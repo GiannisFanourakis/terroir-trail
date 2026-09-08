@@ -67,8 +67,12 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
         onClick={() => setIsOpen((prev) => !prev)}
         className="flex items-center gap-2 p-1 sm:px-2.5 sm:py-1 rounded-xl bg-stone-900 hover:bg-stone-850 border border-white/10 text-stone-200 transition active:scale-95"
       >
-        <span className="w-6 h-6 rounded-lg bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-xs font-bold shrink-0">
-          {user.avatar || '🧭'}
+        <span className="w-6 h-6 rounded-lg bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-xs font-bold shrink-0 overflow-hidden">
+          {user.avatar?.startsWith('http') ? (
+            <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
+          ) : (
+            user.avatar || '🧭'
+          )}
         </span>
         <span className="text-xs font-bold text-white hidden md:inline truncate max-w-[100px]">
           {user.name.split(' ')[0]}
@@ -83,8 +87,12 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
           {/* User Info */}
           <div className="pb-3 border-b border-white/10 mb-2.5">
             <div className="flex items-center gap-2 mb-1">
-              <span className="w-7 h-7 rounded-lg bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-sm">
-                {user.avatar || '🧭'}
+              <span className="w-7 h-7 rounded-lg bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-sm shrink-0 overflow-hidden">
+                {user.avatar?.startsWith('http') ? (
+                  <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
+                ) : (
+                  user.avatar || '🧭'
+                )}
               </span>
               <div className="min-w-0">
                 <div className="font-bold text-white truncate">{user.name}</div>

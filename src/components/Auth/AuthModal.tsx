@@ -1,13 +1,18 @@
 import React, { useState } from 'react';
-import { X, Sparkles, Mail, Lock, User, ArrowRight, ShieldCheck, Check } from 'lucide-react';
+import { X, Mail, Lock, User, ArrowRight, ShieldCheck, Loader2, AlertCircle } from 'lucide-react';
 import { TravelerType } from '../../types/auth';
 
 interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
   onLoginAsDemo: (key: 'giannis' | 'elena' | 'markos') => void;
-  onLogin: (email: string, name?: string) => void;
-  onSignup: (name: string, email: string, travelerType: TravelerType) => void;
+  onLogin: (email: string, password?: string) => Promise<any> | void;
+  onSignup: (name: string, email: string, password?: string, travelerType?: TravelerType) => Promise<any> | void;
+  onLoginWithGoogle?: () => Promise<any>;
+  onLoginWithApple?: () => Promise<any>;
+  isLoading?: boolean;
+  authError?: string | null;
+  isFirebaseConfigured?: boolean;
 }
 
 export const AuthModal: React.FC<AuthModalProps> = ({
@@ -16,41 +21,109 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   onLoginAsDemo,
   onLogin,
   onSignup,
+  onLoginWithGoogle,
+  onLoginWithApple,
+  isLoading = false,
+  authError,
+  isFirebaseConfigured = false,
 }) => {
   const [activeTab, setActiveTab] = useState<'demo' | 'login' | 'signup'>('demo');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [travelerType, setTravelerType] = useState<TravelerType>('crete_local');
-  const [error, setError] = useState('');
+  const [localError, setLocalError] = useState<string>('');
+  const [localLoading, setLocalLoading] = useState<'google' | 'apple' | 'form' | null>(null);
 
   if (!isOpen) return null;
 
-  const handleCustomLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email || !email.includes('@')) {
-      setError('Please enter a valid email address');
-      return;
+  const currentError = localError || authError;
+
+  const handleGoogleLogin = async () => {
+    setLocalError('');
+    if (!onLoginWithGoogle) return;
+    try {
+      setLocalLoading('google');
+      await onLoginWithGoogle();
+      onClose();
+    } catch (err: any) {
+      if (err.message === 'FIREBASE_NOT_CONFIGURED') {
+        setLocalError(
+          'Live Google sign-in requires Firebase credentials. Add your keys to .env (see .env.example) or try the 1-Click Demo below!'
+        );
+      } else {
+        setLocalError(err.message || 'Google sign-in failed');
+      }
+    } finally {
+      setLocalLoading(null);
     }
-    setError('');
-    onLogin(email);
-    onClose();
   };
 
-  const handleCustomSignup = (e: React.FormEvent) => {
+  const handleAppleLogin = async () => {
+    setLocalError('');
+    if (!onLoginWithApple) return;
+    try {
+      setLocalLoading('apple');
+      await onLoginWithApple();
+      onClose();
+    } catch (err: any) {
+      if (err.message === 'FIREBASE_NOT_CONFIGURED') {
+        setLocalError(
+          'Live Apple sign-in requires Firebase credentials. Add your keys to .env (see .env.example) or try the 1-Click Demo below!'
+        );
+      } else {
+        setLocalError(err.message || 'Apple sign-in failed');
+      }
+    } finally {
+      setLocalLoading(null);
+    }
+  };
+
+  const handleCustomLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email || !email.includes('@')) {
+      setLocalError('Please enter a valid email address');
+      return;
+    }
+    setLocalError('');
+    try {
+      setLocalLoading('form');
+      await onLogin(email, password);
+      onClose();
+    } catch (err: any) {
+      setLocalError(err.message || 'Login failed. Please check your credentials.');
+    } finally {
+      setLocalLoading(null);
+    }
+  };
+
+  const handleCustomSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) {
-      setError('Please enter your full name');
+      setLocalError('Please enter your full name');
       return;
     }
     if (!email || !email.includes('@')) {
-      setError('Please enter a valid email address');
+      setLocalError('Please enter a valid email address');
       return;
     }
-    setError('');
-    onSignup(name.trim(), email, travelerType);
-    onClose();
+    if (password && password.length < 6) {
+      setLocalError('Password must be at least 6 characters long');
+      return;
+    }
+    setLocalError('');
+    try {
+      setLocalLoading('form');
+      await onSignup(name.trim(), email, password, travelerType);
+      onClose();
+    } catch (err: any) {
+      setLocalError(err.message || 'Registration failed');
+    } finally {
+      setLocalLoading(null);
+    }
   };
+
+  const isBusy = isLoading || localLoading !== null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200 select-none">
@@ -59,7 +132,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 bg-stone-900 border-b border-white/10 shrink-0">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center text-sm font-bold">
+            <div className="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center text-sm font-bold shadow-inner">
               🛂
             </div>
             <div>
@@ -74,60 +147,131 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-stone-800 hover:bg-stone-700 text-stone-300 flex items-center justify-center transition border border-white/5"
+            className="w-8 h-8 rounded-full bg-stone-800 hover:bg-stone-700 text-stone-300 flex items-center justify-center transition border border-white/5 cursor-pointer"
             aria-label="Close modal"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Tab Selector */}
-        <div className="flex border-b border-white/10 bg-stone-900/60 px-3 pt-2 shrink-0 text-xs font-semibold">
-          <button
-            onClick={() => { setActiveTab('demo'); setError(''); }}
-            className={`flex-1 py-2.5 text-center border-b-2 transition ${
-              activeTab === 'demo'
-                ? 'border-amber-400 text-amber-400 font-bold'
-                : 'border-transparent text-stone-400 hover:text-white'
-            }`}
-          >
-            ⚡ 1-Click Demo
-          </button>
-          <button
-            onClick={() => { setActiveTab('login'); setError(''); }}
-            className={`flex-1 py-2.5 text-center border-b-2 transition ${
-              activeTab === 'login'
-                ? 'border-amber-400 text-amber-400 font-bold'
-                : 'border-transparent text-stone-400 hover:text-white'
-            }`}
-          >
-            Sign In
-          </button>
-          <button
-            onClick={() => { setActiveTab('signup'); setError(''); }}
-            className={`flex-1 py-2.5 text-center border-b-2 transition ${
-              activeTab === 'signup'
-                ? 'border-amber-400 text-amber-400 font-bold'
-                : 'border-transparent text-stone-400 hover:text-white'
-            }`}
-          >
-            Register
-          </button>
-        </div>
+        {/* Scrollable Container */}
+        <div className="overflow-y-auto flex-1 p-5 space-y-4 text-xs">
 
-        {/* Content Body */}
-        <div className="p-5 overflow-y-auto flex-1 min-h-0 space-y-4 text-xs">
-          {error && (
-            <div className="p-2.5 rounded-xl bg-rose-500/20 border border-rose-500/30 text-rose-300 text-xs">
-              {error}
+          {/* Social OAuth Providers */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-[11px] font-semibold text-stone-300">Fast Single Sign-On</span>
+              {isFirebaseConfigured ? (
+                <span className="text-[9px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 font-medium flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                  Live Auth Server
+                </span>
+              ) : (
+                <span className="text-[9px] px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-400 border border-amber-500/30 font-medium">
+                  Config via .env
+                </span>
+              )}
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {/* Google Button */}
+              <button
+                type="button"
+                onClick={handleGoogleLogin}
+                disabled={isBusy}
+                className="flex items-center justify-center gap-2.5 px-3.5 py-2.5 rounded-xl bg-white text-stone-900 font-bold hover:bg-stone-100 active:scale-98 transition shadow-md disabled:opacity-50 cursor-pointer text-xs"
+              >
+                {localLoading === 'google' ? (
+                  <Loader2 className="w-4 h-4 animate-spin text-stone-700" />
+                ) : (
+                  <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
+                    <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.8-2.4 3.66v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.15z"/>
+                    <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.34 24 12 24z"/>
+                    <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.16 0 9.94 0 12s.45 3.84 1.25 5.42l4.03-3.15z"/>
+                    <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.34 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
+                  </svg>
+                )}
+                <span>Google Account</span>
+              </button>
+
+              {/* Apple Button */}
+              <button
+                type="button"
+                onClick={handleAppleLogin}
+                disabled={isBusy}
+                className="flex items-center justify-center gap-2.5 px-3.5 py-2.5 rounded-xl bg-stone-900 hover:bg-stone-850 text-white font-bold border border-white/20 active:scale-98 transition shadow-md disabled:opacity-50 cursor-pointer text-xs"
+              >
+                {localLoading === 'apple' ? (
+                  <Loader2 className="w-4 h-4 animate-spin text-stone-300" />
+                ) : (
+                  <svg className="w-4 h-4 fill-current shrink-0" viewBox="0 0 170 170">
+                    <path d="M150.37 130.25c-2.45 5.66-5.35 10.87-8.71 15.66-4.58 6.53-8.33 11.05-11.22 13.56-4.48 4.12-9.28 6.23-14.42 6.35-3.69 0-8.14-1.05-13.32-3.18-5.19-2.12-9.97-3.17-14.34-3.17-4.58 0-9.49 1.05-14.75 3.17-5.26 2.13-9.5 3.24-12.74 3.35-4.35.13-9.16-1.9-14.42-6.08-3.69-3.06-7.7-7.92-12.02-14.58-6.1-9.35-10.86-19.98-14.28-31.9-3.42-11.91-5.13-23.01-5.13-33.3 0-14.83 3.73-27.02 11.2-36.56 7.47-9.55 16.73-14.38 27.78-14.51 5.37 0 11.13 1.48 17.29 4.43 6.16 2.96 10.15 4.5 11.97 4.64 1.82-.14 6.04-1.74 12.65-4.78 6.62-3.05 12.38-4.42 17.29-4.13 13.58.74 24.36 5.86 32.34 15.35-11.89 7.22-17.65 17.06-17.29 29.53.36 9.87 4.2 18.06 11.53 24.58 7.33 6.51 16.14 10.16 26.43 10.95-2.09 6.31-4.72 12.98-7.91 20.02zM119.22 33.15c-.24-7.4 2.22-14.42 7.38-21.05 5.16-6.63 11.81-10.98 19.96-13.06.49 7.15-1.97 14.07-7.38 20.76-5.41 6.69-12.07 11.14-19.96 13.35z"/>
+                  </svg>
+                )}
+                <span>Apple ID</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Divider */}
+          <div className="relative flex items-center justify-center my-3">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-white/10"></div>
+            </div>
+            <span className="relative px-3 bg-stone-950 text-[10px] uppercase font-bold tracking-wider text-stone-500">
+              or explore via
+            </span>
+          </div>
+
+          {/* Error Message */}
+          {currentError && (
+            <div className="p-3 rounded-2xl bg-rose-500/15 border border-rose-500/30 text-rose-300 text-xs flex items-start gap-2 animate-in fade-in">
+              <AlertCircle className="w-4 h-4 shrink-0 text-rose-400 mt-0.5" />
+              <div className="flex-1 leading-relaxed">
+                {currentError}
+              </div>
             </div>
           )}
 
+          {/* Tab Selector */}
+          <div className="flex rounded-xl bg-stone-900/80 p-1 border border-white/10 text-xs font-semibold">
+            <button
+              onClick={() => { setActiveTab('demo'); setLocalError(''); }}
+              className={`flex-1 py-1.5 rounded-lg text-center transition cursor-pointer ${
+                activeTab === 'demo'
+                  ? 'bg-amber-500 text-stone-950 font-bold shadow-md'
+                  : 'text-stone-400 hover:text-white'
+              }`}
+            >
+              ⚡ 1-Click Demo
+            </button>
+            <button
+              onClick={() => { setActiveTab('login'); setLocalError(''); }}
+              className={`flex-1 py-1.5 rounded-lg text-center transition cursor-pointer ${
+                activeTab === 'login'
+                  ? 'bg-amber-500 text-stone-950 font-bold shadow-md'
+                  : 'text-stone-400 hover:text-white'
+              }`}
+            >
+              Email Login
+            </button>
+            <button
+              onClick={() => { setActiveTab('signup'); setLocalError(''); }}
+              className={`flex-1 py-1.5 rounded-lg text-center transition cursor-pointer ${
+                activeTab === 'signup'
+                  ? 'bg-amber-500 text-stone-950 font-bold shadow-md'
+                  : 'text-stone-400 hover:text-white'
+              }`}
+            >
+              Register
+            </button>
+          </div>
+
           {/* TAB 1: 1-Click Demo */}
           {activeTab === 'demo' && (
-            <div className="space-y-3">
-              <p className="text-stone-400 text-[11px]">
-                Select an authentic pre-configured traveler profile to test passport stamps and tasting notes instantly:
+            <div className="space-y-2.5">
+              <p className="text-stone-400 text-[11px] leading-relaxed">
+                Test the complete experience instantly with genuine pre-configured traveler profiles:
               </p>
 
               {/* Giannis */}
@@ -136,7 +280,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   onLoginAsDemo('giannis');
                   onClose();
                 }}
-                className="w-full text-left p-3 rounded-2xl bg-stone-900 hover:bg-stone-850 border border-amber-500/30 hover:border-amber-400 transition group flex items-center justify-between"
+                className="w-full text-left p-3 rounded-2xl bg-stone-900 hover:bg-stone-850 border border-amber-500/30 hover:border-amber-400 transition group flex items-center justify-between cursor-pointer"
               >
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-xl shrink-0">
@@ -165,7 +309,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   onLoginAsDemo('elena');
                   onClose();
                 }}
-                className="w-full text-left p-3 rounded-2xl bg-stone-900 hover:bg-stone-850 border border-white/10 hover:border-rose-400 transition group flex items-center justify-between"
+                className="w-full text-left p-3 rounded-2xl bg-stone-900 hover:bg-stone-850 border border-white/10 hover:border-rose-400 transition group flex items-center justify-between cursor-pointer"
               >
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-rose-500/20 border border-rose-500/30 flex items-center justify-center text-xl shrink-0">
@@ -194,7 +338,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   onLoginAsDemo('markos');
                   onClose();
                 }}
-                className="w-full text-left p-3 rounded-2xl bg-stone-900 hover:bg-stone-850 border border-white/10 hover:border-amber-400 transition group flex items-center justify-between"
+                className="w-full text-left p-3 rounded-2xl bg-stone-900 hover:bg-stone-850 border border-white/10 hover:border-amber-400 transition group flex items-center justify-between cursor-pointer"
               >
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-amber-400/20 border border-amber-400/30 flex items-center justify-center text-xl shrink-0">
@@ -221,7 +365,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
           {/* TAB 2: Sign In */}
           {activeTab === 'login' && (
-            <form onSubmit={handleCustomLogin} className="space-y-3.5">
+            <form onSubmit={handleCustomLogin} className="space-y-3">
               <div>
                 <label className="block text-stone-400 text-[11px] font-semibold mb-1">
                   Email Address
@@ -232,8 +376,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="you@example.com"
-                    className="w-full bg-stone-900 border border-white/10 text-white rounded-xl pl-9 pr-3 py-2 text-xs focus:outline-none focus:border-amber-400"
+                    placeholder="explorer@example.com"
+                    className="w-full bg-stone-900 border border-white/10 text-white rounded-xl pl-9 pr-3 py-2 text-xs focus:outline-none focus:border-amber-400 transition"
                     required
                   />
                 </div>
@@ -250,7 +394,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
-                    className="w-full bg-stone-900 border border-white/10 text-white rounded-xl pl-9 pr-3 py-2 text-xs focus:outline-none focus:border-amber-400"
+                    className="w-full bg-stone-900 border border-white/10 text-white rounded-xl pl-9 pr-3 py-2 text-xs focus:outline-none focus:border-amber-400 transition"
                     required
                   />
                 </div>
@@ -258,16 +402,24 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
               <button
                 type="submit"
-                className="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs shadow-lg transition active:scale-98"
+                disabled={isBusy}
+                className="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs shadow-lg transition active:scale-98 disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
               >
-                Sign In to TerroirTrail
+                {localLoading === 'form' ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin text-stone-950" />
+                    <span>Signing in...</span>
+                  </>
+                ) : (
+                  <span>Sign In to TerroirTrail</span>
+                )}
               </button>
             </form>
           )}
 
           {/* TAB 3: Register */}
           {activeTab === 'signup' && (
-            <form onSubmit={handleCustomSignup} className="space-y-3.5">
+            <form onSubmit={handleCustomSignup} className="space-y-3">
               <div>
                 <label className="block text-stone-400 text-[11px] font-semibold mb-1">
                   Full Name
@@ -279,7 +431,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Giannis Fanourakis"
-                    className="w-full bg-stone-900 border border-white/10 text-white rounded-xl pl-9 pr-3 py-2 text-xs focus:outline-none focus:border-amber-400"
+                    className="w-full bg-stone-900 border border-white/10 text-white rounded-xl pl-9 pr-3 py-2 text-xs focus:outline-none focus:border-amber-400 transition"
                     required
                   />
                 </div>
@@ -295,8 +447,25 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="you@example.com"
-                    className="w-full bg-stone-900 border border-white/10 text-white rounded-xl pl-9 pr-3 py-2 text-xs focus:outline-none focus:border-amber-400"
+                    placeholder="explorer@example.com"
+                    className="w-full bg-stone-900 border border-white/10 text-white rounded-xl pl-9 pr-3 py-2 text-xs focus:outline-none focus:border-amber-400 transition"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-stone-400 text-[11px] font-semibold mb-1">
+                  Password
+                </label>
+                <div className="relative">
+                  <Lock className="w-4 h-4 text-stone-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="At least 6 characters"
+                    className="w-full bg-stone-900 border border-white/10 text-white rounded-xl pl-9 pr-3 py-2 text-xs focus:outline-none focus:border-amber-400 transition"
                     required
                   />
                 </div>
@@ -317,7 +486,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                       key={t.id}
                       type="button"
                       onClick={() => setTravelerType(t.id as TravelerType)}
-                      className={`flex items-center gap-1.5 p-2 rounded-xl border text-left transition ${
+                      className={`flex items-center gap-1.5 p-2 rounded-xl border text-left transition cursor-pointer ${
                         travelerType === t.id
                           ? 'bg-amber-500/20 text-amber-300 border-amber-500/50 font-bold'
                           : 'bg-stone-900 text-stone-400 border-white/5 hover:text-white'
@@ -332,17 +501,26 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
               <button
                 type="submit"
-                className="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs shadow-lg transition active:scale-98"
+                disabled={isBusy}
+                className="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs shadow-lg transition active:scale-98 disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
               >
-                Create Free Traveler Account
+                {localLoading === 'form' ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin text-stone-950" />
+                    <span>Creating account...</span>
+                  </>
+                ) : (
+                  <span>Create Free Traveler Account</span>
+                )}
               </button>
             </form>
           )}
 
           <div className="flex items-center justify-center gap-1.5 pt-2 text-[10px] text-stone-500">
             <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
-            <span>100% Free & Private · Local browser storage</span>
+            <span>Secure Authentication · Stored per unique Explorer ID</span>
           </div>
+
         </div>
 
       </div>

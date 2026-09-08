@@ -25,8 +25,13 @@ export const App: React.FC = () => {
   const {
     user,
     isAuthenticated,
-    login,
-    signup,
+    isFirebaseConfigured,
+    isLoading: isAuthLoading,
+    authError,
+    loginWithGoogle,
+    loginWithApple,
+    loginWithEmail,
+    signupWithEmail,
     loginAsDemo,
     logout,
     toggleVisited,
@@ -261,8 +266,13 @@ export const App: React.FC = () => {
         isOpen={isAuthModalOpen}
         onClose={() => setIsAuthModalOpen(false)}
         onLoginAsDemo={loginAsDemo}
-        onLogin={login}
-        onSignup={signup}
+        onLogin={loginWithEmail}
+        onSignup={(name, email, password, travelerType) => signupWithEmail(name, email, password, travelerType)}
+        onLoginWithGoogle={loginWithGoogle}
+        onLoginWithApple={loginWithApple}
+        isLoading={isAuthLoading}
+        authError={authError}
+        isFirebaseConfigured={isFirebaseConfigured}
       />
 
       {/* 7. Terroir Passport Stamps Modal */}
