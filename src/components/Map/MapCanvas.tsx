@@ -239,6 +239,17 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     );
   };
 
+  const formatCategoryName = (category: Category) => {
+    switch (category) {
+      case 'winery': return 'Winery';
+      case 'brewery': return 'Microbrewery';
+      case 'kazani': return 'Rakokazano';
+      case 'olive_mill': return 'Olive Mill';
+      case 'cheese_dairy': return 'Mountain Dairy';
+      case 'apiary': return 'Honey & Herbs';
+    }
+  };
+
   return (
     <div className="relative w-full h-full select-none overflow-hidden">
       {/* Map Canvas */}
@@ -343,7 +354,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
               <div>
                 <div className="flex items-center justify-between gap-1">
                   <span className="text-[10px] uppercase font-bold tracking-wider text-amber-400">
-                    {selectedProducer.category.replace('_', ' ')} · {selectedProducer.region}
+                    {formatCategoryName(selectedProducer.category)} · {selectedProducer.region}
                   </span>
                   <button
                     onClick={(e) => {
