@@ -97,5 +97,102 @@ export const CRETAN_DAY_TRIP_LOOPS: DayTripLoop[] = [
       'Epic volcanic Aegean light'
     ],
     isVipOnly: true,
+  },
+  {
+    id: 'peloponnese-mythic-trail',
+    title: 'Peloponnese Mythic Terroir: Blood of Hercules & Arcadia Moschofilero',
+    greekTitle: 'Μυθικό Terroir Πελοποννήσου: Αιγιωργίτικο & Μοσχοφίλερο',
+    subtitle: 'Nemea Grand Cru Slopes (650m) to High Arcadia Champagne-Method Sparkling',
+    destination: 'peloponnese',
+    region: 'Nemea & Mantinia',
+    totalDuration: '6.0 hours',
+    drivingDistance: '64 km (Scenic paved mountain pass)',
+    stops: [
+      {
+        producerId: 'gaia-wines-nemea',
+        suggestedTime: '10:30 AM - 12:30 PM',
+        activity: 'Gravity-flow cellar tour in Koutsi and tasting velvety reserve Agiorgitiko with local cheeses.'
+      },
+      {
+        producerId: 'ktima-skouras',
+        suggestedTime: '1:00 PM - 2:30 PM',
+        activity: 'Tasting of the mythical "Megas Oenos" (Agiorgitiko & Cabernet) in contemporary art tasting galleries.'
+      },
+      {
+        producerId: 'ktima-tselepos',
+        suggestedTime: '3:30 PM - 5:00 PM',
+        activity: 'Cold continental Mantinia plateau tasting of traditional method Amalia Brut sparkling and wild Moschofilero.'
+      }
+    ],
+    description: 'A journey through mythical Greece. Experience Nemea, where Hercules slew the lion, through velvety deep reds, before crossing the mountain pass to the chilly Arcadia plateau for aromatic floral whites.',
+    highlightPointers: [
+      'Nemea ancient stadium and limestone hills',
+      'The legendary "Megas Oenos" vertical library',
+      'Champagne-method sparkling wine at 750m elevation'
+    ],
+    isVipOnly: true,
+  },
+  {
+    id: 'northern-greece-royal-trail',
+    title: 'Kingdom of Macedonia: Epanomi Malagousia & Naoussa Royal Xinomavro',
+    greekTitle: 'Μακεδονία: Μαλαγουζιά Επανομής & Βασιλικό Ξινόμαυρο',
+    subtitle: 'From Thermaic Gulf Sea-Breeze Whites to Mount Vermio Old Vines',
+    destination: 'northern_greece',
+    region: 'Thessaloniki & Naoussa',
+    totalDuration: '6.5 hours',
+    drivingDistance: '85 km (Highway & wine slopes)',
+    stops: [
+      {
+        producerId: 'ktima-gerovassiliou',
+        suggestedTime: '10:00 AM - 12:30 PM',
+        activity: 'Tour the world-renowned corkscrew museum and taste the revived Malagousia facing Mount Olympus.'
+      },
+      {
+        producerId: 'thymiopoulos-vineyards',
+        suggestedTime: '2:00 PM - 4:00 PM',
+        activity: 'Biodynamic vineyard walk and tasting of "Earth and Sky" natural Xinomavro straight from old oak casks.'
+      }
+    ],
+    description: 'Northern Greece is the land of Alexander the Great and Dionysian mystery. This route pairs the world’s benchmark aromatic Malagousia with the legendary structured Xinomavro of Naoussa.',
+    highlightPointers: [
+      'The world’s premier private corkscrew museum (2,600+ pieces)',
+      'Mount Olympus panoramic sea-view terraces',
+      'Biodynamic century-old Xinomavro vines'
+    ],
+    isVipOnly: false,
+  },
+  {
+    id: 'santorini-caldera-sunset-trail',
+    title: 'Santorini Sunset Caldera & Saffron Distillation Trail',
+    greekTitle: 'Διαδρομή Καλντέρας & Αποστάγματα Σαφράν Σαντορίνης',
+    subtitle: 'Cliffside Gravity Winery, Volcanic Black Beach & Saffron Tsikoudia',
+    destination: 'santorini',
+    region: 'Santorini',
+    totalDuration: '5.0 hours',
+    drivingDistance: '28 km (Paved caldera roads)',
+    stops: [
+      {
+        producerId: 'gaia-wines-santorini',
+        suggestedTime: '11:00 AM - 1:00 PM',
+        activity: 'Beachfront industrial canava tasting of sea-submerged Thalassitis right by crashing volcanic surf.'
+      },
+      {
+        producerId: 'canava-santorini-distillery',
+        suggestedTime: '1:30 PM - 3:00 PM',
+        activity: 'Explore 19th-century copper stills and sample Assyrtiko Tsikoudia infused with Greek red saffron.'
+      },
+      {
+        producerId: 'venetsanos-winery-santorini',
+        suggestedTime: '4:00 PM - 6:00 PM (Sunset)',
+        activity: 'Cliffside gravity cellars walk and sunset Nykteri tasting on the sheer edge of the Caldera.'
+      }
+    ],
+    description: 'The definitive luxury circuit on Santorini: from volcanic beach surf to centuries-old saffron copper stills, culminating in a front-row sunset seat on the edge of the Caldera cliffs.',
+    highlightPointers: [
+      'Wines submerged 25m under the Aegean Sea',
+      'Handcrafted saffron & fig tsikoudia',
+      'Front-row cliffside sunset over the sunken volcano'
+    ],
+    isVipOnly: true,
   }
 ];

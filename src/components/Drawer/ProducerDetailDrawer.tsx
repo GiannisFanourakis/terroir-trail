@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Producer } from '../../types/terroir';
+import { getExperiencesForProducer } from '../../data/experiences';
 import { 
   X, MapPin, Star, Phone, Globe, Navigation, Clock, 
   Dog, Footprints, Caravan, Car, Sparkles, Share2, Check, Heart, Award, 
@@ -479,6 +480,66 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                   <div key={idx} className="flex items-start gap-2.5 p-2.5 rounded-xl bg-stone-900 border border-white/5 text-xs text-stone-200">
                     <span className="text-amber-400 font-bold text-sm">✦</span>
                     <span className="leading-relaxed">{highlight}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Curated Bookable Experiences */}
+            <div>
+              <div className="flex items-center justify-between mb-2.5">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-stone-400 flex items-center gap-1.5">
+                  <Wine className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                  Curated Experiences & Tastings
+                </h3>
+                <span className="text-[10px] text-amber-400/80 font-medium">Instant Reserve</span>
+              </div>
+
+              <div className="space-y-2.5">
+                {getExperiencesForProducer(producer.category).map((exp) => (
+                  <div
+                    key={exp.id}
+                    className="p-3.5 rounded-2xl bg-stone-900/90 border border-white/10 hover:border-amber-500/40 transition flex flex-col gap-2 group"
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0 flex-1">
+                        <h4 className="font-bold text-xs text-white group-hover:text-amber-300 transition-colors">
+                          {exp.title}
+                        </h4>
+                        <div className="flex items-center gap-2 mt-1 text-[11px] text-stone-400">
+                          <span className="flex items-center gap-1">
+                            <Clock className="w-3 h-3 text-amber-400 shrink-0" />
+                            <span>{exp.durationMinutes} mins</span>
+                          </span>
+                          <span>•</span>
+                          <span className="font-mono font-bold text-amber-300">€{exp.pricePerPerson} / person</span>
+                        </div>
+                      </div>
+
+                      {onOpenBooking && (
+                        <button
+                          type="button"
+                          onClick={() => onOpenBooking(producer)}
+                          className="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-[11px] shadow-sm transition active:scale-95 shrink-0 cursor-pointer"
+                        >
+                          Book Now
+                        </button>
+                      )}
+                    </div>
+
+                    <p className="text-[11px] text-stone-300 leading-relaxed">
+                      {exp.description}
+                    </p>
+
+                    {/* Includes checklist */}
+                    <div className="pt-1.5 border-t border-white/5 space-y-1">
+                      {exp.includes.map((inc, i) => (
+                        <div key={i} className="flex items-center gap-1.5 text-[10px] text-stone-400">
+                          <Check className="w-3 h-3 text-emerald-400 shrink-0" />
+                          <span>{inc}</span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 ))}
               </div>
