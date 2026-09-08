@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Producer } from '../../types/terroir';
 import { 
   X, MapPin, Star, Phone, Globe, Navigation, Clock, 
-  Dog, Footprints, Caravan, Car, Sparkles, Share2, Check, Heart, Award, CheckCircle2 
+  Dog, Footprints, Caravan, Car, Sparkles, Share2, Check, Heart, Award, CheckCircle2, Wine 
 } from 'lucide-react';
 
 interface ProducerDetailDrawerProps {
@@ -16,6 +16,8 @@ interface ProducerDetailDrawerProps {
   onSaveTastingNote?: (id: string, note: string) => void;
   isAuthenticated?: boolean;
   onOpenAuth?: () => void;
+  onOpenBooking?: (producer: Producer) => void;
+  customNotice?: string;
 }
 
 export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
@@ -29,6 +31,8 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
   onSaveTastingNote,
   isAuthenticated = false,
   onOpenAuth,
+  onOpenBooking,
+  customNotice,
 }) => {
   const [activePhoto, setActivePhoto] = useState<string>('');
   const [copiedLink, setCopiedLink] = useState<boolean>(false);
@@ -217,6 +221,21 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
       {/* 3. Tab Content (Scrollable) */}
       <div className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-6 text-stone-200">
         
+        {/* Live Producer Announcement Bulletin */}
+        {customNotice && (
+          <div className="p-3.5 rounded-2xl bg-amber-500/15 border border-amber-500/30 text-amber-200 text-xs flex items-start gap-2.5 shadow-md animate-in fade-in">
+            <Sparkles className="w-4 h-4 shrink-0 text-amber-400 mt-0.5" />
+            <div className="flex-1 min-w-0">
+              <span className="font-bold text-amber-300 block text-[10px] uppercase tracking-wider mb-0.5">
+                Live Estate Bulletin
+              </span>
+              <p className="text-xs leading-relaxed text-stone-200">
+                {customNotice}
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Rating & Quick Metrics Bar */}
         <div className="flex items-center justify-between p-3.5 rounded-2xl bg-stone-900 border border-white/10 text-xs">
           <div className="flex items-center gap-2">
@@ -464,21 +483,33 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
       </div>
 
       {/* 4. Action Bar (Sticky Footer) */}
-      <div className="p-4 bg-stone-900/90 backdrop-blur-xl border-t border-white/10 shrink-0 flex items-center gap-3">
+      <div className="p-3.5 sm:p-4 bg-stone-900/95 backdrop-blur-xl border-t border-white/10 shrink-0 flex items-center gap-2 sm:gap-3">
+        {onOpenBooking && (
+          <button
+            type="button"
+            onClick={() => onOpenBooking(producer)}
+            className="flex-1 flex items-center justify-center gap-1.5 py-3 px-3.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-stone-950 font-bold text-xs rounded-2xl shadow-xl shadow-amber-500/20 transition transform active:scale-98 cursor-pointer"
+          >
+            <Wine className="w-4 h-4" />
+            <span>Book Tasting</span>
+          </button>
+        )}
+
         <a
           href={producer.googleMapsUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex-1 flex items-center justify-center gap-2 py-3 px-4 bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs rounded-2xl shadow-xl shadow-amber-500/20 transition transform active:scale-98"
+          className="flex-1 flex items-center justify-center gap-1.5 py-3 px-3.5 bg-stone-800 hover:bg-stone-700 text-stone-100 font-bold text-xs rounded-2xl border border-white/10 transition transform active:scale-98"
         >
-          <Navigation className="w-4 h-4 fill-stone-950" />
-          <span>Drive with Google Maps</span>
+          <Navigation className="w-4 h-4 text-amber-400" />
+          <span className="hidden sm:inline">Drive with Maps</span>
+          <span className="sm:hidden">Maps</span>
         </a>
 
         {producer.phone && (
           <a
             href={`tel:${producer.phone}`}
-            className="p-3 rounded-2xl bg-stone-800 hover:bg-stone-700 border border-white/10 text-stone-200 transition"
+            className="p-3 rounded-2xl bg-stone-800 hover:bg-stone-700 border border-white/10 text-stone-200 transition shrink-0"
             title={`Call ${producer.phone}`}
           >
             <Phone className="w-4 h-4" />
@@ -490,7 +521,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
             href={producer.website}
             target="_blank"
             rel="noopener noreferrer"
-            className="p-3 rounded-2xl bg-stone-800 hover:bg-stone-700 border border-white/10 text-stone-200 transition"
+            className="p-3 rounded-2xl bg-stone-800 hover:bg-stone-700 border border-white/10 text-stone-200 transition shrink-0"
             title="Visit Website"
           >
             <Globe className="w-4 h-4" />

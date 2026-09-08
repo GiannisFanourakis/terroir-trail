@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { UserProfile } from '../../types/auth';
-import { User, LogOut, Compass, Heart, Award, ChevronDown } from 'lucide-react';
+import { User, LogOut, Compass, Heart, Award, ChevronDown, Calendar, Building2 } from 'lucide-react';
 
 interface ProfileMenuProps {
   user: UserProfile | null;
@@ -9,6 +9,9 @@ interface ProfileMenuProps {
   onOpenWishlist: () => void;
   onLogout: () => void;
   totalProducersCount: number;
+  onOpenMyBookings?: () => void;
+  onOpenProducerPortal?: () => void;
+  bookingsCount?: number;
 }
 
 export const ProfileMenu: React.FC<ProfileMenuProps> = ({
@@ -18,6 +21,9 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
   onOpenWishlist,
   onLogout,
   totalProducersCount,
+  onOpenMyBookings,
+  onOpenProducerPortal,
+  bookingsCount = 0,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -152,11 +158,44 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
                 setIsOpen(false);
                 onOpenPassport();
               }}
-              className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-stone-300 hover:text-white hover:bg-white/5 transition"
+              className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-stone-300 hover:text-white hover:bg-white/5 transition cursor-pointer"
             >
               <Compass className="w-3.5 h-3.5 text-amber-400" />
               <span>Terroir Passport Stamps</span>
             </button>
+
+            {onOpenMyBookings && (
+              <button
+                onClick={() => {
+                  setIsOpen(false);
+                  onOpenMyBookings();
+                }}
+                className="w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-stone-300 hover:text-white hover:bg-white/5 transition cursor-pointer"
+              >
+                <span className="flex items-center gap-2">
+                  <Calendar className="w-3.5 h-3.5 text-amber-400" />
+                  <span>My Tasting Bookings</span>
+                </span>
+                {bookingsCount > 0 && (
+                  <span className="px-1.5 py-0.2 rounded-full bg-amber-500/20 text-amber-300 text-[10px] font-bold border border-amber-500/30">
+                    {bookingsCount}
+                  </span>
+                )}
+              </button>
+            )}
+
+            {onOpenProducerPortal && (
+              <button
+                onClick={() => {
+                  setIsOpen(false);
+                  onOpenProducerPortal();
+                }}
+                className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-stone-300 hover:text-white hover:bg-white/5 transition cursor-pointer"
+              >
+                <Building2 className="w-3.5 h-3.5 text-emerald-400" />
+                <span>Host / Producer Portal</span>
+              </button>
+            )}
 
             <div className="h-[1px] bg-white/10 my-1" />
 

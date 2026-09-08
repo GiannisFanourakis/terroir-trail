@@ -6,6 +6,8 @@ export type Category =
   | 'apiary'
   | 'brewery';
 
+export type ProducerCategory = Category;
+
 export type Destination = 
   | 'crete' 
   | 'santorini' 

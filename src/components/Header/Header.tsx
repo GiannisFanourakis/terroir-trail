@@ -2,7 +2,7 @@ import React from 'react';
 import { Destination } from '../../types/terroir';
 import { UserProfile } from '../../types/auth';
 import { ProfileMenu } from '../Auth/ProfileMenu';
-import { Compass, Search, X, Heart } from 'lucide-react';
+import { Compass, Search, X, Heart, Building2, Calendar } from 'lucide-react';
 
 interface HeaderProps {
   selectedDestination: Destination | 'all';
@@ -21,6 +21,9 @@ interface HeaderProps {
   onOpenPassport: () => void;
   onLogout: () => void;
   totalProducersCount: number;
+  onOpenMyBookings?: () => void;
+  onOpenProducerPortal?: () => void;
+  bookingsCount?: number;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -40,6 +43,9 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenPassport,
   onLogout,
   totalProducersCount,
+  onOpenMyBookings,
+  onOpenProducerPortal,
+  bookingsCount = 0,
 }) => {
   const destinations: { id: Destination | 'all'; label: string; flag: string }[] = [
     { id: 'all', label: 'All Terroir', flag: '🇬🇷' },
@@ -104,6 +110,9 @@ export const Header: React.FC<HeaderProps> = ({
               onOpenWishlist={onToggleFavoritesOnly}
               onLogout={onLogout}
               totalProducersCount={totalProducersCount}
+              onOpenMyBookings={onOpenMyBookings}
+              onOpenProducerPortal={onOpenProducerPortal}
+              bookingsCount={bookingsCount}
             />
           </div>
         </div>
@@ -179,6 +188,18 @@ export const Header: React.FC<HeaderProps> = ({
             <span>Circuits</span>
           </button>
 
+          {/* Host / Producer Portal Button (Desktop) */}
+          {onOpenProducerPortal && (
+            <button
+              onClick={onOpenProducerPortal}
+              className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-xl border border-white/10 hover:border-emerald-400/50 bg-stone-900 hover:bg-stone-850 text-stone-300 hover:text-emerald-300 transition shrink-0 cursor-pointer"
+              title="Winery & Brewery Host Portal"
+            >
+              <Building2 className="w-3.5 h-3.5 text-emerald-400" />
+              <span>Host Portal</span>
+            </button>
+          )}
+
           {/* User Profile / Auth (Desktop) */}
           <div className="hidden md:block">
             <ProfileMenu
@@ -188,6 +209,9 @@ export const Header: React.FC<HeaderProps> = ({
               onOpenWishlist={onToggleFavoritesOnly}
               onLogout={onLogout}
               totalProducersCount={totalProducersCount}
+              onOpenMyBookings={onOpenMyBookings}
+              onOpenProducerPortal={onOpenProducerPortal}
+              bookingsCount={bookingsCount}
             />
           </div>
         </div>

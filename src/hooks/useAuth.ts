@@ -4,7 +4,9 @@ import {
   auth, 
   googleProvider, 
   appleProvider, 
-  isFirebaseConfigured 
+  isFirebaseConfigured,
+  syncUserProfileToCloud,
+  subscribeToCloudUserProfile
 } from '../services/firebase';
 import { 
   signInWithPopup, 
@@ -147,6 +149,35 @@ export const useAuth = () => {
       console.error('Error syncing auth to localStorage:', e);
     }
   }, [user]);
+
+  // Scenario A: Real-Time Cross-Device Sync (Phone <-> Laptop) via Cloud Firestore
+  useEffect(() => {
+    if (!user?.id || !isFirebaseConfigured) return;
+
+    const unsubscribe = subscribeToCloudUserProfile(user.id, (cloudData) => {
+      setUser((prev) => {
+        if (!prev || prev.id !== user.id) return prev;
+        const currentVisitedSet = new Set(prev.visitedProducers);
+        const cloudVisited = cloudData.visitedProducers || [];
+        const hasNewStamps = cloudVisited.some((id) => !currentVisitedSet.has(id));
+        
+        const mergedNotes = { ...prev.personalNotes, ...(cloudData.personalNotes || {}) };
+        const mergedStamps = Array.from(new Set([...prev.visitedProducers, ...cloudVisited]));
+
+        if (hasNewStamps || Object.keys(cloudData.personalNotes || {}).length > 0) {
+          saveUserData(prev.id, mergedStamps, mergedNotes);
+          return {
+            ...prev,
+            visitedProducers: mergedStamps,
+            personalNotes: mergedNotes,
+          };
+        }
+        return prev;
+      });
+    });
+
+    return () => unsubscribe();
+  }, [user?.id]);
 
   // 1. Google (Gmail) Sign-In
   const loginWithGoogle = useCallback(async () => {
@@ -308,6 +339,7 @@ export const useAuth = () => {
         visitedProducers: updated,
       };
       saveUserData(newProfile.id, updated, newProfile.personalNotes);
+      syncUserProfileToCloud(newProfile.id, updated, newProfile.personalNotes);
       return newProfile;
     });
   }, []);
@@ -331,6 +363,7 @@ export const useAuth = () => {
         personalNotes: newNotes,
       };
       saveUserData(newProfile.id, newProfile.visitedProducers, newNotes);
+      syncUserProfileToCloud(newProfile.id, newProfile.visitedProducers, newNotes);
       return newProfile;
     });
   }, []);

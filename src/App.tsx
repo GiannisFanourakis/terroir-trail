@@ -9,8 +9,13 @@ import { ProducerDetailDrawer } from './components/Drawer/ProducerDetailDrawer';
 import { DayTripModal } from './components/Loops/DayTripModal';
 import { useFavorites } from './hooks/useFavorites';
 import { useAuth } from './hooks/useAuth';
+import { useBookings } from './hooks/useBookings';
+import { useProducerPortal } from './hooks/useProducerPortal';
 import { AuthModal } from './components/Auth/AuthModal';
 import { PassportModal } from './components/Auth/PassportModal';
+import { BookingModal } from './components/Bookings/BookingModal';
+import { ProducerPortalModal } from './components/Portal/ProducerPortalModal';
+import { MyBookingsModal } from './components/Bookings/MyBookingsModal';
 import { List, MapPin } from 'lucide-react';
 
 export const App: React.FC = () => {
@@ -19,6 +24,10 @@ export const App: React.FC = () => {
   const [isLoopsModalOpen, setIsLoopsModalOpen] = useState<boolean>(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
   const [isPassportModalOpen, setIsPassportModalOpen] = useState<boolean>(false);
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState<boolean>(false);
+  const [isPortalModalOpen, setIsPortalModalOpen] = useState<boolean>(false);
+  const [isMyBookingsModalOpen, setIsMyBookingsModalOpen] = useState<boolean>(false);
+  const [bookingTargetProducer, setBookingTargetProducer] = useState<Producer | null>(null);
   const [viewMode, setViewMode] = useState<'map' | 'list'>('map');
 
   const { favorites, toggleFavorite, isFavorite } = useFavorites();
@@ -39,6 +48,18 @@ export const App: React.FC = () => {
     saveTastingNote,
     getTastingNote,
   } = useAuth();
+
+  const {
+    bookings,
+    userBookings,
+    bookTasting,
+    setStatus,
+  } = useBookings(user?.id);
+
+  const {
+    getOverride,
+    updateOverride,
+  } = useProducerPortal();
 
   const initialFilters: FilterState = {
     category: 'all',
@@ -158,6 +179,9 @@ export const App: React.FC = () => {
         onOpenPassport={() => setIsPassportModalOpen(true)}
         onLogout={logout}
         totalProducersCount={CRETAN_PRODUCERS.length}
+        onOpenMyBookings={() => setIsMyBookingsModalOpen(true)}
+        onOpenProducerPortal={() => setIsPortalModalOpen(true)}
+        bookingsCount={userBookings.length}
       />
 
       {/* 2. Interactive Filter Bar */}
@@ -246,6 +270,11 @@ export const App: React.FC = () => {
             onSaveTastingNote={saveTastingNote}
             isAuthenticated={isAuthenticated}
             onOpenAuth={() => setIsAuthModalOpen(true)}
+            onOpenBooking={(producer) => {
+              setBookingTargetProducer(producer);
+              setIsBookingModalOpen(true);
+            }}
+            customNotice={selectedProducer ? getOverride(selectedProducer.id)?.customNotice : undefined}
           />
         )}
       </main>
@@ -283,6 +312,40 @@ export const App: React.FC = () => {
         producers={CRETAN_PRODUCERS}
         onToggleVisited={toggleVisited}
         onSaveTastingNote={saveTastingNote}
+        onSelectProducer={(producer) => {
+          setSelectedProducer(producer);
+          setIsDrawerOpen(true);
+        }}
+      />
+
+      {/* 8. Tasting Reservation Modal */}
+      <BookingModal
+        isOpen={isBookingModalOpen}
+        onClose={() => setIsBookingModalOpen(false)}
+        producer={bookingTargetProducer}
+        user={user}
+        onBookTasting={bookTasting}
+        onOpenAuth={() => setIsAuthModalOpen(true)}
+      />
+
+      {/* 9. Host & Winery/Brewery Management Portal */}
+      <ProducerPortalModal
+        isOpen={isPortalModalOpen}
+        onClose={() => setIsPortalModalOpen(false)}
+        producers={CRETAN_PRODUCERS}
+        bookings={bookings}
+        onUpdateBookingStatus={setStatus}
+        onSaveProducerOverride={updateOverride}
+        getProducerOverride={getOverride}
+      />
+
+      {/* 10. Explorer My Bookings & Visits Modal */}
+      <MyBookingsModal
+        isOpen={isMyBookingsModalOpen}
+        onClose={() => setIsMyBookingsModalOpen(false)}
+        bookings={userBookings}
+        producers={CRETAN_PRODUCERS}
+        onCancelBooking={(id) => setStatus(id, 'cancelled')}
         onSelectProducer={(producer) => {
           setSelectedProducer(producer);
           setIsDrawerOpen(true);
