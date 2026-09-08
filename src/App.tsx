@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { CRETAN_PRODUCERS } from './data/producers';
+import { useProducers } from './hooks/useProducers';
 import { Producer, FilterState, Destination, DayTripLoop } from './types/terroir';
 import { Header } from './components/Header/Header';
 import { FilterBar } from './components/FilterBar/FilterBar';
@@ -107,6 +107,12 @@ export const App: React.FC = () => {
 
   const [filters, setFilters] = useState<FilterState>(initialFilters);
 
+  const { producers, isLive } = useProducers({
+    destination: filters.destination,
+    category: filters.category,
+    searchQuery: filters.searchQuery,
+  });
+
   // Filter Handler
   const handleFilterChange = <K extends keyof FilterState>(key: K, value: FilterState[K]) => {
     setFilters((prev) => ({ ...prev, [key]: value }));
@@ -118,7 +124,7 @@ export const App: React.FC = () => {
 
   // Filter & Search Logic
   const filteredProducers = useMemo(() => {
-    return CRETAN_PRODUCERS.filter((producer) => {
+    return producers.filter((producer) => {
       // Category filter
       if (filters.category !== 'all' && producer.category !== filters.category) {
         return false;
@@ -169,7 +175,7 @@ export const App: React.FC = () => {
 
       return true;
     });
-  }, [filters, isFavorite]);
+  }, [producers, filters, isFavorite]);
 
   // Load a curated loop
   const handleSelectLoop = (loop: DayTripLoop) => {
@@ -183,7 +189,7 @@ export const App: React.FC = () => {
     }));
 
     // Find and select the first producer in the loop
-    const firstProducer = CRETAN_PRODUCERS.find((p) => p.id === loop.stops[0]?.producerId);
+    const firstProducer = producers.find((p) => p.id === loop.stops[0]?.producerId);
     if (firstProducer) {
       setSelectedProducer(firstProducer);
       setIsDrawerOpen(false);
@@ -210,7 +216,7 @@ export const App: React.FC = () => {
         onOpenAuth={() => setIsAuthModalOpen(true)}
         onOpenPassport={() => setIsPassportModalOpen(true)}
         onLogout={logout}
-        totalProducersCount={CRETAN_PRODUCERS.length}
+        totalProducersCount={producers.length}
         onOpenMyBookings={() => setIsMyBookingsModalOpen(true)}
         onOpenProducerPortal={() => setIsPortalModalOpen(true)}
         bookingsCount={userBookings.length}
@@ -224,7 +230,7 @@ export const App: React.FC = () => {
         onFilterChange={handleFilterChange}
         onResetFilters={handleResetFilters}
         totalFiltered={filteredProducers.length}
-        totalCount={CRETAN_PRODUCERS.length}
+        totalCount={producers.length}
       />
 
       {/* 3. Main Workspace: Sidebar List + Leaflet Map Canvas */}
@@ -355,7 +361,7 @@ export const App: React.FC = () => {
         isOpen={isPassportModalOpen}
         onClose={() => setIsPassportModalOpen(false)}
         user={user}
-        producers={CRETAN_PRODUCERS}
+        producers={producers}
         onToggleVisited={toggleVisited}
         onSaveTastingNote={saveTastingNote}
         onSelectProducer={(producer) => {
@@ -383,7 +389,7 @@ export const App: React.FC = () => {
       <ProducerPortalModal
         isOpen={isPortalModalOpen}
         onClose={() => setIsPortalModalOpen(false)}
-        producers={CRETAN_PRODUCERS}
+        producers={producers}
         bookings={bookings}
         onUpdateBookingStatus={setStatus}
         onSaveProducerOverride={updateOverride}
@@ -395,7 +401,7 @@ export const App: React.FC = () => {
         isOpen={isMyBookingsModalOpen}
         onClose={() => setIsMyBookingsModalOpen(false)}
         bookings={userBookings}
-        producers={CRETAN_PRODUCERS}
+        producers={producers}
         onCancelBooking={(id) => setStatus(id, 'cancelled')}
         onSelectProducer={(producer) => {
           setSelectedProducer(producer);
@@ -436,7 +442,7 @@ export const App: React.FC = () => {
         isOpen={isExperiencesModalOpen}
         onClose={() => setIsExperiencesModalOpen(false)}
         onBookExperience={(exp) => {
-          const producer = CRETAN_PRODUCERS.find((p) => p.id === exp.producerId) || CRETAN_PRODUCERS[0];
+          const producer = producers.find((p) => p.id === exp.producerId) || producers[0];
           setBookingTargetProducer(producer);
           setBookingTargetExperienceId(exp.id);
           setIsExperiencesModalOpen(false);

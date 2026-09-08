@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { ALL_EXPERIENCES } from '../../data/experiences';
-import { CRETAN_PRODUCERS } from '../../data/producers';
+import { producerService } from '../../services/producerService';
 import { TastingExperience } from '../../types/booking';
 import { Producer, ProducerCategory, Destination } from '../../types/terroir';
 import { 
@@ -58,7 +58,7 @@ export const ExperienceExplorerModal: React.FC<ExperienceExplorerModalProps> = (
   // Map producerId to actual producer object for quick access
   const producerMap = useMemo(() => {
     const map = new Map<string, Producer>();
-    CRETAN_PRODUCERS.forEach((p) => map.set(p.id, p));
+    producerService.getCachedProducers().forEach((p) => map.set(p.id, p));
     return map;
   }, []);
 

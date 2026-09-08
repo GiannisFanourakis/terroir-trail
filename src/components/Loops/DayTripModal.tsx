@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { CRETAN_DAY_TRIP_LOOPS } from '../../data/loops';
-import { CRETAN_PRODUCERS } from '../../data/producers';
+import { producerService } from '../../services/producerService';
 import { DayTripLoop, Producer } from '../../types/terroir';
 import { X, Clock, Compass, ArrowRight, CheckCircle2, Car, Sparkles, Lock, Crown } from 'lucide-react';
 import { UserProfile } from '../../types/auth';
@@ -29,7 +29,7 @@ export const DayTripModal: React.FC<DayTripModalProps> = ({
   if (!isOpen) return null;
 
   const currentLoop = CRETAN_DAY_TRIP_LOOPS[activeLoopIndex];
-  const getProducer = (id: string) => CRETAN_PRODUCERS.find((p) => p.id === id);
+  const getProducer = (id: string) => producerService.getCachedProducer(id);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200 select-none">
