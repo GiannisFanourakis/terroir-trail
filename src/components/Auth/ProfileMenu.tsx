@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { UserProfile } from '../../types/auth';
-import { User, LogOut, Compass, Heart, Award, ChevronDown, Calendar, Building2, Crown, Package } from 'lucide-react';
+import { User, LogOut, Compass, Heart, Award, ChevronDown, Calendar, Building2, Crown, Package, LogIn } from 'lucide-react';
 
 interface ProfileMenuProps {
   user: UserProfile | null;
@@ -49,11 +49,11 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
     return (
       <button
         onClick={onOpenAuth}
-        className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-xl bg-gradient-to-r from-amber-500/20 to-amber-600/20 hover:from-amber-500/30 hover:to-amber-600/30 text-amber-300 border border-amber-500/30 transition active:scale-95 shrink-0"
+        className="flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 text-xs font-bold rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 shadow-md shadow-amber-500/25 border border-amber-400/80 transition-all transform active:scale-95 shrink-0 cursor-pointer"
         title="Sign in / Explorer Account"
       >
-        <User className="w-3.5 h-3.5" />
-        <span className="hidden sm:inline">Sign In</span>
+        <LogIn className="w-3.5 h-3.5 shrink-0 stroke-[2.5]" />
+        <span className="font-bold tracking-tight whitespace-nowrap">Log In</span>
       </button>
     );
   }
@@ -75,7 +75,7 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
       {/* Avatar Button */}
       <button
         onClick={() => setIsOpen((prev) => !prev)}
-        className="flex items-center gap-2 p-1 sm:px-2.5 sm:py-1 rounded-xl bg-stone-900 hover:bg-stone-850 border border-white/10 text-stone-200 transition active:scale-95"
+        className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-2.5 py-1 rounded-xl bg-stone-900 hover:bg-stone-850 border border-amber-500/30 hover:border-amber-400/50 text-stone-200 transition active:scale-95 shrink-0 cursor-pointer"
       >
         <span className="w-6 h-6 rounded-lg bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-xs font-bold shrink-0 overflow-hidden">
           {user.avatar?.startsWith('http') ? (
@@ -84,10 +84,10 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
             user.avatar || '🧭'
           )}
         </span>
-        <span className="text-xs font-bold text-white hidden md:inline truncate max-w-[100px]">
+        <span className="text-xs font-bold text-white hidden md:inline truncate max-w-[90px]">
           {user.name.split(' ')[0]}
         </span>
-        <ChevronDown className="w-3 h-3 text-stone-400 hidden sm:inline" />
+        <ChevronDown className="w-3 h-3 text-stone-400 shrink-0" />
       </button>
 
       {/* Popover Menu */}

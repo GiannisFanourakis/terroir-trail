@@ -245,10 +245,10 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
       </div>
 
       {/* 2. Interactive Navigation Tabs */}
-      <div className="flex border-b border-white/10 bg-stone-900/60 px-4 shrink-0 text-xs font-semibold">
+      <div className="flex border-b border-white/10 bg-stone-900/60 px-3 sm:px-4 shrink-0 text-xs font-semibold overflow-x-auto scrollbar-none">
         <button
           onClick={() => setActiveTab('story')}
-          className={`px-4 py-3 border-b-2 transition ${
+          className={`px-3 sm:px-4 py-3 border-b-2 transition whitespace-nowrap shrink-0 cursor-pointer ${
             activeTab === 'story'
               ? 'border-amber-400 text-amber-400'
               : 'border-transparent text-stone-400 hover:text-white'
@@ -258,7 +258,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
         </button>
         <button
           onClick={() => setActiveTab('tastings')}
-          className={`px-4 py-3 border-b-2 transition ${
+          className={`px-3 sm:px-4 py-3 border-b-2 transition whitespace-nowrap shrink-0 cursor-pointer ${
             activeTab === 'tastings'
               ? 'border-amber-400 text-amber-400'
               : 'border-transparent text-stone-400 hover:text-white'
@@ -268,7 +268,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
         </button>
         <button
           onClick={() => setActiveTab('visit')}
-          className={`px-4 py-3 border-b-2 transition ${
+          className={`px-3 sm:px-4 py-3 border-b-2 transition whitespace-nowrap shrink-0 cursor-pointer ${
             activeTab === 'visit'
               ? 'border-amber-400 text-amber-400'
               : 'border-transparent text-stone-400 hover:text-white'
@@ -650,15 +650,15 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
       </div>
 
       {/* 4. Action Bar (Sticky Footer) */}
-      <div className="p-3.5 sm:p-4 bg-stone-900/95 backdrop-blur-xl border-t border-white/10 shrink-0 flex items-center gap-2 sm:gap-3">
+      <div className="p-3 sm:p-4 bg-stone-900/95 backdrop-blur-xl border-t border-white/10 shrink-0 flex items-center gap-1.5 sm:gap-2.5">
         {onOpenBooking && (
           <button
             type="button"
             onClick={() => onOpenBooking(producer)}
-            className="flex-1 flex items-center justify-center gap-1.5 py-3 px-3.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-stone-950 font-bold text-xs rounded-2xl shadow-xl shadow-amber-500/20 transition transform active:scale-98 cursor-pointer"
+            className="flex-1 min-w-0 flex items-center justify-center gap-1.5 py-3 px-2.5 sm:px-3.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-stone-950 font-bold text-xs rounded-2xl shadow-xl shadow-amber-500/20 transition transform active:scale-98 cursor-pointer whitespace-nowrap"
           >
-            <Wine className="w-4 h-4" />
-            <span>Book Tasting</span>
+            <Wine className="w-4 h-4 shrink-0" />
+            <span className="truncate">Book Tasting</span>
           </button>
         )}
 
@@ -666,11 +666,10 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
           href={producer.googleMapsUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex-1 flex items-center justify-center gap-1.5 py-3 px-3.5 bg-stone-800 hover:bg-stone-700 text-stone-100 font-bold text-xs rounded-2xl border border-white/10 transition transform active:scale-98"
+          className="flex-1 min-w-0 flex items-center justify-center gap-1.5 py-3 px-2.5 sm:px-3.5 bg-stone-800 hover:bg-stone-700 text-stone-100 font-bold text-xs rounded-2xl border border-white/10 transition transform active:scale-98 whitespace-nowrap"
         >
-          <Navigation className="w-4 h-4 text-amber-400" />
-          <span className="hidden sm:inline">Drive with Maps</span>
-          <span className="sm:hidden">Maps</span>
+          <Navigation className="w-4 h-4 text-amber-400 shrink-0" />
+          <span className="truncate">Directions</span>
         </a>
 
         {directBottleShopUrl && (
@@ -681,7 +680,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
             className="p-3 rounded-2xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/40 text-amber-300 transition shrink-0"
             title="Buy Bottles Directly from Estate"
           >
-            <ShoppingBag className="w-4 h-4" />
+            <ShoppingBag className="w-4 h-4 shrink-0" />
           </a>
         )}
 
@@ -691,7 +690,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
             className="p-3 rounded-2xl bg-stone-800 hover:bg-stone-700 border border-white/10 text-stone-200 transition shrink-0"
             title={`Call ${producer.phone}`}
           >
-            <Phone className="w-4 h-4" />
+            <Phone className="w-4 h-4 shrink-0" />
           </a>
         )}
 
@@ -703,7 +702,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
             className="p-3 rounded-2xl bg-stone-800 hover:bg-stone-700 border border-white/10 text-stone-200 transition shrink-0"
             title="Visit Website"
           >
-            <Globe className="w-4 h-4" />
+            <Globe className="w-4 h-4 shrink-0" />
           </a>
         )}
       </div>

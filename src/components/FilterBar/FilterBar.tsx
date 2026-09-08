@@ -75,48 +75,49 @@ export const FilterBar: React.FC<FilterBarProps> = ({
     <div className="relative z-20 shrink-0 bg-stone-900/95 backdrop-blur-xl border-b border-white/10 px-3 sm:px-6 py-2 shadow-md">
       <div className="max-w-7xl mx-auto flex flex-col gap-1.5">
         
-        {/* Top Category Buttons */}
-        <div className="flex items-center justify-between gap-2 overflow-x-auto scrollbar-none pb-0.5">
-          <div className="flex items-center gap-1 sm:gap-2">
+        {/* Top Category Buttons & Pinned Action Controls */}
+        <div className="flex items-center justify-between gap-2">
+          {/* Scrollable Categories List */}
+          <div className="flex items-center gap-1 sm:gap-2 overflow-x-auto scrollbar-none min-w-0 flex-1 py-0.5">
             {categories.map((cat) => {
               const isSelected = filters.category === cat.id;
               return (
                 <button
                   key={cat.id}
                   onClick={() => onFilterChange('category', cat.id)}
-                  className={`flex items-center gap-1.5 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full text-[11px] sm:text-xs font-semibold transition-all duration-200 whitespace-nowrap shadow-sm ${
+                  className={`flex items-center gap-1.5 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full text-[11px] sm:text-xs font-semibold transition-all duration-200 whitespace-nowrap shadow-sm shrink-0 cursor-pointer ${
                     isSelected
                       ? `${cat.activeColor} shadow-lg scale-105 ring-2 ring-white/20 font-bold`
                       : 'bg-stone-800/80 text-stone-300 hover:text-white hover:bg-stone-700/80 border border-white/5'
                   }`}
                 >
-                  <span className="text-xs sm:text-sm leading-none">{cat.icon}</span>
+                  <span className="text-xs sm:text-sm leading-none shrink-0">{cat.icon}</span>
                   <span>{cat.label}</span>
                 </button>
               );
             })}
           </div>
 
-          {/* Quick Actions: Toggle Filters & Reset */}
-          <div className="flex items-center gap-1.5 shrink-0 pl-1">
+          {/* Quick Actions: Always Pinned & Visible, Never Scrolled Away! */}
+          <div className="flex items-center gap-1.5 shrink-0 pl-1.5 border-l border-white/10">
             <span className="text-[11px] font-semibold text-stone-400 hidden xl:inline">
               <span className="text-amber-400 font-bold">{totalFiltered}</span> of {totalCount} makers
             </span>
 
-            {/* Filter Toggle Button for mobile/small window */}
+            {/* Filter Toggle Button */}
             <button
               onClick={() => setIsMoreFiltersOpen((prev) => !prev)}
-              className={`flex items-center gap-1 text-[11px] sm:text-xs px-2.5 py-1 rounded-full font-medium border transition ${
+              className={`flex items-center gap-1 text-[11px] sm:text-xs px-2.5 py-1 rounded-full font-medium border transition shrink-0 cursor-pointer ${
                 isMoreFiltersOpen || activeSecondaryCount > 0
                   ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
                   : 'bg-stone-800 text-stone-400 hover:text-white border-white/10'
               }`}
               title="More filter options"
             >
-              <SlidersHorizontal className="w-3 h-3" />
+              <SlidersHorizontal className="w-3 h-3 shrink-0" />
               <span>Filters</span>
               {activeSecondaryCount > 0 && (
-                <span className="w-4 h-4 rounded-full bg-amber-500 text-stone-950 font-bold text-[9px] flex items-center justify-center">
+                <span className="w-4 h-4 rounded-full bg-amber-500 text-stone-950 font-bold text-[9px] flex items-center justify-center shrink-0">
                   {activeSecondaryCount}
                 </span>
               )}
@@ -125,11 +126,11 @@ export const FilterBar: React.FC<FilterBarProps> = ({
             {isFiltered && (
               <button
                 onClick={onResetFilters}
-                className="flex items-center gap-1 text-[11px] sm:text-xs text-rose-400 hover:text-rose-300 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 px-2.5 py-1 rounded-full font-medium transition"
+                className="flex items-center gap-1 text-[11px] sm:text-xs text-rose-400 hover:text-rose-300 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 px-2.5 py-1 rounded-full font-medium transition shrink-0 cursor-pointer"
                 title="Reset all filters"
               >
-                <RotateCcw className="w-3 h-3" />
-                <span className="hidden sm:inline">Reset</span>
+                <RotateCcw className="w-3 h-3 shrink-0" />
+                <span>Reset</span>
               </button>
             )}
           </div>
@@ -176,37 +177,37 @@ export const FilterBar: React.FC<FilterBarProps> = ({
             <div className="hidden sm:flex items-center gap-1.5 border-l border-white/10 pl-2">
               <button
                 onClick={() => onFilterChange('dogFriendlyOnly', !filters.dogFriendlyOnly)}
-                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-xl border transition text-xs ${
+                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-xl border transition text-xs shrink-0 cursor-pointer ${
                   filters.dogFriendlyOnly
                     ? 'bg-amber-500 text-stone-950 border-amber-400 font-bold'
                     : 'bg-stone-800 text-stone-400 border-white/10 hover:text-white'
                 }`}
               >
-                <Dog className="w-3 h-3" />
+                <Dog className="w-3 h-3 shrink-0" />
                 <span>Dog Friendly</span>
               </button>
 
               <button
                 onClick={() => onFilterChange('walkInOnly', !filters.walkInOnly)}
-                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-xl border transition text-xs ${
+                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-xl border transition text-xs shrink-0 cursor-pointer ${
                   filters.walkInOnly
                     ? 'bg-amber-500 text-stone-950 border-amber-400 font-bold'
                     : 'bg-stone-800 text-stone-400 border-white/10 hover:text-white'
                 }`}
               >
-                <Footprints className="w-3 h-3" />
+                <Footprints className="w-3 h-3 shrink-0" />
                 <span>Walk-in</span>
               </button>
 
               <button
                 onClick={() => onFilterChange('campervanOnly', !filters.campervanOnly)}
-                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-xl border transition text-xs ${
+                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-xl border transition text-xs shrink-0 cursor-pointer ${
                   filters.campervanOnly
                     ? 'bg-amber-500 text-stone-950 border-amber-400 font-bold'
                     : 'bg-stone-800 text-stone-400 border-white/10 hover:text-white'
                 }`}
               >
-                <Caravan className="w-3 h-3" />
+                <Caravan className="w-3 h-3 shrink-0" />
                 <span>Campervan</span>
               </button>
             </div>
