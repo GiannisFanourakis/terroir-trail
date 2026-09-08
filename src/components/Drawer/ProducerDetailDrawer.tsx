@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Producer } from '../../types/terroir';
 import { 
   X, MapPin, Star, Phone, Globe, Navigation, Clock, 
-  Dog, Footprints, Caravan, Car, Sparkles, Share2, Check, Heart 
+  Dog, Footprints, Caravan, Car, Sparkles, Share2, Check, Heart, Award, CheckCircle2 
 } from 'lucide-react';
 
 interface ProducerDetailDrawerProps {
@@ -10,6 +10,12 @@ interface ProducerDetailDrawerProps {
   onClose: () => void;
   isFavorite?: boolean;
   onToggleFavorite?: (id: string) => void;
+  isVisited?: boolean;
+  onToggleVisited?: (id: string) => void;
+  tastingNote?: string;
+  onSaveTastingNote?: (id: string, note: string) => void;
+  isAuthenticated?: boolean;
+  onOpenAuth?: () => void;
 }
 
 export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
@@ -17,17 +23,27 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
   onClose,
   isFavorite = false,
   onToggleFavorite,
+  isVisited = false,
+  onToggleVisited,
+  tastingNote = '',
+  onSaveTastingNote,
+  isAuthenticated = false,
+  onOpenAuth,
 }) => {
   const [activePhoto, setActivePhoto] = useState<string>('');
   const [copiedLink, setCopiedLink] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<'story' | 'tastings' | 'visit'>('story');
+  const [isEditingNote, setIsEditingNote] = useState<boolean>(false);
+  const [noteDraft, setNoteDraft] = useState<string>('');
 
   useEffect(() => {
     if (producer) {
       setActivePhoto(producer.coverImage);
       setActiveTab('story');
+      setIsEditingNote(false);
+      setNoteDraft(tastingNote);
     }
-  }, [producer]);
+  }, [producer, tastingNote]);
 
   // ESC key to close
   useEffect(() => {
@@ -217,6 +233,100 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
               {producer.priceLevel}
             </span>
           </div>
+        </div>
+
+        {/* Passport Stamp & Tasting Notes Action */}
+        <div className="p-3.5 rounded-2xl bg-gradient-to-r from-amber-950/30 to-stone-900 border border-amber-500/20 flex flex-col gap-2.5">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="text-lg">🏛️</span>
+              <div>
+                <div className="text-xs font-bold text-white">Terroir Passport Check-In</div>
+                <div className="text-[10px] text-stone-400">
+                  {isVisited ? 'Stamped in your collection' : 'Mark this artisan as visited'}
+                </div>
+              </div>
+            </div>
+
+            {onToggleVisited && (
+              <button
+                onClick={() => {
+                  if (!isAuthenticated && onOpenAuth) {
+                    onOpenAuth();
+                  } else {
+                    onToggleVisited(producer.id);
+                  }
+                }}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition active:scale-95 ${
+                  isVisited
+                    ? 'bg-amber-500 text-stone-950 shadow-md shadow-amber-500/20'
+                    : 'bg-stone-800 hover:bg-stone-750 text-stone-300 hover:text-white border border-white/10'
+                }`}
+              >
+                {isVisited ? (
+                  <>
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                    <span>Stamped ✓</span>
+                  </>
+                ) : (
+                  <>
+                    <Award className="w-3.5 h-3.5" />
+                    <span>Stamp Passport</span>
+                  </>
+                )}
+              </button>
+            )}
+          </div>
+
+          {/* Tasting Note Box */}
+          {isAuthenticated ? (
+            <div className="pt-2 border-t border-white/5">
+              <div className="flex items-center justify-between text-[11px] mb-1 font-semibold text-stone-300">
+                <span>My Private Tasting Notes</span>
+                {isEditingNote ? (
+                  <button
+                    onClick={() => {
+                      onSaveTastingNote?.(producer.id, noteDraft);
+                      setIsEditingNote(false);
+                    }}
+                    className="text-amber-400 hover:text-amber-300 font-bold"
+                  >
+                    Save
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => setIsEditingNote(true)}
+                    className="text-stone-400 hover:text-white"
+                  >
+                    {tastingNote ? 'Edit' : '+ Add note'}
+                  </button>
+                )}
+              </div>
+              {isEditingNote ? (
+                <textarea
+                  value={noteDraft}
+                  onChange={(e) => setNoteDraft(e.target.value)}
+                  placeholder="Record your thoughts on their wines, food pairings, or best vintage..."
+                  rows={2}
+                  className="w-full p-2 bg-stone-900 border border-white/10 rounded-xl text-xs text-stone-100 focus:outline-none focus:border-amber-400"
+                />
+              ) : tastingNote ? (
+                <div className="text-[11px] text-amber-200/90 italic p-2 rounded-xl bg-stone-900/80 border border-white/5">
+                  &ldquo;{tastingNote}&rdquo;
+                </div>
+              ) : null}
+            </div>
+          ) : (
+            <div className="pt-1 text-[10px] text-stone-500 flex items-center justify-between">
+              <span>Sign in to record personal tasting notes</span>
+              <button
+                onClick={onOpenAuth}
+                className="text-amber-400 hover:underline font-bold"
+              >
+                Sign In →
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Tab 1: The Story */}

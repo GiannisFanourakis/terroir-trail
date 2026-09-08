@@ -8,15 +8,32 @@ import { ProducerList } from './components/Sidebar/ProducerList';
 import { ProducerDetailDrawer } from './components/Drawer/ProducerDetailDrawer';
 import { DayTripModal } from './components/Loops/DayTripModal';
 import { useFavorites } from './hooks/useFavorites';
+import { useAuth } from './hooks/useAuth';
+import { AuthModal } from './components/Auth/AuthModal';
+import { PassportModal } from './components/Auth/PassportModal';
 import { List, MapPin } from 'lucide-react';
 
 export const App: React.FC = () => {
   const [selectedProducer, setSelectedProducer] = useState<Producer | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
   const [isLoopsModalOpen, setIsLoopsModalOpen] = useState<boolean>(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
+  const [isPassportModalOpen, setIsPassportModalOpen] = useState<boolean>(false);
   const [viewMode, setViewMode] = useState<'map' | 'list'>('map');
 
   const { favorites, toggleFavorite, isFavorite } = useFavorites();
+  const {
+    user,
+    isAuthenticated,
+    login,
+    signup,
+    loginAsDemo,
+    logout,
+    toggleVisited,
+    isVisited,
+    saveTastingNote,
+    getTastingNote,
+  } = useAuth();
 
   const initialFilters: FilterState = {
     category: 'all',
@@ -131,6 +148,11 @@ export const App: React.FC = () => {
         savedCount={favorites.length}
         favoritesOnly={filters.favoritesOnly}
         onToggleFavoritesOnly={() => handleFilterChange('favoritesOnly', !filters.favoritesOnly)}
+        user={user}
+        onOpenAuth={() => setIsAuthModalOpen(true)}
+        onOpenPassport={() => setIsPassportModalOpen(true)}
+        onLogout={logout}
+        totalProducersCount={CRETAN_PRODUCERS.length}
       />
 
       {/* 2. Interactive Filter Bar */}
@@ -213,6 +235,12 @@ export const App: React.FC = () => {
             onClose={() => setIsDrawerOpen(false)}
             isFavorite={selectedProducer ? isFavorite(selectedProducer.id) : false}
             onToggleFavorite={toggleFavorite}
+            isVisited={selectedProducer ? isVisited(selectedProducer.id) : false}
+            onToggleVisited={toggleVisited}
+            tastingNote={selectedProducer ? getTastingNote(selectedProducer.id) : ''}
+            onSaveTastingNote={saveTastingNote}
+            isAuthenticated={isAuthenticated}
+            onOpenAuth={() => setIsAuthModalOpen(true)}
           />
         )}
       </main>
@@ -222,6 +250,29 @@ export const App: React.FC = () => {
         isOpen={isLoopsModalOpen}
         onClose={() => setIsLoopsModalOpen(false)}
         onSelectLoop={handleSelectLoop}
+        onSelectProducer={(producer) => {
+          setSelectedProducer(producer);
+          setIsDrawerOpen(true);
+        }}
+      />
+
+      {/* 6. Explorer Auth & Profile Modal */}
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        onLoginAsDemo={loginAsDemo}
+        onLogin={login}
+        onSignup={signup}
+      />
+
+      {/* 7. Terroir Passport Stamps Modal */}
+      <PassportModal
+        isOpen={isPassportModalOpen}
+        onClose={() => setIsPassportModalOpen(false)}
+        user={user}
+        producers={CRETAN_PRODUCERS}
+        onToggleVisited={toggleVisited}
+        onSaveTastingNote={saveTastingNote}
         onSelectProducer={(producer) => {
           setSelectedProducer(producer);
           setIsDrawerOpen(true);

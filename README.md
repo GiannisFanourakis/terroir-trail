@@ -56,6 +56,10 @@ The information in TerroirTrail is curated from authentic viticultural, brewing,
   * **Artisanal Ethos:** Certified Organic, Biodynamic, Indigenous Only, Amphora Fermentation, Wood-Fired, Raw Milk, Unpasteurized Craft Beer.
   * **On-Site Food:** Full Authentic Taverna, Tasting Board, Dakos & Bread, Brewery Taproom.
   * **Hospitality Toggles:** Dog-friendly, Walk-ins welcome, Campervan overnight friendly.
+* 🛂 **Traveler Profile & 1-Click Login:**
+  * **Instant Demo Accounts:** Sign in as *Giannis Fanourakis (Crete Local)*, *Elena Kazantzaki (Sommelier)*, or *Markos V. (Craft Brewer)*, or register a custom account.
+  * **Terroir Passport Stamps:** Check in and collect official digital stamps for each artisanal winery, microbrewery, or mountain dairy you visit.
+  * **Private Tasting Notes:** Write and save personal vintage impressions, pairing recommendations, and bottle reviews directly inside maker profiles.
 * ❤️ **Favorites & Trip Wishlist:** One-click heart save on sidebar cards, map popups, and drawer headers. Saved spots persist in browser `localStorage`.
 * 📖 **Slide-Out Story Drawer:** Maker's personal history, grape/brew highlights, tasting packages, opening hours, road warnings, and contact info.
 * 🧭 **Curated Day-Trip Loops:** Pre-planned 3-stop day routes across Chania, Heraklion, Santorini, and Rethymno with realistic driving times and distances.
@@ -67,25 +71,28 @@ The information in TerroirTrail is curated from authentic viticultural, brewing,
 * **Frontend:** React 19, TypeScript, Vite
 * **Styling:** Tailwind CSS v4, Lucide React icons
 * **Mapping:** Leaflet + OpenStreetMap / CartoDB / Esri Satellite
-* **State & Storage:** React Hooks (`useFavorites`, `useMemo`) + Browser `localStorage`
+* **State & Storage:** React Hooks (`useFavorites`, `useAuth`, `useMemo`) + Browser `localStorage`
 
 ```
 terroir-trail/
 ├── public/
 ├── src/
 │   ├── types/
-│   │   └── terroir.ts              # Producer, Category, FilterState, DayTripLoop
+│   │   ├── terroir.ts              # Producer, Category, FilterState, DayTripLoop
+│   │   └── auth.ts                 # UserProfile, TravelerType, AuthState
 │   ├── hooks/
-│   │   └── useFavorites.ts         # localStorage-persisted wishlist hook
+│   │   ├── useFavorites.ts         # localStorage-persisted wishlist hook
+│   │   └── useAuth.ts              # Authentication, passport stamps, tasting notes hook
 │   ├── data/
 │   │   ├── producers.ts            # Curated dataset of Greek artisans & microbreweries
 │   │   └── loops.ts                # Curated 3-stop day-trip circuits
 │   ├── components/
-│   │   ├── Header/                 # Brand, destination tabs, search, wishlist button
+│   │   ├── Auth/                   # AuthModal, ProfileMenu, PassportModal
+│   │   ├── Header/                 # Brand, destination tabs, search, wishlist & profile button
 │   │   ├── FilterBar/              # Categories, road access, ethos pills, quick toggles
 │   │   ├── Map/                    # Leaflet map canvas, custom SVG markers, popup cards
 │   │   ├── Sidebar/                # Producer cards list with sorting & heart buttons
-│   │   ├── Drawer/                 # Detailed artisan drawer with tabs & directions
+│   │   ├── Drawer/                 # Detailed artisan drawer with tabs, passport check-in & notes
 │   │   └── Loops/                  # Day-trip circuits modal
 │   ├── styles/
 │   │   └── index.css               # Tailwind CSS v4 & custom glassmorphism

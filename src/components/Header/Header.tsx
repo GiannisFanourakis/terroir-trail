@@ -1,5 +1,7 @@
 import React from 'react';
 import { Destination } from '../../types/terroir';
+import { UserProfile } from '../../types/auth';
+import { ProfileMenu } from '../Auth/ProfileMenu';
 import { Compass, Search, X, Heart } from 'lucide-react';
 
 interface HeaderProps {
@@ -14,6 +16,11 @@ interface HeaderProps {
   savedCount: number;
   favoritesOnly: boolean;
   onToggleFavoritesOnly: () => void;
+  user: UserProfile | null;
+  onOpenAuth: () => void;
+  onOpenPassport: () => void;
+  onLogout: () => void;
+  totalProducersCount: number;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -28,6 +35,11 @@ export const Header: React.FC<HeaderProps> = ({
   savedCount,
   favoritesOnly,
   onToggleFavoritesOnly,
+  user,
+  onOpenAuth,
+  onOpenPassport,
+  onLogout,
+  totalProducersCount,
 }) => {
   const destinations: { id: Destination | 'all'; label: string; flag: string }[] = [
     { id: 'all', label: 'All Terroir', flag: '🇬🇷' },
@@ -84,6 +96,15 @@ export const Header: React.FC<HeaderProps> = ({
               <Compass className="w-3.5 h-3.5" />
               <span>Circuits</span>
             </button>
+
+            <ProfileMenu
+              user={user}
+              onOpenAuth={onOpenAuth}
+              onOpenPassport={onOpenPassport}
+              onOpenWishlist={onToggleFavoritesOnly}
+              onLogout={onLogout}
+              totalProducersCount={totalProducersCount}
+            />
           </div>
         </div>
 
@@ -157,6 +178,18 @@ export const Header: React.FC<HeaderProps> = ({
             <Compass className="w-3.5 h-3.5" />
             <span>Circuits</span>
           </button>
+
+          {/* User Profile / Auth (Desktop) */}
+          <div className="hidden md:block">
+            <ProfileMenu
+              user={user}
+              onOpenAuth={onOpenAuth}
+              onOpenPassport={onOpenPassport}
+              onOpenWishlist={onToggleFavoritesOnly}
+              onLogout={onLogout}
+              totalProducersCount={totalProducersCount}
+            />
+          </div>
         </div>
 
       </div>
