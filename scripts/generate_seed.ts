@@ -104,6 +104,8 @@ lines.push('');
 lines.push('-- ---------------------------------------------------------------------');
 lines.push('-- 2. EXPERIENCES SEED');
 lines.push('-- ---------------------------------------------------------------------');
+lines.push('ALTER TABLE public.experiences ALTER COLUMN producer_id DROP NOT NULL;');
+lines.push('');
 lines.push(`INSERT INTO public.experiences (
   id, producer_id, title, duration_minutes, price_per_person,
   description, includes, badge, producer_name, producer_greek_name,

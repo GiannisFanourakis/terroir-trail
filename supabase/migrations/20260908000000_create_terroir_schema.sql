@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS public.producers (
 -- 3. Create Experiences Table
 CREATE TABLE IF NOT EXISTS public.experiences (
   id TEXT PRIMARY KEY,
-  producer_id TEXT NOT NULL REFERENCES public.producers(id) ON DELETE CASCADE,
+  producer_id TEXT REFERENCES public.producers(id) ON DELETE CASCADE,
   title TEXT NOT NULL,
   duration_minutes INTEGER NOT NULL DEFAULT 60,
   price_per_person NUMERIC(10, 2) NOT NULL DEFAULT 20.00,
@@ -69,6 +69,9 @@ CREATE TABLE IF NOT EXISTS public.experiences (
   is_active BOOLEAN DEFAULT true,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- Ensure producer_id allows NULL if table already existed (for regional masterclasses)
+ALTER TABLE public.experiences ALTER COLUMN producer_id DROP NOT NULL;
 
 -- 4. Create Bookings Table
 CREATE TABLE IF NOT EXISTS public.bookings (

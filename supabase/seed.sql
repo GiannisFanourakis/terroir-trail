@@ -1976,6 +1976,8 @@ ON CONFLICT (id) DO UPDATE SET
 -- ---------------------------------------------------------------------
 -- 2. EXPERIENCES SEED
 -- ---------------------------------------------------------------------
+ALTER TABLE public.experiences ALTER COLUMN producer_id DROP NOT NULL;
+
 INSERT INTO public.experiences (
   id, producer_id, title, duration_minutes, price_per_person,
   description, includes, badge, producer_name, producer_greek_name,
