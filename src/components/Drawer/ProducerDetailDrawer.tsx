@@ -90,16 +90,23 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
   const road = getRoadAccessDetails(producer.roadAccess);
 
   return (
-    <div className="fixed inset-y-0 right-0 z-50 w-full sm:w-[500px] lg:w-[560px] bg-stone-950 text-stone-100 shadow-2xl flex flex-col border-l border-white/10 animate-in slide-in-from-right duration-300 select-none">
-      
-      {/* 1. Hero Gallery & Header */}
-      <div className="relative h-64 sm:h-72 w-full shrink-0 bg-stone-900 overflow-hidden">
-        <img
-          src={activePhoto || producer.coverImage}
-          alt={producer.name}
-          className="w-full h-full object-cover transition-all duration-300"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/40 to-black/30" />
+    <>
+      {/* Backdrop overlay for small screens / tablets */}
+      <div
+        className="fixed inset-0 bg-black/60 backdrop-blur-xs z-40 lg:hidden animate-in fade-in duration-200"
+        onClick={onClose}
+      />
+
+      <div className="fixed inset-y-0 right-0 z-50 w-full sm:w-[480px] lg:w-[540px] max-w-full bg-stone-950 text-stone-100 shadow-2xl flex flex-col border-l border-white/10 animate-in slide-in-from-right duration-300 select-none">
+        
+        {/* 1. Hero Gallery & Header */}
+        <div className="relative h-44 sm:h-56 lg:h-64 w-full shrink-0 bg-stone-900 overflow-hidden">
+          <img
+            src={activePhoto || producer.coverImage}
+            alt={producer.name}
+            className="w-full h-full object-cover transition-all duration-300"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/40 to-black/30" />
 
         {/* Top Control Icons */}
         <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
@@ -382,5 +389,6 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
       </div>
 
     </div>
+    </>
   );
 };

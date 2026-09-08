@@ -29,10 +29,10 @@ export const ProducerList: React.FC<ProducerListProps> = ({
   });
 
   return (
-    <div className="flex flex-col h-full bg-stone-950 border-r border-white/10 w-full sm:w-[380px] md:w-[410px] shrink-0 overflow-hidden select-none">
+    <div className="flex flex-col h-full bg-stone-950 border-r border-white/10 w-full lg:w-[380px] xl:w-[420px] shrink-0 overflow-hidden select-none">
       {/* List Header */}
-      <div className="flex items-center justify-between px-4 py-3 bg-stone-900/60 border-b border-white/10 shrink-0">
-        <span className="text-xs font-bold uppercase tracking-wider text-stone-300">
+      <div className="flex items-center justify-between px-3.5 py-2.5 bg-stone-900/60 border-b border-white/10 shrink-0">
+        <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-stone-300">
           {producers.length} {producers.length === 1 ? 'Location' : 'Artisanal Locations'}
         </span>
 
@@ -51,7 +51,7 @@ export const ProducerList: React.FC<ProducerListProps> = ({
       </div>
 
       {/* Cards Scrollable Feed */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-3.5">
+      <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 pb-24 lg:pb-4">
         {sortedProducers.length > 0 ? (
           sortedProducers.map((producer) => (
             <ProducerCard

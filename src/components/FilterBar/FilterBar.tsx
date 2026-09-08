@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Category, RoadAccess, Ethos, FoodOption, FilterState } from '../../types/terroir';
-import { RotateCcw, Dog, Footprints, Caravan } from 'lucide-react';
+import { RotateCcw, Dog, Footprints, Caravan, SlidersHorizontal } from 'lucide-react';
 
 interface FilterBarProps {
   filters: FilterState;
@@ -17,6 +17,8 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   totalFiltered,
   totalCount,
 }) => {
+  const [isMoreFiltersOpen, setIsMoreFiltersOpen] = useState<boolean>(false);
+
   const categories: { id: Category | 'all'; label: string; icon: string; activeColor: string }[] = [
     { id: 'all', label: 'All Terroir', icon: '🏛️', activeColor: 'bg-amber-500 text-stone-950 shadow-amber-500/20' },
     { id: 'winery', label: 'Wineries', icon: '🍇', activeColor: 'bg-rose-500 text-white shadow-rose-500/30' },
@@ -53,62 +55,88 @@ export const FilterBar: React.FC<FilterBarProps> = ({
     { id: 'dakos_snacks', label: '🥖 Dakos & Bread' },
   ];
 
+  const activeSecondaryCount = [
+    filters.roadAccess !== 'all',
+    filters.ethos !== 'all',
+    filters.foodOption !== 'all',
+    filters.dogFriendlyOnly,
+    filters.walkInOnly,
+    filters.campervanOnly,
+  ].filter(Boolean).length;
+
   const isFiltered =
     filters.category !== 'all' ||
     filters.destination !== 'all' ||
-    filters.roadAccess !== 'all' ||
-    filters.ethos !== 'all' ||
-    filters.foodOption !== 'all' ||
+    activeSecondaryCount > 0 ||
     filters.searchQuery !== '' ||
-    filters.dogFriendlyOnly ||
-    filters.walkInOnly ||
-    filters.campervanOnly;
+    filters.favoritesOnly;
 
   return (
-    <div className="relative z-20 shrink-0 bg-stone-900/95 backdrop-blur-xl border-b border-white/10 px-4 sm:px-6 py-2.5 shadow-md">
-      <div className="max-w-7xl mx-auto flex flex-col gap-2">
+    <div className="relative z-20 shrink-0 bg-stone-900/95 backdrop-blur-xl border-b border-white/10 px-3 sm:px-6 py-2 shadow-md">
+      <div className="max-w-7xl mx-auto flex flex-col gap-1.5">
         
         {/* Top Category Buttons */}
-        <div className="flex items-center justify-between gap-3 overflow-x-auto scrollbar-none pb-0.5">
-          <div className="flex items-center gap-1.5 sm:gap-2">
+        <div className="flex items-center justify-between gap-2 overflow-x-auto scrollbar-none pb-0.5">
+          <div className="flex items-center gap-1 sm:gap-2">
             {categories.map((cat) => {
               const isSelected = filters.category === cat.id;
               return (
                 <button
                   key={cat.id}
                   onClick={() => onFilterChange('category', cat.id)}
-                  className={`flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all duration-200 whitespace-nowrap shadow-sm ${
+                  className={`flex items-center gap-1.5 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full text-[11px] sm:text-xs font-semibold transition-all duration-200 whitespace-nowrap shadow-sm ${
                     isSelected
                       ? `${cat.activeColor} shadow-lg scale-105 ring-2 ring-white/20 font-bold`
                       : 'bg-stone-800/80 text-stone-300 hover:text-white hover:bg-stone-700/80 border border-white/5'
                   }`}
                 >
-                  <span className="text-sm leading-none">{cat.icon}</span>
+                  <span className="text-xs sm:text-sm leading-none">{cat.icon}</span>
                   <span>{cat.label}</span>
                 </button>
               );
             })}
           </div>
 
-          {/* Quick Counter & Clear Filters */}
-          <div className="flex items-center gap-2 shrink-0">
-            <span className="text-xs font-semibold text-stone-400 hidden lg:inline">
+          {/* Quick Actions: Toggle Filters & Reset */}
+          <div className="flex items-center gap-1.5 shrink-0 pl-1">
+            <span className="text-[11px] font-semibold text-stone-400 hidden xl:inline">
               <span className="text-amber-400 font-bold">{totalFiltered}</span> of {totalCount} makers
             </span>
+
+            {/* Filter Toggle Button for mobile/small window */}
+            <button
+              onClick={() => setIsMoreFiltersOpen((prev) => !prev)}
+              className={`flex items-center gap-1 text-[11px] sm:text-xs px-2.5 py-1 rounded-full font-medium border transition ${
+                isMoreFiltersOpen || activeSecondaryCount > 0
+                  ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
+                  : 'bg-stone-800 text-stone-400 hover:text-white border-white/10'
+              }`}
+              title="More filter options"
+            >
+              <SlidersHorizontal className="w-3 h-3" />
+              <span>Filters</span>
+              {activeSecondaryCount > 0 && (
+                <span className="w-4 h-4 rounded-full bg-amber-500 text-stone-950 font-bold text-[9px] flex items-center justify-center">
+                  {activeSecondaryCount}
+                </span>
+              )}
+            </button>
+
             {isFiltered && (
               <button
                 onClick={onResetFilters}
-                className="flex items-center gap-1.5 text-xs text-rose-400 hover:text-rose-300 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 px-3 py-1 rounded-full font-medium transition"
+                className="flex items-center gap-1 text-[11px] sm:text-xs text-rose-400 hover:text-rose-300 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 px-2.5 py-1 rounded-full font-medium transition"
+                title="Reset all filters"
               >
                 <RotateCcw className="w-3 h-3" />
-                <span>Reset</span>
+                <span className="hidden sm:inline">Reset</span>
               </button>
             )}
           </div>
         </div>
 
-        {/* Secondary Sub-filters */}
-        <div className="flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-white/5 text-xs">
+        {/* Secondary Sub-filters (Collapsible on smaller screens) */}
+        <div className={`${isMoreFiltersOpen ? 'flex' : 'hidden lg:flex'} flex-wrap items-center justify-between gap-2 pt-1.5 border-t border-white/5 text-xs animate-in fade-in duration-200`}>
           <div className="flex flex-wrap items-center gap-2">
             
             {/* Road Access Dropdown */}

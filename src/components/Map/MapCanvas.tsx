@@ -14,6 +14,7 @@ interface MapCanvasProps {
   selectedDestination: Destination | 'all';
   isFavorite: (id: string) => boolean;
   onToggleFavorite: (id: string) => void;
+  viewMode?: 'map' | 'list';
 }
 
 export const MapCanvas: React.FC<MapCanvasProps> = ({
@@ -24,6 +25,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
   selectedDestination,
   isFavorite,
   onToggleFavorite,
+  viewMode,
 }) => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
@@ -133,11 +135,42 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
 
     mapInstanceRef.current = map;
 
+    // Invalidate size on container resize (prevents grey tiles on window resize or split screen)
+    let ro: ResizeObserver | null = null;
+    if (typeof ResizeObserver !== 'undefined' && mapContainerRef.current) {
+      ro = new ResizeObserver(() => {
+        map.invalidateSize();
+      });
+      ro.observe(mapContainerRef.current);
+    }
+
+    const handleWindowResize = () => {
+      map.invalidateSize();
+    };
+    window.addEventListener('resize', handleWindowResize);
+
+    // Multiple staggered invalidations to ensure smooth rendering after CSS layouts settle
+    const t1 = setTimeout(() => map.invalidateSize(), 150);
+    const t2 = setTimeout(() => map.invalidateSize(), 400);
+
     return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+      if (ro) ro.disconnect();
+      window.removeEventListener('resize', handleWindowResize);
       map.remove();
       mapInstanceRef.current = null;
     };
   }, []);
+
+  // Re-invalidate size whenever viewMode switches to 'map'
+  useEffect(() => {
+    if (viewMode === 'map' && mapInstanceRef.current) {
+      const map = mapInstanceRef.current;
+      setTimeout(() => map.invalidateSize(), 50);
+      setTimeout(() => map.invalidateSize(), 200);
+    }
+  }, [viewMode]);
 
   // Update Tile Layer Theme
   useEffect(() => {
@@ -260,13 +293,13 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       <div ref={mapContainerRef} className="w-full h-full z-0" />
 
       {/* Floating Modern Controls */}
-      <div className="absolute top-4 right-4 z-20 flex flex-col items-end gap-2.5">
+      <div className="absolute top-3 right-3 sm:top-4 sm:right-4 z-20 flex flex-col items-end gap-2">
         
         {/* Layer Theme Selector Pill */}
         <div className="glass-panel p-1 rounded-2xl flex items-center shadow-2xl">
           <button
             onClick={() => setMapTheme('voyager')}
-            className={`px-3 py-1.5 text-xs font-semibold rounded-xl transition-all ${
+            className={`px-2.5 py-1 sm:px-3 sm:py-1.5 text-[11px] sm:text-xs font-semibold rounded-xl transition-all ${
               mapTheme === 'voyager'
                 ? 'bg-amber-500 text-stone-950 shadow-md font-bold'
                 : 'text-stone-300 hover:text-white hover:bg-white/5'
@@ -276,17 +309,17 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
           </button>
           <button
             onClick={() => setMapTheme('dark')}
-            className={`px-3 py-1.5 text-xs font-semibold rounded-xl transition-all ${
+            className={`px-2.5 py-1 sm:px-3 sm:py-1.5 text-[11px] sm:text-xs font-semibold rounded-xl transition-all ${
               mapTheme === 'dark'
                 ? 'bg-amber-500 text-stone-950 shadow-md font-bold'
                 : 'text-stone-300 hover:text-white hover:bg-white/5'
             }`}
           >
-            Night Terroir
+            Night
           </button>
           <button
             onClick={() => setMapTheme('satellite')}
-            className={`px-3 py-1.5 text-xs font-semibold rounded-xl transition-all ${
+            className={`px-2.5 py-1 sm:px-3 sm:py-1.5 text-[11px] sm:text-xs font-semibold rounded-xl transition-all ${
               mapTheme === 'satellite'
                 ? 'bg-amber-500 text-stone-950 shadow-md font-bold'
                 : 'text-stone-300 hover:text-white hover:bg-white/5'
@@ -297,39 +330,39 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
         </div>
 
         {/* Floating Quick Action Group */}
-        <div className="flex flex-col gap-1.5 glass-panel p-1.5 rounded-2xl shadow-2xl">
+        <div className="flex flex-col gap-1 glass-panel p-1 rounded-2xl shadow-2xl">
           <button
             onClick={handleZoomIn}
-            className="w-9 h-9 rounded-xl flex items-center justify-center text-stone-200 hover:text-white hover:bg-white/10 transition"
+            className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center text-stone-200 hover:text-white hover:bg-white/10 transition"
             title="Zoom In"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           </button>
 
           <button
             onClick={handleZoomOut}
-            className="w-9 h-9 rounded-xl flex items-center justify-center text-stone-200 hover:text-white hover:bg-white/10 transition"
+            className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center text-stone-200 hover:text-white hover:bg-white/10 transition"
             title="Zoom Out"
           >
-            <Minus className="w-4 h-4" />
+            <Minus className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           </button>
 
           <div className="h-[1px] bg-white/10 my-0.5" />
 
           <button
             onClick={handleResetView}
-            className="w-9 h-9 rounded-xl flex items-center justify-center text-stone-200 hover:text-amber-400 hover:bg-white/10 transition group"
+            className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center text-stone-200 hover:text-amber-400 hover:bg-white/10 transition group"
             title="Reset Destination View"
           >
-            <Maximize2 className="w-4 h-4 group-hover:scale-110 transition-transform" />
+            <Maximize2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover:scale-110 transition-transform" />
           </button>
 
           <button
             onClick={handleLocateMe}
-            className="w-9 h-9 rounded-xl flex items-center justify-center text-stone-200 hover:text-sky-400 hover:bg-white/10 transition group"
+            className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center text-stone-200 hover:text-sky-400 hover:bg-white/10 transition group"
             title="My Location"
           >
-            <Navigation className="w-4 h-4 group-hover:scale-110 transition-transform" />
+            <Navigation className="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover:scale-110 transition-transform" />
           </button>
         </div>
 
@@ -337,19 +370,19 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
 
       {/* Floating Bottom Quick-Card (Airbnb / Apple Maps 2026 Style) */}
       {selectedProducer && (
-        <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-30 w-[92%] sm:w-[500px] animate-in slide-in-from-bottom-6 duration-300">
-          <div className="glass-panel p-3.5 rounded-3xl shadow-2xl border border-white/15 text-stone-100 flex gap-3.5 items-center relative overflow-hidden">
+        <div className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-30 w-[95%] sm:w-[480px] max-w-lg animate-in slide-in-from-bottom-6 duration-300">
+          <div className="glass-panel p-2.5 sm:p-3.5 rounded-2xl sm:rounded-3xl shadow-2xl border border-white/15 text-stone-100 flex gap-2.5 sm:gap-3.5 items-center relative overflow-hidden">
             
             <div className="absolute -right-10 -bottom-10 w-36 h-36 bg-amber-500/20 rounded-full blur-3xl pointer-events-none" />
 
-            <div className="relative h-24 w-28 sm:w-32 rounded-2xl overflow-hidden shrink-0 bg-stone-900 border border-white/10">
+            <div className="relative h-20 w-22 sm:h-24 sm:w-32 rounded-xl sm:rounded-2xl overflow-hidden shrink-0 bg-stone-900 border border-white/10">
               <img
                 src={selectedProducer.coverImage}
                 alt={selectedProducer.name}
                 className="w-full h-full object-cover"
               />
-              <span className="absolute bottom-1.5 left-1.5 bg-black/70 backdrop-blur-md text-amber-400 text-[10px] font-bold px-1.5 py-0.5 rounded-md flex items-center gap-0.5">
-                <Star className="w-3 h-3 fill-amber-400" />
+              <span className="absolute bottom-1 left-1 bg-black/70 backdrop-blur-md text-amber-400 text-[9px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded flex items-center gap-0.5">
+                <Star className="w-2.5 h-2.5 sm:w-3 sm:h-3 fill-amber-400" />
                 <span>{selectedProducer.rating}</span>
               </span>
             </div>
@@ -357,10 +390,10 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
             <div className="flex-1 min-w-0 flex flex-col justify-between py-0.5">
               <div>
                 <div className="flex items-center justify-between gap-1">
-                  <span className="text-[10px] uppercase font-bold tracking-wider text-amber-400">
+                  <span className="text-[9px] sm:text-[10px] uppercase font-bold tracking-wider text-amber-400 truncate">
                     {formatCategoryName(selectedProducer.category)} · {selectedProducer.region}
                   </span>
-                  <div className="flex items-center gap-1.5">
+                  <div className="flex items-center gap-1">
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
@@ -371,7 +404,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
                       }`}
                       title={isFavorite(selectedProducer.id) ? 'Remove from wishlist' : 'Save to wishlist'}
                     >
-                      <Heart className={`w-4 h-4 ${isFavorite(selectedProducer.id) ? 'fill-rose-500' : ''}`} />
+                      <Heart className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${isFavorite(selectedProducer.id) ? 'fill-rose-500' : ''}`} />
                     </button>
                     <button
                       onClick={(e) => {
@@ -380,25 +413,25 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
                       }}
                       className="text-stone-400 hover:text-white p-1"
                     >
-                      <X className="w-4 h-4" />
+                      <X className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                     </button>
                   </div>
                 </div>
 
-                <h3 className="font-serif-title font-bold text-base text-white truncate leading-tight mt-0.5">
+                <h3 className="font-serif-title font-bold text-sm sm:text-base text-white truncate leading-tight mt-0.5">
                   {selectedProducer.name}
                 </h3>
-                <p className="text-xs text-stone-400 truncate mt-0.5">
+                <p className="text-[11px] sm:text-xs text-stone-400 truncate mt-0.5">
                   {selectedProducer.tagLine}
                 </p>
               </div>
 
-              <div className="flex items-center justify-between gap-2 mt-2 pt-2 border-t border-white/10">
-                <div className="flex items-center gap-1">
+              <div className="flex items-center justify-between gap-2 mt-1.5 pt-1.5 sm:mt-2 sm:pt-2 border-t border-white/10">
+                <div className="hidden sm:flex items-center gap-1">
                   {selectedProducer.indigenousVarieties.slice(0, 2).map((v, idx) => (
                     <span
                       key={idx}
-                      className="text-[10px] px-2 py-0.5 rounded-md bg-white/10 text-stone-300 font-medium"
+                      className="text-[9px] sm:text-[10px] px-1.5 sm:px-2 py-0.5 rounded-md bg-white/10 text-stone-300 font-medium"
                     >
                       {v}
                     </span>
@@ -407,10 +440,10 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
 
                 <button
                   onClick={() => onOpenDrawer(selectedProducer)}
-                  className="flex items-center gap-1 text-xs font-bold bg-amber-500 hover:bg-amber-400 text-stone-950 px-3 py-1.5 rounded-xl shadow transition active:scale-95 shrink-0"
+                  className="flex items-center gap-1 text-[11px] sm:text-xs font-bold bg-amber-500 hover:bg-amber-400 text-stone-950 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl shadow transition active:scale-95 shrink-0 ml-auto"
                 >
                   <span>Explore Story</span>
-                  <ChevronRight className="w-3.5 h-3.5" />
+                  <ChevronRight className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                 </button>
               </div>
 
@@ -421,7 +454,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       )}
 
       {/* Floating Category Legend in Bottom-Left */}
-      <div className="absolute bottom-5 left-4 z-10 hidden sm:flex items-center gap-3 bg-stone-900/90 backdrop-blur-md text-white text-[11px] px-3.5 py-2 rounded-2xl shadow-xl border border-stone-700">
+      <div className="absolute bottom-5 left-4 z-10 hidden xl:flex items-center gap-3 bg-stone-900/90 backdrop-blur-md text-white text-[11px] px-3.5 py-2 rounded-2xl shadow-xl border border-stone-700">
         <div className="flex items-center gap-1.5">
           <span className="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
           <span>Winery</span>

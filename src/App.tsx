@@ -8,6 +8,7 @@ import { ProducerList } from './components/Sidebar/ProducerList';
 import { ProducerDetailDrawer } from './components/Drawer/ProducerDetailDrawer';
 import { DayTripModal } from './components/Loops/DayTripModal';
 import { useFavorites } from './hooks/useFavorites';
+import { List, MapPin } from 'lucide-react';
 
 export const App: React.FC = () => {
   const [selectedProducer, setSelectedProducer] = useState<Producer | null>(null);
@@ -116,7 +117,7 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col h-screen w-screen overflow-hidden bg-stone-950 font-sans text-stone-100">
+    <div className="flex flex-col h-[100dvh] w-full overflow-hidden bg-stone-950 font-sans text-stone-100">
       {/* 1. Header Bar */}
       <Header
         selectedDestination={filters.destination}
@@ -142,12 +143,12 @@ export const App: React.FC = () => {
       />
 
       {/* 3. Main Workspace: Sidebar List + Leaflet Map Canvas */}
-      <main className="relative flex-1 flex overflow-hidden">
+      <main className="relative flex-1 flex overflow-hidden min-h-0">
         {/* Desktop Sidebar / Mobile List View */}
         <div
           className={`${
             viewMode === 'list' ? 'flex' : 'hidden'
-          } md:flex h-full shrink-0 z-10`}
+          } lg:flex h-full shrink-0 z-10 w-full lg:w-auto`}
         >
           <ProducerList
             producers={filteredProducers}
@@ -155,9 +156,6 @@ export const App: React.FC = () => {
             onSelectProducer={(p) => {
               setSelectedProducer(p);
               setIsDrawerOpen(true);
-              if (window.innerWidth < 768) {
-                setViewMode('map');
-              }
             }}
             onResetFilters={handleResetFilters}
             isFavorite={isFavorite}
@@ -168,7 +166,7 @@ export const App: React.FC = () => {
         {/* The Interactive Map */}
         <div
           className={`flex-1 h-full w-full relative ${
-            viewMode === 'map' ? 'block' : 'hidden md:block'
+            viewMode === 'map' ? 'block' : 'hidden lg:block'
           }`}
         >
           <MapCanvas
@@ -184,7 +182,28 @@ export const App: React.FC = () => {
             selectedDestination={filters.destination}
             isFavorite={isFavorite}
             onToggleFavorite={toggleFavorite}
+            viewMode={viewMode}
           />
+        </div>
+
+        {/* Floating Map/List View Switcher on < lg screens */}
+        <div className="lg:hidden absolute bottom-5 left-1/2 -translate-x-1/2 z-30 pointer-events-auto">
+          <button
+            onClick={() => setViewMode((prev) => (prev === 'map' ? 'list' : 'map'))}
+            className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-stone-900/95 text-stone-100 border border-white/20 shadow-2xl backdrop-blur-xl font-bold text-xs hover:bg-stone-800 hover:text-white active:scale-95 transition-all cursor-pointer select-none"
+          >
+            {viewMode === 'map' ? (
+              <>
+                <List className="w-4 h-4 text-amber-400" />
+                <span>Show List ({filteredProducers.length})</span>
+              </>
+            ) : (
+              <>
+                <MapPin className="w-4 h-4 text-amber-400" />
+                <span>Show Map</span>
+              </>
+            )}
+          </button>
         </div>
 
         {/* 4. Slide-Out Detailed Producer Drawer */}
