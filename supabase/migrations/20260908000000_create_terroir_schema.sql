@@ -147,27 +147,20 @@ AS $$
   LIMIT max_limit;
 $$;
 
--- Proximity Radius Search (e.g. Find all olive mills within 25km of current GPS)
+-- Proximity Radius Search (e.g. Find all producers within 25km of current GPS, ordered by distance)
 CREATE OR REPLACE FUNCTION get_nearby_producers(
   user_lat DOUBLE PRECISION,
   user_lng DOUBLE PRECISION,
   radius_km DOUBLE PRECISION DEFAULT 30.0,
   filter_category TEXT DEFAULT NULL,
+  filter_destination TEXT DEFAULT NULL,
   max_limit INTEGER DEFAULT 50
 )
-RETURNS TABLE (
-  producer public.producers,
-  distance_km DOUBLE PRECISION
-)
+RETURNS SETOF public.producers
 LANGUAGE sql
 STABLE
 AS $$
-  SELECT 
-    p.*,
-    ST_Distance(
-      p.location::geography,
-      ST_SetSRID(ST_MakePoint(user_lng, user_lat), 4326)::geography
-    ) / 1000.0 AS distance_km
+  SELECT *
   FROM public.producers p
   WHERE ST_DWithin(
     p.location::geography,
@@ -175,12 +168,16 @@ AS $$
     radius_km * 1000.0
   )
   AND (filter_category IS NULL OR filter_category = 'all' OR p.category = filter_category)
-  ORDER BY distance_km ASC
+  AND (filter_destination IS NULL OR filter_destination = 'all' OR p.destination = filter_destination)
+  ORDER BY ST_Distance(
+    p.location::geography,
+    ST_SetSRID(ST_MakePoint(user_lng, user_lat), 4326)::geography
+  ) ASC
   LIMIT max_limit;
 $$;
 
 -- =====================================================================
--- ROW LEVEL SECURITY (RLS) POLICIES
+-- ROW LEVEL SECURITY (RLS) POLICIES (Idempotent)
 -- =====================================================================
 
 ALTER TABLE public.producers ENABLE ROW LEVEL SECURITY;
@@ -189,10 +186,12 @@ ALTER TABLE public.bookings ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.reviews ENABLE ROW LEVEL SECURITY;
 
 -- 1. Producers: Anyone can read, only verified owners can update
+DROP POLICY IF EXISTS "Public can view all producers" ON public.producers;
 CREATE POLICY "Public can view all producers"
   ON public.producers FOR SELECT
   USING (true);
 
+DROP POLICY IF EXISTS "Producer owners can update their own estate" ON public.producers;
 CREATE POLICY "Producer owners can update their own estate"
   ON public.producers FOR UPDATE
   TO authenticated
@@ -200,10 +199,12 @@ CREATE POLICY "Producer owners can update their own estate"
   WITH CHECK (auth.uid() = owner_user_id);
 
 -- 2. Experiences: Anyone can read, only estate owner can insert/update/delete
+DROP POLICY IF EXISTS "Public can view active experiences" ON public.experiences;
 CREATE POLICY "Public can view active experiences"
   ON public.experiences FOR SELECT
   USING (is_active = true);
 
+DROP POLICY IF EXISTS "Producer owners can manage experiences" ON public.experiences;
 CREATE POLICY "Producer owners can manage experiences"
   ON public.experiences FOR ALL
   TO authenticated
@@ -216,10 +217,12 @@ CREATE POLICY "Producer owners can manage experiences"
   );
 
 -- 3. Bookings: Users can see their own bookings; producers can see bookings for their estate
+DROP POLICY IF EXISTS "Users can view own bookings" ON public.bookings;
 CREATE POLICY "Users can view own bookings"
   ON public.bookings FOR SELECT
   USING (auth.uid()::text = user_id);
 
+DROP POLICY IF EXISTS "Producers can view bookings for their estate" ON public.bookings;
 CREATE POLICY "Producers can view bookings for their estate"
   ON public.bookings FOR SELECT
   TO authenticated
@@ -231,15 +234,18 @@ CREATE POLICY "Producers can view bookings for their estate"
     )
   );
 
+DROP POLICY IF EXISTS "Anyone can create a booking" ON public.bookings;
 CREATE POLICY "Anyone can create a booking"
   ON public.bookings FOR INSERT
   WITH CHECK (true);
 
 -- 4. Reviews: Anyone can read, authenticated travelers can insert
+DROP POLICY IF EXISTS "Public can view reviews" ON public.reviews;
 CREATE POLICY "Public can view reviews"
   ON public.reviews FOR SELECT
   USING (true);
 
+DROP POLICY IF EXISTS "Authenticated users can post reviews" ON public.reviews;
 CREATE POLICY "Authenticated users can post reviews"
   ON public.reviews FOR INSERT
   TO authenticated
