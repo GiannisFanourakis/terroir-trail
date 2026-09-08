@@ -2,17 +2,21 @@ import React, { useEffect, useState } from 'react';
 import { Producer } from '../../types/terroir';
 import { 
   X, MapPin, Star, Phone, Globe, Navigation, Clock, 
-  Dog, Footprints, Caravan, Car, Sparkles, Share2, Check 
+  Dog, Footprints, Caravan, Car, Sparkles, Share2, Check, Heart 
 } from 'lucide-react';
 
 interface ProducerDetailDrawerProps {
   producer: Producer | null;
   onClose: () => void;
+  isFavorite?: boolean;
+  onToggleFavorite?: (id: string) => void;
 }
 
 export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
   producer,
   onClose,
+  isFavorite = false,
+  onToggleFavorite,
 }) => {
   const [activePhoto, setActivePhoto] = useState<string>('');
   const [copiedLink, setCopiedLink] = useState<boolean>(false);
@@ -99,6 +103,20 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
 
         {/* Top Control Icons */}
         <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
+          {onToggleFavorite && (
+            <button
+              onClick={() => onToggleFavorite(producer.id)}
+              className={`w-9 h-9 rounded-full flex items-center justify-center backdrop-blur-md border transition ${
+                isFavorite
+                  ? 'bg-rose-500/80 border-rose-400/50 text-white shadow-lg shadow-rose-950/40'
+                  : 'bg-black/60 hover:bg-black/80 text-stone-200 border-white/10 hover:text-white'
+              }`}
+              title={isFavorite ? 'Remove from Saved' : 'Save to My Trip'}
+              aria-label={isFavorite ? 'Remove from Saved' : 'Save to My Trip'}
+            >
+              <Heart className={`w-4 h-4 ${isFavorite ? 'fill-current text-white' : ''}`} />
+            </button>
+          )}
           <button
             onClick={handleShare}
             className="w-9 h-9 rounded-full bg-black/60 hover:bg-black/80 text-white flex items-center justify-center backdrop-blur-md border border-white/10 transition"

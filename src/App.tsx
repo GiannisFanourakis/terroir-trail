@@ -7,12 +7,15 @@ import { MapCanvas } from './components/Map/MapCanvas';
 import { ProducerList } from './components/Sidebar/ProducerList';
 import { ProducerDetailDrawer } from './components/Drawer/ProducerDetailDrawer';
 import { DayTripModal } from './components/Loops/DayTripModal';
+import { useFavorites } from './hooks/useFavorites';
 
 export const App: React.FC = () => {
   const [selectedProducer, setSelectedProducer] = useState<Producer | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
   const [isLoopsModalOpen, setIsLoopsModalOpen] = useState<boolean>(false);
   const [viewMode, setViewMode] = useState<'map' | 'list'>('map');
+
+  const { favorites, toggleFavorite, isFavorite } = useFavorites();
 
   const initialFilters: FilterState = {
     category: 'all',
@@ -24,6 +27,7 @@ export const App: React.FC = () => {
     dogFriendlyOnly: false,
     walkInOnly: false,
     campervanOnly: false,
+    favoritesOnly: false,
   };
 
   const [filters, setFilters] = useState<FilterState>(initialFilters);
@@ -69,6 +73,7 @@ export const App: React.FC = () => {
       if (filters.dogFriendlyOnly && !producer.dogFriendly) return false;
       if (filters.walkInOnly && !producer.walkInFriendly) return false;
       if (filters.campervanOnly && !producer.campervanFriendly) return false;
+      if (filters.favoritesOnly && !isFavorite(producer.id)) return false;
 
       // Search Query
       if (filters.searchQuery.trim() !== '') {
@@ -89,7 +94,7 @@ export const App: React.FC = () => {
 
       return true;
     });
-  }, [filters]);
+  }, [filters, isFavorite]);
 
   // Load a curated loop
   const handleSelectLoop = (loop: DayTripLoop) => {
@@ -122,6 +127,9 @@ export const App: React.FC = () => {
         totalFilteredCount={filteredProducers.length}
         viewMode={viewMode}
         onToggleViewMode={() => setViewMode((prev) => (prev === 'map' ? 'list' : 'map'))}
+        savedCount={favorites.length}
+        favoritesOnly={filters.favoritesOnly}
+        onToggleFavoritesOnly={() => handleFilterChange('favoritesOnly', !filters.favoritesOnly)}
       />
 
       {/* 2. Interactive Filter Bar */}
@@ -152,6 +160,8 @@ export const App: React.FC = () => {
               }
             }}
             onResetFilters={handleResetFilters}
+            isFavorite={isFavorite}
+            onToggleFavorite={toggleFavorite}
           />
         </div>
 
@@ -172,6 +182,8 @@ export const App: React.FC = () => {
               setIsDrawerOpen(true);
             }}
             selectedDestination={filters.destination}
+            isFavorite={isFavorite}
+            onToggleFavorite={toggleFavorite}
           />
         </div>
 
@@ -180,6 +192,8 @@ export const App: React.FC = () => {
           <ProducerDetailDrawer
             producer={selectedProducer}
             onClose={() => setIsDrawerOpen(false)}
+            isFavorite={selectedProducer ? isFavorite(selectedProducer.id) : false}
+            onToggleFavorite={toggleFavorite}
           />
         )}
       </main>

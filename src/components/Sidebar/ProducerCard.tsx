@@ -1,17 +1,21 @@
 import React from 'react';
 import { Producer } from '../../types/terroir';
-import { MapPin, Star, ArrowUpRight, Car } from 'lucide-react';
+import { MapPin, Star, ArrowUpRight, Car, Heart } from 'lucide-react';
 
 interface ProducerCardProps {
   producer: Producer;
   isSelected: boolean;
   onSelect: (producer: Producer) => void;
+  isFavorite: boolean;
+  onToggleFavorite: (id: string) => void;
 }
 
 export const ProducerCard: React.FC<ProducerCardProps> = ({
   producer,
   isSelected,
   onSelect,
+  isFavorite,
+  onToggleFavorite,
 }) => {
   const getCategoryBadge = (cat: Producer['category']) => {
     switch (cat) {
@@ -59,10 +63,26 @@ export const ProducerCard: React.FC<ProducerCardProps> = ({
           </span>
         </div>
 
-        <div className="absolute top-2.5 right-2.5 flex items-center gap-1 bg-black/70 backdrop-blur-md text-white px-2.5 py-1 rounded-full text-xs font-bold border border-white/10">
-          <Star className="w-3 h-3 text-amber-400 fill-amber-400" />
-          <span>{producer.rating}</span>
-          <span className="text-stone-400 text-[10px]">({producer.reviewCount})</span>
+        {/* Top Right: Favorite Button & Rating */}
+        <div className="absolute top-2.5 right-2.5 flex items-center gap-1.5">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleFavorite(producer.id);
+            }}
+            className={`p-1.5 rounded-full backdrop-blur-md border transition ${
+              isFavorite
+                ? 'bg-rose-600 text-white border-rose-500 shadow-md scale-105'
+                : 'bg-black/60 text-stone-300 hover:text-white border-white/10'
+            }`}
+            title={isFavorite ? 'Remove from wishlist' : 'Save to wishlist'}
+          >
+            <Heart className={`w-3.5 h-3.5 ${isFavorite ? 'fill-white' : ''}`} />
+          </button>
+          <div className="flex items-center gap-1 bg-black/70 backdrop-blur-md text-white px-2 py-1 rounded-full text-xs font-bold border border-white/10">
+            <Star className="w-3 h-3 text-amber-400 fill-amber-400" />
+            <span>{producer.rating}</span>
+          </div>
         </div>
 
         {/* Bottom Location Overlay */}

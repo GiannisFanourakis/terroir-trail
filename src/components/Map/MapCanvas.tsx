@@ -3,7 +3,7 @@ import L from 'leaflet';
 import { Producer, Category, Destination } from '../../types/terroir';
 import { 
   Plus, Minus, Navigation, Maximize2, Layers, MapPin, 
-  Star, ArrowRight, ExternalLink, X, Compass, ChevronRight 
+  Star, ArrowRight, ExternalLink, X, Compass, ChevronRight, Heart 
 } from 'lucide-react';
 
 interface MapCanvasProps {
@@ -12,6 +12,8 @@ interface MapCanvasProps {
   onSelectProducer: (producer: Producer | null) => void;
   onOpenDrawer: (producer: Producer) => void;
   selectedDestination: Destination | 'all';
+  isFavorite: (id: string) => boolean;
+  onToggleFavorite: (id: string) => void;
 }
 
 export const MapCanvas: React.FC<MapCanvasProps> = ({
@@ -20,6 +22,8 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
   onSelectProducer,
   onOpenDrawer,
   selectedDestination,
+  isFavorite,
+  onToggleFavorite,
 }) => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
@@ -356,15 +360,29 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
                   <span className="text-[10px] uppercase font-bold tracking-wider text-amber-400">
                     {formatCategoryName(selectedProducer.category)} · {selectedProducer.region}
                   </span>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onSelectProducer(null);
-                    }}
-                    className="text-stone-400 hover:text-white p-1"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onToggleFavorite(selectedProducer.id);
+                      }}
+                      className={`p-1 rounded-full transition ${
+                        isFavorite(selectedProducer.id) ? 'text-rose-500 scale-110' : 'text-stone-400 hover:text-white'
+                      }`}
+                      title={isFavorite(selectedProducer.id) ? 'Remove from wishlist' : 'Save to wishlist'}
+                    >
+                      <Heart className={`w-4 h-4 ${isFavorite(selectedProducer.id) ? 'fill-rose-500' : ''}`} />
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onSelectProducer(null);
+                      }}
+                      className="text-stone-400 hover:text-white p-1"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
 
                 <h3 className="font-serif-title font-bold text-base text-white truncate leading-tight mt-0.5">

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Destination } from '../../types/terroir';
-import { Compass, Search, X } from 'lucide-react';
+import { Compass, Search, X, Heart } from 'lucide-react';
 
 interface HeaderProps {
   selectedDestination: Destination | 'all';
@@ -11,6 +11,9 @@ interface HeaderProps {
   totalFilteredCount: number;
   viewMode: 'map' | 'list';
   onToggleViewMode: () => void;
+  savedCount: number;
+  favoritesOnly: boolean;
+  onToggleFavoritesOnly: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -22,6 +25,9 @@ export const Header: React.FC<HeaderProps> = ({
   totalFilteredCount,
   viewMode,
   onToggleViewMode,
+  savedCount,
+  favoritesOnly,
+  onToggleFavoritesOnly,
 }) => {
   const destinations: { id: Destination | 'all'; label: string; flag: string }[] = [
     { id: 'all', label: 'All Terroir', flag: '🇬🇷' },
@@ -58,6 +64,17 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Mobile Buttons */}
           <div className="flex md:hidden items-center gap-2">
+            <button
+              onClick={onToggleFavoritesOnly}
+              className={`flex items-center gap-1 px-2.5 py-1.5 text-xs font-bold rounded-xl border transition ${
+                favoritesOnly
+                  ? 'bg-rose-500 text-white border-rose-400 shadow-md'
+                  : 'bg-stone-900 text-stone-300 border-white/10'
+              }`}
+            >
+              <Heart className={`w-3.5 h-3.5 ${favoritesOnly ? 'fill-white' : 'text-rose-400'}`} />
+              <span>{savedCount}</span>
+            </button>
             <button
               onClick={onOpenLoops}
               className="flex items-center gap-1 px-3 py-1.5 text-xs font-bold bg-amber-500 text-stone-950 rounded-xl shadow-md"
@@ -98,13 +115,13 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
 
           {/* Search Box */}
-          <div className="relative min-w-[210px]">
+          <div className="relative min-w-[190px]">
             <Search className="w-4 h-4 text-stone-400 absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => onSearchChange(e.target.value)}
-              placeholder="Search Charma, Vidiano, brewery..."
+              placeholder="Search Charma, Vidiano..."
               className="w-full bg-stone-900/90 border border-white/10 text-stone-100 text-xs rounded-2xl pl-9 pr-8 py-2 focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 placeholder:text-stone-500 transition"
             />
             {searchQuery && (
@@ -117,13 +134,32 @@ export const Header: React.FC<HeaderProps> = ({
             )}
           </div>
 
+          {/* Saved / Wishlist Button */}
+          <button
+            onClick={onToggleFavoritesOnly}
+            className={`hidden md:flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold rounded-2xl border transition-all ${
+              favoritesOnly
+                ? 'bg-rose-600 text-white border-rose-500 shadow-lg shadow-rose-600/30'
+                : 'bg-stone-900 hover:bg-stone-850 text-stone-300 hover:text-white border-white/10'
+            }`}
+            title="Show saved spots"
+          >
+            <Heart className={`w-3.5 h-3.5 ${favoritesOnly || savedCount > 0 ? 'text-rose-400 fill-rose-400' : 'text-stone-400'}`} />
+            <span>Saved</span>
+            {savedCount > 0 && (
+              <span className="ml-0.5 px-1.5 py-0.2 rounded-full bg-rose-500/20 text-rose-300 text-[10px] font-mono">
+                {savedCount}
+              </span>
+            )}
+          </button>
+
           {/* Curated Day Loops CTA */}
           <button
             onClick={onOpenLoops}
             className="hidden md:flex items-center gap-2 px-4 py-2 text-xs font-bold bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-stone-950 rounded-2xl shadow-lg shadow-amber-500/20 transition transform active:scale-95 shrink-0"
           >
             <Compass className="w-4 h-4" />
-            <span>Curated Circuits</span>
+            <span>Circuits</span>
           </button>
         </div>
 

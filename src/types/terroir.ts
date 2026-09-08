@@ -97,4 +97,5 @@ export interface FilterState {
   dogFriendlyOnly: boolean;
   walkInOnly: boolean;
   campervanOnly: boolean;
+  favoritesOnly: boolean;
 }

@@ -2,7 +2,7 @@ import { Producer } from '../types/terroir';
 
 export const CRETAN_PRODUCERS: Producer[] = [
   // ==========================================
-  // --- LOCAL CRAFT MICROBREWERIES (CRETE & GREECE) ---
+  // --- LOCAL CRAFT MICROBREWERIES ---
   // ==========================================
   {
     id: 'cretan-brewery-charma',
@@ -22,7 +22,7 @@ export const CRETAN_PRODUCERS: Producer[] = [
     description: 'Founded in 2007 by mechanical engineer Ioannis Lionakis, this pioneering microbrewery in the hills of Chania brews 100% natural, unpasteurized craft beer served fresh from the tank.',
     story: 'Tired of mass-produced commercial lagers dominating Greece, Lionakis built a state-of-the-art eco-brewery powered by geothermal energy and spent grain compost. The open-air taproom overlooks olive valleys and serves fresh unfiltered Charma Lager, Dunkel, and Pale Ale paired with local smoked sausages and Cretan cheeses.',
     indigenousVarieties: ['Fresh Unpasteurized Lager', 'Cretan Dunkel', 'Pale Ale with Local Citrus', 'Cretan Thyme Honey Ale'],
-    tastingHighlights: ['Charma Fresh Draft Flight (4 Taps)', 'Smoked Pork Apaki with Dunkel Glaze', 'Guided Brewing Brewhouse Tour'],
+    tastingHighlights: ['Charma Fresh Draft Flight (4 Taps)', 'Smoked Pork Apaki with Dunkel Glaze', 'Guided Brewhouse Tour'],
     openingHours: 'Daily: 11:00 - 20:00 (April - October)',
     bestSeason: 'Spring & Summer afternoons',
     phone: '+30 28210 77977',
@@ -57,7 +57,7 @@ export const CRETAN_PRODUCERS: Producer[] = [
     story: 'Operating under the motto "Craft Beer is not a luxury, it is a human right", Solo crafts unpasteurized ales that push boundaries: imperial stouts aged in Cretan Tsikoudia barrels, hop-bursting double IPAs, and spontaneous wild ales fermented with Cretan flora.',
     indigenousVarieties: ['Faskomilo Saison', 'Tsikoudia Barrel-Aged Imperial Stout', 'Psaki IPA', 'Gourouna DIPA'],
     tastingHighlights: ['Psaki India Pale Ale', 'Horiatiki Saison with Wild Herbs', 'Darkness Imperial Stout on Nitro'],
-    openingHours: 'Mon - Fri: 12:00 - 19:00 (Taproom visits by appt)',
+    openingHours: 'Mon - Fri: 12:00 - 19:00',
     phone: '+30 2810 240444',
     website: 'https://solobeer.gr',
     googleMapsUrl: 'https://maps.google.com/?q=35.3380,25.1610',
@@ -86,7 +86,7 @@ export const CRETAN_PRODUCERS: Producer[] = [
       'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=1000&q=80'
     ],
     tagLine: 'Belgian-Greek Craft Fusion Fermented with Raw Cretan Orange Blossom Honey',
-    description: 'A love story turned microbrewery: Greek brewer Michalis and Belgian brewer Aurélie joined forces to craft "Triple Hop" and Belgian white beers infused with Cretan malts and local citrus blossom honey.',
+    description: 'A love story turned microbrewery: Greek brewer Michalis and Belgian brewer Aurélie joined forces to craft Belgian-style unfiltered white beers infused with local citrus blossom honey.',
     story: 'Michalis learned traditional brewing in Ghent, Belgium, before moving to Crete. Their flagship "White Mountains" unfiltered wheat beer captures the essence of spring in the Lefka Ori.',
     indigenousVarieties: ['White Mountain Witbier', 'Cretan Honey Triple Hop', 'Session IPA'],
     tastingHighlights: ['White Mountains Belgian-Cretan Wit', 'Triple Hop Pale Ale', 'Honey-Glazed Pretzels'],
@@ -119,12 +119,11 @@ export const CRETAN_PRODUCERS: Producer[] = [
       'https://images.unsplash.com/photo-1575037614876-c38a4d44f5b8?auto=format&fit=crop&w=1000&q=80'
     ],
     tagLine: 'Volcanic Island Microbrewery & The Famous Donkey Craft Ales',
-    description: 'Founded by an international alliance of brewmasters from Greece, Serbia, the US, and Germany, this iconic brewery brews unpasteurized ales cooled by volcanic island air.',
-    story: 'Water on the volcanic island of Santorini is mineral-rich and unique. The brewers created Yellow Donkey, Red Donkey, and the rare Crazy Donkey (the first true Greek IPA), creating a cult following worldwide.',
+    description: 'Founded by an international alliance of brewmasters, this iconic brewery brews unpasteurized ales cooled by volcanic island air.',
+    story: 'Water on the volcanic island of Santorini is mineral-rich and unique. The brewers created Yellow Donkey, Red Donkey, and Crazy Donkey (the first true Greek IPA).',
     indigenousVarieties: ['Yellow Donkey Volcanic Blonde', 'Red Donkey Amber Ale', 'Crazy Donkey Greek IPA'],
-    tastingHighlights: ['Fresh Draft Flight of 4 Donkeys', 'Brewery Merch & Glassware', 'Meet the Head Brewer'],
+    tastingHighlights: ['Fresh Draft Flight of 4 Donkeys', 'Brewery Glassware', 'Meet the Head Brewer'],
     openingHours: 'Mon - Sat: 11:00 - 17:00',
-    bestSeason: 'May to October',
     phone: '+30 22860 30268',
     website: 'https://santorinibrewingcompany.gr',
     googleMapsUrl: 'https://maps.google.com/?q=36.3985,25.4520',
@@ -141,7 +140,208 @@ export const CRETAN_PRODUCERS: Producer[] = [
   },
 
   // ==========================================
-  // --- SANTORINI & CYCLADES WINERIES ---
+  // --- NEW AUTHENTIC WINERIES & ESTATES ---
+  // ==========================================
+  {
+    id: 'anoskeli-estate',
+    name: 'Anoskeli Winery & Olive Mill',
+    greekName: 'Οινοποιείο & Ελαιοτριβείο Ανώσκελη',
+    category: 'winery',
+    destination: 'crete',
+    region: 'Chania',
+    village: 'Anoskeli (Platanias)',
+    coordinates: [35.4320, 23.7740],
+    coverImage: 'https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?auto=format&fit=crop&w=1000&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?auto=format&fit=crop&w=1000&q=80'
+    ],
+    tagLine: 'Single-Estate Organic EVOO & Handcrafted Hillside Wines',
+    description: 'Tucked into the green hills of Kolymbari, the Mamidakis family created an integrated estate combining an ultra-modern boutique olive mill with hillside vineyards of Vidiano, Assyrtiko, and Syrah.',
+    story: 'Named after their ancestral village of Anoskeli, the estate has won dozens of international awards for its PDO Kolymbari cold-pressed extra virgin olive oil and single-vineyard "Ano Playa" wines.',
+    indigenousVarieties: ['Vidiano', 'Assyrtiko', 'Vilana', 'Koroneiki EVOO'],
+    tastingHighlights: ['Ano Playa Vidiano Reserve', 'Anoskeli Organic Cold-Pressed EVOO', 'Warm Sourdough Bread with Sea Salt'],
+    openingHours: 'Mon - Sat: 10:00 - 17:00',
+    phone: '+30 28240 83126',
+    website: 'https://anoskeli.gr',
+    googleMapsUrl: 'https://maps.google.com/?q=35.4320,23.7740',
+    roadAccess: 'paved',
+    ethos: ['organic', 'family_estate', 'ancient_groves'],
+    foodOption: 'tasting_board',
+    dogFriendly: true,
+    kidFriendly: true,
+    walkInFriendly: true,
+    campervanFriendly: true,
+    priceLevel: '€€',
+    rating: 4.9,
+    reviewCount: 185
+  },
+  {
+    id: 'domaine-paterianakis',
+    name: 'Domaine Paterianakis',
+    greekName: 'Κτήμα Πατεριανάκη',
+    category: 'winery',
+    destination: 'crete',
+    region: 'Heraklion',
+    village: 'Melesses (Peza)',
+    coordinates: [35.1890, 25.2050],
+    coverImage: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=1000&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=1000&q=80'
+    ],
+    tagLine: 'Organic Pioneers & Clay Amphora Vinification by 3rd-Gen Sisters',
+    description: 'The first certified organic winery on Crete, situated in the historic Peza appellation. Today run by sisters Emmanuela and Niki Paterianakis, crafting organic and natural amphora wines.',
+    story: 'Their father converted the entire estate to organic viticulture in 1997 when few in Greece believed in it. Their stunning hilltop tasting pavilion overlooks rolling organic vineyards.',
+    indigenousVarieties: ['Vidiano', 'Kotsifali', 'Mandilari', 'Assyrtiko'],
+    tastingHighlights: ['Melissokipos Natural Vidiano', '3.14 Amphora Red Blend', 'Organic Grape Must Cookies'],
+    openingHours: 'Mon - Sat: 10:00 - 17:00',
+    phone: '+30 2810 226674',
+    website: 'https://paterianakis.gr',
+    googleMapsUrl: 'https://maps.google.com/?q=35.1890,25.2050',
+    roadAccess: 'paved',
+    ethos: ['organic', 'amphora', 'indigenous_only', 'family_estate'],
+    foodOption: 'tasting_board',
+    dogFriendly: true,
+    kidFriendly: true,
+    walkInFriendly: true,
+    campervanFriendly: false,
+    priceLevel: '€€',
+    rating: 4.8,
+    reviewCount: 140
+  },
+  {
+    id: 'vassaltis-vineyards',
+    name: 'Vassaltis Vineyards Santorini',
+    greekName: 'Αμπελώνες Βασάλτης',
+    category: 'winery',
+    destination: 'santorini',
+    region: 'Santorini',
+    village: 'Vourvoulos',
+    coordinates: [36.4380, 25.4390],
+    coverImage: 'https://images.unsplash.com/photo-1474722883778-792e7990302f?auto=format&fit=crop&w=1000&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1474722883778-792e7990302f?auto=format&fit=crop&w=1000&q=80'
+    ],
+    tagLine: 'Minimalist Volcanic Architecture & Razor-Sharp Seaside Assyrtiko',
+    description: 'Santorini’s newest boutique estate, crafted directly on the volcanic black soils of Vourvoulos near the Aegean shore. Famous for pure, saline, low-intervention whites.',
+    story: 'Named after the dark volcanic rock "basalt" created by the Minoan eruption. Vassaltis embodies modern Greek winemaking: sleek concrete architecture, wild-yeast barrels, and zero-compromise mineral purity.',
+    indigenousVarieties: ['Assyrtiko', 'Athiri', 'Aidani', 'Mavrotragano'],
+    tastingHighlights: ['Vassaltis Gramina Single Vineyard', 'Wild Ferment Assyrtiko', 'Aegean Ceviche Pairing'],
+    openingHours: 'Daily: 11:00 - 20:00',
+    phone: '+30 22860 25056',
+    website: 'https://vassaltis.com',
+    googleMapsUrl: 'https://maps.google.com/?q=36.4380,25.4390',
+    roadAccess: 'paved',
+    ethos: ['indigenous_only', 'craft_batch'],
+    foodOption: 'full_taverna',
+    dogFriendly: true,
+    kidFriendly: false,
+    walkInFriendly: false,
+    campervanFriendly: false,
+    priceLevel: '€€€',
+    rating: 4.9,
+    reviewCount: 270
+  },
+  {
+    id: 'skouras-winery-nemea',
+    name: 'Ktima Skouras (Peloponnese)',
+    greekName: 'Κτήμα Σκούρας',
+    category: 'winery',
+    destination: 'peloponnese',
+    region: 'Nemea',
+    village: 'Malandreni (Argos)',
+    coordinates: [37.7210, 22.6840],
+    coverImage: 'https://images.unsplash.com/photo-1528823872057-9c018a7a7553?auto=format&fit=crop&w=1000&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1528823872057-9c018a7a7553?auto=format&fit=crop&w=1000&q=80'
+    ],
+    tagLine: 'The Pioneer of Megas Oenos & Agiorgitiko World Benchmark',
+    description: 'George Skouras studied enology in Dijon, Burgundy, and returned to the Peloponnese in 1986 to pioneer "Megas Oenos"—a legendary blend of Agiorgitiko and French Cabernet Sauvignon.',
+    story: 'Skouras put Nemea on the global fine-wine map. His modern high-ceilinged estate features world-class art installations and barrel cellars aging thousands of oak casks.',
+    indigenousVarieties: ['Agiorgitiko', 'Moschofilero', 'Malagousia', 'Roditis'],
+    tastingHighlights: ['Megas Oenos Red', 'Viognier Eclectique Barrel-Aged', 'Salto Wild Yeast Moschofilero'],
+    openingHours: 'Mon - Sat: 09:00 - 17:00',
+    phone: '+30 27510 23688',
+    website: 'https://skouras.gr',
+    googleMapsUrl: 'https://maps.google.com/?q=37.7210,22.6840',
+    roadAccess: 'paved',
+    ethos: ['indigenous_only', 'family_estate'],
+    foodOption: 'tasting_board',
+    dogFriendly: true,
+    kidFriendly: true,
+    walkInFriendly: true,
+    campervanFriendly: true,
+    priceLevel: '€€€',
+    rating: 4.9,
+    reviewCount: 390
+  },
+  {
+    id: 'thymiopoulos-naoussa',
+    name: 'Thymiopoulos Vineyards Naoussa',
+    greekName: 'Αμπελώνες Θυμιόπουλου',
+    category: 'winery',
+    destination: 'northern_greece',
+    region: 'Naoussa',
+    village: 'Trilofos',
+    coordinates: [40.6120, 22.1150],
+    coverImage: 'https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?auto=format&fit=crop&w=1000&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?auto=format&fit=crop&w=1000&q=80'
+    ],
+    tagLine: 'Biodynamic Natural Xinomavro Icon "Earth & Sky"',
+    description: 'Apostolos Thymiopoulos is celebrated worldwide as the master of low-intervention, biodynamic Xinomavro, crafting wines with silky tannins and pure floral fruit.',
+    story: 'Coming from generations of grape growers, Apostolos was the first in his family to bottle wine. His "Earth & Sky" and "Jeunes Vignes" grace Michelin-starred wine lists from Tokyo to Paris.',
+    indigenousVarieties: ['Xinomavro', 'Malagousia', 'Vidiano'],
+    tastingHighlights: ['Earth & Sky Single Vineyard Xinomavro', 'Rose de Xinomavro', 'Artisanal Sheep Cheese with Quince'],
+    openingHours: 'Mon - Fri: 10:00 - 16:00 (Appt recommended)',
+    phone: '+30 23320 44200',
+    website: 'https://thymiopoulosvineyards.gr',
+    googleMapsUrl: 'https://maps.google.com/?q=40.6120,22.1150',
+    roadAccess: 'paved',
+    ethos: ['biodynamic', 'organic', 'indigenous_only', 'family_estate'],
+    foodOption: 'tasting_board',
+    dogFriendly: true,
+    kidFriendly: false,
+    walkInFriendly: false,
+    campervanFriendly: false,
+    priceLevel: '€€€',
+    rating: 5.0,
+    reviewCount: 190
+  },
+  {
+    id: 'tyrokomio-gasparis',
+    name: 'Gasparis Traditional Mountain Dairy',
+    greekName: 'Παραδοσιακό Τυροκομείο Γάσπαρης',
+    category: 'cheese_dairy',
+    destination: 'crete',
+    region: 'Chania',
+    village: 'Gavalochori (Apokoronas)',
+    coordinates: [35.4260, 24.2120],
+    coverImage: 'https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d?auto=format&fit=crop&w=1000&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d?auto=format&fit=crop&w=1000&q=80'
+    ],
+    tagLine: 'Authentic Cave-Cured Graviera in Historical Venetian Gavalochori',
+    description: 'Located in the stone village of Gavalochori, the Gasparis family produces raw-milk Graviera, sweet Mizithra, and unpasteurized sheep butter cured with mountain sea salt.',
+    story: 'All milk is sourced from small-scale shepherds whose flocks graze on the wild oregano and thyme slopes of the Apokoronas hills.',
+    indigenousVarieties: ['Apokoronas Sheep Milk', 'Mountain Goat Milk'],
+    tastingHighlights: ['12-Month Aged Graviera with Thyme Honey', 'Warm Sfakian Cheese Pie', 'Creamy Staka'],
+    openingHours: 'Mon - Sat: 08:00 - 15:00',
+    phone: '+30 28250 22440',
+    googleMapsUrl: 'https://maps.google.com/?q=35.4260,24.2120',
+    roadAccess: 'paved',
+    ethos: ['raw_milk', 'family_estate'],
+    foodOption: 'dakos_snacks',
+    dogFriendly: true,
+    kidFriendly: true,
+    walkInFriendly: true,
+    campervanFriendly: false,
+    priceLevel: '€',
+    rating: 4.9,
+    reviewCount: 110
+  },
+
+  // ==========================================
+  // --- EXISTING AUTHENTIC MAKERS ---
   // ==========================================
   {
     id: 'estate-argyros-santorini',
@@ -158,11 +358,10 @@ export const CRETAN_PRODUCERS: Producer[] = [
     ],
     tagLine: 'Centuries-Old Ungrafted Bush Vines & Legendary 20-Year Barrel Vinsanto',
     description: 'Founded in 1903, Argyros is the master of ungrafted 150-year-old Assyrtiko vines woven into traditional round "kouloura" baskets to withstand harsh Aegean gale winds.',
-    story: 'Santorini’s volcanic pumice soil is immune to phylloxera, meaning Argyros’ vines are genetically original rootstocks that have survived centuries without grafting. Their barrel-aged Vinsanto sweet wine is hailed as a global benchmark.',
+    story: 'Santorini’s volcanic pumice soil is immune to phylloxera, meaning Argyros’ vines are genetically original rootstocks that have survived centuries without grafting.',
     indigenousVarieties: ['Assyrtiko', 'Athiri', 'Aidani', 'Mavrotragano'],
     tastingHighlights: ['Monsignori 200-Year-Old Vine Assyrtiko', 'Cuvee Evdemon Amphora', 'Vinsanto 12-Year Oak Aged'],
     openingHours: 'Daily: 10:00 - 19:00',
-    bestSeason: 'Spring and Autumn',
     phone: '+30 22860 31489',
     website: 'https://estateargyros.com',
     googleMapsUrl: 'https://maps.google.com/?q=36.3860,25.4610',
@@ -177,10 +376,6 @@ export const CRETAN_PRODUCERS: Producer[] = [
     rating: 4.9,
     reviewCount: 380
   },
-
-  // ==========================================
-  // --- PELOPONNESE (NEMEA) TERROIR ---
-  // ==========================================
   {
     id: 'semeli-estate-nemea',
     name: 'Semeli Estate Nemea',
@@ -195,8 +390,8 @@ export const CRETAN_PRODUCERS: Producer[] = [
       'https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?auto=format&fit=crop&w=1000&q=80'
     ],
     tagLine: 'High-Altitude Grand Reserve Agiorgitiko in the "Valley of Hercules"',
-    description: 'Perched at 600m altitude in the premier hillside cru of Koutsi, Semeli produces world-class Agiorgitiko (St. George) reds with breathtaking panoramic views over the Nemean plain.',
-    story: 'According to myth, Hercules slew the Nemean lion here, and the blood of the beast gave Agiorgitiko its deep ruby hue. Semeli practices gravity-flow winemaking and hosts luxury winery suites surrounded by vineyards.',
+    description: 'Perched at 600m altitude in the premier hillside cru of Koutsi, Semeli produces world-class Agiorgitiko reds with breathtaking panoramic views over the Nemean plain.',
+    story: 'According to myth, Hercules slew the Nemean lion here, and the blood of the beast gave Agiorgitiko its deep ruby hue. Semeli practices gravity-flow winemaking.',
     indigenousVarieties: ['Agiorgitiko', 'Moschofilero', 'Malagousia'],
     tastingHighlights: ['Semeli Grande Reserve Nemea', 'Deipnos Agiorgitiko-Cabernet', 'Thea Mantinia Moschofilero'],
     openingHours: 'Mon - Sun: 10:00 - 17:00',
@@ -214,10 +409,6 @@ export const CRETAN_PRODUCERS: Producer[] = [
     rating: 4.9,
     reviewCount: 290
   },
-
-  // ==========================================
-  // --- NORTHERN GREECE (NAOUSSA) TERROIR ---
-  // ==========================================
   {
     id: 'kir-yianni-naoussa',
     name: 'Ktima Kir-Yianni Naoussa',
@@ -233,7 +424,7 @@ export const CRETAN_PRODUCERS: Producer[] = [
     ],
     tagLine: 'The Nobility of Xinomavro on the Slopes of Mount Vermion',
     description: 'Founded by Greek wine royalty Yiannis Boutaris in 1997, Kir-Yianni sits in the premier cru of Yiannakochori, dedicated to Greece’s greatest age-worthy red variety: Xinomavro.',
-    story: 'Often compared to Nebbiolo of Barolo, Xinomavro offers aromas of dried tomato, black olive, and wild strawberry with fierce tannins that evolve for decades. The winery’s stone tasting room looks out across rolling alpine vineyards.',
+    story: 'Often compared to Nebbiolo of Barolo, Xinomavro offers aromas of dried tomato, black olive, and wild strawberry with fierce tannins that evolve for decades.',
     indigenousVarieties: ['Xinomavro', 'Malagousia', 'Assyrtiko'],
     tastingHighlights: ['Diaporos Single-Block Xinomavro', 'Ramnista Classic Naoussa', 'Ble Alepou Red Blend'],
     openingHours: 'Daily: 10:00 - 18:00',
@@ -251,10 +442,6 @@ export const CRETAN_PRODUCERS: Producer[] = [
     rating: 4.9,
     reviewCount: 340
   },
-
-  // ==========================================
-  // --- CRETE WINERIES (ORIGINAL GEMS) ---
-  // ==========================================
   {
     id: 'douloufakis-winery',
     name: 'Douloufakis Winery',
@@ -271,11 +458,10 @@ export const CRETAN_PRODUCERS: Producer[] = [
     ],
     tagLine: 'The Master of Vidiano & Historic Amphora Aging in Dafnes',
     description: 'Nikos Douloufakis was instrumental in reviving Crete’s queen white grape, Vidiano. Located in the historic hillside village of Dafnes, this family estate crafts stunning single-vineyard wines and clay amphora-fermented whites.',
-    story: 'Three generations of the Douloufakis family have farmed the limestone-rich hills of Dafnes. Nikos returned from his enology studies in Italy with a radical vision: stop blending Cretan varieties away and showcase them pure. Today, their amphora "Aspros Lagos" Vidiano is celebrated in natural wine bars worldwide.',
+    story: 'Three generations of the Douloufakis family have farmed the limestone-rich hills of Dafnes. Nikos returned from his enology studies in Italy with a radical vision: stop blending Cretan varieties away and showcase them pure.',
     indigenousVarieties: ['Vidiano', 'Liatiko', 'Kotsifali', 'Vilana'],
     tastingHighlights: ['Aspros Lagos Vidiano (Amphora)', 'Dafnios Liatiko Red', 'Femina Malvasia di Candia'],
     openingHours: 'Mon - Sat: 10:00 - 17:00',
-    bestSeason: 'May to October',
     phone: '+30 2810 792010',
     website: 'https://douloufakis.wine',
     googleMapsUrl: 'https://maps.google.com/?q=35.2155,25.0742',
@@ -305,11 +491,10 @@ export const CRETAN_PRODUCERS: Producer[] = [
     ],
     tagLine: 'Organic Terraces & Orange Romeiko at the Foothills of the White Mountains',
     description: 'Surrounded by orange groves and olive trees in Vatolakkos village, Alexandra Manousakis and team produce certified organic wines and innovative natural expressions of the native Romeiko grape.',
-    story: 'Founded by Ted Manousakis who emigrated to the US and returned to honor his ancestral village. Their garden restaurant serves authentic farm-to-table Cretan dishes paired with experimental low-intervention wines and aged Tsikoudia.',
+    story: 'Founded by Ted Manousakis who emigrated to the US and returned to honor his ancestral village. Their garden restaurant serves authentic farm-to-table Cretan dishes paired with experimental low-intervention wines.',
     indigenousVarieties: ['Romeiko', 'Vidiano', 'Assyrtiko'],
     tastingHighlights: ['Nostos Romeiko Blanc de Noir', 'Nostos Alexandra GSM Blend', 'Aged Tsikoudia'],
     openingHours: 'Daily: 11:00 - 21:00',
-    bestSeason: 'Spring & Summer evenings',
     phone: '+30 28210 78262',
     website: 'https://manousakiswinery.com',
     googleMapsUrl: 'https://maps.google.com/?q=35.4542,23.9056',
@@ -339,7 +524,7 @@ export const CRETAN_PRODUCERS: Producer[] = [
     ],
     tagLine: 'Rescuers of Extinct Ancient Cretan Grape Varieties',
     description: 'Credited globally with saving near-extinct Cretan varieties Dafni and Plyto from vanishing. The tasting pavilion overlooks the historic 14th-century stone wine press of Vathypetro valley.',
-    story: 'In the late 1980s, the Lyrarakis brothers scouted mountain abandoned plots to find surviving vines of Dafni (scented like bay laurel) and Plyto. Today their family winery is a pilgrimage site for wine explorers wanting tastes found nowhere else on earth.',
+    story: 'In the late 1980s, the Lyrarakis brothers scouted mountain abandoned plots to find surviving vines of Dafni (scented like bay laurel) and Plyto.',
     indigenousVarieties: ['Dafni', 'Plyto', 'Melissaki', 'Vidiano', 'Mandilari', 'Kotsifali'],
     tastingHighlights: ['Psarades Dafni (Bay leaf notes)', 'Ippodromos Vidiano', 'Aggelis Liatiko 90-year-old ungrafted vines'],
     openingHours: 'Daily: 11:00 - 19:00',
@@ -371,7 +556,7 @@ export const CRETAN_PRODUCERS: Producer[] = [
       'https://images.unsplash.com/photo-1547036967-23d11aacaee0?auto=format&fit=crop&w=1000&q=80'
     ],
     tagLine: 'Monastic Organic Viticulture in the Wind-Swept Arid Cape of Eastern Crete',
-    description: 'Dating to the 14th century, the fortified Monastery of Toplou produces world-famous organic wines, Tsikoudia, and PDO Sitia olive oil swept by the relentless meltemi winds.',
+    description: 'Dating to the 14th century, the fortified Monastery of Toplou produces world-famous organic wines, Tsikoudia, and PDO Sitia olive oil swept by the meltemi winds.',
     story: 'The monks have tended vines here for over 600 years. The stark, arid microclimate of Cape Sidero imparts a unique flinty salinity to the indigenous Thrapsathiri and Assyrtiko grapes.',
     indigenousVarieties: ['Liatiko', 'Thrapsathiri', 'Vilana', 'Assyrtiko'],
     tastingHighlights: ['Toplou Liatiko Organic', 'Thrapsathiri-Assyrtiko Reserve', 'Monastic Tsikoudia aged in oak'],
@@ -390,10 +575,6 @@ export const CRETAN_PRODUCERS: Producer[] = [
     rating: 4.7,
     reviewCount: 420
   },
-
-  // ==========================================
-  // --- RAKOKAZANA & OLIVE MILLS (CRETE) ---
-  // ==========================================
   {
     id: 'kazani-stilianou',
     name: 'Kazani Stilianou & Organic Estate',
@@ -408,8 +589,8 @@ export const CRETAN_PRODUCERS: Producer[] = [
       'https://images.unsplash.com/photo-1516594915697-87eb3b1c14ea?auto=format&fit=crop&w=1000&q=80'
     ],
     tagLine: 'Wood-Fired Copper Distillation & Soulful Autumn Rakokazana',
-    description: 'A genuine artisan rakokazano operating a historic wood-fired copper pot still. In autumn, the courtyard fills with locals roasting chestnuts, grilling souvlaki, and drinking first-distillation "protoraki".',
-    story: 'Yiannis Stilianou believes Tsikoudia should be distilled strictly from organic single-estate grape pomace, not industrial leftovers. The aroma of wild thyme and burning olive wood gives his spirits an unmistakable rustic purity.',
+    description: 'A genuine artisan rakokazano operating a historic wood-fired copper pot still. In autumn, the courtyard fills with locals roasting chestnuts, grilling souvlaki, and drinking fresh raki.',
+    story: 'Yiannis Stilianou believes Tsikoudia should be distilled strictly from organic single-estate grape pomace, not industrial leftovers.',
     indigenousVarieties: ['Kotsifali Pomace', 'Vidiano Marc', 'Liatiko Marc'],
     tastingHighlights: ['Pure Single-Variety Vidiano Tsikoudia', 'Wild Thyme Honey Rakomelo', 'Aged Oak Tsikoudia'],
     openingHours: 'Oct - Dec: Daily 16:00 - late',
@@ -441,11 +622,11 @@ export const CRETAN_PRODUCERS: Producer[] = [
       'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&w=1000&q=80'
     ],
     tagLine: 'Cold-Pressed Granite Millstones & Unfiltered Single-Estate Koroneiki EVOO',
-    description: 'One of the few remaining certified organic olive mills in Greece that strictly uses traditional granite millstones and hydraulic cold-pressing instead of high-heat industrial centrifuges.',
-    story: 'George Dimitriadis and his daughter Chloe revived traditional stone milling to preserve polyphenols and antioxidants in extra virgin olive oil. Their open-air cliffside cafe overlooks the gorge of Roka.',
+    description: 'One of the few remaining certified organic olive mills in Greece that strictly uses traditional granite millstones and hydraulic cold-pressing.',
+    story: 'George Dimitriadis and his daughter Chloe revived traditional stone milling to preserve polyphenols in extra virgin olive oil. Their open-air cliffside cafe overlooks the gorge of Roka.',
     indigenousVarieties: ['Koroneiki', 'Tsounati'],
     tastingHighlights: ['Stone-Milled Organic Koroneiki EVOO', 'Lemon-Crushed Olive Oil', 'Bitter Orange Infusion'],
-    openingHours: 'Daily: 10:00 - 18:00 (May - Oct)',
+    openingHours: 'Daily: 10:00 - 18:00',
     phone: '+30 28240 32005',
     website: 'https://biolea.gr',
     googleMapsUrl: 'https://maps.google.com/?q=35.4389,23.7547',
@@ -474,10 +655,10 @@ export const CRETAN_PRODUCERS: Producer[] = [
       'https://images.unsplash.com/photo-1508615039623-a25605d2b022?auto=format&fit=crop&w=1000&q=80'
     ],
     tagLine: 'A 3,000-Year-Old Living Wonder Still Bearing Fruit',
-    description: 'Estimated to be over 3,000 years old, this monumental olive tree’s trunk has a perimeter of 12.5 meters. The adjacent heritage stone mill demonstrates Minoan through 19th-century extraction methods.',
-    story: 'Branches from this living ancient tree were cut to crown winners in the Athens Olympic Games. Surrounding family farmers produce single-orchard Tsounati olive oil from ancient trees grafted during Byzantine times.',
+    description: 'Estimated to be over 3,000 years old, this monumental olive tree’s trunk has a perimeter of 12.5 meters. The adjacent heritage stone mill demonstrates extraction methods.',
+    story: 'Branches from this living ancient tree were cut to crown winners in the Athens Olympic Games. Surrounding family farmers produce single-orchard Tsounati olive oil.',
     indigenousVarieties: ['Tsounati (Mastoidis)', 'Koroneiki'],
-    tastingHighlights: ['Ancient Grove Tsounati EVOO', 'Wild Herb Marinated Olives', 'Freshly Baked Paximadi with Olive Paste'],
+    tastingHighlights: ['Ancient Grove Tsounati EVOO', 'Wild Herb Marinated Olives', 'Freshly Baked Paximadi'],
     openingHours: 'Daily: 08:30 - 20:30',
     phone: '+30 28240 22279',
     googleMapsUrl: 'https://maps.google.com/?q=35.4868,23.7865',
@@ -492,10 +673,6 @@ export const CRETAN_PRODUCERS: Producer[] = [
     rating: 4.7,
     reviewCount: 650
   },
-
-  // ==========================================
-  // --- SHEPHERD DAIRIES & HERBS (CRETE) ---
-  // ==========================================
   {
     id: 'mitato-halepa',
     name: 'Stone Shepherd Mitato of Halepa',
@@ -510,11 +687,11 @@ export const CRETAN_PRODUCERS: Producer[] = [
       'https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d?auto=format&fit=crop&w=1000&q=80'
     ],
     tagLine: 'Raw-Milk Mountain Graviera Made in Ancient Stone Dome Huts at 1,200m',
-    description: 'An authentic dry-stone dome hut (mitato) built without mortar high on Mount Psiloritis. Watch local mountain shepherds milk indigenous sheep and stir fresh curds in huge copper caldrons over open fires.',
-    story: 'Mitata are ancient architectural wonders unchanged since the Minoan era. Shepherds age their raw-milk Graviera in natural mountain limestone crevices where cool alpine air cures the wheels for up to 18 months.',
+    description: 'An authentic dry-stone dome hut (mitato) built without mortar high on Mount Psiloritis. Watch local mountain shepherds milk indigenous sheep and stir fresh curds in huge copper caldrons.',
+    story: 'Mitata are ancient architectural wonders unchanged since the Minoan era. Shepherds age their raw-milk Graviera in natural mountain limestone crevices where alpine air cures the wheels.',
     indigenousVarieties: ['Mountain Sheep Milk', 'Free-Range Goat Milk'],
     tastingHighlights: ['18-Month Cave-Aged Graviera', 'Warm Fresh Mizithra Curds', 'Pure Alpine Staka with Eggs'],
-    openingHours: 'Weekends & Summer by advance reservation',
+    openingHours: 'Weekends by reservation',
     phone: '+30 28340 61122',
     googleMapsUrl: 'https://maps.google.com/?q=35.3120,24.9080',
     roadAccess: '4x4_required',
@@ -543,7 +720,7 @@ export const CRETAN_PRODUCERS: Producer[] = [
     ],
     tagLine: 'Wild Foraged Malotira & Sacred Diktamos from the Cliffs of Sfakia',
     description: 'Babis Psaroudakis is a master wild-plant herbalist in the remote high village of Kallikratis. He forages indigenous medicinal plants from steep mountain cliffs and extracts pure therapeutic essential oils.',
-    story: 'Cretan Dittany (Diktamos) only grows wild on steep gorge crevices and was hailed since Aristotle for healing wounds. Visiting Babis’ workshop is an intoxicating sensory journey through dried sage, cistus, and mountain tea.',
+    story: 'Cretan Dittany (Diktamos) only grows wild on steep gorge crevices and was hailed since Aristotle for healing wounds. Visiting Babis’ workshop is an intoxicating sensory journey through dried sage and mountain tea.',
     indigenousVarieties: ['Malotira (Sideritis syriaca)', 'Diktamos (Origanum dictamnus)', 'Faskomilo (Wild Sage)'],
     tastingHighlights: ['Fresh Brewed Mountain Tea with Thyme Honey', 'Pure Diktamos Infusion', 'Organic Herb Essential Oils'],
     openingHours: 'Mon - Sat: 10:00 - 18:00',

@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { Producer } from '../../types/terroir';
 import { ProducerCard } from './ProducerCard';
-import { ArrowUpDown, SearchX } from 'lucide-react';
+import { ArrowUpDown, SearchX, Heart } from 'lucide-react';
 
 interface ProducerListProps {
   producers: Producer[];
   selectedProducer: Producer | null;
   onSelectProducer: (producer: Producer) => void;
   onResetFilters: () => void;
+  isFavorite: (id: string) => boolean;
+  onToggleFavorite: (id: string) => void;
 }
 
 export const ProducerList: React.FC<ProducerListProps> = ({
@@ -15,6 +17,8 @@ export const ProducerList: React.FC<ProducerListProps> = ({
   selectedProducer,
   onSelectProducer,
   onResetFilters,
+  isFavorite,
+  onToggleFavorite,
 }) => {
   const [sortBy, setSortBy] = useState<'rating' | 'reviews' | 'name'>('rating');
 
@@ -55,6 +59,8 @@ export const ProducerList: React.FC<ProducerListProps> = ({
               producer={producer}
               isSelected={selectedProducer?.id === producer.id}
               onSelect={onSelectProducer}
+              isFavorite={isFavorite(producer.id)}
+              onToggleFavorite={onToggleFavorite}
             />
           ))
         ) : (
@@ -64,7 +70,7 @@ export const ProducerList: React.FC<ProducerListProps> = ({
             </div>
             <h4 className="text-sm font-bold text-white mb-1">No Makers Match Filters</h4>
             <p className="text-xs text-stone-400 max-w-xs mb-5">
-              Try adjusting your category, road accessibility, or prefecture filters.
+              Try adjusting your category, road accessibility, or destination filters.
             </p>
             <button
               onClick={onResetFilters}
