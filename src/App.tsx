@@ -10,6 +10,7 @@ import { DayTripModal } from './components/Loops/DayTripModal';
 
 export const App: React.FC = () => {
   const [selectedProducer, setSelectedProducer] = useState<Producer | null>(null);
+  const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
   const [isLoopsModalOpen, setIsLoopsModalOpen] = useState<boolean>(false);
   const [viewMode, setViewMode] = useState<'map' | 'list'>('map');
 
@@ -104,11 +105,12 @@ export const App: React.FC = () => {
     const firstProducer = CRETAN_PRODUCERS.find((p) => p.id === loop.stops[0]?.producerId);
     if (firstProducer) {
       setSelectedProducer(firstProducer);
+      setIsDrawerOpen(false);
     }
   };
 
   return (
-    <div className="flex flex-col h-screen w-screen overflow-hidden bg-stone-100 font-sans">
+    <div className="flex flex-col h-screen w-screen overflow-hidden bg-stone-950 font-sans text-stone-100">
       {/* 1. Header Bar */}
       <Header
         selectedRegion={filters.region}
@@ -143,7 +145,7 @@ export const App: React.FC = () => {
             selectedProducer={selectedProducer}
             onSelectProducer={(p) => {
               setSelectedProducer(p);
-              // On mobile, switch back to map to see pin
+              setIsDrawerOpen(true);
               if (window.innerWidth < 768) {
                 setViewMode('map');
               }
@@ -161,16 +163,24 @@ export const App: React.FC = () => {
           <MapCanvas
             producers={filteredProducers}
             selectedProducer={selectedProducer}
-            onSelectProducer={(producer) => setSelectedProducer(producer)}
+            onSelectProducer={(producer) => {
+              setSelectedProducer(producer);
+            }}
+            onOpenDrawer={(producer) => {
+              setSelectedProducer(producer);
+              setIsDrawerOpen(true);
+            }}
             selectedRegion={filters.region}
           />
         </div>
 
         {/* 4. Slide-Out Detailed Producer Drawer */}
-        <ProducerDetailDrawer
-          producer={selectedProducer}
-          onClose={() => setSelectedProducer(null)}
-        />
+        {isDrawerOpen && (
+          <ProducerDetailDrawer
+            producer={selectedProducer}
+            onClose={() => setIsDrawerOpen(false)}
+          />
+        )}
       </main>
 
       {/* 5. Day-Trip Loops Modal */}
@@ -178,7 +188,10 @@ export const App: React.FC = () => {
         isOpen={isLoopsModalOpen}
         onClose={() => setIsLoopsModalOpen(false)}
         onSelectLoop={handleSelectLoop}
-        onSelectProducer={(producer) => setSelectedProducer(producer)}
+        onSelectProducer={(producer) => {
+          setSelectedProducer(producer);
+          setIsDrawerOpen(true);
+        }}
       />
     </div>
   );

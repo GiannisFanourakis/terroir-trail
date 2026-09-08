@@ -1,6 +1,6 @@
 import React from 'react';
 import { Category, RoadAccess, Ethos, FoodOption, FilterState } from '../../types/terroir';
-import { Wine, Flame, Sparkles, Filter, RotateCcw, Dog, Footprints, Caravan } from 'lucide-react';
+import { RotateCcw, Dog, Footprints, Caravan } from 'lucide-react';
 
 interface FilterBarProps {
   filters: FilterState;
@@ -17,19 +17,19 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   totalFiltered,
   totalCount,
 }) => {
-  const categories: { id: Category | 'all'; label: string; icon: string; badgeColor: string }[] = [
-    { id: 'all', label: 'All Terroir', icon: '🏛️', badgeColor: 'bg-stone-100 text-stone-800' },
-    { id: 'winery', label: 'Wineries', icon: '🍇', badgeColor: 'bg-rose-50 text-rose-800 border-rose-200' },
-    { id: 'kazani', label: 'Rakokazana', icon: '🏺', badgeColor: 'bg-amber-50 text-amber-900 border-amber-200' },
-    { id: 'olive_mill', label: 'Olive Mills', icon: '🫒', badgeColor: 'bg-emerald-50 text-emerald-900 border-emerald-200' },
-    { id: 'cheese_dairy', label: 'Shepherd Dairies', icon: '🧀', badgeColor: 'bg-yellow-50 text-yellow-900 border-yellow-200' },
-    { id: 'apiary', label: 'Honey & Herbs', icon: '🍯', badgeColor: 'bg-orange-50 text-orange-900 border-orange-200' },
+  const categories: { id: Category | 'all'; label: string; icon: string; activeColor: string }[] = [
+    { id: 'all', label: 'All Terroir', icon: '🏛️', activeColor: 'bg-amber-500 text-stone-950 shadow-amber-500/20' },
+    { id: 'winery', label: 'Wineries', icon: '🍇', activeColor: 'bg-rose-500 text-white shadow-rose-500/30' },
+    { id: 'kazani', label: 'Rakokazana', icon: '🏺', activeColor: 'bg-amber-600 text-white shadow-amber-600/30' },
+    { id: 'olive_mill', label: 'Olive Mills', icon: '🫒', activeColor: 'bg-emerald-600 text-white shadow-emerald-600/30' },
+    { id: 'cheese_dairy', label: 'Shepherd Dairies', icon: '🧀', activeColor: 'bg-yellow-500 text-stone-950 shadow-yellow-500/30' },
+    { id: 'apiary', label: 'Honey & Herbs', icon: '🍯', activeColor: 'bg-orange-500 text-white shadow-orange-500/30' },
   ];
 
   const roadAccessOptions: { id: RoadAccess | 'all'; label: string }[] = [
-    { id: 'all', label: 'All Roads' },
+    { id: 'all', label: 'All Road Types' },
     { id: 'paved', label: '🚗 Paved Road Only' },
-    { id: 'gravel_ok', label: '🚙 Gravel OK' },
+    { id: 'gravel_ok', label: '🚙 Gravel Road OK' },
     { id: '4x4_required', label: '⛰️ 4x4 Required' },
   ];
 
@@ -37,14 +37,14 @@ export const FilterBar: React.FC<FilterBarProps> = ({
     { id: 'all', label: 'All Ethos' },
     { id: 'organic', label: '🌿 Certified Organic' },
     { id: 'indigenous_only', label: '🧬 Indigenous Varieties' },
-    { id: 'amphora', label: '🏺 Amphora Aging' },
+    { id: 'amphora', label: '🏺 Amphora Fermentation' },
     { id: 'wood_fired', label: '🪵 Wood-Fired Still' },
     { id: 'ancient_groves', label: '🌳 Ancient Groves' },
     { id: 'raw_milk', label: '🥛 Raw-Milk Tradition' },
   ];
 
   const foodOptions: { id: FoodOption | 'all'; label: string }[] = [
-    { id: 'all', label: 'Any Food' },
+    { id: 'all', label: 'Any Dining' },
     { id: 'full_taverna', label: '🍽️ Full Taverna On-Site' },
     { id: 'tasting_board', label: '🧀 Tasting Board' },
     { id: 'dakos_snacks', label: '🥖 Dakos & Bread' },
@@ -62,11 +62,11 @@ export const FilterBar: React.FC<FilterBarProps> = ({
     filters.campervanOnly;
 
   return (
-    <div className="bg-white/95 backdrop-blur-md border-b border-stone-200 shadow-xs px-4 sm:px-6 py-2.5 z-20 shrink-0">
-      <div className="max-w-7xl mx-auto flex flex-col gap-2.5">
+    <div className="relative z-20 shrink-0 bg-stone-900/95 backdrop-blur-xl border-b border-white/10 px-4 sm:px-6 py-2.5 shadow-md">
+      <div className="max-w-7xl mx-auto flex flex-col gap-2">
         
-        {/* Top Category Tabs */}
-        <div className="flex items-center justify-between gap-3 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
+        {/* Top Category Buttons */}
+        <div className="flex items-center justify-between gap-3 overflow-x-auto scrollbar-none pb-0.5">
           <div className="flex items-center gap-1.5 sm:gap-2">
             {categories.map((cat) => {
               const isSelected = filters.category === cat.id;
@@ -74,10 +74,10 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                 <button
                   key={cat.id}
                   onClick={() => onFilterChange('category', cat.id)}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-150 whitespace-nowrap ${
+                  className={`flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all duration-200 whitespace-nowrap shadow-sm ${
                     isSelected
-                      ? 'bg-stone-900 text-amber-400 font-semibold shadow-sm ring-2 ring-stone-900 ring-offset-1'
-                      : 'bg-stone-100/80 text-stone-700 hover:bg-stone-200/70 border border-stone-200/60'
+                      ? `${cat.activeColor} shadow-lg scale-105 ring-2 ring-white/20`
+                      : 'bg-stone-800/80 text-stone-300 hover:text-white hover:bg-stone-700/80 border border-white/5'
                   }`}
                 >
                   <span className="text-sm leading-none">{cat.icon}</span>
@@ -89,13 +89,13 @@ export const FilterBar: React.FC<FilterBarProps> = ({
 
           {/* Quick Counter & Clear Filters */}
           <div className="flex items-center gap-2 shrink-0">
-            <span className="text-xs font-medium text-stone-500 hidden lg:inline">
-              Showing <strong className="text-stone-900">{totalFiltered}</strong> of {totalCount} artisans
+            <span className="text-xs font-semibold text-stone-400 hidden lg:inline">
+              <span className="text-amber-400 font-bold">{totalFiltered}</span> of {totalCount} makers
             </span>
             {isFiltered && (
               <button
                 onClick={onResetFilters}
-                className="flex items-center gap-1 text-xs text-rose-700 hover:text-rose-900 bg-rose-50 hover:bg-rose-100 border border-rose-200 px-2.5 py-1 rounded-full font-medium transition"
+                className="flex items-center gap-1.5 text-xs text-rose-400 hover:text-rose-300 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 px-3 py-1 rounded-full font-medium transition"
               >
                 <RotateCcw className="w-3 h-3" />
                 <span>Reset</span>
@@ -105,56 +105,50 @@ export const FilterBar: React.FC<FilterBarProps> = ({
         </div>
 
         {/* Secondary Sub-filters: Road, Ethos, Food & Quick Toggles */}
-        <div className="flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-stone-100 text-xs">
+        <div className="flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-white/5 text-xs">
           <div className="flex flex-wrap items-center gap-2">
             
             {/* Road Access Dropdown */}
-            <div className="flex items-center">
-              <select
-                value={filters.roadAccess}
-                onChange={(e) => onFilterChange('roadAccess', e.target.value as RoadAccess | 'all')}
-                className="bg-stone-50 hover:bg-stone-100 border border-stone-200 text-stone-700 text-xs rounded-lg px-2.5 py-1 focus:outline-none focus:ring-1 focus:ring-stone-400 cursor-pointer"
-              >
-                {roadAccessOptions.map((opt) => (
-                  <option key={opt.id} value={opt.id}>{opt.label}</option>
-                ))}
-              </select>
-            </div>
+            <select
+              value={filters.roadAccess}
+              onChange={(e) => onFilterChange('roadAccess', e.target.value as RoadAccess | 'all')}
+              className="bg-stone-800 border border-white/10 text-stone-200 text-xs rounded-xl px-3 py-1 focus:outline-none focus:border-amber-400 cursor-pointer"
+            >
+              {roadAccessOptions.map((opt) => (
+                <option key={opt.id} value={opt.id} className="bg-stone-900 text-white">{opt.label}</option>
+              ))}
+            </select>
 
             {/* Ethos Dropdown */}
-            <div className="flex items-center">
-              <select
-                value={filters.ethos}
-                onChange={(e) => onFilterChange('ethos', e.target.value as Ethos | 'all')}
-                className="bg-stone-50 hover:bg-stone-100 border border-stone-200 text-stone-700 text-xs rounded-lg px-2.5 py-1 focus:outline-none focus:ring-1 focus:ring-stone-400 cursor-pointer"
-              >
-                {ethosOptions.map((opt) => (
-                  <option key={opt.id} value={opt.id}>{opt.label}</option>
-                ))}
-              </select>
-            </div>
+            <select
+              value={filters.ethos}
+              onChange={(e) => onFilterChange('ethos', e.target.value as Ethos | 'all')}
+              className="bg-stone-800 border border-white/10 text-stone-200 text-xs rounded-xl px-3 py-1 focus:outline-none focus:border-amber-400 cursor-pointer"
+            >
+              {ethosOptions.map((opt) => (
+                <option key={opt.id} value={opt.id} className="bg-stone-900 text-white">{opt.label}</option>
+              ))}
+            </select>
 
             {/* Food Option Dropdown */}
-            <div className="flex items-center">
-              <select
-                value={filters.foodOption}
-                onChange={(e) => onFilterChange('foodOption', e.target.value as FoodOption | 'all')}
-                className="bg-stone-50 hover:bg-stone-100 border border-stone-200 text-stone-700 text-xs rounded-lg px-2.5 py-1 focus:outline-none focus:ring-1 focus:ring-stone-400 cursor-pointer"
-              >
-                {foodOptions.map((opt) => (
-                  <option key={opt.id} value={opt.id}>{opt.label}</option>
-                ))}
-              </select>
-            </div>
+            <select
+              value={filters.foodOption}
+              onChange={(e) => onFilterChange('foodOption', e.target.value as FoodOption | 'all')}
+              className="bg-stone-800 border border-white/10 text-stone-200 text-xs rounded-xl px-3 py-1 focus:outline-none focus:border-amber-400 cursor-pointer"
+            >
+              {foodOptions.map((opt) => (
+                <option key={opt.id} value={opt.id} className="bg-stone-900 text-white">{opt.label}</option>
+              ))}
+            </select>
 
-            {/* Feature Toggles */}
-            <div className="hidden sm:flex items-center gap-1.5 border-l border-stone-200 pl-2">
+            {/* Quick Feature Toggles */}
+            <div className="hidden sm:flex items-center gap-1.5 border-l border-white/10 pl-2">
               <button
                 onClick={() => onFilterChange('dogFriendlyOnly', !filters.dogFriendlyOnly)}
-                className={`flex items-center gap-1 px-2.5 py-1 rounded-lg border transition ${
+                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-xl border transition text-xs ${
                   filters.dogFriendlyOnly
-                    ? 'bg-amber-100 text-amber-900 border-amber-300 font-semibold'
-                    : 'bg-stone-50 text-stone-600 border-stone-200 hover:bg-stone-100'
+                    ? 'bg-amber-500 text-stone-950 border-amber-400 font-bold'
+                    : 'bg-stone-800 text-stone-400 border-white/10 hover:text-white'
                 }`}
               >
                 <Dog className="w-3 h-3" />
@@ -163,22 +157,22 @@ export const FilterBar: React.FC<FilterBarProps> = ({
 
               <button
                 onClick={() => onFilterChange('walkInOnly', !filters.walkInOnly)}
-                className={`flex items-center gap-1 px-2.5 py-1 rounded-lg border transition ${
+                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-xl border transition text-xs ${
                   filters.walkInOnly
-                    ? 'bg-amber-100 text-amber-900 border-amber-300 font-semibold'
-                    : 'bg-stone-50 text-stone-600 border-stone-200 hover:bg-stone-100'
+                    ? 'bg-amber-500 text-stone-950 border-amber-400 font-bold'
+                    : 'bg-stone-800 text-stone-400 border-white/10 hover:text-white'
                 }`}
               >
                 <Footprints className="w-3 h-3" />
-                <span>Walk-in OK</span>
+                <span>Walk-in</span>
               </button>
 
               <button
                 onClick={() => onFilterChange('campervanOnly', !filters.campervanOnly)}
-                className={`flex items-center gap-1 px-2.5 py-1 rounded-lg border transition ${
+                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-xl border transition text-xs ${
                   filters.campervanOnly
-                    ? 'bg-amber-100 text-amber-900 border-amber-300 font-semibold'
-                    : 'bg-stone-50 text-stone-600 border-stone-200 hover:bg-stone-100'
+                    ? 'bg-amber-500 text-stone-950 border-amber-400 font-bold'
+                    : 'bg-stone-800 text-stone-400 border-white/10 hover:text-white'
                 }`}
               >
                 <Caravan className="w-3 h-3" />
@@ -188,8 +182,8 @@ export const FilterBar: React.FC<FilterBarProps> = ({
 
           </div>
 
-          <div className="text-[11px] text-stone-400 italic">
-            Focusing on ancient & independent Cretan makers
+          <div className="text-[11px] text-stone-400 hidden md:block">
+            Minoan traditions · Unpasteurized · Single-Estate
           </div>
         </div>
 

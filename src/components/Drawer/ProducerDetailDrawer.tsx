@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Producer } from '../../types/terroir';
 import { 
-  X, MapPin, Star, Phone, Globe, Navigation, Clock, ShieldCheck, 
-  Dog, Footprints, Caravan, Utensils, Car, Sparkles, ExternalLink 
+  X, MapPin, Star, Phone, Globe, Navigation, Clock, 
+  Dog, Footprints, Caravan, Car, Sparkles, Share2, Check 
 } from 'lucide-react';
 
 interface ProducerDetailDrawerProps {
@@ -14,6 +14,17 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
   producer,
   onClose,
 }) => {
+  const [activePhoto, setActivePhoto] = useState<string>('');
+  const [copiedLink, setCopiedLink] = useState<boolean>(false);
+  const [activeTab, setActiveTab] = useState<'story' | 'tastings' | 'visit'>('story');
+
+  useEffect(() => {
+    if (producer) {
+      setActivePhoto(producer.coverImage);
+      setActiveTab('story');
+    }
+  }, [producer]);
+
   // ESC key to close
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -25,235 +36,312 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
 
   if (!producer) return null;
 
+  const handleShare = () => {
+    navigator.clipboard.writeText(window.location.href);
+    setCopiedLink(true);
+    setTimeout(() => setCopiedLink(false), 2000);
+  };
+
   const getCategoryDetails = (cat: Producer['category']) => {
     switch (cat) {
       case 'winery':
-        return { label: 'Boutique Winery', icon: '🍇', bg: 'bg-rose-100 text-rose-900 border-rose-200' };
+        return { label: 'Boutique Winery', icon: '🍇', color: 'text-rose-400 bg-rose-500/10 border-rose-500/20' };
       case 'kazani':
-        return { label: 'Traditional Rakokazano', icon: '🏺', bg: 'bg-amber-100 text-amber-950 border-amber-300' };
+        return { label: 'Traditional Rakokazano', icon: '🏺', color: 'text-amber-400 bg-amber-500/10 border-amber-500/20' };
       case 'olive_mill':
-        return { label: 'Artisanal Olive Mill', icon: '🫒', bg: 'bg-emerald-100 text-emerald-950 border-emerald-300' };
+        return { label: 'Artisanal Olive Mill', icon: '🫒', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' };
       case 'cheese_dairy':
-        return { label: 'Mountain Shepherd Dairy (Mitato)', icon: '🧀', bg: 'bg-yellow-100 text-yellow-950 border-yellow-300' };
+        return { label: 'Mountain Shepherd Mitato', icon: '🧀', color: 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20' };
       case 'apiary':
-        return { label: 'Wild Apiary & Herbalist', icon: '🍯', bg: 'bg-orange-100 text-orange-950 border-orange-300' };
+        return { label: 'Wild Apiary & Herbalist', icon: '🍯', color: 'text-orange-400 bg-orange-500/10 border-orange-500/20' };
     }
   };
 
-  const getRoadAccessExplanation = (access: Producer['roadAccess']) => {
+  const getRoadAccessDetails = (access: Producer['roadAccess']) => {
     switch (access) {
       case 'paved':
         return {
-          title: 'Smooth Paved Road',
-          desc: '100% asphalt road all the way to the estate. Perfect for all standard rental cars.',
-          color: 'text-emerald-700 bg-emerald-50 border-emerald-200',
+          title: 'Smooth Asphalt (Standard Car)',
+          desc: '100% paved road directly to the courtyard. Ideal for all standard economy rental cars.',
+          color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
         };
       case 'gravel_ok':
         return {
-          title: 'Short Gravel Section',
-          desc: 'Manageable hard-packed dirt road for the last 500m. Drive slowly with standard car.',
-          color: 'text-amber-800 bg-amber-50 border-amber-200',
+          title: 'Compact Gravel Section',
+          desc: 'Manageable unpaved country track for the last 500m. Drive slowly; standard cars can pass.',
+          color: 'text-amber-400 bg-amber-500/10 border-amber-500/20',
         };
       case '4x4_required':
         return {
-          title: 'High-Clearance or 4x4 Required',
-          desc: 'Steep mountain dirt track with rocks. High clearance SUV or 4x4 strongly recommended.',
-          color: 'text-rose-800 bg-rose-50 border-rose-200',
+          title: 'High Mountain Dirt Track (4x4 Recommended)',
+          desc: 'Steep rocky mountain dirt road. Requires high clearance vehicle or 4x4.',
+          color: 'text-rose-400 bg-rose-500/10 border-rose-500/20',
         };
     }
   };
 
   const cat = getCategoryDetails(producer.category);
-  const road = getRoadAccessExplanation(producer.roadAccess);
+  const road = getRoadAccessDetails(producer.roadAccess);
 
   return (
-    <div className="fixed inset-y-0 right-0 z-50 w-full sm:w-[480px] lg:w-[540px] bg-white shadow-2xl flex flex-col border-l border-stone-200 transition-all duration-300 animate-in slide-in-from-right">
+    <div className="fixed inset-y-0 right-0 z-50 w-full sm:w-[500px] lg:w-[560px] bg-stone-950 text-stone-100 shadow-2xl flex flex-col border-l border-white/10 animate-in slide-in-from-right duration-300 select-none">
       
-      {/* Drawer Header with Cover Image */}
-      <div className="relative h-64 sm:h-72 w-full shrink-0 bg-stone-900">
+      {/* 1. Hero Gallery & Header */}
+      <div className="relative h-64 sm:h-72 w-full shrink-0 bg-stone-900 overflow-hidden">
         <img
-          src={producer.coverImage}
+          src={activePhoto || producer.coverImage}
           alt={producer.name}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover transition-all duration-300"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/40 to-black/20" />
+        <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/40 to-black/30" />
 
-        {/* Close button */}
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 z-10 w-9 h-9 rounded-full bg-black/60 hover:bg-black/90 text-white flex items-center justify-center backdrop-blur-md transition"
-          aria-label="Close drawer"
-        >
-          <X className="w-5 h-5" />
-        </button>
+        {/* Top Control Icons */}
+        <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
+          <button
+            onClick={handleShare}
+            className="w-9 h-9 rounded-full bg-black/60 hover:bg-black/80 text-white flex items-center justify-center backdrop-blur-md border border-white/10 transition"
+            title="Copy Link"
+          >
+            {copiedLink ? <Check className="w-4 h-4 text-emerald-400" /> : <Share2 className="w-4 h-4" />}
+          </button>
+          <button
+            onClick={onClose}
+            className="w-9 h-9 rounded-full bg-black/60 hover:bg-black/80 text-white flex items-center justify-center backdrop-blur-md border border-white/10 transition"
+            aria-label="Close"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
 
-        {/* Top Floating Badge */}
+        {/* Category Pill */}
         <div className="absolute top-4 left-4">
-          <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border backdrop-blur-md shadow-sm ${cat.bg}`}>
+          <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border backdrop-blur-md ${cat.color}`}>
             <span>{cat.icon}</span>
             <span>{cat.label}</span>
           </span>
         </div>
 
-        {/* Bottom Cover Content */}
+        {/* Title Overlay */}
         <div className="absolute bottom-4 left-4 right-4">
-          <div className="flex items-center gap-2 text-amber-300 text-xs font-semibold mb-1">
+          <div className="flex items-center gap-1.5 text-amber-400 text-xs font-bold uppercase tracking-wider mb-1">
             <MapPin className="w-3.5 h-3.5" />
             <span>{producer.village} · {producer.region.toUpperCase()}, CRETE</span>
           </div>
 
-          <h2 className="font-serif-title text-2xl sm:text-3xl font-bold text-white leading-tight drop-shadow-md">
+          <h2 className="font-serif-title text-2xl sm:text-3xl font-bold text-white leading-tight">
             {producer.name}
           </h2>
-          <p className="text-stone-300 text-sm font-medium opacity-90 mt-0.5">
+          <p className="text-stone-300 text-xs font-medium opacity-80 mt-0.5">
             {producer.greekName}
           </p>
         </div>
       </div>
 
-      {/* Drawer Body (Scrollable) */}
-      <div className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-6 text-stone-800">
+      {/* 2. Interactive Navigation Tabs */}
+      <div className="flex border-b border-white/10 bg-stone-900/60 px-4 shrink-0 text-xs font-semibold">
+        <button
+          onClick={() => setActiveTab('story')}
+          className={`px-4 py-3 border-b-2 transition ${
+            activeTab === 'story'
+              ? 'border-amber-400 text-amber-400'
+              : 'border-transparent text-stone-400 hover:text-white'
+          }`}
+        >
+          The Story
+        </button>
+        <button
+          onClick={() => setActiveTab('tastings')}
+          className={`px-4 py-3 border-b-2 transition ${
+            activeTab === 'tastings'
+              ? 'border-amber-400 text-amber-400'
+              : 'border-transparent text-stone-400 hover:text-white'
+          }`}
+        >
+          Tastings & Grapes
+        </button>
+        <button
+          onClick={() => setActiveTab('visit')}
+          className={`px-4 py-3 border-b-2 transition ${
+            activeTab === 'visit'
+              ? 'border-amber-400 text-amber-400'
+              : 'border-transparent text-stone-400 hover:text-white'
+          }`}
+        >
+          Visiting & Road
+        </button>
+      </div>
+
+      {/* 3. Tab Content (Scrollable) */}
+      <div className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-6 text-stone-200">
         
-        {/* Rating, Price & Quick Stats */}
-        <div className="flex items-center justify-between p-3.5 rounded-xl bg-stone-50 border border-stone-200/80 text-xs">
+        {/* Rating & Quick Metrics Bar */}
+        <div className="flex items-center justify-between p-3.5 rounded-2xl bg-stone-900 border border-white/10 text-xs">
           <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1 bg-amber-400/20 text-amber-950 font-bold px-2.5 py-1 rounded-lg border border-amber-300/40">
-              <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
+            <div className="flex items-center gap-1 bg-amber-500/20 text-amber-400 font-bold px-2.5 py-1 rounded-xl border border-amber-400/30">
+              <Star className="w-3.5 h-3.5 fill-amber-400" />
               <span>{producer.rating}</span>
             </div>
-            <span className="text-stone-500">({producer.reviewCount} verified visits)</span>
+            <span className="text-stone-400">({producer.reviewCount} reviews)</span>
           </div>
 
-          <div className="flex items-center gap-2 font-medium">
-            <span className="text-stone-500">Price Level:</span>
-            <span className="font-mono font-bold text-stone-900 bg-white px-2 py-0.5 rounded border border-stone-200">
+          <div className="flex items-center gap-2">
+            <span className="text-stone-400">Price Tier:</span>
+            <span className="font-mono font-bold text-amber-400 bg-stone-800 px-2 py-0.5 rounded border border-white/10">
               {producer.priceLevel}
             </span>
           </div>
         </div>
 
-        {/* Tagline quote */}
-        <div className="border-l-4 border-amber-500 pl-3.5 py-1">
-          <p className="text-sm font-serif-title italic text-stone-800 font-medium leading-relaxed">
-            "{producer.tagLine}"
-          </p>
-        </div>
-
-        {/* Road & Rental Car Accessibility Warning Card */}
-        <div className={`p-4 rounded-xl border ${road.color}`}>
-          <div className="flex items-center gap-2 font-bold text-xs mb-1">
-            <Car className="w-4 h-4 shrink-0" />
-            <span>{road.title}</span>
-          </div>
-          <p className="text-xs leading-relaxed opacity-95">
-            {road.desc}
-          </p>
-        </div>
-
-        {/* The Heritage & Story */}
-        <div>
-          <h3 className="text-xs font-bold uppercase tracking-wider text-stone-400 mb-2 flex items-center gap-1.5">
-            <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-            The Terroir Story & Heritage
-          </h3>
-          <p className="text-sm text-stone-700 leading-relaxed font-normal">
-            {producer.story}
-          </p>
-        </div>
-
-        {/* Indigenous Varieties & Products */}
-        <div>
-          <h3 className="text-xs font-bold uppercase tracking-wider text-stone-400 mb-2.5">
-            Indigenous Grapes & Terroir Specialties
-          </h3>
-          <div className="flex flex-wrap gap-1.5">
-            {producer.indigenousVarieties.map((item, idx) => (
-              <span
-                key={idx}
-                className="px-3 py-1 rounded-lg bg-amber-50/80 border border-amber-200 text-amber-900 font-medium text-xs shadow-2xs"
-              >
-                {item}
-              </span>
-            ))}
-          </div>
-        </div>
-
-        {/* Tasting Highlights */}
-        <div>
-          <h3 className="text-xs font-bold uppercase tracking-wider text-stone-400 mb-2">
-            Must-Try Tastings
-          </h3>
-          <ul className="space-y-1.5 text-xs text-stone-700">
-            {producer.tastingHighlights.map((highlight, idx) => (
-              <li key={idx} className="flex items-start gap-2">
-                <span className="text-amber-500 font-bold">•</span>
-                <span>{highlight}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* Practical Logistics & Visiting Rules */}
-        <div className="space-y-2.5 pt-2 border-t border-stone-200">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-stone-400 mb-2">
-            Visiting Logistics
-          </h3>
-
-          <div className="flex items-center gap-2.5 text-xs text-stone-700">
-            <Clock className="w-4 h-4 text-stone-400 shrink-0" />
-            <span><strong>Hours:</strong> {producer.openingHours}</span>
-          </div>
-
-          {producer.bestSeason && (
-            <div className="flex items-center gap-2.5 text-xs text-stone-700">
-              <Sparkles className="w-4 h-4 text-stone-400 shrink-0" />
-              <span><strong>Prime Season:</strong> {producer.bestSeason}</span>
+        {/* Tab 1: The Story */}
+        {activeTab === 'story' && (
+          <div className="space-y-5 animate-in fade-in duration-200">
+            <div className="border-l-2 border-amber-500 pl-3.5 py-1">
+              <p className="text-sm font-serif-title italic text-stone-200 leading-relaxed">
+                "{producer.tagLine}"
+              </p>
             </div>
-          )}
 
-          {/* Quick Hospitality Badges */}
-          <div className="flex flex-wrap gap-2 pt-2">
-            <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium border ${
-              producer.dogFriendly ? 'bg-emerald-50 text-emerald-800 border-emerald-200' : 'bg-stone-100 text-stone-500 border-stone-200'
-            }`}>
-              <Dog className="w-3.5 h-3.5" />
-              {producer.dogFriendly ? 'Dog Friendly' : 'No Pets'}
-            </span>
+            <div>
+              <h3 className="text-xs font-bold uppercase tracking-wider text-stone-400 mb-2 flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                Heritage & Philosophy
+              </h3>
+              <p className="text-sm text-stone-300 leading-relaxed font-normal">
+                {producer.story}
+              </p>
+            </div>
 
-            <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium border ${
-              producer.walkInFriendly ? 'bg-emerald-50 text-emerald-800 border-emerald-200' : 'bg-amber-50 text-amber-800 border-amber-200'
-            }`}>
-              <Footprints className="w-3.5 h-3.5" />
-              {producer.walkInFriendly ? 'Walk-ins Welcome' : 'Appt Recommended'}
-            </span>
-
-            <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium border ${
-              producer.campervanFriendly ? 'bg-emerald-50 text-emerald-800 border-emerald-200' : 'bg-stone-100 text-stone-500 border-stone-200'
-            }`}>
-              <Caravan className="w-3.5 h-3.5" />
-              {producer.campervanFriendly ? 'Campervan Friendly' : 'No Campervans'}
-            </span>
+            {/* Gallery Thumbnails */}
+            {producer.gallery.length > 1 && (
+              <div>
+                <h4 className="text-xs font-bold uppercase tracking-wider text-stone-400 mb-2">
+                  Photo Gallery
+                </h4>
+                <div className="flex gap-2 overflow-x-auto pb-1">
+                  {producer.gallery.map((img, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setActivePhoto(img)}
+                      className={`relative w-20 h-16 rounded-xl overflow-hidden shrink-0 border-2 transition ${
+                        activePhoto === img ? 'border-amber-400 scale-105 shadow-md' : 'border-white/10 opacity-70 hover:opacity-100'
+                      }`}
+                    >
+                      <img src={img} alt="Thumbnail" className="w-full h-full object-cover" />
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
-        </div>
+        )}
+
+        {/* Tab 2: Tastings & Grapes */}
+        {activeTab === 'tastings' && (
+          <div className="space-y-5 animate-in fade-in duration-200">
+            <div>
+              <h3 className="text-xs font-bold uppercase tracking-wider text-stone-400 mb-2.5">
+                Native Cretan Grapes & Terroir Specialties
+              </h3>
+              <div className="flex flex-wrap gap-2">
+                {producer.indigenousVarieties.map((v, i) => (
+                  <span
+                    key={i}
+                    className="px-3 py-1.5 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-300 font-semibold text-xs"
+                  >
+                    {v}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-xs font-bold uppercase tracking-wider text-stone-400 mb-2">
+                Signature Tastings
+              </h3>
+              <div className="space-y-2">
+                {producer.tastingHighlights.map((highlight, idx) => (
+                  <div key={idx} className="flex items-start gap-2.5 p-2.5 rounded-xl bg-stone-900 border border-white/5 text-xs text-stone-200">
+                    <span className="text-amber-400 font-bold text-sm">✦</span>
+                    <span className="leading-relaxed">{highlight}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Tab 3: Visiting & Road */}
+        {activeTab === 'visit' && (
+          <div className="space-y-5 animate-in fade-in duration-200">
+            {/* Road Warning Card */}
+            <div className={`p-4 rounded-2xl border ${road.color}`}>
+              <div className="flex items-center gap-2 font-bold text-xs mb-1">
+                <Car className="w-4 h-4 shrink-0" />
+                <span>{road.title}</span>
+              </div>
+              <p className="text-xs leading-relaxed opacity-90">
+                {road.desc}
+              </p>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-stone-900 border border-white/10 space-y-3 text-xs">
+              <div className="flex items-center gap-2.5">
+                <Clock className="w-4 h-4 text-amber-400 shrink-0" />
+                <span><strong>Hours:</strong> {producer.openingHours}</span>
+              </div>
+
+              {producer.bestSeason && (
+                <div className="flex items-center gap-2.5">
+                  <Sparkles className="w-4 h-4 text-amber-400 shrink-0" />
+                  <span><strong>Best Season:</strong> {producer.bestSeason}</span>
+                </div>
+              )}
+            </div>
+
+            {/* Badges */}
+            <div className="flex flex-wrap gap-2">
+              <span className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-medium border ${
+                producer.dogFriendly ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-stone-900 text-stone-500 border-white/5'
+              }`}>
+                <Dog className="w-3.5 h-3.5" />
+                {producer.dogFriendly ? 'Dog Friendly' : 'No Pets'}
+              </span>
+
+              <span className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-medium border ${
+                producer.walkInFriendly ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-amber-500/10 text-amber-400 border-amber-500/20'
+              }`}>
+                <Footprints className="w-3.5 h-3.5" />
+                {producer.walkInFriendly ? 'Walk-in Welcome' : 'By Appointment'}
+              </span>
+
+              <span className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-medium border ${
+                producer.campervanFriendly ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-stone-900 text-stone-500 border-white/5'
+              }`}>
+                <Caravan className="w-3.5 h-3.5" />
+                {producer.campervanFriendly ? 'Campervan Friendly' : 'No Campervans'}
+              </span>
+            </div>
+          </div>
+        )}
 
       </div>
 
-      {/* Drawer Sticky Footer / Action CTAs */}
-      <div className="p-4 bg-stone-900 text-white border-t border-stone-800 shrink-0 flex items-center gap-3">
+      {/* 4. Action Bar (Sticky Footer) */}
+      <div className="p-4 bg-stone-900/90 backdrop-blur-xl border-t border-white/10 shrink-0 flex items-center gap-3">
         <a
           href={producer.googleMapsUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs rounded-xl shadow-md transition transform active:scale-98"
+          className="flex-1 flex items-center justify-center gap-2 py-3 px-4 bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs rounded-2xl shadow-xl shadow-amber-500/20 transition transform active:scale-98"
         >
           <Navigation className="w-4 h-4 fill-stone-950" />
-          <span>Open in Google Maps</span>
+          <span>Drive with Google Maps</span>
         </a>
 
         {producer.phone && (
           <a
             href={`tel:${producer.phone}`}
-            className="p-2.5 rounded-xl bg-stone-800 hover:bg-stone-700 border border-stone-700 text-stone-200 transition"
+            className="p-3 rounded-2xl bg-stone-800 hover:bg-stone-700 border border-white/10 text-stone-200 transition"
             title={`Call ${producer.phone}`}
           >
             <Phone className="w-4 h-4" />
@@ -265,7 +353,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
             href={producer.website}
             target="_blank"
             rel="noopener noreferrer"
-            className="p-2.5 rounded-xl bg-stone-800 hover:bg-stone-700 border border-stone-700 text-stone-200 transition"
+            className="p-3 rounded-2xl bg-stone-800 hover:bg-stone-700 border border-white/10 text-stone-200 transition"
             title="Visit Website"
           >
             <Globe className="w-4 h-4" />

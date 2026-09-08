@@ -25,28 +25,28 @@ export const ProducerList: React.FC<ProducerListProps> = ({
   });
 
   return (
-    <div className="flex flex-col h-full bg-stone-50/50 border-r border-stone-200 w-full sm:w-[360px] md:w-[400px] shrink-0 overflow-hidden">
-      {/* Header bar with count and sort */}
-      <div className="flex items-center justify-between px-4 py-2.5 bg-white border-b border-stone-200 shrink-0">
-        <span className="text-xs font-semibold text-stone-700">
-          {producers.length} {producers.length === 1 ? 'Location' : 'Locations'} Found
+    <div className="flex flex-col h-full bg-stone-950 border-r border-white/10 w-full sm:w-[380px] md:w-[410px] shrink-0 overflow-hidden select-none">
+      {/* List Header */}
+      <div className="flex items-center justify-between px-4 py-3 bg-stone-900/60 border-b border-white/10 shrink-0">
+        <span className="text-xs font-bold uppercase tracking-wider text-stone-300">
+          {producers.length} {producers.length === 1 ? 'Location' : 'Artisanal Locations'}
         </span>
 
-        <div className="flex items-center gap-1.5 text-xs text-stone-500">
-          <ArrowUpDown className="w-3.5 h-3.5" />
+        <div className="flex items-center gap-1.5 text-xs text-stone-400 bg-stone-800/80 px-2.5 py-1 rounded-xl border border-white/5">
+          <ArrowUpDown className="w-3.5 h-3.5 text-amber-400" />
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as any)}
-            className="bg-transparent border-none text-stone-800 font-medium text-xs focus:ring-0 cursor-pointer pr-1"
+            className="bg-transparent border-none text-stone-200 font-semibold text-xs focus:ring-0 cursor-pointer pr-1"
           >
-            <option value="rating">Top Rated</option>
-            <option value="reviews">Most Reviewed</option>
-            <option value="name">Alphabetical</option>
+            <option value="rating" className="bg-stone-900 text-white">Top Rated</option>
+            <option value="reviews" className="bg-stone-900 text-white">Most Reviewed</option>
+            <option value="name" className="bg-stone-900 text-white">Alphabetical</option>
           </select>
         </div>
       </div>
 
-      {/* Scrollable list */}
+      {/* Cards Scrollable Feed */}
       <div className="flex-1 overflow-y-auto p-4 space-y-3.5">
         {sortedProducers.length > 0 ? (
           sortedProducers.map((producer) => (
@@ -58,17 +58,17 @@ export const ProducerList: React.FC<ProducerListProps> = ({
             />
           ))
         ) : (
-          <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
-            <div className="w-12 h-12 rounded-full bg-stone-100 flex items-center justify-center text-stone-400 mb-3">
-              <SearchX className="w-6 h-6" />
+          <div className="flex flex-col items-center justify-center py-20 px-4 text-center">
+            <div className="w-14 h-14 rounded-2xl bg-stone-900 border border-white/10 flex items-center justify-center text-amber-400 mb-4 shadow-xl">
+              <SearchX className="w-7 h-7" />
             </div>
-            <h4 className="text-sm font-bold text-stone-800 mb-1">No Artisans Matched</h4>
-            <p className="text-xs text-stone-500 max-w-xs mb-4">
-              Try adjusting your category, road accessibility, or region filters.
+            <h4 className="text-sm font-bold text-white mb-1">No Makers Match Filters</h4>
+            <p className="text-xs text-stone-400 max-w-xs mb-5">
+              Try adjusting your category, road accessibility, or prefecture filters.
             </p>
             <button
               onClick={onResetFilters}
-              className="px-3.5 py-1.5 rounded-lg bg-amber-500 text-stone-950 font-semibold text-xs shadow hover:bg-amber-400 transition"
+              className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs shadow-lg transition"
             >
               Reset All Filters
             </button>

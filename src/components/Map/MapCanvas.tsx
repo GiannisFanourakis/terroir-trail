@@ -1,12 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import { Producer, Category } from '../../types/terroir';
-import { Layers, Maximize2, Navigation, Compass } from 'lucide-react';
+import { 
+  Plus, Minus, Navigation, Maximize2, Layers, MapPin, 
+  Star, ArrowRight, ExternalLink, X, Compass, ChevronRight 
+} from 'lucide-react';
 
 interface MapCanvasProps {
   producers: Producer[];
   selectedProducer: Producer | null;
-  onSelectProducer: (producer: Producer) => void;
+  onSelectProducer: (producer: Producer | null) => void;
+  onOpenDrawer: (producer: Producer) => void;
   selectedRegion: string;
 }
 
@@ -14,75 +18,75 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
   producers,
   selectedProducer,
   onSelectProducer,
+  onOpenDrawer,
   selectedRegion,
 }) => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
   const markersRef = useRef<{ [id: string]: L.Marker }>({});
   const tileLayerRef = useRef<L.TileLayer | null>(null);
-  
-  const [mapStyle, setMapStyle] = useState<'voyager' | 'topo'>('voyager');
+
+  const [mapTheme, setMapTheme] = useState<'voyager' | 'dark' | 'satellite'>('voyager');
 
   // Center of Crete
   const CRETE_CENTER: [number, number] = [35.2401, 24.8093];
   const CRETE_DEFAULT_ZOOM = 9;
 
-  // Tile layer configurations
-  const TILE_LAYERS = {
+  // Modern High-Performance Vector Tile Servers
+  const TILE_CONFIGS = {
     voyager: {
       url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> contributors &copy; <a href="https://carto.com/">CARTO</a>',
+      attribution: '&copy; CartoDB &copy; OpenStreetMap contributors',
       maxZoom: 19,
     },
-    topo: {
-      url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
-      attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ, TomTom, Intermap, iPC, USGS, FAO, NPS, NRCAN, GeoBase, Kadaster NL, Ordnance Survey, METI, swisstopo, MapmyIndia',
+    dark: {
+      url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+      attribution: '&copy; CartoDB &copy; OpenStreetMap contributors',
+      maxZoom: 19,
+    },
+    satellite: {
+      url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+      attribution: 'Source: Esri, Maxar, Earthstar Geographics',
       maxZoom: 18,
-    }
+    },
   };
 
-  // Helper to get marker styling based on category
-  const getMarkerHtml = (category: Category, isSelected: boolean) => {
-    let iconEmoji = '🍇';
-    let bgGradient = 'from-rose-600 to-rose-800';
-    let borderColor = '#991b1b';
+  // Helper to generate modern badge pin HTML
+  const getMarkerHtml = (producer: Producer, isSelected: boolean) => {
+    let icon = '🍇';
+    let iconBg = 'bg-rose-500/20 text-rose-300 border-rose-500/40';
 
-    switch (category) {
+    switch (producer.category) {
       case 'winery':
-        iconEmoji = '🍇';
-        bgGradient = 'from-rose-600 to-rose-800';
-        borderColor = '#991b1b';
+        icon = '🍇';
+        iconBg = 'bg-rose-500/25 text-rose-200 border-rose-500/50';
         break;
       case 'kazani':
-        iconEmoji = '🏺';
-        bgGradient = 'from-amber-600 to-amber-800';
-        borderColor = '#b45309';
+        icon = '🏺';
+        iconBg = 'bg-amber-500/25 text-amber-200 border-amber-500/50';
         break;
       case 'olive_mill':
-        iconEmoji = '🫒';
-        bgGradient = 'from-emerald-600 to-emerald-800';
-        borderColor = '#15803d';
+        icon = '🫒';
+        iconBg = 'bg-emerald-500/25 text-emerald-200 border-emerald-500/50';
         break;
       case 'cheese_dairy':
-        iconEmoji = '🧀';
-        bgGradient = 'from-yellow-600 to-amber-700';
-        borderColor = '#a16207';
+        icon = '🧀';
+        iconBg = 'bg-yellow-500/25 text-yellow-200 border-yellow-500/50';
         break;
       case 'apiary':
-        iconEmoji = '🍯';
-        bgGradient = 'from-orange-500 to-amber-600';
-        borderColor = '#c2410c';
+        icon = '🍯';
+        iconBg = 'bg-orange-500/25 text-orange-200 border-orange-500/50';
         break;
     }
 
-    const selectedRing = isSelected
-      ? 'ring-4 ring-amber-400 ring-offset-2 scale-125 z-50 animate-pulse'
-      : 'hover:scale-115';
-
     return `
-      <div class="custom-terroir-pin ${isSelected ? 'selected' : ''}" style="width: 36px; height: 36px;">
-        <div class="w-9 h-9 rounded-full bg-gradient-to-br ${bgGradient} flex items-center justify-center text-base border-2 border-white shadow-md transition-transform duration-200 ${selectedRing}">
-          ${iconEmoji}
+      <div class="modern-map-pin ${isSelected ? 'active-pin' : ''}">
+        <div class="pin-icon-circle ${iconBg} border">
+          ${icon}
+        </div>
+        <div class="flex flex-col text-left">
+          <span class="pin-text-label">${producer.name}</span>
+          <span class="text-[9px] opacity-75 font-mono">★ ${producer.rating} · ${producer.village}</span>
         </div>
       </div>
     `;
@@ -98,16 +102,22 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       minZoom: 8,
       maxZoom: 18,
       zoomControl: false,
+      attributionControl: true,
     });
 
-    // Add zoom control on the bottom-right
-    L.control.zoom({ position: 'bottomright' }).addTo(map);
-
-    // Initial tile layer
-    tileLayerRef.current = L.tileLayer(TILE_LAYERS[mapStyle].url, {
-      attribution: TILE_LAYERS[mapStyle].attribution,
-      maxZoom: TILE_LAYERS[mapStyle].maxZoom,
+    tileLayerRef.current = L.tileLayer(TILE_CONFIGS[mapTheme].url, {
+      attribution: TILE_CONFIGS[mapTheme].attribution,
+      maxZoom: TILE_CONFIGS[mapTheme].maxZoom,
     }).addTo(map);
+
+    // Clicking anywhere on empty map deselects producer
+    map.on('click', (e) => {
+      // If clicking empty map canvas
+      const target = e.originalEvent.target as HTMLElement;
+      if (target.classList.contains('leaflet-container')) {
+        onSelectProducer(null);
+      }
+    });
 
     mapInstanceRef.current = map;
 
@@ -117,23 +127,23 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     };
   }, []);
 
-  // Handle tile layer style change
+  // Update Tile Layer Theme
   useEffect(() => {
     if (!mapInstanceRef.current || !tileLayerRef.current) return;
     mapInstanceRef.current.removeLayer(tileLayerRef.current);
 
-    tileLayerRef.current = L.tileLayer(TILE_LAYERS[mapStyle].url, {
-      attribution: TILE_LAYERS[mapStyle].attribution,
-      maxZoom: TILE_LAYERS[mapStyle].maxZoom,
+    tileLayerRef.current = L.tileLayer(TILE_CONFIGS[mapTheme].url, {
+      attribution: TILE_CONFIGS[mapTheme].attribution,
+      maxZoom: TILE_CONFIGS[mapTheme].maxZoom,
     }).addTo(mapInstanceRef.current);
-  }, [mapStyle]);
+  }, [mapTheme]);
 
-  // Update Markers when producers or selection changes
+  // Sync Markers
   useEffect(() => {
     const map = mapInstanceRef.current;
     if (!map) return;
 
-    // Clear old markers
+    // Remove old markers
     Object.values(markersRef.current).forEach((m) => m.remove());
     markersRef.current = {};
 
@@ -143,42 +153,22 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
 
     producers.forEach((producer) => {
       const isSelected = selectedProducer?.id === producer.id;
-      
+
       const customIcon = L.divIcon({
-        html: getMarkerHtml(producer.category, isSelected),
-        className: 'custom-leaflet-div-icon',
-        iconSize: [36, 36],
-        iconAnchor: [18, 18],
-        popupAnchor: [0, -20],
+        html: getMarkerHtml(producer, isSelected),
+        className: 'custom-leaflet-pin-wrapper',
+        iconSize: [160, 40],
+        iconAnchor: [80, 20],
       });
 
-      const marker = L.marker(producer.coordinates, { icon: customIcon });
-
-      // Build popup content
-      const popupHtml = `
-        <div class="p-3 max-w-[240px] font-sans">
-          <div class="h-24 -mx-3 -mt-3 mb-2 overflow-hidden relative">
-            <img src="${producer.coverImage}" alt="${producer.name}" class="w-full h-full object-cover" />
-            <span class="absolute bottom-1 right-1 bg-black/70 text-amber-400 text-[10px] font-bold px-1.5 py-0.5 rounded">
-              ★ ${producer.rating}
-            </span>
-          </div>
-          <h4 class="font-bold text-stone-900 text-sm leading-snug">${producer.name}</h4>
-          <p class="text-[11px] text-stone-500 mb-1.5">${producer.village}, ${producer.region.toUpperCase()}</p>
-          <p class="text-xs text-stone-600 line-clamp-2 mb-2">${producer.tagLine}</p>
-          <div class="flex items-center justify-between text-[11px] pt-1.5 border-t border-stone-100">
-            <span class="font-semibold text-stone-700">${producer.priceLevel}</span>
-            <span class="text-amber-700 font-semibold cursor-pointer">View Story →</span>
-          </div>
-        </div>
-      `;
-
-      marker.bindPopup(popupHtml, {
-        closeButton: false,
-        offset: [0, -10],
+      const marker = L.marker(producer.coordinates, {
+        icon: customIcon,
+        riseOnHover: true,
       });
 
-      marker.on('click', () => {
+      // Interactive Marker Press
+      marker.on('click', (e) => {
+        L.DomEvent.stopPropagation(e);
         onSelectProducer(producer);
       });
 
@@ -187,33 +177,34 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       bounds.extend(producer.coordinates);
     });
 
-    // Auto fit to filtered bounds if no specific producer is selected
+    // Auto fit bounds on filter changes if no single producer is selected
     if (!selectedProducer && bounds.isValid() && producers.length > 0) {
-      map.fitBounds(bounds, { padding: [50, 50], maxZoom: 11 });
+      map.fitBounds(bounds, { padding: [60, 60], maxZoom: 11 });
     }
   }, [producers, selectedProducer]);
 
-  // Center on selected producer
+  // Smooth Camera Fly-To on Producer Select
   useEffect(() => {
     const map = mapInstanceRef.current;
     if (!map || !selectedProducer) return;
 
-    map.flyTo(selectedProducer.coordinates, 13, {
-      duration: 1.2,
-      easeLinearity: 0.25,
-    });
+    // Slight offset so bottom floating card doesn't cover the location
+    const [lat, lng] = selectedProducer.coordinates;
+    const targetLat = window.innerWidth < 768 ? lat - 0.015 : lat;
 
-    // Open its popup
-    const marker = markersRef.current[selectedProducer.id];
-    if (marker) {
-      marker.openPopup();
-    }
+    map.flyTo([targetLat, lng], 13, {
+      duration: 1.1,
+      easeLinearity: 0.2,
+    });
   }, [selectedProducer]);
 
-  // Controls actions
-  const handleResetView = () => {
-    if (!mapInstanceRef.current) return;
-    mapInstanceRef.current.flyTo(CRETE_CENTER, CRETE_DEFAULT_ZOOM, { duration: 1 });
+  // Custom Zoom Handlers
+  const handleZoomIn = () => mapInstanceRef.current?.zoomIn();
+  const handleZoomOut = () => mapInstanceRef.current?.zoomOut();
+
+  const handleResetCrete = () => {
+    onSelectProducer(null);
+    mapInstanceRef.current?.flyTo(CRETE_CENTER, CRETE_DEFAULT_ZOOM, { duration: 1 });
   };
 
   const handleLocateMe = () => {
@@ -221,100 +212,191 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         const { latitude, longitude } = pos.coords;
-        mapInstanceRef.current?.flyTo([latitude, longitude], 12);
+        mapInstanceRef.current?.flyTo([latitude, longitude], 13);
         L.circleMarker([latitude, longitude], {
-          radius: 8,
-          fillColor: '#3b82f6',
+          radius: 9,
+          fillColor: '#38bdf8',
           color: '#ffffff',
-          weight: 2,
+          weight: 3,
           opacity: 1,
-          fillOpacity: 0.9,
+          fillOpacity: 1,
         })
           .addTo(mapInstanceRef.current!)
-          .bindPopup('You are here!')
+          .bindPopup('Your Current Location')
           .openPopup();
       },
-      (err) => {
-        console.warn('Geolocation error:', err);
-      }
+      (err) => console.warn('Geo error:', err)
     );
   };
 
   return (
-    <div className="relative w-full h-full">
-      {/* The Leaflet DOM Canvas */}
+    <div className="relative w-full h-full select-none overflow-hidden">
+      {/* 1. The Map Canvas */}
       <div ref={mapContainerRef} className="w-full h-full z-0" />
 
-      {/* Floating Map Controls on Top-Right */}
-      <div className="absolute top-4 right-4 z-10 flex flex-col gap-2">
-        {/* Style Toggle (Voyager vs Topo) */}
-        <div className="bg-white/95 backdrop-blur-md rounded-xl shadow-md border border-stone-200/80 p-1 flex items-center">
+      {/* 2. Top-Right Floating Modern Controls (2026 Style) */}
+      <div className="absolute top-4 right-4 z-20 flex flex-col items-end gap-2.5">
+        
+        {/* Layer Theme Selector Pill */}
+        <div className="glass-panel p-1 rounded-2xl flex items-center shadow-2xl">
           <button
-            onClick={() => setMapStyle('voyager')}
-            className={`px-2.5 py-1 text-xs font-semibold rounded-lg transition ${
-              mapStyle === 'voyager'
-                ? 'bg-stone-900 text-amber-400 shadow-xs'
-                : 'text-stone-600 hover:text-stone-900'
+            onClick={() => setMapTheme('voyager')}
+            className={`px-3 py-1.5 text-xs font-semibold rounded-xl transition-all ${
+              mapTheme === 'voyager'
+                ? 'bg-amber-500 text-stone-950 shadow-md font-bold'
+                : 'text-stone-300 hover:text-white hover:bg-white/5'
             }`}
-            title="Clean Street & Road Map"
           >
             Voyager
           </button>
           <button
-            onClick={() => setMapStyle('topo')}
-            className={`px-2.5 py-1 text-xs font-semibold rounded-lg transition ${
-              mapStyle === 'topo'
-                ? 'bg-stone-900 text-amber-400 shadow-xs'
-                : 'text-stone-600 hover:text-stone-900'
+            onClick={() => setMapTheme('dark')}
+            className={`px-3 py-1.5 text-xs font-semibold rounded-xl transition-all ${
+              mapTheme === 'dark'
+                ? 'bg-amber-500 text-stone-950 shadow-md font-bold'
+                : 'text-stone-300 hover:text-white hover:bg-white/5'
             }`}
-            title="Topographic Elevation Terrain"
           >
-            Mountain Topo
+            Night Terroir
+          </button>
+          <button
+            onClick={() => setMapTheme('satellite')}
+            className={`px-3 py-1.5 text-xs font-semibold rounded-xl transition-all ${
+              mapTheme === 'satellite'
+                ? 'bg-amber-500 text-stone-950 shadow-md font-bold'
+                : 'text-stone-300 hover:text-white hover:bg-white/5'
+            }`}
+          >
+            Satellite
           </button>
         </div>
 
-        {/* Center Crete Button */}
-        <button
-          onClick={handleResetView}
-          className="bg-white/95 backdrop-blur-md hover:bg-stone-50 border border-stone-200/80 text-stone-700 hover:text-stone-900 p-2.5 rounded-xl shadow-md transition flex items-center justify-center group"
-          title="Reset to View All Crete"
-        >
-          <Maximize2 className="w-4 h-4 text-stone-600 group-hover:scale-110 transition-transform" />
-        </button>
+        {/* Floating Quick Action Group */}
+        <div className="flex flex-col gap-1.5 glass-panel p-1.5 rounded-2xl shadow-2xl">
+          {/* Zoom In */}
+          <button
+            onClick={handleZoomIn}
+            className="w-9 h-9 rounded-xl flex items-center justify-center text-stone-200 hover:text-white hover:bg-white/10 transition"
+            title="Zoom In"
+          >
+            <Plus className="w-4 h-4" />
+          </button>
 
-        {/* Locate Me */}
-        <button
-          onClick={handleLocateMe}
-          className="bg-white/95 backdrop-blur-md hover:bg-stone-50 border border-stone-200/80 text-stone-700 hover:text-stone-900 p-2.5 rounded-xl shadow-md transition flex items-center justify-center group"
-          title="Locate my position on Crete"
-        >
-          <Navigation className="w-4 h-4 text-stone-600 group-hover:scale-110 transition-transform" />
-        </button>
+          {/* Zoom Out */}
+          <button
+            onClick={handleZoomOut}
+            className="w-9 h-9 rounded-xl flex items-center justify-center text-stone-200 hover:text-white hover:bg-white/10 transition"
+            title="Zoom Out"
+          >
+            <Minus className="w-4 h-4" />
+          </button>
+
+          <div className="h-[1px] bg-white/10 my-0.5" />
+
+          {/* Recenter Crete */}
+          <button
+            onClick={handleResetCrete}
+            className="w-9 h-9 rounded-xl flex items-center justify-center text-stone-200 hover:text-amber-400 hover:bg-white/10 transition group"
+            title="Fit All Crete"
+          >
+            <Maximize2 className="w-4 h-4 group-hover:scale-110 transition-transform" />
+          </button>
+
+          {/* Locate Me */}
+          <button
+            onClick={handleLocateMe}
+            className="w-9 h-9 rounded-xl flex items-center justify-center text-stone-200 hover:text-sky-400 hover:bg-white/10 transition group"
+            title="My Location"
+          >
+            <Navigation className="w-4 h-4 group-hover:scale-110 transition-transform" />
+          </button>
+        </div>
+
       </div>
 
-      {/* Floating Legend / Terroir Pill in Bottom-Left */}
-      <div className="absolute bottom-5 left-4 z-10 hidden sm:flex items-center gap-3 bg-stone-900/90 backdrop-blur-md text-white text-[11px] px-3.5 py-2 rounded-2xl shadow-xl border border-stone-700">
-        <div className="flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-full bg-rose-600"></span>
-          <span>Winery</span>
+      {/* 3. Floating Bottom Quick-Card (Airbnb / Apple Maps 2026 Style) */}
+      {selectedProducer && (
+        <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-30 w-[92%] sm:w-[480px] animate-in slide-in-from-bottom-6 duration-300">
+          <div className="glass-panel p-3.5 rounded-3xl shadow-2xl border border-white/15 text-stone-100 flex gap-3.5 items-center relative overflow-hidden">
+            
+            {/* Ambient Background Glow */}
+            <div className="absolute -right-10 -bottom-10 w-36 h-36 bg-amber-500/20 rounded-full blur-3xl pointer-events-none" />
+
+            {/* Thumbnail Image */}
+            <div className="relative h-24 w-28 sm:w-32 rounded-2xl overflow-hidden shrink-0 bg-stone-900 border border-white/10">
+              <img
+                src={selectedProducer.coverImage}
+                alt={selectedProducer.name}
+                className="w-full h-full object-cover"
+              />
+              <span className="absolute bottom-1.5 left-1.5 bg-black/70 backdrop-blur-md text-amber-400 text-[10px] font-bold px-1.5 py-0.5 rounded-md flex items-center gap-0.5">
+                <Star className="w-3 h-3 fill-amber-400" />
+                <span>{selectedProducer.rating}</span>
+              </span>
+            </div>
+
+            {/* Info Body */}
+            <div className="flex-1 min-w-0 flex flex-col justify-between py-0.5">
+              <div>
+                <div className="flex items-center justify-between gap-1">
+                  <span className="text-[10px] uppercase font-bold tracking-wider text-amber-400">
+                    {selectedProducer.category.replace('_', ' ')} · {selectedProducer.region}
+                  </span>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onSelectProducer(null);
+                    }}
+                    className="text-stone-400 hover:text-white p-1"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+
+                <h3 className="font-serif-title font-bold text-base text-white truncate leading-tight mt-0.5">
+                  {selectedProducer.name}
+                </h3>
+                <p className="text-xs text-stone-400 truncate mt-0.5">
+                  {selectedProducer.tagLine}
+                </p>
+              </div>
+
+              {/* Varieties & Actions */}
+              <div className="flex items-center justify-between gap-2 mt-2 pt-2 border-t border-white/10">
+                <div className="flex items-center gap-1">
+                  {selectedProducer.indigenousVarieties.slice(0, 2).map((v, idx) => (
+                    <span
+                      key={idx}
+                      className="text-[10px] px-2 py-0.5 rounded-md bg-white/10 text-stone-300 font-medium"
+                    >
+                      {v}
+                    </span>
+                  ))}
+                </div>
+
+                <button
+                  onClick={() => onOpenDrawer(selectedProducer)}
+                  className="flex items-center gap-1 text-xs font-bold bg-amber-500 hover:bg-amber-400 text-stone-950 px-3 py-1.5 rounded-xl shadow transition active:scale-95 shrink-0"
+                >
+                  <span>Explore Story</span>
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+
+            </div>
+
+          </div>
         </div>
-        <div className="flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-full bg-amber-600"></span>
-          <span>Rakokazano</span>
-        </div>
-        <div className="flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-full bg-emerald-600"></span>
-          <span>Olive Mill</span>
-        </div>
-        <div className="flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-full bg-yellow-500"></span>
-          <span>Mitato Dairy</span>
-        </div>
-        <div className="flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-full bg-orange-500"></span>
-          <span>Honey/Herbs</span>
-        </div>
+      )}
+
+      {/* 4. Floating Category Indicator on Top-Left */}
+      <div className="absolute top-4 left-4 z-10 hidden md:flex items-center gap-2 glass-panel px-3.5 py-1.5 rounded-2xl shadow-xl">
+        <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+        <span className="text-xs font-medium text-stone-200">
+          Click any maker on Crete to inspect
+        </span>
       </div>
+
     </div>
   );
 };
