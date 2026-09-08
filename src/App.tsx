@@ -19,6 +19,7 @@ import { MyBookingsModal } from './components/Bookings/MyBookingsModal';
 import { ExplorerPassModal } from './components/Monetization/ExplorerPassModal';
 import { ChauffeurBookingModal } from './components/Monetization/ChauffeurBookingModal';
 import { WineBoxModal } from './components/Monetization/WineBoxModal';
+import { ExperienceExplorerModal } from './components/Experiences/ExperienceExplorerModal';
 import { CRETAN_DAY_TRIP_LOOPS } from './data/loops';
 import { ChauffeurBooking, WineBoxOrder } from './types/monetization';
 import { List, MapPin } from 'lucide-react';
@@ -35,6 +36,8 @@ export const App: React.FC = () => {
   const [isPassModalOpen, setIsPassModalOpen] = useState<boolean>(false);
   const [isChauffeurModalOpen, setIsChauffeurModalOpen] = useState<boolean>(false);
   const [isWineBoxModalOpen, setIsWineBoxModalOpen] = useState<boolean>(false);
+  const [isExperiencesModalOpen, setIsExperiencesModalOpen] = useState<boolean>(false);
+  const [bookingTargetExperienceId, setBookingTargetExperienceId] = useState<string | undefined>(undefined);
   const [chauffeurTargetCircuit, setChauffeurTargetCircuit] = useState<DayTripLoop | null>(null);
   const [bookingTargetProducer, setBookingTargetProducer] = useState<Producer | null>(null);
   const [viewMode, setViewMode] = useState<'map' | 'list'>('map');
@@ -196,6 +199,7 @@ export const App: React.FC = () => {
         searchQuery={filters.searchQuery}
         onSearchChange={(query: string) => handleFilterChange('searchQuery', query)}
         onOpenLoops={() => setIsLoopsModalOpen(true)}
+        onOpenExperiences={() => setIsExperiencesModalOpen(true)}
         totalFilteredCount={filteredProducers.length}
         viewMode={viewMode}
         onToggleViewMode={() => setViewMode((prev) => (prev === 'map' ? 'list' : 'map'))}
@@ -300,8 +304,9 @@ export const App: React.FC = () => {
             onSaveTastingNote={saveTastingNote}
             isAuthenticated={isAuthenticated}
             onOpenAuth={() => setIsAuthModalOpen(true)}
-            onOpenBooking={(producer) => {
+            onOpenBooking={(producer, experienceId) => {
               setBookingTargetProducer(producer);
+              setBookingTargetExperienceId(experienceId);
               setIsBookingModalOpen(true);
             }}
             customNotice={selectedProducer ? getOverride(selectedProducer.id)?.customNotice : undefined}
@@ -363,9 +368,13 @@ export const App: React.FC = () => {
       {/* 8. Tasting Reservation Modal */}
       <BookingModal
         isOpen={isBookingModalOpen}
-        onClose={() => setIsBookingModalOpen(false)}
+        onClose={() => {
+          setIsBookingModalOpen(false);
+          setBookingTargetExperienceId(undefined);
+        }}
         producer={bookingTargetProducer}
         user={user}
+        initialExperienceId={bookingTargetExperienceId}
         onBookTasting={bookTasting}
         onOpenAuth={() => setIsAuthModalOpen(true)}
       />
@@ -420,6 +429,24 @@ export const App: React.FC = () => {
         user={user}
         onOpenAuth={() => setIsAuthModalOpen(true)}
         onOrderBox={handleConfirmWineOrder}
+      />
+
+      {/* 14. 135+ Curated Terroir & Tasting Experiences Explorer Modal */}
+      <ExperienceExplorerModal
+        isOpen={isExperiencesModalOpen}
+        onClose={() => setIsExperiencesModalOpen(false)}
+        onBookExperience={(exp) => {
+          const producer = CRETAN_PRODUCERS.find((p) => p.id === exp.producerId) || CRETAN_PRODUCERS[0];
+          setBookingTargetProducer(producer);
+          setBookingTargetExperienceId(exp.id);
+          setIsExperiencesModalOpen(false);
+          setIsBookingModalOpen(true);
+        }}
+        onSelectProducer={(prod) => {
+          setSelectedProducer(prod);
+          setIsDrawerOpen(true);
+          setIsExperiencesModalOpen(false);
+        }}
       />
     </div>
   );

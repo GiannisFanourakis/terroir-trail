@@ -1,4 +1,4 @@
-import { ProducerCategory } from './terroir';
+import { ProducerCategory, Destination } from './terroir';
 
 export type BookingStatus = 'pending' | 'confirmed' | 'cancelled' | 'completed';
 
@@ -9,6 +9,13 @@ export interface TastingExperience {
   pricePerPerson: number;
   description: string;
   includes: string[];
+  producerId?: string;
+  producerName?: string;
+  producerGreekName?: string;
+  category?: ProducerCategory;
+  destination?: Destination;
+  location?: string;
+  badge?: string;
 }
 
 export interface TastingBooking {

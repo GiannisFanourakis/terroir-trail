@@ -1,5 +1,6 @@
-import { ProducerCategory } from '../types/terroir';
+import { ProducerCategory, Producer } from '../types/terroir';
 import { TastingExperience } from '../types/booking';
+import { PRODUCER_EXPERIENCES } from './producerExperiences';
 
 export const DEFAULT_EXPERIENCES_BY_CATEGORY: Record<ProducerCategory, TastingExperience[]> = {
   winery: [
@@ -297,6 +298,42 @@ export const DEFAULT_EXPERIENCES_BY_CATEGORY: Record<ProducerCategory, TastingEx
   ],
 };
 
-export const getExperiencesForProducer = (category: ProducerCategory): TastingExperience[] => {
-  return DEFAULT_EXPERIENCES_BY_CATEGORY[category] || DEFAULT_EXPERIENCES_BY_CATEGORY.winery;
+export const getExperiencesForProducer = (
+  producerOrCategory: Producer | ProducerCategory | string
+): TastingExperience[] => {
+  if (typeof producerOrCategory === 'object' && producerOrCategory !== null) {
+    const bespoke = PRODUCER_EXPERIENCES.filter((e) => e.producerId === producerOrCategory.id);
+    if (bespoke.length > 0) return bespoke;
+    return DEFAULT_EXPERIENCES_BY_CATEGORY[producerOrCategory.category] || DEFAULT_EXPERIENCES_BY_CATEGORY.winery;
+  }
+
+  // If string matching a producerId
+  const bespoke = PRODUCER_EXPERIENCES.filter((e) => e.producerId === producerOrCategory);
+  if (bespoke.length > 0) return bespoke;
+
+  // Otherwise assume it is a ProducerCategory
+  const cat = producerOrCategory as ProducerCategory;
+  return DEFAULT_EXPERIENCES_BY_CATEGORY[cat] || DEFAULT_EXPERIENCES_BY_CATEGORY.winery;
+};
+
+/**
+ * Complete consolidated catalog of 135+ terroir and tasting experiences:
+ * 114 bespoke estate experiences across 57 Greek producers + 23 category masterclasses.
+ */
+export const ALL_EXPERIENCES: TastingExperience[] = [
+  ...PRODUCER_EXPERIENCES,
+  ...Object.entries(DEFAULT_EXPERIENCES_BY_CATEGORY).flatMap(([cat, exps]) =>
+    exps.map((e) => ({
+      ...e,
+      category: cat as ProducerCategory,
+      badge: e.badge || 'Regional Masterclass',
+      location: 'Pan-Hellenic Heritage',
+    }))
+  ),
+];
+
+export const getAllExperiences = (): TastingExperience[] => ALL_EXPERIENCES;
+
+export const getExperienceById = (id: string): TastingExperience | undefined => {
+  return ALL_EXPERIENCES.find((e) => e.id === id);
 };

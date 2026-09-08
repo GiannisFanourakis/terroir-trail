@@ -18,7 +18,7 @@ interface ProducerDetailDrawerProps {
   onSaveTastingNote?: (id: string, note: string) => void;
   isAuthenticated?: boolean;
   onOpenAuth?: () => void;
-  onOpenBooking?: (producer: Producer) => void;
+  onOpenBooking?: (producer: Producer, initialExperienceId?: string) => void;
   customNotice?: string;
   isProTier?: boolean;
   directBottleShopUrl?: string;
@@ -496,13 +496,18 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
               </div>
 
               <div className="space-y-2.5">
-                {getExperiencesForProducer(producer.category).map((exp) => (
+                {getExperiencesForProducer(producer).map((exp) => (
                   <div
                     key={exp.id}
                     className="p-3.5 rounded-2xl bg-stone-900/90 border border-white/10 hover:border-amber-500/40 transition flex flex-col gap-2 group"
                   >
                     <div className="flex items-start justify-between gap-2">
                       <div className="min-w-0 flex-1">
+                        {exp.badge && (
+                          <span className="inline-block px-2 py-0.5 mb-1 rounded-full text-[9px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                            {exp.badge}
+                          </span>
+                        )}
                         <h4 className="font-bold text-xs text-white group-hover:text-amber-300 transition-colors">
                           {exp.title}
                         </h4>
@@ -519,7 +524,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                       {onOpenBooking && (
                         <button
                           type="button"
-                          onClick={() => onOpenBooking(producer)}
+                          onClick={() => onOpenBooking(producer, exp.id)}
                           className="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-[11px] shadow-sm transition active:scale-95 shrink-0 cursor-pointer"
                         >
                           Book Now

@@ -2,7 +2,7 @@ import React from 'react';
 import { Destination } from '../../types/terroir';
 import { UserProfile } from '../../types/auth';
 import { ProfileMenu } from '../Auth/ProfileMenu';
-import { Compass, Search, X, Heart, Building2, Calendar, Crown, Package } from 'lucide-react';
+import { Compass, Search, X, Heart, Building2, Calendar, Crown, Package, Sparkles } from 'lucide-react';
 
 interface HeaderProps {
   selectedDestination: Destination | 'all';
@@ -10,6 +10,7 @@ interface HeaderProps {
   searchQuery: string;
   onSearchChange: (query: string) => void;
   onOpenLoops: () => void;
+  onOpenExperiences?: () => void;
   totalFilteredCount: number;
   viewMode: 'map' | 'list';
   onToggleViewMode: () => void;
@@ -34,6 +35,7 @@ export const Header: React.FC<HeaderProps> = ({
   searchQuery,
   onSearchChange,
   onOpenLoops,
+  onOpenExperiences,
   totalFilteredCount,
   viewMode,
   onToggleViewMode,
@@ -116,6 +118,21 @@ export const Header: React.FC<HeaderProps> = ({
               <Compass className="w-3.5 h-3.5 shrink-0" />
               <span className="hidden sm:inline">Circuits</span>
             </button>
+
+            {/* 135+ Curated Terroir Experiences */}
+            {onOpenExperiences && (
+              <button
+                onClick={onOpenExperiences}
+                className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-bold bg-stone-900 hover:bg-stone-850 text-amber-300 hover:text-amber-200 border border-amber-500/30 hover:border-amber-400/50 rounded-xl shadow-sm transition transform active:scale-95 shrink-0 cursor-pointer"
+                title="Explore 135+ Curated Terroir & Tasting Experiences"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                <span>Experiences</span>
+                <span className="px-1.5 py-0.2 rounded-full bg-amber-500/20 text-amber-300 text-[10px] font-mono font-bold">
+                  135+
+                </span>
+              </button>
+            )}
 
             {/* Freemium Plan Status & VIP Upgrade (sm and up) */}
             {onOpenExplorerPass && (

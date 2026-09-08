@@ -13,6 +13,7 @@ interface BookingModalProps {
   onClose: () => void;
   producer: Producer | null;
   user: UserProfile | null;
+  initialExperienceId?: string;
   onBookTasting: (
     booking: Omit<TastingBooking, 'id' | 'createdAt' | 'status'>
   ) => Promise<TastingBooking>;
@@ -24,13 +25,26 @@ export const BookingModal: React.FC<BookingModalProps> = ({
   onClose,
   producer,
   user,
+  initialExperienceId,
   onBookTasting,
   onOpenAuth,
 }) => {
   if (!isOpen || !producer) return null;
 
-  const experiences = getExperiencesForProducer(producer.category);
-  const [selectedExpId, setSelectedExpId] = useState<string>(experiences[0]?.id || '');
+  const experiences = getExperiencesForProducer(producer);
+  const [selectedExpId, setSelectedExpId] = useState<string>(
+    initialExperienceId && experiences.some((e) => e.id === initialExperienceId)
+      ? initialExperienceId
+      : experiences[0]?.id || ''
+  );
+
+  React.useEffect(() => {
+    if (initialExperienceId && experiences.some((e) => e.id === initialExperienceId)) {
+      setSelectedExpId(initialExperienceId);
+    } else if (experiences[0]?.id && !experiences.some((e) => e.id === selectedExpId)) {
+      setSelectedExpId(experiences[0].id);
+    }
+  }, [initialExperienceId, producer]);
   
   // Tomorrow's date formatted as YYYY-MM-DD
   const getDefaultDate = () => {
