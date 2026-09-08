@@ -3,7 +3,7 @@ import { Producer } from '../../types/terroir';
 import { 
   X, MapPin, Star, Phone, Globe, Navigation, Clock, 
   Dog, Footprints, Caravan, Car, Sparkles, Share2, Check, Heart, Award, 
-  CheckCircle2, Wine, ShoppingBag, ArrowRight 
+  CheckCircle2, Wine, ShoppingBag, ArrowRight, Crown 
 } from 'lucide-react';
 
 interface ProducerDetailDrawerProps {
@@ -22,6 +22,8 @@ interface ProducerDetailDrawerProps {
   isProTier?: boolean;
   directBottleShopUrl?: string;
   onOpenWineBoxes?: () => void;
+  hasExplorerPass?: boolean;
+  onOpenExplorerPass?: () => void;
 }
 
 export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
@@ -40,6 +42,8 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
   isProTier = false,
   directBottleShopUrl,
   onOpenWineBoxes,
+  hasExplorerPass = false,
+  onOpenExplorerPass,
 }) => {
   const [activePhoto, setActivePhoto] = useState<string>('');
   const [copiedLink, setCopiedLink] = useState<boolean>(false);
@@ -113,8 +117,51 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
     }
   };
 
+  const getVipPerks = (p: Producer) => {
+    if (p.vipPerks) return p.vipPerks;
+    switch (p.category) {
+      case 'winery':
+        return {
+          welcomePour: 'Complimentary cellar pour of aged library vintage',
+          freeMeze: 'Artisanal Cretan Graviera & wild olive pairing',
+          discountPercent: 10,
+        };
+      case 'brewery':
+        return {
+          welcomePour: 'Free seasonal draft flight taster',
+          freeMeze: 'Warm pretzel snack & house apaki bite',
+          discountPercent: 10,
+        };
+      case 'olive_mill':
+        return {
+          welcomePour: 'Private reserve cold-pressed olive oil flight',
+          freeMeze: 'Wood-fired warm sourdough with sea salt',
+          discountPercent: 10,
+        };
+      case 'kazani':
+        return {
+          welcomePour: 'Warm first-run Tsikoudia straight from copper still',
+          freeMeze: 'Roasted village chestnuts & grilled sourdough',
+          discountPercent: 10,
+        };
+      case 'cheese_dairy':
+        return {
+          welcomePour: 'Fresh warm anthotyro tasting directly from vat',
+          freeMeze: 'Thyme honey drizzled mountain mizithra',
+          discountPercent: 10,
+        };
+      default:
+        return {
+          welcomePour: 'Complimentary reserve tasting pour',
+          freeMeze: 'Artisanal local meze platter',
+          discountPercent: 10,
+        };
+    }
+  };
+
   const cat = getCategoryDetails(producer.category);
   const road = getRoadAccessDetails(producer.roadAccess);
+  const vipPerks = getVipPerks(producer);
 
   return (
     <>
@@ -434,6 +481,63 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                     <span className="leading-relaxed">{highlight}</span>
                   </div>
                 ))}
+              </div>
+            </div>
+
+            {/* VIP Terroir Explorer Pass Perks Card (Freemium Privilege) */}
+            <div className={`p-4 rounded-2xl border transition-all ${
+              hasExplorerPass
+                ? 'bg-gradient-to-r from-amber-500/20 via-stone-900 to-amber-950/30 border-amber-400/50 shadow-lg'
+                : 'bg-stone-900/90 border-amber-500/30'
+            }`}>
+              <div className="flex items-start justify-between gap-3 mb-2.5">
+                <div className="flex items-center gap-2">
+                  <div className="w-7 h-7 rounded-lg bg-amber-400/20 flex items-center justify-center text-amber-300 shrink-0">
+                    <Crown className="w-3.5 h-3.5" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-xs text-amber-200 flex items-center gap-1.5">
+                      VIP Pass Privileges
+                      <span className="text-[9px] px-1.5 py-0.2 rounded bg-amber-400/20 text-amber-300 font-bold uppercase">
+                        {hasExplorerPass ? 'ACTIVE' : 'MEMBER EXCLUSIVE'}
+                      </span>
+                    </h4>
+                    <span className="text-[10px] text-stone-400">
+                      {hasExplorerPass
+                        ? 'Show digital card at counter to claim'
+                        : 'Included with Terroir Explorer Pass (€19.99)'}
+                    </span>
+                  </div>
+                </div>
+
+                {hasExplorerPass ? (
+                  <span className="px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-400 font-bold text-[10px] border border-emerald-500/30 shrink-0">
+                    CLAIMABLE
+                  </span>
+                ) : onOpenExplorerPass && (
+                  <button
+                    type="button"
+                    onClick={onOpenExplorerPass}
+                    className="px-2.5 py-1 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-[11px] shadow-sm transition shrink-0 cursor-pointer"
+                  >
+                    Unlock VIP
+                  </button>
+                )}
+              </div>
+
+              <div className="space-y-1.5 pt-1 text-[11px]">
+                <div className="flex items-center gap-2 text-stone-200">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                  <span><strong>Welcome Pour:</strong> {vipPerks.welcomePour}</span>
+                </div>
+                <div className="flex items-center gap-2 text-stone-200">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                  <span><strong>Free Meze:</strong> {vipPerks.freeMeze}</span>
+                </div>
+                <div className="flex items-center gap-2 text-stone-200">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                  <span><strong>Cellar Discount:</strong> {vipPerks.discountPercent}% off all bottle purchases</span>
+                </div>
               </div>
             </div>
 

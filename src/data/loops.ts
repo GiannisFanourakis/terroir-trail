@@ -32,7 +32,8 @@ export const CRETAN_DAY_TRIP_LOOPS: DayTripLoop[] = [
       'Gorge of Roka panoramic views',
       'The world’s oldest documented olive tree',
       'Fresh unfiltered draft beer straight from the conditioning tank'
-    ]
+    ],
+    isVipOnly: false,
   },
   {
     id: 'heraklion-terroir-circuit',
@@ -65,7 +66,8 @@ export const CRETAN_DAY_TRIP_LOOPS: DayTripLoop[] = [
       'Stunning view of Mount Juktas (the sleeping face of Zeus)',
       'Taste wines made in authentic terracotta amphorae',
       'Warm wood-fired hospitality with local raki'
-    ]
+    ],
+    isVipOnly: true,
   },
   {
     id: 'santorini-volcanic-terroir',
@@ -93,6 +95,7 @@ export const CRETAN_DAY_TRIP_LOOPS: DayTripLoop[] = [
       'Woven basket vines (kouloura) unique to Santorini',
       'The famous Yellow & Crazy Donkey microbrews',
       'Epic volcanic Aegean light'
-    ]
+    ],
+    isVipOnly: true,
   }
 ];

@@ -65,6 +65,9 @@ export const ChauffeurBookingModal: React.FC<ChauffeurBookingModalProps> = ({
   };
 
   const currentVehicle = vehicleDetails[vehicleType];
+  const isVip = !!user?.hasExplorerPass;
+  const vipDiscount = isVip ? 30 : 0;
+  const finalPriceEur = Math.max(0, currentVehicle.priceEur - vipDiscount);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -90,7 +93,7 @@ export const ChauffeurBookingModal: React.FC<ChauffeurBookingModalProps> = ({
         vehicleName: currentVehicle.name,
         durationHours: 8,
         guestsCount,
-        totalPrice: currentVehicle.priceEur,
+        totalPrice: finalPriceEur,
         specialRequests: specialRequests.trim() || undefined,
         status: 'confirmed',
         createdAt: new Date().toISOString(),
@@ -325,6 +328,40 @@ export const ChauffeurBookingModal: React.FC<ChauffeurBookingModalProps> = ({
                 />
               </div>
 
+              {/* Fare Summary & VIP Discount Bar */}
+              <div className="p-3.5 rounded-2xl bg-stone-900/90 border border-white/10 space-y-2 text-xs">
+                <div className="flex items-center justify-between text-stone-400">
+                  <span>Full Day Dedicated Chauffeur (8h):</span>
+                  <span className="font-semibold text-stone-200">€{currentVehicle.priceEur}</span>
+                </div>
+                {isVip ? (
+                  <div className="flex items-center justify-between text-amber-300 font-bold pt-1.5 border-t border-white/5">
+                    <span>👑 VIP Member Voucher Discount:</span>
+                    <span>-€30.00</span>
+                  </div>
+                ) : (
+                  <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-[11px] flex items-center justify-between text-amber-200">
+                    <span>💡 Terroir Explorer VIPs save €30 on chauffeur rides</span>
+                    <button
+                      type="button"
+                      onClick={onOpenAuth}
+                      className="font-bold underline cursor-pointer text-amber-300 hover:text-amber-200"
+                    >
+                      Upgrade
+                    </button>
+                  </div>
+                )}
+                <div className="flex items-center justify-between pt-1.5 border-t border-white/10">
+                  <span className="font-bold text-stone-300">Total Day Fare:</span>
+                  <div className="text-right">
+                    <span className="font-serif-title text-lg font-bold text-emerald-400">
+                      €{finalPriceEur}
+                    </span>
+                    <span className="text-[10px] text-stone-500 block">Includes fuel, tolls, cold mineral water & wait time</span>
+                  </div>
+                </div>
+              </div>
+
               {/* Submit CTA */}
               <button
                 type="submit"
@@ -335,7 +372,7 @@ export const ChauffeurBookingModal: React.FC<ChauffeurBookingModalProps> = ({
                   <span>Reserving Chauffeur Van...</span>
                 ) : (
                   <>
-                    <span>Book Private Driver (€{currentVehicle.priceEur} Full Day)</span>
+                    <span>Book Private Driver (€{finalPriceEur} Full Day)</span>
                     <ArrowRight className="w-4 h-4" />
                   </>
                 )}

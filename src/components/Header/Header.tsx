@@ -204,15 +204,31 @@ export const Header: React.FC<HeaderProps> = ({
             </button>
           )}
 
-          {/* VIP Pass CTA (Desktop) */}
+          {/* Freemium Plan Status & VIP Upgrade CTA */}
           {onOpenExplorerPass && (
             <button
               onClick={onOpenExplorerPass}
-              className="hidden xl:flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-xl border border-amber-400/30 hover:border-amber-400 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 transition shrink-0 cursor-pointer"
-              title={user?.hasExplorerPass ? 'VIP Pass Active' : 'Get Terroir Explorer Pass (€19.99)'}
+              className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-xl border transition shrink-0 cursor-pointer ${
+                user?.hasExplorerPass
+                  ? 'bg-gradient-to-r from-amber-500/20 via-amber-400/20 to-amber-600/20 text-amber-300 border-amber-400/40 shadow-sm'
+                  : 'bg-stone-900 hover:bg-stone-850 text-stone-300 hover:text-white border-amber-500/30'
+              }`}
+              title={user?.hasExplorerPass ? 'VIP Pass Active' : 'Free Plan · Upgrade to VIP (€19.99)'}
             >
               <Crown className="w-3.5 h-3.5 text-amber-400" />
-              <span>{user?.hasExplorerPass ? 'VIP Pass' : 'VIP Pass'}</span>
+              {user?.hasExplorerPass ? (
+                <span className="flex items-center gap-1 font-bold text-amber-300">
+                  <span>VIP PASS</span>
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                </span>
+              ) : (
+                <span className="flex items-center gap-1.5">
+                  <span className="text-stone-400 hidden sm:inline">Free Plan</span>
+                  <span className="px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 font-bold text-[10px]">
+                    Upgrade VIP
+                  </span>
+                </span>
+              )}
             </button>
           )}
 

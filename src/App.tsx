@@ -308,6 +308,8 @@ export const App: React.FC = () => {
             isProTier={selectedProducer ? (getOverride(selectedProducer.id)?.isProTier ?? false) : false}
             directBottleShopUrl={selectedProducer ? getOverride(selectedProducer.id)?.directBottleShopUrl : undefined}
             onOpenWineBoxes={() => setIsWineBoxModalOpen(true)}
+            hasExplorerPass={!!user?.hasExplorerPass}
+            onOpenExplorerPass={() => setIsPassModalOpen(true)}
           />
         )}
       </main>
@@ -325,6 +327,8 @@ export const App: React.FC = () => {
           setChauffeurTargetCircuit(loop);
           setIsChauffeurModalOpen(true);
         }}
+        user={user}
+        onOpenExplorerPass={() => setIsPassModalOpen(true)}
       />
 
       {/* 6. Explorer Auth & Profile Modal */}

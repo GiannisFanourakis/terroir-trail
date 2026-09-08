@@ -22,6 +22,7 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
 }) => {
   if (!isOpen) return null;
 
+  const [activeTab, setActiveTab] = useState<'upgrade' | 'compare'>('upgrade');
   const [paymentMethod, setPaymentMethod] = useState<'apple' | 'google' | 'card'>('apple');
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [isPurchased, setIsPurchased] = useState<boolean>(false);
@@ -43,15 +44,32 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
       desc: 'Direct savings on bottle purchases to pack in your suitcase or cellar.',
     },
     {
-      icon: '🎧',
-      title: 'Offline GPS Audio Road Stories',
-      desc: 'Short geo-triggered audio guides narrating 4,000-year Cretan wine history.',
+      icon: '🚐',
+      title: '€30 Off Private Mercedes Chauffeur',
+      desc: 'Discount voucher applied automatically to private wine circuit bookings.',
+    },
+    {
+      icon: '✈️',
+      title: '€15 Off International Wine Delivery',
+      desc: 'Temperature-controlled certified wine boxes shipped directly to your door.',
     },
     {
       icon: '⚡',
-      title: 'Priority Walk-in Privileges',
-      desc: 'Guaranteed terrace seating during peak harvest and golden hour sunset times.',
+      title: 'All Curated Day Loops & Unlimited Passport Stamps',
+      desc: 'Unlock Heraklion, Chania, and Santorini circuits with sommelier notes.',
     },
+  ];
+
+  const comparisonRows = [
+    { feature: 'Interactive Artisanal Map & GPS', free: '✅ Included', vip: '✅ Included' },
+    { feature: 'Curated Day-Trip Circuits', free: '1 Starter Circuit', vip: '⭐ All 5+ Curated Routes' },
+    { feature: 'Welcome Pour of Library Wine', free: '❌ Standard Tasting', vip: '⭐ Complimentary Glass' },
+    { feature: 'Artisanal Meze Pairing', free: '❌ Extra Charge', vip: '⭐ Free Graviera & Olives' },
+    { feature: 'Direct Cellar Bottle Purchases', free: '❌ 0% Discount', vip: '⭐ 10% Off All Bottles' },
+    { feature: 'Passport Stamps & Journal', free: 'Up to 3 Stamps', vip: '⭐ Unlimited Stamps' },
+    { feature: 'Private Mercedes Chauffeur', free: 'Full Rate (€280)', vip: '⭐ €30 Discount Voucher' },
+    { feature: 'International Wine Delivery', free: 'Standard Shipping', vip: '⭐ €15 Discount Voucher' },
+    { feature: 'Digital Holographic Wallet Pass', free: '❌ None', vip: '⭐ Instant Apple/Google Pass' },
   ];
 
   const handlePurchase = async () => {
@@ -107,6 +125,32 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
           </div>
         </div>
 
+        {/* Tab Toggle: Upgrade vs Comparison */}
+        {!isPurchased && !user?.hasExplorerPass && (
+          <div className="flex border-b border-white/10 bg-stone-900/70 px-6 pt-2 shrink-0">
+            <button
+              onClick={() => setActiveTab('upgrade')}
+              className={`flex-1 py-2.5 text-xs font-semibold text-center border-b-2 transition cursor-pointer ${
+                activeTab === 'upgrade'
+                  ? 'border-amber-400 text-amber-400 font-bold'
+                  : 'border-transparent text-stone-400 hover:text-white'
+              }`}
+            >
+              👑 Get VIP Pass (€19.99)
+            </button>
+            <button
+              onClick={() => setActiveTab('compare')}
+              className={`flex-1 py-2.5 text-xs font-semibold text-center border-b-2 transition cursor-pointer ${
+                activeTab === 'compare'
+                  ? 'border-amber-400 text-amber-400 font-bold'
+                  : 'border-transparent text-stone-400 hover:text-white'
+              }`}
+            >
+              ⚖️ Free vs VIP Comparison
+            </button>
+          </div>
+        )}
+
         {/* Content Body */}
         <div className="p-5 sm:p-6 overflow-y-auto flex-1 min-h-0 space-y-4 text-xs">
           
@@ -155,6 +199,45 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
                 className="w-full max-w-sm py-3 rounded-2xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs shadow-xl transition active:scale-98 cursor-pointer mx-auto block"
               >
                 Start Exploring with VIP Pass
+              </button>
+            </div>
+          ) : activeTab === 'compare' ? (
+            /* Freemium Comparison Matrix View */
+            <div className="space-y-3.5 animate-in fade-in duration-150">
+              <div className="text-center pb-1">
+                <h3 className="font-serif-title font-bold text-sm text-white">
+                  Choose the Perfect Agritourism Experience
+                </h3>
+                <p className="text-[11px] text-stone-400">
+                  Explore basic makers for free or upgrade to the full VIP agritourism trail
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-white/10 overflow-hidden bg-stone-900/80 shadow-lg">
+                <div className="grid grid-cols-12 bg-stone-900 p-2.5 border-b border-white/10 text-[11px] font-bold">
+                  <div className="col-span-6 text-stone-400">Platform Feature</div>
+                  <div className="col-span-3 text-center text-stone-300">Free (€0)</div>
+                  <div className="col-span-3 text-center text-amber-400">VIP Pass</div>
+                </div>
+
+                <div className="divide-y divide-white/5 text-[11px]">
+                  {comparisonRows.map((row, i) => (
+                    <div key={i} className="grid grid-cols-12 p-2.5 items-center hover:bg-white/5 transition">
+                      <div className="col-span-6 font-medium text-stone-300">{row.feature}</div>
+                      <div className="col-span-3 text-center text-stone-400 text-[10px]">{row.free}</div>
+                      <div className="col-span-3 text-center text-amber-300 font-semibold text-[10px]">{row.vip}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setActiveTab('upgrade')}
+                className="w-full py-3 rounded-2xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs shadow-lg transition active:scale-98 cursor-pointer flex items-center justify-center gap-1.5"
+              >
+                <span>Upgrade to Terroir Explorer Pass (€19.99)</span>
+                <ArrowRight className="w-4 h-4" />
               </button>
             </div>
           ) : (

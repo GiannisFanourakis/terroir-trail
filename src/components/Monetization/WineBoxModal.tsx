@@ -37,7 +37,9 @@ export const WineBoxModal: React.FC<WineBoxModalProps> = ({
 
   const selectedBox = CURATED_WINE_BOXES.find((b) => b.id === selectedBoxId) || CURATED_WINE_BOXES[0];
   const shippingRate = SHIPPING_RATES[shippingCountryCode] || SHIPPING_RATES.DE;
-  const totalEur = selectedBox.priceEur + shippingRate.costEur;
+  const isVip = !!user?.hasExplorerPass;
+  const vipDiscount = isVip ? 15 : 0;
+  const totalEur = Math.max(0, selectedBox.priceEur + shippingRate.costEur - vipDiscount);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -286,13 +288,40 @@ export const WineBoxModal: React.FC<WineBoxModalProps> = ({
               </div>
 
               {/* Price Summary Bar */}
-              <div className="p-3.5 rounded-2xl bg-stone-900/90 border border-white/10 flex items-center justify-between text-xs">
-                <span className="text-stone-400">Total (Box + Certified Shipping):</span>
-                <div className="text-right">
-                  <span className="font-serif-title text-lg font-bold text-emerald-400">
-                    €{totalEur}
-                  </span>
-                  <span className="text-[10px] text-stone-500 block">All taxes & duty included</span>
+              <div className="p-3.5 rounded-2xl bg-stone-900/90 border border-white/10 space-y-2 text-xs">
+                <div className="flex items-center justify-between text-stone-400">
+                  <span>Wine Box ({selectedBox.bottlesCount} Bottles):</span>
+                  <span className="font-semibold text-stone-200">€{selectedBox.priceEur}</span>
+                </div>
+                <div className="flex items-center justify-between text-stone-400">
+                  <span>Certified Insulated Transport ({shippingRate.country}):</span>
+                  <span className="font-semibold text-stone-200">€{shippingRate.costEur}</span>
+                </div>
+                {isVip ? (
+                  <div className="flex items-center justify-between text-amber-300 font-bold pt-1.5 border-t border-white/5">
+                    <span>👑 VIP Passholder Voucher:</span>
+                    <span>-€15.00</span>
+                  </div>
+                ) : (
+                  <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-[11px] flex items-center justify-between text-amber-200">
+                    <span>💡 VIP Pass members save €15 on this order</span>
+                    <button
+                      type="button"
+                      onClick={onOpenAuth}
+                      className="font-bold underline cursor-pointer text-amber-300 hover:text-amber-200"
+                    >
+                      Upgrade
+                    </button>
+                  </div>
+                )}
+                <div className="flex items-center justify-between pt-1.5 border-t border-white/10">
+                  <span className="font-bold text-stone-300">Total:</span>
+                  <div className="text-right">
+                    <span className="font-serif-title text-lg font-bold text-emerald-400">
+                      €{totalEur}
+                    </span>
+                    <span className="text-[10px] text-stone-500 block">All taxes & duty included</span>
+                  </div>
                 </div>
               </div>
 

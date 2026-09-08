@@ -30,7 +30,10 @@ export const PassportModal: React.FC<PassportModalProps> = ({
 
   if (!isOpen || !user) return null;
 
+  const FREE_STAMP_LIMIT = 3;
+  const isVip = !!user.hasExplorerPass;
   const visitedCount = user.visitedProducers.length;
+  const isFreeLimitReached = !isVip && visitedCount >= FREE_STAMP_LIMIT;
   const progressPercent = Math.round((visitedCount / producers.length) * 100);
 
   const filteredProducers = producers.filter((p) => {
@@ -39,6 +42,15 @@ export const PassportModal: React.FC<PassportModalProps> = ({
     if (filterMode === 'unstamped') return !isStamped;
     return true;
   });
+
+  const handleToggleStamp = (producerId: string) => {
+    const isStamped = user.visitedProducers.includes(producerId);
+    if (!isStamped && isFreeLimitReached) {
+      if (onOpenExplorerPass) onOpenExplorerPass();
+      return;
+    }
+    onToggleVisited(producerId);
+  };
 
   const handleStartEditNote = (producerId: string) => {
     setEditingNoteId(producerId);
@@ -65,12 +77,14 @@ export const PassportModal: React.FC<PassportModalProps> = ({
                 <h2 className="font-serif-title text-base sm:text-lg font-bold text-white">
                   {user.name}&apos;s Terroir Passport
                 </h2>
-                <span className="text-[9px] px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-300 font-bold uppercase tracking-wider">
-                  Official
+                <span className={`text-[9px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${
+                  isVip ? 'bg-amber-400/20 text-amber-300 border border-amber-400/30' : 'bg-stone-800 text-stone-400 border border-white/10'
+                }`}>
+                  {isVip ? '👑 VIP MEMBER' : 'FREE TIER (3 STAMPS)'}
                 </span>
               </div>
               <p className="text-[11px] text-stone-400">
-                {visitedCount} of {producers.length} Greek Artisans Stamped ({progressPercent}%)
+                {visitedCount} of {producers.length} Artisans Stamped {isVip ? '(Unlimited)' : `(${Math.min(visitedCount, FREE_STAMP_LIMIT)}/3 Free Allowed)`}
               </p>
             </div>
           </div>
@@ -230,7 +244,7 @@ export const PassportModal: React.FC<PassportModalProps> = ({
 
                   {/* Stamp Toggle Action */}
                   <button
-                    onClick={() => onToggleVisited(producer.id)}
+                    onClick={() => handleToggleStamp(producer.id)}
                     className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition shrink-0 ${
                       isStamped
                         ? 'bg-amber-500 text-stone-950 shadow-md shadow-amber-500/20'

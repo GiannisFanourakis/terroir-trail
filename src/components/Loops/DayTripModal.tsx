@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { CRETAN_DAY_TRIP_LOOPS } from '../../data/loops';
 import { CRETAN_PRODUCERS } from '../../data/producers';
 import { DayTripLoop, Producer } from '../../types/terroir';
-import { X, Clock, Compass, ArrowRight, CheckCircle2, Car, Sparkles } from 'lucide-react';
+import { X, Clock, Compass, ArrowRight, CheckCircle2, Car, Sparkles, Lock, Crown } from 'lucide-react';
+import { UserProfile } from '../../types/auth';
 
 interface DayTripModalProps {
   isOpen: boolean;
@@ -10,6 +11,8 @@ interface DayTripModalProps {
   onSelectLoop: (loop: DayTripLoop) => void;
   onSelectProducer: (producer: Producer) => void;
   onBookChauffeur?: (loop: DayTripLoop) => void;
+  user?: UserProfile | null;
+  onOpenExplorerPass?: () => void;
 }
 
 export const DayTripModal: React.FC<DayTripModalProps> = ({
@@ -18,6 +21,8 @@ export const DayTripModal: React.FC<DayTripModalProps> = ({
   onSelectLoop,
   onSelectProducer,
   onBookChauffeur,
+  user,
+  onOpenExplorerPass,
 }) => {
   const [activeLoopIndex, setActiveLoopIndex] = useState<number>(0);
 
@@ -70,6 +75,21 @@ export const DayTripModal: React.FC<DayTripModalProps> = ({
               >
                 <span>{idx === 0 ? '🍇' : idx === 1 ? '🫒' : '⛰️'}</span>
                 <span>{loop.region.toUpperCase()}</span>
+                {loop.isVipOnly ? (
+                  user?.hasExplorerPass ? (
+                    <span className="text-[9px] px-1.5 py-0.2 rounded bg-amber-400/20 text-amber-300 font-bold">
+                      VIP
+                    </span>
+                  ) : (
+                    <span className="flex items-center gap-0.5 text-[9px] px-1.5 py-0.2 rounded bg-stone-800 text-stone-400 border border-white/10 font-semibold">
+                      <Lock className="w-2.5 h-2.5" /> VIP
+                    </span>
+                  )
+                ) : (
+                  <span className="text-[9px] px-1.5 py-0.2 rounded bg-emerald-500/15 text-emerald-400 font-bold">
+                    FREE
+                  </span>
+                )}
                 <span className="text-[11px] text-stone-500 font-normal">({loop.totalDuration})</span>
               </button>
             );
@@ -85,6 +105,11 @@ export const DayTripModal: React.FC<DayTripModalProps> = ({
               <span>{currentLoop.region.toUpperCase()}, CRETE</span>
               <span>•</span>
               <span className="text-stone-400 font-normal">{currentLoop.drivingDistance}</span>
+              {currentLoop.isVipOnly && (
+                <span className="px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-300 text-[10px] font-bold border border-amber-400/30">
+                  {user?.hasExplorerPass ? '👑 VIP Circuit Unlocked' : '🔒 VIP Explorer Circuit'}
+                </span>
+              )}
             </div>
 
             <h3 className="font-serif-title text-xl sm:text-2xl font-bold text-white leading-snug">
@@ -97,6 +122,37 @@ export const DayTripModal: React.FC<DayTripModalProps> = ({
               {currentLoop.description}
             </p>
           </div>
+
+          {/* Freemium VIP Circuit Paywall Teaser */}
+          {currentLoop.isVipOnly && !user?.hasExplorerPass && (
+            <div className="p-4 rounded-2xl bg-gradient-to-r from-amber-500/20 via-stone-900 to-amber-950/30 border border-amber-400/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xl">
+              <div className="flex items-start gap-3">
+                <div className="w-9 h-9 rounded-xl bg-amber-400/20 border border-amber-400/40 flex items-center justify-center text-amber-300 shrink-0 text-base">
+                  <Crown className="w-4 h-4" />
+                </div>
+                <div>
+                  <div className="text-xs font-bold text-amber-200 flex items-center gap-1.5">
+                    <span>VIP Member Itinerary</span>
+                    <span className="text-[9px] px-1.5 py-0.2 rounded bg-amber-400 text-stone-950 font-bold uppercase">Included with Pass</span>
+                  </div>
+                  <p className="text-xs text-stone-300 mt-0.5 leading-relaxed">
+                    This circuit includes exclusive library barrel tastings, wood-fired kazani feasting, and free welcome pours at each stop.
+                  </p>
+                </div>
+              </div>
+
+              {onOpenExplorerPass && (
+                <button
+                  type="button"
+                  onClick={onOpenExplorerPass}
+                  className="w-full sm:w-auto px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-amber-500/25 transition shrink-0 cursor-pointer"
+                >
+                  <Crown className="w-3.5 h-3.5" />
+                  <span>Unlock VIP (€19.99)</span>
+                </button>
+              )}
+            </div>
+          )}
 
           {/* Highlights */}
           <div className="p-4 bg-amber-500/10 rounded-2xl border border-amber-500/20">
@@ -224,16 +280,41 @@ export const DayTripModal: React.FC<DayTripModalProps> = ({
             >
               Close
             </button>
-            <button
-              onClick={() => {
-                onSelectLoop(currentLoop);
-                onClose();
-              }}
-              className="flex items-center gap-2 px-5 py-2.5 text-xs font-bold bg-amber-500 hover:bg-amber-400 text-stone-950 rounded-2xl shadow-xl shadow-amber-500/20 transition transform active:scale-95"
-            >
-              <span>Load Circuit on Map</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </button>
+
+            {currentLoop.isVipOnly && !user?.hasExplorerPass ? (
+              <>
+                <button
+                  onClick={() => {
+                    onSelectLoop(currentLoop);
+                    onClose();
+                  }}
+                  className="px-4 py-2.5 text-xs font-semibold text-stone-300 hover:text-white bg-stone-800 hover:bg-stone-750 rounded-2xl border border-white/10 transition"
+                  title="Preview route waypoints without full VIP guide"
+                >
+                  Preview Circuit
+                </button>
+                {onOpenExplorerPass && (
+                  <button
+                    onClick={onOpenExplorerPass}
+                    className="flex items-center gap-2 px-5 py-2.5 text-xs font-bold bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-stone-950 rounded-2xl shadow-xl shadow-amber-500/20 transition transform active:scale-95 cursor-pointer"
+                  >
+                    <Crown className="w-3.5 h-3.5" />
+                    <span>Unlock VIP (€19.99)</span>
+                  </button>
+                )}
+              </>
+            ) : (
+              <button
+                onClick={() => {
+                  onSelectLoop(currentLoop);
+                  onClose();
+                }}
+                className="flex items-center gap-2 px-5 py-2.5 text-xs font-bold bg-amber-500 hover:bg-amber-400 text-stone-950 rounded-2xl shadow-xl shadow-amber-500/20 transition transform active:scale-95"
+              >
+                <span>Load Circuit on Map</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            )}
           </div>
         </div>
 

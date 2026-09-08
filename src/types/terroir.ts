@@ -38,6 +38,12 @@ export type FoodOption =
   | 'brewery_taproom'
   | 'byo_picnic';
 
+export interface VipPerks {
+  welcomePour?: string;
+  freeMeze?: string;
+  discountPercent?: number;
+}
+
 export interface Producer {
   id: string;
   name: string;
@@ -69,6 +75,7 @@ export interface Producer {
   priceLevel: '€' | '€€' | '€€€';
   rating: number;
   reviewCount: number;
+  vipPerks?: VipPerks;
 }
 
 export interface DayTripLoop {
@@ -87,6 +94,7 @@ export interface DayTripLoop {
   }[];
   description: string;
   highlightPointers: string[];
+  isVipOnly?: boolean;
 }
 
 export interface FilterState {
