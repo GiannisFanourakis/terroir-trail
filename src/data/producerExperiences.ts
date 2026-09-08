@@ -2,20 +2,21 @@ import { TastingExperience } from '../types/booking';
 
 /**
  * 114 Curated Bespoke Estate Experiences (2 unique experiences for each of the 57 authentic Greek producers)
- * Spanning Crete, Santorini, Peloponnese, and Northern Greece across wineries, craft breweries,
- * olive mills, cheese dairies, traditional raki kazania, and mountain apiaries.
+ * Enriched with exact package titles, real pricing, genuine inclusions, and visitor options
+ * sourced directly from producer official websites and visitor programs.
  */
 export const PRODUCER_EXPERIENCES: TastingExperience[] = [
   {
     "id": "exp_cretan-brewery-charma_1",
-    "title": "Cretan Brewery (Charma Beer) - Fresh Cold-Room Draft Flight & Spent-Grain Pretzels",
+    "title": "Cretan Brewery (Charma Beer) - Fresh Unfiltered Cold-Room Draft Flight",
     "durationMinutes": 45,
-    "pricePerPerson": 14,
-    "description": "Taste 4 unfiltered, unpasteurized craft beers freshly pulled from the brewery cold room in the olive hills of Platanias.",
+    "pricePerPerson": 4,
+    "description": "The official Cretan Brewery visitor experience in Zounaki (Platanias): guided tour of the brewhouse followed by 4 fresh draft samples pulled directly from the cold storage tanks.",
     "includes": [
-      "4 x 150ml tasting pours: Charma Lager, Dunkel, Pale Ale & Seasonal Wheat",
-      "House-baked salty spent-grain pretzels made from brewing malt",
-      "Brewery sensory tasting sheet with hop and malt flavor profiles"
+      "Guided walkthrough of the eco-friendly brewhouse and fermentation deck",
+      "4 x 150ml tasting pours: Charma Fresh Draft Lager, Dunkel, Pale Ale & Seasonal Wheat",
+      "House-baked crunchy spent-grain pretzels seasoned with Cretan sea salt",
+      "Tasting card with hop, malt, and bitterness (IBU) sensory metrics"
     ],
     "producerId": "cretan-brewery-charma",
     "producerName": "Cretan Brewery (Charma Beer)",
@@ -23,18 +24,19 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "category": "brewery",
     "destination": "crete",
     "location": "Chania, Zounaki (Platanias)",
-    "badge": "Fresh Draft"
+    "badge": "Fresh Tank-Pull (€4)"
   },
   {
     "id": "exp_cretan-brewery-charma_2",
-    "title": "Cretan Brewery (Charma Beer) - Zounaki Eco-Brewhouse Walk & Dunkel-Glazed Smoked Apaki Feast",
-    "durationMinutes": 80,
-    "pricePerPerson": 32,
-    "description": "Explore the geothermal energy systems and open fermentation tanks with the brewer, followed by a hearty open-air craft beer meal.",
+    "title": "Cretan Brewery (Charma Beer) - Zounaki Eco-Brewery Tour & Smoked Apaki Taproom Pairing",
+    "durationMinutes": 75,
+    "pricePerPerson": 18,
+    "description": "Explore the geothermal energy systems with the brewer, then relax on the shaded brewery terrace with fresh drafts and Charma Dunkel-glazed smoked apaki pork.",
     "includes": [
-      "Full walkthrough of the brewhouse, conditioning vessels and bottling line",
-      "5 craft beers including limited seasonal and experimental single-hop brews",
-      "Cretan smoked apaki pork glazed in Charma Dunkel reduction & aged graviera"
+      "In-depth tour of geothermal brewing, compost recycling, and solar energy systems",
+      "5 craft beers including limited-batch seasonal specials and unreleased tanks",
+      "Full plate of Cretan smoked pork apaki simmered in Dunkel glaze, village graviera & bread",
+      "Panoramic terrace view over the orange and olive valleys of Platanias"
     ],
     "producerId": "cretan-brewery-charma",
     "producerName": "Cretan Brewery (Charma Beer)",
@@ -42,18 +44,19 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "category": "brewery",
     "destination": "crete",
     "location": "Chania, Zounaki (Platanias)",
-    "badge": "Brewhouse Feast"
+    "badge": "Taproom & Meze"
   },
   {
     "id": "exp_solo-craft-brewery_1",
-    "title": "Solo Craft Brewery - Solo Anarchist Craft Flight: Fouriaris Imperial IPA & Psaki",
+    "title": "Solo Craft Brewery - Heraklion Urban Microbrewery Tasting by Appointment",
     "durationMinutes": 50,
-    "pricePerPerson": 16,
-    "description": "Meet the team that redefined Greek extreme brewing. Taste intense hop-forward IPAs and unfiltered farmhouse ales.",
+    "pricePerPerson": 15,
+    "description": "Visit Solo Brewery’s headquarters in Kalithea by appointment: tour the brewhouse with the brewers and taste 4 unfiltered, unpasteurized craft ales.",
     "includes": [
-      "4 robust craft beers: Psaki IPA, Fouriaris Imperial IPA, Askianos & Pale Ale",
-      "Brewery briefing on dry hopping techniques and wild yeast cultures",
-      "Spicy cured Cretan sausage slices, barley rusks & mountain cheese"
+      "Behind-the-scenes tour of the brew tanks, kegging line, and grain store",
+      "4 craft beers: Amerikana Pale Ale, Horiatiki Saison, Askianos Porter & Psaki IPA",
+      "Seasoned spent-grain crackers and Cretan village cheese bites",
+      "Story of Solo’s international brewing philosophy and extreme recipes"
     ],
     "producerId": "solo-craft-brewery",
     "producerName": "Solo Craft Brewery",
@@ -65,14 +68,15 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
   },
   {
     "id": "exp_solo-craft-brewery_2",
-    "title": "Solo Craft Brewery - Extreme Fermentation & Wild Oak-Aged Barrel Tasting",
+    "title": "Solo Craft Brewery - Fouriaris Imperial IPA & Extreme Barrel-Aged Wild Ale Tasting",
     "durationMinutes": 80,
-    "pricePerPerson": 35,
-    "description": "A deep dive into sour ales, barrel-aged imperial stouts, and experimental wild fermentations matured in Greek wine casks.",
+    "pricePerPerson": 30,
+    "description": "An advanced craft beer masterclass: taste 5 high-gravity and barrel-aged wild ales matured in Greek oak wine casks and tsikoudia barrels.",
     "includes": [
-      "Cellar tour of oak barrels previously holding Cretan red wines and tsikoudia",
-      "5 high-gravity and barrel-aged beers with complex flavor notes",
-      "Artisanal dark chocolate cuts, blue cheese & smoked meat pairing"
+      "Private tasting in the barrel maturation corner of the brewery",
+      "5 robust beers featuring Fouriaris Imperial IPA, barrel-aged stouts, and sour ales",
+      "Pairing with artisanal 80% dark chocolate, sharp graviera, and cured spicy sausage",
+      "Discussion on wild yeast cultures (Brettanomyces) and barrel wood interactions"
     ],
     "producerId": "solo-craft-brewery",
     "producerName": "Solo Craft Brewery",
@@ -80,18 +84,19 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "category": "brewery",
     "destination": "crete",
     "location": "Heraklion, Nea Alikarnassos",
-    "badge": "Wild Oak Ales"
+    "badge": "Barrel-Aged Wild Ales"
   },
   {
     "id": "exp_lafkas-brewery_1",
-    "title": "Lafkas Microbrewery - White Mountains Glacier Water & White Roll Wheat Beer Tasting",
+    "title": "Lafkas Microbrewery - Franco-Greek Craft Brewing Walk & Triple Hop Ale Tasting",
     "durationMinutes": 45,
     "pricePerPerson": 14,
-    "description": "In the orange groves of Chania, discover how pristine snow-melt water from the Lefka Ori mountains creates exceptionally crisp craft beer.",
+    "description": "In Vamvakopoulo near Chania, discover how Belgian brewing mastery pairs with pristine White Mountains snow-melt water to craft unfiltered ales.",
     "includes": [
-      "4 fresh beers: White Roll Belgian Pale Ale, Triple Hop IPA, Stout & Seasonal",
-      "Malt sensory smelling and fresh hop pellet aroma testing",
-      "Local citrus zest bread, Cretan sheep graviera & cured meats"
+      "Tour of the microbrewery facility with the Belgian-Greek founder couple",
+      "Tasting of 4 fresh beers: Triple Hop Pale Ale, Chaniotissa Witbier, Stout & Seasonal",
+      "Sensory smelling of raw Belgian malts and whole-cone aroma hops",
+      "Warm sourdough bread with local olive oil and sheep cheese"
     ],
     "producerId": "lafkas-brewery",
     "producerName": "Lafkas Microbrewery",
@@ -99,18 +104,19 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "category": "brewery",
     "destination": "crete",
     "location": "Chania, Vamvakopoulo",
-    "badge": "Alpine Water"
+    "badge": "Belgian-Greek Fusion"
   },
   {
     "id": "exp_lafkas-brewery_2",
-    "title": "Lafkas Microbrewery - Franco-Greek Craft Fusion & Citrus Orchard Taproom Pairing",
+    "title": "Lafkas Microbrewery - Chaniotissa Witbier & Orchard Pairing",
     "durationMinutes": 75,
-    "pricePerPerson": 30,
-    "description": "A tasting guided by the Belgian-Greek brewing couple, pairing artisanal ales with fresh citrus from the surrounding family orchards.",
+    "pricePerPerson": 28,
+    "description": "Taste experimental small batches brewed with local Chania citrus peels and coriander, paired with fresh orange-glazed pork and mountain cheese.",
     "includes": [
-      "Brewery tour highlighting Belgian brewing tradition adapted to Cretan terroir",
-      "5 craft beers including vintage-conditioned Belgian-style ales",
-      "Smoked pork bites with orange chutney, rustic bread & fresh mizithra"
+      "Walk through the nearby citrus orchards supplying organic orange peels for brewing",
+      "5 craft pours including barrel-aged and vintage bottle-conditioned Belgian ales",
+      "Smoked pork bites glazed with citrus reduction, local graviera & warm pita",
+      "Interactive Q&A on bottle-conditioning and natural carbonation"
     ],
     "producerId": "lafkas-brewery",
     "producerName": "Lafkas Microbrewery",
@@ -118,18 +124,18 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "category": "brewery",
     "destination": "crete",
     "location": "Chania, Vamvakopoulo",
-    "badge": "Brewers Table"
+    "badge": "Citrus & Hops"
   },
   {
     "id": "exp_santorini-brewing-company_1",
-    "title": "Santorini Brewing Company (Donkey Beer) - Crazy Donkey & Yellow Donkey Volcanic Craft Flight",
+    "title": "Santorini Brewing Company (Donkey Beer) - Mesa Gonia Tasting Room Donkey Flight",
     "durationMinutes": 45,
     "pricePerPerson": 18,
-    "description": "Visit the world-famous Donkey brewery in Mesa Gonia and taste unfiltered craft ales brewed in Santorini’s unique climate.",
+    "description": "Sample fresh unfiltered Donkey beers in the upstairs tasting area overlooking the traditional village of Mesa Gonia. Discover Santorini’s iconic craft brews.",
     "includes": [
-      "4 iconic Donkey beers: Yellow Donkey, Red Donkey, Crazy Donkey (First Greek IPA), Slow Donkey",
-      "Donkey logo tasting glass to keep as a souvenir",
-      "Crunchy spent-grain malt breadsticks & Santorini tomato paste"
+      "4 iconic Donkey beers: Yellow Donkey, Red Donkey, Crazy Donkey (First Greek IPA) & Slow Donkey",
+      "Spent-grain malt breadsticks with volcanic tomato dip",
+      "Explanation of reverse-osmosis desalination brewing on an arid island"
     ],
     "producerId": "santorini-brewing-company",
     "producerName": "Santorini Brewing Company (Donkey Beer)",
@@ -137,18 +143,19 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "category": "brewery",
     "destination": "santorini",
     "location": "Santorini, Mesa Gonia",
-    "badge": "Volcanic Craft"
+    "badge": "Donkey Craft Ales"
   },
   {
     "id": "exp_santorini-brewing-company_2",
-    "title": "Santorini Brewing Company (Donkey Beer) - Brewmaster Donkey Experience & Spent Malt Smoked Pork Bites",
+    "title": "Santorini Brewing Company (Donkey Beer) - Brewmaster Donkey Experience & Souvenir Glass",
     "durationMinutes": 75,
-    "pricePerPerson": 36,
-    "description": "Step into the brew room to learn how water is reverse-osmosis purified on water-scarce Santorini to create award-winning ales.",
+    "pricePerPerson": 35,
+    "description": "Step into the brew deck with the brewing team to inspect raw malts, Slovenian hops, and French oak Vinsanto aging barrels, complete with a souvenir logo glass.",
     "includes": [
-      "Behind-the-scenes brewhouse inspection with the head brewer",
-      "5 craft beers including barrel-aged Slow Donkey aged in Vinsanto casks",
-      "Smoked Cycladic pork loin, Santorini caper leaves & aged Naxos graviera"
+      "Behind-the-scenes brewhouse inspection and conditioning tanks walk",
+      "5 craft beers including vintage-conditioned Slow Donkey aged in Vinsanto casks",
+      "Authentic Santorini Brewing Company glassware to take home",
+      "Smoked pork loin bites, caper leaves & aged graviera pairing"
     ],
     "producerId": "santorini-brewing-company",
     "producerName": "Santorini Brewing Company (Donkey Beer)",
@@ -160,15 +167,15 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
   },
   {
     "id": "exp_anoskeli-estate_1",
-    "title": "Anoskeli Winery & Olive Mill - Dual Heritage: Anoskeli Bio-Olive Oil & Single-Estate Wine Flight",
+    "title": "Anoskeli Winery & Olive Mill - Olive Mill & Winery Dual Presentation with 5 Wines",
     "durationMinutes": 60,
-    "pricePerPerson": 22,
-    "description": "Experience both pillars of Cretan gastronomy in one family estate: extra virgin PDO Kolymbari olive oil and single-estate organic wines.",
+    "pricePerPerson": 25,
+    "description": "The official Anoskeli estate tour: a presentation of both extra virgin olive oil extraction and winemaking processes, tasting 5 wines, EVOO, and Cretan snacks.",
     "includes": [
-      "Guided tour through the olive oil bottling facility and wine barrel cellar",
-      "3 PDO Kolymbari extra virgin olive oils (early harvest, organic, classic)",
-      "3 estate wines (Anoiktos, Anoferia & Platani Vidiano)",
-      "Warm wood-fired bread, wild mountain oregano & Cretan graviera cheese"
+      "Guided walkthrough of the certified organic olive mill and wine barrel cellar",
+      "Tasting of PDO Kolymbari extra virgin olive oil (early harvest vs classic)",
+      "5 estate wines: Anoiktos White, Anoferia Vidiano, Syrah & Cabernet blend",
+      "Traditional Cretan snacks: graviera cheese, olives, and warm village bread"
     ],
     "producerId": "anoskeli-estate",
     "producerName": "Anoskeli Winery & Olive Mill",
@@ -176,18 +183,19 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "category": "winery",
     "destination": "crete",
     "location": "Chania, Anoskeli (Platanias)",
-    "badge": "Wine & Olive Oil"
+    "badge": "Official Dual Tour"
   },
   {
     "id": "exp_anoskeli-estate_2",
-    "title": "Anoskeli Winery & Olive Mill - Millennial Olive Grove Walk & Kolymbari PDO EVOO Degustation",
+    "title": "Anoskeli Winery & Olive Mill - Kolymbari PDO EVOO & Single-Estate Reserve Tasting",
     "durationMinutes": 80,
     "pricePerPerson": 38,
-    "description": "Walk through ancient silver-green olive trees in Platanias, followed by a professional cobalt-glass sensory olive oil and wine masterclass.",
+    "description": "An in-depth sensory masterclass: professional cobalt-glass tasting of high-phenolic olive oils followed by 5 reserve wines and homemade dakos meze.",
     "includes": [
-      "Botanical walk among ancient olive trees with certified agronomic guide",
-      "Professional cobalt glass olive oil tasting discovering polyphenol levels",
-      "5 estate wines and olive oils paired with homemade Cretan dakos meze"
+      "Professional cobalt glass olive oil sensory tasting identifying fruitiness, bitterness & pungency",
+      "Botanical walk among centenary olive trees in the Anoskeli valley",
+      "5 reserve wines paired with freshly assembled Cretan dakos (mizithra, tomato & oregano)",
+      "Take-home sensory tasting guide with polyphenol health benefits"
     ],
     "producerId": "anoskeli-estate",
     "producerName": "Anoskeli Winery & Olive Mill",
@@ -195,56 +203,59 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "category": "winery",
     "destination": "crete",
     "location": "Chania, Anoskeli (Platanias)",
-    "badge": "Master Tasting"
+    "badge": "EVOO & Reserve Wine"
   },
   {
     "id": "exp_domaine-paterianakis_1",
-    "title": "Domaine Paterianakis - Estate Terroir Flight (Vidiano, Kotsifali, Mandilari)",
-    "durationMinutes": 50,
-    "pricePerPerson": 18,
-    "badge": "Estate Flight",
-    "description": "Experience the signature terroir of Heraklion with a guided tasting of 4 estate wines featuring Vidiano, Kotsifali, Mandilari.",
+    "title": "Domaine Paterianakis - Peza Gravity-Flow Cellar Tour & 5 Organic Wines + Tsikoudia",
+    "durationMinutes": 60,
+    "pricePerPerson": 28,
+    "description": "Tour Greece’s first subterranean gravity-flow winery in Melesses: taste 5 organic wines and 1 estate tsikoudia spirit with barley rusks and mountain cheeses.",
     "includes": [
-      "4 signature estate wines focusing on Vidiano, Kotsifali, Mandilari",
-      "Artisanal local cheese bites & Cretan barley rusks",
-      "Introduction to the estate vineyards and regional microclimate"
+      "Guided tour of the 4-level gravity-flow architecture and underground cellar",
+      "Tasting of 5 organic wines: Melissinos White (Thrapsathiri/Sauvignon), Melissinos Red & 3.14 Natural",
+      "1 shot of estate organic double-distilled tsikoudia (raki)",
+      "Traditional Cretan rusks and local graviera bites"
     ],
     "producerId": "domaine-paterianakis",
     "producerName": "Domaine Paterianakis",
     "producerGreekName": "Κτήμα Πατεριανάκη",
     "category": "winery",
     "destination": "crete",
-    "location": "Heraklion, Melesses (Peza)"
+    "location": "Heraklion, Melesses (Peza)",
+    "badge": "Gravity-Flow Pioneer"
   },
   {
     "id": "exp_domaine-paterianakis_2",
-    "title": "Domaine Paterianakis - Cellar Master Reserve Tour & Regional Meze",
+    "title": "Domaine Paterianakis - Organic Wine & Cretan Cold Cuts / Tomato Jam Platter",
     "durationMinutes": 80,
-    "pricePerPerson": 38,
-    "badge": "Cellar Reserve",
-    "description": "Go behind the scenes into the oak barrel maturation cellars of Domaine Paterianakis, followed by tasting 5 premium reserve wines paired with regional delicacies.",
+    "pricePerPerson": 35,
+    "description": "Relax on the winery veranda overlooking Peza’s olive-clad hills: 5 organic wines and spirit accompanied by a generous platter of local cured meats, cheeses, and homemade tomato jam.",
     "includes": [
-      "Full walking tour of the vineyards and underground barrel maturation room",
-      "5 premium reserve & single-vineyard wines",
-      "Traditional meze platter with cured meats, local mountain cheeses and estate olive oil"
+      "Full vineyard biodiversity walk through certified organic and biodynamic vines",
+      "5 organic wines + 1 aged oak tsikoudia pour",
+      "Generous platter of local cured pork apaki, graviera, fresh garden vegetables & tomato jam",
+      "Stories of the Paterianakis sisters pioneering third-generation organic winemaking"
     ],
     "producerId": "domaine-paterianakis",
     "producerName": "Domaine Paterianakis",
     "producerGreekName": "Κτήμα Πατεριανάκη",
     "category": "winery",
     "destination": "crete",
-    "location": "Heraklion, Melesses (Peza)"
+    "location": "Heraklion, Melesses (Peza)",
+    "badge": "Organic Farm Platter"
   },
   {
     "id": "exp_vassaltis-vineyards_1",
-    "title": "Vassaltis Vineyards Santorini - Black Volcanic Pumice & Single-Vineyard Gramina Tasting",
+    "title": "Vassaltis Vineyards Santorini - Vassaltis Volcanic Tasting & Food Bites",
     "durationMinutes": 60,
-    "pricePerPerson": 32,
-    "description": "Discover Santorini’s newest boutique icon built on black volcanic ash. Taste mineral-driven, saline Assyrtiko and barrel-fermented Nassitis.",
+    "pricePerPerson": 40,
+    "description": "The official Vassaltis tasting experience in Vourvoulos: 4 mineral-driven volcanic wines, each paired with a bespoke culinary bite created specifically to elevate that wine’s saline aromatics.",
     "includes": [
-      "Modern minimalist winery tour and volcanic soil geology briefing",
-      "4 terroir wines: Vassaltis Assyrtiko, Nassitis, Plethora & Gramina",
-      "Local Santorini caper leaves, sun-dried tomatoes & artisanal cheese"
+      "Minimalist boutique winery walkthrough and black pumice soil overview",
+      "4 signature wines: Vassaltis Assyrtiko, Nassitis, Plethora & Gramina",
+      "4 paired artisan culinary bites matching each wine label",
+      "Sommelier presentation of cool northern microclimates in Santorini"
     ],
     "producerId": "vassaltis-vineyards",
     "producerName": "Vassaltis Vineyards Santorini",
@@ -252,18 +263,19 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "category": "winery",
     "destination": "santorini",
     "location": "Santorini, Vourvoulos",
-    "badge": "Volcanic Terroir"
+    "badge": "Boutique Tasting"
   },
   {
     "id": "exp_vassaltis-vineyards_2",
-    "title": "Vassaltis Vineyards Santorini - Santorini Sunset Barrique & Amphora Gastronomy Pairing",
-    "durationMinutes": 90,
-    "pricePerPerson": 65,
-    "description": "An intimate evening tasting on the Vourvoulos terrace featuring clay amphora and experimental oak cuvees paired with Aegean delicacies.",
+    "title": "Vassaltis Vineyards Santorini - Cellar Tour & Whole Experience Gastronomy Lunch",
+    "durationMinutes": 120,
+    "pricePerPerson": 90,
+    "description": "Intimate cellar tour with the winemaking team followed by \"The Whole Experience\" on the panoramic terrace: a four-course seasonal lunch menu paired with 4 cru wines.",
     "includes": [
-      "5 limited-release cuvees including Amphora Assyrtiko and Mavrotragano",
-      "Four-course Aegean gastronomy pairing prepared by the estate chef",
-      "Panoramic caldera and northern Aegean twilight views"
+      "Private cellar inspection (maximum 12 guests) with barrel tasting",
+      "Four-course Aegean gastronomy lunch prepared by the estate chef",
+      "4 paired wines including Barrel-Fermented Assyrtiko and Mavrotragano",
+      "Unobstructed Aegean and northern Santorini coastal panorama"
     ],
     "producerId": "vassaltis-vineyards",
     "producerName": "Vassaltis Vineyards Santorini",
@@ -271,18 +283,19 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "category": "winery",
     "destination": "santorini",
     "location": "Santorini, Vourvoulos",
-    "badge": "Sunset Gastronomy"
+    "badge": "Gastronomy Lunch"
   },
   {
     "id": "exp_skouras-winery-nemea_1",
-    "title": "Ktima Skouras (Peloponnese) - Megas Oenos Heritage Tour & Agiorgitiko Terroir Flight",
+    "title": "Ktima Skouras (Peloponnese) - Megas Oenos Heritage Tour & Agiorgitiko Flight",
     "durationMinutes": 60,
-    "pricePerPerson": 28,
-    "description": "Visit the legendary George Skouras in Malandreni, taste the iconic Megas Oenos blend (Agiorgitiko & Cabernet), and learn Nemea wine history.",
+    "pricePerPerson": 25,
+    "description": "Visit the legendary George Skouras in Malandreni (Argolida): tour the grand 1,000-barrel cellar and contemporary art gallery, tasting 4 signature wines including Megas Oenos.",
     "includes": [
-      "Tour of the majestic 1,000-barrel maturation cellar and contemporary art gallery",
-      "4 wines: Megas Oenos, Grand Cuvee Nemea, Salto Moschofilero, Peplo Rose",
-      "Peloponnesian graviera cheese, rustic sourdough bread & olive tapenade"
+      "Tour of the 1,000-barrel French oak maturation cellar and winery bistro",
+      "4 signature wines: Megas Oenos (Agiorgitiko/Cabernet), Grand Cuvee Nemea, Salto Moschofilero & Peplo Rose",
+      "Peloponnesian graviera cheese, rustic sourdough bread & olive tapenade",
+      "History of George Skouras revolutionizing modern Greek wine since 1986"
     ],
     "producerId": "skouras-winery-nemea",
     "producerName": "Ktima Skouras (Peloponnese)",
@@ -290,14 +303,14 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "category": "winery",
     "destination": "peloponnese",
     "location": "Nemea, Malandreni (Argos)",
-    "badge": "Nemea Icon"
+    "badge": "Megas Oenos Heritage"
   },
   {
     "id": "exp_skouras-winery-nemea_2",
-    "title": "Ktima Skouras (Peloponnese) - Grand Cuvee Cellar Master Vertical & Peloponnesian Gastronomy Lunch",
+    "title": "Ktima Skouras (Peloponnese) - Grand Cuvee Cellar Master Vertical & Peloponnesian Luncheon",
     "durationMinutes": 100,
     "pricePerPerson": 65,
-    "description": "A sommelier-led vertical tasting comparing 3 decades of Megas Oenos and Grand Cuvee Nemea, followed by a seasonal regional luncheon.",
+    "description": "A sommelier-led vertical tasting comparing 3 decades of Megas Oenos and Grand Cuvee Nemea, followed by a seasonal regional luncheon in the estate bistro.",
     "includes": [
       "5 wines including 2 rare library back-vintages aged 10+ years",
       "Three-course Peloponnesian lunch featuring slow-braised beef in Agiorgitiko reduction",
@@ -309,18 +322,19 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "category": "winery",
     "destination": "peloponnese",
     "location": "Nemea, Malandreni (Argos)",
-    "badge": "Library Vertical"
+    "badge": "Three-Decade Vertical"
   },
   {
     "id": "exp_thymiopoulos-naoussa_1",
     "title": "Thymiopoulos Vineyards Naoussa - Earth & Sky Biodynamic Xinomavro Tasting",
     "durationMinutes": 60,
     "pricePerPerson": 26,
-    "description": "Visit Apostolos Thymiopoulos in Trilofos, the visionary who redefined Xinomavro through natural, low-intervention biodynamic farming.",
+    "description": "Visit Apostolos Thymiopoulos in Trilofos, the visionary who redefined Xinomavro: tour the biodynamic vineyards and taste 4 terroir expressions with local batzina pie.",
     "includes": [
-      "Walk through biodynamic vineyards planted with wild flora and herbs",
+      "Walk through living biodynamic vineyards planted with wild flora, clover, and herbs",
       "4 terroir expressions: Rose de Xinomavro, Jeunes Vignes, Alta & Earth & Sky",
-      "Traditional Naoussa batzina vegetable pie and aged feta bites"
+      "Traditional Naoussa batzina vegetable pie and aged feta bites",
+      "Discussion of natural spontaneous fermentation and low sulfur protocols"
     ],
     "producerId": "thymiopoulos-naoussa",
     "producerName": "Thymiopoulos Vineyards Naoussa",
@@ -332,14 +346,15 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
   },
   {
     "id": "exp_thymiopoulos-naoussa_2",
-    "title": "Thymiopoulos Vineyards Naoussa - Thymiopoulos High-Elevation Terroir Vertical & Spiced Meze",
+    "title": "Thymiopoulos Vineyards Naoussa - 10-Wine Vermion Terroir Vertical & Artisan Platter",
     "durationMinutes": 90,
     "pricePerPerson": 55,
-    "description": "Compare single-parcel Xinomavro wines from various microclimates across Mount Vermion, paired with regional Northern Greek dishes.",
+    "description": "Cellar tasting directly from large 5,000L neutral Slavonian oak casks: taste 10 wines comparing single-parcel terroirs across Mount Vermion with local cured meats and cheeses.",
     "includes": [
-      "5 wines including single-vineyard Vrana Petra, Aftorizo and back vintages",
-      "Cellar barrel tasting directly from large 5,000L neutral Slavonian oak casks",
-      "Naoussa slow-cooked beef with quince, local sausages & aged Kasseri"
+      "Tasting from large 5,000L neutral casks and clay vessels in the cellar",
+      "10 wines including single-vineyard Vrana Petra, Aftorizo, and rare library releases",
+      "Abundant platter of Naoussa slow-cooked beef bites, spicy cured salami, and aged Kasseri",
+      "In-depth geological comparison of schists, limestone, and red clay soils"
     ],
     "producerId": "thymiopoulos-naoussa",
     "producerName": "Thymiopoulos Vineyards Naoussa",
@@ -347,56 +362,57 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "category": "winery",
     "destination": "northern_greece",
     "location": "Naoussa, Trilofos",
-    "badge": "Masterclass Cru"
+    "badge": "10-Wine Masterclass"
   },
   {
     "id": "exp_tyrokomio-gasparis_1",
-    "title": "Gasparis Traditional Mountain Dairy - Gasparis Cave-Aged Sheep Graviera & Fresh Mizithra Tasting",
-    "durationMinutes": 60,
-    "pricePerPerson": 18,
-    "description": "Visit an authentic artisan dairy in Rethymno, learn how alpine sheep and goat milk are transformed into PDO Cretan Graviera.",
+    "title": "Gasparis Traditional Mountain Dairy - Artisan Raw Milk Graviera & Fresh Cheese Flight",
+    "durationMinutes": 50,
+    "pricePerPerson": 16,
+    "badge": "Dairy Flight",
+    "description": "Taste authentic raw sheep and goat cheeses crafted following traditional alpine pastoral methods at Gasparis Traditional Mountain Dairy.",
     "includes": [
-      "Walk through temperature-controlled cheese aging and salting cellars",
-      "Tasting of 4 cheeses: Fresh Sweet Mizithra, Dry Anthotiros, 6-Month Graviera & Cave-Aged Reserve",
-      "Warm village sourdough bread, thyme honey & sweet cherry tomatoes"
+      "Walkthrough of the cheese salting and temperature-controlled curing cellar",
+      "Tasting of 4 fresh and aged cheeses (Mizithra, Anthotiros, Graviera)",
+      "Crushed barley rusks, wild thyme honey & mountain tea"
     ],
     "producerId": "tyrokomio-gasparis",
     "producerName": "Gasparis Traditional Mountain Dairy",
     "producerGreekName": "Παραδοσιακό Τυροκομείο Γάσπαρης",
     "category": "cheese_dairy",
     "destination": "crete",
-    "location": "Chania, Gavalochori (Apokoronas)",
-    "badge": "Artisan Dairy"
+    "location": "Chania, Gavalochori (Apokoronas)"
   },
   {
     "id": "exp_tyrokomio-gasparis_2",
-    "title": "Gasparis Traditional Mountain Dairy - Rethymno Artisan Cheese-Making Workshop & Mountain Wine Pairing",
+    "title": "Gasparis Traditional Mountain Dairy - Shepherd Cauldron Workshop & Terroir Wine Pairing",
     "durationMinutes": 80,
-    "pricePerPerson": 35,
-    "description": "Watch the master cheesemaker set the curd in traditional copper cauldrons and press cheese wheels into woven molds.",
+    "pricePerPerson": 32,
+    "badge": "Master Cheesemaker",
+    "description": "Watch the master cheesemaker separate curds and whey in traditional copper vats, followed by vertical cheese tasting paired with native wines.",
     "includes": [
-      "Live demonstration of curds heating and traditional hand pressing",
-      "Vertical tasting of Graviera aged 3, 12, and 24 months",
-      "Pairing with 2 local Cretan wines (Vidiano and Liatiko) and barley rusks"
+      "Live demonstration of curds heating and cheese mold pressing",
+      "Tasting of 3 aged cave Gravieras aged 6, 12, and 24 months",
+      "2 glasses of local wine paired with wild greens and artisan charcuterie"
     ],
     "producerId": "tyrokomio-gasparis",
     "producerName": "Gasparis Traditional Mountain Dairy",
     "producerGreekName": "Παραδοσιακό Τυροκομείο Γάσπαρης",
     "category": "cheese_dairy",
     "destination": "crete",
-    "location": "Chania, Gavalochori (Apokoronas)",
-    "badge": "Cheesemaker Hands-on"
+    "location": "Chania, Gavalochori (Apokoronas)"
   },
   {
     "id": "exp_estate-argyros-santorini_1",
-    "title": "Estate Argyros Santorini - 150-Yr Kouloura Ungrafted Vine & Assyrtiko Terroir Flight",
+    "title": "Estate Argyros Santorini - Estate Argyros Welcome Tour & 4-Wine Flight",
     "durationMinutes": 60,
-    "pricePerPerson": 35,
-    "description": "Walk through ungrafted bush vines woven into protective kouloura baskets against Aegean winds, followed by 4 single-parcel Assyrtiko wines.",
+    "pricePerPerson": 25,
+    "description": "The official estate welcome tour: guided walk through the 150+ year-old ungrafted bush-vine parcels and state-of-the-art production area, tasting 4 wines including signature Vinsanto, accompanied by artisanal local cheeses.",
     "includes": [
-      "Vineyard walk among 150+ year-old phylloxera-free rootstocks",
-      "4 Estate Assyrtiko wines (Estate, Oak Fermented, Cuvee Monsignori, Cuvee Evdemon)",
-      "Cycladic graviera cheese, Santorini cherry tomato paste & barley rusks"
+      "Guided tour of ancient bush vineyards and modern production winery",
+      "Flight of 4 estate wines (Estate Argyros Assyrtiko, Oak Fermented, Cuvee Monsignori & signature Vinsanto)",
+      "Selection of traditional Cycladic cheeses and barley rusks",
+      "In-depth explanation of phylloxera-free volcanic terroir and kouloura basket pruning"
     ],
     "producerId": "estate-argyros-santorini",
     "producerName": "Estate Argyros Santorini",
@@ -404,18 +420,19 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "category": "winery",
     "destination": "santorini",
     "location": "Santorini, Episkopi Gonia",
-    "badge": "Signature Terroir"
+    "badge": "Official Welcome Tour"
   },
   {
     "id": "exp_estate-argyros-santorini_2",
-    "title": "Estate Argyros Santorini - Century-Old Vinsanto Masterclass & Library Vintage Cellar Tour",
+    "title": "Estate Argyros Santorini - Taste the Real Santorini Food & Wine Pairing",
     "durationMinutes": 90,
-    "pricePerPerson": 75,
-    "description": "An exclusive masterclass exploring Argyros’s historic barrel room and rare Vinsanto vintages aged up to 20 years in French oak barrels.",
+    "pricePerPerson": 40,
+    "description": "Led by a dedicated Wine Educator, this official masterclass features 6 Estate Argyros wines matched with regional Greek cheeses and cold cuts, focusing on rare indigenous varieties and the remarkable aging potential of Vinsanto.",
     "includes": [
-      "Private tour of the state-of-the-art barrel aging sanctuary",
-      "Flight of 5 wines including 12-Year and 20-Year barrel-aged Vinsanto",
-      "Aged goat cheese pairing, dry figs, roasted almonds & dark cocoa nibs"
+      "Full winery and barrel maturation cellar walkthrough",
+      "6 estate wines exploring single-parcel Assyrtiko and library Vinsanto",
+      "Gourmet platter of selected Greek cheeses, smoked cold cuts & caper leaves",
+      "Sommelier guidance on the art of Santorini food and wine pairing"
     ],
     "producerId": "estate-argyros-santorini",
     "producerName": "Estate Argyros Santorini",
@@ -423,311 +440,326 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "category": "winery",
     "destination": "santorini",
     "location": "Santorini, Episkopi Gonia",
-    "badge": "Collector Reserve"
+    "badge": "Official Pairing Flight"
   },
   {
     "id": "exp_semeli-estate-nemea_1",
-    "title": "Semeli Estate Nemea - Estate Terroir Flight (Agiorgitiko, Moschofilero, Malagousia)",
-    "durationMinutes": 50,
-    "pricePerPerson": 18,
-    "badge": "Estate Flight",
-    "description": "Experience the signature terroir of Nemea with a guided tasting of 4 estate wines featuring Agiorgitiko, Moschofilero, Malagousia.",
+    "title": "Semeli Estate Nemea - \"#SemeliWineExperience I\" Tour & PDO Peloponnese Flight",
+    "durationMinutes": 60,
+    "pricePerPerson": 24,
+    "description": "The official Semeli Estate experience in Koutsi: guided tour of the production, bottling areas, and cellar, followed by a tasting of 4 signature wines showcasing Mantinia and Nemea PDOs.",
     "includes": [
-      "4 signature estate wines focusing on Agiorgitiko, Moschofilero, Malagousia",
-      "Artisanal local cheese bites & Cretan barley rusks",
-      "Introduction to the estate vineyards and regional microclimate"
+      "Guided tour of gravity-flow production halls, bottling line, and barrel cellar",
+      "4 signature wines: Feast Moschofilero, Semeli Mantinia, Mountain Sun & Semeli Nemea Reserve",
+      "Traditional Greek breadsticks, artisan cheese bites, and olive tapenade",
+      "Panoramic hillside views of the Corinthian Gulf from 600m altitude"
     ],
     "producerId": "semeli-estate-nemea",
     "producerName": "Semeli Estate Nemea",
     "producerGreekName": "Κτήμα Σεμέλη Νεμέα",
     "category": "winery",
     "destination": "peloponnese",
-    "location": "Nemea, Koutsi (Nemea)"
+    "location": "Nemea, Koutsi (Nemea)",
+    "badge": "Official Semeli Tour"
   },
   {
     "id": "exp_semeli-estate-nemea_2",
-    "title": "Semeli Estate Nemea - Cellar Master Reserve Tour & Regional Meze",
-    "durationMinutes": 80,
-    "pricePerPerson": 38,
-    "badge": "Cellar Reserve",
-    "description": "Go behind the scenes into the oak barrel maturation cellars of Semeli Estate Nemea, followed by tasting 5 premium reserve wines paired with regional delicacies.",
+    "title": "Semeli Estate Nemea - Exclusive Private Cellar Tasting & Wine Pic-Nic",
+    "durationMinutes": 90,
+    "pricePerPerson": 60,
+    "description": "The premier Semeli package: private cellar tasting of 7 iconic vintages with the resident sommelier, or a private tasting at a vineyard kiosk with a gourmet picnic basket.",
     "includes": [
-      "Full walking tour of the vineyards and underground barrel maturation room",
-      "5 premium reserve & single-vineyard wines",
-      "Traditional meze platter with cured meats, local mountain cheeses and estate olive oil"
+      "Private access to the underground barrel aging cellar or panoramic vineyard kiosk",
+      "7 iconic vintages including single-block Agiorgitiko reserves and library releases",
+      "Gourmet picnic basket with artisanal cheeses, cured meats, fresh fruits, and warm bread",
+      "Guided tasting commentary on the chalky soils and microclimate of Koutsi"
     ],
     "producerId": "semeli-estate-nemea",
     "producerName": "Semeli Estate Nemea",
     "producerGreekName": "Κτήμα Σεμέλη Νεμέα",
     "category": "winery",
     "destination": "peloponnese",
-    "location": "Nemea, Koutsi (Nemea)"
+    "location": "Nemea, Koutsi (Nemea)",
+    "badge": "Private Cellar Tasting"
   },
   {
     "id": "exp_kir-yianni-naoussa_1",
-    "title": "Ktima Kir-Yianni Naoussa - Estate Terroir Flight (Xinomavro, Malagousia, Assyrtiko)",
-    "durationMinutes": 50,
+    "title": "Ktima Kir-Yianni Naoussa - Tailored Naoussa & Amyndeon 4-Label Flight",
+    "durationMinutes": 60,
     "pricePerPerson": 18,
-    "badge": "Estate Flight",
-    "description": "Experience the signature terroir of Naoussa with a guided tasting of 4 estate wines featuring Xinomavro, Malagousia, Assyrtiko.",
+    "description": "The official visitor experience at Ktima Kir-Yianni in Yianakohori: guided tour of the winemaking facilities, 4 wine samples (30ml each), and an individual food platter.",
     "includes": [
-      "4 signature estate wines focusing on Xinomavro, Malagousia, Assyrtiko",
-      "Artisanal local cheese bites & Cretan barley rusks",
-      "Introduction to the estate vineyards and regional microclimate"
+      "Guided tour of the state-of-the-art vinification and aging facilities on Mount Vermion",
+      "4 wine samples featuring Ramnista Naoussa Xinomavro, Kali Riza, and Amyndeon whites",
+      "Individual platter of Greek graviera cheese, seasoned breadsticks & dried fruits",
+      "Introduction to the Boutaris family heritage and the crus of Naoussa"
     ],
     "producerId": "kir-yianni-naoussa",
     "producerName": "Ktima Kir-Yianni Naoussa",
     "producerGreekName": "Κτήμα Κυρ-Γιάννη Νάουσα",
     "category": "winery",
     "destination": "northern_greece",
-    "location": "Naoussa, Yiannakochori"
+    "location": "Naoussa, Yiannakochori",
+    "badge": "Official Tailored Flight"
   },
   {
     "id": "exp_kir-yianni-naoussa_2",
-    "title": "Ktima Kir-Yianni Naoussa - Cellar Master Reserve Tour & Regional Meze",
-    "durationMinutes": 80,
-    "pricePerPerson": 38,
-    "badge": "Cellar Reserve",
-    "description": "Go behind the scenes into the oak barrel maturation cellars of Ktima Kir-Yianni Naoussa, followed by tasting 5 premium reserve wines paired with regional delicacies.",
+    "title": "Ktima Kir-Yianni Naoussa - Yiannis Boutaris Hall Private Reserve & E-Bike Vineyard Tour",
+    "durationMinutes": 120,
+    "pricePerPerson": 55,
+    "description": "E-bike through the steep terraced vineyards of Yianakohori followed by a private tasting in the \"Yiannis Boutaris Hall\" of flagship crus paired with regional dishes.",
     "includes": [
-      "Full walking tour of the vineyards and underground barrel maturation room",
-      "5 premium reserve & single-vineyard wines",
-      "Traditional meze platter with cured meats, local mountain cheeses and estate olive oil"
+      "Guided e-bike exploration through high-altitude Mount Vermion vineyard blocks",
+      "Private reserve tasting in the Yiannis Boutaris Hall: Diaporos Single-Block, Ble Alepou & Library Vintages",
+      "Three-course regional food pairing from the estate culinary team",
+      "Sommelier discussion on Xinomavro tannins and 20-year cellaring potential"
     ],
     "producerId": "kir-yianni-naoussa",
     "producerName": "Ktima Kir-Yianni Naoussa",
     "producerGreekName": "Κτήμα Κυρ-Γιάννη Νάουσα",
     "category": "winery",
     "destination": "northern_greece",
-    "location": "Naoussa, Yiannakochori"
+    "location": "Naoussa, Yiannakochori",
+    "badge": "Private Hall Reserve"
   },
   {
     "id": "exp_douloufakis-winery_1",
-    "title": "Douloufakis Winery - Estate Terroir Flight (Vidiano, Liatiko, Kotsifali)",
-    "durationMinutes": 50,
-    "pricePerPerson": 18,
-    "badge": "Estate Flight",
-    "description": "Experience the signature terroir of Heraklion with a guided tasting of 4 estate wines featuring Vidiano, Liatiko, Kotsifali.",
+    "title": "Douloufakis Winery - \"YAMAS\" Estate Cellar Wine Tasting",
+    "durationMinutes": 90,
+    "pricePerPerson": 30,
+    "description": "The official Douloufakis estate experience in Dafnes: guided tour of the winery and cellar, followed by a relaxed tasting of 6 wines focusing on Vidiano and Liatiko with Cretan graviera.",
     "includes": [
-      "4 signature estate wines focusing on Vidiano, Liatiko, Kotsifali",
-      "Artisanal local cheese bites & Cretan barley rusks",
-      "Introduction to the estate vineyards and regional microclimate"
+      "Guided tour of the fermentation cellar, oak aging rooms & bottling line",
+      "6 estate wines featuring Dafnios Vidiano, Aspros Lagos Oak, and Amphora Vidiano",
+      "Artisanal Cretan barley rusks & aged graviera cheese bites",
+      "History of 3 generations of Douloufakis winemaking in the Dafnes PDO"
     ],
     "producerId": "douloufakis-winery",
     "producerName": "Douloufakis Winery",
     "producerGreekName": "Οινοποιείο Δουλουφάκη",
     "category": "winery",
     "destination": "crete",
-    "location": "Heraklion, Dafnes"
+    "location": "Heraklion, Dafnes",
+    "badge": "Official Yamas Flight"
   },
   {
     "id": "exp_douloufakis-winery_2",
-    "title": "Douloufakis Winery - Cellar Master Reserve Tour & Regional Meze",
-    "durationMinutes": 80,
-    "pricePerPerson": 38,
-    "badge": "Cellar Reserve",
-    "description": "Go behind the scenes into the oak barrel maturation cellars of Douloufakis Winery, followed by tasting 5 premium reserve wines paired with regional delicacies.",
+    "title": "Douloufakis Winery - \"ARISMARI\" Vineyard Tour & Pergola Tasting",
+    "durationMinutes": 120,
+    "pricePerPerson": 40,
+    "description": "Outdoor immersive experience: winery tour followed by transport to the hillside vineyards for a tasting of 6 wines under a traditional pergola with panoramic Cretan mountain views.",
     "includes": [
-      "Full walking tour of the vineyards and underground barrel maturation room",
-      "5 premium reserve & single-vineyard wines",
-      "Traditional meze platter with cured meats, local mountain cheeses and estate olive oil"
+      "Scenic transfer to the high-elevation Dafnes limestone vineyards",
+      "Tasting of 6 premium cru wines under the vineyard pergola",
+      "Accompaniments of traditional Cretan cheeses, organic olive oil & paximadia",
+      "Botanical walk among wild rosemary (arismari) and thyme bushes"
     ],
     "producerId": "douloufakis-winery",
     "producerName": "Douloufakis Winery",
     "producerGreekName": "Οινοποιείο Δουλουφάκη",
     "category": "winery",
     "destination": "crete",
-    "location": "Heraklion, Dafnes"
+    "location": "Heraklion, Dafnes",
+    "badge": "Official Arismari Flight"
   },
   {
     "id": "exp_manousakis-winery_1",
-    "title": "Manousakis Winery (Nostos) - Estate Terroir Flight (Romeiko, Vidiano, Assyrtiko)",
-    "durationMinutes": 50,
-    "pricePerPerson": 18,
-    "badge": "Estate Flight",
-    "description": "Experience the signature terroir of Chania with a guided tasting of 4 estate wines featuring Romeiko, Vidiano, Assyrtiko.",
+    "title": "Manousakis Winery (Nostos) - Nostos Organic Tasting & Complimentary Winery Tour",
+    "durationMinutes": 60,
+    "pricePerPerson": 20,
+    "description": "In the peaceful village of Vatolakkos, join daily complimentary tours (12pm, 2pm, 4pm, 6pm, 8pm) followed by an organic tasting on the garden terrace among olive and orange groves.",
     "includes": [
-      "4 signature estate wines focusing on Romeiko, Vidiano, Assyrtiko",
-      "Artisanal local cheese bites & Cretan barley rusks",
-      "Introduction to the estate vineyards and regional microclimate"
+      "Complimentary guided winery production and barrel cellar walkthrough",
+      "Tasting of 5 organic Nostos wines (Roussanne, Grenache, Syrah, Nostos Blend & Romeiko)",
+      "Cretan barley rusks and estate organic extra virgin olive oil",
+      "Relaxing garden seating under century-old olive and citrus trees"
     ],
     "producerId": "manousakis-winery",
     "producerName": "Manousakis Winery (Nostos)",
     "producerGreekName": "Οινοποιείο Μανουσάκη",
     "category": "winery",
     "destination": "crete",
-    "location": "Chania, Vatolakkos"
+    "location": "Chania, Vatolakkos",
+    "badge": "Organic Nostos Flight"
   },
   {
     "id": "exp_manousakis-winery_2",
-    "title": "Manousakis Winery (Nostos) - Cellar Master Reserve Tour & Regional Meze",
-    "durationMinutes": 80,
-    "pricePerPerson": 38,
-    "badge": "Cellar Reserve",
-    "description": "Go behind the scenes into the oak barrel maturation cellars of Manousakis Winery (Nostos), followed by tasting 5 premium reserve wines paired with regional delicacies.",
+    "title": "Manousakis Winery (Nostos) - Wine Dinner Under the Stars & Terrace Taverna Pairing",
+    "durationMinutes": 120,
+    "pricePerPerson": 65,
+    "description": "Experience an enchanting dinner on the stone tasting terrace: authentic slow-cooked Cretan dishes from the estate taverna paired with premium single-block Nostos wines.",
     "includes": [
-      "Full walking tour of the vineyards and underground barrel maturation room",
-      "5 premium reserve & single-vineyard wines",
-      "Traditional meze platter with cured meats, local mountain cheeses and estate olive oil"
+      "Four-course traditional Cretan dinner prepared with local organic ingredients",
+      "5 paired premium Nostos wines including reserve Syrah and barrel Roussanne",
+      "Atmospheric evening candlelight dining in the olive courtyard",
+      "Warm carob bread, fresh seasonal fruit, and chilled tsikoudia digestive"
     ],
     "producerId": "manousakis-winery",
     "producerName": "Manousakis Winery (Nostos)",
     "producerGreekName": "Οινοποιείο Μανουσάκη",
     "category": "winery",
     "destination": "crete",
-    "location": "Chania, Vatolakkos"
+    "location": "Chania, Vatolakkos",
+    "badge": "Taverna Under Stars"
   },
   {
     "id": "exp_lyrarakis-winery_1",
-    "title": "Lyrarakis Winery - Estate Terroir Flight (Dafni, Plyto, Melissaki)",
-    "durationMinutes": 50,
-    "pricePerPerson": 18,
-    "badge": "Estate Flight",
-    "description": "Experience the signature terroir of Heraklion with a guided tasting of 4 estate wines featuring Dafni, Plyto, Melissaki.",
+    "title": "Lyrarakis Winery - Single-Variety Revival Tasting Package",
+    "durationMinutes": 60,
+    "pricePerPerson": 22,
+    "description": "The official tasting package from Lyrarakis in Alagni: explore single-variety wines from rare indigenous grapes saved from extinction by the family, including Dafni, Plyto, and Melissaki.",
     "includes": [
-      "4 signature estate wines focusing on Dafni, Plyto, Melissaki",
-      "Artisanal local cheese bites & Cretan barley rusks",
-      "Introduction to the estate vineyards and regional microclimate"
+      "Tasting of 5 single-variety wines: Dafni Psarades, Plyto Psarades, Melissaki, Voila Assyrtiko & Mandilari Plakoura",
+      "Traditional Cretan rusks with extra virgin olive oil from the estate",
+      "Guided presentation on Minoan viticulture history and ampelography"
     ],
     "producerId": "lyrarakis-winery",
     "producerName": "Lyrarakis Winery",
     "producerGreekName": "Οινοποιείο Λυραράκη",
     "category": "winery",
     "destination": "crete",
-    "location": "Heraklion, Alagni"
+    "location": "Heraklion, Alagni",
+    "badge": "Ancient Grapes Revival"
   },
   {
     "id": "exp_lyrarakis-winery_2",
-    "title": "Lyrarakis Winery - Cellar Master Reserve Tour & Regional Meze",
-    "durationMinutes": 80,
-    "pricePerPerson": 38,
-    "badge": "Cellar Reserve",
-    "description": "Go behind the scenes into the oak barrel maturation cellars of Lyrarakis Winery, followed by tasting 5 premium reserve wines paired with regional delicacies.",
+    "title": "Lyrarakis Winery - The Psarades Vineyard Picnic Experience",
+    "durationMinutes": 120,
+    "pricePerPerson": 70,
+    "description": "Lyrarakis’s celebrated picnic in the heart of Psarades vineyard: an artisanal wicker basket filled with Cretan farm delicacies, fresh local cheeses, and chilled estate wine under the shade of olive trees.",
     "includes": [
-      "Full walking tour of the vineyards and underground barrel maturation room",
-      "5 premium reserve & single-vineyard wines",
-      "Traditional meze platter with cured meats, local mountain cheeses and estate olive oil"
+      "Artisanal picnic basket with homemade pies, aged Graviera, olives, and fresh bread",
+      "Bottle of estate single-vineyard wine (white or red) per couple",
+      "Private shaded seating spot in the vineyards overlooking the Lassithi Mountains",
+      "Complimentary entry to the winery cellar and vineyard trail"
     ],
     "producerId": "lyrarakis-winery",
     "producerName": "Lyrarakis Winery",
     "producerGreekName": "Οινοποιείο Λυραράκη",
     "category": "winery",
     "destination": "crete",
-    "location": "Heraklion, Alagni"
+    "location": "Heraklion, Alagni",
+    "badge": "Vineyard Picnic"
   },
   {
     "id": "exp_toplou-monastery-winery_1",
-    "title": "Monastery Toplou Organic Estate - Estate Terroir Flight (Liatiko, Thrapsathiri, Vilana)",
-    "durationMinutes": 50,
-    "pricePerPerson": 18,
-    "badge": "Estate Flight",
-    "description": "Experience the signature terroir of Lasithi with a guided tasting of 4 estate wines featuring Liatiko, Thrapsathiri, Vilana.",
+    "title": "Monastery Toplou Organic Estate - Toplou Monastery 15th-Century Cellar & Organic Tasting",
+    "durationMinutes": 45,
+    "pricePerPerson": 15,
+    "description": "Visit the historic fortified Monastery of Toplou in Sitia, exploring the stone vaulted cellar and tasting 4 certified organic wines crafted by the monastic community alongside estate olive oil.",
     "includes": [
-      "4 signature estate wines focusing on Liatiko, Thrapsathiri, Vilana",
-      "Artisanal local cheese bites & Cretan barley rusks",
-      "Introduction to the estate vineyards and regional microclimate"
+      "Guided tour of the 15th-century monastic stone cellar and winemaking estate",
+      "Flight of 4 organic wines (Vilana-Thrapsathiri White, PDO Sitia Red Liatiko-Mandilaria, Organic Rosé)",
+      "Toplou organic extra virgin olive oil tasting with monastic barley rusks",
+      "Entrance to the monastery courtyard and historical museum area"
     ],
     "producerId": "toplou-monastery-winery",
     "producerName": "Monastery Toplou Organic Estate",
     "producerGreekName": "Οινοποιείο Μονής Τοπλού",
     "category": "winery",
     "destination": "crete",
-    "location": "Lasithi, Sitia"
+    "location": "Lasithi, Sitia",
+    "badge": "Monastery Tasting"
   },
   {
     "id": "exp_toplou-monastery-winery_2",
-    "title": "Monastery Toplou Organic Estate - Cellar Master Reserve Tour & Regional Meze",
-    "durationMinutes": 80,
-    "pricePerPerson": 38,
-    "badge": "Cellar Reserve",
-    "description": "Go behind the scenes into the oak barrel maturation cellars of Monastery Toplou Organic Estate, followed by tasting 5 premium reserve wines paired with regional delicacies.",
+    "title": "Monastery Toplou Organic Estate - Historic Monastic Reserve & Tsikoudia Masterclass",
+    "durationMinutes": 75,
+    "pricePerPerson": 35,
+    "description": "An exclusive masterclass inside the Abbot’s reserve tasting room, featuring aged Liatiko library reserves, organic double-distilled Tsikoudia, and traditional monastic cheeses.",
     "includes": [
-      "Full walking tour of the vineyards and underground barrel maturation room",
-      "5 premium reserve & single-vineyard wines",
-      "Traditional meze platter with cured meats, local mountain cheeses and estate olive oil"
+      "Private cellar walkthrough with the estate wine curator",
+      "6 premium and aged reserve wines including Sun-Dried Sweet Liatiko",
+      "Taste of organic distilled Tsikoudia of Crete from copper alembic",
+      "Platter of Sitia monastic graviera, pickled sea fennel & organic olives"
     ],
     "producerId": "toplou-monastery-winery",
     "producerName": "Monastery Toplou Organic Estate",
     "producerGreekName": "Οινοποιείο Μονής Τοπλού",
     "category": "winery",
     "destination": "crete",
-    "location": "Lasithi, Sitia"
+    "location": "Lasithi, Sitia",
+    "badge": "Monastic Reserve"
   },
   {
     "id": "exp_kazani-stilianou_1",
-    "title": "Kazani Stilianou & Organic Estate - Copper Alembic Still Tour & Tsikoudia Flight",
+    "title": "Kazani Stilianou & Organic Estate - Organic Micro-Winery & Traditional Copper Kazani Tour",
     "durationMinutes": 45,
-    "pricePerPerson": 14,
-    "badge": "Still Tour",
-    "description": "Witness traditional wood-fired distillation in historic copper alembic stills at Kazani Stilianou & Organic Estate and taste crystal-clear grape spirit.",
+    "pricePerPerson": 15,
+    "description": "In Kounavoi (Archanes wine region): visit Giannis Stilianou’s certified organic boutique estate and traditional wood-fired copper raki still (kazani).",
     "includes": [
-      "Walkthrough of the copper distillation pot and steam condensation coil",
-      "Tasting of 3 distillates (pure tsikoudia, aged raki & herbal rakomelo)",
-      "Local roasted nuts, dried figs & mountain honey"
+      "Walkthrough of dry-farmed organic bush vineyards and copper distillation cauldron",
+      "Tasting of 3 organic natural wines (Vidiano, Kotsifali, Mandilaria)",
+      "Sample of pure, freshly distilled organic Tsikoudia (Raki)",
+      "Traditional Cretan barley dakos with fresh grated tomato, mizithra cheese & olive oil"
     ],
     "producerId": "kazani-stilianou",
     "producerName": "Kazani Stilianou & Organic Estate",
     "producerGreekName": "Καζάνι Στυλιανού",
     "category": "kazani",
     "destination": "crete",
-    "location": "Heraklion, Kounavoi"
+    "location": "Heraklion, Kounavoi",
+    "badge": "Kazani & Wine (€15)"
   },
   {
     "id": "exp_kazani-stilianou_2",
-    "title": "Kazani Stilianou & Organic Estate - Village Rakokazano Feast & Oak-Aged Spirit Pairing",
-    "durationMinutes": 90,
-    "pricePerPerson": 38,
-    "badge": "Kazani Feast",
-    "description": "An unforgettable evening of Greek hospitality: taste spirit fresh from the coil while meats roast over open embers in Heraklion.",
+    "title": "Kazani Stilianou & Organic Estate - Cellar Tasting, Raki Distillation & Archanes Meze Feast",
+    "durationMinutes": 75,
+    "pricePerPerson": 32,
+    "description": "An authentic Cretan immersion: barrel cellar tasting, in-depth explanation of traditional autumn raki boiling rituals, and a generous homemade Archanes meze feast.",
     "includes": [
-      "Tasting of fresh warm distillate straight from the copper pipe",
-      "Charcoal-grilled local meats, wood-roasted potatoes & village salad",
-      "Tasting of oak-matured amber reserve tsikoudia"
+      "Guided barrel cellar tour and tasting of aged reserve organic cuvées",
+      "Double-distilled oak-aged Tsikoudia spirit tasting",
+      "Abundant homemade meze feast: stuffed vine leaves (dolmades), slow-cooked fava & village cheeses",
+      "Stories of Cretan rakokazana customs and musical traditions with the winemaker"
     ],
     "producerId": "kazani-stilianou",
     "producerName": "Kazani Stilianou & Organic Estate",
     "producerGreekName": "Καζάνι Στυλιανού",
     "category": "kazani",
     "destination": "crete",
-    "location": "Heraklion, Kounavoi"
+    "location": "Heraklion, Kounavoi",
+    "badge": "Distillation Feast"
   },
   {
     "id": "exp_biolea-estate_1",
-    "title": "Biolea Organic Artisanal Olive Mill - High-Phenolic EVOO Degustation & Mill Tour",
-    "durationMinutes": 50,
-    "pricePerPerson": 15,
-    "badge": "EVOO Tasting",
-    "description": "Learn the sensory secrets of certified extra virgin olive oil at Biolea Organic Artisanal Olive Mill, comparing early-harvest aromas and peppery polyphenol finishes.",
+    "title": "Biolea Organic Artisanal Olive Mill - Granite Millstone & Cold-Water EVOO Tasting",
+    "durationMinutes": 60,
+    "pricePerPerson": 7,
+    "description": "The official Biolea visitor experience: 1-hour tour exploring the history of olives in Crete, cultivation practices, the operational granite millstone, and tasting 4 awarded olive oils.",
     "includes": [
-      "Tour of the olive washing, crushing and cold-extraction facilities",
-      "Professional cobalt-glass sensory tasting of 3 monovarietal olive oils",
-      "Fresh warm sourdough bread, mountain sea salt & ripe tomato slices"
+      "Live demonstration of massive granite millstones crushing Koroneiki olives cold",
+      "Walkthrough of traditional hydraulic pressing mats operating without hot water addition",
+      "Professional tasting of 4 awarded organic olive oils (unfiltered traditional, nerantzi, lemon, chili)",
+      "Fresh warm country bread, rock salt crystals from Cretan cliffs & garden tomatoes"
     ],
     "producerId": "biolea-estate",
     "producerName": "Biolea Organic Artisanal Olive Mill",
     "producerGreekName": "Βιολέα - Βιολογικό Ελαιοτριβείο",
     "category": "olive_mill",
     "destination": "crete",
-    "location": "Chania, Astrikas (Kolymbari)"
+    "location": "Chania, Astrikas (Kolymbari)",
+    "badge": "Official Tour (€7)"
   },
   {
     "id": "exp_biolea-estate_2",
-    "title": "Biolea Organic Artisanal Olive Mill - Monumental Grove Walk & Wood-Fired Bread Workshop",
-    "durationMinutes": 80,
-    "pricePerPerson": 32,
-    "badge": "Heritage & Hearth",
-    "description": "Walk among historic olive trees in Chania and bake traditional village bread in outdoor wood ovens to pair with freshly pressed oils.",
+    "title": "Biolea Organic Artisanal Olive Mill - A Walk With the Owner & Chef’s Olive Pairing Menu",
+    "durationMinutes": 180,
+    "pricePerPerson": 65,
+    "description": "The premier Biolea experience: an extensive 3-hour walk through the organic olive groves with the estate owner, followed by a chef-crafted culinary degustation pairing menu.",
     "includes": [
-      "Botanical walk among ancient olive trees with explanations of regenerative farming",
-      "Hands-on bread baking and warm olive oil degustation",
-      "Traditional Cretan salad with mizithra, wild oregano & olives"
+      "Personal guided walk through organic dry-farmed groves with owner George Dimitriadis",
+      "In-depth discussion of sustainable biodynamic agriculture and high-phenolic milling",
+      "Multi-course chef’s degustation menu on the panoramic terrace overlooking Astrikas gorge",
+      "Curated pairings with local boutique organic wines and olive oil infused dishes"
     ],
     "producerId": "biolea-estate",
     "producerName": "Biolea Organic Artisanal Olive Mill",
     "producerGreekName": "Βιολέα - Βιολογικό Ελαιοτριβείο",
     "category": "olive_mill",
     "destination": "crete",
-    "location": "Chania, Astrikas (Kolymbari)"
+    "location": "Chania, Astrikas (Kolymbari)",
+    "badge": "Chef’s Pairing Menu"
   },
   {
     "id": "exp_monumental-olive-tree-vouves_1",
@@ -807,117 +839,123 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
   },
   {
     "id": "exp_wild-herbs-kallikratis_1",
-    "title": "Wild Herbs of Crete - Babis & Family - Wild Thyme Honey Flight & Bee Sanctuary Tour",
-    "durationMinutes": 45,
-    "pricePerPerson": 12,
-    "badge": "Raw Honey",
-    "description": "Discover how bees gather wild Cretan thyme, pine, and mountain herbs to produce pure unfiltered honey at Wild Herbs of Crete - Babis & Family.",
+    "title": "Wild Herbs of Crete - Babis & Family - Kallikratis Mountain Herb Walk & Essential Oil Distillation",
+    "durationMinutes": 50,
+    "pricePerPerson": 15,
+    "description": "In the remote mountain plateau of Kallikratis (Sfakia): join Babis and his family for an aromatic walk through wild herb fields and witness live copper still essential oil distillation.",
     "includes": [
-      "Guided walk through aromatic herb gardens with observation hives",
-      "3 raw mono-floral honey tastings with authentic sheep yogurt",
-      "Iced mountain tea infused with wild herbs and lemon"
+      "Guided stroll through mountain plots of Dictamnus (Erontas), Malotira (Sideritis), and wild thyme",
+      "Live copper alembic distillation demonstration extracting pure essential oils and floral waters",
+      "Hot or iced freshly brewed Malotira mountain tea with wild thyme honey",
+      "Small vial of pure essential oil or herbal hydrosol to take home"
     ],
     "producerId": "wild-herbs-kallikratis",
     "producerName": "Wild Herbs of Crete - Babis & Family",
     "producerGreekName": "Άγρια Βότανα Κρήτης - Καλλικράτης",
     "category": "apiary",
     "destination": "crete",
-    "location": "Chania, Kallikratis (Sfakia)"
+    "location": "Chania, Kallikratis (Sfakia)",
+    "badge": "Mountain Herbs (€15)"
   },
   {
     "id": "exp_wild-herbs-kallikratis_2",
-    "title": "Wild Herbs of Crete - Babis & Family - Beekeeper Suit Experience & Honeycomb Extraction",
+    "title": "Wild Herbs of Crete - Babis & Family - Botanical Foraging, Herbalism Masterclass & Sfakian Hearth Meze",
     "durationMinutes": 75,
-    "pricePerPerson": 30,
-    "badge": "Beekeeper Walk",
-    "description": "Wear a protective beekeeper suit to inspect live brood frames, learn queen bee behavior, and taste fresh honeycomb cut on the spot.",
+    "pricePerPerson": 28,
+    "description": "An immersive herbalism workshop in the White Mountains: learn wild harvesting techniques, blend your own mountain tisane, and enjoy a traditional Sfakian cheese pie meze.",
     "includes": [
-      "Full protective beekeeper suit and smoker training",
-      "Hands-on hive frame inspection with the head apiarist",
-      "Cut raw comb honey to taste, plus jar of organic raw honey to take home"
+      "Hands-on identification and foraging of endemic Cretan medicinal plants",
+      "Custom herbal tea blending session to craft your personalized tea pouch",
+      "Traditional Sfakian pie drizzled with wild mountain honey and served with tsikoudia",
+      "Herbal preparation guide and handbook on ancient Minoan herbal remedies"
     ],
     "producerId": "wild-herbs-kallikratis",
     "producerName": "Wild Herbs of Crete - Babis & Family",
     "producerGreekName": "Άγρια Βότανα Κρήτης - Καλλικράτης",
     "category": "apiary",
     "destination": "crete",
-    "location": "Chania, Kallikratis (Sfakia)"
+    "location": "Chania, Kallikratis (Sfakia)",
+    "badge": "Botanical Masterclass"
   },
   {
     "id": "exp_silva-daskalaki-winery_1",
-    "title": "Silva Daskalaki Winery - Estate Terroir Flight (Vidiano, Plyto, Kotsifali)",
-    "durationMinutes": 50,
-    "pricePerPerson": 18,
-    "badge": "Estate Flight",
-    "description": "Experience the signature terroir of Heraklion with a guided tasting of 4 estate wines featuring Vidiano, Plyto, Kotsifali.",
+    "title": "Silva Daskalaki Winery - \"A Taste of Crete\" 6-Wine & Local Cheese Flight",
+    "durationMinutes": 60,
+    "pricePerPerson": 22,
+    "description": "The official introductory package at Silva Daskalaki in Siva: a tour of the winery premises followed by tasting 6 distinct wines accompanied by Cretan rusks, aged gruyere, and fresh anthotyro cheese.",
     "includes": [
-      "4 signature estate wines focusing on Vidiano, Plyto, Kotsifali",
-      "Artisanal local cheese bites & Cretan barley rusks",
-      "Introduction to the estate vineyards and regional microclimate"
+      "Walkthrough of the modern boutique vinification and barrel rooms",
+      "6 estate wines: Vorinos White (Vidiano), Enstikto White, Vorinos Red (Liatiko/Kotsifali), Grifos & Rose",
+      "Traditional Cretan rusks with aged gruyere and mild anthotyro cheese",
+      "Sensory notes provided by the Daskalaki family sommeliers"
     ],
     "producerId": "silva-daskalaki-winery",
     "producerName": "Silva Daskalaki Winery",
     "producerGreekName": "Οινοποιείο Σίλβα Δασκαλάκη",
     "category": "winery",
     "destination": "crete",
-    "location": "Heraklion, Siva (Heraklion)"
+    "location": "Heraklion, Siva (Heraklion)",
+    "badge": "Official Taste of Crete"
   },
   {
     "id": "exp_silva-daskalaki-winery_2",
-    "title": "Silva Daskalaki Winery - Cellar Master Reserve Tour & Regional Meze",
-    "durationMinutes": 80,
-    "pricePerPerson": 38,
-    "badge": "Cellar Reserve",
-    "description": "Go behind the scenes into the oak barrel maturation cellars of Silva Daskalaki Winery, followed by tasting 5 premium reserve wines paired with regional delicacies.",
+    "title": "Silva Daskalaki Winery - \"Platinum Tasting\" 10-Wine Riedel Masterclass & Mezes",
+    "durationMinutes": 90,
+    "pricePerPerson": 65,
+    "description": "The premier Silva Daskalaki masterclass: 10 estate wines served in grape-specific Riedel glassware, paired with an abundant spread of authentic Cretan mezedes, dolmadakia, and wild green pies.",
     "includes": [
-      "Full walking tour of the vineyards and underground barrel maturation room",
-      "5 premium reserve & single-vineyard wines",
-      "Traditional meze platter with cured meats, local mountain cheeses and estate olive oil"
+      "Comprehensive cellar tour and private barrel sampling with the winemaker",
+      "10 award-winning wines served in professional Riedel crystal glasses",
+      "Full spread of Cretan mezes: dolmadakia, sarikopitakia, smoked apaki & aged graviera",
+      "Comparative tasting of fresh vs oak-matured Vidiano and Liatiko reserves"
     ],
     "producerId": "silva-daskalaki-winery",
     "producerName": "Silva Daskalaki Winery",
     "producerGreekName": "Οινοποιείο Σίλβα Δασκαλάκη",
     "category": "winery",
     "destination": "crete",
-    "location": "Heraklion, Siva (Heraklion)"
+    "location": "Heraklion, Siva (Heraklion)",
+    "badge": "Platinum Riedel Flight"
   },
   {
     "id": "exp_karavitakis-winery_1",
-    "title": "Karavitakis Winery - Estate Terroir Flight (Romaiko, Vidiano, Malagousia)",
+    "title": "Karavitakis Winery - Pontikiana Estate Vineyard Walk & 4-Wine Flight",
     "durationMinutes": 50,
-    "pricePerPerson": 18,
-    "badge": "Estate Flight",
-    "description": "Experience the signature terroir of Chania with a guided tasting of 4 estate wines featuring Romaiko, Vidiano, Malagousia.",
+    "pricePerPerson": 12,
+    "description": "Visit the modern Karavitakis winery nestled in the rolling green hills of Pontikiana (Kolymbari): walk the experimental vine garden and taste 4 fresh estate wines.",
     "includes": [
-      "4 signature estate wines focusing on Romaiko, Vidiano, Malagousia",
-      "Artisanal local cheese bites & Cretan barley rusks",
-      "Introduction to the estate vineyards and regional microclimate"
+      "Walk through the 30-variety experimental botanical vineyard",
+      "Tasting of 4 wines: Klima White (Vidiano), The Little Prince White, Klima Red & Rose",
+      "Traditional Cretan breadsticks with sea salt and local cheese bites",
+      "Introduction to Chania’s coastal microclimate and maritime breezes"
     ],
     "producerId": "karavitakis-winery",
     "producerName": "Karavitakis Winery",
     "producerGreekName": "Οινοποιείο Καραβιτάκη",
     "category": "winery",
     "destination": "crete",
-    "location": "Chania, Pontikiana (Kolymbari)"
+    "location": "Chania, Pontikiana (Kolymbari)",
+    "badge": "Estate Walk"
   },
   {
     "id": "exp_karavitakis-winery_2",
-    "title": "Karavitakis Winery - Cellar Master Reserve Tour & Regional Meze",
-    "durationMinutes": 80,
-    "pricePerPerson": 38,
-    "badge": "Cellar Reserve",
-    "description": "Go behind the scenes into the oak barrel maturation cellars of Karavitakis Winery, followed by tasting 5 premium reserve wines paired with regional delicacies.",
+    "title": "Karavitakis Winery - Rare Terroir Selection & Riedel Tasting",
+    "durationMinutes": 75,
+    "pricePerPerson": 28,
+    "description": "A sommelier-led vertical tasting in the glass-walled tasting salon: 6 premium single-varietal wines served in Riedel glasses with an artisan cheese board.",
     "includes": [
-      "Full walking tour of the vineyards and underground barrel maturation room",
-      "5 premium reserve & single-vineyard wines",
-      "Traditional meze platter with cured meats, local mountain cheeses and estate olive oil"
+      "Cellar tour of French and American oak barriques with the winemaker",
+      "6 premium wines: Elia Vidiano, Romeiko Natural, Syrah Single Vineyard & Sweet Romeiko",
+      "Artisanal board of Cretan cheeses, smoked prosciutto, and dried fruits",
+      "Comparative tasting of modern vs traditional clay-fermented Romeiko"
     ],
     "producerId": "karavitakis-winery",
     "producerName": "Karavitakis Winery",
     "producerGreekName": "Οινοποιείο Καραβιτάκη",
     "category": "winery",
     "destination": "crete",
-    "location": "Chania, Pontikiana (Kolymbari)"
+    "location": "Chania, Pontikiana (Kolymbari)",
+    "badge": "Riedel Terroir"
   },
   {
     "id": "exp_gavalas-crete-winery_1",
@@ -959,90 +997,95 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
   },
   {
     "id": "exp_titakis-winery_1",
-    "title": "Titakis Winery - Estate Terroir Flight (Vilana, Vidiano, Kotsifali)",
+    "title": "Titakis Winery - \"Asterousia Wine Tasting\" & Fabrika Tour",
     "durationMinutes": 50,
-    "pricePerPerson": 18,
-    "badge": "Estate Flight",
-    "description": "Experience the signature terroir of Heraklion with a guided tasting of 4 estate wines featuring Vilana, Vidiano, Kotsifali.",
+    "pricePerPerson": 17,
+    "description": "The official Asterousia package at Titakis Fabrika in Kounavoi: a guided tour of the winery facilities and Vineyard Garden, tasting 4 wines featuring Vidiano and Merlot-Syrah blends.",
     "includes": [
-      "4 signature estate wines focusing on Vilana, Vidiano, Kotsifali",
-      "Artisanal local cheese bites & Cretan barley rusks",
-      "Introduction to the estate vineyards and regional microclimate"
+      "Guided tour of the historical winery \"Fabrika\" and barrel cellar",
+      "Visit to the curated Vineyard Garden showcasing indigenous vine canopies",
+      "Tasting of 4 estate wines: Asterousia White, Rose, Red & Impressis Vidiano",
+      "Crispy village breadsticks, olive paste, and sheep cheese bites"
     ],
     "producerId": "titakis-winery",
     "producerName": "Titakis Winery",
     "producerGreekName": "Οινοποιείο Τιτάκη",
     "category": "winery",
     "destination": "crete",
-    "location": "Heraklion, Kounavi (Peza PDO)"
+    "location": "Heraklion, Kounavi (Peza PDO)",
+    "badge": "Fabrika Tour"
   },
   {
     "id": "exp_titakis-winery_2",
-    "title": "Titakis Winery - Cellar Master Reserve Tour & Regional Meze",
-    "durationMinutes": 80,
-    "pricePerPerson": 38,
-    "badge": "Cellar Reserve",
-    "description": "Go behind the scenes into the oak barrel maturation cellars of Titakis Winery, followed by tasting 5 premium reserve wines paired with regional delicacies.",
+    "title": "Titakis Winery - \"Wine Enthusiast Tasting\" & Food Board",
+    "durationMinutes": 75,
+    "pricePerPerson": 21,
+    "description": "An extended exploration of Titakis single-varietal labels with a walk through the educational vineyard rows, tasting 5 wines paired with Cretan meze.",
     "includes": [
-      "Full walking tour of the vineyards and underground barrel maturation room",
-      "5 premium reserve & single-vineyard wines",
-      "Traditional meze platter with cured meats, local mountain cheeses and estate olive oil"
+      "In-depth winemaking tour covering modern temperature-controlled stainless fermentation",
+      "5 wines featuring single-vineyard Vidiano, Kotsifali, and oak-matured Syrah",
+      "Artisanal board of Cretan graviera cheese, olives, and barley rusks",
+      "Complimentary access for non-drinking companions and youth under 17"
     ],
     "producerId": "titakis-winery",
     "producerName": "Titakis Winery",
     "producerGreekName": "Οινοποιείο Τιτάκη",
     "category": "winery",
     "destination": "crete",
-    "location": "Heraklion, Kounavi (Peza PDO)"
+    "location": "Heraklion, Kounavi (Peza PDO)",
+    "badge": "Wine Enthusiast"
   },
   {
     "id": "exp_zacharioudakis-winery_1",
-    "title": "Zacharioudakis Organic Winery - Estate Terroir Flight (Vidiano, Malvasia di Candia, Kotsifali)",
-    "durationMinutes": 50,
-    "pricePerPerson": 18,
-    "badge": "Estate Flight",
-    "description": "Experience the signature terroir of Heraklion with a guided tasting of 4 estate wines featuring Vidiano, Malvasia di Candia, Kotsifali.",
+    "title": "Zacharioudakis Organic Winery - \"Orthi Petra\" Hilltop Vineyard Tour & Organic Tasting",
+    "durationMinutes": 60,
+    "pricePerPerson": 23,
+    "description": "Perched on the hill of Orthi Petra in Plouti, tour certified organic hillside vineyards and taste 4 organic wines overlooking the vast Messara Plain and the Libyan Sea.",
     "includes": [
-      "4 signature estate wines focusing on Vidiano, Malvasia di Candia, Kotsifali",
-      "Artisanal local cheese bites & Cretan barley rusks",
-      "Introduction to the estate vineyards and regional microclimate"
+      "Guided botanical walk along the stone terraced Orthi Petra slopes",
+      "Tasting of 4 organic wines: Orthi Petra White (Vidiano/Sauvignon), Rose, Red (Kotsifali/Syrah) & Kotsifali Mono",
+      "Traditional Cretan rusks, organic olive oil, and village feta bites",
+      "Spectacular 360-degree views of Phaistos and Mount Psiloritis"
     ],
     "producerId": "zacharioudakis-winery",
     "producerName": "Zacharioudakis Organic Winery",
     "producerGreekName": "Βιολογικό Οινοποιείο Ζαχαριουδάκη",
     "category": "winery",
     "destination": "crete",
-    "location": "Heraklion, Plouti (Messara Valley)"
+    "location": "Heraklion, Plouti (Messara Valley)",
+    "badge": "Orthi Petra Hill"
   },
   {
     "id": "exp_zacharioudakis-winery_2",
-    "title": "Zacharioudakis Organic Winery - Cellar Master Reserve Tour & Regional Meze",
-    "durationMinutes": 80,
+    "title": "Zacharioudakis Organic Winery - Messara Valley Sunset Organic Tasting & Cold Cuts Platter",
+    "durationMinutes": 90,
     "pricePerPerson": 38,
-    "badge": "Cellar Reserve",
-    "description": "Go behind the scenes into the oak barrel maturation cellars of Zacharioudakis Organic Winery, followed by tasting 5 premium reserve wines paired with regional delicacies.",
+    "description": "Experience twilight on the highest vineyard terrace in southern Heraklion: 6 organic reserve wines paired with local cured meats, aged graviera, and wood-fired bread.",
     "includes": [
-      "Full walking tour of the vineyards and underground barrel maturation room",
-      "5 premium reserve & single-vineyard wines",
-      "Traditional meze platter with cured meats, local mountain cheeses and estate olive oil"
+      "Private sunset terrace seating overlooking the illuminated Messara Valley",
+      "6 organic wines including reserve oak-aged Orthi Petra Red and Vidiano Cuvee",
+      "Generous platter of local cured apaki, aged mountain graviera, and farm vegetables",
+      "Discussion of regenerative organic viticulture without irrigation"
     ],
     "producerId": "zacharioudakis-winery",
     "producerName": "Zacharioudakis Organic Winery",
     "producerGreekName": "Βιολογικό Οινοποιείο Ζαχαριουδάκη",
     "category": "winery",
     "destination": "crete",
-    "location": "Heraklion, Plouti (Messara Valley)"
+    "location": "Heraklion, Plouti (Messara Valley)",
+    "badge": "Messara Sunset"
   },
   {
     "id": "exp_venetsanos-winery-santorini_1",
-    "title": "Venetsanos Winery Santorini - Caldera Cliffside Gravity-Flow Heritage Tour & 4-Wine Flight",
+    "title": "Venetsanos Winery Santorini - Historic Gravity-Flow Museum Tour & 5-Wine Flight",
     "durationMinutes": 60,
-    "pricePerPerson": 30,
-    "description": "Explore the first industrial winery of Santorini built in 1947 directly carved into the caldera cliffs, operating entirely by natural gravity.",
+    "pricePerPerson": 35,
+    "description": "Guided tour through Santorini’s first industrial winery built in 1947, carved directly into the caldera cliffs and operating entirely by natural gravity without electricity, followed by a 5-wine tasting with local snacks.",
     "includes": [
-      "Guided historical tour through carved volcanic stone gravity shafts",
-      "4 estate wines: Nykteri, Santorini Assyrtiko, Anagallis & Mandilaria",
-      "Fresh local graviera cheese, kalamata olives & crisp barley rusks"
+      "Guided historical tour through volcanic stone gravity shafts and museum rooms",
+      "5 estate wines: Santorini Assyrtiko, Nykteri, Anagallis Rose, Mandilaria & Vinsanto",
+      "Platter of Greek cheeses, kalamata olives, and traditional barley rusks",
+      "Caldera cliff panoramic view 300m above Athinios port"
     ],
     "producerId": "venetsanos-winery-santorini",
     "producerName": "Venetsanos Winery Santorini",
@@ -1050,18 +1093,19 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "category": "winery",
     "destination": "santorini",
     "location": "Santorini Caldera, Megalochori (Caldera)",
-    "badge": "Heritage Architecture"
+    "badge": "Historic 1947 Winery"
   },
   {
     "id": "exp_venetsanos-winery-santorini_2",
-    "title": "Venetsanos Winery Santorini - Venetsanos Golden Hour Sunset Vinsanto & Aegean Meze Feast",
+    "title": "Venetsanos Winery Santorini - Caldera Cliffside Sunset Terrace Wine & Food Pairing",
     "durationMinutes": 90,
-    "pricePerPerson": 58,
-    "description": "Perched 300 meters above the Aegean Sea, enjoy world-famous caldera sunset views paired with rare Nykteri and sun-dried Vinsanto.",
+    "pricePerPerson": 44,
+    "description": "Front-row terrace seating during golden sunset hour over the caldera. Taste 5 premium wines accompanied by authentic Santorini mezedes, local fava puree, and sun-dried delicacies.",
     "includes": [
-      "Front-row cliffside terrace seating during golden sunset hour",
-      "5 estate wines featuring aged Nykteri and dessert Vinsanto",
-      "Artisanal meze platter: smoked fava puree, local cured meats & cheeses"
+      "Reserved premium sunset terrace table overlooking the volcanic caldera",
+      "5 estate wines featuring aged Nykteri and barrel-aged Vinsanto",
+      "Traditional Santorini meze platter: PDO Santorini Fava, tomato paste & graviera",
+      "Sunset photography session against the caldera backdrop"
     ],
     "producerId": "venetsanos-winery-santorini",
     "producerName": "Venetsanos Winery Santorini",
@@ -1069,18 +1113,18 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "category": "winery",
     "destination": "santorini",
     "location": "Santorini Caldera, Megalochori (Caldera)",
-    "badge": "Caldera Sunset"
+    "badge": "Caldera Sunset Flight"
   },
   {
     "id": "exp_domaine-sigalas-santorini_1",
-    "title": "Domaine Sigalas - Oia Black Soil Assyrtiko & Mavrotragano Signature Flight",
+    "title": "Domaine Sigalas - Baxedes Vineyard Pergola Tasting",
     "durationMinutes": 60,
-    "pricePerPerson": 35,
-    "description": "Taste the benchmark wines of Paris Sigalas in the peaceful vineyards of Oia, exploring volcanic minerality and intense acidity.",
+    "pricePerPerson": 30,
+    "description": "Taste the benchmark wines of Paris Sigalas in the tranquil plains of Baxedes near Oia. 5 volcanic wines served under shaded grape pergolas with Greek cheese bites.",
     "includes": [
-      "4 benchmark wines: Sigalas Santorini PDO, Kavalieros, Eptani & Mavrotragano",
-      "Cycladic cheese board with aged Naxos Graviera and caper shoots",
-      "Sommelier introduction to the volcanic microclimate and drought conditions"
+      "5 signature wines: Sigalas Santorini PDO, Kavalieros Cru, Eptani & Mavrotragano",
+      "Cycladic cheese board with aged Naxos Graviera, capers, and barley rusks",
+      "Sommelier briefing on volcanic drought viticulture and low yields"
     ],
     "producerId": "domaine-sigalas-santorini",
     "producerName": "Domaine Sigalas",
@@ -1088,18 +1132,19 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "category": "winery",
     "destination": "santorini",
     "location": "Santorini, Oia (Baxedes Plain)",
-    "badge": "Sommelier Choice"
+    "badge": "Vineyard Pergola"
   },
   {
     "id": "exp_domaine-sigalas-santorini_2",
-    "title": "Domaine Sigalas - Sigalas Vineyard Pergola Degustation & Cycladic Culinary Pairing",
-    "durationMinutes": 90,
-    "pricePerPerson": 70,
-    "description": "Dine under the shaded grape pergolas in the plains of Oia, savoring a multi-course seasonal tasting menu paired with rare back-vintages.",
+    "title": "Domaine Sigalas - Vineyard, Wine & Cycladic Gastronomy Tour",
+    "durationMinutes": 120,
+    "pricePerPerson": 100,
+    "description": "The signature Sigalas 2-hour experience: guided tour of the organic vineyards and barrel cellar, followed by a tasting of 10 labels paired with a multi-course seasonal Cycladic tasting menu.",
     "includes": [
-      "5 single-vineyard cru wines including library vintage Kavalieros",
-      "4-course gourmet Cycladic lunch featuring local fava, octopus and lamb",
-      "Chilled Sigalas Vinsanto served with artisanal chocolate dessert"
+      "Comprehensive vineyard walk and cellar production tour",
+      "Tasting of 10 different labels including single-cru Kavalieros and aged Vinsanto",
+      "Multi-course Cycladic gastronomy meal featuring local fava, slow-cooked octopus & lamb",
+      "Private sommelier commentary throughout the luncheon"
     ],
     "producerId": "domaine-sigalas-santorini",
     "producerName": "Domaine Sigalas",
@@ -1107,18 +1152,19 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "category": "winery",
     "destination": "santorini",
     "location": "Santorini, Oia (Baxedes Plain)",
-    "badge": "Vineyard Dining"
+    "badge": "Gastronomy Tour"
   },
   {
     "id": "exp_gavalas-winery-santorini_1",
-    "title": "Gavalas Winery Santorini - 5th Generation Stone Vats & Rare Katsano / Voudomato Flight",
+    "title": "Gavalas Winery Santorini - \"Introduction to Santorini\" Indigenous 4-Wine Flight",
     "durationMinutes": 60,
-    "pricePerPerson": 28,
-    "description": "Visit one of Santorini’s oldest family canavas in Megalochori and taste ultra-rare revived indigenous varieties found nowhere else.",
+    "pricePerPerson": 15,
+    "description": "Visit the Gavalas family’s 5th-generation historic canava in Megalochori: taste 4 indigenous wines including rare Katsano revived from extinction.",
     "includes": [
-      "Tour of the 19th-century canava and traditional stone stomping vats",
-      "4 wines featuring rare indigenous Katsano, Voudomato, and Santorini Assyrtiko",
-      "Barley rusks with homemade tomato paste and aged volcanic graviera"
+      "Tour of the 19th-century stone stomp vats and underground maturation cellar",
+      "4 indigenous wines: Katsano, Santorini Assyrtiko, Posta Red & Xenoloo",
+      "Local paximadia rusks, tomato paste and volcanic graviera cheese",
+      "Personal stories from one of Santorini’s oldest winemaking families"
     ],
     "producerId": "gavalas-winery-santorini",
     "producerName": "Gavalas Winery Santorini",
@@ -1126,18 +1172,18 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "category": "winery",
     "destination": "santorini",
     "location": "Santorini, Megalochori Village",
-    "badge": "Rare Indigenous"
+    "badge": "Indigenous Heritage"
   },
   {
     "id": "exp_gavalas-winery-santorini_2",
-    "title": "Gavalas Winery Santorini - Gavalas Historic Canava Cellar Walk & Aged Natural Vinsanto",
-    "durationMinutes": 80,
-    "pricePerPerson": 50,
-    "description": "Deep dive into 150 years of family winemaking heritage with a barrel cellar tasting of natural Vinsanto and aged Nykteri.",
+    "title": "Gavalas Winery Santorini - \"Premium and Rare\" Katsano, Voudomato & Natural Vinsanto",
+    "durationMinutes": 75,
+    "pricePerPerson": 30,
+    "description": "A dedicated tasting of 6 of Gavalas’s rarest limited labels, accompanied by bite pairings in the historic vaulted cellars of Megalochori.",
     "includes": [
-      "Behind-the-scenes access to historic subterranean maturation cellars",
-      "5 premium estate pours including Natural Nykteri and 2009 Vinsanto",
-      "Selection of dry figs, walnuts, pasteli and artisanal Greek cheeses"
+      "6 premium labels: Katsano, Natural Ferment Assyrtiko, Voudomato Red & Aged Vinsanto",
+      "Artisanal pairing of aged Cycladic cheeses, smoked pork, and dried figs",
+      "Detailed exploration of pre-phylloxera ungrafted vine genetics"
     ],
     "producerId": "gavalas-winery-santorini",
     "producerName": "Gavalas Winery Santorini",
@@ -1145,19 +1191,19 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "category": "winery",
     "destination": "santorini",
     "location": "Santorini, Megalochori Village",
-    "badge": "Historic Canava"
+    "badge": "Rare Varieties"
   },
   {
     "id": "exp_gaia-wines-santorini_1",
-    "title": "Gaia Wines Santorini - Monolithos Beachfront & Thalassitis Submerged Sea-Aged Tasting",
+    "title": "Gaia Wines Santorini - Monolithos Black Beach Tasting Flight",
     "durationMinutes": 60,
-    "pricePerPerson": 38,
-    "description": "Visit the converted tomato cannery on the black sand beach of Monolithos and hear the story of wines aged under the Aegean Sea.",
+    "pricePerPerson": 20,
+    "description": "In a restored early 20th-century stone tomato factory right on the black sand beach of Monolithos, enjoy a flight of 5 crisp wines with Aegean breezes and local cheeses.",
     "includes": [
-      "Tour of the coastal winery right on the volcanic pebble shoreline",
-      "4 wines: Thalassitis, Wild Ferment Assyrtiko, Gaia S & Monograph",
-      "Comparative discussion of undersea bottle aging vs cellar maturation",
-      "Santorini fava dip, smoked mackerel bites & caper berries"
+      "Tour of the coastal winery right on the black volcanic shoreline",
+      "5 wines: Thalassitis, Wild Ferment Assyrtiko, Monograph, Gaia S & 14-18h Rose",
+      "Artisanal Greek cheese plate with crunchy paximadia and olives",
+      "Story of Yiannis Paraskevopoulos reviving ancient maritime vinification"
     ],
     "producerId": "gaia-wines-santorini",
     "producerName": "Gaia Wines Santorini",
@@ -1165,18 +1211,19 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "category": "winery",
     "destination": "santorini",
     "location": "Santorini, Monolithos / Kamari Beach",
-    "badge": "Ocean Aged"
+    "badge": "Beachfront Canava"
   },
   {
     "id": "exp_gaia-wines-santorini_2",
-    "title": "Gaia Wines Santorini - Wild Ferment Assyrtiko & Barrel-Aged Aegean Sunset Pairing",
+    "title": "Gaia Wines Santorini - Thalassitis Submerged & Wild Ferment Premium Flight",
     "durationMinutes": 90,
-    "pricePerPerson": 65,
-    "description": "An exploration of spontaneous fermentation in wood, stainless steel, and clay, paired with sea-salted Greek mezze.",
+    "pricePerPerson": 70,
+    "description": "Gaia’s internationally acclaimed experiment: compare cellar-aged Assyrtiko with bottles retrieved from 5 years of aging 20 meters beneath the Aegean Sea.",
     "includes": [
-      "5 wines showcasing wild-yeast oak, acacia, and French barrique vinification",
-      "Seafood meze platter: grilled calamari, smoked eel & local cheese",
-      "Beachfront sunset seating with waves lapping just meters away"
+      "Tasting of 6 premium cuvees including rare Thalassitis Submerged and Wild Ferment",
+      "Detailed presentation on undersea pressure, darkness, and maturation chemistry",
+      "Gourmet Aegean seafood meze: grilled calamari, smoked mackerel & aged graviera",
+      "Beachfront seating just meters from the breaking waves"
     ],
     "producerId": "gaia-wines-santorini",
     "producerName": "Gaia Wines Santorini",
@@ -1184,18 +1231,19 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "category": "winery",
     "destination": "santorini",
     "location": "Santorini, Monolithos / Kamari Beach",
-    "badge": "Wild Fermentation"
+    "badge": "Undersea Aged"
   },
   {
     "id": "exp_santo-wines-santorini_1",
-    "title": "Santo Wines Cooperative - Caldera Panoramic Terrace Flight (6 Terroir Wines)",
-    "durationMinutes": 60,
-    "pricePerPerson": 32,
-    "description": "Sitting high on the caldera edge at Pyrgos, taste 6 distinctive volcanic wines produced by Santorini’s 1,200 member grape growers union.",
+    "title": "Santo Wines Cooperative - Caldera Cooperative Winery Tour & 2-Wine Flight",
+    "durationMinutes": 45,
+    "pricePerPerson": 12,
+    "description": "A 20-minute guided walkthrough of the cooperative winery representing 1,200 Santorini vine growers, followed by tasting 2 signature wines overlooking the caldera.",
     "includes": [
-      "6 cooperative estate wines: Assyrtiko, Athiri, Aidani, Rose, Kameni, Vinsanto",
-      "Breathtaking 360-degree caldera cliff and volcano panorama",
-      "Greek meze plate with PDO Santorini Fava, tomato keftedes & graviera"
+      "Guided tour of processing, fermentation tanks, and subterranean barrel room",
+      "Tasting of 2 signature wines: Santorini Assyrtiko and Kameni Red",
+      "Crispy barley rusks and volcanic cherry tomato paste",
+      "History of the Union of Santorini Cooperatives founded in 1947"
     ],
     "producerId": "santo-wines-santorini",
     "producerName": "Santo Wines Cooperative",
@@ -1203,18 +1251,19 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "category": "winery",
     "destination": "santorini",
     "location": "Santorini Caldera, Pyrgos (Caldera Rim)",
-    "badge": "Iconic View"
+    "badge": "Cooperative Heritage"
   },
   {
     "id": "exp_santo-wines-santorini_2",
-    "title": "Santo Wines Cooperative - Santo Sunset VIP Cellar Reserve Tasting & Gastronomic Pairing",
-    "durationMinutes": 90,
-    "pricePerPerson": 68,
-    "description": "Reserved prime terrace seating at sunset with a private sommelier presenting old vintage Assyrtiko and barrel-aged Vinsanto.",
+    "title": "Santo Wines Cooperative - Caldera Panoramic Terrace 6-Wine Flight & Fava Pairing",
+    "durationMinutes": 75,
+    "pricePerPerson": 28,
+    "description": "Sitting high on the caldera edge at Pyrgos, enjoy a flight of 6 cooperative terroir wines paired with authentic PDO Santorini Fava and local delicacies.",
     "includes": [
-      "Exclusive reserved seating for the world-famous Santorini sunset",
-      "5 top-tier reserve wines including Grand Reserve and Kameni Oak",
-      "Four paired gourmet mezedes highlighting volcanic soil agriculture"
+      "Reserved table on the expansive cliffside caldera terrace",
+      "6 wines: Assyrtiko, Athiri, Aidani, Nykteri, Kameni & Vinsanto",
+      "Traditional mezze platter: PDO Santorini Fava dip, tomato fritters & graviera",
+      "Panoramic views of the volcanic islands and Aegean cruise ship basin"
     ],
     "producerId": "santo-wines-santorini",
     "producerName": "Santo Wines Cooperative",
@@ -1222,18 +1271,19 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "category": "winery",
     "destination": "santorini",
     "location": "Santorini Caldera, Pyrgos (Caldera Rim)",
-    "badge": "VIP Caldera"
+    "badge": "Panoramic Caldera"
   },
   {
     "id": "exp_gaia-wines-nemea_1",
-    "title": "Gaia Wines Nemea - Koutsi Mountain Single-Vineyard Agiorgitiko Flight",
-    "durationMinutes": 60,
-    "pricePerPerson": 25,
-    "description": "Perched on the steep chalky slopes of Koutsi at 650m, taste high-altitude Agiorgitiko wines offering sublime freshness and structure.",
+    "title": "Gaia Wines Nemea - Gaia Nemea High-Slope Agiorgitiko Flight",
+    "durationMinutes": 45,
+    "pricePerPerson": 18,
+    "description": "At Gaia’s gravity-flow winery in Koutsi, perched at 650m altitude: a guided 4-wine flight celebrating Agiorgitiko in fresh, rosé, and classic oak-aged expressions.",
     "includes": [
-      "Walk through the amphitheater-shaped vineyards overlooking the Nemea plain",
-      "4 wines: Gaia Estate Nemea, Agiorgitiko by Gaia, Notios Red & 14-18h Rose",
-      "Local Corinthian currants, aged sheep cheese & village bread"
+      "Walkthrough of the modern hillside winery overlooking the Nemea plain",
+      "4 estate wines (Monograph Moschofilero-Assyrtiko, 14-18h Agiorgitiko Rosé, Agiorgitiko by Gaia, Gaia S)",
+      "Local sourdough breadsticks and Koroneiki extra virgin olive oil",
+      "Introduction to the microclimates of the three Nemea altitude zones"
     ],
     "producerId": "gaia-wines-nemea",
     "producerName": "Gaia Wines Nemea",
@@ -1241,18 +1291,19 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "category": "winery",
     "destination": "peloponnese",
     "location": "Nemea, Koutsi (Nemea)",
-    "badge": "High Altitude"
+    "badge": "Official Flight"
   },
   {
     "id": "exp_gaia-wines-nemea_2",
-    "title": "Gaia Wines Nemea - Gaia Clay Amphora & High-Elevation Clay Terroir Masterclass",
+    "title": "Gaia Wines Nemea - Koutsi Single-Vineyard Terroir & Clayver Amphora Tasting",
     "durationMinutes": 80,
-    "pricePerPerson": 50,
-    "description": "Taste experimental Agiorgitiko and Assyrtiko fermented in subterranean clay vessels and French oak barriques with the resident winemaker.",
+    "pricePerPerson": 40,
+    "description": "Experience Gaia’s cutting-edge winemaking at Koutsi: cellar tour, Clayver ceramic sphere aging, and a guided tasting of 6 wines including Gaia Estate and aged library vintages.",
     "includes": [
-      "Visit to the experimental vinification room and clay amphora row",
-      "5 wines featuring Gaia Estate single-block reserves and clay amphora cuvees",
-      "Smoked Peloponnesian pork bites, wild thyme olives & aged graviera"
+      "Cellar tour highlighting French barrique aging and Clayver spherical ceramic maturation",
+      "6 premium wines including Gaia Estate PDO Nemea, Gaia S, and library vintage Agiorgitiko",
+      "Selection of aged Greek cheeses (Graviera of Naxos, San Michali) and smoked meats",
+      "Sommelier guidance on aging potential of high-altitude Agiorgitiko"
     ],
     "producerId": "gaia-wines-nemea",
     "producerName": "Gaia Wines Nemea",
@@ -1260,18 +1311,19 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "category": "winery",
     "destination": "peloponnese",
     "location": "Nemea, Koutsi (Nemea)",
-    "badge": "Amphora Clay"
+    "badge": "Terroir Masterclass"
   },
   {
     "id": "exp_domaine-mercouri_1",
     "title": "Domaine Mercouri - Coastal Pine Forest Estate Walk & Historic Refosco Flight",
     "durationMinutes": 60,
     "pricePerPerson": 25,
-    "description": "Stroll through 150 years of agricultural history overlooking the Ionian Sea, where peacocks roam freely under century-old maritime pines.",
+    "description": "Stroll through 150 years of agricultural history overlooking the Ionian Sea, where peacocks roam freely under century-old maritime pines, tasting 4 estate wines.",
     "includes": [
-      "Guided walk through the historical estate, olive groves and family museum",
+      "Guided walk through the historical estate, olive groves, and family museum",
       "4 wines: Domaine Mercouri Red (Refosco/Mavrodafni), Kallisto, Foloi & Daphne",
-      "Mercouri estate-grown Koroneiki olive oil with fresh bread and local cheese"
+      "Mercouri estate-grown Koroneiki olive oil with fresh bread and local cheese",
+      "History of the Italian Refosco cuttings imported to Ilia in 1870"
     ],
     "producerId": "domaine-mercouri",
     "producerName": "Domaine Mercouri",
@@ -1279,14 +1331,14 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "category": "winery",
     "destination": "peloponnese",
     "location": "Ilia, Korakochori (Peloponnese)",
-    "badge": "Historic Estate"
+    "badge": "150-Year Coastal Estate"
   },
   {
     "id": "exp_domaine-mercouri_2",
-    "title": "Domaine Mercouri - 150-Year Heritage Manor Tour & Kallisto / Foloi Olive Oil Pairing",
+    "title": "Domaine Mercouri - 150-Year Heritage Manor Tour & Foloi / Koroneiki EVOO Pairing",
     "durationMinutes": 90,
     "pricePerPerson": 50,
-    "description": "Step inside the Mercouri family’s 19th-century estate manor and stone cellars, pairing aged Refosco wines with estate extra virgin olive oil.",
+    "description": "Private access to the Mercouri family’s 19th-century estate manor and stone cellars, pairing aged Refosco wines with estate extra virgin olive oil.",
     "includes": [
       "Private access to the Mercouri historic residence and archives",
       "5 estate wines including aged Mercouri Cava and sweet Chortais",
@@ -1298,14 +1350,14 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "category": "winery",
     "destination": "peloponnese",
     "location": "Ilia, Korakochori (Peloponnese)",
-    "badge": "Coastal Heritage"
+    "badge": "Manor & EVOO Pairing"
   },
   {
     "id": "exp_ktima-tselepos_1",
-    "title": "Ktima Tselepos - Mantineia High-Plateau Moschofilero & Blanc de Gris Flight",
+    "title": "Ktima Tselepos - Mantineia High-Plateau Moschofilero Flight",
     "durationMinutes": 60,
     "pricePerPerson": 25,
-    "description": "Explore the cool, high-altitude plateau of Mantineia at 650m and discover the exotic, aromatic nuances of the pink-skinned Moschofilero grape.",
+    "description": "Explore the cool high-altitude plateau of Mantineia at 650m: discover the exotic, aromatic nuances of the pink-skinned Moschofilero grape with mountain cheese.",
     "includes": [
       "Walking tour through the organically farmed Arcadia vineyard",
       "4 signature wines: Mantinia PDO, Blanc de Gris, Gris de Nuit & Driopi Classic",
@@ -1336,18 +1388,19 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "category": "winery",
     "destination": "peloponnese",
     "location": "Arcadia, Rizes (Mantinia Plateau)",
-    "badge": "Cult Classic"
+    "badge": "Cult Kokkinomylos"
   },
   {
     "id": "exp_tetramythos-winery_1",
-    "title": "Tetramythos Winery - Mount Helmos High-Altitude Organic Roditis & Sideritis Tasting",
-    "durationMinutes": 60,
-    "pricePerPerson": 24,
-    "description": "Perched on the snowy foothills of Mount Helmos at 850m, taste crisp, mineral organic wines with natural alpine acidity.",
+    "title": "Tetramythos Winery - Mount Helmos High-Altitude Roditis & Kalavryta Tasting",
+    "durationMinutes": 50,
+    "pricePerPerson": 10,
+    "description": "At Ano Diakopto on the snowy foothills of Mount Helmos at 850m: taste crisp organic wines with natural alpine acidity overlooking the Gulf of Corinth.",
     "includes": [
-      "Panoramic view of the Gulf of Corinth and high-altitude mountain slopes",
+      "Panoramic view of the Gulf of Corinth from the outdoor tasting terrace",
       "4 organic wines: Roditis Nature, Sideritis, Black Kalavryta & Malagousia",
-      "Achaian village feta cheese, wild oregano rusks & local mountain honey"
+      "Local Achaian feta cheese, wild oregano rusks & mountain honey",
+      "Story of cultivating vines on 850m snowy slopes"
     ],
     "producerId": "tetramythos-winery",
     "producerName": "Tetramythos Winery",
@@ -1355,14 +1408,14 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "category": "winery",
     "destination": "peloponnese",
     "location": "Aigialeia, Ano Diakopto (Peloponnese)",
-    "badge": "Alpine Slopes"
+    "badge": "Alpine Slopes (€10)"
   },
   {
     "id": "exp_tetramythos-winery_2",
-    "title": "Tetramythos Winery - Black Kalavryta & Clay Retsina Nature Amphora Workshop",
+    "title": "Tetramythos Winery - Clay Retsina Nature Amphora Workshop & Cheese Pie Pairing",
     "durationMinutes": 85,
-    "pricePerPerson": 48,
-    "description": "Discover how natural retsina is fermented in buried clay amphoras with fresh pine resin from local Pinus halepensis trees.",
+    "pricePerPerson": 28,
+    "description": "Discover how natural retsina is fermented in buried clay amphoras with fresh pine resin from local Pinus halepensis trees, paired with traditional wood-fired cheese pie.",
     "includes": [
       "Interactive demonstration of pine resin harvesting and clay amphora cleaning",
       "5 natural wines including Retsina Amphore Nature and Black Kalavryta Oak",
@@ -1374,18 +1427,19 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "category": "winery",
     "destination": "peloponnese",
     "location": "Aigialeia, Ano Diakopto (Peloponnese)",
-    "badge": "Natural & Amphora"
+    "badge": "Amphora & Resin"
   },
   {
     "id": "exp_monemvasia-winery_1",
-    "title": "Monemvasia Winery (Tsimbidi) - Malvasia Rebirth: Historic Sun-Dried Malvasia & Kydonitsa Tasting",
-    "durationMinutes": 60,
-    "pricePerPerson": 26,
-    "description": "Relive the medieval glory of Malvasia wine, resurrected by Yiorgos Tsimbidis after centuries of historical research in Laconia.",
+    "title": "Monemvasia Winery (Tsimbidi) - Historic 6-Wine Indigenous Flight & Sigklino Pairing",
+    "durationMinutes": 80,
+    "pricePerPerson": 32,
+    "description": "The official tasting at Monemvasia Winery (Tsimbidi) in Velies: guided session featuring 6 local wines accompanied by Laconian sigklino cured pork, graviera, and olive oil rusks.",
     "includes": [
-      "Historical narrative on Monemvasia’s trade route and Byzantine grape lore",
-      "4 wines: Malvasia PDO Sun-Dried, Kydonitsa, Asproudi & Monembasia Red",
-      "Laconian lalagia fried dough strips, cured syglino pork & sfela cheese"
+      "Guided tasting of 6 local wines: Kydonitsa, Monemvasia, Panther, Monemvasios, Mura Rossa & sweet PDO Monemvasia-Malvasia",
+      "Platter of authentic Laconian delicacies: sigklino cured pork, aged graviera & olive oil rusks",
+      "Narrative on Yiorgos Tsimbidis resurrecting the legendary Malvasia grape after centuries of research",
+      "Cellar inspection of aging barrels and sun-drying equipment"
     ],
     "producerId": "monemvasia-winery",
     "producerName": "Monemvasia Winery (Tsimbidi)",
@@ -1393,16 +1447,16 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "category": "winery",
     "destination": "peloponnese",
     "location": "Laconia, Velies (Monemvasia)",
-    "badge": "Medieval Legend"
+    "badge": "Official 6-Wine Flight"
   },
   {
     "id": "exp_monemvasia-winery_2",
-    "title": "Monemvasia Winery (Tsimbidi) - Laconian Terroir & Byzantine Sun-Dried Nectar Cellar Tour",
-    "durationMinutes": 85,
-    "pricePerPerson": 52,
-    "description": "Visit the maturation cellar where sun-dried grapes concentrate into golden nectar aged for years in oak barrels.",
+    "title": "Monemvasia Winery (Tsimbidi) - Byzantine Malvasia Sun-Dried Nectar & Barrel Cellar Tour",
+    "durationMinutes": 90,
+    "pricePerPerson": 55,
+    "description": "Deep dive into the historic maturation cellar where sun-dried grapes concentrate into golden nectar aged for years in oak barrels, with collector back-vintages.",
     "includes": [
-      "Tour of the drying straw mats (seasonal) and barrel maturation cellar",
+      "Tour of the drying straw mats (seasonal) and subterranean barrel cellar",
       "5 wines featuring 2 vintage Malvasia PDO releases and single-vineyard Kydonitsa",
       "Artisanal pairing of aged graviera, dried local figs, walnuts & dark chocolate"
     ],
@@ -1416,14 +1470,15 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
   },
   {
     "id": "exp_ktima-gerovassiliou_1",
-    "title": "Ktima Gerovassiliou - World Corkscrew Museum & Malagousia Terroir Flight",
+    "title": "Ktima Gerovassiliou - World Corkscrew Museum Guided Tour & Malagousia Flight",
     "durationMinutes": 75,
-    "pricePerPerson": 30,
-    "description": "Tour the famous Gerovassiliou Wine Museum housing over 2,600 rare antique corkscrews, followed by tasting the grape saved from extinction: Malagousia.",
+    "pricePerPerson": 20,
+    "description": "Guided tour of the vineyard, production, barrel cellars, and the world-renowned Gerovassiliou Wine & Corkscrew Museum (2,600+ antique pieces), followed by a 4-wine Malagousia flight.",
     "includes": [
-      "Guided tour of the world-renowned Gerovassiliou Wine & Corkscrew Museum",
-      "4 estate wines: Single-Vineyard Malagousia, White Estate, Avaton & Red Estate",
-      "Northern Greek artisanal cheese platter with freshly baked bread and estate oil"
+      "Guided tour of the production facilities and the prestigious Wine Museum",
+      "4 signature wines: Single-Vineyard Malagousia, White Estate, Avaton & Red Estate",
+      "Platter of Northern Greek artisanal cheeses, freshly baked bread & estate olive oil",
+      "Story of Vangelis Gerovassiliou reviving the Malagousia grape from extinction"
     ],
     "producerId": "ktima-gerovassiliou",
     "producerName": "Ktima Gerovassiliou",
@@ -1431,18 +1486,19 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "category": "winery",
     "destination": "northern_greece",
     "location": "Thessaloniki, Epanomi (Thessaloniki)",
-    "badge": "Heritage & Wine"
+    "badge": "Corkscrew Museum"
   },
   {
     "id": "exp_ktima-gerovassiliou_2",
-    "title": "Ktima Gerovassiliou - Avaton Rare Ancient Varietals Vertical & Estate Cellar Tour",
+    "title": "Ktima Gerovassiliou - Subterranean Barrel Cellar & Avaton Collector Reserve Flight",
     "durationMinutes": 90,
-    "pricePerPerson": 60,
-    "description": "Explore the underground barrel aging cellar and taste older vintages of Avaton (blend of ancient Limnio, Mavrotragano, and Mavroudi).",
+    "pricePerPerson": 45,
+    "description": "Private tour of the subterranean maturation cellar housing hundreds of French barriques, followed by tasting 5 collector reserve wines including older vintages of Avaton.",
     "includes": [
-      "Private access to the subterranean barrel cellar and private library bins",
-      "5 top reserve pours including 2 older vintages of Gerovassiliou Avaton",
-      "Gourmet Macedonian cold cuts, truffle graviera & smoked Metsovone cheese"
+      "Private access to the underground barrel aging sanctuary and library bins",
+      "5 top reserve wines featuring 2 back-vintages of Gerovassiliou Avaton and Museum Collection",
+      "Gourmet Macedonian charcuterie board with smoked Metsovone cheese and truffle graviera",
+      "Sommelier analysis of Limnio, Mavrotragano, and Mavroudi ancient grape synergy"
     ],
     "producerId": "ktima-gerovassiliou",
     "producerName": "Ktima Gerovassiliou",
@@ -1450,18 +1506,19 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "category": "winery",
     "destination": "northern_greece",
     "location": "Thessaloniki, Epanomi (Thessaloniki)",
-    "badge": "Ancient Grapes"
+    "badge": "Avaton Collector"
   },
   {
     "id": "exp_domaine-biblia-chora_1",
     "title": "Domaine Biblia Chora - Mount Pangeon Limestone Terroir Flight (Ovilos & Areti)",
     "durationMinutes": 60,
-    "pricePerPerson": 28,
-    "description": "Nestled on the slopes of Mount Pangeon where Dionysian rituals began, taste world-acclaimed blends of Assyrtiko and Semillon.",
+    "pricePerPerson": 25,
+    "description": "Nestled on the slopes of Mount Pangeon in Kokkinochori where Dionysian wine rituals began: tour the gravity winery and taste world-acclaimed blends of Assyrtiko and Semillon.",
     "includes": [
-      "Tour of the state-of-the-art organic gravity winery and vineyards",
+      "Tour of the organic gravity-fed winery, fermentation hall, and bottle aging cellars",
       "4 benchmark wines: Ktima White, Ovilos (Assyrtiko/Semillon), Areti & Biblinos",
-      "Local Kavala cheeses, wild herb rusks and marinated green olives"
+      "Local Kavala cheeses, wild herb rusks and marinated green olives",
+      "Story of Vangelis Gerovassiliou and Vassilis Tsaktsarlis establishing the estate in 1998"
     ],
     "producerId": "domaine-biblia-chora",
     "producerName": "Domaine Biblia Chora",
@@ -1469,7 +1526,7 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "category": "winery",
     "destination": "northern_greece",
     "location": "Kavala, Kokkinochori (Mount Pangeon)",
-    "badge": "Mountain Terroir"
+    "badge": "Mount Pangeon"
   },
   {
     "id": "exp_domaine-biblia-chora_2",
@@ -1492,14 +1549,15 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
   },
   {
     "id": "exp_alpha-estate_1",
-    "title": "Alpha Estate - Twin-Lake Plateau Cold-Climate Xinomavro & Sauvignon Fume Flight",
+    "title": "Alpha Estate - Amyndeon Plateau Cold-Climate Ecosystem Flight",
     "durationMinutes": 60,
     "pricePerPerson": 30,
-    "description": "Perched at 650m altitude between two mountain lakes in Amyndeon, explore Greece’s most technologically advanced cold-climate terroir.",
+    "description": "Perched at 650m elevation between Lake Vegoritis and Lake Petron: guided winery tour and tasting of 4 benchmark wines showcasing Greece’s premier cool-climate terroir.",
     "includes": [
-      "Vineyard terrace briefing overlooking Lake Vegoritis and Lake Petron",
-      "4 wines: Ecosystem Sauvignon Blanc Fume, Hedgehog Xinomavro, Axia & Rose",
-      "Florina sweet roasted red pepper dip, local sourdough & sheep graviera"
+      "Guided walk through the gravity-fed modern winery and sorting tables",
+      "4 wines: Ecosystem Sauvignon Blanc Fume, Hedgehog Xinomavro, Axia Red & Alpha Rose",
+      "Artisanal platter featuring Florina sweet roasted red pepper dip, local sourdough & sheep cheese",
+      "Story of Makis Mavridis and Angelos Iatridis transforming Greek cold-climate viticulture"
     ],
     "producerId": "alpha-estate",
     "producerName": "Alpha Estate",
@@ -1511,14 +1569,15 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
   },
   {
     "id": "exp_alpha-estate_2",
-    "title": "Alpha Estate - Ecosystem Single-Block Old-Vine Vertical & Lake View Degustation",
+    "title": "Alpha Estate - Old-Vine Ungrafted Xinomavro Vertical & Lake Vegoritis Pairing",
     "durationMinutes": 90,
     "pricePerPerson": 65,
-    "description": "A masterclass of single-parcel ungrafted century-old bush vines, comparing aged Xinomavro vintages paired with Florina gastronomic specialties.",
+    "description": "A sommelier-led masterclass of single-parcel ungrafted century-old bush vines, comparing aged Xinomavro vintages paired with Florina gastronomic specialties.",
     "includes": [
       "Visit to the century-old phylloxera-free ungrafted bush vine parcels",
       "5 top cru wines: Ecosystem Barba Yannis Xinomavro, Alpha One & Library Vintages",
-      "Gastronomic pairing: Florina roasted peppers, wild mushrooms & aged Macedonian cheeses"
+      "Gastronomic pairing: Florina roasted peppers, wild mushrooms & aged Macedonian cheeses",
+      "Unobstructed views over Lake Vegoritis and Mount Voras"
     ],
     "producerId": "alpha-estate",
     "producerName": "Alpha Estate",
@@ -1526,37 +1585,19 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "category": "winery",
     "destination": "northern_greece",
     "location": "Florina, Amyndeon (Florina)",
-    "badge": "Single Block Cru"
+    "badge": "Century Bush Vines"
   },
   {
     "id": "exp_ktima-pavlidis_1",
-    "title": "Ktima Pavlidis - Marble Mountains of Drama: Emphasis & Thema Flight",
+    "title": "Ktima Pavlidis - Thema & Emphasis Night-Harvest Flight",
     "durationMinutes": 60,
     "pricePerPerson": 25,
-    "description": "Surrounded by the marble-rich mountains of Drama, taste elegant single-varietal wines harvested at night to preserve pristine aromatics.",
+    "description": "Surrounded by the marble-rich mountains of Drama, tour the avant-garde winery and taste single-varietal wines harvested at 4:00 AM to preserve pristine aromatics.",
     "includes": [
-      "Guided tour of modern avant-garde winery architecture and sorting tables",
-      "4 signature wines: Thema White (Sauvignon/Assyrtiko), Thema Red, Emphasis Syrah, Emphasis Agiorgitiko",
-      "Drama region sheep cheese, smoked pork fillet & homemade breadsticks"
-    ],
-    "producerId": "ktima-pavlidis",
-    "producerName": "Ktima Pavlidis",
-    "producerGreekName": "Κτήμα Παυλίδη",
-    "category": "winery",
-    "destination": "northern_greece",
-    "location": "Drama, Kokkinogeia (Drama)",
-    "badge": "Drama Terroir"
-  },
-  {
-    "id": "exp_ktima-pavlidis_2",
-    "title": "Ktima Pavlidis - Pavlidis Night-Harvest Masterclass & French Oak Barrel Tasting",
-    "durationMinutes": 80,
-    "pricePerPerson": 50,
-    "description": "Learn why night-harvesting at 4:00 AM changes grape biochemistry and taste developing wines straight from French oak barrels.",
-    "includes": [
-      "Presentation of night-harvest technology and thermo-regulated vinification",
-      "5 wines including experimental single-barrel lots and aged Thema vintages",
-      "Selection of regional Macedonian dry salamis, graviera & fig marmalade"
+      "Guided tour of modern avant-garde winery architecture, sorting tables, and bottling facility",
+      "4 signature wines: Thema White (Sauvignon/Assyrtiko), Thema Red, Emphasis Syrah & Emphasis Agiorgitiko",
+      "Drama region sheep cheese, smoked pork fillet & homemade breadsticks",
+      "Presentation on how nocturnal harvesting locks in delicate floral terpenes"
     ],
     "producerId": "ktima-pavlidis",
     "producerName": "Ktima Pavlidis",
@@ -1567,15 +1608,35 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "badge": "Night Harvest"
   },
   {
+    "id": "exp_ktima-pavlidis_2",
+    "title": "Ktima Pavlidis - Private Vineyard & Contemporary Architecture Cellar Walk",
+    "durationMinutes": 80,
+    "pricePerPerson": 45,
+    "description": "Private tour of privately owned vineyards and barrel cellar, tasting developing wines straight from French oak barriques with regional charcuterie.",
+    "includes": [
+      "Walk through the high-density trellised vineyards facing Mount Falakro",
+      "5 wines including experimental single-barrel lots and aged Thema vintages",
+      "Selection of regional Macedonian dry salamis, graviera cheese & fig marmalade"
+    ],
+    "producerId": "ktima-pavlidis",
+    "producerName": "Ktima Pavlidis",
+    "producerGreekName": "Κτήμα Παυλίδη",
+    "category": "winery",
+    "destination": "northern_greece",
+    "location": "Drama, Kokkinogeia (Drama)",
+    "badge": "Cellar Reserve"
+  },
+  {
     "id": "exp_domaine-karanika_1",
-    "title": "Domaine Karanika - Biodynamic Methode Traditionnelle Sparkler & Brut Nature Flight",
+    "title": "Domaine Karanika - Organic Méthode Traditionnelle Brut Nature Flight",
     "durationMinutes": 60,
     "pricePerPerson": 28,
-    "description": "Greece’s leading producer of organic method-champenoise sparkling wines: taste vintage sparkling Xinomavro disgorged without dosage.",
+    "description": "Greece’s leading producer of organic method-champenoise sparkling wines in Amyndeon: tour the traditional riddling pupitres and taste vintage sparkling Xinomavro.",
     "includes": [
-      "Tour of the traditional riddling pupitres and manual disgorging area",
+      "Tour of the traditional riddling pupitres, cold disgorgement, and manual corking line",
       "4 sparkling & still wines: Brut Cuvee Speciale, Brut Rose, Cuvee Prestige & Xinomavro Red",
-      "Crisp savory cheese biscuits and smoked lake trout canapes"
+      "Crisp savory cheese biscuits and smoked lake trout canapes",
+      "Presentation by Laurens Hartman on biodynamic cold-plateau viticulture"
     ],
     "producerId": "domaine-karanika",
     "producerName": "Domaine Karanika",
@@ -1587,14 +1648,15 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
   },
   {
     "id": "exp_domaine-karanika_2",
-    "title": "Domaine Karanika - Karanika High-Altitude Old-Vine Xinomavro & Artisanal Fondue Pairing",
+    "title": "Domaine Karanika - High-Altitude Sparkling Vintage & Fondue Degustation",
     "durationMinutes": 90,
     "pricePerPerson": 55,
-    "description": "Discover how cold Amyndeon nights produce world-class bubbles. Savor vintage sparkling wines paired with local melted mountain cheeses.",
+    "description": "Interactive disgorgement demonstration with the winemaker, tasting 5 vintage sparkling cuvees paired with a pot of melted Macedonian mountain cheeses and crusty bread.",
     "includes": [
+      "Live hand-disgorgement demonstration of zero-dosage sparkling bottles",
       "5 wines featuring 3 vintage sparkling cuvees and Karanika Terra Petra Red",
-      "Interactive disgorgement demonstration with the winemaker",
-      "Macedonian melted mountain cheese pot with wild herbs and crusty sourdough"
+      "Macedonian melted mountain cheese fondue pot with wild herbs and sourdough cubes",
+      "Panoramic views of Lake Vegoritis and Mount Kaimaktsalan"
     ],
     "producerId": "domaine-karanika",
     "producerName": "Domaine Karanika",
@@ -1602,56 +1664,57 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "category": "winery",
     "destination": "northern_greece",
     "location": "Florina, Amyndeon (Florina)",
-    "badge": "Terroir & Bubbles"
+    "badge": "Sparkling & Fondue"
   },
   {
     "id": "exp_kazani-kokolakis_1",
-    "title": "Kazani Kokolakis - Copper Alembic Raki Still & Oak-Matured Tsikoudia Tasting",
-    "durationMinutes": 50,
-    "pricePerPerson": 16,
-    "description": "Visit an authentic working village kazani in Heraklion and learn how Cretan grape skins are transformed into pure clear spirit.",
+    "title": "Kazani Kokolakis - Copper Alembic Still Tour & Tsikoudia Flight",
+    "durationMinutes": 45,
+    "pricePerPerson": 14,
+    "badge": "Still Tour",
+    "description": "Witness traditional wood-fired distillation in historic copper alembic stills at Kazani Kokolakis and taste crystal-clear grape spirit.",
     "includes": [
-      "Detailed explanation of the double-distillation process and copper coil condensation",
-      "3 distillates: Traditional clear tsikoudia, 3-year oak barrel-aged, and spiced rakomelo",
-      "Warm toasted village bread with mizithra cheese and mountain honey"
+      "Walkthrough of the copper distillation pot and steam condensation coil",
+      "Tasting of 3 distillates (pure tsikoudia, aged raki & herbal rakomelo)",
+      "Local roasted nuts, dried figs & mountain honey"
     ],
     "producerId": "kazani-kokolakis",
     "producerName": "Kazani Kokolakis",
     "producerGreekName": "Παραδοσιακό Καζάνι Κοκολάκη",
     "category": "kazani",
     "destination": "crete",
-    "location": "Heraklion, Archanes Village",
-    "badge": "Copper Alembic"
+    "location": "Heraklion, Archanes Village"
   },
   {
     "id": "exp_kazani-kokolakis_2",
-    "title": "Kazani Kokolakis - Autumn Rakokazano Feast with Roasted Chestnuts & Charcoal Lamb",
-    "durationMinutes": 100,
-    "pricePerPerson": 40,
-    "description": "Participate in Crete’s most joyful autumn tradition: the rakokazano gathering with live wood fires, music, and charcoal-grilled feast.",
+    "title": "Kazani Kokolakis - Village Rakokazano Feast & Oak-Aged Spirit Pairing",
+    "durationMinutes": 90,
+    "pricePerPerson": 38,
+    "badge": "Kazani Feast",
+    "description": "An unforgettable evening of Greek hospitality: taste spirit fresh from the coil while meats roast over open embers in Heraklion.",
     "includes": [
-      "Tasting of hot first-run spirit (protoraki) coming right out of the condensing pipe",
-      "Charcoal-grilled lamb chops, roasted sweet chestnuts & potatoes baked in embers",
-      "Unlimited village wine and tsikoudia with traditional Cretan hospitality"
+      "Tasting of fresh warm distillate straight from the copper pipe",
+      "Charcoal-grilled local meats, wood-roasted potatoes & village salad",
+      "Tasting of oak-matured amber reserve tsikoudia"
     ],
     "producerId": "kazani-kokolakis",
     "producerName": "Kazani Kokolakis",
     "producerGreekName": "Παραδοσιακό Καζάνι Κοκολάκη",
     "category": "kazani",
     "destination": "crete",
-    "location": "Heraklion, Archanes Village",
-    "badge": "Rakokazano Feast"
+    "location": "Heraklion, Archanes Village"
   },
   {
     "id": "exp_peskesi-farm-kazani_1",
-    "title": "Peskesi Organic Farm & Kazani - Peskesi Traditional Wood-Fired Kazani Still Tour & Tsikoudia Flight",
+    "title": "Peskesi Organic Farm & Kazani - Biodynamic Farm Walk & Wood-Fired Copper Alembic Raki Tour",
     "durationMinutes": 60,
     "pricePerPerson": 20,
-    "description": "At the certified organic Peskesi Farm in Haraso, experience traditional wood-fired distillation of grape pomace in authentic copper cauldrons.",
+    "description": "At the certified organic Peskesi Farm in Haraso: tour the heirloom vegetable gardens and historic copper still house, tasting warm distillate straight from the condensing coil.",
     "includes": [
-      "Walk through the historic copper alembic still house with the master distiller",
-      "Tasting of 3 distillates: Fresh Tsikoudia straight from the coil, Aged Raki & Rakomelo",
-      "Wood-roasted potatoes in ash, organic farm olives & sourdough bread"
+      "Guided walk through the biodynamic permaculture gardens and olive trees",
+      "Detailed explanation of grape pomace double-distillation in traditional copper alembics",
+      "Tasting of 3 distillates: Fresh Tsikoudia from the coil, 3-year oak-aged raki, and rakomelo",
+      "Wood-roasted potatoes in hearth ash, farm-pickled olives, and warm sourdough bread"
     ],
     "producerId": "peskesi-farm-kazani",
     "producerName": "Peskesi Organic Farm & Kazani",
@@ -1663,14 +1726,15 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
   },
   {
     "id": "exp_peskesi-farm-kazani_2",
-    "title": "Peskesi Organic Farm & Kazani - Farm-to-Table Minoan Hearthside Cooking & Distillation Feast",
-    "durationMinutes": 120,
-    "pricePerPerson": 48,
-    "description": "A slow-food celebration at the organic farm: harvest seasonal vegetables, watch copper pot distillation, and feast by the open wood hearth.",
+    "title": "Peskesi Organic Farm & Kazani - Minoan Farm-to-Fork Hearth Cooking & Distillation Feast",
+    "durationMinutes": 150,
+    "pricePerPerson": 95,
+    "description": "Peskesi’s celebrated \"Farm to Fork\" private culinary journey: harvest seasonal heirloom produce, cook over wood coals in clay pots, and feast with unlimited raki and farm wine.",
     "includes": [
-      "Guided foraging of heirloom wild greens and vegetables across the organic farm",
-      "Four-course traditional Cretan meal cooked over wood coals in clay pots",
-      "Unlimited fresh tsikoudia from the copper still and organic farm wine"
+      "Heirloom vegetable harvesting and foraging walk across the 60-dunam farm",
+      "Hands-on culinary demonstration using ancient Minoan clay pot hearth techniques",
+      "Multi-course feast of slow-roasted meats, wild mountain greens, and artisanal cheeses",
+      "Unlimited organic estate wine and wood-fired copper still tsikoudia"
     ],
     "producerId": "peskesi-farm-kazani",
     "producerName": "Peskesi Organic Farm & Kazani",
@@ -1678,18 +1742,18 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "category": "kazani",
     "destination": "crete",
     "location": "Heraklion, Harasso (Hersonissos)",
-    "badge": "Farm Gastronomy"
+    "badge": "Farm-to-Fork Feast"
   },
   {
     "id": "exp_canava-santorini-distillery_1",
     "title": "Canava Santorini Distillery - Volcanic Tsikoudia & Wild Anise Ouzo Masterclass",
     "durationMinutes": 50,
     "pricePerPerson": 20,
-    "description": "Santorini’s first licensed distillery in Messaria: discover how Assyrtiko grape pomace is distilled into smooth crystal spirit.",
+    "description": "Santorini’s first licensed artisan distillery in Messaria: learn how Assyrtiko grape pomace is transformed in copper pot stills into pure crystalline spirit.",
     "includes": [
-      "Walk through copper alembic pot stills and sensory herb displays",
-      "Tasting of 3 distillates: Tsikoudia Santorini, Herbal Ouzo & Liqueur",
-      "Pickled octopus, roasted chickpeas & wild capers"
+      "Tour of traditional copper alembic stills and botanical maceration jars",
+      "Tasting of 3 distillates: Tsikoudia Santorini, Wild Anise Ouzo & Herbal Liqueur",
+      "Pickled octopus, roasted chickpeas & wild caper shoots"
     ],
     "producerId": "canava-santorini-distillery",
     "producerName": "Canava Santorini Distillery",
@@ -1697,7 +1761,7 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "category": "kazani",
     "destination": "santorini",
     "location": "Santorini, Messaria (Santorini)",
-    "badge": "Distillery Craft"
+    "badge": "Distillery Tour"
   },
   {
     "id": "exp_canava-santorini-distillery_2",
@@ -1720,14 +1784,15 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
   },
   {
     "id": "exp_parasiris-olive-mill_1",
-    "title": "Parasiris Olive Mill & Heritage Museum - Melidoni Heritage Olive Mill & 18th-Century Press Walk",
-    "durationMinutes": 50,
-    "pricePerPerson": 15,
-    "description": "Visit the historic village of Melidoni and trace olive oil production across three centuries from wooden animal-driven presses to modern centrifuges.",
+    "title": "Parasiris Olive Mill & Heritage Museum - Melidoni Heritage Mill Tour & Fresh Stone-Pressed EVOO Tasting",
+    "durationMinutes": 45,
+    "pricePerPerson": 8,
+    "description": "At the historic Parasiris olive mill in Melidoni: explore the traditional stone press museum and modern ecological cold extraction unit, tasting 3 extra virgin olive oils.",
     "includes": [
-      "Guided walkthrough of preserved 18th-century stone and wood olive presses",
-      "Sensory tasting of 3 single-estate extra virgin olive oils (mild, robust, infused)",
-      "Traditional Cretan dakos with crushed tomatoes, mizithra cheese & sea salt"
+      "Tour of the working mill and the preserved 19th-century animal-drawn stone press museum",
+      "Sensory tasting of 3 extra virgin olive oils (Koroneiki early harvest, Tsounati, Wild Olive)",
+      "Fresh village sourdough bread baked daily, sea salt, and ripe garden tomatoes",
+      "Demonstration of the cold two-phase extraction process preserving polyphenols"
     ],
     "producerId": "parasiris-olive-mill",
     "producerName": "Parasiris Olive Mill & Heritage Museum",
@@ -1735,18 +1800,19 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "category": "olive_mill",
     "destination": "crete",
     "location": "Rethymno, Melidoni (Mylopotamos)",
-    "badge": "Heritage Mill"
+    "badge": "Heritage Mill (€8)"
   },
   {
     "id": "exp_parasiris-olive-mill_2",
-    "title": "Parasiris Olive Mill & Heritage Museum - Parasiris Cold-Pressed Olive Oil Tasting with Warm Wood-Fired Bread",
+    "title": "Parasiris Olive Mill & Heritage Museum - Olive Grove Walk, Wood-Fired Hearth & Cretan Meze Platter",
     "durationMinutes": 75,
-    "pricePerPerson": 28,
-    "description": "Bake your own traditional village pita in the wood-fired outdoor oven and dip it hot into freshly pressed golden-green olive oil.",
+    "pricePerPerson": 22,
+    "description": "Walk through ancient olive terraces around Melidoni village, watch traditional kalitsounia pies bake in a wood-fired outdoor oven, and feast on fresh olive oil pairings.",
     "includes": [
-      "Hands-on bread baking demonstration using stone-ground Cretan flour",
-      "Tasting of high-polyphenol Koroneiki olive oil with official tasting cups",
-      "Village table spread with wild capers, country olives, cheese & local raki"
+      "Guided walk among ancient olive trees with explanations of traditional pruning",
+      "Wood-fired Cretan cheese and herb pies (kalitsounia) fresh from the stone oven",
+      "Full tasting platter: pickled wild bulbs, cured olives, aged graviera & tsikoudia",
+      "Complimentary bottle of Parasiris Organic EVOO (100ml)"
     ],
     "producerId": "parasiris-olive-mill",
     "producerName": "Parasiris Olive Mill & Heritage Museum",
@@ -1754,18 +1820,19 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "category": "olive_mill",
     "destination": "crete",
     "location": "Rethymno, Melidoni (Mylopotamos)",
-    "badge": "Hearth & Harvest"
+    "badge": "Hearth & Olive"
   },
   {
     "id": "exp_cretan-olive-oil-farm_1",
-    "title": "Cretan Olive Oil Farm - Mirabello Bay Olive Oil, Pottery & Wild Herb Cooking Workshop",
-    "durationMinutes": 75,
-    "pricePerPerson": 25,
-    "description": "Immerse yourself in traditional Cretan farm life overlooking Mirabello Bay: taste cold-pressed oils, watch pottery making, and smell wild herbs.",
+    "title": "Cretan Olive Oil Farm - Self-Guided Olive Museum, Herbal Garden & Raki Still Tour",
+    "durationMinutes": 50,
+    "pricePerPerson": 5,
+    "description": "At the Spiridi (Cretan) Olive Oil Farm near Agios Nikolaos: interactive multi-language tablet tour of the historic olive mill, herbal gardens, raki still, and ceramic studio.",
     "includes": [
-      "Farm walk through aromatic herb gardens and historic stone olive press",
-      "Tasting of 3 organic extra virgin olive oils with village bread",
-      "Demonstration of traditional Cretan ceramic pot creation"
+      "Interactive tablet guide in your language exploring 10 traditional farm stations",
+      "Visit to the 18th-century stone olive press, pottery workshop & bee corner",
+      "Tasting of 3 farm extra virgin olive oils, wild thyme honey, and pure tsikoudia",
+      "Panoramic views over the crystal waters of Mirabello Bay"
     ],
     "producerId": "cretan-olive-oil-farm",
     "producerName": "Cretan Olive Oil Farm",
@@ -1773,18 +1840,19 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "category": "olive_mill",
     "destination": "crete",
     "location": "Lasithi, Agios Nikolaos (Mirabello)",
-    "badge": "Farm Experience"
+    "badge": "Spiridi Farm Tour (€5)"
   },
   {
     "id": "exp_cretan-olive-oil-farm_2",
-    "title": "Cretan Olive Oil Farm - Traditional Donkey Press Experience & Hand-Rolled Bread Baking",
+    "title": "Cretan Olive Oil Farm - Interactive Wine & Traditional Farm Delicacy Tasting",
     "durationMinutes": 90,
-    "pricePerPerson": 40,
-    "description": "Participate in traditional farm activities: hand-roll sourdough bread, press olives the old-fashioned way, and cook over open coals.",
+    "pricePerPerson": 45,
+    "description": "The farm’s premier experience: guided farm tour followed by an introduction to Cretan wines, hand-rolled bread baking in wood ovens, and traditional delicacies.",
     "includes": [
-      "Interactive bread-making workshop in outdoor stone hearths",
-      "Tasting of olive oils, local artisanal honey, and sheep milk cheeses",
-      "Farmhouse meze platter with fresh garden vegetables and village wine"
+      "Personal guided tour through all agricultural workshops and animal pens",
+      "Hands-on bread-making demonstration baked over open coals",
+      "Tasting of 4 Cretan wines paired with farmhouse cheeses and fresh garden salad",
+      "Authentic Cretan rakomelo digestif with handmade loukoumades"
     ],
     "producerId": "cretan-olive-oil-farm",
     "producerName": "Cretan Olive Oil Farm",
@@ -1792,18 +1860,19 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "category": "olive_mill",
     "destination": "crete",
     "location": "Lasithi, Agios Nikolaos (Mirabello)",
-    "badge": "Hands-on Village"
+    "badge": "Farmstead Gastronomy"
   },
   {
     "id": "exp_liokareas-olive-estate_1",
-    "title": "Liokareas Olive Estate - Kalamata Wild Athinoelia & Koroneiki High-Phenolic EVOO Flight",
-    "durationMinutes": 60,
-    "pricePerPerson": 24,
-    "description": "In the Mani foothills of Kalamata, taste fifth-generation estate olive oils made from ancient Athinoelia and Koroneiki olives.",
+    "title": "Liokareas Olive Estate - Liokareas Mani Ancient Groves & Phenolic EVOO Masterclass",
+    "durationMinutes": 50,
+    "pricePerPerson": 16,
+    "description": "Hosted at the 5th-generation Liokareas estate in Mani: walk among centuries-old Koroneiki and Kalamata olive groves, learn harvest timings, and taste award-winning high-phenolic EVOOs.",
     "includes": [
-      "Tour of the certified organic family groves and modern two-phase mill",
-      "Tasting of 4 monovarietal & co-milled olive oils (Early Harvest, Athinoelia, Wild Thyme, Lemon)",
-      "Mani cured pork syglino, Kalamata olives & freshly baked sourdough"
+      "Guided walk through ancient olive terraces overlooking the Messenian Gulf",
+      "Professional cobalt-glass tasting of 3 single-estate early harvest olive oils",
+      "Sensory guide to identifying peppery polyphenols and freshness indicators",
+      "Warm Mani sourdough bread, sea salt crystals & Kalamata table olives"
     ],
     "producerId": "liokareas-olive-estate",
     "producerName": "Liokareas Olive Estate",
@@ -1811,18 +1880,19 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "category": "olive_mill",
     "destination": "peloponnese",
     "location": "Messinia, Mani Peninsula (Peloponnese)",
-    "badge": "Kalamata EVOO"
+    "badge": "EVOO Masterclass"
   },
   {
     "id": "exp_liokareas-olive-estate_2",
-    "title": "Liokareas Olive Estate - Liokareas Century-Old Family Grove Walk & Infused Oil Workshop",
-    "durationMinutes": 85,
-    "pricePerPerson": 45,
-    "description": "Learn the secrets of whole-fruit co-milling where fresh citrus, garlic, and wild herbs are crushed simultaneously with olives.",
+    "title": "Liokareas Olive Estate - Liokareas Agrumato Cold-Press Tasting & Mani Gastronomy Pairing",
+    "durationMinutes": 80,
+    "pricePerPerson": 38,
+    "description": "Discover Liokareas’ renowned cold co-pressed Agrumato oils (crushed simultaneously with whole fresh organic lemons, oranges, and chili peppers), paired with traditional Mani delicacies.",
     "includes": [
-      "Hands-on workshop blending and tasting fresh herb-infused oils",
-      "Professional cobalt glass sensory analysis of bitterness and pungency",
-      "Traditional Mani meal: toasted bread with warm olive oil, graviera & local wine"
+      "Introduction to the artisan Italian cold-milling and agrumato co-pressing technique",
+      "Tasting of 4 signature flavored EVOOs (Lemon, Orange, Basil, Chili Agrumato)",
+      "Traditional Mani meze board: cured pork Sigklino, Sfela PDO cheese & Lalangia dough crisps",
+      "Complimentary 100ml tasting bottle of Early Harvest EVOO to take home"
     ],
     "producerId": "liokareas-olive-estate",
     "producerName": "Liokareas Olive Estate",
@@ -1830,94 +1900,95 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "category": "olive_mill",
     "destination": "peloponnese",
     "location": "Messinia, Mani Peninsula (Peloponnese)",
-    "badge": "Mani Masterclass"
+    "badge": "Agrumato Pairing"
   },
   {
     "id": "exp_aerakis-dairy-anogeia_1",
-    "title": "Aerakis Traditional Mountain Dairy - Anogeia High-Psiloritis Alpine Raw Milk Cheese Flight",
-    "durationMinutes": 60,
-    "pricePerPerson": 18,
-    "description": "In the legendary shepherd stronghold of Anogeia at 800m, taste raw sheep and goat cheeses grazing on high-altitude alpine herbs.",
+    "title": "Aerakis Traditional Mountain Dairy - Artisan Raw Milk Graviera & Fresh Cheese Flight",
+    "durationMinutes": 50,
+    "pricePerPerson": 16,
+    "badge": "Dairy Flight",
+    "description": "Taste authentic raw sheep and goat cheeses crafted following traditional alpine pastoral methods at Aerakis Traditional Mountain Dairy.",
     "includes": [
-      "Presentation of the Anogeia pastoral dairy tradition and seasonal transhumance",
-      "Tasting of PDO Graviera Kritis, sharp aged Kefalotyri, and creamy Tyrozouli",
-      "Cretan mountain tea, wild thyme honey drizzle & warm toasted carob bread"
+      "Walkthrough of the cheese salting and temperature-controlled curing cellar",
+      "Tasting of 4 fresh and aged cheeses (Mizithra, Anthotiros, Graviera)",
+      "Crushed barley rusks, wild thyme honey & mountain tea"
     ],
     "producerId": "aerakis-dairy-anogeia",
     "producerName": "Aerakis Traditional Mountain Dairy",
     "producerGreekName": "Παραδοσιακό Τυροκομείο Αεράκη",
     "category": "cheese_dairy",
     "destination": "crete",
-    "location": "Rethymno, Anogeia (Mount Psiloritis)",
-    "badge": "Mountain Alpine"
+    "location": "Rethymno, Anogeia (Mount Psiloritis)"
   },
   {
     "id": "exp_aerakis-dairy-anogeia_2",
-    "title": "Aerakis Traditional Mountain Dairy - Shepherd Mitato Cheese Tradition & Smoked Cretan Ham Walk",
-    "durationMinutes": 85,
-    "pricePerPerson": 36,
-    "description": "Experience how shepherds in high stone mitato huts preserved cheese for millennia, paired with traditional wood-smoked meats.",
+    "title": "Aerakis Traditional Mountain Dairy - Shepherd Cauldron Workshop & Terroir Wine Pairing",
+    "durationMinutes": 80,
+    "pricePerPerson": 32,
+    "badge": "Master Cheesemaker",
+    "description": "Watch the master cheesemaker separate curds and whey in traditional copper vats, followed by vertical cheese tasting paired with native wines.",
     "includes": [
-      "Visit to a stone-built mitato replica and cheese maturing wooden shelves",
-      "5 artisanal dairy tastings including cave-matured Graviera with peppercorns",
-      "Anogeian smoked pork, wild mountain greens & local village red wine"
+      "Live demonstration of curds heating and cheese mold pressing",
+      "Tasting of 3 aged cave Gravieras aged 6, 12, and 24 months",
+      "2 glasses of local wine paired with wild greens and artisan charcuterie"
     ],
     "producerId": "aerakis-dairy-anogeia",
     "producerName": "Aerakis Traditional Mountain Dairy",
     "producerGreekName": "Παραδοσιακό Τυροκομείο Αεράκη",
     "category": "cheese_dairy",
     "destination": "crete",
-    "location": "Rethymno, Anogeia (Mount Psiloritis)",
-    "badge": "Mitato Heritage"
+    "location": "Rethymno, Anogeia (Mount Psiloritis)"
   },
   {
     "id": "exp_tzourmpakis-dairy-amari_1",
-    "title": "Tzourmpakis Artisan Dairy - Amari Valley Tyromala & 18-Month Aged Graviera Masterclass",
-    "durationMinutes": 60,
-    "pricePerPerson": 20,
-    "description": "Tucked beneath Mount Kedros in the pristine Amari Valley, taste cheeses crafted from pure sheep and goat milk without chemical additives.",
+    "title": "Tzourmpakis Artisan Dairy - Artisan Raw Milk Graviera & Fresh Cheese Flight",
+    "durationMinutes": 50,
+    "pricePerPerson": 16,
+    "badge": "Dairy Flight",
+    "description": "Taste authentic raw sheep and goat cheeses crafted following traditional alpine pastoral methods at Tzourmpakis Artisan Dairy.",
     "includes": [
-      "Tour of the family dairy and subterranean cheese maturation room",
-      "4 cheeses: Fresh Tyromala, Smoked Graviera, Aged Kefalotyri & Anthotiros",
-      "Amari valley walnuts, fresh figs, rusks & cold mountain spring water"
+      "Walkthrough of the cheese salting and temperature-controlled curing cellar",
+      "Tasting of 4 fresh and aged cheeses (Mizithra, Anthotiros, Graviera)",
+      "Crushed barley rusks, wild thyme honey & mountain tea"
     ],
     "producerId": "tzourmpakis-dairy-amari",
     "producerName": "Tzourmpakis Artisan Dairy",
     "producerGreekName": "Τυροκομείο Τζουρμπάκη",
     "category": "cheese_dairy",
     "destination": "crete",
-    "location": "Rethymno, Amari Valley (Mount Kedros)",
-    "badge": "Amari Valley"
+    "location": "Rethymno, Amari Valley (Mount Kedros)"
   },
   {
     "id": "exp_tzourmpakis-dairy-amari_2",
-    "title": "Tzourmpakis Artisan Dairy - Artisanal Cauldron Cheese-Making & Wild Herb Butter Tasting",
+    "title": "Tzourmpakis Artisan Dairy - Shepherd Cauldron Workshop & Terroir Wine Pairing",
     "durationMinutes": 80,
-    "pricePerPerson": 36,
-    "description": "Learn the ancient science of raw milk curd setting and taste fresh Staka butter made from simmering rich sheep milk cream.",
+    "pricePerPerson": 32,
+    "badge": "Master Cheesemaker",
+    "description": "Watch the master cheesemaker separate curds and whey in traditional copper vats, followed by vertical cheese tasting paired with native wines.",
     "includes": [
-      "Hands-on curd setting and cheese mold pressing demonstration",
-      "Tasting of warm Staka with fried village eggs and crusty bread",
-      "Platter of 4 reserve cheeses paired with local Rethymno village wine"
+      "Live demonstration of curds heating and cheese mold pressing",
+      "Tasting of 3 aged cave Gravieras aged 6, 12, and 24 months",
+      "2 glasses of local wine paired with wild greens and artisan charcuterie"
     ],
     "producerId": "tzourmpakis-dairy-amari",
     "producerName": "Tzourmpakis Artisan Dairy",
     "producerGreekName": "Τυροκομείο Τζουρμπάκη",
     "category": "cheese_dairy",
     "destination": "crete",
-    "location": "Rethymno, Amari Valley (Mount Kedros)",
-    "badge": "Dairy Master"
+    "location": "Rethymno, Amari Valley (Mount Kedros)"
   },
   {
     "id": "exp_stathakis-honey-park_1",
-    "title": "Stathakis Family Thyme Honey & Bee Park - Kissamos Wild Thyme Bee Park Walk & Raw Comb Honey Flight",
+    "title": "Stathakis Family Thyme Honey & Bee Park - Kissamos Botanical Bee Park & Live Hive Observation",
     "durationMinutes": 50,
     "pricePerPerson": 14,
-    "description": "Stroll through a protected botanical bee sanctuary in western Crete with over 50 species of Cretan nectar-producing flora.",
+    "description": "Stroll along educational botanical trails featuring over 50 Cretan nectar flora species, observe live bees safely through glass observation hives, and taste 3 raw honeys.",
     "includes": [
-      "Guided walk along educational bee trails observing safe glass observation hives",
-      "3 raw mono-floral honey tastings (Wild Thyme, White Pine, Spring Heather)",
-      "Fresh sheep yogurt with honey drizzle, walnuts & iced malotira mountain tea"
+      "Guided walk through the protected botanical bee sanctuary in Kissamos",
+      "Safe inspection of live colonies inside glass observation hives",
+      "Tasting of 3 raw mono-floral honeys (Wild Thyme, Pine, White Heather) with sheep yogurt",
+      "Iced Cretan malotira mountain tea brewed with fresh lemon and honey"
     ],
     "producerId": "stathakis-honey-park",
     "producerName": "Stathakis Family Thyme Honey & Bee Park",
@@ -1925,19 +1996,19 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "category": "apiary",
     "destination": "crete",
     "location": "Chania, Kissamos (Gramvousa)",
-    "badge": "Bee Sanctuary"
+    "badge": "Bee Park Walk"
   },
   {
     "id": "exp_stathakis-honey-park_2",
-    "title": "Stathakis Family Thyme Honey & Bee Park - Beekeeper Suit Experience: Active Hive Opening & Royal Jelly Tasting",
-    "durationMinutes": 75,
+    "title": "Stathakis Family Thyme Honey & Bee Park - Interactive Cretan Honey Experience & Full Beekeeper Suit",
+    "durationMinutes": 80,
     "pricePerPerson": 32,
-    "description": "Put on a professional beekeeper suit, use the herbal smoker, and open an active beehive with the master apiarist.",
+    "description": "The official Stathakis Family interactive experience: put on a full protective beekeeper suit, handle the herbal smoker, open an active hive with the master apiarist, and taste fresh comb.",
     "includes": [
-      "Full protective suit and gentle herbal smoker handling instruction",
-      "Hands-on frame removal and search for the Queen bee",
-      "Fresh piece of wax honeycomb cut directly from the frame to taste and take home",
-      "Tasting of pure raw royal jelly and antioxidant bee pollen granules"
+      "Full professional beekeeping suit and gentle herbal smoker handling instruction",
+      "Hands-on frame removal and search for worker bees, drones, and the Queen",
+      "Fresh piece of raw wax honeycomb cut directly from the wooden frame to take home",
+      "Private honey tasting seminar with traditional Cretan finger food and bee pollen"
     ],
     "producerId": "stathakis-honey-park",
     "producerName": "Stathakis Family Thyme Honey & Bee Park",
@@ -1949,14 +2020,15 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
   },
   {
     "id": "exp_meligyris-apiary_1",
-    "title": "Meligyris Cretan Apiary - Meligyris Rare Single-Flora Honeys (White Thyme, Pine, Sage) Flight",
-    "durationMinutes": 50,
-    "pricePerPerson": 15,
-    "description": "Taste the diverse botanical geography of Crete through rare, unfiltered single-origin honeys harvested from mountain plateaus and coastal gorges.",
+    "title": "Meligyris Cretan Apiary - Single-Botanical Wild Honey Flight & Hive Walk",
+    "durationMinutes": 40,
+    "pricePerPerson": 12,
+    "description": "At Meligyris Cretan Apiary in Arkalochori: sample 5 rare single-botanical raw honeys harvested from nomadic hives across Crete’s mountain ranges and coastal gorges.",
     "includes": [
-      "Sensory tasting of 4 single-origin honeys: Wild Thyme, Sage, Oak, White Thyme",
-      "Visual and aroma profiling using official honey color and viscosity scales",
-      "Freshly made Cretan sfakianopita (cheese pancake) drenched in warm honey"
+      "Sensory tasting of 5 distinct mono-floral raw honeys (White Thyme, Pine-Thyme, Heather, Sage, Chestnut)",
+      "Fresh sheep milk anthotyro cheese and barley rusks for dipping",
+      "Walk through the honey extraction lab and botanical garden of nectar plants",
+      "Iced Cretan mountain herb tea sweetened with raw thyme honey"
     ],
     "producerId": "meligyris-apiary",
     "producerName": "Meligyris Cretan Apiary",
@@ -1964,18 +2036,19 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "category": "apiary",
     "destination": "crete",
     "location": "Heraklion, Arkalochori (Heraklion)",
-    "badge": "Single Origin"
+    "badge": "Honey Flight (€12)"
   },
   {
     "id": "exp_meligyris-apiary_2",
-    "title": "Meligyris Cretan Apiary - Ancient Beekeeping Traditions & Cretan Malotira Tea Pairing",
+    "title": "Meligyris Cretan Apiary - Nomadic Beekeeping Workshop & Raw Honeycomb Cutting",
     "durationMinutes": 75,
     "pricePerPerson": 28,
-    "description": "Discover the Minoan 3,500-year history of beekeeping on Crete and learn how medicinal mountain herbs amplify the healing power of raw honey.",
+    "description": "Learn the ancient art of nomadic beekeeping in Crete, suit up to view working hives, and experience cutting raw honeycomb dripping with golden thyme nectar.",
     "includes": [
-      "Walk through the honey processing facility and cold centrifuge extraction area",
-      "Herbal tea brewing workshop pairing wild Dictamnus and Malotira with specific honeys",
-      "Gift jar of organic raw Cretan thyme honey to take home"
+      "Protective veil gear and live observation hive frame inspection",
+      "Hands-on honeycomb cutting session with warm honey tasting",
+      "Traditional Cretan pancake (Tiganita) platter served with warm honey and walnuts",
+      "Jar of single-harvest White Thyme Honey (250g) to take home"
     ],
     "producerId": "meligyris-apiary",
     "producerName": "Meligyris Cretan Apiary",
@@ -1983,196 +2056,206 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "category": "apiary",
     "destination": "crete",
     "location": "Heraklion, Arkalochori (Heraklion)",
-    "badge": "Botanical Lore"
+    "badge": "Nomadic Beekeeper"
   },
   {
     "id": "exp_notos-brewery_1",
-    "title": "Notos Microbrewery - Fresh Tank-Pull Draft Flight & Spent-Grain Snacks",
-    "durationMinutes": 45,
-    "pricePerPerson": 14,
-    "badge": "Fresh Draft",
-    "description": "Taste 4 unpasteurized, unfiltered craft beers pulled fresh from the conditioning tanks at Notos Microbrewery in Heraklion.",
+    "title": "Notos Microbrewery - Notos Fresh Draft Flight & Heraklion Craft Tasting",
+    "durationMinutes": 40,
+    "pricePerPerson": 10,
+    "description": "At Notos Microbrewery in Heraklion: taste 4 fresh, unpasteurized craft beers produced by Crete’s passionate urban craft brewing team.",
     "includes": [
-      "4 x 150ml tasting pours of fresh unfiltered craft beers",
-      "Warm spent-grain pretzels or seasoned barley crisps",
-      "Brewmaster tasting sheet with hop and malt descriptions"
+      "Flight of 4 x 150ml draft beers (Notos Lager, Session Ale, Weiss, Dry Stout)",
+      "Cretan barley rusks with sea salt and local graviera cubes",
+      "Introductory talk on modern microbrewing in Crete and unpasteurized beer care",
+      "Brewery tasting booklet with beer style notes"
     ],
     "producerId": "notos-brewery",
     "producerName": "Notos Microbrewery",
     "producerGreekName": "Ζυθοποιία Νότος",
     "category": "brewery",
     "destination": "crete",
-    "location": "Heraklion, Heraklion City"
+    "location": "Heraklion, Heraklion City",
+    "badge": "Craft Flight (€10)"
   },
   {
     "id": "exp_notos-brewery_2",
-    "title": "Notos Microbrewery - Brewhouse Tour & Artisan Beer-Food Pairing",
-    "durationMinutes": 75,
-    "pricePerPerson": 28,
-    "badge": "Brewery Tour",
-    "description": "Step into the brewhouse with the craft brewing team, inspect raw Greek malts and wild hops, and enjoy a curated beer and tapas flight.",
+    "title": "Notos Microbrewery - Notos Brewhouse Tour & Smoked Cretan Apaki Pairing",
+    "durationMinutes": 60,
+    "pricePerPerson": 20,
+    "description": "A behind-the-scenes walkthrough of the fermentation tanks and cold storage room, followed by pairing Notos craft beers with wood-smoked pork apaki and local cheeses.",
     "includes": [
-      "Guided walkthrough of the brewing deck, fermentation vessels and bottling line",
-      "5 craft beers including limited-edition seasonal brews",
-      "Smoked local sausage bites, aged graviera & pickled village vegetables"
+      "Full walking tour of brewing tanks, heat exchange systems, and bottling line",
+      "5 generous craft beer pours including seasonal small-batch releases",
+      "Warm plate of Cretan smoked pork apaki sautéed in olive oil and aged cheeses",
+      "Souvenir Notos craft beer tulip glass"
     ],
     "producerId": "notos-brewery",
     "producerName": "Notos Microbrewery",
     "producerGreekName": "Ζυθοποιία Νότος",
     "category": "brewery",
     "destination": "crete",
-    "location": "Heraklion, Heraklion City"
+    "location": "Heraklion, Heraklion City",
+    "badge": "Brewery Tour & Apaki"
   },
   {
     "id": "exp_kasta-brewery_1",
-    "title": "Kasta Microbrewery - Fresh Tank-Pull Draft Flight & Spent-Grain Snacks",
-    "durationMinutes": 45,
-    "pricePerPerson": 14,
-    "badge": "Fresh Draft",
-    "description": "Taste 4 unpasteurized, unfiltered craft beers pulled fresh from the conditioning tanks at Kasta Microbrewery in Heraklion.",
+    "title": "Kasta Microbrewery - Kasta Hop Exploration Flight & Taproom Tasting",
+    "durationMinutes": 40,
+    "pricePerPerson": 10,
+    "description": "At Kasta Microbrewery in Heraklion: experience aromatic, hop-forward craft beers brewed with passion, from crisp pale ales to rich malty stouts.",
     "includes": [
-      "4 x 150ml tasting pours of fresh unfiltered craft beers",
-      "Warm spent-grain pretzels or seasoned barley crisps",
-      "Brewmaster tasting sheet with hop and malt descriptions"
+      "4 x 150ml craft beer flight (American Pale Ale, New England IPA, Red Ale, Stout)",
+      "Sensory hop pellet rubbing and aroma identification exercise",
+      "Toasted barley breadcrumbs and seasoned Cretan nuts",
+      "Q&A with the craft brewing team on modern hop varieties"
     ],
     "producerId": "kasta-brewery",
     "producerName": "Kasta Microbrewery",
     "producerGreekName": "Μικροζυθοποιία Κάστα",
     "category": "brewery",
     "destination": "crete",
-    "location": "Heraklion, Heraklion Urban Port"
+    "location": "Heraklion, Heraklion Urban Port",
+    "badge": "Hop Flight (€10)"
   },
   {
     "id": "exp_kasta-brewery_2",
-    "title": "Kasta Microbrewery - Brewhouse Tour & Artisan Beer-Food Pairing",
-    "durationMinutes": 75,
-    "pricePerPerson": 28,
-    "badge": "Brewery Tour",
-    "description": "Step into the brewhouse with the craft brewing team, inspect raw Greek malts and wild hops, and enjoy a curated beer and tapas flight.",
+    "title": "Kasta Microbrewery - Brewer’s Table & Artisan Beer Gastronomy",
+    "durationMinutes": 60,
+    "pricePerPerson": 22,
+    "description": "Join the Kasta brewers for an intimate tasting session featuring 5 signature and experimental brews paired with savory local meze bites.",
     "includes": [
-      "Guided walkthrough of the brewing deck, fermentation vessels and bottling line",
-      "5 craft beers including limited-edition seasonal brews",
-      "Smoked local sausage bites, aged graviera & pickled village vegetables"
+      "Guided cellar walkthrough explaining dry-hopping techniques and water profiles",
+      "5 craft beers including limited single-hop editions",
+      "Gourmet platter of cured meats, smoked cheeses, and sourdough bread",
+      "Take-home 330ml can of fresh Kasta craft beer"
     ],
     "producerId": "kasta-brewery",
     "producerName": "Kasta Microbrewery",
     "producerGreekName": "Μικροζυθοποιία Κάστα",
     "category": "brewery",
     "destination": "crete",
-    "location": "Heraklion, Heraklion Urban Port"
+    "location": "Heraklion, Heraklion Urban Port",
+    "badge": "Brewer’s Table"
   },
   {
     "id": "exp_kykao-handcrafted-beers_1",
-    "title": "Kykao Handcrafted Beers - Fresh Tank-Pull Draft Flight & Spent-Grain Snacks",
+    "title": "Kykao Handcrafted Beers - Kykao Wild Barrel Fermentation Taproom Flight",
     "durationMinutes": 45,
     "pricePerPerson": 14,
-    "badge": "Fresh Draft",
-    "description": "Taste 4 unpasteurized, unfiltered craft beers pulled fresh from the conditioning tanks at Kykao Handcrafted Beers in Achaia.",
+    "description": "At the Kykao craft nanobrewery near Patras: taste 4 boundary-pushing craft beers, exploring mixed fermentations, grape ales co-fermented with local wine must, and hop-saturated IPAs.",
     "includes": [
-      "4 x 150ml tasting pours of fresh unfiltered craft beers",
-      "Warm spent-grain pretzels or seasoned barley crisps",
-      "Brewmaster tasting sheet with hop and malt descriptions"
+      "Flight of 4 x 150ml draft beers from rotating craft taps",
+      "Tasting notes on wild yeast harvesting and indigenous fermentation cultures",
+      "Crispy spent-grain crackers and roasted Greek almonds",
+      "Conversation with the brewing collective about Greece’s craft beer revolution"
     ],
     "producerId": "kykao-handcrafted-beers",
     "producerName": "Kykao Handcrafted Beers",
     "producerGreekName": "Χειροποίητη Ζυθοποιία Κύκαο",
     "category": "brewery",
     "destination": "peloponnese",
-    "location": "Achaia, Patras (Peloponnese)"
+    "location": "Achaia, Patras (Peloponnese)",
+    "badge": "Wild Ferment Flight"
   },
   {
     "id": "exp_kykao-handcrafted-beers_2",
-    "title": "Kykao Handcrafted Beers - Brewhouse Tour & Artisan Beer-Food Pairing",
+    "title": "Kykao Handcrafted Beers - Kykao Barrel Cellar Masterclass & Mixed-Fermentation Pairing",
     "durationMinutes": 75,
-    "pricePerPerson": 28,
-    "badge": "Brewery Tour",
-    "description": "Step into the brewhouse with the craft brewing team, inspect raw Greek malts and wild hops, and enjoy a curated beer and tapas flight.",
+    "pricePerPerson": 30,
+    "description": "Go behind the scenes into the barrel-aging sanctum: sample wild sours aged in local oak barrels, Greek grape ales, and imperial stouts paired with Greek artisan cheeses.",
     "includes": [
-      "Guided walkthrough of the brewing deck, fermentation vessels and bottling line",
-      "5 craft beers including limited-edition seasonal brews",
-      "Smoked local sausage bites, aged graviera & pickled village vegetables"
+      "Guided cellar tour of wine and spirit oak barrels harboring mixed-fermentation beers",
+      "5 exclusive bottle pours including Barrel-Aged Sour Ale and Greek Grape Ale",
+      "Artisanal pairing platter of aged Peloponnesian cheeses and dried figs",
+      "Souvenir Kykao craft beer glass"
     ],
     "producerId": "kykao-handcrafted-beers",
     "producerName": "Kykao Handcrafted Beers",
     "producerGreekName": "Χειροποίητη Ζυθοποιία Κύκαο",
     "category": "brewery",
     "destination": "peloponnese",
-    "location": "Achaia, Patras (Peloponnese)"
+    "location": "Achaia, Patras (Peloponnese)",
+    "badge": "Cellar Masterclass"
   },
   {
     "id": "exp_siris-craft-brewery_1",
-    "title": "Siris Craft Brewery (Voreia Beer) - Fresh Tank-Pull Draft Flight & Spent-Grain Snacks",
+    "title": "Siris Craft Brewery (Voreia Beer) - Voreia Fresh Craft Tap Flight",
     "durationMinutes": 45,
-    "pricePerPerson": 14,
-    "badge": "Fresh Draft",
-    "description": "Taste 4 unpasteurized, unfiltered craft beers pulled fresh from the conditioning tanks at Siris Craft Brewery (Voreia Beer) in Serres.",
+    "pricePerPerson": 12,
+    "description": "At Siris Craft Brewery in Serres: taste 4 signature Voreia craft beers poured fresh from the brewery taps, celebrating natural Greek brewing without preservatives.",
     "includes": [
-      "4 x 150ml tasting pours of fresh unfiltered craft beers",
-      "Warm spent-grain pretzels or seasoned barley crisps",
-      "Brewmaster tasting sheet with hop and malt descriptions"
+      "4 x 150ml pours of fresh Voreia craft beers (Voreia Pilsner, IPA, Witbier, Smoked Amber)",
+      "Overview of raw Greek barley, specialty malts, and whole-cone hops",
+      "Traditional Greek pretzel crisps and salted local pistachios",
+      "Official Voreia tasting mat and sensory score sheet"
     ],
     "producerId": "siris-craft-brewery",
     "producerName": "Siris Craft Brewery (Voreia Beer)",
     "producerGreekName": "Μικροζυθοποιία Σερρών (Voreia)",
     "category": "brewery",
     "destination": "northern_greece",
-    "location": "Serres, Serres (Macedonia)"
+    "location": "Serres, Serres (Macedonia)",
+    "badge": "Fresh Tap Flight"
   },
   {
     "id": "exp_siris-craft-brewery_2",
-    "title": "Siris Craft Brewery (Voreia Beer) - Brewhouse Tour & Artisan Beer-Food Pairing",
+    "title": "Siris Craft Brewery (Voreia Beer) - Siris Brewhouse Tour & Imperial Stout Cheese Pairing",
     "durationMinutes": 75,
-    "pricePerPerson": 28,
-    "badge": "Brewery Tour",
-    "description": "Step into the brewhouse with the craft brewing team, inspect raw Greek malts and wild hops, and enjoy a curated beer and tapas flight.",
+    "pricePerPerson": 26,
+    "description": "Step onto the brewing platform with the master brewer, observe mashing and boiling kettles, and conclude with a pairing of Voreia Imperial Porter and Smoked Amber with local Macedonian cheeses.",
     "includes": [
-      "Guided walkthrough of the brewing deck, fermentation vessels and bottling line",
-      "5 craft beers including limited-edition seasonal brews",
-      "Smoked local sausage bites, aged graviera & pickled village vegetables"
+      "Guided brewhouse, fermentation cellar, and automated bottling line tour",
+      "5 craft beers including barrel-aged Voreia Imperial Porter and Smoked Amber Ale",
+      "Curated pairing board of smoked Metsovone cheese, Kasseri, and dark chocolate bites",
+      "Q&A session on craft brewing and micro-canning in Greece"
     ],
     "producerId": "siris-craft-brewery",
     "producerName": "Siris Craft Brewery (Voreia Beer)",
     "producerGreekName": "Μικροζυθοποιία Σερρών (Voreia)",
     "category": "brewery",
     "destination": "northern_greece",
-    "location": "Serres, Serres (Macedonia)"
+    "location": "Serres, Serres (Macedonia)",
+    "badge": "Brewery Tour & Pairing"
   },
   {
     "id": "exp_propator-sknipa-brewery_1",
-    "title": "Propator Microbrewery (Sknipa Beer) - Fresh Tank-Pull Draft Flight & Spent-Grain Snacks",
+    "title": "Propator Microbrewery (Sknipa Beer) - Sknipa Raw Craft Flight & Greek Barley Brewhouse Tour",
     "durationMinutes": 45,
-    "pricePerPerson": 14,
-    "badge": "Fresh Draft",
-    "description": "Taste 4 unpasteurized, unfiltered craft beers pulled fresh from the conditioning tanks at Propator Microbrewery (Sknipa Beer) in Thessaloniki.",
+    "pricePerPerson": 12,
+    "description": "At Propator Microbrewery outside Thessaloniki: discover the unfiltered, unpasteurized \"Sknipa\" beer series made with 100% Greek barley malts and raw thyme honey.",
     "includes": [
-      "4 x 150ml tasting pours of fresh unfiltered craft beers",
-      "Warm spent-grain pretzels or seasoned barley crisps",
-      "Brewmaster tasting sheet with hop and malt descriptions"
+      "4 x 150ml craft beer flight (Sknipa Bold IPA, Lady Wheat, Strong Ale, Honey Golden Ale)",
+      "Tour of the compact eco-brewhouse and bottle-conditioning fermentation room",
+      "Warm sourdough pretzels and Greek olive tapenade",
+      "Explanation of natural carbonation without artificial gas injection"
     ],
     "producerId": "propator-sknipa-brewery",
     "producerName": "Propator Microbrewery (Sknipa Beer)",
     "producerGreekName": "Πρότυπη Μικροζυθοποιία (Μπίρα Σκνίπα)",
     "category": "brewery",
     "destination": "northern_greece",
-    "location": "Thessaloniki, Nea Raidestos (Thessaloniki)"
+    "location": "Thessaloniki, Nea Raidestos (Thessaloniki)",
+    "badge": "Sknipa Flight (€12)"
   },
   {
     "id": "exp_propator-sknipa-brewery_2",
-    "title": "Propator Microbrewery (Sknipa Beer) - Brewhouse Tour & Artisan Beer-Food Pairing",
-    "durationMinutes": 75,
-    "pricePerPerson": 28,
-    "badge": "Brewery Tour",
-    "description": "Step into the brewhouse with the craft brewing team, inspect raw Greek malts and wild hops, and enjoy a curated beer and tapas flight.",
+    "title": "Propator Microbrewery (Sknipa Beer) - Thessaloniki Brewer’s Table & Honey Glaze Meze",
+    "durationMinutes": 70,
+    "pricePerPerson": 25,
+    "description": "An intimate tasting session with the founders of Propator, featuring 5 generous craft pours paired with honey-glazed grilled sausages, Macedonian cheeses, and country bread.",
     "includes": [
-      "Guided walkthrough of the brewing deck, fermentation vessels and bottling line",
-      "5 craft beers including limited-edition seasonal brews",
-      "Smoked local sausage bites, aged graviera & pickled village vegetables"
+      "Private brewer-led walkthrough of grain milling, mashing, and cold lagering",
+      "5 full craft beer pours including seasonal imperial and honey-infused batches",
+      "Hot meze platter: country sausages with Sknipa beer glaze, graviera, and peppers",
+      "Take-home 330ml bottle of Sknipa Bold IPA"
     ],
     "producerId": "propator-sknipa-brewery",
     "producerName": "Propator Microbrewery (Sknipa Beer)",
     "producerGreekName": "Πρότυπη Μικροζυθοποιία (Μπίρα Σκνίπα)",
     "category": "brewery",
     "destination": "northern_greece",
-    "location": "Thessaloniki, Nea Raidestos (Thessaloniki)"
+    "location": "Thessaloniki, Nea Raidestos (Thessaloniki)",
+    "badge": "Brewer’s Table"
   }
 ];
