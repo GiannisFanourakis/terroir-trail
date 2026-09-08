@@ -372,6 +372,26 @@ export const useAuth = () => {
     return user?.personalNotes[producerId] || '';
   }, [user]);
 
+  // 9. VIP Explorer Pass Activation
+  const activateExplorerPass = useCallback((durationDays: number = 365) => {
+    setUser((prev) => {
+      if (!prev) return prev;
+      const expiryDate = new Date();
+      expiryDate.setDate(expiryDate.getDate() + durationDays);
+      const newProfile: UserProfile = {
+        ...prev,
+        hasExplorerPass: true,
+        explorerPassUntil: expiryDate.toISOString(),
+      };
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(newProfile));
+      } catch (e) {
+        console.error('Error saving updated explorer pass to localStorage:', e);
+      }
+      return newProfile;
+    });
+  }, []);
+
   return {
     user,
     isAuthenticated: !!user,
@@ -389,6 +409,7 @@ export const useAuth = () => {
     isVisited,
     saveTastingNote,
     getTastingNote,
+    activateExplorerPass,
   };
 };
 

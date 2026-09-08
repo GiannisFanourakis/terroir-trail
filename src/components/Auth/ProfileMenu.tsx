@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { UserProfile } from '../../types/auth';
-import { User, LogOut, Compass, Heart, Award, ChevronDown, Calendar, Building2 } from 'lucide-react';
+import { User, LogOut, Compass, Heart, Award, ChevronDown, Calendar, Building2, Crown, Package } from 'lucide-react';
 
 interface ProfileMenuProps {
   user: UserProfile | null;
@@ -12,6 +12,8 @@ interface ProfileMenuProps {
   onOpenMyBookings?: () => void;
   onOpenProducerPortal?: () => void;
   bookingsCount?: number;
+  onOpenExplorerPass?: () => void;
+  onOpenWineBoxes?: () => void;
 }
 
 export const ProfileMenu: React.FC<ProfileMenuProps> = ({
@@ -24,6 +26,8 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
   onOpenMyBookings,
   onOpenProducerPortal,
   bookingsCount = 0,
+  onOpenExplorerPass,
+  onOpenWineBoxes,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -163,6 +167,42 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
               <Compass className="w-3.5 h-3.5 text-amber-400" />
               <span>Terroir Passport Stamps</span>
             </button>
+
+            {onOpenExplorerPass && (
+              <button
+                onClick={() => {
+                  setIsOpen(false);
+                  onOpenExplorerPass();
+                }}
+                className="w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-stone-300 hover:text-amber-300 hover:bg-amber-500/10 transition cursor-pointer"
+              >
+                <span className="flex items-center gap-2">
+                  <Crown className="w-3.5 h-3.5 text-amber-400" />
+                  <span>{user.hasExplorerPass ? 'VIP Pass Active' : 'VIP Explorer Pass'}</span>
+                </span>
+                <span className="px-1.5 py-0.2 rounded-full bg-amber-500/20 text-amber-300 text-[10px] font-bold border border-amber-500/30">
+                  {user.hasExplorerPass ? 'VIP' : '€19.99'}
+                </span>
+              </button>
+            )}
+
+            {onOpenWineBoxes && (
+              <button
+                onClick={() => {
+                  setIsOpen(false);
+                  onOpenWineBoxes();
+                }}
+                className="w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-stone-300 hover:text-rose-300 hover:bg-rose-500/10 transition cursor-pointer"
+              >
+                <span className="flex items-center gap-2">
+                  <Package className="w-3.5 h-3.5 text-rose-400" />
+                  <span>Wine Delivery</span>
+                </span>
+                <span className="px-1.5 py-0.2 rounded-full bg-rose-500/20 text-rose-300 text-[10px] font-bold border border-rose-500/30">
+                  EU/US
+                </span>
+              </button>
+            )}
 
             {onOpenMyBookings && (
               <button

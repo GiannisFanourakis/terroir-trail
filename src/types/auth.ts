@@ -14,6 +14,8 @@ export interface UserProfile {
   visitedProducers: string[]; // List of producer IDs stamped/visited
   personalNotes: Record<string, string>; // producerId -> personal tasting note
   memberSince: string;
+  hasExplorerPass?: boolean;
+  explorerPassUntil?: string;
 }
 
 export interface AuthState {

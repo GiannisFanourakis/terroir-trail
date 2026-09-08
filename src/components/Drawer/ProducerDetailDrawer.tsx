@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Producer } from '../../types/terroir';
 import { 
   X, MapPin, Star, Phone, Globe, Navigation, Clock, 
-  Dog, Footprints, Caravan, Car, Sparkles, Share2, Check, Heart, Award, CheckCircle2, Wine 
+  Dog, Footprints, Caravan, Car, Sparkles, Share2, Check, Heart, Award, 
+  CheckCircle2, Wine, ShoppingBag, ArrowRight 
 } from 'lucide-react';
 
 interface ProducerDetailDrawerProps {
@@ -18,6 +19,9 @@ interface ProducerDetailDrawerProps {
   onOpenAuth?: () => void;
   onOpenBooking?: (producer: Producer) => void;
   customNotice?: string;
+  isProTier?: boolean;
+  directBottleShopUrl?: string;
+  onOpenWineBoxes?: () => void;
 }
 
 export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
@@ -33,6 +37,9 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
   onOpenAuth,
   onOpenBooking,
   customNotice,
+  isProTier = false,
+  directBottleShopUrl,
+  onOpenWineBoxes,
 }) => {
   const [activePhoto, setActivePhoto] = useState<string>('');
   const [copiedLink, setCopiedLink] = useState<boolean>(false);
@@ -160,12 +167,18 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
           </button>
         </div>
 
-        {/* Category Pill */}
-        <div className="absolute top-4 left-4">
+        {/* Category & Pro Badge */}
+        <div className="absolute top-4 left-4 flex items-center gap-2">
           <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border backdrop-blur-md ${cat.color}`}>
             <span>{cat.icon}</span>
             <span>{cat.label}</span>
           </span>
+          {isProTier && (
+            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-amber-400 to-amber-500 text-stone-950 shadow-lg shadow-amber-500/20 border border-amber-300">
+              <span>👑</span>
+              <span>Pro Estate</span>
+            </span>
+          )}
         </div>
 
         {/* Title Overlay */}
@@ -423,6 +436,56 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                 ))}
               </div>
             </div>
+
+            {/* Direct Bottle Shop Link (Pro Tier) */}
+            {directBottleShopUrl && (
+              <a
+                href={directBottleShopUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-between p-3.5 rounded-2xl bg-gradient-to-r from-amber-500/15 via-amber-400/10 to-transparent border border-amber-400/30 hover:border-amber-400/60 transition group text-left"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-xl bg-amber-400/20 flex items-center justify-center text-amber-300">
+                    <ShoppingBag className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold text-amber-200 flex items-center gap-1.5">
+                      Direct Estate Bottle Store
+                      <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-amber-400/20 text-amber-300 font-normal">0% Commission</span>
+                    </div>
+                    <div className="text-[11px] text-stone-400">Order directly from {producer.name}'s cellar</div>
+                  </div>
+                </div>
+                <ArrowRight className="w-4 h-4 text-amber-400 group-hover:translate-x-0.5 transition" />
+              </a>
+            )}
+
+            {/* Taste of the Trail - International Delivery */}
+            {onOpenWineBoxes && (
+              <div
+                onClick={onOpenWineBoxes}
+                className="p-3.5 rounded-2xl bg-gradient-to-br from-stone-900 via-rose-950/20 to-stone-900 border border-rose-500/20 hover:border-rose-500/40 transition cursor-pointer group"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-xl bg-rose-500/20 flex items-center justify-center text-rose-300 shrink-0 text-base">
+                      ✈️
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-stone-100 flex items-center gap-1.5">
+                        International Cellar Delivery
+                        <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-rose-500/20 text-rose-300 font-medium">EU / UK / US</span>
+                      </div>
+                      <p className="text-[11px] text-stone-400 mt-0.5">
+                        Temperature-controlled insulated boxes shipped straight to your doorstep.
+                      </p>
+                    </div>
+                  </div>
+                  <ArrowRight className="w-4 h-4 text-rose-400 group-hover:translate-x-0.5 transition shrink-0 mt-1" />
+                </div>
+              </div>
+            )}
           </div>
         )}
 
@@ -505,6 +568,18 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
           <span className="hidden sm:inline">Drive with Maps</span>
           <span className="sm:hidden">Maps</span>
         </a>
+
+        {directBottleShopUrl && (
+          <a
+            href={directBottleShopUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="p-3 rounded-2xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/40 text-amber-300 transition shrink-0"
+            title="Buy Bottles Directly from Estate"
+          >
+            <ShoppingBag className="w-4 h-4" />
+          </a>
+        )}
 
         {producer.phone && (
           <a

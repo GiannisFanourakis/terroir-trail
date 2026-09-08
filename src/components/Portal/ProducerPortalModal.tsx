@@ -3,7 +3,8 @@ import { Producer } from '../../types/terroir';
 import { TastingBooking, ProducerOverride } from '../../types/booking';
 import { 
   X, Check, AlertCircle, Clock, Calendar, Users, Phone, Mail, 
-  Sparkles, CheckCircle2, XCircle, Building2, ChevronDown, Save, Send 
+  Sparkles, CheckCircle2, XCircle, Building2, ChevronDown, Save, Send, 
+  Crown, Globe, ExternalLink 
 } from 'lucide-react';
 
 interface ProducerPortalModalProps {
@@ -30,7 +31,7 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
   const [selectedProducerId, setSelectedProducerId] = useState<string>(
     producers[0]?.id || 'manousakis'
   );
-  const [activeTab, setActiveTab] = useState<'bookings' | 'notice' | 'metrics'>('bookings');
+  const [activeTab, setActiveTab] = useState<'bookings' | 'notice' | 'plan' | 'metrics'>('bookings');
 
   const selectedProducer =
     producers.find((p) => p.id === selectedProducerId) || producers[0];
@@ -42,14 +43,22 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
   const [isAcceptingBookings, setIsAcceptingBookings] = useState<boolean>(
     currentOverride ? currentOverride.isAcceptingBookings : true
   );
+  const [isProTier, setIsProTier] = useState<boolean>(
+    currentOverride ? Boolean(currentOverride.isProTier) : false
+  );
+  const [directBottleShopUrl, setDirectBottleShopUrl] = useState<string>(
+    currentOverride?.directBottleShopUrl || ''
+  );
   const [saveSuccess, setSaveSuccess] = useState<boolean>(false);
 
-  // When switching producers, sync notice draft
+  // When switching producers, sync notice and pro status
   const handleSelectProducer = (id: string) => {
     setSelectedProducerId(id);
     const ov = getProducerOverride(id);
     setCustomNotice(ov?.customNotice || '');
     setIsAcceptingBookings(ov ? ov.isAcceptingBookings : true);
+    setIsProTier(ov ? Boolean(ov.isProTier) : false);
+    setDirectBottleShopUrl(ov?.directBottleShopUrl || '');
     setSaveSuccess(false);
   };
 
@@ -66,6 +75,8 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
       producerId: selectedProducer.id,
       customNotice: customNotice.trim(),
       isAcceptingBookings,
+      isProTier,
+      directBottleShopUrl: directBottleShopUrl.trim(),
       updatedAt: new Date().toISOString(),
     });
     setSaveSuccess(true);
@@ -172,6 +183,22 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
             }`}
           >
             <span>📊 Estate Stats</span>
+          </button>
+          <button
+            onClick={() => setActiveTab('plan')}
+            className={`py-2 px-3 border-b-2 transition cursor-pointer flex items-center gap-1.5 ${
+              activeTab === 'plan'
+                ? 'border-amber-400 text-amber-400 font-bold'
+                : 'border-transparent text-stone-400 hover:text-white'
+            }`}
+          >
+            <Crown className="w-3.5 h-3.5 text-amber-400" />
+            <span>Host Pro Tier</span>
+            {isProTier && (
+              <span className="text-[9px] px-1.5 py-0.2 rounded-full bg-amber-400 text-stone-950 font-bold">
+                ACTIVE
+              </span>
+            )}
           </button>
         </div>
 
@@ -389,6 +416,142 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
                   <li>Mentioning road conditions (e.g. standard asphalt vs gravel track) helps travelers choose the right rental vehicle.</li>
                   <li>Highlighting local Cretan cheeses (Graviera, Mizithra) paired with your native wines creates unforgettable experiences.</li>
                 </ul>
+              </div>
+            </div>
+          )}
+
+          {/* TAB 4: Plan & Subscription */}
+          {activeTab === 'plan' && (
+            <div className="space-y-4">
+              {saveSuccess && (
+                <div className="p-3 rounded-xl bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-xs flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-400" />
+                  <span>Host Pro settings saved and synced to cloud!</span>
+                </div>
+              )}
+
+              {/* Plan Comparison Card */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {/* Free Partner */}
+                <div className={`p-4 rounded-2xl border transition ${
+                  !isProTier
+                    ? 'bg-stone-900/90 border-white/20'
+                    : 'bg-stone-950/60 border-white/5 opacity-60'
+                }`}>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="font-bold text-white text-xs">Standard Partner</span>
+                    <span className="text-[10px] text-stone-400">Free Forever</span>
+                  </div>
+                  <ul className="text-[11px] text-stone-400 space-y-1.5 list-disc list-inside">
+                    <li>Standard map marker & directory page</li>
+                    <li>Online tasting requests</li>
+                    <li>12% platform booking commission</li>
+                  </ul>
+                  {!isProTier && (
+                    <span className="mt-3 block text-center py-1.5 rounded-xl bg-stone-800 text-stone-300 text-[11px] font-bold">
+                      Current Plan
+                    </span>
+                  )}
+                </div>
+
+                {/* Terroir Pro */}
+                <div className={`p-4 rounded-2xl border transition relative overflow-hidden ${
+                  isProTier
+                    ? 'bg-gradient-to-br from-amber-500/20 via-stone-900 to-stone-900 border-amber-400 shadow-xl shadow-amber-500/10'
+                    : 'bg-stone-900/90 border-amber-500/30'
+                }`}>
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-1.5">
+                      <Crown className="w-4 h-4 text-amber-400" />
+                      <span className="font-bold text-white text-xs">Verified Terroir Pro</span>
+                    </div>
+                    <span className="font-serif-title text-amber-300 font-bold text-sm">€39<span className="text-[10px] text-stone-400">/mo</span></span>
+                  </div>
+                  <ul className="text-[11px] text-stone-300 space-y-1.5 list-disc list-inside">
+                    <li><strong className="text-amber-300">Gold Glowing Badge</strong> on interactive map</li>
+                    <li><strong className="text-amber-300">0% Commission</strong> on tasting reservations</li>
+                    <li><strong className="text-amber-300">Direct Online Shop Link</strong> on your drawer</li>
+                    <li>Top featured ranking in curated Day Circuits</li>
+                  </ul>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsProTier(!isProTier);
+                    }}
+                    className={`w-full mt-3 py-2 rounded-xl text-xs font-bold transition cursor-pointer flex items-center justify-center gap-1.5 ${
+                      isProTier
+                        ? 'bg-emerald-500 text-stone-950 shadow-md'
+                        : 'bg-amber-500 hover:bg-amber-400 text-stone-950 shadow-lg'
+                    }`}
+                  >
+                    <Crown className="w-3.5 h-3.5" />
+                    <span>{isProTier ? '✓ Pro Tier Active (Click to Pause)' : 'Upgrade to Host Pro (€39/mo)'}</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Pro Customization Settings */}
+              <form onSubmit={handleSaveNotice} className="p-4 rounded-2xl bg-stone-900 border border-white/10 space-y-3">
+                <span className="font-bold text-white text-xs block">
+                  Pro Estate Settings & Direct E-Commerce
+                </span>
+
+                <div>
+                  <label className="block text-stone-400 text-[11px] font-semibold mb-1">
+                    Direct Online Bottle Shop URL
+                  </label>
+                  <div className="relative">
+                    <Globe className="w-4 h-4 text-stone-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                    <input
+                      type="url"
+                      value={directBottleShopUrl}
+                      onChange={(e) => setDirectBottleShopUrl(e.target.value)}
+                      placeholder="https://shop.manousakiswinery.com"
+                      className="w-full bg-stone-950 border border-white/10 text-white rounded-xl pl-9 pr-3 py-2 text-xs focus:outline-none focus:border-amber-400 transition"
+                    />
+                  </div>
+                  <p className="text-[10px] text-stone-500 mt-1">
+                    Adds a direct "Buy Bottles Direct" button on your estate profile for travelers to order wine after their visit.
+                  </p>
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs shadow-md transition flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <Save className="w-4 h-4" />
+                  <span>Save Plan & Store Link</span>
+                </button>
+              </form>
+
+              {/* Pro Visitor Demographics Analytics */}
+              <div className="p-4 rounded-2xl bg-stone-900 border border-white/10 space-y-2">
+                <span className="font-bold text-white text-xs block">
+                  Pro Visitor Demographic Insights (Last 30 Days)
+                </span>
+                <div className="grid grid-cols-4 gap-2 text-center pt-1">
+                  <div className="p-2 rounded-xl bg-stone-950/80 border border-white/5">
+                    <span className="text-base block">🇩🇪</span>
+                    <span className="font-bold text-white text-xs block">42%</span>
+                    <span className="text-[9px] text-stone-400">Germany</span>
+                  </div>
+                  <div className="p-2 rounded-xl bg-stone-950/80 border border-white/5">
+                    <span className="text-base block">🇬🇧</span>
+                    <span className="font-bold text-white text-xs block">28%</span>
+                    <span className="text-[9px] text-stone-400">UK</span>
+                  </div>
+                  <div className="p-2 rounded-xl bg-stone-950/80 border border-white/5">
+                    <span className="text-base block">🇺🇸</span>
+                    <span className="font-bold text-white text-xs block">18%</span>
+                    <span className="text-[9px] text-stone-400">USA</span>
+                  </div>
+                  <div className="p-2 rounded-xl bg-stone-950/80 border border-white/5">
+                    <span className="text-base block">🇫🇷</span>
+                    <span className="font-bold text-white text-xs block">12%</span>
+                    <span className="text-[9px] text-stone-400">France</span>
+                  </div>
+                </div>
               </div>
             </div>
           )}

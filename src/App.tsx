@@ -16,6 +16,11 @@ import { PassportModal } from './components/Auth/PassportModal';
 import { BookingModal } from './components/Bookings/BookingModal';
 import { ProducerPortalModal } from './components/Portal/ProducerPortalModal';
 import { MyBookingsModal } from './components/Bookings/MyBookingsModal';
+import { ExplorerPassModal } from './components/Monetization/ExplorerPassModal';
+import { ChauffeurBookingModal } from './components/Monetization/ChauffeurBookingModal';
+import { WineBoxModal } from './components/Monetization/WineBoxModal';
+import { CRETAN_DAY_TRIP_LOOPS } from './data/loops';
+import { ChauffeurBooking, WineBoxOrder } from './types/monetization';
 import { List, MapPin } from 'lucide-react';
 
 export const App: React.FC = () => {
@@ -27,6 +32,10 @@ export const App: React.FC = () => {
   const [isBookingModalOpen, setIsBookingModalOpen] = useState<boolean>(false);
   const [isPortalModalOpen, setIsPortalModalOpen] = useState<boolean>(false);
   const [isMyBookingsModalOpen, setIsMyBookingsModalOpen] = useState<boolean>(false);
+  const [isPassModalOpen, setIsPassModalOpen] = useState<boolean>(false);
+  const [isChauffeurModalOpen, setIsChauffeurModalOpen] = useState<boolean>(false);
+  const [isWineBoxModalOpen, setIsWineBoxModalOpen] = useState<boolean>(false);
+  const [chauffeurTargetCircuit, setChauffeurTargetCircuit] = useState<DayTripLoop | null>(null);
   const [bookingTargetProducer, setBookingTargetProducer] = useState<Producer | null>(null);
   const [viewMode, setViewMode] = useState<'map' | 'list'>('map');
 
@@ -47,7 +56,26 @@ export const App: React.FC = () => {
     isVisited,
     saveTastingNote,
     getTastingNote,
+    activateExplorerPass,
   } = useAuth();
+
+  const handleConfirmChauffeurBooking = (booking: ChauffeurBooking) => {
+    try {
+      const existing = JSON.parse(localStorage.getItem('terroir_chauffeur_bookings') || '[]');
+      localStorage.setItem('terroir_chauffeur_bookings', JSON.stringify([booking, ...existing]));
+    } catch (e) {
+      console.error('Error saving chauffeur booking:', e);
+    }
+  };
+
+  const handleConfirmWineOrder = (order: WineBoxOrder) => {
+    try {
+      const existing = JSON.parse(localStorage.getItem('terroir_wine_orders') || '[]');
+      localStorage.setItem('terroir_wine_orders', JSON.stringify([order, ...existing]));
+    } catch (e) {
+      console.error('Error saving wine order:', e);
+    }
+  };
 
   const {
     bookings,
@@ -182,6 +210,8 @@ export const App: React.FC = () => {
         onOpenMyBookings={() => setIsMyBookingsModalOpen(true)}
         onOpenProducerPortal={() => setIsPortalModalOpen(true)}
         bookingsCount={userBookings.length}
+        onOpenExplorerPass={() => setIsPassModalOpen(true)}
+        onOpenWineBoxes={() => setIsWineBoxModalOpen(true)}
       />
 
       {/* 2. Interactive Filter Bar */}
@@ -275,6 +305,9 @@ export const App: React.FC = () => {
               setIsBookingModalOpen(true);
             }}
             customNotice={selectedProducer ? getOverride(selectedProducer.id)?.customNotice : undefined}
+            isProTier={selectedProducer ? (getOverride(selectedProducer.id)?.isProTier ?? false) : false}
+            directBottleShopUrl={selectedProducer ? getOverride(selectedProducer.id)?.directBottleShopUrl : undefined}
+            onOpenWineBoxes={() => setIsWineBoxModalOpen(true)}
           />
         )}
       </main>
@@ -287,6 +320,10 @@ export const App: React.FC = () => {
         onSelectProducer={(producer) => {
           setSelectedProducer(producer);
           setIsDrawerOpen(true);
+        }}
+        onBookChauffeur={(loop) => {
+          setChauffeurTargetCircuit(loop);
+          setIsChauffeurModalOpen(true);
         }}
       />
 
@@ -316,6 +353,7 @@ export const App: React.FC = () => {
           setSelectedProducer(producer);
           setIsDrawerOpen(true);
         }}
+        onOpenExplorerPass={() => setIsPassModalOpen(true)}
       />
 
       {/* 8. Tasting Reservation Modal */}
@@ -350,6 +388,34 @@ export const App: React.FC = () => {
           setSelectedProducer(producer);
           setIsDrawerOpen(true);
         }}
+      />
+
+      {/* 11. VIP Terroir Explorer Pass Modal (€19.99 B2C Pass) */}
+      <ExplorerPassModal
+        isOpen={isPassModalOpen}
+        onClose={() => setIsPassModalOpen(false)}
+        user={user}
+        onOpenAuth={() => setIsAuthModalOpen(true)}
+        onActivatePass={() => activateExplorerPass(365)}
+      />
+
+      {/* 12. Private Chauffeur & Mercedes Van Booking Modal */}
+      <ChauffeurBookingModal
+        isOpen={isChauffeurModalOpen}
+        onClose={() => setIsChauffeurModalOpen(false)}
+        initialCircuit={chauffeurTargetCircuit}
+        user={user}
+        onOpenAuth={() => setIsAuthModalOpen(true)}
+        onBookChauffeur={handleConfirmChauffeurBooking}
+      />
+
+      {/* 13. Taste of the Trail - International Wine Delivery Modal */}
+      <WineBoxModal
+        isOpen={isWineBoxModalOpen}
+        onClose={() => setIsWineBoxModalOpen(false)}
+        user={user}
+        onOpenAuth={() => setIsAuthModalOpen(true)}
+        onOrderBox={handleConfirmWineOrder}
       />
     </div>
   );

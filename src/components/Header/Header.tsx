@@ -2,7 +2,7 @@ import React from 'react';
 import { Destination } from '../../types/terroir';
 import { UserProfile } from '../../types/auth';
 import { ProfileMenu } from '../Auth/ProfileMenu';
-import { Compass, Search, X, Heart, Building2, Calendar } from 'lucide-react';
+import { Compass, Search, X, Heart, Building2, Calendar, Crown, Package } from 'lucide-react';
 
 interface HeaderProps {
   selectedDestination: Destination | 'all';
@@ -24,6 +24,8 @@ interface HeaderProps {
   onOpenMyBookings?: () => void;
   onOpenProducerPortal?: () => void;
   bookingsCount?: number;
+  onOpenExplorerPass?: () => void;
+  onOpenWineBoxes?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -46,6 +48,8 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenMyBookings,
   onOpenProducerPortal,
   bookingsCount = 0,
+  onOpenExplorerPass,
+  onOpenWineBoxes,
 }) => {
   const destinations: { id: Destination | 'all'; label: string; flag: string }[] = [
     { id: 'all', label: 'All Terroir', flag: '🇬🇷' },
@@ -200,6 +204,30 @@ export const Header: React.FC<HeaderProps> = ({
             </button>
           )}
 
+          {/* VIP Pass CTA (Desktop) */}
+          {onOpenExplorerPass && (
+            <button
+              onClick={onOpenExplorerPass}
+              className="hidden xl:flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-xl border border-amber-400/30 hover:border-amber-400 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 transition shrink-0 cursor-pointer"
+              title={user?.hasExplorerPass ? 'VIP Pass Active' : 'Get Terroir Explorer Pass (€19.99)'}
+            >
+              <Crown className="w-3.5 h-3.5 text-amber-400" />
+              <span>{user?.hasExplorerPass ? 'VIP Pass' : 'VIP Pass'}</span>
+            </button>
+          )}
+
+          {/* Wine Delivery CTA (Desktop) */}
+          {onOpenWineBoxes && (
+            <button
+              onClick={onOpenWineBoxes}
+              className="hidden 2xl:flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-xl border border-rose-500/30 hover:border-rose-400 bg-rose-950/20 hover:bg-rose-950/40 text-rose-300 transition shrink-0 cursor-pointer"
+              title="International Wine Delivery (EU/UK/US)"
+            >
+              <Package className="w-3.5 h-3.5 text-rose-400" />
+              <span>Wine Boxes</span>
+            </button>
+          )}
+
           {/* User Profile / Auth (Desktop) */}
           <div className="hidden md:block">
             <ProfileMenu
@@ -212,6 +240,8 @@ export const Header: React.FC<HeaderProps> = ({
               onOpenMyBookings={onOpenMyBookings}
               onOpenProducerPortal={onOpenProducerPortal}
               bookingsCount={bookingsCount}
+              onOpenExplorerPass={onOpenExplorerPass}
+              onOpenWineBoxes={onOpenWineBoxes}
             />
           </div>
         </div>

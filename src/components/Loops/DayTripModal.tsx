@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import { CRETAN_DAY_TRIP_LOOPS } from '../../data/loops';
 import { CRETAN_PRODUCERS } from '../../data/producers';
 import { DayTripLoop, Producer } from '../../types/terroir';
-import { X, Clock, Compass, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { X, Clock, Compass, ArrowRight, CheckCircle2, Car, Sparkles } from 'lucide-react';
 
 interface DayTripModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSelectLoop: (loop: DayTripLoop) => void;
   onSelectProducer: (producer: Producer) => void;
+  onBookChauffeur?: (loop: DayTripLoop) => void;
 }
 
 export const DayTripModal: React.FC<DayTripModalProps> = ({
@@ -16,6 +17,7 @@ export const DayTripModal: React.FC<DayTripModalProps> = ({
   onClose,
   onSelectLoop,
   onSelectProducer,
+  onBookChauffeur,
 }) => {
   const [activeLoopIndex, setActiveLoopIndex] = useState<number>(0);
 
@@ -109,6 +111,39 @@ export const DayTripModal: React.FC<DayTripModalProps> = ({
                 </div>
               ))}
             </div>
+          </div>
+
+          {/* Chauffeur Experience Upsell */}
+          <div className="p-4 rounded-2xl bg-gradient-to-r from-amber-500/15 via-stone-900 to-amber-950/20 border border-amber-400/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-lg">
+            <div className="flex items-start gap-3">
+              <div className="w-10 h-10 rounded-xl bg-amber-400/20 border border-amber-400/30 flex items-center justify-center text-amber-300 shrink-0 text-lg">
+                🚐
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-bold text-amber-200">Taste Freely • Private Mercedes Chauffeur</span>
+                  <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-amber-400/20 text-amber-300 font-semibold uppercase">VIP</span>
+                </div>
+                <p className="text-xs text-stone-300 mt-0.5 leading-relaxed">
+                  Enjoy wine and raki pours without worrying about mountain curves, tight stone lanes, or zero-tolerance BAC limits.
+                </p>
+                <div className="text-[11px] text-stone-400 mt-1">
+                  From <strong className="text-amber-300">€280/day</strong> for 7-Pax Mercedes V-Class • Includes chilled mineral water & pickup
+                </div>
+              </div>
+            </div>
+
+            {onBookChauffeur && (
+              <button
+                type="button"
+                onClick={() => onBookChauffeur(currentLoop)}
+                className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-amber-500/20 transition shrink-0 cursor-pointer"
+              >
+                <Car className="w-3.5 h-3.5" />
+                <span>Reserve Chauffeur</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            )}
           </div>
 
           {/* 3-Stop Route Timeline */}

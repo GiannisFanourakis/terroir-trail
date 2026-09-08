@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Producer } from '../../types/terroir';
 import { UserProfile } from '../../types/auth';
-import { X, Award, CheckCircle2, Circle, MapPin, Edit3, Save, Compass } from 'lucide-react';
+import { X, Award, CheckCircle2, Circle, MapPin, Edit3, Save, Compass, Crown, Sparkles } from 'lucide-react';
 
 interface PassportModalProps {
   isOpen: boolean;
@@ -11,6 +11,7 @@ interface PassportModalProps {
   onToggleVisited: (producerId: string) => void;
   onSaveTastingNote: (producerId: string, note: string) => void;
   onSelectProducer: (producer: Producer) => void;
+  onOpenExplorerPass?: () => void;
 }
 
 export const PassportModal: React.FC<PassportModalProps> = ({
@@ -21,6 +22,7 @@ export const PassportModal: React.FC<PassportModalProps> = ({
   onToggleVisited,
   onSaveTastingNote,
   onSelectProducer,
+  onOpenExplorerPass,
 }) => {
   const [filterMode, setFilterMode] = useState<'all' | 'stamped' | 'unstamped'>('all');
   const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
@@ -83,7 +85,55 @@ export const PassportModal: React.FC<PassportModalProps> = ({
         </div>
 
         {/* Passport Progress & Filter Tabs */}
-        <div className="px-5 py-3 bg-stone-900/50 border-b border-white/10 shrink-0 space-y-2.5">
+        <div className="px-5 py-3.5 bg-stone-900/60 border-b border-white/10 shrink-0 space-y-3">
+          {/* VIP Explorer Pass Banner */}
+          {user.hasExplorerPass ? (
+            <div className="p-3 rounded-2xl bg-gradient-to-r from-amber-500/20 via-stone-900 to-amber-900/25 border border-amber-400/40 flex items-center justify-between gap-3 shadow-inner">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-amber-400/20 border border-amber-400/30 flex items-center justify-center text-amber-300 shrink-0">
+                  <Crown className="w-4 h-4" />
+                </div>
+                <div>
+                  <div className="text-xs font-bold text-amber-200 flex items-center gap-1.5">
+                    <span>VIP Terroir Explorer Pass Active</span>
+                    <span className="text-[9px] px-1.5 py-0.2 rounded-md bg-amber-400/20 text-amber-300 font-semibold uppercase">VIP</span>
+                  </div>
+                  <div className="text-[11px] text-stone-300">
+                    Complimentary pours, artisan meze &amp; 10% cellar discount enabled
+                  </div>
+                </div>
+              </div>
+              <span className="text-[10px] text-amber-300 font-bold px-2 py-1 rounded-lg bg-amber-400/15 border border-amber-400/30 shrink-0">
+                ACTIVE
+              </span>
+            </div>
+          ) : (
+            <div className="p-3 rounded-2xl bg-gradient-to-r from-amber-500/15 via-stone-900 to-amber-950/20 border border-amber-500/30 flex items-center justify-between gap-3">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-amber-400/20 border border-amber-400/30 flex items-center justify-center text-amber-300 shrink-0">
+                  <Crown className="w-4 h-4" />
+                </div>
+                <div>
+                  <div className="text-xs font-bold text-amber-200">
+                    Terroir Explorer Pass (€19.99)
+                  </div>
+                  <div className="text-[11px] text-stone-400">
+                    Free welcome pours, artisanal meze &amp; 10% off cellar bottles
+                  </div>
+                </div>
+              </div>
+              {onOpenExplorerPass && (
+                <button
+                  type="button"
+                  onClick={onOpenExplorerPass}
+                  className="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs shadow-md shadow-amber-500/20 transition shrink-0 cursor-pointer"
+                >
+                  Upgrade
+                </button>
+              )}
+            </div>
+          )}
+
           {/* Progress Bar */}
           <div className="w-full h-2 bg-stone-800 rounded-full overflow-hidden">
             <div

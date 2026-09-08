@@ -1,0 +1,285 @@
+import React, { useState } from 'react';
+import { UserProfile } from '../../types/auth';
+import { 
+  X, Award, CheckCircle2, Sparkles, ShieldCheck, 
+  Wine, Gift, Compass, CreditCard, Apple, ArrowRight, Star 
+} from 'lucide-react';
+
+interface ExplorerPassModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  user: UserProfile | null;
+  onActivatePass: () => Promise<void> | void;
+  onOpenAuth: () => void;
+}
+
+export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
+  isOpen,
+  onClose,
+  user,
+  onActivatePass,
+  onOpenAuth,
+}) => {
+  if (!isOpen) return null;
+
+  const [paymentMethod, setPaymentMethod] = useState<'apple' | 'google' | 'card'>('apple');
+  const [isProcessing, setIsProcessing] = useState<boolean>(false);
+  const [isPurchased, setIsPurchased] = useState<boolean>(false);
+
+  const perks = [
+    {
+      icon: '🍷',
+      title: 'Complimentary Welcome Pours',
+      desc: 'An extra cellar-reserve glass at 20+ participating boutique wineries.',
+    },
+    {
+      icon: '🧀',
+      title: 'Free Artisan Meze Platter',
+      desc: 'Complimentary sheep graviera cheese & organic olives with any tasting.',
+    },
+    {
+      icon: '🏷️',
+      title: '10% Cellar-Door Bottle Discount',
+      desc: 'Direct savings on bottle purchases to pack in your suitcase or cellar.',
+    },
+    {
+      icon: '🎧',
+      title: 'Offline GPS Audio Road Stories',
+      desc: 'Short geo-triggered audio guides narrating 4,000-year Cretan wine history.',
+    },
+    {
+      icon: '⚡',
+      title: 'Priority Walk-in Privileges',
+      desc: 'Guaranteed terrace seating during peak harvest and golden hour sunset times.',
+    },
+  ];
+
+  const handlePurchase = async () => {
+    if (!user) {
+      onOpenAuth();
+      return;
+    }
+    setIsProcessing(true);
+    try {
+      // Simulate high-speed Stripe Checkout authorization
+      await new Promise((res) => setTimeout(res, 900));
+      await onActivatePass();
+      setIsPurchased(true);
+    } catch (e) {
+      console.error('Pass activation failed:', e);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200 select-none">
+      <div className="relative w-full max-w-lg bg-stone-950 text-stone-100 rounded-3xl shadow-2xl border border-amber-500/30 overflow-hidden flex flex-col max-h-[92vh]">
+        
+        {/* Header with Glowing Gold Accent */}
+        <div className="relative px-6 py-5 bg-gradient-to-br from-amber-950/80 via-stone-900 to-stone-950 border-b border-amber-500/30 shrink-0">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-500 to-amber-700 text-stone-950 flex items-center justify-center text-xl font-bold shadow-lg shadow-amber-500/30 ring-2 ring-amber-400/40">
+                👑
+              </div>
+              <div>
+                <div className="flex items-center gap-1.5">
+                  <h2 className="font-serif-title text-lg sm:text-xl font-bold text-white leading-tight">
+                    Terroir Explorer Pass
+                  </h2>
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-400 text-stone-950 font-bold tracking-wider uppercase">
+                    VIP 2026
+                  </span>
+                </div>
+                <p className="text-xs text-amber-200/80 mt-0.5">
+                  The ultimate 14-day holiday pass for authentic Greek agritourism
+                </p>
+              </div>
+            </div>
+
+            <button
+              onClick={onClose}
+              className="w-8 h-8 rounded-full bg-stone-800 hover:bg-stone-700 text-stone-300 flex items-center justify-center transition border border-white/10 cursor-pointer"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+
+        {/* Content Body */}
+        <div className="p-5 sm:p-6 overflow-y-auto flex-1 min-h-0 space-y-4 text-xs">
+          
+          {isPurchased || user?.hasExplorerPass ? (
+            /* Activated Card */
+            <div className="py-6 text-center space-y-4 animate-in zoom-in-95 duration-200">
+              <div className="w-16 h-16 rounded-full bg-amber-500/20 border-2 border-amber-400 text-amber-400 flex items-center justify-center mx-auto text-2xl shadow-xl shadow-amber-500/20">
+                <CheckCircle2 className="w-8 h-8" />
+              </div>
+
+              <div className="space-y-1">
+                <h3 className="font-serif-title text-xl font-bold text-white">
+                  VIP Explorer Pass Activated!
+                </h3>
+                <p className="text-xs text-stone-300 max-w-sm mx-auto">
+                  Welcome, <span className="text-amber-400 font-bold">{user?.name}</span>. Your VIP pass is active across all 20+ participating Cretan and Greek estates.
+                </p>
+              </div>
+
+              {/* Digital Member Card */}
+              <div className="p-5 rounded-3xl bg-gradient-to-tr from-amber-600/30 via-stone-900 to-amber-900/40 border-2 border-amber-400/50 shadow-2xl max-w-sm mx-auto text-left relative overflow-hidden">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-xl">🍇</span>
+                    <span className="font-serif-title font-bold text-white text-sm">TerroirTrail VIP</span>
+                  </div>
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-400 text-stone-950 font-bold">
+                    VALID · 14 DAYS
+                  </span>
+                </div>
+
+                <div className="space-y-1 my-3">
+                  <div className="text-[10px] uppercase tracking-wider text-amber-200/70 font-semibold">Passholder</div>
+                  <div className="font-bold text-white text-base">{user?.name}</div>
+                  <div className="text-[10px] text-stone-400 font-mono">PASS #GR-2026-{user?.id.slice(-6).toUpperCase()}</div>
+                </div>
+
+                <div className="pt-2 border-t border-white/10 flex items-center justify-between text-[10px] text-amber-300 font-medium">
+                  <span>Show at estate cellar doors</span>
+                  <span>10% Off Bottles & Free Meze</span>
+                </div>
+              </div>
+
+              <button
+                onClick={onClose}
+                className="w-full max-w-sm py-3 rounded-2xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs shadow-xl transition active:scale-98 cursor-pointer mx-auto block"
+              >
+                Start Exploring with VIP Pass
+              </button>
+            </div>
+          ) : (
+            /* Purchase Flow */
+            <div className="space-y-4">
+              
+              {/* Gold Price Card */}
+              <div className="p-4 rounded-2xl bg-gradient-to-r from-amber-500/15 via-stone-900 to-stone-900 border border-amber-500/40 flex items-center justify-between">
+                <div>
+                  <span className="text-[10px] uppercase font-bold tracking-wider text-amber-400 block mb-0.5">
+                    14-Day Holiday Pass
+                  </span>
+                  <div className="flex items-baseline gap-2">
+                    <span className="font-serif-title text-2xl font-bold text-white">€19.99</span>
+                    <span className="text-stone-400 text-xs line-through">€45.00</span>
+                    <span className="text-[10px] text-emerald-400 font-bold bg-emerald-500/20 px-1.5 py-0.5 rounded">
+                      Save €25 on first 2 visits
+                    </span>
+                  </div>
+                </div>
+
+                <div className="text-right">
+                  <span className="text-[11px] text-stone-400 block">Pays for itself at</span>
+                  <span className="text-xs font-bold text-amber-300">Your First Winery</span>
+                </div>
+              </div>
+
+              {/* Perks List */}
+              <div className="space-y-2">
+                <span className="text-stone-400 text-[11px] font-semibold block">
+                  Included VIP Privileges
+                </span>
+                <div className="space-y-2">
+                  {perks.map((p, idx) => (
+                    <div
+                      key={idx}
+                      className="p-3 rounded-2xl bg-stone-900/90 border border-white/5 flex items-start gap-3"
+                    >
+                      <span className="text-lg shrink-0">{p.icon}</span>
+                      <div>
+                        <span className="font-bold text-white text-xs block leading-tight">
+                          {p.title}
+                        </span>
+                        <p className="text-[11px] text-stone-400 mt-0.5 leading-relaxed">
+                          {p.desc}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Payment Methods */}
+              <div className="pt-2 border-t border-white/10 space-y-2.5">
+                <span className="text-stone-400 text-[11px] font-semibold block">
+                  Select Fast Checkout
+                </span>
+                <div className="grid grid-cols-3 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setPaymentMethod('apple')}
+                    className={`py-2 px-3 rounded-xl border font-bold text-xs flex items-center justify-center gap-1.5 transition cursor-pointer ${
+                      paymentMethod === 'apple'
+                        ? 'bg-white text-stone-950 border-white shadow-md'
+                        : 'bg-stone-900 border-white/10 text-stone-300 hover:text-white'
+                    }`}
+                  >
+                    <span>Pay</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setPaymentMethod('google')}
+                    className={`py-2 px-3 rounded-xl border font-bold text-xs flex items-center justify-center gap-1.5 transition cursor-pointer ${
+                      paymentMethod === 'google'
+                        ? 'bg-white text-stone-950 border-white shadow-md'
+                        : 'bg-stone-900 border-white/10 text-stone-300 hover:text-white'
+                    }`}
+                  >
+                    <span>GPay</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setPaymentMethod('card')}
+                    className={`py-2 px-3 rounded-xl border font-bold text-xs flex items-center justify-center gap-1.5 transition cursor-pointer ${
+                      paymentMethod === 'card'
+                        ? 'bg-amber-500 text-stone-950 border-amber-500 shadow-md'
+                        : 'bg-stone-900 border-white/10 text-stone-300 hover:text-white'
+                    }`}
+                  >
+                    <CreditCard className="w-3.5 h-3.5" />
+                    <span>Card</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* CTA Button */}
+              <button
+                type="button"
+                onClick={handlePurchase}
+                disabled={isProcessing}
+                className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 text-stone-950 font-bold text-xs shadow-xl shadow-amber-500/25 transition transform active:scale-98 disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer mt-2"
+              >
+                {isProcessing ? (
+                  <span>Authorizing VIP Pass...</span>
+                ) : (
+                  <>
+                    <span>Activate Terroir Explorer Pass (€19.99)</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </>
+                )}
+              </button>
+
+              <div className="flex items-center justify-center gap-1.5 text-[10px] text-stone-500 pt-1">
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
+                <span>100% Guaranteed · Refundable if unused within 48 hours</span>
+              </div>
+
+            </div>
+          )}
+
+        </div>
+
+      </div>
+    </div>
+  );
+};

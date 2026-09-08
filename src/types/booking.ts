@@ -41,5 +41,8 @@ export interface ProducerOverride {
   isAcceptingBookings: boolean;
   contactEmail?: string;
   contactPhone?: string;
+  isProTier?: boolean;
+  directBottleShopUrl?: string;
+  hasChauffeurPartnership?: boolean;
   updatedAt: string;
 }
