@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { CRETAN_PRODUCERS } from './data/producers';
-import { Producer, FilterState, Region, DayTripLoop } from './types/terroir';
+import { Producer, FilterState, Destination, DayTripLoop } from './types/terroir';
 import { Header } from './components/Header/Header';
 import { FilterBar } from './components/FilterBar/FilterBar';
 import { MapCanvas } from './components/Map/MapCanvas';
@@ -16,7 +16,7 @@ export const App: React.FC = () => {
 
   const initialFilters: FilterState = {
     category: 'all',
-    region: 'all',
+    destination: 'all',
     roadAccess: 'all',
     ethos: 'all',
     foodOption: 'all',
@@ -45,8 +45,8 @@ export const App: React.FC = () => {
         return false;
       }
 
-      // Region filter
-      if (filters.region !== 'all' && producer.region !== filters.region) {
+      // Destination filter (Macro-Region: Crete, Santorini, Peloponnese, etc.)
+      if (filters.destination !== 'all' && producer.destination !== filters.destination) {
         return false;
       }
 
@@ -76,12 +76,13 @@ export const App: React.FC = () => {
         const matchesName = producer.name.toLowerCase().includes(q);
         const matchesGreekName = producer.greekName.toLowerCase().includes(q);
         const matchesVillage = producer.village.toLowerCase().includes(q);
+        const matchesRegion = producer.region.toLowerCase().includes(q);
         const matchesDescription = producer.description.toLowerCase().includes(q);
         const matchesVariety = producer.indigenousVarieties.some((v) =>
           v.toLowerCase().includes(q)
         );
 
-        if (!matchesName && !matchesGreekName && !matchesVillage && !matchesDescription && !matchesVariety) {
+        if (!matchesName && !matchesGreekName && !matchesVillage && !matchesRegion && !matchesDescription && !matchesVariety) {
           return false;
         }
       }
@@ -92,10 +93,10 @@ export const App: React.FC = () => {
 
   // Load a curated loop
   const handleSelectLoop = (loop: DayTripLoop) => {
-    // Filter to this region
+    // Filter to this destination
     setFilters((prev) => ({
       ...prev,
-      region: loop.region,
+      destination: loop.destination,
       category: 'all',
       roadAccess: 'all',
       searchQuery: '',
@@ -113,8 +114,8 @@ export const App: React.FC = () => {
     <div className="flex flex-col h-screen w-screen overflow-hidden bg-stone-950 font-sans text-stone-100">
       {/* 1. Header Bar */}
       <Header
-        selectedRegion={filters.region}
-        onSelectRegion={(region: Region | 'all') => handleFilterChange('region', region)}
+        selectedDestination={filters.destination}
+        onSelectDestination={(dest: Destination | 'all') => handleFilterChange('destination', dest)}
         searchQuery={filters.searchQuery}
         onSearchChange={(query: string) => handleFilterChange('searchQuery', query)}
         onOpenLoops={() => setIsLoopsModalOpen(true)}
@@ -170,7 +171,7 @@ export const App: React.FC = () => {
               setSelectedProducer(producer);
               setIsDrawerOpen(true);
             }}
-            selectedRegion={filters.region}
+            selectedDestination={filters.destination}
           />
         </div>
 

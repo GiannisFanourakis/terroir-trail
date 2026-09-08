@@ -3,13 +3,14 @@ export type Category =
   | 'kazani' 
   | 'olive_mill' 
   | 'cheese_dairy' 
-  | 'apiary';
+  | 'apiary'
+  | 'brewery';
 
-export type Region = 
-  | 'chania' 
-  | 'rethymno' 
-  | 'heraklion' 
-  | 'lasithi';
+export type Destination = 
+  | 'crete' 
+  | 'santorini' 
+  | 'peloponnese' 
+  | 'northern_greece';
 
 export type RoadAccess = 
   | 'paved' 
@@ -24,12 +25,15 @@ export type Ethos =
   | 'family_estate' 
   | 'ancient_groves'
   | 'wood_fired'
-  | 'raw_milk';
+  | 'raw_milk'
+  | 'unpasteurized'
+  | 'craft_batch';
 
 export type FoodOption = 
   | 'full_taverna' 
   | 'tasting_board' 
   | 'dakos_snacks' 
+  | 'brewery_taproom'
   | 'byo_picnic';
 
 export interface Producer {
@@ -37,7 +41,8 @@ export interface Producer {
   name: string;
   greekName: string;
   category: Category;
-  region: Region;
+  destination: Destination;
+  region: string; // e.g. "Chania", "Heraklion", "Santorini Caldera", "Nemea", "Naoussa"
   village: string;
   coordinates: [number, number]; // [lat, lng]
   coverImage: string;
@@ -45,7 +50,7 @@ export interface Producer {
   tagLine: string;
   description: string;
   story: string;
-  indigenousVarieties: string[]; // e.g. ["Vidiano", "Liatiko", "Koroneiki", "Graviera"]
+  indigenousVarieties: string[]; // e.g. ["Vidiano", "Assyrtiko", "Agiorgitiko", "Craft IPA", "Fresh Lager"]
   tastingHighlights: string[];
   openingHours: string;
   bestSeason?: string;
@@ -69,7 +74,8 @@ export interface DayTripLoop {
   title: string;
   greekTitle: string;
   subtitle: string;
-  region: Region;
+  destination: Destination;
+  region: string;
   totalDuration: string;
   drivingDistance: string;
   stops: {
@@ -83,7 +89,7 @@ export interface DayTripLoop {
 
 export interface FilterState {
   category: Category | 'all';
-  region: Region | 'all';
+  destination: Destination | 'all';
   roadAccess: RoadAccess | 'all';
   ethos: Ethos | 'all';
   foodOption: FoodOption | 'all';

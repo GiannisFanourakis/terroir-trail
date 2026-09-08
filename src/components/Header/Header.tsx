@@ -1,10 +1,10 @@
 import React from 'react';
-import { Region } from '../../types/terroir';
-import { Compass, Search, MapPin, X, Layers, Sparkles } from 'lucide-react';
+import { Destination } from '../../types/terroir';
+import { Compass, Search, X } from 'lucide-react';
 
 interface HeaderProps {
-  selectedRegion: Region | 'all';
-  onSelectRegion: (region: Region | 'all') => void;
+  selectedDestination: Destination | 'all';
+  onSelectDestination: (dest: Destination | 'all') => void;
   searchQuery: string;
   onSearchChange: (query: string) => void;
   onOpenLoops: () => void;
@@ -14,8 +14,8 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({
-  selectedRegion,
-  onSelectRegion,
+  selectedDestination,
+  onSelectDestination,
   searchQuery,
   onSearchChange,
   onOpenLoops,
@@ -23,35 +23,35 @@ export const Header: React.FC<HeaderProps> = ({
   viewMode,
   onToggleViewMode,
 }) => {
-  const regions: { id: Region | 'all'; label: string; greekLabel: string }[] = [
-    { id: 'all', label: 'All Crete', greekLabel: 'Όλη η Κρήτη' },
-    { id: 'chania', label: 'Chania', greekLabel: 'Χανιά' },
-    { id: 'rethymno', label: 'Rethymno', greekLabel: 'Ρέθυμνο' },
-    { id: 'heraklion', label: 'Heraklion', greekLabel: 'Ηράκλειο' },
-    { id: 'lasithi', label: 'Lasithi', greekLabel: 'Λασίθι' },
+  const destinations: { id: Destination | 'all'; label: string; flag: string }[] = [
+    { id: 'all', label: 'All Terroir', flag: '🇬🇷' },
+    { id: 'crete', label: 'Crete', flag: '🌿' },
+    { id: 'santorini', label: 'Santorini', flag: '🌋' },
+    { id: 'peloponnese', label: 'Peloponnese', flag: '🏛️' },
+    { id: 'northern_greece', label: 'N. Greece', flag: '🏔️' },
   ];
 
   return (
     <header className="relative z-30 shrink-0 bg-stone-950 border-b border-white/10 px-4 sm:px-6 py-3 shadow-2xl">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-3">
         
-        {/* Brand & Identity */}
+        {/* Brand & Subtitle */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-500 to-rose-600 flex items-center justify-center text-xl shadow-lg shadow-amber-500/20 ring-1 ring-white/20">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-500 via-rose-600 to-amber-700 flex items-center justify-center text-xl shadow-lg shadow-amber-500/20 ring-1 ring-white/20">
               🍇
             </div>
             <div>
               <div className="flex items-center gap-2">
                 <h1 className="font-serif-title text-xl sm:text-2xl font-bold tracking-tight text-white flex items-center gap-1">
-                  Terroir<span className="text-amber-400 font-sans font-normal">Trail</span>
+                  Terroir<span className="text-amber-400 font-sans font-light">Trail</span>
                 </h1>
-                <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-400/10 text-amber-400 font-bold border border-amber-400/20">
-                  Crete
+                <span className="text-[10px] uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-amber-400/15 text-amber-400 font-bold border border-amber-400/30">
+                  Mediterranean
                 </span>
               </div>
               <p className="text-[11px] text-stone-400 font-medium hidden sm:block">
-                The Curated Map for Ancient Vineyards, Rakokazana & High-Mountain Mitata
+                Curated Wineries, Local Craft Breweries, Rakokazana & Mountain Dairies
               </p>
             </div>
           </div>
@@ -74,22 +74,24 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
 
-        {/* Center: Prefecture Region Bar */}
+        {/* Center: Destination Switcher & Search */}
         <div className="flex flex-col sm:flex-row sm:items-center gap-2.5">
+          {/* Destination Selector */}
           <div className="flex items-center bg-stone-900/90 p-1 rounded-2xl border border-white/10 overflow-x-auto scrollbar-none">
-            {regions.map((r) => {
-              const isActive = selectedRegion === r.id;
+            {destinations.map((d) => {
+              const isActive = selectedDestination === d.id;
               return (
                 <button
-                  key={r.id}
-                  onClick={() => onSelectRegion(r.id)}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all duration-200 ${
+                  key={d.id}
+                  onClick={() => onSelectDestination(d.id)}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all duration-200 ${
                     isActive
                       ? 'bg-amber-500 text-stone-950 shadow-md font-bold'
                       : 'text-stone-400 hover:text-white hover:bg-white/5'
                   }`}
                 >
-                  {r.label}
+                  <span className="text-xs">{d.flag}</span>
+                  <span>{d.label}</span>
                 </button>
               );
             })}
@@ -102,7 +104,7 @@ export const Header: React.FC<HeaderProps> = ({
               type="text"
               value={searchQuery}
               onChange={(e) => onSearchChange(e.target.value)}
-              placeholder="Search Vidiano, Dafnes, olive mill..."
+              placeholder="Search Charma, Vidiano, brewery..."
               className="w-full bg-stone-900/90 border border-white/10 text-stone-100 text-xs rounded-2xl pl-9 pr-8 py-2 focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 placeholder:text-stone-500 transition"
             />
             {searchQuery && (
@@ -121,7 +123,7 @@ export const Header: React.FC<HeaderProps> = ({
             className="hidden md:flex items-center gap-2 px-4 py-2 text-xs font-bold bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-stone-950 rounded-2xl shadow-lg shadow-amber-500/20 transition transform active:scale-95 shrink-0"
           >
             <Compass className="w-4 h-4" />
-            <span>Day-Trip Loops</span>
+            <span>Curated Circuits</span>
           </button>
         </div>
 

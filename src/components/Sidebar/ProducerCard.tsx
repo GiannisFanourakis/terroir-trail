@@ -17,6 +17,8 @@ export const ProducerCard: React.FC<ProducerCardProps> = ({
     switch (cat) {
       case 'winery':
         return { label: 'Winery', icon: '🍇', bg: 'bg-rose-500/20 text-rose-300 border-rose-500/30' };
+      case 'brewery':
+        return { label: 'Microbrewery', icon: '🍺', bg: 'bg-amber-400/25 text-amber-300 border-amber-400/40' };
       case 'kazani':
         return { label: 'Rakokazano', icon: '🏺', bg: 'bg-amber-500/20 text-amber-300 border-amber-500/30' };
       case 'olive_mill':
@@ -63,7 +65,7 @@ export const ProducerCard: React.FC<ProducerCardProps> = ({
           <span className="text-stone-400 text-[10px]">({producer.reviewCount})</span>
         </div>
 
-        {/* Bottom Village & Region */}
+        {/* Bottom Location Overlay */}
         <div className="absolute bottom-2.5 left-3 right-3 flex items-end justify-between">
           <div className="flex items-center gap-1.5 text-stone-300 text-xs font-medium">
             <MapPin className="w-3.5 h-3.5 text-amber-400 shrink-0" />
@@ -100,6 +102,11 @@ export const ProducerCard: React.FC<ProducerCardProps> = ({
               {v}
             </span>
           ))}
+          {producer.ethos.includes('unpasteurized') && (
+            <span className="text-[10px] px-2 py-0.5 rounded-lg bg-amber-400/20 text-amber-300 font-medium border border-amber-400/30">
+              Fresh Draft
+            </span>
+          )}
           {producer.ethos.includes('organic') && (
             <span className="text-[10px] px-2 py-0.5 rounded-lg bg-emerald-500/20 text-emerald-300 font-medium border border-emerald-500/30">
               Bio

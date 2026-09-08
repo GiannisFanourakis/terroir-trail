@@ -46,6 +46,8 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
     switch (cat) {
       case 'winery':
         return { label: 'Boutique Winery', icon: '🍇', color: 'text-rose-400 bg-rose-500/10 border-rose-500/20' };
+      case 'brewery':
+        return { label: 'Craft Microbrewery', icon: '🍺', color: 'text-amber-300 bg-amber-400/15 border-amber-400/30' };
       case 'kazani':
         return { label: 'Traditional Rakokazano', icon: '🏺', color: 'text-amber-400 bg-amber-500/10 border-amber-500/20' };
       case 'olive_mill':
@@ -125,7 +127,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
         <div className="absolute bottom-4 left-4 right-4">
           <div className="flex items-center gap-1.5 text-amber-400 text-xs font-bold uppercase tracking-wider mb-1">
             <MapPin className="w-3.5 h-3.5" />
-            <span>{producer.village} · {producer.region.toUpperCase()}, CRETE</span>
+            <span>{producer.village} · {producer.region.toUpperCase()}</span>
           </div>
 
           <h2 className="font-serif-title text-2xl sm:text-3xl font-bold text-white leading-tight">
@@ -157,7 +159,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
               : 'border-transparent text-stone-400 hover:text-white'
           }`}
         >
-          Tastings & Grapes
+          Tastings & Crafts
         </button>
         <button
           onClick={() => setActiveTab('visit')}
@@ -167,7 +169,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
               : 'border-transparent text-stone-400 hover:text-white'
           }`}
         >
-          Visiting & Road
+          Visiting & Access
         </button>
       </div>
 
@@ -181,7 +183,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
               <Star className="w-3.5 h-3.5 fill-amber-400" />
               <span>{producer.rating}</span>
             </div>
-            <span className="text-stone-400">({producer.reviewCount} reviews)</span>
+            <span className="text-stone-400">({producer.reviewCount} verified visits)</span>
           </div>
 
           <div className="flex items-center gap-2">
@@ -235,12 +237,12 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
           </div>
         )}
 
-        {/* Tab 2: Tastings & Grapes */}
+        {/* Tab 2: Tastings & Grapes/Crafts */}
         {activeTab === 'tastings' && (
           <div className="space-y-5 animate-in fade-in duration-200">
             <div>
               <h3 className="text-xs font-bold uppercase tracking-wider text-stone-400 mb-2.5">
-                Native Cretan Grapes & Terroir Specialties
+                Specialties & Varieties
               </h3>
               <div className="flex flex-wrap gap-2">
                 {producer.indigenousVarieties.map((v, i) => (
@@ -256,7 +258,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
 
             <div>
               <h3 className="text-xs font-bold uppercase tracking-wider text-stone-400 mb-2">
-                Signature Tastings
+                Signature Tastings & Pours
               </h3>
               <div className="space-y-2">
                 {producer.tastingHighlights.map((highlight, idx) => (

@@ -20,6 +20,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   const categories: { id: Category | 'all'; label: string; icon: string; activeColor: string }[] = [
     { id: 'all', label: 'All Terroir', icon: '🏛️', activeColor: 'bg-amber-500 text-stone-950 shadow-amber-500/20' },
     { id: 'winery', label: 'Wineries', icon: '🍇', activeColor: 'bg-rose-500 text-white shadow-rose-500/30' },
+    { id: 'brewery', label: 'Microbreweries', icon: '🍺', activeColor: 'bg-amber-400 text-stone-950 shadow-amber-400/30' },
     { id: 'kazani', label: 'Rakokazana', icon: '🏺', activeColor: 'bg-amber-600 text-white shadow-amber-600/30' },
     { id: 'olive_mill', label: 'Olive Mills', icon: '🫒', activeColor: 'bg-emerald-600 text-white shadow-emerald-600/30' },
     { id: 'cheese_dairy', label: 'Shepherd Dairies', icon: '🧀', activeColor: 'bg-yellow-500 text-stone-950 shadow-yellow-500/30' },
@@ -35,6 +36,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
 
   const ethosOptions: { id: Ethos | 'all'; label: string }[] = [
     { id: 'all', label: 'All Ethos' },
+    { id: 'unpasteurized', label: '🍺 Unpasteurized Craft Beer' },
     { id: 'organic', label: '🌿 Certified Organic' },
     { id: 'indigenous_only', label: '🧬 Indigenous Varieties' },
     { id: 'amphora', label: '🏺 Amphora Fermentation' },
@@ -45,6 +47,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
 
   const foodOptions: { id: FoodOption | 'all'; label: string }[] = [
     { id: 'all', label: 'Any Dining' },
+    { id: 'brewery_taproom', label: '🍻 Brewery Taproom & Meze' },
     { id: 'full_taverna', label: '🍽️ Full Taverna On-Site' },
     { id: 'tasting_board', label: '🧀 Tasting Board' },
     { id: 'dakos_snacks', label: '🥖 Dakos & Bread' },
@@ -52,7 +55,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
 
   const isFiltered =
     filters.category !== 'all' ||
-    filters.region !== 'all' ||
+    filters.destination !== 'all' ||
     filters.roadAccess !== 'all' ||
     filters.ethos !== 'all' ||
     filters.foodOption !== 'all' ||
@@ -76,7 +79,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                   onClick={() => onFilterChange('category', cat.id)}
                   className={`flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all duration-200 whitespace-nowrap shadow-sm ${
                     isSelected
-                      ? `${cat.activeColor} shadow-lg scale-105 ring-2 ring-white/20`
+                      ? `${cat.activeColor} shadow-lg scale-105 ring-2 ring-white/20 font-bold`
                       : 'bg-stone-800/80 text-stone-300 hover:text-white hover:bg-stone-700/80 border border-white/5'
                   }`}
                 >
@@ -104,7 +107,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
           </div>
         </div>
 
-        {/* Secondary Sub-filters: Road, Ethos, Food & Quick Toggles */}
+        {/* Secondary Sub-filters */}
         <div className="flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-white/5 text-xs">
           <div className="flex flex-wrap items-center gap-2">
             
@@ -183,7 +186,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
           </div>
 
           <div className="text-[11px] text-stone-400 hidden md:block">
-            Minoan traditions · Unpasteurized · Single-Estate
+            Unfiltered Craft Beers · Ancient Vineyards · Family Olive Groves
           </div>
         </div>
 

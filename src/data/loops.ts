@@ -2,11 +2,45 @@ import { DayTripLoop } from '../types/terroir';
 
 export const CRETAN_DAY_TRIP_LOOPS: DayTripLoop[] = [
   {
+    id: 'chania-craft-beer-olive-trail',
+    title: 'Chania Craft Beer, Stone Mills & Mountain Romeiko',
+    greekTitle: 'Μικροζυθοποιία, Ελαιόλαδο & Ρωμαίικο Χανίων',
+    subtitle: 'Unpasteurized Fresh Draft, 3,000-Yr Olive Tree & Orange Groves',
+    destination: 'crete',
+    region: 'Chania',
+    totalDuration: '5.5 hours',
+    drivingDistance: '46 km (All paved roads)',
+    stops: [
+      {
+        producerId: 'biolea-estate',
+        suggestedTime: '10:30 AM - 12:00 PM',
+        activity: 'Watch granite millstones crush organic Koroneiki olives with bread tasting on the terrace.'
+      },
+      {
+        producerId: 'monumental-olive-tree-vouves',
+        suggestedTime: '12:30 PM - 1:30 PM',
+        activity: 'Stand beside a 3,000-year-old living tree and visit the historic cooperative mill.'
+      },
+      {
+        producerId: 'cretan-brewery-charma',
+        suggestedTime: '2:00 PM - 4:00 PM',
+        activity: 'Fresh unpasteurized Charma draft flight & smoked Cretan sausages in the olive grove taproom.'
+      }
+    ],
+    description: 'A perfect western Crete day route combining historic liquid gold and modern craft beer innovation in the lush foothills of the White Mountains.',
+    highlightPointers: [
+      'Gorge of Roka panoramic views',
+      'The world’s oldest documented olive tree',
+      'Fresh unfiltered draft beer straight from the conditioning tank'
+    ]
+  },
+  {
     id: 'heraklion-terroir-circuit',
     title: 'The Heraklion Wine & Ancient Press Circuit',
     greekTitle: 'Οινική Διαδρομή & Αρχαία Πατητήρια Ηρακλείου',
     subtitle: 'From Amphora Vidiano to Wood-Fired Kazani Meze',
-    region: 'heraklion',
+    destination: 'crete',
+    region: 'Heraklion',
     totalDuration: '5.5 hours',
     drivingDistance: '48 km (Paved roads)',
     stops: [
@@ -34,67 +68,31 @@ export const CRETAN_DAY_TRIP_LOOPS: DayTripLoop[] = [
     ]
   },
   {
-    id: 'chania-stone-mill-romeiko',
-    title: 'Chania Stone Mills & White Mountain Romeiko',
-    greekTitle: 'Πέτρινοι Μύλοι & Ρωμαίικο Χανίων',
-    subtitle: 'Ancient 3,000-Yr Olive Trees & Organic Vineyard Dining',
-    region: 'chania',
-    totalDuration: '6 hours',
-    drivingDistance: '56 km (Paved roads)',
+    id: 'santorini-volcanic-terroir',
+    title: 'Santorini Volcanic Caldera & Donkey Beer Trail',
+    greekTitle: 'Ηφαιστειακό Terroir & Μπίρα Donkey Σαντορίνης',
+    subtitle: '150-Yr Ungrafted Kouloura Vines to Volcanic Microbrews',
+    destination: 'santorini',
+    region: 'Santorini',
+    totalDuration: '4.5 hours',
+    drivingDistance: '22 km (Paved roads)',
     stops: [
       {
-        producerId: 'biolea-estate',
-        suggestedTime: '10:30 AM - 12:00 PM',
-        activity: 'Watch stone millstones crush organic Koroneiki olives, with bread dipping on the terrace.'
+        producerId: 'estate-argyros-santorini',
+        suggestedTime: '11:00 AM - 1:00 PM',
+        activity: 'Explore 150-year-old ungrafted bush vines and taste mineral-rich volcanic Assyrtiko.'
       },
       {
-        producerId: 'monumental-olive-tree-vouves',
-        suggestedTime: '12:30 PM - 1:30 PM',
-        activity: 'Stand beside a 3,000-year-old living tree and explore ancient Cretan olive heritage.'
-      },
-      {
-        producerId: 'manousakis-winery',
-        suggestedTime: '2:00 PM - 4:30 PM',
-        activity: 'Organic Romeiko orange wine tasting and farm-to-table lunch under the orange trees.'
+        producerId: 'santorini-brewing-company',
+        suggestedTime: '1:30 PM - 3:30 PM',
+        activity: 'Taste Yellow, Red, and Crazy Donkey unpasteurized craft ales with local volcanic tomato fritters.'
       }
     ],
-    description: 'Travel through the lush valleys of western Crete at the foot of the dramatic White Mountains (Lefka Ori). Connect with ancient olive heritage and finish with world-class organic food and wine.',
+    description: 'Experience the extreme volcanic terroir of Santorini—from dry mineral wines that taste of pumice and sea spray to the island’s famous Donkey craft ales.',
     highlightPointers: [
-      'Gorge of Roka panoramic views from Biolea',
-      'The world’s oldest documented olive tree',
-      'Relaxed, family-run garden dining in Vatolakkos'
-    ]
-  },
-  {
-    id: 'rethymno-wild-amari-shepherd',
-    title: 'Wild Amari Valley & Mountain Shepherd Quest',
-    greekTitle: 'Η Άγρια Κοιλάδα Αμαρίου & Τα Μητάτα του Ψηλορείτη',
-    subtitle: 'Waterfalls, Hidden Kazania & Raw-Milk Graviera at 1,200m',
-    region: 'rethymno',
-    totalDuration: '6.5 hours',
-    drivingDistance: '72 km (Includes mountain road)',
-    stops: [
-      {
-        producerId: 'paraschakis-olive-mill',
-        suggestedTime: '10:00 AM - 11:30 AM',
-        activity: 'Experience 18th-century wooden olive presses in historic Melidoni.'
-      },
-      {
-        producerId: 'kazani-kourkoulou',
-        suggestedTime: '12:30 PM - 2:00 PM',
-        activity: 'Riverside raki and wild herb lunch under the plane trees of Patsos.'
-      },
-      {
-        producerId: 'mitato-halepa',
-        suggestedTime: '3:00 PM - 4:30 PM',
-        activity: 'High-mountain trek to a dry-stone shepherd hut for warm curds and aged Graviera.'
-      }
-    ],
-    description: 'An adventurous journey off the beaten track into the untouched heart of Crete. From historical olive mills to the high alpine pastures of Mount Psiloritis where shepherds still live by ancient customs.',
-    highlightPointers: [
-      'Patsos Saint Anthony Gorge scenery',
-      'Breathtaking views of Mount Psiloritis summit',
-      'Taste raw-milk cheese straight from the shepherd’s copper cauldron'
+      'Woven basket vines (kouloura) unique to Santorini',
+      'The famous Yellow & Crazy Donkey microbrews',
+      'Epic volcanic Aegean light'
     ]
   }
 ];

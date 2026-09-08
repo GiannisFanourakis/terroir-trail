@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
-import { Producer, Category } from '../../types/terroir';
+import { Producer, Category, Destination } from '../../types/terroir';
 import { 
   Plus, Minus, Navigation, Maximize2, Layers, MapPin, 
   Star, ArrowRight, ExternalLink, X, Compass, ChevronRight 
@@ -11,7 +11,7 @@ interface MapCanvasProps {
   selectedProducer: Producer | null;
   onSelectProducer: (producer: Producer | null) => void;
   onOpenDrawer: (producer: Producer) => void;
-  selectedRegion: string;
+  selectedDestination: Destination | 'all';
 }
 
 export const MapCanvas: React.FC<MapCanvasProps> = ({
@@ -19,7 +19,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
   selectedProducer,
   onSelectProducer,
   onOpenDrawer,
-  selectedRegion,
+  selectedDestination,
 }) => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
@@ -28,11 +28,15 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
 
   const [mapTheme, setMapTheme] = useState<'voyager' | 'dark' | 'satellite'>('voyager');
 
-  // Center of Crete
-  const CRETE_CENTER: [number, number] = [35.2401, 24.8093];
-  const CRETE_DEFAULT_ZOOM = 9;
+  // Centers per destination
+  const DESTINATION_CENTERS: Record<Destination | 'all', { coords: [number, number]; zoom: number }> = {
+    all: { coords: [37.9838, 24.2272], zoom: 7 }, // Greece overview
+    crete: { coords: [35.2401, 24.8093], zoom: 9 },
+    santorini: { coords: [36.3932, 25.4615], zoom: 12 },
+    peloponnese: { coords: [37.8280, 22.6580], zoom: 10 },
+    northern_greece: { coords: [40.6650, 22.0450], zoom: 10 },
+  };
 
-  // Modern High-Performance Vector Tile Servers
   const TILE_CONFIGS = {
     voyager: {
       url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
@@ -54,16 +58,20 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
   // Helper to generate modern badge pin HTML
   const getMarkerHtml = (producer: Producer, isSelected: boolean) => {
     let icon = '🍇';
-    let iconBg = 'bg-rose-500/20 text-rose-300 border-rose-500/40';
+    let iconBg = 'bg-rose-500/25 text-rose-200 border-rose-500/50';
 
     switch (producer.category) {
       case 'winery':
         icon = '🍇';
         iconBg = 'bg-rose-500/25 text-rose-200 border-rose-500/50';
         break;
+      case 'brewery':
+        icon = '🍺';
+        iconBg = 'bg-amber-400/30 text-amber-300 border-amber-400/60';
+        break;
       case 'kazani':
         icon = '🏺';
-        iconBg = 'bg-amber-500/25 text-amber-200 border-amber-500/50';
+        iconBg = 'bg-amber-600/25 text-amber-200 border-amber-600/50';
         break;
       case 'olive_mill':
         icon = '🫒';
@@ -96,10 +104,12 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
   useEffect(() => {
     if (!mapContainerRef.current || mapInstanceRef.current) return;
 
+    const initial = DESTINATION_CENTERS[selectedDestination];
+
     const map = L.map(mapContainerRef.current, {
-      center: CRETE_CENTER,
-      zoom: CRETE_DEFAULT_ZOOM,
-      minZoom: 8,
+      center: initial.coords,
+      zoom: initial.zoom,
+      minZoom: 6,
       maxZoom: 18,
       zoomControl: false,
       attributionControl: true,
@@ -110,9 +120,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       maxZoom: TILE_CONFIGS[mapTheme].maxZoom,
     }).addTo(map);
 
-    // Clicking anywhere on empty map deselects producer
     map.on('click', (e) => {
-      // If clicking empty map canvas
       const target = e.originalEvent.target as HTMLElement;
       if (target.classList.contains('leaflet-container')) {
         onSelectProducer(null);
@@ -137,6 +145,15 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       maxZoom: TILE_CONFIGS[mapTheme].maxZoom,
     }).addTo(mapInstanceRef.current);
   }, [mapTheme]);
+
+  // Sync Destination Viewport
+  useEffect(() => {
+    const map = mapInstanceRef.current;
+    if (!map || selectedProducer) return;
+
+    const target = DESTINATION_CENTERS[selectedDestination];
+    map.flyTo(target.coords, target.zoom, { duration: 1.2 });
+  }, [selectedDestination]);
 
   // Sync Markers
   useEffect(() => {
@@ -166,7 +183,6 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
         riseOnHover: true,
       });
 
-      // Interactive Marker Press
       marker.on('click', (e) => {
         L.DomEvent.stopPropagation(e);
         onSelectProducer(producer);
@@ -176,11 +192,6 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       markersRef.current[producer.id] = marker;
       bounds.extend(producer.coordinates);
     });
-
-    // Auto fit bounds on filter changes if no single producer is selected
-    if (!selectedProducer && bounds.isValid() && producers.length > 0) {
-      map.fitBounds(bounds, { padding: [60, 60], maxZoom: 11 });
-    }
   }, [producers, selectedProducer]);
 
   // Smooth Camera Fly-To on Producer Select
@@ -188,7 +199,6 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     const map = mapInstanceRef.current;
     if (!map || !selectedProducer) return;
 
-    // Slight offset so bottom floating card doesn't cover the location
     const [lat, lng] = selectedProducer.coordinates;
     const targetLat = window.innerWidth < 768 ? lat - 0.015 : lat;
 
@@ -198,13 +208,13 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     });
   }, [selectedProducer]);
 
-  // Custom Zoom Handlers
   const handleZoomIn = () => mapInstanceRef.current?.zoomIn();
   const handleZoomOut = () => mapInstanceRef.current?.zoomOut();
 
-  const handleResetCrete = () => {
+  const handleResetView = () => {
     onSelectProducer(null);
-    mapInstanceRef.current?.flyTo(CRETE_CENTER, CRETE_DEFAULT_ZOOM, { duration: 1 });
+    const target = DESTINATION_CENTERS[selectedDestination];
+    mapInstanceRef.current?.flyTo(target.coords, target.zoom, { duration: 1 });
   };
 
   const handleLocateMe = () => {
@@ -231,10 +241,10 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
 
   return (
     <div className="relative w-full h-full select-none overflow-hidden">
-      {/* 1. The Map Canvas */}
+      {/* Map Canvas */}
       <div ref={mapContainerRef} className="w-full h-full z-0" />
 
-      {/* 2. Top-Right Floating Modern Controls (2026 Style) */}
+      {/* Floating Modern Controls */}
       <div className="absolute top-4 right-4 z-20 flex flex-col items-end gap-2.5">
         
         {/* Layer Theme Selector Pill */}
@@ -273,7 +283,6 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
 
         {/* Floating Quick Action Group */}
         <div className="flex flex-col gap-1.5 glass-panel p-1.5 rounded-2xl shadow-2xl">
-          {/* Zoom In */}
           <button
             onClick={handleZoomIn}
             className="w-9 h-9 rounded-xl flex items-center justify-center text-stone-200 hover:text-white hover:bg-white/10 transition"
@@ -282,7 +291,6 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
             <Plus className="w-4 h-4" />
           </button>
 
-          {/* Zoom Out */}
           <button
             onClick={handleZoomOut}
             className="w-9 h-9 rounded-xl flex items-center justify-center text-stone-200 hover:text-white hover:bg-white/10 transition"
@@ -293,16 +301,14 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
 
           <div className="h-[1px] bg-white/10 my-0.5" />
 
-          {/* Recenter Crete */}
           <button
-            onClick={handleResetCrete}
+            onClick={handleResetView}
             className="w-9 h-9 rounded-xl flex items-center justify-center text-stone-200 hover:text-amber-400 hover:bg-white/10 transition group"
-            title="Fit All Crete"
+            title="Reset Destination View"
           >
             <Maximize2 className="w-4 h-4 group-hover:scale-110 transition-transform" />
           </button>
 
-          {/* Locate Me */}
           <button
             onClick={handleLocateMe}
             className="w-9 h-9 rounded-xl flex items-center justify-center text-stone-200 hover:text-sky-400 hover:bg-white/10 transition group"
@@ -314,15 +320,13 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
 
       </div>
 
-      {/* 3. Floating Bottom Quick-Card (Airbnb / Apple Maps 2026 Style) */}
+      {/* Floating Bottom Quick-Card (Airbnb / Apple Maps 2026 Style) */}
       {selectedProducer && (
-        <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-30 w-[92%] sm:w-[480px] animate-in slide-in-from-bottom-6 duration-300">
+        <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-30 w-[92%] sm:w-[500px] animate-in slide-in-from-bottom-6 duration-300">
           <div className="glass-panel p-3.5 rounded-3xl shadow-2xl border border-white/15 text-stone-100 flex gap-3.5 items-center relative overflow-hidden">
             
-            {/* Ambient Background Glow */}
             <div className="absolute -right-10 -bottom-10 w-36 h-36 bg-amber-500/20 rounded-full blur-3xl pointer-events-none" />
 
-            {/* Thumbnail Image */}
             <div className="relative h-24 w-28 sm:w-32 rounded-2xl overflow-hidden shrink-0 bg-stone-900 border border-white/10">
               <img
                 src={selectedProducer.coverImage}
@@ -335,7 +339,6 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
               </span>
             </div>
 
-            {/* Info Body */}
             <div className="flex-1 min-w-0 flex flex-col justify-between py-0.5">
               <div>
                 <div className="flex items-center justify-between gap-1">
@@ -361,7 +364,6 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
                 </p>
               </div>
 
-              {/* Varieties & Actions */}
               <div className="flex items-center justify-between gap-2 mt-2 pt-2 border-t border-white/10">
                 <div className="flex items-center gap-1">
                   {selectedProducer.indigenousVarieties.slice(0, 2).map((v, idx) => (
@@ -389,14 +391,29 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
         </div>
       )}
 
-      {/* 4. Floating Category Indicator on Top-Left */}
-      <div className="absolute top-4 left-4 z-10 hidden md:flex items-center gap-2 glass-panel px-3.5 py-1.5 rounded-2xl shadow-xl">
-        <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
-        <span className="text-xs font-medium text-stone-200">
-          Click any maker on Crete to inspect
-        </span>
+      {/* Floating Category Legend in Bottom-Left */}
+      <div className="absolute bottom-5 left-4 z-10 hidden sm:flex items-center gap-3 bg-stone-900/90 backdrop-blur-md text-white text-[11px] px-3.5 py-2 rounded-2xl shadow-xl border border-stone-700">
+        <div className="flex items-center gap-1.5">
+          <span className="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+          <span>Winery</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <span className="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+          <span>Microbrewery</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <span className="w-2.5 h-2.5 rounded-full bg-amber-600"></span>
+          <span>Rakokazano</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+          <span>Olive Mill</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <span className="w-2.5 h-2.5 rounded-full bg-yellow-500"></span>
+          <span>Dairy</span>
+        </div>
       </div>
-
     </div>
   );
 };
