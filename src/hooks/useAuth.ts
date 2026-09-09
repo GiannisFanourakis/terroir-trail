@@ -5,7 +5,9 @@ import {
   googleProvider, 
   appleProvider, 
   isFirebaseConfigured,
-  syncUserProfileToCloud,
+  saveUserProfileToCloud,
+  fetchUserProfileFromCloud,
+  sendPasswordReset,
   subscribeToCloudUserProfile
 } from '../services/firebase';
 import { 
@@ -168,25 +170,64 @@ export const useAuth = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [authError, setAuthError] = useState<string | null>(null);
 
-  // Helper to map a Firebase User to our UserProfile model
-  const mapFirebaseUser = (fbUser: FirebaseUser, customType?: TravelerType): UserProfile => {
+  // Helper for human-readable Firebase Auth error messages
+  const formatAuthError = (error: any): string => {
+    if (!error) return 'An unexpected error occurred. Please try again.';
+    const code = error.code || '';
+    switch (code) {
+      case 'auth/invalid-credential':
+      case 'auth/user-not-found':
+      case 'auth/wrong-password':
+        return 'Incorrect email or password. Please verify your credentials.';
+      case 'auth/email-already-in-use':
+        return 'An account with this email address already exists. Please sign in instead.';
+      case 'auth/weak-password':
+        return 'Password is too weak. Please choose at least 6 characters.';
+      case 'auth/invalid-email':
+        return 'Please enter a valid email address.';
+      case 'auth/popup-closed-by-user':
+        return 'The sign-in popup was closed before completing.';
+      case 'auth/popup-blocked':
+        return 'The sign-in popup was blocked by your browser. Please allow popups for this site.';
+      case 'auth/unauthorized-domain':
+        return 'Unauthorized domain. Please add this domain to authorized domains in Firebase Console.';
+      case 'auth/configuration-not-found':
+        return 'Authentication is not yet enabled in Firebase Console. Go to Build ➔ Authentication to enable Email/Password and Google.';
+      case 'auth/too-many-requests':
+        return 'Access has been temporarily disabled due to many failed attempts. Please reset your password or try again later.';
+      case 'auth/network-request-failed':
+        return 'Network connection error. Please check your internet connection.';
+      default:
+        return error.message || 'Authentication failed. Please try again.';
+    }
+  };
+
+  // Helper to map a Firebase User + Cloud Firestore Profile to our UserProfile model
+  const mapFirebaseUser = (
+    fbUser: FirebaseUser, 
+    customType?: TravelerType,
+    cloudProfile?: Partial<UserProfile> | null
+  ): UserProfile => {
     const existing = getUserData(fbUser.uid);
-    const displayName = fbUser.displayName || fbUser.email?.split('@')[0] || 'Terroir Explorer';
-    const photo = fbUser.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=d97706&color=ffffff&bold=true&format=svg`;
+    const displayName = cloudProfile?.name || fbUser.displayName || existing.name || fbUser.email?.split('@')[0] || 'Terroir Explorer';
+    const photo = fbUser.photoURL || cloudProfile?.avatar || existing.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=d97706&color=ffffff&bold=true&format=svg`;
+    
     return {
       id: fbUser.uid,
       name: displayName,
-      email: fbUser.email || '',
+      email: fbUser.email || cloudProfile?.email || existing.email || '',
       avatar: photo,
-      hometown: existing.hometown || 'Explorer',
-      role: existing.role || 'traveler',
-      isProducer: existing.isProducer || false,
-      claimedProducerId: existing.claimedProducerId,
-      producerName: existing.producerName,
-      travelerType: customType || existing.travelerType || 'culinary_nomad',
-      visitedProducers: existing.visitedProducers || [],
-      personalNotes: existing.personalNotes || {},
-      memberSince: existing.memberSince || '2026',
+      hometown: cloudProfile?.hometown || existing.hometown || 'Explorer',
+      role: cloudProfile?.role || existing.role || 'traveler',
+      isProducer: cloudProfile?.isProducer ?? existing.isProducer ?? false,
+      claimedProducerId: cloudProfile?.claimedProducerId || existing.claimedProducerId,
+      producerName: cloudProfile?.producerName || existing.producerName,
+      travelerType: customType || cloudProfile?.travelerType || existing.travelerType || 'culinary_nomad',
+      visitedProducers: cloudProfile?.visitedProducers || existing.visitedProducers || [],
+      personalNotes: cloudProfile?.personalNotes || existing.personalNotes || {},
+      memberSince: cloudProfile?.memberSince || existing.memberSince || '2026',
+      hasExplorerPass: cloudProfile?.hasExplorerPass ?? existing.hasExplorerPass ?? false,
+      explorerPassUntil: cloudProfile?.explorerPassUntil || existing.explorerPassUntil,
     };
   };
 
@@ -194,17 +235,20 @@ export const useAuth = () => {
   useEffect(() => {
     if (!isFirebaseConfigured || !auth) return;
 
-    const unsubscribe = onAuthStateChanged(auth, (fbUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (fbUser) => {
       if (fbUser) {
-        setUser((prev) => {
-          // If we already have this user, merge their current in-memory notes
-          const mapped = mapFirebaseUser(fbUser, prev?.travelerType);
-          return {
-            ...mapped,
-            visitedProducers: prev?.id === fbUser.uid ? prev.visitedProducers : mapped.visitedProducers,
-            personalNotes: prev?.id === fbUser.uid ? prev.personalNotes : mapped.personalNotes,
-          };
-        });
+        try {
+          const cloudProfile = await fetchUserProfileFromCloud(fbUser.uid);
+          const mapped = mapFirebaseUser(fbUser, undefined, cloudProfile);
+          setUser(mapped);
+          saveUserData(mapped.id, mapped.visitedProducers, mapped.personalNotes, mapped);
+          if (!cloudProfile) {
+            await saveUserProfileToCloud(mapped);
+          }
+        } catch (e) {
+          console.warn('Error fetching cloud profile on auth change:', e);
+          setUser((prev) => mapFirebaseUser(fbUser, prev?.travelerType));
+        }
       }
     });
 
@@ -216,7 +260,7 @@ export const useAuth = () => {
     try {
       if (user) {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
-        saveUserData(user.id, user.visitedProducers, user.personalNotes);
+        saveUserData(user.id, user.visitedProducers, user.personalNotes, user);
       } else {
         localStorage.removeItem(STORAGE_KEY);
       }
@@ -225,29 +269,29 @@ export const useAuth = () => {
     }
   }, [user]);
 
-  // Scenario A: Real-Time Cross-Device Sync (Phone <-> Laptop) via Cloud Firestore
+  // Real-Time Cross-Device Sync (Phone <-> Laptop) via Cloud Firestore
   useEffect(() => {
     if (!user?.id || !isFirebaseConfigured) return;
 
     const unsubscribe = subscribeToCloudUserProfile(user.id, (cloudData) => {
       setUser((prev) => {
         if (!prev || prev.id !== user.id) return prev;
-        const currentVisitedSet = new Set(prev.visitedProducers);
-        const cloudVisited = cloudData.visitedProducers || [];
-        const hasNewStamps = cloudVisited.some((id) => !currentVisitedSet.has(id));
-        
-        const mergedNotes = { ...prev.personalNotes, ...(cloudData.personalNotes || {}) };
-        const mergedStamps = Array.from(new Set([...prev.visitedProducers, ...cloudVisited]));
-
-        if (hasNewStamps || Object.keys(cloudData.personalNotes || {}).length > 0) {
-          saveUserData(prev.id, mergedStamps, mergedNotes);
-          return {
-            ...prev,
-            visitedProducers: mergedStamps,
-            personalNotes: mergedNotes,
-          };
-        }
-        return prev;
+        const merged: UserProfile = {
+          ...prev,
+          name: cloudData.name || prev.name,
+          email: cloudData.email || prev.email,
+          role: cloudData.role || prev.role,
+          isProducer: cloudData.isProducer ?? prev.isProducer,
+          claimedProducerId: cloudData.claimedProducerId || prev.claimedProducerId,
+          producerName: cloudData.producerName || prev.producerName,
+          travelerType: cloudData.travelerType || prev.travelerType,
+          visitedProducers: cloudData.visitedProducers || prev.visitedProducers,
+          personalNotes: { ...prev.personalNotes, ...(cloudData.personalNotes || {}) },
+          hasExplorerPass: cloudData.hasExplorerPass ?? prev.hasExplorerPass,
+          explorerPassUntil: cloudData.explorerPassUntil || prev.explorerPassUntil,
+        };
+        saveUserData(merged.id, merged.visitedProducers, merged.personalNotes, merged);
+        return merged;
       });
     });
 
@@ -263,18 +307,17 @@ export const useAuth = () => {
         throw new Error('FIREBASE_NOT_CONFIGURED');
       }
       const result = await signInWithPopup(auth, googleProvider);
-      const mapped = mapFirebaseUser(result.user, 'culinary_nomad');
+      const cloudProfile = await fetchUserProfileFromCloud(result.user.uid);
+      const mapped = mapFirebaseUser(result.user, 'culinary_nomad', cloudProfile);
+      if (!cloudProfile) {
+        await saveUserProfileToCloud(mapped);
+      }
       setUser(mapped);
+      saveUserData(mapped.id, mapped.visitedProducers, mapped.personalNotes, mapped);
       return mapped;
     } catch (error: any) {
       console.error('Google Sign-in error:', error);
-      const message = error.code === 'auth/popup-closed-by-user'
-        ? 'Sign in popup was closed.'
-        : error.code === 'auth/unauthorized-domain'
-        ? 'Unauthorized domain. Please add localhost to Firebase authorized domains.'
-        : error.code === 'auth/configuration-not-found'
-        ? 'Authentication is not yet enabled in Firebase Console. Go to Build ➔ Authentication and click "Get started", then enable Google under Sign-in method.'
-        : error.message || 'Google sign-in failed.';
+      const message = formatAuthError(error);
       setAuthError(message);
       throw error;
     } finally {
@@ -291,14 +334,17 @@ export const useAuth = () => {
         throw new Error('FIREBASE_NOT_CONFIGURED');
       }
       const result = await signInWithPopup(auth, appleProvider);
-      const mapped = mapFirebaseUser(result.user, 'culinary_nomad');
+      const cloudProfile = await fetchUserProfileFromCloud(result.user.uid);
+      const mapped = mapFirebaseUser(result.user, 'culinary_nomad', cloudProfile);
+      if (!cloudProfile) {
+        await saveUserProfileToCloud(mapped);
+      }
       setUser(mapped);
+      saveUserData(mapped.id, mapped.visitedProducers, mapped.personalNotes, mapped);
       return mapped;
     } catch (error: any) {
       console.error('Apple Sign-in error:', error);
-      const message = error.code === 'auth/popup-closed-by-user'
-        ? 'Sign in popup was closed.'
-        : error.message || 'Apple sign-in failed.';
+      const message = formatAuthError(error);
       setAuthError(message);
       throw error;
     } finally {
@@ -306,18 +352,20 @@ export const useAuth = () => {
     }
   }, []);
 
-  // 3. Email & Password Sign-In
+  // 3. Email & Password Sign-In (Real Firebase Auth)
   const loginWithEmail = useCallback(async (email: string, password?: string) => {
     setIsLoading(true);
     setAuthError(null);
     try {
       if (isFirebaseConfigured && auth && password) {
         const cred = await signInWithEmailAndPassword(auth, email, password);
-        const mapped = mapFirebaseUser(cred.user);
+        const cloudProfile = await fetchUserProfileFromCloud(cred.user.uid);
+        const mapped = mapFirebaseUser(cred.user, undefined, cloudProfile);
         setUser(mapped);
+        saveUserData(mapped.id, mapped.visitedProducers, mapped.personalNotes, mapped);
         return mapped;
       } else {
-        // Local fallback if Firebase is not yet configured
+        // Fallback local authentication
         const inferredName = email.split('@')[0];
         const newUser: UserProfile = {
           id: `user_${Date.now()}`,
@@ -335,11 +383,7 @@ export const useAuth = () => {
       }
     } catch (error: any) {
       console.error('Email sign-in error:', error);
-      const msg = error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential'
-        ? 'Invalid email or password.'
-        : error.code === 'auth/configuration-not-found'
-        ? 'Authentication is not yet enabled in Firebase Console. Go to Build ➔ Authentication and click "Get started", then enable Email/Password.'
-        : error.message || 'Failed to sign in.';
+      const msg = formatAuthError(error);
       setAuthError(msg);
       throw error;
     } finally {
@@ -347,8 +391,13 @@ export const useAuth = () => {
     }
   }, []);
 
-  // 4. Email & Password Registration
-  const signupWithEmail = useCallback(async (name: string, email: string, password?: string, travelerType: TravelerType = 'culinary_nomad') => {
+  // 4. Email & Password Registration (Real Firebase Auth)
+  const signupWithEmail = useCallback(async (
+    name: string, 
+    email: string, 
+    password?: string, 
+    travelerType: TravelerType = 'culinary_nomad'
+  ) => {
     setIsLoading(true);
     setAuthError(null);
     try {
@@ -356,10 +405,13 @@ export const useAuth = () => {
         const cred = await createUserWithEmailAndPassword(auth, email, password);
         await firebaseUpdateProfile(cred.user, { displayName: name });
         const mapped = mapFirebaseUser(cred.user, travelerType);
+        mapped.name = name;
+        await saveUserProfileToCloud(mapped);
         setUser(mapped);
+        saveUserData(mapped.id, mapped.visitedProducers, mapped.personalNotes, mapped);
         return mapped;
       } else {
-        // Local fallback
+        // Fallback local
         const newUser: UserProfile = {
           id: `user_${Date.now()}`,
           name,
@@ -376,11 +428,7 @@ export const useAuth = () => {
       }
     } catch (error: any) {
       console.error('Email signup error:', error);
-      const msg = error.code === 'auth/email-already-in-use'
-        ? 'This email is already registered.'
-        : error.code === 'auth/configuration-not-found'
-        ? 'Authentication is not yet enabled in Firebase Console. Go to Build ➔ Authentication and click "Get started", then enable Email/Password.'
-        : error.message || 'Failed to register account.';
+      const msg = formatAuthError(error);
       setAuthError(msg);
       throw error;
     } finally {
@@ -388,58 +436,105 @@ export const useAuth = () => {
     }
   }, []);
 
-  // 5. 1-Click Demo Profiles (Giannis, Elena, Markos)
+  // 5. Send Real Password Reset Link
+  const sendPasswordResetLink = useCallback(async (email: string) => {
+    setIsLoading(true);
+    setAuthError(null);
+    try {
+      if (!isFirebaseConfigured || !auth) {
+        throw new Error('Firebase authentication is not configured.');
+      }
+      await sendPasswordReset(email);
+    } catch (error: any) {
+      console.error('Password reset error:', error);
+      const msg = formatAuthError(error);
+      setAuthError(msg);
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  // 6. 1-Click Demo Profiles (Giannis, Elena, Markos)
   const loginAsDemo = useCallback((demoKey: 'giannis' | 'elena' | 'markos') => {
     const profile = DEMO_PROFILES[demoKey] || DEMO_PROFILES.giannis;
     setUser({ ...profile });
+    return profile;
   }, []);
 
-  // 5b. 1-Click Demo Producer Profiles (Paterianakis, Manousakis, Charma, Monteraponi)
+  // 6b. 1-Click Demo Producer Profiles (Paterianakis, Manousakis, Charma, Monteraponi)
   const loginAsDemoProducer = useCallback((demoKey: 'paterianakis' | 'manousakis' | 'charma' | 'monteraponi') => {
     const profile = DEMO_PRODUCER_PROFILES[demoKey] || DEMO_PRODUCER_PROFILES.paterianakis;
     setUser({ ...profile });
     return profile;
   }, []);
 
-  // 5c. Login as Registered Producer
+  // 6c. Real Producer Sign In
+  // Accepts (email, password) OR legacy (producerId, producerName, email, password)
   const loginAsProducer = useCallback(async (
-    producerId: string,
-    producerName: string,
-    email: string,
-    password?: string,
-    hostName?: string
+    arg1: string,
+    arg2?: string,
+    arg3?: string,
+    arg4?: string
   ) => {
     setIsLoading(true);
     setAuthError(null);
+
+    // Resolve arguments
+    let targetEmail = '';
+    let targetPassword = '';
+    let targetProducerId: string | undefined;
+    let targetProducerName: string | undefined;
+
+    if (arg1.includes('@')) {
+      targetEmail = arg1;
+      targetPassword = arg2 || '';
+      targetProducerId = arg3;
+      targetProducerName = arg4;
+    } else {
+      // Legacy: (producerId, producerName, email, password)
+      targetProducerId = arg1;
+      targetProducerName = arg2;
+      targetEmail = arg3 || '';
+      targetPassword = arg4 || '';
+    }
+
     try {
-      if (isFirebaseConfigured && auth && password) {
-        const cred = await signInWithEmailAndPassword(auth, email, password);
-        const mapped = mapFirebaseUser(cred.user);
+      if (isFirebaseConfigured && auth && targetPassword) {
+        const cred = await signInWithEmailAndPassword(auth, targetEmail, targetPassword);
+        const cloudProfile = await fetchUserProfileFromCloud(cred.user.uid);
+        const mapped = mapFirebaseUser(cred.user, undefined, cloudProfile);
+        
+        const resolvedProducerId = cloudProfile?.claimedProducerId || mapped.claimedProducerId || targetProducerId;
+        const resolvedProducerName = cloudProfile?.producerName || mapped.producerName || targetProducerName;
+
         const producerUser: UserProfile = {
           ...mapped,
           role: 'producer',
           isProducer: true,
-          claimedProducerId: producerId,
-          producerName,
+          claimedProducerId: resolvedProducerId,
+          producerName: resolvedProducerName,
         };
+
+        await saveUserProfileToCloud(producerUser);
         saveUserData(producerUser.id, producerUser.visitedProducers, producerUser.personalNotes, producerUser);
         setUser(producerUser);
         return producerUser;
       } else {
         // Fallback local authentication
-        const inferredName = hostName || email.split('@')[0];
+        const inferredName = targetEmail.split('@')[0];
         const producerUser: UserProfile = {
-          id: `producer_${producerId}_${Date.now()}`,
+          id: `producer_${targetProducerId || 'estate'}_${Date.now()}`,
           name: inferredName.charAt(0).toUpperCase() + inferredName.slice(1),
-          email,
+          email: targetEmail,
           avatar: '🏛️',
-          hometown: producerName,
+          hometown: targetProducerName || 'Wine Estate',
           role: 'producer',
           isProducer: true,
-          claimedProducerId: producerId,
-          producerName,
+          claimedProducerId: targetProducerId,
+          producerName: targetProducerName,
           travelerType: 'wine_enthusiast',
-          visitedProducers: [producerId],
+          visitedProducers: targetProducerId ? [targetProducerId] : [],
           personalNotes: {},
           memberSince: '2026',
         };
@@ -449,9 +544,7 @@ export const useAuth = () => {
       }
     } catch (error: any) {
       console.error('Producer login error:', error);
-      const msg = error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential'
-        ? 'Invalid email or password.'
-        : error.message || 'Failed to sign in as producer.';
+      const msg = formatAuthError(error);
       setAuthError(msg);
       throw error;
     } finally {
@@ -459,7 +552,7 @@ export const useAuth = () => {
     }
   }, []);
 
-  // 5d. Claim & Register New Estate Host
+  // 6d. Real Claim & Register Estate Host
   const claimAndRegisterProducer = useCallback(async (
     producerId: string,
     producerName: string,
@@ -477,11 +570,15 @@ export const useAuth = () => {
         const producerUser: UserProfile = {
           ...mapped,
           name: hostName,
+          email,
           role: 'producer',
           isProducer: true,
           claimedProducerId: producerId,
           producerName,
+          travelerType: 'wine_enthusiast',
+          visitedProducers: [producerId],
         };
+        await saveUserProfileToCloud(producerUser);
         saveUserData(producerUser.id, producerUser.visitedProducers, producerUser.personalNotes, producerUser);
         setUser(producerUser);
         return producerUser;
@@ -507,9 +604,7 @@ export const useAuth = () => {
       }
     } catch (error: any) {
       console.error('Producer registration error:', error);
-      const msg = error.code === 'auth/email-already-in-use'
-        ? 'This email is already registered.'
-        : error.message || 'Failed to register producer account.';
+      const msg = formatAuthError(error);
       setAuthError(msg);
       throw error;
     } finally {
@@ -542,8 +637,8 @@ export const useAuth = () => {
         ...prev,
         visitedProducers: updated,
       };
-      saveUserData(newProfile.id, updated, newProfile.personalNotes);
-      syncUserProfileToCloud(newProfile.id, updated, newProfile.personalNotes);
+      saveUserData(newProfile.id, updated, newProfile.personalNotes, newProfile);
+      saveUserProfileToCloud(newProfile);
       return newProfile;
     });
   }, []);
@@ -566,8 +661,8 @@ export const useAuth = () => {
         ...prev,
         personalNotes: newNotes,
       };
-      saveUserData(newProfile.id, newProfile.visitedProducers, newNotes);
-      syncUserProfileToCloud(newProfile.id, newProfile.visitedProducers, newNotes);
+      saveUserData(newProfile.id, newProfile.visitedProducers, newNotes, newProfile);
+      saveUserProfileToCloud(newProfile);
       return newProfile;
     });
   }, []);
@@ -589,6 +684,8 @@ export const useAuth = () => {
       };
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(newProfile));
+        saveUserData(newProfile.id, newProfile.visitedProducers, newProfile.personalNotes, newProfile);
+        saveUserProfileToCloud(newProfile);
       } catch (e) {
         console.error('Error saving updated explorer pass to localStorage:', e);
       }
@@ -607,6 +704,7 @@ export const useAuth = () => {
     loginWithApple,
     loginWithEmail,
     signupWithEmail,
+    sendPasswordResetLink,
     loginAsDemo,
     loginAsDemoProducer,
     loginAsProducer,

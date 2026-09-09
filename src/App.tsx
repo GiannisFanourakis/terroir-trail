@@ -54,6 +54,7 @@ export const App: React.FC = () => {
     loginWithApple,
     loginWithEmail,
     signupWithEmail,
+    sendPasswordResetLink,
     loginAsDemo,
     loginAsDemoProducer,
     loginAsProducer,
@@ -367,6 +368,7 @@ export const App: React.FC = () => {
         onSignup={(name, email, password, travelerType) => signupWithEmail(name, email, password, travelerType)}
         onLoginAsProducer={loginAsProducer}
         onClaimProducer={claimAndRegisterProducer}
+        onResetPassword={sendPasswordResetLink}
         onLoginWithGoogle={loginWithGoogle}
         onLoginWithApple={loginWithApple}
         isLoading={isAuthLoading}

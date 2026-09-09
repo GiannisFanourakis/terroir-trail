@@ -1,5 +1,5 @@
 import { initializeApp, getApps, getApp, FirebaseApp } from 'firebase/app';
-import { getAuth, GoogleAuthProvider, OAuthProvider, Auth } from 'firebase/auth';
+import { getAuth, GoogleAuthProvider, OAuthProvider, Auth, sendPasswordResetEmail } from 'firebase/auth';
 import {
   getFirestore,
   doc,
@@ -15,6 +15,7 @@ import {
   Firestore,
 } from 'firebase/firestore';
 import { TastingBooking, ProducerOverride } from '../types/booking';
+import { UserProfile } from '../types/auth';
 
 const getEnv = (key: string): string => {
   if (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env[key]) {
@@ -64,32 +65,80 @@ appleProvider.addScope('email');
 appleProvider.addScope('name');
 
 // =========================================================
-// SCENARIO A: Cloud Firestore Traveler Profile Sync (Phone <-> Laptop)
+// SCENARIO A: Cloud Firestore Traveler & Host Profile Sync
 // =========================================================
 
 /**
- * Saves visited stamps and personal tasting notes to Cloud Firestore
+ * Saves complete user profile (traveler or verified estate host) to Cloud Firestore
+ */
+export const saveUserProfileToCloud = async (profile: Partial<UserProfile> & { id: string }) => {
+  if (!isFirebaseConfigured || !db || !profile.id) return;
+  try {
+    const userRef = doc(db, 'users', profile.id);
+    const dataToSave: Record<string, any> = {
+      updatedAt: new Date().toISOString(),
+    };
+    if (profile.name !== undefined) dataToSave.name = profile.name;
+    if (profile.email !== undefined) dataToSave.email = profile.email;
+    if (profile.avatar !== undefined) dataToSave.avatar = profile.avatar;
+    if (profile.hometown !== undefined) dataToSave.hometown = profile.hometown;
+    if (profile.role !== undefined) dataToSave.role = profile.role;
+    if (profile.isProducer !== undefined) dataToSave.isProducer = profile.isProducer;
+    if (profile.claimedProducerId !== undefined) dataToSave.claimedProducerId = profile.claimedProducerId;
+    if (profile.producerName !== undefined) dataToSave.producerName = profile.producerName;
+    if (profile.travelerType !== undefined) dataToSave.travelerType = profile.travelerType;
+    if (profile.visitedProducers !== undefined) dataToSave.visitedProducers = profile.visitedProducers;
+    if (profile.personalNotes !== undefined) dataToSave.personalNotes = profile.personalNotes;
+    if (profile.hasExplorerPass !== undefined) dataToSave.hasExplorerPass = profile.hasExplorerPass;
+    if (profile.explorerPassUntil !== undefined) dataToSave.explorerPassUntil = profile.explorerPassUntil;
+    if (profile.memberSince !== undefined) dataToSave.memberSince = profile.memberSince;
+
+    await setDoc(userRef, dataToSave, { merge: true });
+  } catch (error) {
+    console.error('Error saving user profile to Firestore:', error);
+  }
+};
+
+/**
+ * Fetches user profile document from Cloud Firestore
+ */
+export const fetchUserProfileFromCloud = async (userId: string): Promise<Partial<UserProfile> | null> => {
+  if (!isFirebaseConfigured || !db || !userId) return null;
+  try {
+    const userRef = doc(db, 'users', userId);
+    const snap = await getDoc(userRef);
+    if (snap.exists()) {
+      return snap.data() as Partial<UserProfile>;
+    }
+  } catch (error) {
+    console.warn('Error fetching user profile from Firestore:', error);
+  }
+  return null;
+};
+
+/**
+ * Sends a real password reset link to user's registered email
+ */
+export const sendPasswordReset = async (userEmail: string): Promise<void> => {
+  if (!isFirebaseConfigured || !auth) {
+    throw new Error('Firebase authentication is not configured.');
+  }
+  await sendPasswordResetEmail(auth, userEmail);
+};
+
+/**
+ * Backwards-compatible helper for visited stamps and notes sync
  */
 export const syncUserProfileToCloud = async (
   userId: string,
   visitedProducers: string[],
   personalNotes: Record<string, string>
 ) => {
-  if (!isFirebaseConfigured || !db || !userId) return;
-  try {
-    const userRef = doc(db, 'users', userId);
-    await setDoc(
-      userRef,
-      {
-        visitedProducers,
-        personalNotes,
-        updatedAt: new Date().toISOString(),
-      },
-      { merge: true }
-    );
-  } catch (error) {
-    console.error('Error syncing profile to Firestore:', error);
-  }
+  return saveUserProfileToCloud({
+    id: userId,
+    visitedProducers,
+    personalNotes,
+  });
 };
 
 /**
@@ -97,7 +146,7 @@ export const syncUserProfileToCloud = async (
  */
 export const subscribeToCloudUserProfile = (
   userId: string,
-  onUpdate: (data: { visitedProducers?: string[]; personalNotes?: Record<string, string> }) => void
+  onUpdate: (data: Partial<UserProfile>) => void
 ): (() => void) => {
   if (!isFirebaseConfigured || !db || !userId) {
     return () => {};
@@ -108,11 +157,8 @@ export const subscribeToCloudUserProfile = (
       userRef,
       (docSnap) => {
         if (docSnap.exists()) {
-          const data = docSnap.data();
-          onUpdate({
-            visitedProducers: data.visitedProducers || [],
-            personalNotes: data.personalNotes || {},
-          });
+          const data = docSnap.data() as Partial<UserProfile>;
+          onUpdate(data);
         }
       },
       (error) => {
