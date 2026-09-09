@@ -197,6 +197,8 @@ export const useAuth = () => {
         ? 'Sign in popup was closed.'
         : error.code === 'auth/unauthorized-domain'
         ? 'Unauthorized domain. Please add localhost to Firebase authorized domains.'
+        : error.code === 'auth/configuration-not-found'
+        ? 'Authentication is not yet enabled in Firebase Console. Go to Build ➔ Authentication and click "Get started", then enable Google under Sign-in method.'
         : error.message || 'Google sign-in failed.';
       setAuthError(message);
       throw error;
@@ -260,6 +262,8 @@ export const useAuth = () => {
       console.error('Email sign-in error:', error);
       const msg = error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential'
         ? 'Invalid email or password.'
+        : error.code === 'auth/configuration-not-found'
+        ? 'Authentication is not yet enabled in Firebase Console. Go to Build ➔ Authentication and click "Get started", then enable Email/Password.'
         : error.message || 'Failed to sign in.';
       setAuthError(msg);
       throw error;
@@ -299,6 +303,8 @@ export const useAuth = () => {
       console.error('Email signup error:', error);
       const msg = error.code === 'auth/email-already-in-use'
         ? 'This email is already registered.'
+        : error.code === 'auth/configuration-not-found'
+        ? 'Authentication is not yet enabled in Firebase Console. Go to Build ➔ Authentication and click "Get started", then enable Email/Password.'
         : error.message || 'Failed to register account.';
       setAuthError(msg);
       throw error;
