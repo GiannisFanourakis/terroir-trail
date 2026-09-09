@@ -119,9 +119,9 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
         
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 bg-stone-900 border-b border-white/10 shrink-0">
-          <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-rose-500 to-amber-600 text-white flex items-center justify-center text-lg font-bold shadow-md">
-              🏛️
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl overflow-hidden shadow-md ring-1 ring-white/20 bg-stone-950 p-0.5 shrink-0 flex items-center justify-center">
+              <img src="/logo.png" alt="TerroirTrail" className="w-full h-full object-contain" />
             </div>
             <div>
               <div className="flex items-center gap-2">
@@ -159,8 +159,8 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
         {/* ========================================================= */}
         {!isProducerAuthenticated ? (
           <div className="p-6 sm:p-10 text-center space-y-5 my-auto">
-            <div className="w-16 h-16 rounded-3xl bg-amber-500/15 text-amber-300 border border-amber-500/30 flex items-center justify-center text-3xl mx-auto shadow-inner">
-              🏛️
+            <div className="w-20 h-20 rounded-3xl overflow-hidden shadow-2xl ring-1 ring-white/20 mx-auto bg-stone-900 p-1">
+              <img src="/logo.png" alt="TerroirTrail" className="w-full h-full object-contain" />
             </div>
             
             <div className="space-y-1.5">
