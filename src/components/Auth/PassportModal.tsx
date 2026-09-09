@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Producer } from '../../types/terroir';
 import { UserProfile } from '../../types/auth';
 import { X, Award, CheckCircle2, Circle, MapPin, Edit3, Save, Compass, Crown, Sparkles } from 'lucide-react';
+import { UserAvatar } from '../Common/UserAvatar';
 
 interface PassportModalProps {
   isOpen: boolean;
@@ -69,9 +70,7 @@ export const PassportModal: React.FC<PassportModalProps> = ({
         {/* Passport Header */}
         <div className="flex items-center justify-between px-5 py-4 bg-gradient-to-r from-stone-900 via-stone-900 to-amber-950/40 border-b border-white/10 shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center text-xl shadow-lg shadow-amber-500/10">
-              🏛️
-            </div>
+            <UserAvatar user={user} size="lg" className="w-11 h-11 ring-2 ring-amber-400/50 shadow-lg shadow-amber-500/10" />
             <div>
               <div className="flex items-center gap-2">
                 <h2 className="font-serif-title text-base sm:text-lg font-bold text-white">

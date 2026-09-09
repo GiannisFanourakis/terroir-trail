@@ -102,11 +102,13 @@ export const useAuth = () => {
   // Helper to map a Firebase User to our UserProfile model
   const mapFirebaseUser = (fbUser: FirebaseUser, customType?: TravelerType): UserProfile => {
     const existing = getUserData(fbUser.uid);
+    const displayName = fbUser.displayName || fbUser.email?.split('@')[0] || 'Terroir Explorer';
+    const photo = fbUser.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=d97706&color=ffffff&bold=true&format=svg`;
     return {
       id: fbUser.uid,
-      name: fbUser.displayName || fbUser.email?.split('@')[0] || 'Terroir Explorer',
+      name: displayName,
       email: fbUser.email || '',
-      avatar: fbUser.photoURL || (customType === 'craft_beer_explorer' ? '🍺' : '🍇'),
+      avatar: photo,
       hometown: 'Explorer',
       travelerType: customType || 'culinary_nomad',
       visitedProducers: existing.visitedProducers,

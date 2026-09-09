@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { UserProfile } from '../../types/auth';
 import { User, LogOut, Compass, Heart, Award, ChevronDown, Calendar, Building2, Crown, Package, LogIn } from 'lucide-react';
+import { UserAvatar } from '../Common/UserAvatar';
 
 interface ProfileMenuProps {
   user: UserProfile | null;
@@ -75,19 +76,13 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
       {/* Avatar Button */}
       <button
         onClick={() => setIsOpen((prev) => !prev)}
-        className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-2.5 py-1 rounded-xl bg-stone-900 hover:bg-stone-850 border border-amber-500/30 hover:border-amber-400/50 text-stone-200 transition active:scale-95 shrink-0 cursor-pointer"
+        className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-2.5 py-1 rounded-xl bg-stone-900 hover:bg-stone-850 border border-amber-500/30 hover:border-amber-400/50 text-stone-200 transition active:scale-95 shrink-0 cursor-pointer group"
       >
-        <span className="w-6 h-6 rounded-lg bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-xs font-bold shrink-0 overflow-hidden">
-          {user.avatar?.startsWith('http') ? (
-            <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
-          ) : (
-            user.avatar || '🧭'
-          )}
-        </span>
-        <span className="text-xs font-bold text-white hidden md:inline truncate max-w-[90px]">
+        <UserAvatar user={user} size="xs" className="ring-1 ring-amber-500/50" />
+        <span className="text-xs font-bold text-white hidden md:inline truncate max-w-[90px] group-hover:text-amber-300 transition-colors">
           {user.name.split(' ')[0]}
         </span>
-        <ChevronDown className="w-3 h-3 text-stone-400 shrink-0" />
+        <ChevronDown className="w-3 h-3 text-stone-400 shrink-0 group-hover:text-amber-300 transition-colors" />
       </button>
 
       {/* Popover Menu */}
@@ -96,16 +91,10 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
           
           {/* User Info */}
           <div className="pb-3 border-b border-white/10 mb-2.5">
-            <div className="flex items-center gap-2 mb-1">
-              <span className="w-7 h-7 rounded-lg bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-sm shrink-0 overflow-hidden">
-                {user.avatar?.startsWith('http') ? (
-                  <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
-                ) : (
-                  user.avatar || '🧭'
-                )}
-              </span>
+            <div className="flex items-center gap-2.5 mb-1">
+              <UserAvatar user={user} size="md" className="ring-2 ring-amber-500/50 shadow-md" />
               <div className="min-w-0">
-                <div className="font-bold text-white truncate">{user.name}</div>
+                <div className="font-bold text-white truncate text-sm">{user.name}</div>
                 <div className="text-[10px] text-stone-400 truncate">{user.email}</div>
               </div>
             </div>
