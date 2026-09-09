@@ -9,7 +9,7 @@ interface ExplorerPassModalProps {
   isOpen: boolean;
   onClose: () => void;
   user: UserProfile | null;
-  onActivatePass: () => Promise<void> | void;
+  onActivatePass: (days?: number) => Promise<void> | void;
   onOpenAuth: () => void;
 }
 
@@ -23,6 +23,7 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
   if (!isOpen) return null;
 
   const [activeTab, setActiveTab] = useState<'upgrade' | 'compare'>('upgrade');
+  const [selectedPlan, setSelectedPlan] = useState<'holiday' | 'annual'>('holiday');
   const [paymentMethod, setPaymentMethod] = useState<'apple' | 'google' | 'card'>('apple');
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [isPurchased, setIsPurchased] = useState<boolean>(false);
@@ -81,7 +82,7 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
     try {
       // Simulate high-speed Stripe Checkout authorization
       await new Promise((res) => setTimeout(res, 900));
-      await onActivatePass();
+      await onActivatePass(selectedPlan === 'holiday' ? 14 : 365);
       setIsPurchased(true);
     } catch (e) {
       console.error('Pass activation failed:', e);
@@ -136,7 +137,7 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
                   : 'border-transparent text-stone-400 hover:text-white'
               }`}
             >
-              👑 Get VIP Pass (€19.99)
+              👑 Holiday Pass (€14.99)
             </button>
             <button
               onClick={() => setActiveTab('compare')}
@@ -236,7 +237,7 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
                 onClick={() => setActiveTab('upgrade')}
                 className="w-full py-3 rounded-2xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs shadow-lg transition active:scale-98 cursor-pointer flex items-center justify-center gap-1.5"
               >
-                <span>Upgrade to Terroir Explorer Pass (€19.99)</span>
+                <span>Get Terroir Holiday Pass (€14.99)</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
             </div>
@@ -244,25 +245,67 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
             /* Purchase Flow */
             <div className="space-y-4">
               
-              {/* Gold Price Card */}
-              <div className="p-4 rounded-2xl bg-gradient-to-r from-amber-500/15 via-stone-900 to-stone-900 border border-amber-500/40 flex items-center justify-between">
-                <div>
-                  <span className="text-[10px] uppercase font-bold tracking-wider text-amber-400 block mb-0.5">
-                    14-Day Holiday Pass
-                  </span>
-                  <div className="flex items-baseline gap-2">
-                    <span className="font-serif-title text-2xl font-bold text-white">€19.99</span>
-                    <span className="text-stone-400 text-xs line-through">€45.00</span>
-                    <span className="text-[10px] text-emerald-400 font-bold bg-emerald-500/20 px-1.5 py-0.5 rounded">
-                      Save €25 on first 2 visits
+              {/* Plan Selection Cards: Holiday vs Annual */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                {/* 1. Holiday Pass (Primary recommended) */}
+                <button
+                  type="button"
+                  onClick={() => setSelectedPlan('holiday')}
+                  className={`p-3.5 rounded-2xl border text-left transition cursor-pointer relative overflow-hidden ${
+                    selectedPlan === 'holiday'
+                      ? 'bg-gradient-to-br from-amber-500/20 via-stone-900 to-stone-900 border-amber-400 shadow-lg shadow-amber-500/10'
+                      : 'bg-stone-900/70 border-white/10 hover:border-white/20'
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-[10px] uppercase font-bold tracking-wider text-amber-400">
+                      14-Day Holiday Pass
+                    </span>
+                    <span className="text-[9px] px-1.5 py-0.2 rounded bg-amber-400 text-stone-950 font-extrabold uppercase">
+                      Most Popular
                     </span>
                   </div>
-                </div>
+                  <div className="flex items-baseline gap-1.5">
+                    <span className="font-serif-title text-2xl font-bold text-white">€14.99</span>
+                    <span className="text-[10px] text-stone-400">one-time</span>
+                  </div>
+                  <p className="text-[11px] text-stone-300 mt-1 leading-tight">
+                    Perfect for your vacation. <strong>No subscription</strong>, no auto-renew.
+                  </p>
+                  <span className="mt-2 inline-block text-[10px] text-emerald-400 font-semibold">
+                    ✓ Pays for itself at 1st winery
+                  </span>
+                </button>
 
-                <div className="text-right">
-                  <span className="text-[11px] text-stone-400 block">Pays for itself at</span>
-                  <span className="text-xs font-bold text-amber-300">Your First Winery</span>
-                </div>
+                {/* 2. Annual Pass */}
+                <button
+                  type="button"
+                  onClick={() => setSelectedPlan('annual')}
+                  className={`p-3.5 rounded-2xl border text-left transition cursor-pointer relative overflow-hidden ${
+                    selectedPlan === 'annual'
+                      ? 'bg-gradient-to-br from-amber-500/20 via-stone-900 to-stone-900 border-amber-400 shadow-lg shadow-amber-500/10'
+                      : 'bg-stone-900/70 border-white/10 hover:border-white/20'
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-[10px] uppercase font-bold tracking-wider text-stone-400">
+                      Annual Pass
+                    </span>
+                    <span className="text-[9px] px-1.5 py-0.2 rounded bg-stone-800 text-stone-300 font-semibold uppercase">
+                      365 Days
+                    </span>
+                  </div>
+                  <div className="flex items-baseline gap-1.5">
+                    <span className="font-serif-title text-2xl font-bold text-white">€29.99</span>
+                    <span className="text-[10px] text-stone-400">/year</span>
+                  </div>
+                  <p className="text-[11px] text-stone-300 mt-1 leading-tight">
+                    For local residents, sommeliers & repeat travelers in Greece/Italy.
+                  </p>
+                  <span className="mt-2 inline-block text-[10px] text-amber-300 font-semibold">
+                    ✓ All circuits & harvest invites
+                  </span>
+                </button>
               </div>
 
               {/* Perks List */}
@@ -346,7 +389,11 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
                   <span>Authorizing VIP Pass...</span>
                 ) : (
                   <>
-                    <span>Activate Terroir Explorer Pass (€19.99)</span>
+                    <span>
+                      {selectedPlan === 'holiday'
+                        ? 'Activate 14-Day Holiday Pass (€14.99)'
+                        : 'Activate Annual Terroir Pass (€29.99)'}
+                    </span>
                     <ArrowRight className="w-4 h-4" />
                   </>
                 )}

@@ -128,7 +128,7 @@ export const PassportModal: React.FC<PassportModalProps> = ({
                 </div>
                 <div>
                   <div className="text-xs font-bold text-amber-200">
-                    Terroir Explorer Pass (€19.99)
+                    Terroir Holiday Pass (€14.99)
                   </div>
                   <div className="text-[11px] text-stone-400">
                     Free welcome pours, artisanal meze &amp; 10% off cellar bottles

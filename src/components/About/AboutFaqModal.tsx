@@ -101,7 +101,7 @@ const FAQ_DATA: FaqItem[] = [
     id: 'what-is-vip-explorer-pass',
     category: 'passport',
     categoryLabel: 'Passport & VIP Pass',
-    question: 'What is the VIP Terroir Explorer Pass (€19.99)?',
+    question: 'What is the Terroir Holiday Pass (€14.99)?',
     answer: 'The VIP Explorer Pass is an optional annual membership for passionate travelers. It unlocks exclusive benefits across participating partner estates: complimentary welcome library wine pours, free artisan graviera meze platters, 10% off cellar-door bottle purchases, a €30 discount voucher on private Mercedes chauffeurs, and access to all curated Day-Trip driving routes.',
     actionText: 'Learn About VIP Pass Perks',
     actionType: 'explorer_pass',

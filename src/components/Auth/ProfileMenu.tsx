@@ -205,7 +205,7 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
                   <span>{user.hasExplorerPass ? 'VIP Pass Active' : 'VIP Explorer Pass'}</span>
                 </span>
                 <span className="px-1.5 py-0.2 rounded-full bg-amber-500/20 text-amber-300 text-[10px] font-bold border border-amber-500/30">
-                  {user.hasExplorerPass ? 'VIP' : '€19.99'}
+                  {user.hasExplorerPass ? 'VIP' : '€14.99'}
                 </span>
               </button>
             )}

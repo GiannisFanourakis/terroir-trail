@@ -604,7 +604,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                     <span className="text-[10px] text-stone-400">
                       {hasExplorerPass
                         ? 'Show digital card at counter to claim'
-                        : 'Included with Terroir Explorer Pass (€19.99)'}
+                        : 'Included with Terroir Holiday Pass (€14.99)'}
                     </span>
                   </div>
                 </div>

@@ -148,7 +148,7 @@ export const DayTripModal: React.FC<DayTripModalProps> = ({
                   className="w-full sm:w-auto px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-amber-500/25 transition shrink-0 cursor-pointer"
                 >
                   <Crown className="w-3.5 h-3.5" />
-                  <span>Unlock VIP (€19.99)</span>
+                  <span>Holiday Pass (€14.99)</span>
                 </button>
               )}
             </div>
@@ -299,7 +299,7 @@ export const DayTripModal: React.FC<DayTripModalProps> = ({
                     className="flex items-center gap-2 px-5 py-2.5 text-xs font-bold bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-stone-950 rounded-2xl shadow-xl shadow-amber-500/20 transition transform active:scale-95 cursor-pointer"
                   >
                     <Crown className="w-3.5 h-3.5" />
-                    <span>Unlock VIP (€19.99)</span>
+                    <span>Holiday Pass (€14.99)</span>
                   </button>
                 )}
               </>

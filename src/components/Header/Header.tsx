@@ -154,7 +154,7 @@ export const Header: React.FC<HeaderProps> = ({
                     ? 'bg-amber-500/20 text-amber-300 border-amber-400/40 shadow-sm'
                     : 'bg-stone-900 hover:bg-stone-850 text-stone-300 hover:text-white border-amber-500/30'
                 }`}
-                title={user?.hasExplorerPass ? 'VIP Pass Active' : 'Free Plan · Upgrade to VIP (€19.99)'}
+                title={user?.hasExplorerPass ? 'VIP Pass Active' : 'Free Plan · Upgrade to Holiday Pass (€14.99)'}
               >
                 <Crown className="w-3.5 h-3.5 text-amber-400 shrink-0" />
                 {user?.hasExplorerPass ? (

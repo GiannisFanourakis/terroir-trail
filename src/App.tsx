@@ -467,13 +467,13 @@ export const App: React.FC = () => {
         }}
       />
 
-      {/* 11. VIP Terroir Explorer Pass Modal (€19.99 B2C Pass) */}
+      {/* 11. VIP Terroir Holiday Pass Modal (€14.99 B2C Pass) */}
       <ExplorerPassModal
         isOpen={isPassModalOpen}
         onClose={() => setIsPassModalOpen(false)}
         user={user}
         onOpenAuth={() => setIsAuthModalOpen(true)}
-        onActivatePass={() => activateExplorerPass(365)}
+        onActivatePass={(days = 14) => activateExplorerPass(days)}
       />
 
       {/* 12. Private Chauffeur & Mercedes Van Booking Modal */}
