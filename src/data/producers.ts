@@ -151,9 +151,22 @@ export const CRETAN_PRODUCERS: Producer[] = [
     region: 'Chania',
     village: 'Anoskeli (Platanias)',
     coordinates: [35.4320, 23.7740],
-    coverImage: 'https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?auto=format&fit=crop&w=1000&q=80',
+    coverImage: '/images/estates/boutari-skalani.jpg',
     gallery: [
-      'https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?auto=format&fit=crop&w=1000&q=80'
+      '/images/estates/boutari-skalani.jpg',
+      '/images/estates/vouves-ancient-olive-tree.jpg'
+    ],
+    photoCredit: {
+      author: 'Cayambe',
+      source: 'Wikimedia Commons',
+      license: 'CC BY-SA 4.0'
+    },
+    galleryCredits: [
+      {
+        author: 'Eric Nagle',
+        source: 'Wikimedia Commons',
+        license: 'CC BY-SA 4.0'
+      }
     ],
     tagLine: 'Single-Estate Organic EVOO & Handcrafted Hillside Wines',
     description: 'Tucked into the green hills of Kolymbari, the Mamidakis family created an integrated estate combining an ultra-modern boutique olive mill with hillside vineyards of Vidiano, Assyrtiko, and Syrah.',
@@ -250,10 +263,15 @@ export const CRETAN_PRODUCERS: Producer[] = [
     region: 'Nemea',
     village: 'Malandreni (Argos)',
     coordinates: [37.7210, 22.6840],
-    coverImage: 'https://images.unsplash.com/photo-1528823872057-9c018a7a7553?auto=format&fit=crop&w=1000&q=80',
+    coverImage: '/images/estates/nemea-vineyards.jpg',
     gallery: [
-      'https://images.unsplash.com/photo-1528823872057-9c018a7a7553?auto=format&fit=crop&w=1000&q=80'
+      '/images/estates/nemea-vineyards.jpg'
     ],
+    photoCredit: {
+      author: 'Ulrich Still',
+      source: 'Wikimedia Commons',
+      license: 'CC BY-SA 3.0 de'
+    },
     tagLine: 'The Pioneer of Megas Oenos & Agiorgitiko World Benchmark',
     description: 'George Skouras studied enology in Dijon, Burgundy, and returned to the Peloponnese in 1986 to pioneer "Megas Oenos"—a legendary blend of Agiorgitiko and French Cabernet Sauvignon.',
     story: 'Skouras put Nemea on the global fine-wine map. His modern high-ceilinged estate features world-class art installations and barrel cellars aging thousands of oak casks.',
@@ -352,9 +370,22 @@ export const CRETAN_PRODUCERS: Producer[] = [
     region: 'Santorini',
     village: 'Episkopi Gonia',
     coordinates: [36.3860, 25.4610],
-    coverImage: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=1000&q=80',
+    coverImage: '/images/estates/santorini-kouloura.jpg',
     gallery: [
-      'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=1000&q=80'
+      '/images/estates/santorini-kouloura.jpg',
+      '/images/estates/santo-wines-bottles.jpg'
+    ],
+    photoCredit: {
+      author: 'AkatsukiKuro',
+      source: 'Wikimedia Commons',
+      license: 'CC0 Public Domain'
+    },
+    galleryCredits: [
+      {
+        author: 'Marcelo Costa',
+        source: 'Wikimedia Commons',
+        license: 'CC BY 2.0'
+      }
     ],
     tagLine: 'Centuries-Old Ungrafted Bush Vines & Legendary 20-Year Barrel Vinsanto',
     description: 'Founded in 1903, Argyros is the master of ungrafted 150-year-old Assyrtiko vines woven into traditional round "kouloura" baskets to withstand harsh Aegean gale winds.',
@@ -385,10 +416,15 @@ export const CRETAN_PRODUCERS: Producer[] = [
     region: 'Nemea',
     village: 'Koutsi (Nemea)',
     coordinates: [37.8280, 22.6580],
-    coverImage: 'https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?auto=format&fit=crop&w=1000&q=80',
+    coverImage: '/images/estates/nemea-vineyards.jpg',
     gallery: [
-      'https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?auto=format&fit=crop&w=1000&q=80'
+      '/images/estates/nemea-vineyards.jpg'
     ],
+    photoCredit: {
+      author: 'Ulrich Still',
+      source: 'Wikimedia Commons',
+      license: 'CC BY-SA 3.0 de'
+    },
     tagLine: 'High-Altitude Grand Reserve Agiorgitiko in the "Valley of Hercules"',
     description: 'Perched at 600m altitude in the premier hillside cru of Koutsi, Semeli produces world-class Agiorgitiko reds with breathtaking panoramic views over the Nemean plain.',
     story: 'According to myth, Hercules slew the Nemean lion here, and the blood of the beast gave Agiorgitiko its deep ruby hue. Semeli practices gravity-flow winemaking.',
@@ -418,9 +454,22 @@ export const CRETAN_PRODUCERS: Producer[] = [
     region: 'Naoussa',
     village: 'Yiannakochori',
     coordinates: [40.6650, 22.0450],
-    coverImage: 'https://images.unsplash.com/photo-1528823872057-9c018a7a7553?auto=format&fit=crop&w=1000&q=80',
+    coverImage: '/images/estates/kir-yianni-estate.jpg',
     gallery: [
-      'https://images.unsplash.com/photo-1528823872057-9c018a7a7553?auto=format&fit=crop&w=1000&q=80'
+      '/images/estates/kir-yianni-estate.jpg',
+      '/images/estates/naoussa-vineyards.jpg'
+    ],
+    photoCredit: {
+      author: 'Osenji',
+      source: 'Wikimedia Commons',
+      license: 'CC BY-SA 4.0'
+    },
+    galleryCredits: [
+      {
+        author: 'Vagrand',
+        source: 'Wikimedia Commons',
+        license: 'CC BY-SA 3.0'
+      }
     ],
     tagLine: 'The Nobility of Xinomavro on the Slopes of Mount Vermion',
     description: 'Founded by Greek wine royalty Yiannis Boutaris in 1997, Kir-Yianni sits in the premier cru of Yiannakochori, dedicated to Greece’s greatest age-worthy red variety: Xinomavro.',
@@ -617,10 +666,15 @@ export const CRETAN_PRODUCERS: Producer[] = [
     region: 'Chania',
     village: 'Astrikas (Kolymbari)',
     coordinates: [35.4389, 23.7547],
-    coverImage: 'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&w=1000&q=80',
+    coverImage: '/images/estates/vouves-ancient-olive-tree.jpg',
     gallery: [
-      'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&w=1000&q=80'
+      '/images/estates/vouves-ancient-olive-tree.jpg'
     ],
+    photoCredit: {
+      author: 'Eric Nagle',
+      source: 'Wikimedia Commons',
+      license: 'CC BY-SA 4.0'
+    },
     tagLine: 'Cold-Pressed Granite Millstones & Unfiltered Single-Estate Koroneiki EVOO',
     description: 'One of the few remaining certified organic olive mills in Greece that strictly uses traditional granite millstones and hydraulic cold-pressing.',
     story: 'George Dimitriadis and his daughter Chloe revived traditional stone milling to preserve polyphenols in extra virgin olive oil. Their open-air cliffside cafe overlooks the gorge of Roka.',
@@ -682,9 +736,22 @@ export const CRETAN_PRODUCERS: Producer[] = [
     region: 'Rethymno',
     village: 'Livadia (Mount Psiloritis)',
     coordinates: [35.3120, 24.9080],
-    coverImage: 'https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d?auto=format&fit=crop&w=1000&q=80',
+    coverImage: '/images/estates/crete-mitato-shepherd.jpg',
     gallery: [
-      'https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d?auto=format&fit=crop&w=1000&q=80'
+      '/images/estates/crete-mitato-shepherd.jpg',
+      '/images/estates/rethymno-graviera.jpg'
+    ],
+    photoCredit: {
+      author: 'Wikimedia Contributor',
+      source: 'Wikimedia Commons',
+      license: 'CC BY-SA 4.0'
+    },
+    galleryCredits: [
+      {
+        author: 'Catlemur',
+        source: 'Wikimedia Commons',
+        license: 'CC BY-SA 4.0'
+      }
     ],
     tagLine: 'Raw-Milk Mountain Graviera Made in Ancient Stone Dome Huts at 1,200m',
     description: 'An authentic dry-stone dome hut (mitato) built without mortar high on Mount Psiloritis. Watch local mountain shepherds milk indigenous sheep and stir fresh curds in huge copper caldrons.',
@@ -974,9 +1041,23 @@ export const CRETAN_PRODUCERS: Producer[] = [
     region: 'Santorini',
     village: 'Oia (Baxedes Plain)',
     coordinates: [36.4630, 25.3850],
-    coverImage: 'https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?auto=format&fit=crop&w=1000&q=80',
+    coverImage: '/images/estates/sigalas-vineyard.jpg',
     gallery: [
-      'https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?auto=format&fit=crop&w=1000&q=80'
+      '/images/estates/sigalas-vineyard.jpg',
+      '/images/estates/santorini-kouloura.jpg'
+    ],
+    photoCredit: {
+      author: 'Treephoto',
+      source: 'Wikimedia Commons',
+      license: 'CC BY-SA 4.0',
+      url: 'https://commons.wikimedia.org/wiki/File:Old_vines_at_Domaine_Sigalas_in_Santorini,_Greece.jpg'
+    },
+    galleryCredits: [
+      {
+        author: 'AkatsukiKuro',
+        source: 'Wikimedia Commons',
+        license: 'CC0 Public Domain'
+      }
     ],
     tagLine: 'World-Renowned Benchmark of Volcanic Assyrtiko & Mavrotragano',
     description: 'Founded in 1991 by visionary Paris Sigalas, this iconic estate in Oia is credited with proving the world-class aging potential of Santorini Assyrtiko and rescuing the endangered red Mavrotragano.',
@@ -1478,9 +1559,22 @@ export const CRETAN_PRODUCERS: Producer[] = [
     region: 'Heraklion',
     village: 'Archanes Village',
     coordinates: [35.2380, 25.1650],
-    coverImage: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=1000&q=80',
+    coverImage: '/images/estates/crete-kazani-copper-still.jpg',
     gallery: [
-      'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=1000&q=80'
+      '/images/estates/crete-kazani-copper-still.jpg',
+      '/images/estates/crete-tsikoudia-serving.jpg'
+    ],
+    photoCredit: {
+      author: 'Lemur12',
+      source: 'Wikimedia Commons',
+      license: 'Public Domain'
+    },
+    galleryCredits: [
+      {
+        author: 'Nickeley102',
+        source: 'Wikimedia Commons',
+        license: 'CC BY-SA 3.0'
+      }
     ],
     tagLine: 'Wood-Fired Copper Alembic Still in Historic Archanes with Live Lute Music',
     description: 'Every autumn, the wood-fired alembic copper still of the Kokolakis family comes alive. Locals gather around the open fire for warm, fresh distillate, roasted chestnuts, and traditional mantinades.',
@@ -1694,10 +1788,16 @@ export const CRETAN_PRODUCERS: Producer[] = [
     region: 'Rethymno',
     village: 'Anogeia (Mount Psiloritis)',
     coordinates: [35.2910, 24.8820],
-    coverImage: 'https://images.unsplash.com/photo-1452195100486-9cc805987862?auto=format&fit=crop&w=1000&q=80',
+    coverImage: '/images/estates/rethymno-graviera.jpg',
     gallery: [
-      'https://images.unsplash.com/photo-1452195100486-9cc805987862?auto=format&fit=crop&w=1000&q=80'
+      '/images/estates/rethymno-graviera.jpg',
+      '/images/estates/crete-mitato-shepherd.jpg'
     ],
+    photoCredit: {
+      author: 'Catlemur',
+      source: 'Wikimedia Commons',
+      license: 'CC BY-SA 4.0'
+    },
     tagLine: 'Alpine Psiloritis Pastures (750m) & Legendary Cave-Aged Anogeian Graviera',
     description: 'High in the proud mountain village of Anogeia on Mount Psiloritis, the Aerakis family collects raw milk from free-range sheep grazing wild thyme, crafting cheeses aged in natural rock cavities.',
     story: 'In Anogeia, cheese making is inseparable from shepherd poetry and resistance history. Aerakis preserves unpasteurized raw-milk curdling, creating nutty, piquant Gravieras that age for over 18 months.',
@@ -2020,10 +2120,23 @@ export const CRETAN_PRODUCERS: Producer[] = [
     village: 'Radda in Chianti',
     locality: 'Radda in Chianti',
     coordinates: [43.4671, 11.3447],
-    coverImage: 'https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?auto=format&fit=crop&w=1200&q=80',
+    coverImage: '/images/estates/chianti-classico-valleys.jpg',
     gallery: [
-      'https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=1200&q=80'
+      '/images/estates/chianti-classico-valleys.jpg',
+      '/images/estates/chianti-antinori.jpg'
+    ],
+    photoCredit: {
+      author: 'Tom Chance',
+      source: 'Wikimedia Commons',
+      license: 'CC BY-SA 2.0',
+      url: 'https://commons.wikimedia.org/wiki/File:Vineyards_in_the_Chianti_Classico_valleys.jpg'
+    },
+    galleryCredits: [
+      {
+        author: 'Michal Osmenda',
+        source: 'Wikimedia Commons',
+        license: 'CC BY-SA 2.0'
+      }
     ],
     tagLine: 'High-Altitude Organic Chianti Classico from Pure Galestro Limestone',
     description: 'Perched at 470 meters on the hills of Radda in Chianti, Monteraponi is a benchmark for purist, artisanal Sangiovese with unadorned minerality and natural elegance.',

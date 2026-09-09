@@ -45,6 +45,13 @@ export interface VipPerks {
   discountPercent?: number;
 }
 
+export interface PhotoCredit {
+  author: string;
+  source: string; // e.g. "Wikimedia Commons", "Estate Press Kit", "Unsplash Free License"
+  license?: string; // e.g. "CC BY-SA 4.0", "CC BY 2.0", "Press License"
+  url?: string;
+}
+
 export interface Producer {
   id: string;
   name: string;
@@ -59,6 +66,8 @@ export interface Producer {
   coordinates: [number, number]; // [lat, lng]
   coverImage: string;
   gallery: string[];
+  photoCredit?: PhotoCredit;
+  galleryCredits?: PhotoCredit[];
   tagLine: string;
   description: string;
   story: string;

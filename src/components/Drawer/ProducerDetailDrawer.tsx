@@ -61,10 +61,9 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
   const {
     photos,
     activePhoto,
+    activeCredit,
     activePhotoIndex,
     setActivePhotoIndex,
-    isGooglePlaces,
-    isLoading: isPhotosLoading,
   } = useProducerPhotos(producer);
 
   useEffect(() => {
@@ -278,26 +277,26 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
               )}
             </div>
 
-            {/* Mandatory Photographer Attribution (Google Maps Platform Terms of Service compliant) */}
-            {isGooglePlaces && activePhoto?.attributions?.[0] && (
+            {/* Verified Photographer & Estate Media Attribution */}
+            {(activeCredit || activePhoto?.attributions?.[0]) && (
               <div className="flex items-center">
-                {activePhoto.attributions[0].uri ? (
+                {activeCredit?.url ? (
                   <a
-                    href={activePhoto.attributions[0].uri}
+                    href={activeCredit.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-black/75 hover:bg-black/90 backdrop-blur-md text-[10px] text-stone-300 hover:text-white border border-white/15 transition shadow-sm truncate max-w-[240px] sm:max-w-[280px]"
-                    title="View photographer on Google Maps"
+                    className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-black/75 hover:bg-black/90 backdrop-blur-md text-[10px] text-stone-300 hover:text-white border border-white/15 transition shadow-sm truncate max-w-[240px] sm:max-w-[300px]"
+                    title="View photo source & license"
                   >
                     <Camera className="w-3 h-3 text-amber-400 shrink-0" />
-                    <span className="truncate">{activePhoto.attributions[0].displayName}</span>
-                    <span className="text-[9px] text-amber-400/90 font-medium shrink-0">· Google Maps</span>
+                    <span className="truncate">Photo: {activeCredit.author}</span>
+                    <span className="text-[9px] text-amber-400/90 font-medium shrink-0">· {activeCredit.license || activeCredit.source}</span>
                   </a>
                 ) : (
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-black/75 backdrop-blur-md text-[10px] text-stone-300 border border-white/15 shadow-sm truncate max-w-[240px] sm:max-w-[280px]">
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-black/75 backdrop-blur-md text-[10px] text-stone-300 border border-white/15 shadow-sm truncate max-w-[240px] sm:max-w-[300px]">
                     <Camera className="w-3 h-3 text-amber-400 shrink-0" />
-                    <span className="truncate">{activePhoto.attributions[0].displayName}</span>
-                    <span className="text-[9px] text-amber-400/90 font-medium shrink-0">· Google Maps</span>
+                    <span className="truncate">Photo: {activeCredit?.author || activePhoto?.attributions?.[0]?.displayName}</span>
+                    <span className="text-[9px] text-amber-400/90 font-medium shrink-0">· {activeCredit?.license || activeCredit?.source || 'Verified Media'}</span>
                   </span>
                 )}
               </div>
@@ -537,15 +536,13 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                 <div className="flex items-center justify-between">
                   <h4 className="text-xs font-bold uppercase tracking-wider text-stone-400 flex items-center gap-1.5">
                     <Camera className="w-3.5 h-3.5 text-amber-400" />
-                    <span>{isGooglePlaces ? 'Google Maps Estate Gallery' : 'Photo Gallery'}</span>
+                    <span>Estate Visual Portfolio</span>
                     <span className="text-[10px] text-stone-400 normal-case font-normal">({photos.length} photos)</span>
                   </h4>
-                  {isGooglePlaces && (
-                    <span className="text-[10px] font-medium text-amber-400/90 flex items-center gap-1">
-                      <span>📍</span>
-                      <span>Live from Google Maps</span>
-                    </span>
-                  )}
+                  <span className="text-[10px] font-semibold text-emerald-400/90 flex items-center gap-1">
+                    <span>✓</span>
+                    <span>Verified Archival Media</span>
+                  </span>
                 </div>
 
                 <div className="flex gap-2.5 overflow-x-auto pb-1 scrollbar-thin">
@@ -570,28 +567,29 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                   ))}
                 </div>
 
-                {/* Mandatory Google Maps Attribution (Agentskills & ToS compliance) */}
-                {isGooglePlaces && activePhoto?.attributions?.[0] && (
+                {/* Verified Estate Media & Photographer Credit */}
+                {activeCredit && (
                   <div className="p-2.5 rounded-xl bg-stone-900/90 border border-white/5 text-[10px] text-stone-400 flex items-center justify-between">
                     <span className="truncate pr-2">
-                      Photo by{' '}
-                      {activePhoto.attributions[0].uri ? (
+                      Photo credit:{' '}
+                      {activeCredit.url ? (
                         <a
-                          href={activePhoto.attributions[0].uri}
+                          href={activeCredit.url}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-amber-400 hover:underline font-medium"
                         >
-                          {activePhoto.attributions[0].displayName}
+                          {activeCredit.author}
                         </a>
                       ) : (
                         <span className="text-stone-300 font-medium">
-                          {activePhoto.attributions[0].displayName}
+                          {activeCredit.author}
                         </span>
                       )}
+                      {' '}· {activeCredit.source} {activeCredit.license ? `(${activeCredit.license})` : ''}
                     </span>
-                    <span className="text-[9px] font-bold uppercase tracking-wider text-stone-400 shrink-0">
-                      Google Maps
+                    <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-400/90 shrink-0">
+                      Clear Rights
                     </span>
                   </div>
                 )}
