@@ -20,6 +20,7 @@ import { ExplorerPassModal } from './components/Monetization/ExplorerPassModal';
 import { ChauffeurBookingModal } from './components/Monetization/ChauffeurBookingModal';
 import { WineBoxModal } from './components/Monetization/WineBoxModal';
 import { ExperienceExplorerModal } from './components/Experiences/ExperienceExplorerModal';
+import { AboutFaqModal } from './components/About/AboutFaqModal';
 import { CRETAN_DAY_TRIP_LOOPS } from './data/loops';
 import { ChauffeurBooking, WineBoxOrder } from './types/monetization';
 import { List, MapPin } from 'lucide-react';
@@ -37,6 +38,8 @@ export const App: React.FC = () => {
   const [isChauffeurModalOpen, setIsChauffeurModalOpen] = useState<boolean>(false);
   const [isWineBoxModalOpen, setIsWineBoxModalOpen] = useState<boolean>(false);
   const [isExperiencesModalOpen, setIsExperiencesModalOpen] = useState<boolean>(false);
+  const [isAboutFaqModalOpen, setIsAboutFaqModalOpen] = useState<boolean>(false);
+  const [aboutFaqInitialTab, setAboutFaqInitialTab] = useState<'about' | 'faq'>('about');
   const [bookingTargetExperienceId, setBookingTargetExperienceId] = useState<string | undefined>(undefined);
   const [chauffeurTargetCircuit, setChauffeurTargetCircuit] = useState<DayTripLoop | null>(null);
   const [bookingTargetProducer, setBookingTargetProducer] = useState<Producer | null>(null);
@@ -231,6 +234,14 @@ export const App: React.FC = () => {
         bookingsCount={userBookings.length}
         onOpenExplorerPass={() => setIsPassModalOpen(true)}
         onOpenWineBoxes={() => setIsWineBoxModalOpen(true)}
+        onOpenAbout={() => {
+          setAboutFaqInitialTab('about');
+          setIsAboutFaqModalOpen(true);
+        }}
+        onOpenFaq={() => {
+          setAboutFaqInitialTab('faq');
+          setIsAboutFaqModalOpen(true);
+        }}
       />
 
       {/* 2. Interactive Filter Bar */}
@@ -482,6 +493,21 @@ export const App: React.FC = () => {
           setIsDrawerOpen(true);
           setIsExperiencesModalOpen(false);
         }}
+      />
+
+      {/* 15. About Us & Frequently Asked Questions Modal */}
+      <AboutFaqModal
+        isOpen={isAboutFaqModalOpen}
+        onClose={() => setIsAboutFaqModalOpen(false)}
+        initialTab={aboutFaqInitialTab}
+        onOpenLoops={() => setIsLoopsModalOpen(true)}
+        onOpenExperiences={() => setIsExperiencesModalOpen(true)}
+        onOpenAuth={(role) => {
+          setAuthInitialRole(role || 'traveler');
+          setIsAuthModalOpen(true);
+        }}
+        onOpenExplorerPass={() => setIsPassModalOpen(true)}
+        onOpenProducerPortal={() => setIsPortalModalOpen(true)}
       />
     </div>
   );

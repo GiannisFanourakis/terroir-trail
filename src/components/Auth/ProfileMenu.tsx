@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { UserProfile } from '../../types/auth';
-import { User, LogOut, Compass, Heart, Award, ChevronDown, Calendar, Building2, Crown, Package, LogIn } from 'lucide-react';
+import { User, LogOut, Compass, Heart, Award, ChevronDown, Calendar, Building2, Crown, Package, LogIn, BookOpen, HelpCircle } from 'lucide-react';
 import { UserAvatar } from '../Common/UserAvatar';
 
 interface ProfileMenuProps {
@@ -15,6 +15,8 @@ interface ProfileMenuProps {
   bookingsCount?: number;
   onOpenExplorerPass?: () => void;
   onOpenWineBoxes?: () => void;
+  onOpenAbout?: () => void;
+  onOpenFaq?: () => void;
 }
 
 export const ProfileMenu: React.FC<ProfileMenuProps> = ({
@@ -29,6 +31,8 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
   bookingsCount = 0,
   onOpenExplorerPass,
   onOpenWineBoxes,
+  onOpenAbout,
+  onOpenFaq,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -49,6 +53,17 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
   if (!user) {
     return (
       <div className="flex items-center gap-1.5 shrink-0">
+        {onOpenAbout && (
+          <button
+            onClick={onOpenAbout}
+            className="flex md:hidden items-center gap-1 px-2.5 py-1.5 text-xs font-semibold rounded-xl border border-white/10 bg-stone-900 text-stone-300 hover:text-white transition cursor-pointer"
+            title="About TerroirTrail & FAQ"
+          >
+            <BookOpen className="w-3.5 h-3.5 text-amber-400" />
+            <span className="text-[11px]">About</span>
+          </button>
+        )}
+
         <button
           onClick={() => onOpenAuth('producer')}
           className="hidden lg:flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold rounded-xl border border-white/10 hover:border-amber-400/40 bg-stone-900 hover:bg-stone-850 text-stone-300 hover:text-amber-300 transition shrink-0 cursor-pointer"
@@ -259,6 +274,39 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
               >
                 <Building2 className="w-3.5 h-3.5 text-stone-500" />
                 <span>Producer & Estate Login</span>
+              </button>
+            )}
+
+            {onOpenAbout && (
+              <button
+                onClick={() => {
+                  setIsOpen(false);
+                  onOpenAbout();
+                }}
+                className="w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-stone-300 hover:text-amber-300 hover:bg-white/5 transition cursor-pointer"
+              >
+                <span className="flex items-center gap-2">
+                  <BookOpen className="w-3.5 h-3.5 text-amber-400" />
+                  <span>About Us & Story</span>
+                </span>
+              </button>
+            )}
+
+            {onOpenFaq && (
+              <button
+                onClick={() => {
+                  setIsOpen(false);
+                  onOpenFaq();
+                }}
+                className="w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-stone-300 hover:text-amber-300 hover:bg-white/5 transition cursor-pointer"
+              >
+                <span className="flex items-center gap-2">
+                  <HelpCircle className="w-3.5 h-3.5 text-amber-400" />
+                  <span>FAQ & Guide</span>
+                </span>
+                <span className="px-1.5 py-0.2 rounded-full bg-stone-800 text-stone-400 text-[10px] font-mono">
+                  14
+                </span>
               </button>
             )}
 

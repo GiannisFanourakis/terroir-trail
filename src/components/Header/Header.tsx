@@ -2,7 +2,7 @@ import React from 'react';
 import { Destination } from '../../types/terroir';
 import { UserProfile } from '../../types/auth';
 import { ProfileMenu } from '../Auth/ProfileMenu';
-import { Compass, Search, X, Heart, Building2, Calendar, Crown, Package, Sparkles } from 'lucide-react';
+import { Compass, Search, X, Heart, Building2, Calendar, Crown, Package, Sparkles, BookOpen, HelpCircle } from 'lucide-react';
 
 interface HeaderProps {
   selectedDestination: Destination | 'all';
@@ -27,6 +27,8 @@ interface HeaderProps {
   bookingsCount?: number;
   onOpenExplorerPass?: () => void;
   onOpenWineBoxes?: () => void;
+  onOpenAbout?: () => void;
+  onOpenFaq?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -52,6 +54,8 @@ export const Header: React.FC<HeaderProps> = ({
   bookingsCount = 0,
   onOpenExplorerPass,
   onOpenWineBoxes,
+  onOpenAbout,
+  onOpenFaq,
 }) => {
   const destinations: { id: Destination | 'all'; label: string; flag: string }[] = [
     { id: 'all', label: 'All Terroir', flag: '🍇' },
@@ -195,6 +199,18 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
             )}
 
+            {/* About & FAQ */}
+            {onOpenAbout && (
+              <button
+                onClick={onOpenAbout}
+                className="hidden md:flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-bold bg-stone-900 hover:bg-stone-850 text-stone-300 hover:text-white border border-white/10 hover:border-amber-400/40 rounded-xl shadow-sm transition transform active:scale-95 shrink-0 cursor-pointer"
+                title="About TerroirTrail, Our Story & Frequently Asked Questions"
+              >
+                <BookOpen className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                <span>About & FAQ</span>
+              </button>
+            )}
+
             {/* Wine Delivery (xl and up) */}
             {onOpenWineBoxes && (
               <button
@@ -220,6 +236,8 @@ export const Header: React.FC<HeaderProps> = ({
               bookingsCount={bookingsCount}
               onOpenExplorerPass={onOpenExplorerPass}
               onOpenWineBoxes={onOpenWineBoxes}
+              onOpenAbout={onOpenAbout}
+              onOpenFaq={onOpenFaq}
             />
           </div>
         </div>
