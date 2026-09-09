@@ -299,7 +299,11 @@ export const useAuth = () => {
   }, [user?.id]);
 
   // 1. Google (Gmail) Sign-In
-  const loginWithGoogle = useCallback(async () => {
+  const loginWithGoogle = useCallback(async (
+    role: 'traveler' | 'producer' = 'traveler',
+    claimedProducerId?: string,
+    producerName?: string
+  ) => {
     setIsLoading(true);
     setAuthError(null);
     try {
@@ -309,12 +313,23 @@ export const useAuth = () => {
       const result = await signInWithPopup(auth, googleProvider);
       const cloudProfile = await fetchUserProfileFromCloud(result.user.uid);
       const mapped = mapFirebaseUser(result.user, 'culinary_nomad', cloudProfile);
-      if (!cloudProfile) {
-        await saveUserProfileToCloud(mapped);
-      }
-      setUser(mapped);
-      saveUserData(mapped.id, mapped.visitedProducers, mapped.personalNotes, mapped);
-      return mapped;
+
+      const isProducerRole = role === 'producer' || Boolean(cloudProfile?.isProducer);
+      const resolvedProducerId = cloudProfile?.claimedProducerId || claimedProducerId;
+      const resolvedProducerName = cloudProfile?.producerName || producerName;
+
+      const finalUser: UserProfile = {
+        ...mapped,
+        role: isProducerRole ? 'producer' : (cloudProfile?.role || 'traveler'),
+        isProducer: isProducerRole,
+        claimedProducerId: resolvedProducerId,
+        producerName: resolvedProducerName,
+      };
+
+      await saveUserProfileToCloud(finalUser);
+      setUser(finalUser);
+      saveUserData(finalUser.id, finalUser.visitedProducers, finalUser.personalNotes, finalUser);
+      return finalUser;
     } catch (error: any) {
       console.error('Google Sign-in error:', error);
       const message = formatAuthError(error);
@@ -326,7 +341,11 @@ export const useAuth = () => {
   }, []);
 
   // 2. Apple Sign-In
-  const loginWithApple = useCallback(async () => {
+  const loginWithApple = useCallback(async (
+    role: 'traveler' | 'producer' = 'traveler',
+    claimedProducerId?: string,
+    producerName?: string
+  ) => {
     setIsLoading(true);
     setAuthError(null);
     try {
@@ -336,12 +355,23 @@ export const useAuth = () => {
       const result = await signInWithPopup(auth, appleProvider);
       const cloudProfile = await fetchUserProfileFromCloud(result.user.uid);
       const mapped = mapFirebaseUser(result.user, 'culinary_nomad', cloudProfile);
-      if (!cloudProfile) {
-        await saveUserProfileToCloud(mapped);
-      }
-      setUser(mapped);
-      saveUserData(mapped.id, mapped.visitedProducers, mapped.personalNotes, mapped);
-      return mapped;
+
+      const isProducerRole = role === 'producer' || Boolean(cloudProfile?.isProducer);
+      const resolvedProducerId = cloudProfile?.claimedProducerId || claimedProducerId;
+      const resolvedProducerName = cloudProfile?.producerName || producerName;
+
+      const finalUser: UserProfile = {
+        ...mapped,
+        role: isProducerRole ? 'producer' : (cloudProfile?.role || 'traveler'),
+        isProducer: isProducerRole,
+        claimedProducerId: resolvedProducerId,
+        producerName: resolvedProducerName,
+      };
+
+      await saveUserProfileToCloud(finalUser);
+      setUser(finalUser);
+      saveUserData(finalUser.id, finalUser.visitedProducers, finalUser.personalNotes, finalUser);
+      return finalUser;
     } catch (error: any) {
       console.error('Apple Sign-in error:', error);
       const message = formatAuthError(error);

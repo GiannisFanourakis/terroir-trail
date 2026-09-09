@@ -21,6 +21,7 @@ import { ChauffeurBookingModal } from './components/Monetization/ChauffeurBookin
 import { WineBoxModal } from './components/Monetization/WineBoxModal';
 import { ExperienceExplorerModal } from './components/Experiences/ExperienceExplorerModal';
 import { AboutFaqModal } from './components/About/AboutFaqModal';
+import { LegalModal } from './components/Legal/LegalModal';
 import { CRETAN_DAY_TRIP_LOOPS } from './data/loops';
 import { ChauffeurBooking, WineBoxOrder } from './types/monetization';
 import { List, MapPin } from 'lucide-react';
@@ -40,6 +41,13 @@ export const App: React.FC = () => {
   const [isExperiencesModalOpen, setIsExperiencesModalOpen] = useState<boolean>(false);
   const [isAboutFaqModalOpen, setIsAboutFaqModalOpen] = useState<boolean>(false);
   const [aboutFaqInitialTab, setAboutFaqInitialTab] = useState<'about' | 'faq'>('about');
+  const [isLegalModalOpen, setIsLegalModalOpen] = useState<boolean>(false);
+  const [legalInitialTab, setLegalInitialTab] = useState<'privacy' | 'terms' | 'licenses'>('privacy');
+
+  const handleOpenLegal = (tab: 'privacy' | 'terms' | 'licenses' = 'privacy') => {
+    setLegalInitialTab(tab);
+    setIsLegalModalOpen(true);
+  };
   const [bookingTargetExperienceId, setBookingTargetExperienceId] = useState<string | undefined>(undefined);
   const [chauffeurTargetCircuit, setChauffeurTargetCircuit] = useState<DayTripLoop | null>(null);
   const [bookingTargetProducer, setBookingTargetProducer] = useState<Producer | null>(null);
@@ -242,6 +250,7 @@ export const App: React.FC = () => {
           setAboutFaqInitialTab('faq');
           setIsAboutFaqModalOpen(true);
         }}
+        onOpenLegal={handleOpenLegal}
       />
 
       {/* 2. Interactive Filter Bar */}
@@ -382,6 +391,9 @@ export const App: React.FC = () => {
         onResetPassword={sendPasswordResetLink}
         onLoginWithGoogle={loginWithGoogle}
         onLoginWithApple={loginWithApple}
+        onOpenPrivacyNotice={() => handleOpenLegal('privacy')}
+        onOpenTerms={() => handleOpenLegal('terms')}
+        onOpenLicenses={() => handleOpenLegal('licenses')}
         isLoading={isAuthLoading}
         authError={authError}
         isFirebaseConfigured={isFirebaseConfigured}
@@ -429,11 +441,17 @@ export const App: React.FC = () => {
           setIsAuthModalOpen(true);
         }}
         onLoginAsDemoProducer={loginAsDemoProducer}
+        onLoginWithGoogle={loginWithGoogle}
+        onLoginWithApple={loginWithApple}
         producers={producers}
         bookings={bookings}
         onUpdateBookingStatus={setStatus}
         onSaveProducerOverride={updateOverride}
         getProducerOverride={getOverride}
+        onSelectProducerForDrawer={(producer) => {
+          setSelectedProducer(producer);
+          setIsDrawerOpen(true);
+        }}
       />
 
       {/* 10. Explorer My Bookings & Visits Modal */}
@@ -508,6 +526,14 @@ export const App: React.FC = () => {
         }}
         onOpenExplorerPass={() => setIsPassModalOpen(true)}
         onOpenProducerPortal={() => setIsPortalModalOpen(true)}
+        onOpenLegal={handleOpenLegal}
+      />
+
+      {/* 16. Legal Notice, GDPR Privacy Policy & Open Source Licenses Modal */}
+      <LegalModal
+        isOpen={isLegalModalOpen}
+        onClose={() => setIsLegalModalOpen(false)}
+        initialTab={legalInitialTab}
       />
     </div>
   );

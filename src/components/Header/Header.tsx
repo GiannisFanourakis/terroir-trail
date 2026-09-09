@@ -29,6 +29,7 @@ interface HeaderProps {
   onOpenWineBoxes?: () => void;
   onOpenAbout?: () => void;
   onOpenFaq?: () => void;
+  onOpenLegal?: (tab?: 'privacy' | 'terms' | 'licenses') => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -56,6 +57,7 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenWineBoxes,
   onOpenAbout,
   onOpenFaq,
+  onOpenLegal,
 }) => {
   const destinations: { id: Destination | 'all'; label: string; flag: string }[] = [
     { id: 'all', label: 'All Terroir', flag: '🍇' },
@@ -238,6 +240,7 @@ export const Header: React.FC<HeaderProps> = ({
               onOpenWineBoxes={onOpenWineBoxes}
               onOpenAbout={onOpenAbout}
               onOpenFaq={onOpenFaq}
+              onOpenLegal={onOpenLegal}
             />
           </div>
         </div>

@@ -15,6 +15,7 @@ interface AboutFaqModalProps {
   onOpenAuth?: (role?: 'traveler' | 'producer') => void;
   onOpenExplorerPass?: () => void;
   onOpenProducerPortal?: () => void;
+  onOpenLegal?: (tab?: 'privacy' | 'terms' | 'licenses') => void;
 }
 
 interface FaqItem {
@@ -161,6 +162,7 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
   onOpenAuth,
   onOpenExplorerPass,
   onOpenProducerPortal,
+  onOpenLegal,
 }) => {
   if (!isOpen) return null;
 
@@ -602,6 +604,47 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
             </div>
           )}
 
+        </div>
+
+        {/* Footer Legal Strip */}
+        <div className="px-5 sm:px-6 py-2.5 bg-stone-900 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-stone-500 shrink-0">
+          <span>Copyright © 2026 TerroirTrail · Fair-Trade Discovery</span>
+          {onOpenLegal && (
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  onClose();
+                  onOpenLegal('privacy');
+                }}
+                className="hover:text-amber-400 underline transition cursor-pointer text-stone-400"
+              >
+                Privacy Notice (GDPR)
+              </button>
+              <span>·</span>
+              <button
+                type="button"
+                onClick={() => {
+                  onClose();
+                  onOpenLegal('terms');
+                }}
+                className="hover:text-amber-400 underline transition cursor-pointer text-stone-400"
+              >
+                Terms of Service
+              </button>
+              <span>·</span>
+              <button
+                type="button"
+                onClick={() => {
+                  onClose();
+                  onOpenLegal('licenses');
+                }}
+                className="hover:text-amber-400 underline transition cursor-pointer text-stone-400"
+              >
+                Licenses
+              </button>
+            </div>
+          )}
         </div>
 
       </div>

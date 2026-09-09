@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { UserProfile } from '../../types/auth';
-import { User, LogOut, Compass, Heart, Award, ChevronDown, Calendar, Building2, Crown, Package, LogIn, BookOpen, HelpCircle } from 'lucide-react';
+import { User, LogOut, Compass, Heart, Award, ChevronDown, Calendar, Building2, Crown, Package, LogIn, BookOpen, HelpCircle, Scale } from 'lucide-react';
 import { UserAvatar } from '../Common/UserAvatar';
 
 interface ProfileMenuProps {
@@ -17,6 +17,7 @@ interface ProfileMenuProps {
   onOpenWineBoxes?: () => void;
   onOpenAbout?: () => void;
   onOpenFaq?: () => void;
+  onOpenLegal?: (tab?: 'privacy' | 'terms' | 'licenses') => void;
 }
 
 export const ProfileMenu: React.FC<ProfileMenuProps> = ({
@@ -33,6 +34,7 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
   onOpenWineBoxes,
   onOpenAbout,
   onOpenFaq,
+  onOpenLegal,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -307,6 +309,22 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
                 <span className="px-1.5 py-0.2 rounded-full bg-stone-800 text-stone-400 text-[10px] font-mono">
                   14
                 </span>
+              </button>
+            )}
+
+            {onOpenLegal && (
+              <button
+                onClick={() => {
+                  setIsOpen(false);
+                  onOpenLegal('privacy');
+                }}
+                className="w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-stone-400 hover:text-white hover:bg-white/5 transition cursor-pointer text-xs"
+              >
+                <span className="flex items-center gap-2">
+                  <Scale className="w-3.5 h-3.5 text-stone-400" />
+                  <span>Privacy & Legal Terms</span>
+                </span>
+                <span className="text-[10px] text-stone-500 font-mono">GDPR</span>
               </button>
             )}
 
