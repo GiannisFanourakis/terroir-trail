@@ -63,6 +63,69 @@ export const DEMO_PROFILES: Record<string, UserProfile> = {
   },
 };
 
+export const DEMO_PRODUCER_PROFILES: Record<string, UserProfile> = {
+  paterianakis: {
+    id: 'producer_paterianakis',
+    name: 'Emmanuela Paterianaki',
+    email: 'info@paterianakis.gr',
+    avatar: '🍇',
+    hometown: 'Melesses (Peza), Heraklion',
+    role: 'producer',
+    isProducer: true,
+    claimedProducerId: 'domaine-paterianakis',
+    producerName: 'Domaine Paterianakis',
+    travelerType: 'wine_enthusiast',
+    visitedProducers: ['domaine-paterianakis'],
+    personalNotes: {},
+    memberSince: '2024',
+  },
+  manousakis: {
+    id: 'producer_manousakis',
+    name: 'Alexandra Manousakis',
+    email: 'winery@manousakiswinery.com',
+    avatar: '🍷',
+    hometown: 'Vatolakkos, Chania',
+    role: 'producer',
+    isProducer: true,
+    claimedProducerId: 'manousakis-winery',
+    producerName: 'Manousakis Winery',
+    travelerType: 'wine_enthusiast',
+    visitedProducers: ['manousakis-winery'],
+    personalNotes: {},
+    memberSince: '2023',
+  },
+  charma: {
+    id: 'producer_charma',
+    name: 'Ioannis Lionakis',
+    email: 'info@cretanbeer.gr',
+    avatar: '🍺',
+    hometown: 'Zounaki, Chania',
+    role: 'producer',
+    isProducer: true,
+    claimedProducerId: 'cretan-brewery-charma',
+    producerName: 'Cretan Brewery (Charma Beer)',
+    travelerType: 'craft_beer_explorer',
+    visitedProducers: ['cretan-brewery-charma'],
+    personalNotes: {},
+    memberSince: '2025',
+  },
+  monteraponi: {
+    id: 'producer_monteraponi',
+    name: 'Michele Braganti',
+    email: 'info@monteraponi.it',
+    avatar: '🏰',
+    hometown: 'Radda in Chianti, Tuscany',
+    role: 'producer',
+    isProducer: true,
+    claimedProducerId: 'monteraponi-tuscany',
+    producerName: 'Azienda Agricola Monteraponi',
+    travelerType: 'wine_enthusiast',
+    visitedProducers: ['monteraponi-tuscany'],
+    personalNotes: {},
+    memberSince: '2024',
+  },
+};
+
 // Helper to load user stamps and notes from local storage by user ID
 const getUserData = (userId: string) => {
   try {
@@ -74,11 +137,17 @@ const getUserData = (userId: string) => {
   return { visitedProducers: [], personalNotes: {} };
 };
 
-const saveUserData = (userId: string, visitedProducers: string[], personalNotes: Record<string, string>) => {
+const saveUserData = (
+  userId: string, 
+  visitedProducers: string[], 
+  personalNotes: Record<string, string>,
+  extra?: Partial<UserProfile>
+) => {
   try {
+    const prev = getUserData(userId);
     localStorage.setItem(
       `terroir_data_${userId}`,
-      JSON.stringify({ visitedProducers, personalNotes })
+      JSON.stringify({ ...prev, visitedProducers, personalNotes, ...extra })
     );
   } catch (e) {
     console.error('Error saving user data:', e);
@@ -109,11 +178,15 @@ export const useAuth = () => {
       name: displayName,
       email: fbUser.email || '',
       avatar: photo,
-      hometown: 'Explorer',
-      travelerType: customType || 'culinary_nomad',
-      visitedProducers: existing.visitedProducers,
-      personalNotes: existing.personalNotes,
-      memberSince: '2026',
+      hometown: existing.hometown || 'Explorer',
+      role: existing.role || 'traveler',
+      isProducer: existing.isProducer || false,
+      claimedProducerId: existing.claimedProducerId,
+      producerName: existing.producerName,
+      travelerType: customType || existing.travelerType || 'culinary_nomad',
+      visitedProducers: existing.visitedProducers || [],
+      personalNotes: existing.personalNotes || {},
+      memberSince: existing.memberSince || '2026',
     };
   };
 
@@ -321,6 +394,129 @@ export const useAuth = () => {
     setUser({ ...profile });
   }, []);
 
+  // 5b. 1-Click Demo Producer Profiles (Paterianakis, Manousakis, Charma, Monteraponi)
+  const loginAsDemoProducer = useCallback((demoKey: 'paterianakis' | 'manousakis' | 'charma' | 'monteraponi') => {
+    const profile = DEMO_PRODUCER_PROFILES[demoKey] || DEMO_PRODUCER_PROFILES.paterianakis;
+    setUser({ ...profile });
+    return profile;
+  }, []);
+
+  // 5c. Login as Registered Producer
+  const loginAsProducer = useCallback(async (
+    producerId: string,
+    producerName: string,
+    email: string,
+    password?: string,
+    hostName?: string
+  ) => {
+    setIsLoading(true);
+    setAuthError(null);
+    try {
+      if (isFirebaseConfigured && auth && password) {
+        const cred = await signInWithEmailAndPassword(auth, email, password);
+        const mapped = mapFirebaseUser(cred.user);
+        const producerUser: UserProfile = {
+          ...mapped,
+          role: 'producer',
+          isProducer: true,
+          claimedProducerId: producerId,
+          producerName,
+        };
+        saveUserData(producerUser.id, producerUser.visitedProducers, producerUser.personalNotes, producerUser);
+        setUser(producerUser);
+        return producerUser;
+      } else {
+        // Fallback local authentication
+        const inferredName = hostName || email.split('@')[0];
+        const producerUser: UserProfile = {
+          id: `producer_${producerId}_${Date.now()}`,
+          name: inferredName.charAt(0).toUpperCase() + inferredName.slice(1),
+          email,
+          avatar: '🏛️',
+          hometown: producerName,
+          role: 'producer',
+          isProducer: true,
+          claimedProducerId: producerId,
+          producerName,
+          travelerType: 'wine_enthusiast',
+          visitedProducers: [producerId],
+          personalNotes: {},
+          memberSince: '2026',
+        };
+        saveUserData(producerUser.id, producerUser.visitedProducers, producerUser.personalNotes, producerUser);
+        setUser(producerUser);
+        return producerUser;
+      }
+    } catch (error: any) {
+      console.error('Producer login error:', error);
+      const msg = error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential'
+        ? 'Invalid email or password.'
+        : error.message || 'Failed to sign in as producer.';
+      setAuthError(msg);
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  // 5d. Claim & Register New Estate Host
+  const claimAndRegisterProducer = useCallback(async (
+    producerId: string,
+    producerName: string,
+    hostName: string,
+    email: string,
+    password?: string
+  ) => {
+    setIsLoading(true);
+    setAuthError(null);
+    try {
+      if (isFirebaseConfigured && auth && password) {
+        const cred = await createUserWithEmailAndPassword(auth, email, password);
+        await firebaseUpdateProfile(cred.user, { displayName: hostName });
+        const mapped = mapFirebaseUser(cred.user);
+        const producerUser: UserProfile = {
+          ...mapped,
+          name: hostName,
+          role: 'producer',
+          isProducer: true,
+          claimedProducerId: producerId,
+          producerName,
+        };
+        saveUserData(producerUser.id, producerUser.visitedProducers, producerUser.personalNotes, producerUser);
+        setUser(producerUser);
+        return producerUser;
+      } else {
+        const producerUser: UserProfile = {
+          id: `producer_${producerId}_${Date.now()}`,
+          name: hostName,
+          email,
+          avatar: '🏛️',
+          hometown: producerName,
+          role: 'producer',
+          isProducer: true,
+          claimedProducerId: producerId,
+          producerName,
+          travelerType: 'wine_enthusiast',
+          visitedProducers: [producerId],
+          personalNotes: {},
+          memberSince: '2026',
+        };
+        saveUserData(producerUser.id, producerUser.visitedProducers, producerUser.personalNotes, producerUser);
+        setUser(producerUser);
+        return producerUser;
+      }
+    } catch (error: any) {
+      console.error('Producer registration error:', error);
+      const msg = error.code === 'auth/email-already-in-use'
+        ? 'This email is already registered.'
+        : error.message || 'Failed to register producer account.';
+      setAuthError(msg);
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
   // 6. Sign Out
   const logout = useCallback(async () => {
     try {
@@ -412,6 +608,9 @@ export const useAuth = () => {
     loginWithEmail,
     signupWithEmail,
     loginAsDemo,
+    loginAsDemoProducer,
+    loginAsProducer,
+    claimAndRegisterProducer,
     logout,
     toggleVisited,
     isVisited,

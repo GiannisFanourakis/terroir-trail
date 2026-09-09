@@ -41,6 +41,7 @@ export const App: React.FC = () => {
   const [chauffeurTargetCircuit, setChauffeurTargetCircuit] = useState<DayTripLoop | null>(null);
   const [bookingTargetProducer, setBookingTargetProducer] = useState<Producer | null>(null);
   const [viewMode, setViewMode] = useState<'map' | 'list'>('map');
+  const [authInitialRole, setAuthInitialRole] = useState<'traveler' | 'producer'>('traveler');
 
   const { favorites, toggleFavorite, isFavorite } = useFavorites();
   const {
@@ -54,6 +55,9 @@ export const App: React.FC = () => {
     loginWithEmail,
     signupWithEmail,
     loginAsDemo,
+    loginAsDemoProducer,
+    loginAsProducer,
+    claimAndRegisterProducer,
     logout,
     toggleVisited,
     isVisited,
@@ -214,7 +218,10 @@ export const App: React.FC = () => {
         favoritesOnly={filters.favoritesOnly}
         onToggleFavoritesOnly={() => handleFilterChange('favoritesOnly', !filters.favoritesOnly)}
         user={user}
-        onOpenAuth={() => setIsAuthModalOpen(true)}
+        onOpenAuth={(role) => {
+          setAuthInitialRole(role || 'traveler');
+          setIsAuthModalOpen(true);
+        }}
         onOpenPassport={() => setIsPassportModalOpen(true)}
         onLogout={logout}
         totalProducersCount={producers.length}
@@ -303,6 +310,8 @@ export const App: React.FC = () => {
           <ProducerDetailDrawer
             producer={selectedProducer}
             onClose={() => setIsDrawerOpen(false)}
+            user={user}
+            onOpenProducerPortal={() => setIsPortalModalOpen(true)}
             isFavorite={selectedProducer ? isFavorite(selectedProducer.id) : false}
             onToggleFavorite={toggleFavorite}
             isVisited={selectedProducer ? isVisited(selectedProducer.id) : false}
@@ -310,7 +319,10 @@ export const App: React.FC = () => {
             tastingNote={selectedProducer ? getTastingNote(selectedProducer.id) : ''}
             onSaveTastingNote={saveTastingNote}
             isAuthenticated={isAuthenticated}
-            onOpenAuth={() => setIsAuthModalOpen(true)}
+            onOpenAuth={(role) => {
+              setAuthInitialRole(role || 'traveler');
+              setIsAuthModalOpen(true);
+            }}
             onOpenBooking={(producer, experienceId) => {
               setBookingTargetProducer(producer);
               setBookingTargetExperienceId(experienceId);
@@ -347,9 +359,14 @@ export const App: React.FC = () => {
       <AuthModal
         isOpen={isAuthModalOpen}
         onClose={() => setIsAuthModalOpen(false)}
+        initialRole={authInitialRole}
+        producers={producers}
         onLoginAsDemo={loginAsDemo}
+        onLoginAsDemoProducer={loginAsDemoProducer}
         onLogin={loginWithEmail}
         onSignup={(name, email, password, travelerType) => signupWithEmail(name, email, password, travelerType)}
+        onLoginAsProducer={loginAsProducer}
+        onClaimProducer={claimAndRegisterProducer}
         onLoginWithGoogle={loginWithGoogle}
         onLoginWithApple={loginWithApple}
         isLoading={isAuthLoading}
@@ -383,13 +400,22 @@ export const App: React.FC = () => {
         user={user}
         initialExperienceId={bookingTargetExperienceId}
         onBookTasting={bookTasting}
-        onOpenAuth={() => setIsAuthModalOpen(true)}
+        onOpenAuth={() => {
+          setAuthInitialRole('traveler');
+          setIsAuthModalOpen(true);
+        }}
       />
 
       {/* 9. Host & Winery/Brewery Management Portal */}
       <ProducerPortalModal
         isOpen={isPortalModalOpen}
         onClose={() => setIsPortalModalOpen(false)}
+        user={user}
+        onOpenAuth={(role) => {
+          setAuthInitialRole(role || 'producer');
+          setIsAuthModalOpen(true);
+        }}
+        onLoginAsDemoProducer={loginAsDemoProducer}
         producers={producers}
         bookings={bookings}
         onUpdateBookingStatus={setStatus}

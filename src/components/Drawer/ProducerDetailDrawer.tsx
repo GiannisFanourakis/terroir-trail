@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { Producer } from '../../types/terroir';
+import { UserProfile } from '../../types/auth';
 import { getExperiencesForProducer } from '../../data/experiences';
 import { 
   X, MapPin, Star, Phone, Globe, Navigation, Clock, 
   Dog, Footprints, Caravan, Car, Sparkles, Share2, Check, Heart, Award, 
-  CheckCircle2, Wine, ShoppingBag, ArrowRight, Crown 
+  CheckCircle2, Wine, ShoppingBag, ArrowRight, Crown, Building2 
 } from 'lucide-react';
 
 interface ProducerDetailDrawerProps {
   producer: Producer | null;
   onClose: () => void;
+  user?: UserProfile | null;
+  onOpenProducerPortal?: () => void;
   isFavorite?: boolean;
   onToggleFavorite?: (id: string) => void;
   isVisited?: boolean;
@@ -17,7 +20,7 @@ interface ProducerDetailDrawerProps {
   tastingNote?: string;
   onSaveTastingNote?: (id: string, note: string) => void;
   isAuthenticated?: boolean;
-  onOpenAuth?: () => void;
+  onOpenAuth?: (role?: 'traveler' | 'producer') => void;
   onOpenBooking?: (producer: Producer, initialExperienceId?: string) => void;
   customNotice?: string;
   isProTier?: boolean;
@@ -30,6 +33,8 @@ interface ProducerDetailDrawerProps {
 export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
   producer,
   onClose,
+  user,
+  onOpenProducerPortal,
   isFavorite = false,
   onToggleFavorite,
   isVisited = false,
@@ -251,6 +256,27 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
         </div>
       </div>
 
+      {/* 1b. Verified Estate Host Banner (Visible if user owns this estate) */}
+      {user?.isProducer && user.claimedProducerId === producer.id && (
+        <div className="mx-4 mt-3 p-3 rounded-2xl bg-amber-500/15 border border-amber-500/40 flex items-center justify-between gap-3 shadow-inner">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <span className="text-xl">🏛️</span>
+            <div className="min-w-0">
+              <div className="font-bold text-white text-xs truncate">You are the verified host of this estate</div>
+              <div className="text-[10px] text-amber-300/90 truncate">Manage hours, notices, tasting bookings & bottle shop</div>
+            </div>
+          </div>
+          {onOpenProducerPortal && (
+            <button
+              onClick={onOpenProducerPortal}
+              className="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-extrabold text-xs transition shrink-0 cursor-pointer shadow-md"
+            >
+              Host Dashboard
+            </button>
+          )}
+        </div>
+      )}
+
       {/* 2. Interactive Navigation Tabs */}
       <div className="flex border-b border-white/10 bg-stone-900/60 px-3 sm:px-4 shrink-0 text-xs font-semibold overflow-x-auto scrollbar-none">
         <button
@@ -406,8 +432,9 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
             <div className="pt-1 text-[10px] text-stone-500 flex items-center justify-between">
               <span>Sign in to record personal tasting notes</span>
               <button
-                onClick={onOpenAuth}
-                className="text-amber-400 hover:underline font-bold"
+                type="button"
+                onClick={() => onOpenAuth?.('traveler')}
+                className="text-amber-400 hover:underline font-bold cursor-pointer"
               >
                 Sign In →
               </button>
@@ -660,6 +687,20 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                   </div>
                   <ArrowRight className="w-4 h-4 text-rose-400 group-hover:translate-x-0.5 transition shrink-0 mt-1" />
                 </div>
+              </div>
+            )}
+
+            {/* Producer / Winemaker Login Prompt */}
+            {(!user?.isProducer || user.claimedProducerId !== producer.id) && (
+              <div className="pt-3 border-t border-white/10 text-center">
+                <button
+                  type="button"
+                  onClick={() => onOpenAuth && onOpenAuth('producer')}
+                  className="text-[11px] text-stone-400 hover:text-amber-300 transition cursor-pointer inline-flex items-center gap-1.5 hover:underline"
+                >
+                  <Building2 className="w-3.5 h-3.5 text-amber-400/80" />
+                  <span>Are you the winemaker or owner of {producer.name}? Log in to manage this estate</span>
+                </button>
               </div>
             )}
           </div>

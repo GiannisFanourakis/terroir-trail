@@ -5,7 +5,7 @@ import { UserAvatar } from '../Common/UserAvatar';
 
 interface ProfileMenuProps {
   user: UserProfile | null;
-  onOpenAuth: () => void;
+  onOpenAuth: (role?: 'traveler' | 'producer') => void;
   onOpenPassport: () => void;
   onOpenWishlist: () => void;
   onLogout: () => void;
@@ -48,14 +48,25 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
 
   if (!user) {
     return (
-      <button
-        onClick={onOpenAuth}
-        className="flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 text-xs font-bold rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 shadow-md shadow-amber-500/25 border border-amber-400/80 transition-all transform active:scale-95 shrink-0 cursor-pointer"
-        title="Sign in / Explorer Account"
-      >
-        <LogIn className="w-3.5 h-3.5 shrink-0 stroke-[2.5]" />
-        <span className="font-bold tracking-tight whitespace-nowrap">Log In</span>
-      </button>
+      <div className="flex items-center gap-1.5 shrink-0">
+        <button
+          onClick={() => onOpenAuth('producer')}
+          className="hidden lg:flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold rounded-xl border border-white/10 hover:border-amber-400/40 bg-stone-900 hover:bg-stone-850 text-stone-300 hover:text-amber-300 transition shrink-0 cursor-pointer"
+          title="Producer & Estate Owner Sign In"
+        >
+          <Building2 className="w-3.5 h-3.5 text-amber-400/80 shrink-0" />
+          <span>Producer Login</span>
+        </button>
+
+        <button
+          onClick={() => onOpenAuth('traveler')}
+          className="flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 text-xs font-bold rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 shadow-md shadow-amber-500/25 border border-amber-400/80 transition-all transform active:scale-95 shrink-0 cursor-pointer"
+          title="Sign in / Explorer Account"
+        >
+          <LogIn className="w-3.5 h-3.5 shrink-0 stroke-[2.5]" />
+          <span className="font-bold tracking-tight whitespace-nowrap">Log In</span>
+        </button>
+      </div>
     );
   }
 
@@ -100,9 +111,16 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
             </div>
 
             <div className="flex items-center justify-between mt-2 pt-1 text-[10px]">
-              <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-bold border border-amber-500/30">
-                {getBadgeLabel(user.travelerType)}
-              </span>
+              {user.isProducer ? (
+                <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-bold border border-amber-500/30 flex items-center gap-1">
+                  <span>🏛️</span>
+                  <span>{user.producerName || 'Verified Host'}</span>
+                </span>
+              ) : (
+                <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-bold border border-amber-500/30">
+                  {getBadgeLabel(user.travelerType)}
+                </span>
+              )}
               <span className="text-stone-400 font-medium">Member {user.memberSince}</span>
             </div>
           </div>
@@ -213,16 +231,34 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
               </button>
             )}
 
-            {onOpenProducerPortal && (
+            {user.isProducer ? (
+              onOpenProducerPortal && (
+                <button
+                  onClick={() => {
+                    setIsOpen(false);
+                    onOpenProducerPortal();
+                  }}
+                  className="w-full flex items-center justify-between px-2.5 py-2 rounded-xl bg-gradient-to-r from-amber-500/20 to-rose-500/15 hover:from-amber-500/30 hover:to-rose-500/25 border border-amber-500/30 text-amber-300 transition cursor-pointer font-bold"
+                >
+                  <span className="flex items-center gap-2">
+                    <Building2 className="w-4 h-4 text-amber-400" />
+                    <span>My Estate Dashboard</span>
+                  </span>
+                  <span className="text-[9px] px-1.5 py-0.2 rounded bg-amber-400 text-stone-950 font-extrabold uppercase">
+                    Host
+                  </span>
+                </button>
+              )
+            ) : (
               <button
                 onClick={() => {
                   setIsOpen(false);
-                  onOpenProducerPortal();
+                  onOpenAuth('producer');
                 }}
-                className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-stone-300 hover:text-white hover:bg-white/5 transition cursor-pointer"
+                className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-stone-400 hover:text-amber-300 hover:bg-white/5 transition cursor-pointer text-[11px]"
               >
-                <Building2 className="w-3.5 h-3.5 text-emerald-400" />
-                <span>Host / Producer Portal</span>
+                <Building2 className="w-3.5 h-3.5 text-stone-500" />
+                <span>Producer & Estate Login</span>
               </button>
             )}
 

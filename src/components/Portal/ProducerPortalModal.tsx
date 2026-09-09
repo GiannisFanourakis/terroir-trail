@@ -1,15 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Producer } from '../../types/terroir';
 import { TastingBooking, ProducerOverride } from '../../types/booking';
+import { UserProfile } from '../../types/auth';
 import { 
   X, Check, AlertCircle, Clock, Calendar, Users, Phone, Mail, 
   Sparkles, CheckCircle2, XCircle, Building2, ChevronDown, Save, Send, 
-  Crown, Globe, ExternalLink 
+  Crown, Globe, ExternalLink, ShieldCheck, ArrowRight, LogIn
 } from 'lucide-react';
 
 interface ProducerPortalModalProps {
   isOpen: boolean;
   onClose: () => void;
+  user: UserProfile | null;
+  onOpenAuth?: (role?: 'producer') => void;
+  onLoginAsDemoProducer?: (key: 'paterianakis' | 'manousakis' | 'charma' | 'monteraponi') => void;
   producers: Producer[];
   bookings: TastingBooking[];
   onUpdateBookingStatus: (bookingId: string, status: TastingBooking['status']) => Promise<void>;
@@ -20,6 +24,9 @@ interface ProducerPortalModalProps {
 export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
   isOpen,
   onClose,
+  user,
+  onOpenAuth,
+  onLoginAsDemoProducer,
   producers,
   bookings,
   onUpdateBookingStatus,
@@ -28,15 +35,32 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
 }) => {
   if (!isOpen) return null;
 
-  const [selectedProducerId, setSelectedProducerId] = useState<string>(
-    producers[0]?.id || 'manousakis'
-  );
+  const isProducerAuthenticated = Boolean(user && user.isProducer && user.claimedProducerId);
+
+  // Initialize selected producer to the authenticated user's claimed estate
+  const [selectedProducerId, setSelectedProducerId] = useState<string>(() => {
+    if (user?.claimedProducerId) {
+      const match = producers.find((p) => p.id === user.claimedProducerId);
+      if (match) return match.id;
+    }
+    return producers[0]?.id || 'domaine-paterianakis';
+  });
+
   const [activeTab, setActiveTab] = useState<'bookings' | 'notice' | 'plan' | 'metrics'>('bookings');
 
-  const selectedProducer =
-    producers.find((p) => p.id === selectedProducerId) || producers[0];
+  // Sync selected producer whenever user profile changes
+  useEffect(() => {
+    if (user?.claimedProducerId) {
+      setSelectedProducerId(user.claimedProducerId);
+    }
+  }, [user?.claimedProducerId]);
 
-  const currentOverride = getProducerOverride(selectedProducer.id);
+  const selectedProducer =
+    producers.find((p) => p.id === selectedProducerId) ||
+    producers.find((p) => p.id === user?.claimedProducerId) ||
+    producers[0];
+
+  const currentOverride = selectedProducer ? getProducerOverride(selectedProducer.id) : undefined;
   const [customNotice, setCustomNotice] = useState<string>(
     currentOverride?.customNotice || ''
   );
@@ -51,18 +75,23 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
   );
   const [saveSuccess, setSaveSuccess] = useState<boolean>(false);
 
-  // When switching producers, sync notice and pro status
+  // Sync state when selected producer changes
+  useEffect(() => {
+    if (selectedProducer) {
+      const ov = getProducerOverride(selectedProducer.id);
+      setCustomNotice(ov?.customNotice || '');
+      setIsAcceptingBookings(ov ? ov.isAcceptingBookings : true);
+      setIsProTier(ov ? Boolean(ov.isProTier) : false);
+      setDirectBottleShopUrl(ov?.directBottleShopUrl || '');
+      setSaveSuccess(false);
+    }
+  }, [selectedProducerId, getProducerOverride]);
+
   const handleSelectProducer = (id: string) => {
     setSelectedProducerId(id);
-    const ov = getProducerOverride(id);
-    setCustomNotice(ov?.customNotice || '');
-    setIsAcceptingBookings(ov ? ov.isAcceptingBookings : true);
-    setIsProTier(ov ? Boolean(ov.isProTier) : false);
-    setDirectBottleShopUrl(ov?.directBottleShopUrl || '');
-    setSaveSuccess(false);
   };
 
-  const estateBookings = bookings.filter((b) => b.producerId === selectedProducer.id);
+  const estateBookings = selectedProducer ? bookings.filter((b) => b.producerId === selectedProducer.id) : [];
   const pendingBookings = estateBookings.filter((b) => b.status === 'pending');
   const confirmedBookings = estateBookings.filter((b) => b.status === 'confirmed');
 
@@ -71,6 +100,7 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
 
   const handleSaveNotice = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!selectedProducer) return;
     await onSaveProducerOverride({
       producerId: selectedProducer.id,
       customNotice: customNotice.trim(),
@@ -96,14 +126,21 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
             <div>
               <div className="flex items-center gap-2">
                 <h2 className="font-serif-title text-base sm:text-lg font-bold text-white leading-tight">
-                  Producer & Host Portal
+                  {isProducerAuthenticated && selectedProducer
+                    ? `${selectedProducer.name} — Host Dashboard`
+                    : 'Producer & Host Portal'}
                 </h2>
-                <span className="text-[9px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 font-bold uppercase tracking-wider">
-                  Live Management
-                </span>
+                {isProducerAuthenticated && (
+                  <span className="text-[9px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 font-bold uppercase tracking-wider flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    Verified Host
+                  </span>
+                )}
               </div>
               <p className="text-[11px] text-stone-400">
-                Manage tasting reservations, estate hours & announcements
+                {isProducerAuthenticated && user
+                  ? `Logged in as ${user.name} (${user.email}) · ${selectedProducer?.village || ''}, ${selectedProducer?.region || ''}`
+                  : 'Manage tasting reservations, estate hours & announcements'}
               </p>
             </div>
           </div>
@@ -117,38 +154,95 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
           </button>
         </div>
 
-        {/* Producer Estate Selector Bar */}
-        <div className="px-5 py-3 bg-stone-900/60 border-b border-white/10 flex items-center justify-between gap-3 text-xs">
-          <div className="flex items-center gap-2 min-w-0">
-            <span className="text-stone-400 text-[11px] font-semibold shrink-0">Estate:</span>
-            <div className="relative flex-1">
-              <select
-                value={selectedProducerId}
-                onChange={(e) => handleSelectProducer(e.target.value)}
-                className="w-full bg-stone-950 border border-white/15 text-white font-bold rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:border-amber-400 transition cursor-pointer pr-8 truncate"
+        {/* ========================================================= */}
+        {/* GATE: IF NOT LOGGED IN AS A PRODUCER                      */}
+        {/* ========================================================= */}
+        {!isProducerAuthenticated ? (
+          <div className="p-6 sm:p-10 text-center space-y-5 my-auto">
+            <div className="w-16 h-16 rounded-3xl bg-amber-500/15 text-amber-300 border border-amber-500/30 flex items-center justify-center text-3xl mx-auto shadow-inner">
+              🏛️
+            </div>
+            
+            <div className="space-y-1.5">
+              <h3 className="text-lg sm:text-xl font-bold text-white font-serif-title">
+                Producer & Estate Host Sign In Required
+              </h3>
+              <p className="text-xs text-stone-400 max-w-md mx-auto leading-relaxed">
+                This dashboard is strictly reserved for verified winery, brewery, distillery and farm hosts. Log in to manage reservations, adjust hours, and post live harvest bulletins.
+              </p>
+            </div>
+
+            <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-2.5 max-w-sm mx-auto">
+              <button
+                onClick={() => {
+                  onClose();
+                  if (onOpenAuth) onOpenAuth('producer');
+                }}
+                className="w-full py-2.5 px-4 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs shadow-lg transition flex items-center justify-center gap-2 cursor-pointer"
               >
-                {producers.map((p) => (
-                  <option key={p.id} value={p.id}>
-                    {p.name} ({p.village}, {p.region})
-                  </option>
-                ))}
-              </select>
+                <LogIn className="w-4 h-4" />
+                <span>Producer Sign In / Register</span>
+              </button>
+
+              {onLoginAsDemoProducer && (
+                <button
+                  onClick={() => {
+                    onLoginAsDemoProducer('paterianakis');
+                  }}
+                  className="w-full py-2.5 px-4 rounded-xl bg-stone-900 hover:bg-stone-850 text-stone-300 border border-white/10 hover:border-amber-400/40 text-xs font-semibold transition flex items-center justify-center gap-1.5 cursor-pointer"
+                >
+                  <span>⚡ 1-Click Host Demo</span>
+                </button>
+              )}
+            </div>
+
+            <div className="pt-4 flex items-center justify-center gap-2 text-[11px] text-stone-500">
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
+              <span>Are you a registered producer on TerroirTrail? Access is linked directly to your estate profile.</span>
             </div>
           </div>
+        ) : (
+          <>
+            {/* Authenticated Producer Estate Bar */}
+            <div className="px-5 py-3 bg-stone-900/60 border-b border-white/10 flex items-center justify-between gap-3 text-xs">
+              <div className="flex items-center gap-2 min-w-0">
+                <span className="text-stone-400 text-[11px] font-semibold shrink-0">Managing Estate:</span>
+                
+                {/* If user is demo host, allow testing other estates */}
+                {user?.id.startsWith('producer_') ? (
+                  <div className="relative flex-1">
+                    <select
+                      value={selectedProducerId}
+                      onChange={(e) => handleSelectProducer(e.target.value)}
+                      className="w-full bg-stone-950 border border-amber-500/30 text-amber-300 font-bold rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:border-amber-400 transition cursor-pointer pr-8 truncate"
+                    >
+                      {producers.map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {p.name} ({p.village}, {p.region})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                ) : (
+                  <span className="font-bold text-white truncate bg-stone-900 px-3 py-1.5 rounded-xl border border-white/10">
+                    {selectedProducer?.name} ({selectedProducer?.village}, {selectedProducer?.region})
+                  </span>
+                )}
+              </div>
 
-          {/* Quick Metrics Badges */}
-          <div className="hidden sm:flex items-center gap-2 text-[10px]">
-            <span className="px-2 py-1 rounded-lg bg-amber-500/15 text-amber-300 font-bold border border-amber-500/25">
-              {pendingBookings.length} Pending
-            </span>
-            <span className="px-2 py-1 rounded-lg bg-emerald-500/15 text-emerald-300 font-bold border border-emerald-500/25">
-              {confirmedBookings.length} Confirmed
-            </span>
-          </div>
-        </div>
+              {/* Quick Metrics Badges */}
+              <div className="hidden sm:flex items-center gap-2 text-[10px]">
+                <span className="px-2 py-1 rounded-lg bg-amber-500/15 text-amber-300 font-bold border border-amber-500/25">
+                  {pendingBookings.length} Pending
+                </span>
+                <span className="px-2 py-1 rounded-lg bg-emerald-500/15 text-emerald-300 font-bold border border-emerald-500/25">
+                  {confirmedBookings.length} Confirmed
+                </span>
+              </div>
+            </div>
 
-        {/* Tabs */}
-        <div className="flex border-b border-white/10 bg-stone-950 px-5 pt-2 text-xs font-semibold shrink-0">
+            {/* Tabs */}
+            <div className="flex border-b border-white/10 bg-stone-950 px-5 pt-2 text-xs font-semibold shrink-0">
           <button
             onClick={() => setActiveTab('bookings')}
             className={`py-2 px-3 border-b-2 transition cursor-pointer flex items-center gap-1.5 ${
@@ -557,6 +651,8 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
           )}
 
         </div>
+        </>
+      )}
 
       </div>
     </div>

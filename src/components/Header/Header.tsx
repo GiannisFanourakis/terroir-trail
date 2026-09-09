@@ -18,7 +18,7 @@ interface HeaderProps {
   favoritesOnly: boolean;
   onToggleFavoritesOnly: () => void;
   user: UserProfile | null;
-  onOpenAuth: () => void;
+  onOpenAuth: (role?: 'traveler' | 'producer') => void;
   onOpenPassport: () => void;
   onLogout: () => void;
   totalProducersCount: number;
@@ -163,15 +163,31 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
             )}
 
-            {/* Host Portal (lg and up) */}
-            {onOpenProducerPortal && (
+            {/* Producer / Estate Host Entry Point */}
+            {user?.isProducer && user.claimedProducerId ? (
+              onOpenProducerPortal && (
+                <button
+                  onClick={onOpenProducerPortal}
+                  className="hidden md:flex items-center gap-2 px-3 py-1.5 text-xs font-bold rounded-xl border border-amber-500/40 bg-gradient-to-r from-amber-500/15 via-stone-900 to-rose-500/10 hover:border-amber-400 text-amber-300 transition shrink-0 cursor-pointer shadow-sm"
+                  title={`Manage ${user.producerName || 'My Estate'}`}
+                >
+                  <Building2 className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                  <span className="truncate max-w-[130px] lg:max-w-[190px]">
+                    {user.producerName || 'Estate Host'}
+                  </span>
+                  <span className="text-[9px] px-1.5 py-0.2 rounded-full bg-amber-400 text-stone-950 font-extrabold uppercase">
+                    Host
+                  </span>
+                </button>
+              )
+            ) : (
               <button
-                onClick={onOpenProducerPortal}
-                className="hidden lg:flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-bold rounded-xl border border-white/10 hover:border-emerald-400/50 bg-stone-900 hover:bg-stone-850 text-stone-300 hover:text-emerald-300 transition shrink-0 cursor-pointer"
-                title="Winery & Brewery Host Portal"
+                onClick={() => onOpenAuth('producer')}
+                className="hidden lg:flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-bold rounded-xl border border-white/10 hover:border-amber-400/50 bg-stone-900 hover:bg-stone-850 text-stone-300 hover:text-amber-300 transition shrink-0 cursor-pointer"
+                title="Winery & Brewery Host Sign In"
               >
-                <Building2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                <span>Host Portal</span>
+                <Building2 className="w-3.5 h-3.5 text-amber-400/80 shrink-0" />
+                <span>Producer Login</span>
               </button>
             )}
 
