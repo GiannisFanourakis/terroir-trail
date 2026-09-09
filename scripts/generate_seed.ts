@@ -31,7 +31,7 @@ lines.push('-- -----------------------------------------------------------------
 lines.push('-- 1. PRODUCERS SEED');
 lines.push('-- ---------------------------------------------------------------------');
 lines.push(`INSERT INTO public.producers (
-  id, name, greek_name, category, destination, region, village, lat, lng,
+  id, name, greek_name, category, destination, country, country_code, region, village, lat, lng,
   cover_image, gallery, tag_line, description, story, indigenous_varieties,
   tasting_highlights, opening_hours, best_season, phone, website,
   google_maps_url, road_access, ethos, food_option, dog_friendly,
@@ -47,6 +47,8 @@ const producerValues = CRETAN_PRODUCERS.map((p) => {
   ${sqlStr(p.greekName)},
   ${sqlStr(p.category)},
   ${sqlStr(p.destination)},
+  ${sqlStr(p.country || (p.destination === 'tuscany' ? 'Italy' : 'Greece'))},
+  ${sqlStr(p.countryCode || (p.destination === 'tuscany' ? 'IT' : 'GR'))},
   ${sqlStr(p.region)},
   ${sqlStr(p.village)},
   ${lat},
@@ -83,6 +85,8 @@ lines.push('  name = EXCLUDED.name,');
 lines.push('  greek_name = EXCLUDED.greek_name,');
 lines.push('  category = EXCLUDED.category,');
 lines.push('  destination = EXCLUDED.destination,');
+lines.push('  country = EXCLUDED.country,');
+lines.push('  country_code = EXCLUDED.country_code,');
 lines.push('  region = EXCLUDED.region,');
 lines.push('  village = EXCLUDED.village,');
 lines.push('  lat = EXCLUDED.lat,');

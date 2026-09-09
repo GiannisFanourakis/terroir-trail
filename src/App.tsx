@@ -163,12 +163,13 @@ export const App: React.FC = () => {
         const matchesGreekName = producer.greekName.toLowerCase().includes(q);
         const matchesVillage = producer.village.toLowerCase().includes(q);
         const matchesRegion = producer.region.toLowerCase().includes(q);
+        const matchesCountry = (producer.country || '').toLowerCase().includes(q);
         const matchesDescription = producer.description.toLowerCase().includes(q);
         const matchesVariety = producer.indigenousVarieties.some((v) =>
           v.toLowerCase().includes(q)
         );
 
-        if (!matchesName && !matchesGreekName && !matchesVillage && !matchesRegion && !matchesDescription && !matchesVariety) {
+        if (!matchesName && !matchesGreekName && !matchesVillage && !matchesRegion && !matchesCountry && !matchesDescription && !matchesVariety) {
           return false;
         }
       }

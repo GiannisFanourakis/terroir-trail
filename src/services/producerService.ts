@@ -24,14 +24,21 @@ export interface ProducerQueryOptions {
  * Transforms a Supabase PostgreSQL row into the frontend Producer type
  */
 export function mapRowToProducer(row: any): Producer {
+  const country = row.country || (row.destination === 'tuscany' ? 'Italy' : 'Greece');
+  const countryCode = row.country_code || (row.destination === 'tuscany' ? 'IT' : 'GR');
+  const locality = row.locality || row.village;
+
   return {
     id: row.id,
     name: row.name,
     greekName: row.greek_name || row.name,
     category: row.category as Category,
     destination: row.destination as Destination,
+    country,
+    countryCode,
     region: row.region,
-    village: row.village,
+    village: locality,
+    locality,
     coordinates: [row.lat ?? (row.coordinates?.[0] || 0), row.lng ?? (row.coordinates?.[1] || 0)],
     coverImage: row.cover_image || '',
     gallery: Array.isArray(row.gallery) ? row.gallery : [],
@@ -114,7 +121,14 @@ export const producerService = {
         if (!error && data && data.length > 0) {
           const remoteProducers = data.map(mapRowToProducer);
           remoteProducers.forEach((p) => producerCache.set(p.id, p));
-          return remoteProducers;
+          let list = Array.from(producerCache.values());
+          if (destination && destination !== 'all') {
+            list = list.filter((p) => p.destination === destination);
+          }
+          if (category && category !== 'all') {
+            list = list.filter((p) => p.category === category);
+          }
+          return list;
         }
       } catch (err) {
         console.warn('Supabase fetch failed, falling back to local cache/seed:', err);
@@ -147,6 +161,7 @@ export const producerService = {
           p.greekName.toLowerCase().includes(q) ||
           p.region.toLowerCase().includes(q) ||
           p.village.toLowerCase().includes(q) ||
+          (p.country && p.country.toLowerCase().includes(q)) ||
           p.indigenousVarieties.some((v) => v.toLowerCase().includes(q))
       );
     }

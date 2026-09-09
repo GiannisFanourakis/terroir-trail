@@ -12,7 +12,8 @@ export type Destination =
   | 'crete' 
   | 'santorini' 
   | 'peloponnese' 
-  | 'northern_greece';
+  | 'northern_greece'
+  | 'tuscany';
 
 export type RoadAccess = 
   | 'paved' 
@@ -50,8 +51,11 @@ export interface Producer {
   greekName: string;
   category: Category;
   destination: Destination;
-  region: string; // e.g. "Chania", "Heraklion", "Santorini Caldera", "Nemea", "Naoussa"
-  village: string;
+  country?: string; // e.g. "Greece", "Italy"
+  countryCode?: string; // e.g. "GR", "IT"
+  region: string; // e.g. "Chania", "Heraklion", "Tuscany", "Nemea", "Naoussa"
+  village: string; // Locality / Village
+  locality?: string; // Explicit locality alias
   coordinates: [number, number]; // [lat, lng]
   coverImage: string;
   gallery: string[];

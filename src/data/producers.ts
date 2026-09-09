@@ -2004,5 +2004,50 @@ export const CRETAN_PRODUCERS: Producer[] = [
     priceLevel: '€',
     rating: 4.8,
     reviewCount: 260
+  },
+  // ==========================================
+  // --- TUSCANY, ITALY: ARTISAN WINERIES ---
+  // ==========================================
+  {
+    id: 'monteraponi-tuscany',
+    name: 'Azienda Agricola Monteraponi',
+    greekName: 'Azienda Agricola Monteraponi',
+    category: 'winery',
+    destination: 'tuscany',
+    country: 'Italy',
+    countryCode: 'IT',
+    region: 'Tuscany',
+    village: 'Radda in Chianti',
+    locality: 'Radda in Chianti',
+    coordinates: [43.4671, 11.3447],
+    coverImage: 'https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?auto=format&fit=crop&w=1200&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=1200&q=80'
+    ],
+    tagLine: 'High-Altitude Organic Chianti Classico from Pure Galestro Limestone',
+    description: 'Perched at 470 meters on the hills of Radda in Chianti, Monteraponi is a benchmark for purist, artisanal Sangiovese with unadorned minerality and natural elegance.',
+    story: 'Founded on a historic 10th-century medieval estate, Monteraponi was revitalized by winemaker Michele Braganti with a commitment to authentic, non-interventionist winemaking. Farming certified organic vineyards surrounded by oak forests, Michele vinifies exclusively with indigenous yeasts in raw concrete vats, followed by long, gentle macerations and aging in large neutral Slavonian and French oak ovals. The result is pure, vibrant Sangiovese that reflects the true, unmanipulated terroir of Radda in Chianti.',
+    indigenousVarieties: ['Sangiovese', 'Canaiolo', 'Colorino', 'Trebbiano Toscano'],
+    tastingHighlights: ['Chianti Classico DOCG', 'Chianti Classico Riserva Il Campitello', 'Baron Ugo IGT Toscana', 'Artisanal Cellar Visit by Appointment'],
+    openingHours: 'By Appointment: Mon - Fri: 09:00 - 18:00',
+    bestSeason: 'Spring through Autumn (April - October)',
+    phone: '+39 0577 738208',
+    website: 'https://www.monteraponi.it',
+    googleMapsUrl: 'https://maps.google.com/?q=43.4671,11.3447',
+    roadAccess: 'paved',
+    ethos: ['organic', 'indigenous_only', 'family_estate'],
+    foodOption: 'tasting_board',
+    dogFriendly: true,
+    kidFriendly: true,
+    walkInFriendly: false,
+    campervanFriendly: false,
+    priceLevel: '€€',
+    rating: 4.9,
+    reviewCount: 42,
+    vipPerks: {
+      welcomePour: 'Tasting of estate Extra Virgin Olive Oil & library vintage sample',
+      discountPercent: 10
+    }
   }
 ];

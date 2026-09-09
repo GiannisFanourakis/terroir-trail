@@ -233,15 +233,21 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
         <div className="absolute bottom-4 left-4 right-4">
           <div className="flex items-center gap-1.5 text-amber-400 text-xs font-bold uppercase tracking-wider mb-1">
             <MapPin className="w-3.5 h-3.5" />
-            <span>{producer.village} · {producer.region.toUpperCase()}</span>
+            <span>
+              {producer.countryCode === 'IT' ? '🇮🇹 ' : ''}
+              {producer.village} · {producer.region.toUpperCase()}
+              {producer.country ? ` · ${producer.country.toUpperCase()}` : ''}
+            </span>
           </div>
 
           <h2 className="font-serif-title text-2xl sm:text-3xl font-bold text-white leading-tight">
             {producer.name}
           </h2>
-          <p className="text-stone-300 text-xs font-medium opacity-80 mt-0.5">
-            {producer.greekName}
-          </p>
+          {producer.greekName && producer.greekName !== producer.name && (
+            <p className="text-stone-300 text-xs font-medium opacity-80 mt-0.5">
+              {producer.greekName}
+            </p>
+          )}
         </div>
       </div>
 

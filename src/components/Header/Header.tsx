@@ -54,11 +54,12 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenWineBoxes,
 }) => {
   const destinations: { id: Destination | 'all'; label: string; flag: string }[] = [
-    { id: 'all', label: 'All Terroir', flag: '🇬🇷' },
+    { id: 'all', label: 'All Terroir', flag: '🍇' },
     { id: 'crete', label: 'Crete', flag: '🌿' },
     { id: 'santorini', label: 'Santorini', flag: '🌋' },
     { id: 'peloponnese', label: 'Peloponnese', flag: '🏛️' },
     { id: 'northern_greece', label: 'N. Greece', flag: '🏔️' },
+    { id: 'tuscany', label: 'Tuscany', flag: '🇮🇹' },
   ];
 
   return (

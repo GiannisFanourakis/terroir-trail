@@ -42,6 +42,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     santorini: { coords: [36.3932, 25.4615], zoom: 12 },
     peloponnese: { coords: [37.8280, 22.6580], zoom: 10 },
     northern_greece: { coords: [40.6650, 22.0450], zoom: 10 },
+    tuscany: { coords: [43.4671, 11.3447], zoom: 10 },
   };
 
   const CARTO_API_KEY = (import.meta.env.VITE_CARTO_API_KEY as string) || '';

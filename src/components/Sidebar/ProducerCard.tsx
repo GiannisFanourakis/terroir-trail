@@ -89,7 +89,10 @@ export const ProducerCard: React.FC<ProducerCardProps> = ({
         <div className="absolute bottom-2.5 left-3 right-3 flex items-end justify-between">
           <div className="flex items-center gap-1.5 text-stone-300 text-xs font-medium">
             <MapPin className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-            <span className="truncate">{producer.village}, {producer.region.toUpperCase()}</span>
+            <span className="truncate">
+              {producer.countryCode === 'IT' ? '🇮🇹 ' : ''}
+              {producer.village}, {producer.region.toUpperCase()}
+            </span>
           </div>
           <span className="text-xs font-mono font-bold text-amber-300 bg-black/60 px-2 py-0.5 rounded border border-white/10">
             {producer.priceLevel}
