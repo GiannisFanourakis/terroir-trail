@@ -71,11 +71,11 @@ export const Header: React.FC<HeaderProps> = ({
           
           {/* Brand & Subtitle */}
           <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
-            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl overflow-hidden shadow-lg shadow-amber-500/10 ring-1 ring-white/20 shrink-0 bg-stone-900 flex items-center justify-center p-0.5">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 shrink-0 flex items-center justify-center">
               <img
                 src="/logo.png"
                 alt="TerroirTrail Emblem"
-                className="w-full h-full object-contain"
+                className="w-full h-full object-contain drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)] transition-transform hover:scale-105 duration-200"
               />
             </div>
             <div className="min-w-0">

@@ -300,7 +300,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         {/* Modal Header */}
         <div className="p-6 pb-4 border-b border-white/10 text-center relative bg-gradient-to-b from-stone-900/80 to-transparent">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-stone-900/90 border border-white/10 text-xs font-semibold mb-2 shadow-sm">
-            <img src="/logo.png" alt="TerroirTrail" className="w-4 h-4 rounded-full object-cover shrink-0" />
+            <img src="/logo.png" alt="TerroirTrail" className="w-4 h-4 object-contain shrink-0" />
             <span className="text-amber-300">TerroirTrail Authentication</span>
             {isFirebaseConfigured && (
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" title="Live Cloud Auth Server"></span>
