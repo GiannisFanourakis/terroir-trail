@@ -5,8 +5,10 @@ import { getExperiencesForProducer } from '../../data/experiences';
 import { 
   X, MapPin, Star, Phone, Globe, Navigation, Clock, 
   Dog, Footprints, Caravan, Car, Sparkles, Share2, Check, Heart, Award, 
-  CheckCircle2, Wine, ShoppingBag, ArrowRight, Crown, Building2 
+  CheckCircle2, Wine, ShoppingBag, ArrowRight, Crown, Building2,
+  Camera, ChevronLeft, ChevronRight
 } from 'lucide-react';
+import { useProducerPhotos } from '../../services/googlePlacesPhotos';
 
 interface ProducerDetailDrawerProps {
   producer: Producer | null;
@@ -51,15 +53,22 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
   hasExplorerPass = false,
   onOpenExplorerPass,
 }) => {
-  const [activePhoto, setActivePhoto] = useState<string>('');
   const [copiedLink, setCopiedLink] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<'story' | 'tastings' | 'visit'>('story');
   const [isEditingNote, setIsEditingNote] = useState<boolean>(false);
   const [noteDraft, setNoteDraft] = useState<string>('');
 
+  const {
+    photos,
+    activePhoto,
+    activePhotoIndex,
+    setActivePhotoIndex,
+    isGooglePlaces,
+    isLoading: isPhotosLoading,
+  } = useProducerPhotos(producer);
+
   useEffect(() => {
     if (producer) {
-      setActivePhoto(producer.coverImage);
       setActiveTab('story');
       setIsEditingNote(false);
       setNoteDraft(tastingNote);
@@ -180,59 +189,120 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
       <div className="fixed inset-y-0 right-0 z-50 w-full sm:w-[480px] lg:w-[540px] max-w-full bg-stone-950 text-stone-100 shadow-2xl flex flex-col border-l border-white/10 animate-in slide-in-from-right duration-300 select-none">
         
         {/* 1. Hero Gallery & Header */}
-        <div className="relative h-44 sm:h-56 lg:h-64 w-full shrink-0 bg-stone-900 overflow-hidden">
+        <div className="relative h-48 sm:h-60 lg:h-64 w-full shrink-0 bg-stone-900 overflow-hidden group">
           <img
-            src={activePhoto || producer.coverImage}
+            src={activePhoto?.url || producer.coverImage}
             alt={producer.name}
             className="w-full h-full object-cover transition-all duration-300"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/40 to-black/30" />
 
-        {/* Top Control Icons */}
-        <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
-          {onToggleFavorite && (
-            <button
-              onClick={() => onToggleFavorite(producer.id)}
-              className={`w-9 h-9 rounded-full flex items-center justify-center backdrop-blur-md border transition ${
-                isFavorite
-                  ? 'bg-rose-500/80 border-rose-400/50 text-white shadow-lg shadow-rose-950/40'
-                  : 'bg-black/60 hover:bg-black/80 text-stone-200 border-white/10 hover:text-white'
-              }`}
-              title={isFavorite ? 'Remove from Saved' : 'Save to My Trip'}
-              aria-label={isFavorite ? 'Remove from Saved' : 'Save to My Trip'}
-            >
-              <Heart className={`w-4 h-4 ${isFavorite ? 'fill-current text-white' : ''}`} />
-            </button>
-          )}
-          <button
-            onClick={handleShare}
-            className="w-9 h-9 rounded-full bg-black/60 hover:bg-black/80 text-white flex items-center justify-center backdrop-blur-md border border-white/10 transition"
-            title="Copy Link"
-          >
-            {copiedLink ? <Check className="w-4 h-4 text-emerald-400" /> : <Share2 className="w-4 h-4" />}
-          </button>
-          <button
-            onClick={onClose}
-            className="w-9 h-9 rounded-full bg-black/60 hover:bg-black/80 text-white flex items-center justify-center backdrop-blur-md border border-white/10 transition"
-            aria-label="Close"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
+          {/* Carousel Arrows (if multiple photos) */}
+          {photos.length > 1 && (
+            <>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setActivePhotoIndex((activePhotoIndex - 1 + photos.length) % photos.length);
+                }}
+                className="absolute left-2.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/60 hover:bg-black/90 text-white flex items-center justify-center backdrop-blur-md border border-white/10 opacity-80 sm:opacity-0 group-hover:opacity-100 transition-all cursor-pointer z-20 shadow-lg"
+                aria-label="Previous photo"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setActivePhotoIndex((activePhotoIndex + 1) % photos.length);
+                }}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/60 hover:bg-black/90 text-white flex items-center justify-center backdrop-blur-md border border-white/10 opacity-80 sm:opacity-0 group-hover:opacity-100 transition-all cursor-pointer z-20 shadow-lg"
+                aria-label="Next photo"
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
 
-        {/* Category & Pro Badge */}
-        <div className="absolute top-4 left-4 flex items-center gap-2">
-          <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border backdrop-blur-md ${cat.color}`}>
-            <span>{cat.icon}</span>
-            <span>{cat.label}</span>
-          </span>
-          {isProTier && (
-            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-amber-400 to-amber-500 text-stone-950 shadow-lg shadow-amber-500/20 border border-amber-300">
-              <span>👑</span>
-              <span>Pro Estate</span>
-            </span>
+              {/* Photo indicator dots / counter */}
+              <div className="absolute bottom-20 right-4 z-10 px-2 py-0.5 rounded-full bg-black/65 backdrop-blur-md text-[10px] font-mono text-stone-300 border border-white/10 flex items-center gap-1.5">
+                <Camera className="w-3 h-3 text-amber-400" />
+                <span>{activePhotoIndex + 1} / {photos.length}</span>
+              </div>
+            </>
           )}
-        </div>
+
+          {/* Top Control Icons */}
+          <div className="absolute top-4 right-4 z-20 flex items-center gap-2">
+            {onToggleFavorite && (
+              <button
+                onClick={() => onToggleFavorite(producer.id)}
+                className={`w-9 h-9 rounded-full flex items-center justify-center backdrop-blur-md border transition ${
+                  isFavorite
+                    ? 'bg-rose-500/80 border-rose-400/50 text-white shadow-lg shadow-rose-950/40'
+                    : 'bg-black/60 hover:bg-black/80 text-stone-200 border-white/10 hover:text-white'
+                }`}
+                title={isFavorite ? 'Remove from Saved' : 'Save to My Trip'}
+                aria-label={isFavorite ? 'Remove from Saved' : 'Save to My Trip'}
+              >
+                <Heart className={`w-4 h-4 ${isFavorite ? 'fill-current text-white' : ''}`} />
+              </button>
+            )}
+            <button
+              onClick={handleShare}
+              className="w-9 h-9 rounded-full bg-black/60 hover:bg-black/80 text-white flex items-center justify-center backdrop-blur-md border border-white/10 transition"
+              title="Copy Link"
+            >
+              {copiedLink ? <Check className="w-4 h-4 text-emerald-400" /> : <Share2 className="w-4 h-4" />}
+            </button>
+            <button
+              onClick={onClose}
+              className="w-9 h-9 rounded-full bg-black/60 hover:bg-black/80 text-white flex items-center justify-center backdrop-blur-md border border-white/10 transition"
+              aria-label="Close"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+
+          {/* Category & Pro Badge & Google Maps attribution */}
+          <div className="absolute top-4 left-4 z-20 flex flex-col items-start gap-1.5 max-w-[calc(100%-130px)]">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border backdrop-blur-md ${cat.color}`}>
+                <span>{cat.icon}</span>
+                <span>{cat.label}</span>
+              </span>
+              {isProTier && (
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-amber-400 to-amber-500 text-stone-950 shadow-lg shadow-amber-500/20 border border-amber-300">
+                  <span>👑</span>
+                  <span>Pro Estate</span>
+                </span>
+              )}
+            </div>
+
+            {/* Mandatory Photographer Attribution (Google Maps Platform Terms of Service compliant) */}
+            {isGooglePlaces && activePhoto?.attributions?.[0] && (
+              <div className="flex items-center">
+                {activePhoto.attributions[0].uri ? (
+                  <a
+                    href={activePhoto.attributions[0].uri}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-black/75 hover:bg-black/90 backdrop-blur-md text-[10px] text-stone-300 hover:text-white border border-white/15 transition shadow-sm truncate max-w-[240px] sm:max-w-[280px]"
+                    title="View photographer on Google Maps"
+                  >
+                    <Camera className="w-3 h-3 text-amber-400 shrink-0" />
+                    <span className="truncate">{activePhoto.attributions[0].displayName}</span>
+                    <span className="text-[9px] text-amber-400/90 font-medium shrink-0">· Google Maps</span>
+                  </a>
+                ) : (
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-black/75 backdrop-blur-md text-[10px] text-stone-300 border border-white/15 shadow-sm truncate max-w-[240px] sm:max-w-[280px]">
+                    <Camera className="w-3 h-3 text-amber-400 shrink-0" />
+                    <span className="truncate">{activePhoto.attributions[0].displayName}</span>
+                    <span className="text-[9px] text-amber-400/90 font-medium shrink-0">· Google Maps</span>
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
 
         {/* Title Overlay */}
         <div className="absolute bottom-4 left-4 right-4">
@@ -462,24 +532,69 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
             </div>
 
             {/* Gallery Thumbnails */}
-            {producer.gallery.length > 1 && (
-              <div>
-                <h4 className="text-xs font-bold uppercase tracking-wider text-stone-400 mb-2">
-                  Photo Gallery
-                </h4>
-                <div className="flex gap-2 overflow-x-auto pb-1">
-                  {producer.gallery.map((img, i) => (
+            {photos.length > 1 && (
+              <div className="space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-stone-400 flex items-center gap-1.5">
+                    <Camera className="w-3.5 h-3.5 text-amber-400" />
+                    <span>{isGooglePlaces ? 'Google Maps Estate Gallery' : 'Photo Gallery'}</span>
+                    <span className="text-[10px] text-stone-400 normal-case font-normal">({photos.length} photos)</span>
+                  </h4>
+                  {isGooglePlaces && (
+                    <span className="text-[10px] font-medium text-amber-400/90 flex items-center gap-1">
+                      <span>📍</span>
+                      <span>Live from Google Maps</span>
+                    </span>
+                  )}
+                </div>
+
+                <div className="flex gap-2.5 overflow-x-auto pb-1 scrollbar-thin">
+                  {photos.map((item, i) => (
                     <button
                       key={i}
-                      onClick={() => setActivePhoto(img)}
-                      className={`relative w-20 h-16 rounded-xl overflow-hidden shrink-0 border-2 transition ${
-                        activePhoto === img ? 'border-amber-400 scale-105 shadow-md' : 'border-white/10 opacity-70 hover:opacity-100'
+                      type="button"
+                      onClick={() => setActivePhotoIndex(i)}
+                      className={`relative w-20 h-16 rounded-xl overflow-hidden shrink-0 border-2 transition cursor-pointer ${
+                        activePhotoIndex === i
+                          ? 'border-amber-400 scale-105 shadow-md ring-2 ring-amber-400/30'
+                          : 'border-white/10 opacity-70 hover:opacity-100'
                       }`}
                     >
-                      <img src={img} alt="Thumbnail" className="w-full h-full object-cover" />
+                      <img
+                        src={item.thumbUrl || item.url}
+                        alt={`Photo ${i + 1}`}
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                      />
                     </button>
                   ))}
                 </div>
+
+                {/* Mandatory Google Maps Attribution (Agentskills & ToS compliance) */}
+                {isGooglePlaces && activePhoto?.attributions?.[0] && (
+                  <div className="p-2.5 rounded-xl bg-stone-900/90 border border-white/5 text-[10px] text-stone-400 flex items-center justify-between">
+                    <span className="truncate pr-2">
+                      Photo by{' '}
+                      {activePhoto.attributions[0].uri ? (
+                        <a
+                          href={activePhoto.attributions[0].uri}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-amber-400 hover:underline font-medium"
+                        >
+                          {activePhoto.attributions[0].displayName}
+                        </a>
+                      ) : (
+                        <span className="text-stone-300 font-medium">
+                          {activePhoto.attributions[0].displayName}
+                        </span>
+                      )}
+                    </span>
+                    <span className="text-[9px] font-bold uppercase tracking-wider text-stone-400 shrink-0">
+                      Google Maps
+                    </span>
+                  </div>
+                )}
               </div>
             )}
           </div>
