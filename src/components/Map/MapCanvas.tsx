@@ -32,7 +32,8 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
   const markersRef = useRef<{ [id: string]: L.Marker }>({});
   const tileLayerRef = useRef<L.TileLayer | null>(null);
 
-  const [mapTheme, setMapTheme] = useState<'voyager' | 'dark' | 'satellite'>('voyager');
+  type MapTheme = 'topo' | 'voyager' | 'dark' | 'satellite';
+  const [mapTheme, setMapTheme] = useState<MapTheme>('topo');
 
   // Centers per destination
   const DESTINATION_CENTERS: Record<Destination | 'all', { coords: [number, number]; zoom: number }> = {
@@ -43,17 +44,39 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     northern_greece: { coords: [40.6650, 22.0450], zoom: 10 },
   };
 
-  const TILE_CONFIGS = {
-    voyager: {
-      url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
-      attribution: '&copy; CartoDB &copy; OpenStreetMap contributors',
+  const CARTO_API_KEY = (import.meta.env.VITE_CARTO_API_KEY as string) || '';
+
+  const TILE_CONFIGS: Record<MapTheme, { url: string; attribution: string; maxZoom: number; subdomains?: string }> = {
+    topo: {
+      url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
+      attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ, TomTom, USGS',
       maxZoom: 19,
     },
-    dark: {
-      url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
-      attribution: '&copy; CartoDB &copy; OpenStreetMap contributors',
-      maxZoom: 19,
-    },
+    voyager: CARTO_API_KEY
+      ? {
+          url: `https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png?key=${CARTO_API_KEY}`,
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attributions">CARTO</a>',
+          subdomains: 'abcd',
+          maxZoom: 19,
+        }
+      : {
+          url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+          subdomains: 'abc',
+          maxZoom: 19,
+        },
+    dark: CARTO_API_KEY
+      ? {
+          url: `https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png?key=${CARTO_API_KEY}`,
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attributions">CARTO</a>',
+          subdomains: 'abcd',
+          maxZoom: 19,
+        }
+      : {
+          url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',
+          attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
+          maxZoom: 18,
+        },
     satellite: {
       url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
       attribution: 'Source: Esri, Maxar, Earthstar Geographics',
@@ -124,6 +147,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     tileLayerRef.current = L.tileLayer(TILE_CONFIGS[mapTheme].url, {
       attribution: TILE_CONFIGS[mapTheme].attribution,
       maxZoom: TILE_CONFIGS[mapTheme].maxZoom,
+      subdomains: TILE_CONFIGS[mapTheme].subdomains || 'abc',
     }).addTo(map);
 
     map.on('click', (e) => {
@@ -180,6 +204,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     tileLayerRef.current = L.tileLayer(TILE_CONFIGS[mapTheme].url, {
       attribution: TILE_CONFIGS[mapTheme].attribution,
       maxZoom: TILE_CONFIGS[mapTheme].maxZoom,
+      subdomains: TILE_CONFIGS[mapTheme].subdomains || 'abc',
     }).addTo(mapInstanceRef.current);
   }, [mapTheme]);
 
@@ -298,14 +323,26 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
         {/* Layer Theme Selector Pill */}
         <div className="glass-panel p-1 rounded-2xl flex items-center shadow-2xl">
           <button
+            onClick={() => setMapTheme('topo')}
+            className={`px-2.5 py-1 sm:px-3 sm:py-1.5 text-[11px] sm:text-xs font-semibold rounded-xl transition-all ${
+              mapTheme === 'topo'
+                ? 'bg-amber-500 text-stone-950 shadow-md font-bold'
+                : 'text-stone-300 hover:text-white hover:bg-white/5'
+            }`}
+            title="Topographic terrain & vineyard elevation contours (Free, no API key required)"
+          >
+            Terroir
+          </button>
+          <button
             onClick={() => setMapTheme('voyager')}
             className={`px-2.5 py-1 sm:px-3 sm:py-1.5 text-[11px] sm:text-xs font-semibold rounded-xl transition-all ${
               mapTheme === 'voyager'
                 ? 'bg-amber-500 text-stone-950 shadow-md font-bold'
                 : 'text-stone-300 hover:text-white hover:bg-white/5'
             }`}
+            title={CARTO_API_KEY ? "CARTO Voyager Basemap" : "OpenStreetMap Standard (Free, no API key required)"}
           >
-            Voyager
+            {CARTO_API_KEY ? 'Voyager' : 'Streets'}
           </button>
           <button
             onClick={() => setMapTheme('dark')}
@@ -314,6 +351,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
                 ? 'bg-amber-500 text-stone-950 shadow-md font-bold'
                 : 'text-stone-300 hover:text-white hover:bg-white/5'
             }`}
+            title={CARTO_API_KEY ? "CARTO Dark Matter" : "Esri Dark Canvas (Free, no API key required)"}
           >
             Night
           </button>
@@ -324,6 +362,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
                 ? 'bg-amber-500 text-stone-950 shadow-md font-bold'
                 : 'text-stone-300 hover:text-white hover:bg-white/5'
             }`}
+            title="High-resolution aerial satellite imagery"
           >
             Satellite
           </button>
