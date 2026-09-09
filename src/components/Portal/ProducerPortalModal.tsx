@@ -337,31 +337,31 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
                 <div className="grid grid-cols-2 gap-1.5">
                   <button
                     onClick={() => onLoginAsDemoProducer('paterianakis')}
-                    className="p-2 rounded-xl bg-stone-900 hover:bg-stone-850 border border-white/10 text-stone-300 text-xs text-left transition hover:border-amber-400/40 cursor-pointer"
+                    className="p-2.5 rounded-xl bg-stone-900 hover:bg-stone-850 border border-amber-500/30 text-stone-300 text-xs text-left transition hover:border-amber-400 cursor-pointer"
                   >
-                    <span className="font-bold text-white block truncate">Domaine Paterianakis</span>
-                    <span className="text-[10px] text-stone-400">Peza, Crete · Winery</span>
+                    <span className="font-bold text-white block truncate">Fake Winery (Demo)</span>
+                    <span className="text-[10px] text-amber-400">Host: John Smith</span>
                   </button>
                   <button
                     onClick={() => onLoginAsDemoProducer('manousakis')}
-                    className="p-2 rounded-xl bg-stone-900 hover:bg-stone-850 border border-white/10 text-stone-300 text-xs text-left transition hover:border-amber-400/40 cursor-pointer"
+                    className="p-2.5 rounded-xl bg-stone-900 hover:bg-stone-850 border border-white/10 text-stone-300 text-xs text-left transition hover:border-amber-400/40 cursor-pointer"
                   >
-                    <span className="font-bold text-white block truncate">Manousakis Winery</span>
-                    <span className="text-[10px] text-stone-400">Chania, Crete · Winery</span>
+                    <span className="font-bold text-white block truncate">Valley Vineyard (Demo)</span>
+                    <span className="text-[10px] text-stone-400">Host: Jane Miller</span>
                   </button>
                   <button
                     onClick={() => onLoginAsDemoProducer('charma')}
-                    className="p-2 rounded-xl bg-stone-900 hover:bg-stone-850 border border-white/10 text-stone-300 text-xs text-left transition hover:border-amber-400/40 cursor-pointer"
+                    className="p-2.5 rounded-xl bg-stone-900 hover:bg-stone-850 border border-white/10 text-stone-300 text-xs text-left transition hover:border-amber-400/40 cursor-pointer"
                   >
-                    <span className="font-bold text-white block truncate">Cretan Brewery (Charma)</span>
-                    <span className="text-[10px] text-stone-400">Zounaki · Brewery</span>
+                    <span className="font-bold text-white block truncate">Craft Brewing Co. (Demo)</span>
+                    <span className="text-[10px] text-stone-400">Host: David Wilson</span>
                   </button>
                   <button
                     onClick={() => onLoginAsDemoProducer('monteraponi')}
-                    className="p-2 rounded-xl bg-stone-900 hover:bg-stone-850 border border-white/10 text-stone-300 text-xs text-left transition hover:border-amber-400/40 cursor-pointer"
+                    className="p-2.5 rounded-xl bg-stone-900 hover:bg-stone-850 border border-white/10 text-stone-300 text-xs text-left transition hover:border-amber-400/40 cursor-pointer"
                   >
-                    <span className="font-bold text-white block truncate">Monteraponi (Italy)</span>
-                    <span className="text-[10px] text-stone-400">Tuscany · Chianti</span>
+                    <span className="font-bold text-white block truncate">Tuscan Hillside (Demo)</span>
+                    <span className="text-[10px] text-stone-400">Host: Marco Rossi</span>
                   </button>
                 </div>
               </div>

@@ -577,7 +577,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                           autoComplete="name"
                           value={name}
                           onChange={(e) => setName(e.target.value)}
-                          placeholder="Giannis Fanourakis"
+                          placeholder="John Smith"
                           className="w-full bg-stone-900 border border-white/10 text-white rounded-xl pl-9 pr-3 py-2.5 text-xs focus:outline-none focus:border-amber-400 transition"
                           required
                         />
@@ -807,7 +807,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                           autoComplete="email"
                           value={producerEmail}
                           onChange={(e) => setProducerEmail(e.target.value)}
-                          placeholder="winery@estate.gr"
+                          placeholder="winemaker@fake-winery.com"
                           className="w-full bg-stone-900 border border-white/10 text-white rounded-xl pl-9 pr-3 py-2.5 text-xs focus:outline-none focus:border-amber-400 transition"
                           required
                         />
@@ -968,7 +968,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                           type="text"
                           value={producerHostName}
                           onChange={(e) => setProducerHostName(e.target.value)}
-                          placeholder="Emmanuela Paterianaki"
+                          placeholder="John Smith"
                           className="w-full bg-stone-900 border border-white/10 text-white rounded-xl pl-9 pr-3 py-2.5 text-xs focus:outline-none focus:border-amber-400 transition"
                           required
                         />
@@ -985,7 +985,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                           type="email"
                           value={producerEmail}
                           onChange={(e) => setProducerEmail(e.target.value)}
-                          placeholder="info@paterianakis.gr"
+                          placeholder="winemaker@fake-winery.com"
                           className="w-full bg-stone-900 border border-white/10 text-white rounded-xl pl-9 pr-3 py-2.5 text-xs focus:outline-none focus:border-amber-400 transition"
                           required
                         />
@@ -1066,7 +1066,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                           type="email"
                           value={producerEmail}
                           onChange={(e) => setProducerEmail(e.target.value)}
-                          placeholder="winery@estate.gr"
+                          placeholder="winemaker@fake-winery.com"
                           className="w-full bg-stone-900 border border-white/10 text-white rounded-xl pl-9 pr-3 py-2.5 text-xs focus:outline-none focus:border-amber-400 transition"
                           required
                         />
@@ -1138,10 +1138,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                       className="p-2 rounded-xl bg-stone-900 hover:bg-stone-850 border border-amber-500/20 text-left flex items-center justify-between text-xs cursor-pointer transition"
                     >
                       <div className="flex items-center gap-2">
-                        <span className="text-sm">🇬🇷</span>
+                        <span className="text-sm">🧭</span>
                         <div>
-                          <span className="font-bold text-white">Giannis Fanourakis</span>
-                          <span className="text-[10px] text-stone-400 ml-2">Crete Local · 4 Stamps</span>
+                          <span className="font-bold text-white">John Smith</span>
+                          <span className="text-[10px] text-stone-400 ml-2">Explorer · 4 Stamps</span>
                         </div>
                       </div>
                       <ArrowRight className="w-3.5 h-3.5 text-amber-400" />
@@ -1158,7 +1158,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                       <div className="flex items-center gap-2">
                         <span className="text-sm">🍷</span>
                         <div>
-                          <span className="font-bold text-white">Elena Kazantzaki</span>
+                          <span className="font-bold text-white">Jane Doe</span>
                           <span className="text-[10px] text-stone-400 ml-2">Sommelier · 3 Stamps</span>
                         </div>
                       </div>
@@ -1176,7 +1176,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                       <div className="flex items-center gap-2">
                         <span className="text-sm">🍺</span>
                         <div>
-                          <span className="font-bold text-white">Markos V.</span>
+                          <span className="font-bold text-white">Alex Miller</span>
                           <span className="text-[10px] text-stone-400 ml-2">Craft Brewer · 3 Stamps</span>
                         </div>
                       </div>
@@ -1186,10 +1186,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 ) : (
                   <div className="grid grid-cols-1 gap-1.5">
                     {[
-                      { key: 'paterianakis', name: 'Domaine Paterianakis', host: 'Emmanuela Paterianaki', tag: 'Organic Winery · Peza' },
-                      { key: 'manousakis', name: 'Manousakis Winery', host: 'Alexandra Manousakis', tag: 'Estate Winery · Chania' },
-                      { key: 'charma', name: 'Cretan Brewery (Charma)', host: 'Ioannis Lionakis', tag: 'Microbrewery · Chania' },
-                      { key: 'monteraponi', name: 'Monteraponi (Tuscany)', host: 'Michele Braganti', tag: 'Chianti Classico · Italy' },
+                      { key: 'paterianakis', name: 'Fake Winery (Demo Estate)', host: 'John Smith', tag: 'Organic Winery · Demo' },
+                      { key: 'manousakis', name: 'Valley Vineyard (Demo)', host: 'Jane Miller', tag: 'Estate Winery · Demo' },
+                      { key: 'charma', name: 'Craft Brewing Co. (Demo)', host: 'David Wilson', tag: 'Microbrewery · Demo' },
+                      { key: 'monteraponi', name: 'Tuscan Hillside (Demo)', host: 'Marco Rossi', tag: 'Chianti Classico · Demo' },
                     ].map((h) => (
                       <button
                         key={h.key}
