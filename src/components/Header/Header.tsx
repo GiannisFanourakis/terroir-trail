@@ -194,7 +194,7 @@ export const Header: React.FC<HeaderProps> = ({
               <button
                 onClick={() => onOpenAuth('producer')}
                 className="hidden lg:flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-bold rounded-xl border border-white/10 hover:border-amber-400/50 bg-stone-900 hover:bg-stone-850 text-stone-300 hover:text-amber-300 transition shrink-0 cursor-pointer"
-                title="Winery & Brewery Host Sign In"
+                title="Artisan Producer & Host Sign In"
               >
                 <Building2 className="w-3.5 h-3.5 text-amber-400/80 shrink-0" />
                 <span>Producer Login</span>

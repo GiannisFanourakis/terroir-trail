@@ -67,15 +67,6 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
         )}
 
         <button
-          onClick={() => onOpenAuth('producer')}
-          className="hidden lg:flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold rounded-xl border border-white/10 hover:border-amber-400/40 bg-stone-900 hover:bg-stone-850 text-stone-300 hover:text-amber-300 transition shrink-0 cursor-pointer"
-          title="Producer & Estate Owner Sign In"
-        >
-          <Building2 className="w-3.5 h-3.5 text-amber-400/80 shrink-0" />
-          <span>Producer Login</span>
-        </button>
-
-        <button
           onClick={() => onOpenAuth('traveler')}
           className="flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 text-xs font-bold rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 shadow-md shadow-amber-500/25 border border-amber-400/80 transition-all transform active:scale-95 shrink-0 cursor-pointer"
           title="Sign in / Explorer Account"
