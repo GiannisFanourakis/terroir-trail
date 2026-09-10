@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://terroir-trail.web.app/sitemap.xml
