@@ -36,6 +36,10 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
   type MapTheme = 'topo' | 'voyager' | 'dark' | 'satellite';
   const [mapTheme, setMapTheme] = useState<MapTheme>('topo');
 
+  // Zoom-adaptive Pin Display: 'adaptive' (auto unclutter), 'compact' (pins only), 'expanded' (full bounding boxes)
+  type PinDisplayMode = 'adaptive' | 'compact' | 'expanded';
+  const [pinDisplayMode, setPinDisplayMode] = useState<PinDisplayMode>('adaptive');
+
   // Centers per destination
   const DESTINATION_CENTERS: Record<Destination | 'all', { coords: [number, number]; zoom: number }> = {
     all: { coords: [37.9838, 24.2272], zoom: 7 }, // Greece overview
@@ -223,6 +227,35 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     map.flyTo(target.coords, target.zoom, { duration: 1.2 });
   }, [selectedDestination]);
 
+  // Synchronize Pin Density & Zoom-Adaptive Uncluttering
+  useEffect(() => {
+    const map = mapInstanceRef.current;
+    if (!map || !mapContainerRef.current) return;
+
+    const applyPinMode = () => {
+      if (!mapContainerRef.current || !mapInstanceRef.current) return;
+      const currentZoom = mapInstanceRef.current.getZoom();
+      const isCompact =
+        pinDisplayMode === 'compact'
+          ? true
+          : pinDisplayMode === 'expanded'
+          ? false
+          : currentZoom < 12;
+
+      mapContainerRef.current.classList.toggle('map-zoomed-out', isCompact);
+      mapContainerRef.current.classList.toggle('map-zoomed-in', !isCompact);
+    };
+
+    applyPinMode();
+    map.on('zoom', applyPinMode);
+    map.on('zoomend', applyPinMode);
+
+    return () => {
+      map.off('zoom', applyPinMode);
+      map.off('zoomend', applyPinMode);
+    };
+  }, [pinDisplayMode]);
+
   // Sync Markers
   useEffect(() => {
     const map = mapInstanceRef.current;
@@ -408,6 +441,34 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
             title="My Location"
           >
             <Navigation className="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover:scale-110 transition-transform" />
+          </button>
+
+          <div className="h-[1px] bg-white/10 my-0.5" />
+
+          {/* Toggle Map Pin Density: Auto / Compact / Detailed */}
+          <button
+            onClick={() => {
+              setPinDisplayMode((prev) =>
+                prev === 'adaptive' ? 'compact' : prev === 'compact' ? 'expanded' : 'adaptive'
+              );
+            }}
+            className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center transition group relative ${
+              pinDisplayMode !== 'adaptive'
+                ? 'bg-amber-500/20 text-amber-400 border border-amber-500/40'
+                : 'text-stone-200 hover:text-amber-400 hover:bg-white/10'
+            }`}
+            title={`Map Pin Density: ${
+              pinDisplayMode === 'adaptive'
+                ? 'Smart Auto (Zoom-Adaptive: Pins ↔ Bounding Boxes)'
+                : pinDisplayMode === 'compact'
+                ? 'Compact Pins Only (Uncluttered)'
+                : 'Full Bounding Boxes (Always show name & rating)'
+            }`}
+          >
+            <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover:scale-110 transition-transform" />
+            {pinDisplayMode !== 'adaptive' && (
+              <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-amber-400 ring-2 ring-stone-900" />
+            )}
           </button>
         </div>
 
