@@ -1164,9 +1164,23 @@ export const CRETAN_PRODUCERS: Producer[] = [
     region: 'Santorini Caldera',
     village: 'Pyrgos (Caldera Rim)',
     coordinates: [36.3870, 25.4380],
-    coverImage: 'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?auto=format&fit=crop&w=1000&q=80',
+    coverImage: '/images/estates/santo-wines-terrace.jpg',
     gallery: [
-      'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?auto=format&fit=crop&w=1000&q=80'
+      '/images/estates/santo-wines-terrace.jpg',
+      '/images/estates/santo-wines-bottles.jpg'
+    ],
+    photoCredit: {
+      author: 'Bernard Gagnon',
+      source: 'Wikimedia Commons',
+      license: 'CC BY-SA 3.0',
+      url: 'https://commons.wikimedia.org/wiki/File:View_from_the_terrace_of_the_Santo_Wine_cooperative.jpg'
+    },
+    galleryCredits: [
+      {
+        author: 'Marcelo Costa',
+        source: 'Wikimedia Commons',
+        license: 'CC BY 2.0'
+      }
     ],
     tagLine: 'Santorini’s Historic Cooperative on the Highest Caldera Ridge',
     description: 'Representing all 1,200 local wine growers, Santo Wines boasts the most dramatic amphitheater tasting terrace in the Aegean, dedicated to biodiversity and island community viticulture.',
