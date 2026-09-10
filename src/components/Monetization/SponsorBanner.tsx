@@ -59,7 +59,13 @@ export const SponsorBanner: React.FC<SponsorBannerProps> = ({
   // If the user is a VIP Passholder, they enjoy an entirely ad-free experience!
   if (hasExplorerPass) return null;
 
-  const [isDismissed, setIsDismissed] = useState<boolean>(false);
+  const [isDismissed, setIsDismissed] = useState<boolean>(() => {
+    try {
+      return sessionStorage.getItem('terroir_sponsor_dismissed') === 'true';
+    } catch {
+      return false;
+    }
+  });
   const [currentIdx, setCurrentIdx] = useState<number>(0);
 
   // Rotate sponsor every 14 seconds
@@ -74,30 +80,67 @@ export const SponsorBanner: React.FC<SponsorBannerProps> = ({
 
   const sponsor = SPONSOR_CAMPAIGNS[currentIdx];
 
-  const renderIcon = () => {
+  const handleDismiss = () => {
+    setIsDismissed(true);
+    try {
+      sessionStorage.setItem('terroir_sponsor_dismissed', 'true');
+    } catch {
+      // ignore
+    }
+  };
+
+  const renderIcon = (sizeClass = 'w-3.5 h-3.5') => {
     switch (sponsor.iconType) {
       case 'flight':
-        return <Plane className="w-4 h-4 text-sky-400" />;
+        return <Plane className={`${sizeClass} text-sky-400`} />;
       case 'car':
-        return <Car className="w-4 h-4 text-emerald-400" />;
+        return <Car className={`${sizeClass} text-emerald-400`} />;
       case 'villa':
-        return <Home className="w-4 h-4 text-amber-400" />;
+        return <Home className={`${sizeClass} text-amber-400`} />;
       default:
-        return <Sparkles className="w-4 h-4 text-amber-400" />;
+        return <Sparkles className={`${sizeClass} text-amber-400`} />;
     }
   };
 
   return (
     <div
-      className={`relative z-20 mx-auto w-full max-w-4xl px-3 py-1.5 transition-all animate-in fade-in slide-in-from-bottom-2 duration-300 ${className}`}
+      className={`relative z-20 mx-auto w-full max-w-3xl px-2 sm:px-3 py-1 transition-all animate-in fade-in slide-in-from-top-1 duration-300 ${className}`}
     >
+      {/* ── Mobile View (< sm): Sleek, ultra-compact glass pill badge that NEVER obscures Android controls ── */}
+      <div className="flex sm:hidden items-center justify-between gap-2 px-3 py-1 rounded-full bg-stone-950/90 backdrop-blur-xl border border-white/15 shadow-xl text-[11px] max-w-[92vw] mx-auto">
+        <a
+          href={sponsor.ctaUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-1.5 min-w-0 flex-1 truncate text-stone-200 hover:text-white"
+        >
+          <span className="shrink-0">{renderIcon('w-3 h-3')}</span>
+          <span className="text-[8px] font-bold text-amber-400 uppercase tracking-wider shrink-0 bg-amber-400/10 px-1 py-0.2 rounded border border-amber-400/25">
+            Partner
+          </span>
+          <span className="truncate text-[11px] font-medium text-stone-200">{sponsor.title}</span>
+          <ExternalLink className="w-2.5 h-2.5 text-stone-400 shrink-0 ml-0.5" />
+        </a>
+
+        <button
+          type="button"
+          onClick={handleDismiss}
+          className="text-stone-500 hover:text-white p-0.5 ml-1 shrink-0 transition"
+          aria-label="Dismiss sponsor"
+          title="Dismiss ad"
+        >
+          <X className="w-3 h-3" />
+        </button>
+      </div>
+
+      {/* ── Desktop View (≥ sm): Full rich sponsor card in top-middle of web app ── */}
       <div
-        className={`relative flex flex-col sm:flex-row items-center justify-between gap-2.5 px-3.5 py-2 rounded-2xl bg-gradient-to-r ${sponsor.accentColor} border shadow-lg backdrop-blur-xl`}
+        className={`hidden sm:flex relative flex-row items-center justify-between gap-3 px-3.5 py-2 rounded-2xl bg-gradient-to-r ${sponsor.accentColor} border shadow-lg backdrop-blur-xl`}
       >
         {/* Left: Sponsor Info */}
-        <div className="flex items-center gap-3 min-w-0 w-full sm:w-auto">
+        <div className="flex items-center gap-3 min-w-0 flex-1">
           <div className="w-8 h-8 rounded-xl bg-stone-900/90 border border-white/10 flex items-center justify-center shrink-0 shadow-sm">
-            {renderIcon()}
+            {renderIcon('w-4 h-4')}
           </div>
 
           <div className="min-w-0 flex-1">
@@ -114,14 +157,14 @@ export const SponsorBanner: React.FC<SponsorBannerProps> = ({
                 {sponsor.title}
               </a>
             </div>
-            <p className="text-[10px] text-stone-300 line-clamp-1 sm:line-clamp-none">
+            <p className="text-[10px] text-stone-300 line-clamp-1">
               {sponsor.desc}
             </p>
           </div>
         </div>
 
         {/* Right: Actions */}
-        <div className="flex items-center gap-2 shrink-0 self-end sm:self-center w-full sm:w-auto justify-end">
+        <div className="flex items-center gap-2 shrink-0 justify-end">
           {/* External Sponsor Link */}
           <a
             href={sponsor.ctaUrl}
@@ -139,17 +182,17 @@ export const SponsorBanner: React.FC<SponsorBannerProps> = ({
               type="button"
               onClick={onOpenExplorerPass}
               className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-[11px] font-bold transition active:scale-95 cursor-pointer"
-              title="Upgrade to Terroir Holiday Pass (€14.99) for a 100% Ad-Free Experience"
+              title="Upgrade to Terroir Holiday Pass for a 100% Ad-Free Experience"
             >
               <Crown className="w-3 h-3 text-amber-400" />
-              <span className="hidden xs:inline">Ad-Free</span> VIP
+              <span>VIP</span>
             </button>
           )}
 
           {/* Dismiss button */}
           <button
             type="button"
-            onClick={() => setIsDismissed(true)}
+            onClick={handleDismiss}
             className="w-6 h-6 rounded-full bg-stone-900/80 hover:bg-stone-800 text-stone-400 hover:text-white flex items-center justify-center transition border border-white/5 cursor-pointer"
             aria-label="Dismiss sponsor banner"
             title="Dismiss ad"
