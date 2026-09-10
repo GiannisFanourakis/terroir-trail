@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { Destination } from '../../types/terroir';
 import { UserProfile } from '../../types/auth';
 import { ProfileMenu } from '../Auth/ProfileMenu';
-import { Compass, Search, X, Heart, Building2, Calendar, Crown, Package, Sparkles, BookOpen, HelpCircle, Menu, Award, QrCode } from 'lucide-react';
+import { UserAvatar } from '../Common/UserAvatar';
+import { Compass, Search, X, Heart, Building2, Calendar, Crown, Package, Sparkles, BookOpen, HelpCircle, Menu, Award, QrCode, LogOut, User } from 'lucide-react';
 
 interface HeaderProps {
   selectedDestination: Destination | 'all';
@@ -204,8 +205,26 @@ export const Header: React.FC<HeaderProps> = ({
               />
             </div>
 
-            {/* ── Mobile: saved pill + hamburger ── */}
-            <div className="flex sm:hidden items-center gap-2 shrink-0">
+            {/* ── Mobile: profile + saved pill + hamburger ── */}
+            <div className="flex sm:hidden items-center gap-1.5 shrink-0">
+              {/* Profile Avatar Menu */}
+              <ProfileMenu
+                user={user}
+                onOpenAuth={onOpenAuth}
+                onOpenPassport={onOpenPassport}
+                onOpenWishlist={onToggleFavoritesOnly}
+                onLogout={onLogout}
+                totalProducersCount={totalProducersCount}
+                onOpenMyBookings={onOpenMyBookings}
+                onOpenProducerPortal={onOpenProducerPortal}
+                bookingsCount={bookingsCount}
+                onOpenExplorerPass={onOpenExplorerPass}
+                onOpenDigitalPass={onOpenDigitalPass}
+                onOpenAbout={onOpenAbout}
+                onOpenFaq={onOpenFaq}
+                onOpenLegal={onOpenLegal}
+              />
+
               {/* Saved badge (always visible) */}
               <button
                 onClick={onToggleFavoritesOnly}
@@ -393,25 +412,51 @@ export const Header: React.FC<HeaderProps> = ({
                 </button>
               )}
 
-              {/* Profile / Sign In */}
-              <div onClick={closeMenu}>
-                <ProfileMenu
-                  user={user}
-                  onOpenAuth={onOpenAuth}
-                  onOpenPassport={onOpenPassport}
-                  onOpenWishlist={onToggleFavoritesOnly}
-                  onLogout={onLogout}
-                  totalProducersCount={totalProducersCount}
-                  onOpenMyBookings={onOpenMyBookings}
-                  onOpenProducerPortal={onOpenProducerPortal}
-                  bookingsCount={bookingsCount}
-                  onOpenExplorerPass={onOpenExplorerPass}
-                  onOpenDigitalPass={onOpenDigitalPass}
-                  onOpenAbout={onOpenAbout}
-                  onOpenFaq={onOpenFaq}
-                  onOpenLegal={onOpenLegal}
-                />
-              </div>
+              {/* User Profile Card / Sign In */}
+              {user ? (
+                <div className="mt-2 p-3.5 rounded-2xl bg-stone-900/90 border border-white/10 flex flex-col gap-3">
+                  <div className="flex items-center gap-3">
+                    <UserAvatar user={user} size="md" className="ring-2 ring-amber-500/50" />
+                    <div className="min-w-0 flex-1">
+                      <div className="font-bold text-white text-sm truncate">{user.name}</div>
+                      <div className="text-[11px] text-stone-400 truncate">{user.email}</div>
+                    </div>
+                  </div>
+
+                  {onOpenMyBookings && (
+                    <button
+                      onClick={() => { onOpenMyBookings(); closeMenu(); }}
+                      className="flex items-center justify-between w-full px-3 py-2 text-xs font-semibold text-stone-200 bg-stone-950 hover:bg-stone-850 rounded-xl border border-white/5 transition cursor-pointer"
+                    >
+                      <span className="flex items-center gap-2">
+                        <Calendar className="w-3.5 h-3.5 text-amber-400" />
+                        <span>My Bookings</span>
+                      </span>
+                      {bookingsCount > 0 && (
+                        <span className="px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-[10px] font-bold">
+                          {bookingsCount}
+                        </span>
+                      )}
+                    </button>
+                  )}
+
+                  <button
+                    onClick={() => { onLogout(); closeMenu(); }}
+                    className="flex items-center justify-center gap-2 w-full px-3 py-2 text-xs font-bold text-rose-400 bg-rose-500/10 hover:bg-rose-500/20 rounded-xl border border-rose-500/20 transition cursor-pointer"
+                  >
+                    <LogOut className="w-3.5 h-3.5" />
+                    <span>Sign Out</span>
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => { onOpenAuth('traveler'); closeMenu(); }}
+                  className="flex items-center justify-center gap-2 w-full mt-2 px-4 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-sm shadow-lg shadow-amber-500/20 transition cursor-pointer"
+                >
+                  <User className="w-4 h-4" />
+                  <span>Sign In / Create Account</span>
+                </button>
+              )}
             </div>
           </div>
         </>

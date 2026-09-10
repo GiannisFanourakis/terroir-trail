@@ -43,20 +43,31 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
 
   // Close dropdown when clicking outside
   useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
+    if (!isOpen) return;
+
+    const handleOutside = (e: Event) => {
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
         setIsOpen(false);
       }
     };
-    if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+
+    // Small delay ensures the opening tap doesn't immediately dismiss the popover
+    const timer = setTimeout(() => {
+      document.addEventListener('pointerdown', handleOutside);
+      document.addEventListener('click', handleOutside);
+    }, 10);
+
+    return () => {
+      clearTimeout(timer);
+      document.removeEventListener('pointerdown', handleOutside);
+      document.removeEventListener('click', handleOutside);
+    };
   }, [isOpen]);
 
   if (!user) {
     return (
       <button
+        type="button"
         onClick={() => onOpenAuth('traveler')}
         className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 active:scale-95 text-stone-950 text-xs font-bold transition shadow-md shadow-amber-500/20 shrink-0 cursor-pointer"
       >
@@ -80,22 +91,29 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
   };
 
   return (
-    <div ref={menuRef} className="relative z-30 shrink-0">
+    <div ref={menuRef} className="relative z-40 shrink-0">
       {/* Avatar Button */}
       <button
-        onClick={() => setIsOpen((prev) => !prev)}
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          setIsOpen((prev) => !prev);
+        }}
         className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-2.5 py-1 rounded-xl bg-stone-900 hover:bg-stone-850 border border-amber-500/30 hover:border-amber-400/50 text-stone-200 transition active:scale-95 shrink-0 cursor-pointer group"
       >
         <UserAvatar user={user} size="xs" className="ring-1 ring-amber-500/50" />
         <span className="text-xs font-bold text-white hidden md:inline truncate max-w-[90px] group-hover:text-amber-300 transition-colors">
           {user.name.split(' ')[0]}
         </span>
-        <ChevronDown className="w-3 h-3 text-stone-400 shrink-0 group-hover:text-amber-300 transition-colors" />
+        <ChevronDown className={`w-3 h-3 text-stone-400 shrink-0 group-hover:text-amber-300 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
       {/* Popover Menu */}
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-72 sm:w-80 bg-stone-950/95 backdrop-blur-2xl border border-white/15 rounded-2xl shadow-2xl p-3 animate-in fade-in slide-in-from-top-2 duration-150 text-xs">
+        <div
+          onClick={(e) => e.stopPropagation()}
+          className="absolute right-0 mt-2 w-72 sm:w-80 bg-stone-950/95 backdrop-blur-2xl border border-white/15 rounded-2xl shadow-2xl p-3 animate-in fade-in slide-in-from-top-2 duration-150 text-xs z-50"
+        >
           
           {/* User Info */}
           <div className="pb-3 border-b border-white/10 mb-2.5">

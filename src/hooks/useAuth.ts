@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { Capacitor } from '@capacitor/core';
 import { UserProfile, TravelerType, ProducerTaxDetails, HostClaimStatus } from '../types/auth';
 import { 
   auth, 
@@ -12,12 +13,14 @@ import {
 } from '../services/firebase';
 import { 
   signInWithPopup, 
+  signInWithCredential,
   signOut as firebaseSignOut, 
   onAuthStateChanged,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   updateProfile as firebaseUpdateProfile,
-  User as FirebaseUser
+  User as FirebaseUser,
+  GoogleAuthProvider
 } from 'firebase/auth';
 
 const STORAGE_KEY = 'terroir_trail_user';
@@ -248,6 +251,9 @@ export const useAuth = () => {
       case 'auth/network-request-failed':
         return 'Network connection error. Please check your internet connection.';
       default:
+        if (error.message?.includes('cancel') || error.code === '16' || error.message?.includes('16:')) {
+          return 'Sign-in was cancelled.';
+        }
         return error.message || 'Authentication failed. Please try again.';
     }
   };
@@ -364,9 +370,29 @@ export const useAuth = () => {
       if (!isFirebaseConfigured || !auth) {
         throw new Error('FIREBASE_NOT_CONFIGURED');
       }
-      const result = await signInWithPopup(auth, googleProvider);
-      const cloudProfile = await fetchUserProfileFromCloud(result.user.uid);
-      const mapped = mapFirebaseUser(result.user, 'culinary_nomad', cloudProfile);
+
+      let firebaseUser: FirebaseUser;
+
+      if (Capacitor.isNativePlatform()) {
+        const { FirebaseAuthentication } = await import('@capacitor-firebase/authentication');
+        const nativeResult = await FirebaseAuthentication.signInWithGoogle();
+
+        if (nativeResult.credential?.idToken) {
+          const credential = GoogleAuthProvider.credential(nativeResult.credential.idToken);
+          const authRes = await signInWithCredential(auth, credential);
+          firebaseUser = authRes.user;
+        } else if (auth.currentUser) {
+          firebaseUser = auth.currentUser;
+        } else {
+          throw new Error('No credentials returned from Google Sign-In.');
+        }
+      } else {
+        const result = await signInWithPopup(auth, googleProvider);
+        firebaseUser = result.user;
+      }
+
+      const cloudProfile = await fetchUserProfileFromCloud(firebaseUser.uid);
+      const mapped = mapFirebaseUser(firebaseUser, 'culinary_nomad', cloudProfile);
 
       const isProducerRole = role === 'producer' || Boolean(cloudProfile?.isProducer);
       const resolvedProducerId = cloudProfile?.claimedProducerId || claimedProducerId;
@@ -725,6 +751,14 @@ export const useAuth = () => {
   // 6f. Sign Out
   const logout = useCallback(async () => {
     try {
+      if (Capacitor.isNativePlatform()) {
+        try {
+          const { FirebaseAuthentication } = await import('@capacitor-firebase/authentication');
+          await FirebaseAuthentication.signOut();
+        } catch (e) {
+          console.warn('Native sign out error:', e);
+        }
+      }
       if (isFirebaseConfigured && auth) {
         await firebaseSignOut(auth);
       }
