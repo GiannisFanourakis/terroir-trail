@@ -191,7 +191,8 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
             )}
 
-            {/* Artisan Boxes Delivery (xl and up) */}
+            {/* Artisan Boxes Delivery commented out until clientbase and logistics are established */}
+            {/*
             {onOpenWineBoxes && (
               <button
                 onClick={onOpenWineBoxes}
@@ -202,6 +203,7 @@ export const Header: React.FC<HeaderProps> = ({
                 <span>Artisan Boxes</span>
               </button>
             )}
+            */}
 
             {/* Login & Account Actions (Side by Side) */}
             <div className="flex items-center gap-1.5 shrink-0">
@@ -245,7 +247,7 @@ export const Header: React.FC<HeaderProps> = ({
                 onOpenProducerPortal={onOpenProducerPortal}
                 bookingsCount={bookingsCount}
                 onOpenExplorerPass={onOpenExplorerPass}
-                onOpenWineBoxes={onOpenWineBoxes}
+                /* onOpenWineBoxes={onOpenWineBoxes} */
                 onOpenAbout={onOpenAbout}
                 onOpenFaq={onOpenFaq}
                 onOpenLegal={onOpenLegal}

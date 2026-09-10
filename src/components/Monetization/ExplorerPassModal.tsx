@@ -50,9 +50,9 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
       desc: 'Collect unlimited digital artisan stamps and record sommelier tasting notes.',
     },
     {
-      icon: '✈️',
-      title: '€15 Off International Artisan Delivery',
-      desc: 'Temperature-controlled certified artisan boxes shipped directly to your door.',
+      icon: '🛡️',
+      title: '100% Ad-Free Pure Experience',
+      desc: 'Explore the map, directory, and estate profiles completely free of sponsor ads.',
     },
     {
       icon: '✨',
@@ -68,7 +68,7 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
     { feature: 'Artisanal Meze Pairing', free: '❌ Extra Charge', vip: '⭐ Free Graviera & Olives' },
     { feature: 'Direct Cellar Bottle Purchases', free: '❌ 0% Discount', vip: '⭐ 10% Off All Bottles' },
     { feature: 'Passport Stamps & Journal', free: 'Up to 3 Stamps', vip: '⭐ Unlimited Stamps' },
-    { feature: 'International Artisan Box Delivery', free: 'Standard Shipping', vip: '⭐ €15 Discount Voucher' },
+    { feature: 'Sponsor & Partner Ads', free: 'Standard Ads', vip: '⭐ 100% Ad-Free' },
     { feature: 'Digital Holographic Wallet Pass', free: '❌ None', vip: '⭐ Instant Apple/Google Pass' },
   ];
 

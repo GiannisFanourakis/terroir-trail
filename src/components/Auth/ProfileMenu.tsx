@@ -201,6 +201,8 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
               </button>
             )}
 
+            {/* Artisan Boxes commented out until clientbase and shipping logistics are established */}
+            {/*
             {onOpenWineBoxes && (
               <button
                 onClick={() => {
@@ -218,6 +220,7 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
                 </span>
               </button>
             )}
+            */}
 
             {onOpenMyBookings && (
               <button

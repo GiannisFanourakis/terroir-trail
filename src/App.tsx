@@ -22,6 +22,7 @@ import { WineBoxModal } from './components/Monetization/WineBoxModal';
 import { ExperienceExplorerModal } from './components/Experiences/ExperienceExplorerModal';
 import { AboutFaqModal } from './components/About/AboutFaqModal';
 import { LegalModal } from './components/Legal/LegalModal';
+import { SponsorBanner } from './components/Monetization/SponsorBanner';
 import { CRETAN_DAY_TRIP_LOOPS } from './data/loops';
 import { ChauffeurBooking, WineBoxOrder } from './types/monetization';
 import { List, MapPin } from 'lucide-react';
@@ -294,6 +295,16 @@ export const App: React.FC = () => {
             viewMode === 'map' ? 'block' : 'hidden lg:block'
           }`}
         >
+          {/* Sponsor / Travel Partner Ad Banner (Ad-Free for VIP Passholders) */}
+          <div className="absolute top-2.5 left-0 right-0 z-20 pointer-events-none flex justify-center px-3">
+            <div className="pointer-events-auto w-full max-w-3xl">
+              <SponsorBanner
+                hasExplorerPass={!!user?.hasExplorerPass}
+                onOpenExplorerPass={() => setIsPassModalOpen(true)}
+              />
+            </div>
+          </div>
+
           <MapCanvas
             producers={filteredProducers}
             selectedProducer={selectedProducer}
@@ -499,7 +510,8 @@ export const App: React.FC = () => {
       />
       */}
 
-      {/* 13. Taste of the Trail - International Artisan Delivery Modal */}
+      {/* 13. Taste of the Trail - International Artisan Delivery Modal (Commented out until clientbase and international shipping logistics are established) */}
+      {/*
       <WineBoxModal
         isOpen={isWineBoxModalOpen}
         onClose={() => setIsWineBoxModalOpen(false)}
@@ -508,6 +520,7 @@ export const App: React.FC = () => {
         onOpenAuth={() => setIsAuthModalOpen(true)}
         onOrderBox={handleConfirmWineOrder}
       />
+      */}
 
       {/* 14. 135+ Curated Terroir & Tasting Experiences Explorer Modal (Commented out until clientbase is built and direct deals on experiences are made with producers) */}
       {/*

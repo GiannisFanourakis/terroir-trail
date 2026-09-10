@@ -933,7 +933,8 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
               </a>
             )}
 
-            {/* Delivery Box (Wineries, Breweries, Olive Mills) */}
+            {/* Delivery Box commented out until clientbase and international courier logistics are established */}
+            {/*
             {onOpenWineBoxes && term.hasDeliveryBoxes && (
               <div
                 onClick={() => onOpenWineBoxes(term.deliveryCategory)}
@@ -958,6 +959,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                 </div>
               </div>
             )}
+            */}
 
             {/* Producer / Estate Host Login Prompt */}
             {(!user?.isProducer || user.claimedProducerId !== producer.id) && (
