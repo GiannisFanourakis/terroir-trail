@@ -1691,14 +1691,14 @@ export const CRETAN_PRODUCERS: Producer[] = [
   // --- ARTISANAL OLIVE MILLS & GROVES ---
   // ==========================================
   {
-    id: 'parasiris-olive-mill',
+    id: 'paraschakis-olive-mill',
     name: 'Paraschakis Family Olive Mill & Heritage Museum',
     greekName: 'Ελαιοτριβείο Οικογένειας Παρασχάκη (Melidoni)',
     category: 'olive_mill',
     destination: 'crete',
     region: 'Rethymno',
     village: 'Melidoni (Mylopotamos)',
-    coordinates: [35.3810, 24.7410],
+    coordinates: [35.3761, 24.7256],
     coverImage: 'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&w=1000&q=80',
     gallery: [
       'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&w=1000&q=80'
@@ -1711,7 +1711,7 @@ export const CRETAN_PRODUCERS: Producer[] = [
     openingHours: 'Daily: 09:00 - 19:00',
     phone: '+30 28340 22039',
     website: 'https://paraschakis.gr',
-    googleMapsUrl: 'https://maps.google.com/?q=35.3810,24.7410',
+    googleMapsUrl: 'https://maps.google.com/?q=35.3761,24.7256',
     roadAccess: 'paved',
     ethos: ['ancient_groves', 'family_estate', 'organic'],
     foodOption: 'dakos_snacks',

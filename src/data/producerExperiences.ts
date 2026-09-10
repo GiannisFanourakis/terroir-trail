@@ -1783,28 +1783,28 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "badge": "Master Distiller"
   },
   {
-    "id": "exp_parasiris-olive-mill_1",
-    "title": "Parasiris Olive Mill & Heritage Museum - Melidoni Heritage Mill Tour & Fresh Stone-Pressed EVOO Tasting",
+    "id": "exp_paraschakis-olive-mill_1",
+    "title": "Paraschakis Family Olive Mill & Heritage Museum - Melidoni Heritage Mill Tour & Fresh Stone-Pressed EVOO Tasting",
     "durationMinutes": 45,
     "pricePerPerson": 8,
-    "description": "At the historic Parasiris olive mill in Melidoni: explore the traditional stone press museum and modern ecological cold extraction unit, tasting 3 extra virgin olive oils.",
+    "description": "At the historic Paraschakis family olive mill in Melidoni: explore the traditional stone press museum and modern ecological cold extraction unit, tasting 3 extra virgin olive oils.",
     "includes": [
       "Tour of the working mill and the preserved 19th-century animal-drawn stone press museum",
       "Sensory tasting of 3 extra virgin olive oils (Koroneiki early harvest, Tsounati, Wild Olive)",
       "Fresh village sourdough bread baked daily, sea salt, and ripe garden tomatoes",
       "Demonstration of the cold two-phase extraction process preserving polyphenols"
     ],
-    "producerId": "parasiris-olive-mill",
-    "producerName": "Parasiris Olive Mill & Heritage Museum",
-    "producerGreekName": "Ελαιοτριβείο & Μουσείο Παρασύρη",
+    "producerId": "paraschakis-olive-mill",
+    "producerName": "Paraschakis Family Olive Mill & Heritage Museum",
+    "producerGreekName": "Ελαιοτριβείο Οικογένειας Παρασχάκη (Melidoni)",
     "category": "olive_mill",
     "destination": "crete",
     "location": "Rethymno, Melidoni (Mylopotamos)",
     "badge": "Heritage Mill (€8)"
   },
   {
-    "id": "exp_parasiris-olive-mill_2",
-    "title": "Parasiris Olive Mill & Heritage Museum - Olive Grove Walk, Wood-Fired Hearth & Cretan Meze Platter",
+    "id": "exp_paraschakis-olive-mill_2",
+    "title": "Paraschakis Family Olive Mill & Heritage Museum - Olive Grove Walk, Wood-Fired Hearth & Cretan Meze Platter",
     "durationMinutes": 75,
     "pricePerPerson": 22,
     "description": "Walk through ancient olive terraces around Melidoni village, watch traditional kalitsounia pies bake in a wood-fired outdoor oven, and feast on fresh olive oil pairings.",
@@ -1812,11 +1812,11 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
       "Guided walk among ancient olive trees with explanations of traditional pruning",
       "Wood-fired Cretan cheese and herb pies (kalitsounia) fresh from the stone oven",
       "Full tasting platter: pickled wild bulbs, cured olives, aged graviera & tsikoudia",
-      "Complimentary bottle of Parasiris Organic EVOO (100ml)"
+      "Complimentary bottle of Paraschakis Organic EVOO (100ml)"
     ],
-    "producerId": "parasiris-olive-mill",
-    "producerName": "Parasiris Olive Mill & Heritage Museum",
-    "producerGreekName": "Ελαιοτριβείο & Μουσείο Παρασύρη",
+    "producerId": "paraschakis-olive-mill",
+    "producerName": "Paraschakis Family Olive Mill & Heritage Museum",
+    "producerGreekName": "Ελαιοτριβείο Οικογένειας Παρασχάκη (Melidoni)",
     "category": "olive_mill",
     "destination": "crete",
     "location": "Rethymno, Melidoni (Mylopotamos)",
