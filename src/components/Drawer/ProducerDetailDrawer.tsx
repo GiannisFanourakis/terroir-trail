@@ -6,7 +6,7 @@ import {
   X, MapPin, Star, Phone, Globe, Navigation, Clock, 
   Dog, Footprints, Caravan, Car, Sparkles, Share2, Check, Heart, Award, 
   CheckCircle2, Wine, ShoppingBag, ArrowRight, Crown, Building2,
-  Camera, ChevronLeft, ChevronRight
+  Camera, ChevronLeft, ChevronRight, Beer
 } from 'lucide-react';
 import { useProducerPhotos } from '../../services/googlePlacesPhotos';
 
@@ -27,7 +27,7 @@ interface ProducerDetailDrawerProps {
   customNotice?: string;
   isProTier?: boolean;
   directBottleShopUrl?: string;
-  onOpenWineBoxes?: () => void;
+  onOpenWineBoxes?: (category?: 'wine' | 'beer' | 'olive_oil') => void;
   hasExplorerPass?: boolean;
   onOpenExplorerPass?: () => void;
 }
@@ -173,9 +173,118 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
     }
   };
 
+  const getCategoryTerminology = (category: Producer['category'], name: string) => {
+    switch (category) {
+      case 'brewery':
+        return {
+          makerTitle: 'head brewer or owner',
+          venueName: 'brewery',
+          productPlural: 'can & bottle',
+          storeLabel: 'Direct Brewery Bottle Shop',
+          storeSub: `Order fresh craft brews directly from ${name}'s taproom`,
+          discountLabel: 'Taproom Discount',
+          tastingNotePlaceholder: 'Record your thoughts on their craft beers, hop profiles, or seasonal releases...',
+          bookingLabel: 'Book Brewhouse Tour',
+          hasDeliveryBoxes: true,
+          deliveryCategory: 'beer' as const,
+          deliveryIcon: '🍺',
+          deliveryBoxTitle: 'Craft Beer Cold-Pack Delivery',
+          deliveryBadge: 'Fresh Brews',
+          deliveryBoxDesc: 'Brewery-fresh unpasteurized craft cans and ales shipped direct to your home.',
+        };
+      case 'olive_mill':
+        return {
+          makerTitle: 'master miller or owner',
+          venueName: 'estate & mill',
+          productPlural: 'bottle & tin',
+          storeLabel: 'Direct Mill Farm Shop',
+          storeSub: `Order harvest-fresh EVOO directly from ${name}'s mill`,
+          discountLabel: 'Mill Discount',
+          tastingNotePlaceholder: 'Record your thoughts on their olive oil harvest, polyphenols, or olive varieties...',
+          bookingLabel: 'Book Mill Visit',
+          hasDeliveryBoxes: true,
+          deliveryCategory: 'olive_oil' as const,
+          deliveryIcon: '🫒',
+          deliveryBoxTitle: 'Single-Estate EVOO Delivery',
+          deliveryBadge: 'Harvest Fresh',
+          deliveryBoxDesc: 'Certified cold-pressed extra virgin olive oils shipped direct from the grove.',
+        };
+      case 'kazani':
+        return {
+          makerTitle: 'master distiller or owner',
+          venueName: 'distillery',
+          productPlural: 'bottle',
+          storeLabel: 'Direct Distillery Store',
+          storeSub: `Order artisan spirits directly from ${name}'s still`,
+          discountLabel: 'Distillery Discount',
+          tastingNotePlaceholder: 'Record your thoughts on their tsikoudia distillation, botanicals, or aged spirits...',
+          bookingLabel: 'Book Tasting Visit',
+          hasDeliveryBoxes: false,
+          deliveryCategory: undefined,
+          deliveryIcon: '🏺',
+          deliveryBoxTitle: '',
+          deliveryBadge: '',
+          deliveryBoxDesc: '',
+        };
+      case 'cheese_dairy':
+        return {
+          makerTitle: 'master cheesemaker or shepherd',
+          venueName: 'mitato & dairy',
+          productPlural: 'cheese wheel & purchase',
+          storeLabel: 'Direct Dairy Store',
+          storeSub: `Order artisanal mountain cheeses directly from ${name}`,
+          discountLabel: 'Dairy Discount',
+          tastingNotePlaceholder: 'Record your thoughts on their graviera, mizithra, or mountain milk traditions...',
+          bookingLabel: 'Book Mitato Visit',
+          hasDeliveryBoxes: false,
+          deliveryCategory: undefined,
+          deliveryIcon: '🧀',
+          deliveryBoxTitle: '',
+          deliveryBadge: '',
+          deliveryBoxDesc: '',
+        };
+      case 'apiary':
+        return {
+          makerTitle: 'beekeeper or herbalist',
+          venueName: 'apiary',
+          productPlural: 'jar & product',
+          storeLabel: 'Direct Apiary Store',
+          storeSub: `Order raw wild thyme honey directly from ${name}`,
+          discountLabel: 'Farm Discount',
+          tastingNotePlaceholder: 'Record your thoughts on their thyme honey, aroma, or wild botanicals...',
+          bookingLabel: 'Book Apiary Tour',
+          hasDeliveryBoxes: false,
+          deliveryCategory: undefined,
+          deliveryIcon: '🍯',
+          deliveryBoxTitle: '',
+          deliveryBadge: '',
+          deliveryBoxDesc: '',
+        };
+      case 'winery':
+      default:
+        return {
+          makerTitle: 'winemaker or owner',
+          venueName: 'estate',
+          productPlural: 'bottle',
+          storeLabel: 'Direct Estate Bottle Store',
+          storeSub: `Order directly from ${name}'s cellar`,
+          discountLabel: 'Cellar Discount',
+          tastingNotePlaceholder: 'Record your thoughts on their wines, food pairings, or best vintage...',
+          bookingLabel: 'Book Tasting',
+          hasDeliveryBoxes: true,
+          deliveryCategory: 'wine' as const,
+          deliveryIcon: '✈️',
+          deliveryBoxTitle: 'International Cellar Delivery',
+          deliveryBadge: 'EU / UK / US',
+          deliveryBoxDesc: 'Temperature-controlled insulated boxes shipped straight to your doorstep.',
+        };
+    }
+  };
+
   const cat = getCategoryDetails(producer.category);
   const road = getRoadAccessDetails(producer.roadAccess);
   const vipPerks = getVipPerks(producer);
+  const term = getCategoryTerminology(producer.category, producer.name);
 
   return (
     <>
@@ -487,7 +596,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                 <textarea
                   value={noteDraft}
                   onChange={(e) => setNoteDraft(e.target.value)}
-                  placeholder="Record your thoughts on their wines, food pairings, or best vintage..."
+                  placeholder={term.tastingNotePlaceholder}
                   rows={2}
                   className="w-full p-2 bg-stone-900 border border-white/10 rounded-xl text-xs text-stone-100 focus:outline-none focus:border-amber-400"
                 />
@@ -748,7 +857,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                 </div>
                 <div className="flex items-center gap-2 text-stone-200">
                   <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                  <span><strong>Cellar Discount:</strong> {vipPerks.discountPercent}% off all bottle purchases</span>
+                  <span><strong>{term.discountLabel}:</strong> {vipPerks.discountPercent}% off all {term.productPlural} purchases</span>
                 </div>
               </div>
             </div>
@@ -767,34 +876,34 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                   </div>
                   <div>
                     <div className="text-xs font-bold text-amber-200 flex items-center gap-1.5">
-                      Direct Estate Bottle Store
+                      {term.storeLabel}
                       <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-amber-400/20 text-amber-300 font-normal">0% Commission</span>
                     </div>
-                    <div className="text-[11px] text-stone-400">Order directly from {producer.name}'s cellar</div>
+                    <div className="text-[11px] text-stone-400">{term.storeSub}</div>
                   </div>
                 </div>
                 <ArrowRight className="w-4 h-4 text-amber-400 group-hover:translate-x-0.5 transition" />
               </a>
             )}
 
-            {/* Taste of the Trail - International Delivery */}
-            {onOpenWineBoxes && (
+            {/* Delivery Box (Wineries, Breweries, Olive Mills) */}
+            {onOpenWineBoxes && term.hasDeliveryBoxes && (
               <div
-                onClick={onOpenWineBoxes}
+                onClick={() => onOpenWineBoxes(term.deliveryCategory)}
                 className="p-3.5 rounded-2xl bg-gradient-to-br from-stone-900 via-rose-950/20 to-stone-900 border border-rose-500/20 hover:border-rose-500/40 transition cursor-pointer group"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-center gap-3">
                     <div className="w-9 h-9 rounded-xl bg-rose-500/20 flex items-center justify-center text-rose-300 shrink-0 text-base">
-                      ✈️
+                      {term.deliveryIcon}
                     </div>
                     <div>
                       <div className="text-xs font-bold text-stone-100 flex items-center gap-1.5">
-                        International Cellar Delivery
-                        <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-rose-500/20 text-rose-300 font-medium">EU / UK / US</span>
+                        {term.deliveryBoxTitle}
+                        <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-rose-500/20 text-rose-300 font-medium">{term.deliveryBadge}</span>
                       </div>
                       <p className="text-[11px] text-stone-400 mt-0.5">
-                        Temperature-controlled insulated boxes shipped straight to your doorstep.
+                        {term.deliveryBoxDesc}
                       </p>
                     </div>
                   </div>
@@ -812,7 +921,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                   className="text-[11px] text-stone-400 hover:text-amber-300 transition cursor-pointer inline-flex items-center gap-1.5 hover:underline"
                 >
                   <Building2 className="w-3.5 h-3.5 text-amber-400/80" />
-                  <span>Are you the winemaker or owner of {producer.name}? Log in to manage this estate</span>
+                  <span>Are you the {term.makerTitle} of {producer.name}? Log in to manage this {term.venueName}</span>
                 </button>
               </div>
             )}
@@ -883,8 +992,12 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
             onClick={() => onOpenBooking(producer)}
             className="flex-1 min-w-0 flex items-center justify-center gap-1.5 py-3 px-2.5 sm:px-3.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-stone-950 font-bold text-xs rounded-2xl shadow-xl shadow-amber-500/20 transition transform active:scale-98 cursor-pointer whitespace-nowrap"
           >
-            <Wine className="w-4 h-4 shrink-0" />
-            <span className="truncate">Book Tasting</span>
+            {producer.category === 'brewery' ? (
+              <Beer className="w-4 h-4 shrink-0" />
+            ) : (
+              <Wine className="w-4 h-4 shrink-0" />
+            )}
+            <span className="truncate">{term.bookingLabel}</span>
           </button>
         )}
 

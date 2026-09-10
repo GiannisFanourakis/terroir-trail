@@ -24,6 +24,7 @@ export interface CuratedWineBox {
   id: string;
   name: string;
   tagline: string;
+  category?: 'wine' | 'beer' | 'olive_oil';
   bottlesCount: number;
   priceEur: number;
   coverImage: string;

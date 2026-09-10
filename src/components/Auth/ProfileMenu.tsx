@@ -220,10 +220,10 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
               >
                 <span className="flex items-center gap-2">
                   <Package className="w-3.5 h-3.5 text-rose-400" />
-                  <span>Wine Delivery</span>
+                  <span>Artisan Boxes</span>
                 </span>
                 <span className="px-1.5 py-0.2 rounded-full bg-rose-500/20 text-rose-300 text-[10px] font-bold border border-rose-500/30">
-                  EU/US
+                  Wine, Beer & EVOO
                 </span>
               </button>
             )}

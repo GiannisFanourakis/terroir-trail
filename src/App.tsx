@@ -38,6 +38,7 @@ export const App: React.FC = () => {
   const [isPassModalOpen, setIsPassModalOpen] = useState<boolean>(false);
   const [isChauffeurModalOpen, setIsChauffeurModalOpen] = useState<boolean>(false);
   const [isWineBoxModalOpen, setIsWineBoxModalOpen] = useState<boolean>(false);
+  const [wineBoxCategory, setWineBoxCategory] = useState<'all' | 'wine' | 'beer' | 'olive_oil'>('all');
   const [isExperiencesModalOpen, setIsExperiencesModalOpen] = useState<boolean>(false);
   const [isAboutFaqModalOpen, setIsAboutFaqModalOpen] = useState<boolean>(false);
   const [aboutFaqInitialTab, setAboutFaqInitialTab] = useState<'about' | 'faq'>('about');
@@ -241,7 +242,10 @@ export const App: React.FC = () => {
         onOpenProducerPortal={() => setIsPortalModalOpen(true)}
         bookingsCount={userBookings.length}
         onOpenExplorerPass={() => setIsPassModalOpen(true)}
-        onOpenWineBoxes={() => setIsWineBoxModalOpen(true)}
+        onOpenWineBoxes={() => {
+          setWineBoxCategory('all');
+          setIsWineBoxModalOpen(true);
+        }}
         onOpenAbout={() => {
           setAboutFaqInitialTab('about');
           setIsAboutFaqModalOpen(true);
@@ -352,7 +356,10 @@ export const App: React.FC = () => {
             customNotice={selectedProducer ? getOverride(selectedProducer.id)?.customNotice : undefined}
             isProTier={selectedProducer ? (getOverride(selectedProducer.id)?.isProTier ?? false) : false}
             directBottleShopUrl={selectedProducer ? getOverride(selectedProducer.id)?.directBottleShopUrl : undefined}
-            onOpenWineBoxes={() => setIsWineBoxModalOpen(true)}
+            onOpenWineBoxes={(category) => {
+              setWineBoxCategory(category || 'all');
+              setIsWineBoxModalOpen(true);
+            }}
             hasExplorerPass={!!user?.hasExplorerPass}
             onOpenExplorerPass={() => setIsPassModalOpen(true)}
           />
@@ -486,10 +493,11 @@ export const App: React.FC = () => {
         onBookChauffeur={handleConfirmChauffeurBooking}
       />
 
-      {/* 13. Taste of the Trail - International Wine Delivery Modal */}
+      {/* 13. Taste of the Trail - International Artisan Delivery Modal */}
       <WineBoxModal
         isOpen={isWineBoxModalOpen}
         onClose={() => setIsWineBoxModalOpen(false)}
+        initialCategory={wineBoxCategory}
         user={user}
         onOpenAuth={() => setIsAuthModalOpen(true)}
         onOrderBox={handleConfirmWineOrder}

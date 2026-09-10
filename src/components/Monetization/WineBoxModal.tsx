@@ -1,15 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { UserProfile } from '../../types/auth';
 import { CuratedWineBox, WineBoxOrder } from '../../types/monetization';
 import { CURATED_WINE_BOXES, SHIPPING_RATES } from '../../data/wineBoxes';
 import { 
   X, Wine, Plane, ShieldCheck, CheckCircle2, 
-  ArrowRight, Package, Truck, Sparkles, MapPin, Mail, User 
+  ArrowRight, Package, Truck, Sparkles, MapPin, Mail, User, Beer 
 } from 'lucide-react';
 
 interface WineBoxModalProps {
   isOpen: boolean;
   onClose: () => void;
+  initialCategory?: 'all' | 'wine' | 'beer' | 'olive_oil';
   user: UserProfile | null;
   onOrderBox: (order: WineBoxOrder) => Promise<void> | void;
   onOpenAuth: () => void;
@@ -18,13 +19,32 @@ interface WineBoxModalProps {
 export const WineBoxModal: React.FC<WineBoxModalProps> = ({
   isOpen,
   onClose,
+  initialCategory = 'all',
   user,
   onOrderBox,
   onOpenAuth,
 }) => {
   if (!isOpen) return null;
 
-  const [selectedBoxId, setSelectedBoxId] = useState<string>(CURATED_WINE_BOXES[0].id);
+  const [categoryFilter, setCategoryFilter] = useState<'all' | 'wine' | 'beer' | 'olive_oil'>(initialCategory);
+  const [selectedBoxId, setSelectedBoxId] = useState<string>(() => {
+    const initialMatching = CURATED_WINE_BOXES.find(b => initialCategory === 'all' || b.category === initialCategory);
+    return initialMatching ? initialMatching.id : CURATED_WINE_BOXES[0].id;
+  });
+
+  useEffect(() => {
+    if (initialCategory) {
+      setCategoryFilter(initialCategory);
+      const match = CURATED_WINE_BOXES.find(b => initialCategory === 'all' || b.category === initialCategory);
+      if (match) setSelectedBoxId(match.id);
+    }
+  }, [initialCategory, isOpen]);
+
+  const filteredBoxes = CURATED_WINE_BOXES.filter((b) => {
+    if (categoryFilter === 'all') return true;
+    return b.category === categoryFilter;
+  });
+
   const [shippingCountryCode, setShippingCountryCode] = useState<string>('DE');
   const [name, setName] = useState<string>(user?.name || '');
   const [email, setEmail] = useState<string>(user?.email || '');
@@ -35,7 +55,7 @@ export const WineBoxModal: React.FC<WineBoxModalProps> = ({
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [confirmedOrder, setConfirmedOrder] = useState<WineBoxOrder | null>(null);
 
-  const selectedBox = CURATED_WINE_BOXES.find((b) => b.id === selectedBoxId) || CURATED_WINE_BOXES[0];
+  const selectedBox = CURATED_WINE_BOXES.find((b) => b.id === selectedBoxId) || filteredBoxes[0] || CURATED_WINE_BOXES[0];
   const shippingRate = SHIPPING_RATES[shippingCountryCode] || SHIPPING_RATES.DE;
   const isVip = !!user?.hasExplorerPass;
   const vipDiscount = isVip ? 15 : 0;
@@ -94,10 +114,10 @@ export const WineBoxModal: React.FC<WineBoxModalProps> = ({
             <div>
               <div className="flex items-center gap-1.5">
                 <h2 className="font-serif-title text-base sm:text-lg font-bold text-white leading-tight">
-                  Ship Authentic Cretan Wines Home
+                  Ship Mediterranean Terroir & Craft Boxes Home
                 </h2>
                 <span className="text-[9px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-bold border border-emerald-500/30">
-                  Direct Estate Cellar
+                  Direct Producer Cellar & Grove
                 </span>
               </div>
               <p className="text-[11px] text-stone-400">
@@ -125,7 +145,7 @@ export const WineBoxModal: React.FC<WineBoxModalProps> = ({
 
               <div className="space-y-1">
                 <h3 className="font-serif-title text-xl font-bold text-white">
-                  Wine Box Order Confirmed!
+                  Artisan Box Order Confirmed!
                 </h3>
                 <p className="text-xs text-stone-400 max-w-sm mx-auto">
                   Your curated <span className="text-amber-300 font-bold">{confirmedOrder.boxName}</span> will be packed in certified shockproof packaging in Heraklion and dispatched to <span className="text-white font-bold">{confirmedOrder.shippingCountry}</span>.
@@ -135,7 +155,7 @@ export const WineBoxModal: React.FC<WineBoxModalProps> = ({
               <div className="p-4 rounded-2xl bg-stone-900 border border-white/10 text-left space-y-2 max-w-md mx-auto">
                 <div className="flex items-center justify-between pb-2 border-b border-white/10">
                   <span className="text-stone-400">Collection:</span>
-                  <span className="font-bold text-white text-right">{confirmedOrder.boxName} ({confirmedOrder.bottlesCount} Bottles)</span>
+                  <span className="font-bold text-white text-right">{confirmedOrder.boxName} ({confirmedOrder.bottlesCount} Items)</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-stone-400">Destination:</span>
@@ -164,12 +184,81 @@ export const WineBoxModal: React.FC<WineBoxModalProps> = ({
               
               {/* 1. Box Selection */}
               <div>
-                <label className="block text-stone-400 text-[11px] font-semibold mb-1.5">
-                  1. Choose Your Curated Greek Wine Box
-                </label>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2.5">
+                  <label className="block text-stone-400 text-[11px] font-semibold">
+                    1. Choose Your Curated Artisan Box
+                  </label>
+                  
+                  {/* Category Filter Tabs */}
+                  <div className="flex items-center gap-1 p-0.5 rounded-xl bg-stone-900 border border-white/10 self-start sm:self-auto flex-wrap">
+                    <button
+                      type="button"
+                      onClick={() => setCategoryFilter('all')}
+                      className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition cursor-pointer ${
+                        categoryFilter === 'all'
+                          ? 'bg-amber-500 text-stone-950 shadow-sm'
+                          : 'text-stone-400 hover:text-white'
+                      }`}
+                    >
+                      All Boxes
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setCategoryFilter('wine');
+                        const firstWine = CURATED_WINE_BOXES.find(b => b.category === 'wine');
+                        if (firstWine) setSelectedBoxId(firstWine.id);
+                      }}
+                      className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition cursor-pointer flex items-center gap-1 ${
+                        categoryFilter === 'wine'
+                          ? 'bg-rose-500 text-white shadow-sm'
+                          : 'text-stone-400 hover:text-white'
+                      }`}
+                    >
+                      🍷 Wine
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setCategoryFilter('beer');
+                        const firstBeer = CURATED_WINE_BOXES.find(b => b.category === 'beer');
+                        if (firstBeer) setSelectedBoxId(firstBeer.id);
+                      }}
+                      className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition cursor-pointer flex items-center gap-1 ${
+                        categoryFilter === 'beer'
+                          ? 'bg-amber-400 text-stone-950 shadow-sm'
+                          : 'text-stone-400 hover:text-white'
+                      }`}
+                    >
+                      🍺 Craft Beer
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setCategoryFilter('olive_oil');
+                        const firstOlive = CURATED_WINE_BOXES.find(b => b.category === 'olive_oil');
+                        if (firstOlive) setSelectedBoxId(firstOlive.id);
+                      }}
+                      className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition cursor-pointer flex items-center gap-1 ${
+                        categoryFilter === 'olive_oil'
+                          ? 'bg-emerald-500 text-white shadow-sm'
+                          : 'text-stone-400 hover:text-white'
+                      }`}
+                    >
+                      🫒 EVOO
+                    </button>
+                  </div>
+                </div>
+
                 <div className="space-y-2">
-                  {CURATED_WINE_BOXES.map((box) => {
+                  {filteredBoxes.map((box) => {
                     const isSelected = selectedBoxId === box.id;
+                    const itemsLabel = box.category === 'beer' 
+                      ? `${box.bottlesCount} Fresh Cans & Bottles` 
+                      : box.category === 'olive_oil'
+                      ? `${box.bottlesCount} Single-Estate Harvest EVOOs`
+                      : `${box.bottlesCount} Estate Bottles`;
+
                     return (
                       <button
                         key={box.id}
@@ -185,7 +274,7 @@ export const WineBoxModal: React.FC<WineBoxModalProps> = ({
                           <div className="flex items-center gap-2">
                             <span className="font-bold text-white text-xs">{box.name}</span>
                             <span className="text-[10px] px-1.5 py-0.5 rounded bg-stone-800 text-amber-300 font-bold">
-                              {box.bottlesCount} Bottles
+                              {itemsLabel}
                             </span>
                           </div>
                           <span className="font-serif-title font-bold text-sm text-white bg-amber-500/20 px-2 py-0.5 rounded-full border border-amber-500/30">
@@ -290,7 +379,7 @@ export const WineBoxModal: React.FC<WineBoxModalProps> = ({
               {/* Price Summary Bar */}
               <div className="p-3.5 rounded-2xl bg-stone-900/90 border border-white/10 space-y-2 text-xs">
                 <div className="flex items-center justify-between text-stone-400">
-                  <span>Wine Box ({selectedBox.bottlesCount} Bottles):</span>
+                  <span>Artisan Box ({selectedBox.bottlesCount} {selectedBox.category === 'beer' ? 'Cans & Bottles' : selectedBox.category === 'olive_oil' ? 'Bottles & Tins' : 'Bottles'}):</span>
                   <span className="font-semibold text-stone-200">€{selectedBox.priceEur}</span>
                 </div>
                 <div className="flex items-center justify-between text-stone-400">
@@ -335,7 +424,7 @@ export const WineBoxModal: React.FC<WineBoxModalProps> = ({
                   <span>Preparing Dispatch Order...</span>
                 ) : (
                   <>
-                    <span>Confirm International Wine Box Order (€{totalEur})</span>
+                    <span>Confirm International Delivery Order (€{totalEur})</span>
                     <ArrowRight className="w-4 h-4" />
                   </>
                 )}
@@ -343,7 +432,7 @@ export const WineBoxModal: React.FC<WineBoxModalProps> = ({
 
               <div className="flex items-center justify-center gap-1.5 text-[10px] text-stone-500 pt-1">
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
-                <span>Certified temperature-controlled transport · 100% Bottle Breakage Guarantee</span>
+                <span>Certified temperature-controlled transport · 100% Item Breakage & Cold-Chain Guarantee</span>
               </div>
             </form>
           )}
