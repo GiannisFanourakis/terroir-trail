@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { UserProfile } from '../../types/auth';
 import { 
   X, Award, CheckCircle2, Sparkles, ShieldCheck, 
-  Wine, Gift, Compass, CreditCard, Apple, ArrowRight, Star, Lock
+  Wine, Gift, Compass, CreditCard, Apple, ArrowRight, Star, Lock, QrCode
 } from 'lucide-react';
 
 interface ExplorerPassModalProps {
@@ -11,6 +11,7 @@ interface ExplorerPassModalProps {
   user: UserProfile | null;
   onActivatePass: (days?: number) => Promise<void> | void;
   onOpenAuth: (role?: 'traveler' | 'producer') => void;
+  onOpenDigitalPass?: () => void;
 }
 
 export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
@@ -19,6 +20,7 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
   user,
   onActivatePass,
   onOpenAuth,
+  onOpenDigitalPass,
 }) => {
   if (!isOpen) return null;
 
@@ -201,7 +203,9 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
                     </span>
                   </div>
                   <span className="text-[9px] px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/40 font-bold uppercase tracking-wider">
-                    VALID · 14 DAYS
+                    {user?.explorerPassUntil && (new Date(user.explorerPassUntil).getTime() - Date.now()) > 35 * 86400000 
+                      ? 'VALID · 365 DAYS' 
+                      : 'VALID · 14 DAYS'}
                   </span>
                 </div>
 
@@ -217,12 +221,26 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
                 </div>
               </div>
 
-              <button
-                onClick={onClose}
-                className="w-full max-w-sm py-3 rounded-2xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs shadow-xl transition active:scale-98 cursor-pointer mx-auto block"
-              >
-                Start Exploring with VIP Pass
-              </button>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-2 max-w-sm mx-auto">
+                {onOpenDigitalPass && (
+                  <button
+                    onClick={() => {
+                      onClose();
+                      onOpenDigitalPass();
+                    }}
+                    className="w-full py-3 rounded-2xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs shadow-xl transition active:scale-98 cursor-pointer flex items-center justify-center gap-1.5"
+                  >
+                    <QrCode className="w-4 h-4" />
+                    <span>Open Digital Pass & QR</span>
+                  </button>
+                )}
+                <button
+                  onClick={onClose}
+                  className="w-full py-3 rounded-2xl bg-stone-850 hover:bg-stone-800 text-stone-200 border border-white/10 font-bold text-xs transition active:scale-98 cursor-pointer"
+                >
+                  Start Exploring
+                </button>
+              </div>
             </div>
           ) : activeTab === 'compare' ? (
             /* Freemium Comparison Matrix View */

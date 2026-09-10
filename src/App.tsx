@@ -17,6 +17,8 @@ import { BookingModal } from './components/Bookings/BookingModal';
 import { ProducerPortalModal } from './components/Portal/ProducerPortalModal';
 import { MyBookingsModal } from './components/Bookings/MyBookingsModal';
 import { ExplorerPassModal } from './components/Monetization/ExplorerPassModal';
+import { DigitalPassModal } from './components/Monetization/DigitalPassModal';
+import { HostVerificationModal, VerifiedPassInfo } from './components/Monetization/HostVerificationModal';
 import { ChauffeurBookingModal } from './components/Monetization/ChauffeurBookingModal';
 import { WineBoxModal } from './components/Monetization/WineBoxModal';
 import { ExperienceExplorerModal } from './components/Experiences/ExperienceExplorerModal';
@@ -37,6 +39,8 @@ export const App: React.FC = () => {
   const [isPortalModalOpen, setIsPortalModalOpen] = useState<boolean>(false);
   const [isMyBookingsModalOpen, setIsMyBookingsModalOpen] = useState<boolean>(false);
   const [isPassModalOpen, setIsPassModalOpen] = useState<boolean>(false);
+  const [isDigitalPassModalOpen, setIsDigitalPassModalOpen] = useState<boolean>(false);
+  const [verifiedGuestInfo, setVerifiedGuestInfo] = useState<VerifiedPassInfo | null>(null);
   const [isChauffeurModalOpen, setIsChauffeurModalOpen] = useState<boolean>(false);
   const [isWineBoxModalOpen, setIsWineBoxModalOpen] = useState<boolean>(false);
   const [wineBoxCategory, setWineBoxCategory] = useState<'all' | 'wine' | 'beer' | 'olive_oil' | 'honey' | 'cheese'>('all');
@@ -81,7 +85,7 @@ export const App: React.FC = () => {
     activateExplorerPass,
   } = useAuth();
 
-  // Listen for Stripe Checkout redirects (?vip=success or ?producer=upgraded)
+  // Listen for Stripe Checkout redirects (?vip=success or ?producer=upgraded) or QR Pass Verifications (?verify_pass=...)
   const [stripeNotification, setStripeNotification] = useState<string | null>(null);
 
   useEffect(() => {
@@ -89,7 +93,15 @@ export const App: React.FC = () => {
     const params = new URLSearchParams(window.location.search);
     const vipParam = params.get('vip');
     const planParam = params.get('plan');
-    if (vipParam === 'annual' || (vipParam === 'success' && planParam === 'annual')) {
+    const verifyPassId = params.get('verify_pass');
+
+    if (verifyPassId) {
+      const guestName = params.get('name') || 'Valued Explorer';
+      const tier = params.get('tier') === 'annual' ? 'Annual VIP Explorer (365 Days)' : '14-Day VIP Holiday Pass';
+      setVerifiedGuestInfo({ passId: verifyPassId, name: guestName, tier });
+      const cleanUrl = window.location.origin + window.location.pathname;
+      window.history.replaceState({}, document.title, cleanUrl);
+    } else if (vipParam === 'annual' || (vipParam === 'success' && planParam === 'annual')) {
       activateExplorerPass(365);
       setStripeNotification('🎉 Welcome VIP Explorer! Your 365-Day Annual Pass is active & all ads are removed.');
       const cleanUrl = window.location.origin + window.location.pathname;
@@ -288,6 +300,7 @@ export const App: React.FC = () => {
         onOpenProducerPortal={() => setIsPortalModalOpen(true)}
         bookingsCount={userBookings.length}
         onOpenExplorerPass={() => setIsPassModalOpen(true)}
+        onOpenDigitalPass={() => setIsDigitalPassModalOpen(true)}
         onOpenWineBoxes={() => {
           setWineBoxCategory('all');
           setIsWineBoxModalOpen(true);
@@ -437,6 +450,7 @@ export const App: React.FC = () => {
             }}
             hasExplorerPass={!!user?.hasExplorerPass}
             onOpenExplorerPass={() => setIsPassModalOpen(true)}
+            onOpenDigitalPass={() => setIsDigitalPassModalOpen(true)}
           />
         )}
       </main>
@@ -496,6 +510,10 @@ export const App: React.FC = () => {
           setIsDrawerOpen(true);
         }}
         onOpenExplorerPass={() => setIsPassModalOpen(true)}
+        onOpenDigitalPass={() => {
+          setIsPassportModalOpen(false);
+          setIsDigitalPassModalOpen(true);
+        }}
       />
 
       {/* 8. Tasting Reservation Modal */}
@@ -559,6 +577,28 @@ export const App: React.FC = () => {
         user={user}
         onOpenAuth={() => setIsAuthModalOpen(true)}
         onActivatePass={(days = 14) => activateExplorerPass(days)}
+        onOpenDigitalPass={() => {
+          setIsPassModalOpen(false);
+          setIsDigitalPassModalOpen(true);
+        }}
+      />
+
+      {/* 11.1 Digital VIP Explorer Pass & Offline QR Modal */}
+      <DigitalPassModal
+        isOpen={isDigitalPassModalOpen}
+        onClose={() => setIsDigitalPassModalOpen(false)}
+        user={user}
+        onOpenExplorerPass={() => {
+          setIsDigitalPassModalOpen(false);
+          setIsPassModalOpen(true);
+        }}
+      />
+
+      {/* 11.2 Host Cellar Door Pass Verification Modal (When cellar master scans guest QR code) */}
+      <HostVerificationModal
+        isOpen={!!verifiedGuestInfo}
+        onClose={() => setVerifiedGuestInfo(null)}
+        guestInfo={verifiedGuestInfo}
       />
 
       {/* 12. Private Chauffeur & Mercedes Van Booking Modal (Commented out until deals are struck with chauffeurs / dealerships) */}

@@ -6,7 +6,7 @@ import {
   X, MapPin, Star, Phone, Globe, Navigation, Clock, 
   Dog, Footprints, Caravan, Car, Sparkles, Share2, Check, Heart, Award, 
   CheckCircle2, Wine, ShoppingBag, ArrowRight, Crown, Building2,
-  Camera, ChevronLeft, ChevronRight, Beer, Mail, Calendar
+  Camera, ChevronLeft, ChevronRight, Beer, Mail, Calendar, QrCode
 } from 'lucide-react';
 import { useProducerPhotos } from '../../services/googlePlacesPhotos';
 
@@ -30,6 +30,7 @@ interface ProducerDetailDrawerProps {
   onOpenWineBoxes?: (category?: 'wine' | 'beer' | 'olive_oil' | 'honey' | 'cheese') => void;
   hasExplorerPass?: boolean;
   onOpenExplorerPass?: () => void;
+  onOpenDigitalPass?: () => void;
 }
 
 export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
@@ -52,6 +53,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
   onOpenWineBoxes,
   hasExplorerPass = false,
   onOpenExplorerPass,
+  onOpenDigitalPass,
 }) => {
   const [copiedLink, setCopiedLink] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<'story' | 'tastings' | 'visit'>('story');
@@ -895,14 +897,25 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                 </div>
 
                 {hasExplorerPass ? (
-                  <span className="px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-400 font-bold text-[10px] border border-emerald-500/30 shrink-0">
-                    CLAIMABLE
-                  </span>
+                  onOpenDigitalPass ? (
+                    <button
+                      type="button"
+                      onClick={onOpenDigitalPass}
+                      className="px-2.5 py-1 rounded-xl bg-amber-400 hover:bg-amber-300 text-stone-950 font-bold text-[11px] shadow-sm transition shrink-0 cursor-pointer flex items-center gap-1.5 active:scale-95"
+                    >
+                      <QrCode className="w-3 h-3 text-stone-950" />
+                      <span>Show Pass</span>
+                    </button>
+                  ) : (
+                    <span className="px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-400 font-bold text-[10px] border border-emerald-500/30 shrink-0">
+                      CLAIMABLE
+                    </span>
+                  )
                 ) : onOpenExplorerPass && (
                   <button
                     type="button"
                     onClick={onOpenExplorerPass}
-                    className="px-2.5 py-1 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-[11px] shadow-sm transition shrink-0 cursor-pointer"
+                    className="px-2.5 py-1 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-[11px] shadow-sm transition shrink-0 cursor-pointer active:scale-95"
                   >
                     Unlock VIP
                   </button>

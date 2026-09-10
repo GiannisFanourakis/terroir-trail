@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Producer } from '../../types/terroir';
 import { UserProfile } from '../../types/auth';
-import { X, Award, CheckCircle2, Circle, MapPin, Edit3, Save, Compass, Crown, Sparkles } from 'lucide-react';
+import { X, Award, CheckCircle2, Circle, MapPin, Edit3, Save, Compass, Crown, Sparkles, QrCode } from 'lucide-react';
 import { UserAvatar } from '../Common/UserAvatar';
 
 interface PassportModalProps {
@@ -13,6 +13,7 @@ interface PassportModalProps {
   onSaveTastingNote: (producerId: string, note: string) => void;
   onSelectProducer: (producer: Producer) => void;
   onOpenExplorerPass?: () => void;
+  onOpenDigitalPass?: () => void;
 }
 
 export const PassportModal: React.FC<PassportModalProps> = ({
@@ -24,6 +25,7 @@ export const PassportModal: React.FC<PassportModalProps> = ({
   onSaveTastingNote,
   onSelectProducer,
   onOpenExplorerPass,
+  onOpenDigitalPass,
 }) => {
   const [filterMode, setFilterMode] = useState<'all' | 'stamped' | 'unstamped'>('all');
   const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
@@ -116,9 +118,24 @@ export const PassportModal: React.FC<PassportModalProps> = ({
                   </div>
                 </div>
               </div>
-              <span className="text-[10px] text-amber-300 font-bold px-2 py-1 rounded-lg bg-amber-400/15 border border-amber-400/30 shrink-0">
-                ACTIVE
-              </span>
+              <div className="flex items-center gap-1.5 shrink-0">
+                {onOpenDigitalPass && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onClose();
+                      onOpenDigitalPass();
+                    }}
+                    className="text-[10px] text-stone-950 font-bold px-2.5 py-1.5 rounded-xl bg-amber-400 hover:bg-amber-300 transition shadow flex items-center gap-1 cursor-pointer"
+                  >
+                    <QrCode className="w-3 h-3" />
+                    <span>Show Pass</span>
+                  </button>
+                )}
+                <span className="text-[10px] text-emerald-400 font-bold px-2 py-1 rounded-lg bg-emerald-500/15 border border-emerald-500/30">
+                  ACTIVE
+                </span>
+              </div>
             </div>
           ) : (
             <div className="p-3 rounded-2xl bg-gradient-to-r from-amber-500/15 via-stone-900 to-amber-950/20 border border-amber-500/30 flex items-center justify-between gap-3">

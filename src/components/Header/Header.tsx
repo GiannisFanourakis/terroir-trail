@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Destination } from '../../types/terroir';
 import { UserProfile } from '../../types/auth';
 import { ProfileMenu } from '../Auth/ProfileMenu';
-import { Compass, Search, X, Heart, Building2, Calendar, Crown, Package, Sparkles, BookOpen, HelpCircle, Menu } from 'lucide-react';
+import { Compass, Search, X, Heart, Building2, Calendar, Crown, Package, Sparkles, BookOpen, HelpCircle, Menu, Award, QrCode } from 'lucide-react';
 
 interface HeaderProps {
   selectedDestination: Destination | 'all';
@@ -26,6 +26,7 @@ interface HeaderProps {
   onOpenProducerPortal?: () => void;
   bookingsCount?: number;
   onOpenExplorerPass?: () => void;
+  onOpenDigitalPass?: () => void;
   onOpenWineBoxes?: () => void;
   onOpenAbout?: () => void;
   onOpenFaq?: () => void;
@@ -54,6 +55,7 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenProducerPortal,
   bookingsCount = 0,
   onOpenExplorerPass,
+  onOpenDigitalPass,
   onOpenWineBoxes,
   onOpenAbout,
   onOpenFaq,
@@ -125,18 +127,24 @@ export const Header: React.FC<HeaderProps> = ({
               {/* VIP Pass */}
               {onOpenExplorerPass && (
                 <button
-                  onClick={onOpenExplorerPass}
+                  onClick={() => {
+                    if (user?.hasExplorerPass && onOpenDigitalPass) {
+                      onOpenDigitalPass();
+                    } else {
+                      onOpenExplorerPass();
+                    }
+                  }}
                   className={`flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-bold rounded-xl border transition shrink-0 cursor-pointer ${
                     user?.hasExplorerPass
-                      ? 'bg-amber-500/20 text-amber-300 border-amber-400/40 shadow-sm'
+                      ? 'bg-amber-500/20 text-amber-300 border-amber-400/40 shadow-sm hover:border-amber-400'
                       : 'bg-stone-900 hover:bg-stone-850 text-stone-300 hover:text-white border-amber-500/30'
                   }`}
-                  title={user?.hasExplorerPass ? 'VIP Pass Active' : 'Upgrade to Holiday Pass'}
+                  title={user?.hasExplorerPass ? 'View Digital VIP Pass & QR' : 'Upgrade to Holiday Pass'}
                 >
                   <Crown className="w-3.5 h-3.5 text-amber-400 shrink-0" />
                   {user?.hasExplorerPass ? (
                     <span className="flex items-center gap-1 font-bold text-amber-300">
-                      <span>VIP</span>
+                      <span>VIP Pass</span>
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />
                     </span>
                   ) : (
@@ -189,6 +197,7 @@ export const Header: React.FC<HeaderProps> = ({
                 onOpenProducerPortal={onOpenProducerPortal}
                 bookingsCount={bookingsCount}
                 onOpenExplorerPass={onOpenExplorerPass}
+                onOpenDigitalPass={onOpenDigitalPass}
                 onOpenAbout={onOpenAbout}
                 onOpenFaq={onOpenFaq}
                 onOpenLegal={onOpenLegal}
@@ -298,7 +307,14 @@ export const Header: React.FC<HeaderProps> = ({
               {/* VIP Pass */}
               {onOpenExplorerPass && (
                 <button
-                  onClick={() => { onOpenExplorerPass(); closeMenu(); }}
+                  onClick={() => { 
+                    if (user?.hasExplorerPass && onOpenDigitalPass) {
+                      onOpenDigitalPass();
+                    } else {
+                      onOpenExplorerPass();
+                    }
+                    closeMenu(); 
+                  }}
                   className={`flex items-center gap-3 w-full px-3 py-3 text-sm font-semibold rounded-xl border transition cursor-pointer ${
                     user?.hasExplorerPass
                       ? 'bg-amber-500/20 text-amber-300 border-amber-400/40'
@@ -307,7 +323,7 @@ export const Header: React.FC<HeaderProps> = ({
                 >
                   <Crown className="w-4 h-4 text-amber-400 shrink-0" />
                   {user?.hasExplorerPass ? (
-                    <span className="flex items-center gap-2">VIP Pass Active <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" /></span>
+                    <span className="flex items-center gap-2">View Digital VIP Pass <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" /></span>
                   ) : (
                     <span>Get Holiday VIP Pass</span>
                   )}
@@ -318,50 +334,64 @@ export const Header: React.FC<HeaderProps> = ({
               {onOpenAbout && (
                 <button
                   onClick={() => { onOpenAbout(); closeMenu(); }}
-                  className="flex items-center gap-3 w-full px-3 py-3 text-sm font-semibold rounded-xl border border-white/10 bg-stone-900 text-stone-200 hover:border-amber-400/40 transition cursor-pointer"
+                  className="flex items-center gap-3 w-full px-3 py-3 text-sm font-semibold text-stone-200 hover:text-white bg-stone-900 hover:bg-stone-850 rounded-xl border border-white/10 hover:border-amber-400/40 transition cursor-pointer"
                 >
                   <BookOpen className="w-4 h-4 text-amber-400 shrink-0" />
                   <span>About & FAQ</span>
                 </button>
               )}
 
-              {/* Producer Login / Portal */}
+              {/* Producer Login / Claim Listing */}
               {user?.isProducer && user.claimedProducerId ? (
                 onOpenProducerPortal && (
                   <button
                     onClick={() => { onOpenProducerPortal(); closeMenu(); }}
-                    className="flex items-center gap-3 w-full px-3 py-3 text-sm font-semibold rounded-xl border border-amber-500/30 bg-amber-500/10 text-amber-300 hover:border-amber-400 transition cursor-pointer"
+                    className="flex items-center gap-3 w-full px-3 py-3 text-sm font-semibold text-amber-300 bg-amber-500/15 hover:bg-amber-500/25 rounded-xl border border-amber-500/30 transition cursor-pointer"
                   >
                     <Building2 className="w-4 h-4 text-amber-400 shrink-0" />
-                    <span className="truncate">{user.producerName || 'Estate Host Portal'}</span>
-                    <span className="ml-auto text-[9px] px-1.5 py-0.5 rounded-full bg-amber-400 text-stone-950 font-extrabold uppercase">Host</span>
+                    <span>Host Portal ({user.producerName?.split(' ')[0] || 'Estate'})</span>
                   </button>
                 )
               ) : (
                 <button
                   onClick={() => { onOpenAuth('producer'); closeMenu(); }}
-                  className="flex items-center gap-3 w-full px-3 py-3 text-sm font-semibold rounded-xl border border-white/10 bg-stone-900 text-stone-200 hover:border-amber-400/40 transition cursor-pointer"
+                  className="flex items-center gap-3 w-full px-3 py-3 text-sm font-semibold text-amber-400 bg-amber-500/10 hover:bg-amber-500/20 rounded-xl border border-amber-500/30 transition cursor-pointer"
                 >
-                  <Building2 className="w-4 h-4 text-amber-400/80 shrink-0" />
+                  <Building2 className="w-4 h-4 text-amber-400 shrink-0" />
                   <span>Host Portal</span>
                 </button>
               )}
 
-              {/* My Bookings */}
-              {onOpenMyBookings && user && (
+              {/* Terroir Passport */}
+              <button
+                onClick={() => { onOpenPassport(); closeMenu(); }}
+                className="flex items-center gap-3 w-full px-3 py-3 text-sm font-semibold text-stone-200 hover:text-white bg-stone-900 hover:bg-stone-850 rounded-xl border border-white/10 hover:border-amber-400/40 transition cursor-pointer"
+              >
+                <Award className="w-4 h-4 text-amber-400 shrink-0" />
+                <span>Terroir Passport</span>
+              </button>
+
+              {/* Day-Trip Loops */}
+              {onOpenLoops && (
                 <button
-                  onClick={() => { onOpenMyBookings(); closeMenu(); }}
-                  className="flex items-center gap-3 w-full px-3 py-3 text-sm font-semibold rounded-xl border border-white/10 bg-stone-900 text-stone-200 hover:border-amber-400/40 transition cursor-pointer"
+                  onClick={() => { onOpenLoops(); closeMenu(); }}
+                  className="flex items-center gap-3 w-full px-3 py-3 text-sm font-semibold text-stone-200 hover:text-white bg-stone-900 hover:bg-stone-850 rounded-xl border border-white/10 hover:border-amber-400/40 transition cursor-pointer"
                 >
-                  <Calendar className="w-4 h-4 text-amber-400 shrink-0" />
-                  <span>My Bookings</span>
-                  {bookingsCount > 0 && (
-                    <span className="ml-auto px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-xs font-mono">{bookingsCount}</span>
-                  )}
+                  <Compass className="w-4 h-4 text-amber-400 shrink-0" />
+                  <span>Day-Trip Loops</span>
                 </button>
               )}
 
-              <div className="border-t border-white/10 my-1" />
+              {/* Curated Experiences */}
+              {onOpenExperiences && (
+                <button
+                  onClick={() => { onOpenExperiences(); closeMenu(); }}
+                  className="flex items-center gap-3 w-full px-3 py-3 text-sm font-semibold text-stone-200 hover:text-white bg-stone-900 hover:bg-stone-850 rounded-xl border border-white/10 hover:border-amber-400/40 transition cursor-pointer"
+                >
+                  <Sparkles className="w-4 h-4 text-amber-400 shrink-0" />
+                  <span>Curated Experiences</span>
+                </button>
+              )}
 
               {/* Profile / Sign In */}
               <div onClick={closeMenu}>
@@ -376,6 +406,7 @@ export const Header: React.FC<HeaderProps> = ({
                   onOpenProducerPortal={onOpenProducerPortal}
                   bookingsCount={bookingsCount}
                   onOpenExplorerPass={onOpenExplorerPass}
+                  onOpenDigitalPass={onOpenDigitalPass}
                   onOpenAbout={onOpenAbout}
                   onOpenFaq={onOpenFaq}
                   onOpenLegal={onOpenLegal}

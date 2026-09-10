@@ -14,6 +14,7 @@ interface ProfileMenuProps {
   onOpenProducerPortal?: () => void;
   bookingsCount?: number;
   onOpenExplorerPass?: () => void;
+  onOpenDigitalPass?: () => void;
   onOpenWineBoxes?: () => void;
   onOpenAbout?: () => void;
   onOpenFaq?: () => void;
@@ -31,6 +32,7 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
   onOpenProducerPortal,
   bookingsCount = 0,
   onOpenExplorerPass,
+  onOpenDigitalPass,
   onOpenWineBoxes,
   onOpenAbout,
   onOpenFaq,
@@ -182,16 +184,20 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
                   type="button"
                   onClick={() => {
                     setIsOpen(false);
-                    onOpenExplorerPass();
+                    if (user.hasExplorerPass && onOpenDigitalPass) {
+                      onOpenDigitalPass();
+                    } else {
+                      onOpenExplorerPass();
+                    }
                   }}
                   className={`w-full py-1.5 rounded-xl text-[11px] font-bold flex items-center justify-center gap-1.5 transition cursor-pointer ${
                     user.hasExplorerPass
-                      ? 'bg-stone-800 hover:bg-stone-750 text-amber-300 border border-amber-400/30'
+                      ? 'bg-stone-800 hover:bg-stone-750 text-amber-300 border border-amber-400/30 shadow-md'
                       : 'bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-stone-950 shadow-md font-extrabold'
                   }`}
                 >
                   <Sparkles className="w-3 h-3" />
-                  <span>{user.hasExplorerPass ? 'View VIP Pass Privileges' : 'Get 14-Day VIP Pass (€14.99)'}</span>
+                  <span>{user.hasExplorerPass ? 'View Digital VIP Pass & QR' : 'Get 14-Day VIP Pass (€14.99)'}</span>
                 </button>
               )}
             </div>
@@ -251,13 +257,17 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
               <button
                 onClick={() => {
                   setIsOpen(false);
-                  onOpenExplorerPass();
+                  if (user.hasExplorerPass && onOpenDigitalPass) {
+                    onOpenDigitalPass();
+                  } else {
+                    onOpenExplorerPass();
+                  }
                 }}
                 className="w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-stone-300 hover:text-amber-300 hover:bg-amber-500/10 transition cursor-pointer"
               >
                 <span className="flex items-center gap-2">
                   <Crown className="w-3.5 h-3.5 text-amber-400" />
-                  <span>{user.hasExplorerPass ? 'VIP Pass Active' : 'VIP Pass (Optional)'}</span>
+                  <span>{user.hasExplorerPass ? 'Digital VIP Pass & QR' : 'VIP Pass (Optional)'}</span>
                 </span>
                 <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
                   user.hasExplorerPass 
