@@ -54,25 +54,13 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
 
   if (!user) {
     return (
-      <div className="flex items-center gap-1.5 shrink-0">
-        {onOpenAbout && (
-          <button
-            onClick={onOpenAbout}
-            className="hidden md:flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-bold bg-stone-900 hover:bg-stone-850 text-stone-300 hover:text-white border border-white/10 hover:border-amber-400/40 rounded-xl transition shrink-0 cursor-pointer"
-          >
-            <BookOpen className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-            <span>About & FAQ</span>
-          </button>
-        )}
-
-        <button
-          onClick={() => onOpenAuth('traveler')}
-          className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 active:scale-95 text-stone-950 text-xs font-bold transition shadow-md shadow-amber-500/20 shrink-0 cursor-pointer"
-        >
-          <User className="w-3.5 h-3.5" />
-          <span>Sign In</span>
-        </button>
-      </div>
+      <button
+        onClick={() => onOpenAuth('traveler')}
+        className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 active:scale-95 text-stone-950 text-xs font-bold transition shadow-md shadow-amber-500/20 shrink-0 cursor-pointer"
+      >
+        <User className="w-3.5 h-3.5" />
+        <span>Sign In</span>
+      </button>
     );
   }
 
