@@ -87,7 +87,14 @@ export const App: React.FC = () => {
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const params = new URLSearchParams(window.location.search);
-    if (params.get('vip') === 'success') {
+    const vipParam = params.get('vip');
+    const planParam = params.get('plan');
+    if (vipParam === 'annual' || (vipParam === 'success' && planParam === 'annual')) {
+      activateExplorerPass(365);
+      setStripeNotification('🎉 Welcome VIP Explorer! Your 365-Day Annual Pass is active & all ads are removed.');
+      const cleanUrl = window.location.origin + window.location.pathname;
+      window.history.replaceState({}, document.title, cleanUrl);
+    } else if (vipParam === 'success') {
       activateExplorerPass(14);
       setStripeNotification('🎉 Welcome VIP Explorer! Your 14-Day Holiday Pass is active & all ads are removed.');
       const cleanUrl = window.location.origin + window.location.pathname;

@@ -82,7 +82,7 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
 
     const stripeUrl = selectedPlan === 'holiday'
       ? import.meta.env.VITE_STRIPE_EXPLORER_PASS_URL
-      : import.meta.env.VITE_STRIPE_ANNUAL_PASS_URL || import.meta.env.VITE_STRIPE_EXPLORER_PASS_URL;
+      : import.meta.env.VITE_STRIPE_ANNUAL_PASS_URL;
 
     if (stripeUrl) {
       setIsProcessing(true);
