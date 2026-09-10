@@ -323,7 +323,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       <div ref={mapContainerRef} className="w-full h-full z-0" />
 
       {/* Floating Modern Controls */}
-      <div className="absolute top-3 right-3 sm:top-4 sm:right-4 z-20 flex flex-col items-end gap-2">
+      <div className="absolute top-16 right-3 sm:top-4 sm:right-4 z-20 flex flex-col items-end gap-2">
         
         {/* Layer Theme Selector Pill */}
         <div className="glass-panel p-1 rounded-2xl flex items-center shadow-2xl">

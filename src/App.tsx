@@ -286,8 +286,6 @@ export const App: React.FC = () => {
             onResetFilters={handleResetFilters}
             isFavorite={isFavorite}
             onToggleFavorite={toggleFavorite}
-            hasExplorerPass={!!user?.hasExplorerPass}
-            onOpenExplorerPass={() => setIsPassModalOpen(true)}
           />
         </div>
 
@@ -297,9 +295,9 @@ export const App: React.FC = () => {
             viewMode === 'map' ? 'block' : 'hidden lg:block'
           }`}
         >
-          {/* Desktop-only Sponsor / Travel Partner Ad Banner (Placed on left so it never overlaps map controls on the right) */}
-          <div className="hidden lg:flex absolute top-3 left-3 z-10 pointer-events-none">
-            <div className="pointer-events-auto max-w-sm xl:max-w-md">
+          {/* Sponsor / Travel Partner Ad Banner (Top Middle) */}
+          <div className="absolute top-2.5 left-0 right-0 z-20 pointer-events-none flex justify-center px-3">
+            <div className="pointer-events-auto w-full max-w-2xl">
               <GoogleAdSlot
                 hasExplorerPass={!!user?.hasExplorerPass}
                 onOpenExplorerPass={() => setIsPassModalOpen(true)}
