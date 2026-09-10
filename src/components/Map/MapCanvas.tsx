@@ -117,14 +117,18 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
         break;
     }
 
+    const shortVillage = producer.village
+      ? producer.village.split('(')[0].split(',')[0].trim()
+      : producer.region;
+
     return `
       <div class="modern-map-pin ${isSelected ? 'active-pin' : ''}">
         <div class="pin-icon-circle ${iconBg} border">
           ${icon}
         </div>
-        <div class="flex flex-col text-left">
-          <span class="pin-text-label">${producer.name}</span>
-          <span class="text-[9px] opacity-75 font-mono">★ ${producer.rating} · ${producer.village}</span>
+        <div class="pin-text-container">
+          <span class="pin-text-label" title="${producer.name}">${producer.name}</span>
+          <span class="pin-text-sub">★ ${producer.rating} · ${shortVillage}</span>
         </div>
       </div>
     `;
@@ -237,8 +241,8 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       const customIcon = L.divIcon({
         html: getMarkerHtml(producer, isSelected),
         className: 'custom-leaflet-pin-wrapper',
-        iconSize: [160, 40],
-        iconAnchor: [80, 20],
+        iconSize: [180, 42],
+        iconAnchor: [90, 21],
       });
 
       const marker = L.marker(producer.coordinates, {
@@ -325,7 +329,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
         <div className="glass-panel p-1 rounded-2xl flex items-center shadow-2xl">
           <button
             onClick={() => setMapTheme('topo')}
-            className={`px-2.5 py-1 sm:px-3 sm:py-1.5 text-[11px] sm:text-xs font-semibold rounded-xl transition-all ${
+            className={`px-2.5 py-1 sm:px-3 sm:py-1.5 text-[11px] sm:text-xs font-semibold rounded-xl transition-all whitespace-nowrap ${
               mapTheme === 'topo'
                 ? 'bg-amber-500 text-stone-950 shadow-md font-bold'
                 : 'text-stone-300 hover:text-white hover:bg-white/5'
@@ -336,7 +340,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
           </button>
           <button
             onClick={() => setMapTheme('voyager')}
-            className={`px-2.5 py-1 sm:px-3 sm:py-1.5 text-[11px] sm:text-xs font-semibold rounded-xl transition-all ${
+            className={`px-2.5 py-1 sm:px-3 sm:py-1.5 text-[11px] sm:text-xs font-semibold rounded-xl transition-all whitespace-nowrap ${
               mapTheme === 'voyager'
                 ? 'bg-amber-500 text-stone-950 shadow-md font-bold'
                 : 'text-stone-300 hover:text-white hover:bg-white/5'
@@ -347,7 +351,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
           </button>
           <button
             onClick={() => setMapTheme('dark')}
-            className={`px-2.5 py-1 sm:px-3 sm:py-1.5 text-[11px] sm:text-xs font-semibold rounded-xl transition-all ${
+            className={`px-2.5 py-1 sm:px-3 sm:py-1.5 text-[11px] sm:text-xs font-semibold rounded-xl transition-all whitespace-nowrap ${
               mapTheme === 'dark'
                 ? 'bg-amber-500 text-stone-950 shadow-md font-bold'
                 : 'text-stone-300 hover:text-white hover:bg-white/5'
@@ -358,7 +362,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
           </button>
           <button
             onClick={() => setMapTheme('satellite')}
-            className={`px-2.5 py-1 sm:px-3 sm:py-1.5 text-[11px] sm:text-xs font-semibold rounded-xl transition-all ${
+            className={`px-2.5 py-1 sm:px-3 sm:py-1.5 text-[11px] sm:text-xs font-semibold rounded-xl transition-all whitespace-nowrap ${
               mapTheme === 'satellite'
                 ? 'bg-amber-500 text-stone-950 shadow-md font-bold'
                 : 'text-stone-300 hover:text-white hover:bg-white/5'
