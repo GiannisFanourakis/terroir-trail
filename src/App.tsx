@@ -224,7 +224,7 @@ export const App: React.FC = () => {
         searchQuery={filters.searchQuery}
         onSearchChange={(query: string) => handleFilterChange('searchQuery', query)}
         onOpenLoops={() => setIsLoopsModalOpen(true)}
-        onOpenExperiences={() => setIsExperiencesModalOpen(true)}
+        /* onOpenExperiences={() => setIsExperiencesModalOpen(true)} - Commented out until direct deals on experiences are made with producers */
         totalFilteredCount={filteredProducers.length}
         viewMode={viewMode}
         onToggleViewMode={() => setViewMode((prev) => (prev === 'map' ? 'list' : 'map'))}
@@ -505,7 +505,8 @@ export const App: React.FC = () => {
         onOrderBox={handleConfirmWineOrder}
       />
 
-      {/* 14. 135+ Curated Terroir & Tasting Experiences Explorer Modal */}
+      {/* 14. 135+ Curated Terroir & Tasting Experiences Explorer Modal (Commented out until clientbase is built and direct deals on experiences are made with producers) */}
+      {/*
       <ExperienceExplorerModal
         isOpen={isExperiencesModalOpen}
         onClose={() => setIsExperiencesModalOpen(false)}
@@ -522,6 +523,7 @@ export const App: React.FC = () => {
           setIsExperiencesModalOpen(false);
         }}
       />
+      */}
 
       {/* 15. About Us & Frequently Asked Questions Modal */}
       <AboutFaqModal
@@ -529,7 +531,7 @@ export const App: React.FC = () => {
         onClose={() => setIsAboutFaqModalOpen(false)}
         initialTab={aboutFaqInitialTab}
         onOpenLoops={() => setIsLoopsModalOpen(true)}
-        onOpenExperiences={() => setIsExperiencesModalOpen(true)}
+        /* onOpenExperiences={() => setIsExperiencesModalOpen(true)} */
         onOpenAuth={(role) => {
           setAuthInitialRole(role || 'traveler');
           setIsAuthModalOpen(true);

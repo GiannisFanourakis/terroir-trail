@@ -38,8 +38,8 @@ const FAQ_DATA: FaqItem[] = [
     question: 'What is TerroirTrail and how is it different from Tripadvisor or Google Maps?',
     answer: 'Standard mapping and travel portals list commercial mass-tourist wine factories alongside bus tour traps. TerroirTrail is an exclusively curated agritourism discovery platform strictly dedicated to independent, family-owned, and sustainable producers. Every winery, craft brewery, rakokazano distillery, and mountain dairy on TerroirTrail has been hand-selected for authentic hospitality, low-intervention methods, and estate-bottled craftsmanship.',
     highlight: 'Strictly zero commercial bulk factories or mass-bus tour traps.',
-    actionText: 'Explore Curated Experiences',
-    actionType: 'experiences',
+    actionText: 'Explore Curated Day Circuits',
+    actionType: 'loops',
   },
   {
     id: 'how-producers-selected',

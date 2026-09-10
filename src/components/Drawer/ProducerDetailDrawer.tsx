@@ -740,7 +740,11 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
               </div>
             </div>
 
-            {/* Curated Bookable Experiences */}
+            {/* 
+              Specific preset tasting packages commented out for now until direct experience 
+              deals and partnerships are established with the producers themselves.
+            */}
+            {/*
             <div>
               <div className="flex items-center justify-between mb-2.5">
                 <h3 className="text-xs font-bold uppercase tracking-wider text-stone-400 flex items-center gap-1.5">
@@ -791,7 +795,6 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                       {exp.description}
                     </p>
 
-                    {/* Includes checklist */}
                     <div className="pt-1.5 border-t border-white/5 space-y-1">
                       {exp.includes.map((inc, i) => (
                         <div key={i} className="flex items-center gap-1.5 text-[10px] text-stone-400">
@@ -803,6 +806,50 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                   </div>
                 ))}
               </div>
+            </div>
+            */}
+
+            {/* Direct Cellar Door Visits & Tastings Card */}
+            <div className="p-4 rounded-2xl bg-stone-900/90 border border-white/10 space-y-3">
+              <div className="flex items-center justify-between">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-white flex items-center gap-1.5">
+                  <Wine className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                  Tastings & Cellar Visits
+                </h3>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 font-bold border border-emerald-500/20">
+                  0% Commission
+                </span>
+              </div>
+
+              <p className="text-xs text-stone-300 leading-relaxed">
+                Tastings, cellar walks, and estate visits are hosted directly by {producer.name}. Tasting options and fees are set independently by the estate and payable directly at the cellar door.
+              </p>
+
+              <div className="grid grid-cols-2 gap-2 text-[11px] pt-1 border-t border-white/5">
+                <div className="space-y-0.5">
+                  <span className="text-[10px] text-stone-400 block font-medium">Visiting Style</span>
+                  <span className="font-semibold text-stone-200">
+                    {producer.walkInFriendly ? 'Walk-in Welcome' : 'By Appointment'}
+                  </span>
+                </div>
+                <div className="space-y-0.5">
+                  <span className="text-[10px] text-stone-400 block font-medium">Opening Hours</span>
+                  <span className="font-semibold text-stone-200 truncate block">
+                    {producer.openingHours}
+                  </span>
+                </div>
+              </div>
+
+              {onOpenBooking && (
+                <button
+                  type="button"
+                  onClick={() => onOpenBooking(producer)}
+                  className="w-full mt-1 py-2.5 px-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs shadow-sm transition active:scale-98 cursor-pointer flex items-center justify-center gap-1.5"
+                >
+                  <Wine className="w-3.5 h-3.5" />
+                  <span>Request Tasting Visit</span>
+                </button>
+              )}
             </div>
 
             {/* VIP Terroir Explorer Pass Perks Card (Freemium Privilege) */}

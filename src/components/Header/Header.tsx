@@ -130,7 +130,8 @@ export const Header: React.FC<HeaderProps> = ({
               <span className="hidden sm:inline">Circuits</span>
             </button>
 
-            {/* 135+ Curated Terroir Experiences */}
+            {/* Curated Experiences button commented out for now until clientbase is built and direct deals on experiences are made with producers */}
+            {/*
             {onOpenExperiences && (
               <button
                 onClick={onOpenExperiences}
@@ -144,6 +145,7 @@ export const Header: React.FC<HeaderProps> = ({
                 </span>
               </button>
             )}
+            */}
 
             {/* Freemium Plan Status & VIP Upgrade (sm and up) */}
             {onOpenExplorerPass && (

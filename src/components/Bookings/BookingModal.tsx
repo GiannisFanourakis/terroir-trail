@@ -20,6 +20,29 @@ interface BookingModalProps {
   onOpenAuth: () => void;
 }
 
+const VISIT_OPTIONS = [
+  {
+    id: 'estate_tasting',
+    title: 'Cellar Door Tasting & Estate Visit',
+    desc: 'Guided sampling of estate produce/wines. Tasting fees payable directly at the cellar door.',
+  },
+  {
+    id: 'vineyard_tour',
+    title: 'Vineyard Walk & Cellar Tour',
+    desc: 'Tour the grounds and barrel cellars, followed by tasting. Arranged directly with the host.',
+  },
+  {
+    id: 'cellar_purchase',
+    title: 'Cellar Door Bottle Purchase & Quick Tasting',
+    desc: 'Visit to sample and purchase bottles directly for your holiday or cellar collection.',
+  },
+  {
+    id: 'group_custom',
+    title: 'Group or Custom Agritourism Inquiry',
+    desc: 'Special group tasting, food pairing, or masterclass request.',
+  },
+];
+
 export const BookingModal: React.FC<BookingModalProps> = ({
   isOpen,
   onClose,
@@ -31,7 +54,11 @@ export const BookingModal: React.FC<BookingModalProps> = ({
 }) => {
   if (!isOpen || !producer) return null;
 
+  // Curated preset packages are commented out until direct experience agreements are in place with producers.
   const experiences = getExperiencesForProducer(producer);
+  const [selectedVisitTypeId, setSelectedVisitTypeId] = useState<string>('estate_tasting');
+  const selectedVisitType = VISIT_OPTIONS.find((v) => v.id === selectedVisitTypeId) || VISIT_OPTIONS[0];
+
   const [selectedExpId, setSelectedExpId] = useState<string>(
     initialExperienceId && experiences.some((e) => e.id === initialExperienceId)
       ? initialExperienceId
@@ -102,11 +129,11 @@ export const BookingModal: React.FC<BookingModalProps> = ({
         userPhone: phone.trim(),
         date,
         timeSlot,
-        experienceId: selectedExp.id,
-        experienceTitle: selectedExp.title,
-        pricePerPerson: selectedExp.pricePerPerson,
+        experienceId: selectedVisitType.id,
+        experienceTitle: selectedVisitType.title,
+        pricePerPerson: 0,
         guestsCount,
-        totalEstimated,
+        totalEstimated: 0,
         specialRequests: specialRequests.trim() || undefined,
       });
       setConfirmedBooking(created);
@@ -191,8 +218,12 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                   <span className="font-bold text-white">{confirmedBooking.guestsCount} {confirmedBooking.guestsCount === 1 ? 'Guest' : 'Guests'}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-stone-400 text-[11px]">Estimated Cost:</span>
-                  <span className="font-bold text-emerald-400 text-sm">€{confirmedBooking.totalEstimated} total (€{confirmedBooking.pricePerPerson}/pers)</span>
+                  <span className="text-stone-400 text-[11px]">Tasting Fee:</span>
+                  <span className="font-bold text-emerald-400 text-xs">
+                    {confirmedBooking.totalEstimated > 0
+                      ? `€${confirmedBooking.totalEstimated} total (€${confirmedBooking.pricePerPerson}/pers)`
+                      : 'Pay directly at cellar door (0% commission)'}
+                  </span>
                 </div>
                 <div className="flex items-center justify-between pt-1 text-[10px] text-stone-500 border-t border-white/5">
                   <span>Booking ID: <code className="text-stone-400">{confirmedBooking.id.slice(0, 16)}...</code></span>
@@ -232,7 +263,12 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                 </div>
               )}
 
-              {/* 1. Choose Experience */}
+              {/* 1. Choose Tasting / Visit Type */}
+              {/* 
+                Specific preset tasting packages commented out for now until direct experience
+                deals and partnerships are established with the producers themselves.
+              */}
+              {/*
               <div>
                 <label className="block text-stone-400 text-[11px] font-semibold mb-1.5">
                   1. Choose Tasting Experience
@@ -268,6 +304,41 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                           </span>
                         ))}
                       </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+              */}
+
+              {/* Direct Visit Type Selection */}
+              <div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="block text-stone-400 text-[11px] font-semibold">
+                    1. Select Visit Type
+                  </label>
+                  <span className="text-[10px] text-emerald-400 font-bold">
+                    0% Booking Fee
+                  </span>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {VISIT_OPTIONS.map((opt) => (
+                    <button
+                      key={opt.id}
+                      type="button"
+                      onClick={() => setSelectedVisitTypeId(opt.id)}
+                      className={`text-left p-3 rounded-2xl border transition cursor-pointer flex flex-col justify-between ${
+                        selectedVisitTypeId === opt.id
+                          ? 'bg-amber-500/15 border-amber-500/60 ring-1 ring-amber-500/40 text-amber-200'
+                          : 'bg-stone-900 border-white/10 hover:border-white/20 text-stone-300'
+                      }`}
+                    >
+                      <div>
+                        <div className="font-bold text-white text-xs mb-0.5">{opt.title}</div>
+                        <p className="text-[10px] text-stone-400 leading-snug">{opt.desc}</p>
+                      </div>
+                      <span className="text-[9px] text-amber-400/90 font-medium mt-2 block">
+                        ✓ Tasting fees direct at cellar door
+                      </span>
                     </button>
                   ))}
                 </div>
@@ -405,7 +476,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                   <span>Sending request to estate...</span>
                 ) : (
                   <>
-                    <span>Request Tasting Reservation (€{totalEstimated})</span>
+                    <span>Request Tasting Visit Appointment</span>
                     <ArrowRight className="w-4 h-4" />
                   </>
                 )}
