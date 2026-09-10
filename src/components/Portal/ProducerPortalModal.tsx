@@ -177,6 +177,8 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
     } catch (err: any) {
       if (err.message === 'FIREBASE_NOT_CONFIGURED') {
         setOauthError('Apple sign-in requires Firebase credentials. Check your .env file or use 1-Click Host Demo.');
+      } else if (err.code === 'auth/operation-not-allowed' || err.message?.includes('operation-not-allowed')) {
+        setOauthError('Apple Sign-In is not enabled yet in your Firebase project. To use it, enable Apple in Firebase Console ➔ Authentication ➔ Sign-in method, or sign in with Google or 1-Click Host Demo.');
       } else {
         setOauthError(err.message || 'Apple sign-in failed.');
       }

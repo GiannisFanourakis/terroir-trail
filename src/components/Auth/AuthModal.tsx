@@ -138,6 +138,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     } catch (err: any) {
       if (err.message === 'FIREBASE_NOT_CONFIGURED') {
         setLocalError('Apple sign-in requires Firebase credentials. Check your .env file.');
+      } else if (err.code === 'auth/operation-not-allowed' || err.message?.includes('operation-not-allowed')) {
+        setLocalError('Apple Sign-In is not enabled yet in your Firebase project. To use it, enable Apple in Firebase Console ➔ Authentication ➔ Sign-in method (requires Apple Developer credentials), or sign in with Google or Email.');
       } else {
         setLocalError(err.message || 'Apple sign-in failed.');
       }

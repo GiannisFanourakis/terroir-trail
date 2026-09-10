@@ -193,6 +193,8 @@ export const useAuth = () => {
         return 'Unauthorized domain. Please add this domain to authorized domains in Firebase Console.';
       case 'auth/configuration-not-found':
         return 'Authentication is not yet enabled in Firebase Console. Go to Build ➔ Authentication to enable Email/Password and Google.';
+      case 'auth/operation-not-allowed':
+        return 'Apple Sign-In is not enabled yet in your Firebase Console. Please enable Apple in Firebase Console ➔ Authentication ➔ Sign-in method (requires Apple Developer credentials), or sign in with Google or Email.';
       case 'auth/too-many-requests':
         return 'Access has been temporarily disabled due to many failed attempts. Please reset your password or try again later.';
       case 'auth/network-request-failed':
