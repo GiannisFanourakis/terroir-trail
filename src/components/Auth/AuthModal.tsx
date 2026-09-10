@@ -107,9 +107,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         setSelectedProducerId(initialProdId);
         const p = producers.find((prod) => prod.id === initialProdId);
         if (p) {
-          setLegalBusinessName(p.name);
-          setRegisteredAddress(`${p.village}, ${p.region} (${p.country || 'Greece'})`);
-          setDispatchContactPhone(p.phone || '');
+          setLegalBusinessName('');
+          setRegisteredAddress('');
+          setDispatchContactPhone('');
           const initialCountry = (p.country === 'Italy' || p.destination === 'tuscany') ? 'IT' : 'GR';
           setFiscalCountry(initialCountry);
         }
@@ -125,9 +125,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     setSelectedProducerId(prodId);
     const p = producers.find((prod) => prod.id === prodId);
     if (p) {
-      setLegalBusinessName(p.name);
-      setRegisteredAddress(`${p.village}, ${p.region} (${p.country || 'Greece'})`);
-      setDispatchContactPhone(p.phone || '');
+      setLegalBusinessName('');
+      setRegisteredAddress('');
+      setDispatchContactPhone('');
       const initialCountry = (p.country === 'Italy' || p.destination === 'tuscany') ? 'IT' : 'GR';
       setFiscalCountry(initialCountry);
     }
@@ -1106,7 +1106,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                             value={vatNumber}
                             onChange={(e) => setVatNumber(e.target.value.toUpperCase())}
                             placeholder={fiscalLabels.placeholder}
-                            className={`w-full bg-stone-950 border rounded-xl pl-9 pr-3 py-2.5 text-xs focus:outline-none transition ${
+                            className={`w-full bg-stone-950 border rounded-xl pl-9 pr-3 py-2.5 text-xs focus:outline-none placeholder:text-stone-500 transition ${
                               vatValidation?.isValid
                                 ? 'border-emerald-500/60 text-emerald-300'
                                 : vatNumber.trim()
@@ -1141,8 +1141,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                             type="text"
                             value={legalBusinessName}
                             onChange={(e) => setLegalBusinessName(e.target.value)}
-                            placeholder={selectedProducer ? `${selectedProducer.name} (Demo Entity)` : 'Artisan Producer (Demo)'}
-                            className="w-full bg-stone-950 border border-white/10 text-white rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-amber-400 transition"
+                            placeholder={selectedProducer ? `e.g. ${selectedProducer.name} Estate Partnership (Demo)` : 'e.g. Artisan Producer (Demo)'}
+                            className="w-full bg-stone-950 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-amber-400 transition"
                           />
                         </div>
 
@@ -1156,8 +1156,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                               type="tel"
                               value={dispatchContactPhone}
                               onChange={(e) => setDispatchContactPhone(e.target.value)}
-                              placeholder={fiscalCountry === 'IT' ? '+39 0577 000000' : fiscalCountry === 'FR' ? '+33 1 00 00 00 00' : fiscalCountry === 'ES' ? '+34 910 000000' : '+30 2810 000000'}
-                              className="w-full bg-stone-950 border border-white/10 text-white rounded-xl pl-8 pr-3 py-2 text-xs focus:outline-none focus:border-amber-400 transition"
+                              placeholder={fiscalCountry === 'IT' ? 'e.g. +39 0577 000000' : fiscalCountry === 'FR' ? 'e.g. +33 1 00 00 00 00' : fiscalCountry === 'ES' ? 'e.g. +34 910 000000' : 'e.g. +30 2810 000000'}
+                              className="w-full bg-stone-950 border border-white/10 text-white placeholder:text-stone-500 rounded-xl pl-8 pr-3 py-2 text-xs focus:outline-none focus:border-amber-400 transition"
                             />
                           </div>
                         </div>
@@ -1172,8 +1172,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                           type="text"
                           value={registeredAddress}
                           onChange={(e) => setRegisteredAddress(e.target.value)}
-                          placeholder={selectedProducer ? `${selectedProducer.village}, ${selectedProducer.region}` : 'Facility street address, Postal code, Region'}
-                          className="w-full bg-stone-950 border border-white/10 text-white rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-amber-400 transition"
+                          placeholder={selectedProducer ? `e.g. ${selectedProducer.village}, ${selectedProducer.region}` : 'e.g. Facility street address, Postal code, Region'}
+                          className="w-full bg-stone-950 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-amber-400 transition"
                         />
                       </div>
 

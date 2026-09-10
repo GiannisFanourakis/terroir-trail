@@ -66,27 +66,29 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
     initialProducerId || defaultProducer.id
   );
 
+  const currentProducer = allProducers.find((p: Producer) => p.id === selectedProducerId) || defaultProducer;
+
   const [activeTab, setActiveTab] = useState<TabKey>('fiscal');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState<ProducerRegistrationRecord | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
   const [copiedPayload, setCopiedPayload] = useState(false);
 
-  // --- Form State ---
+  // --- Form State (Default empty strings so suggestive examples render strictly as ghost text placeholders) ---
   // Step 1: Fiscal & Identity
   const [producerCategory, setProducerCategory] = useState<ProducerRegistrationRecord['producerCategory']>(
     (defaultProducer.category as any) || 'winery'
   );
-  const [tradeBrandName, setTradeBrandName] = useState(defaultProducer.name);
-  const [legalBusinessName, setLegalBusinessName] = useState(`${defaultProducer.name} Estate Partnership (DEMO)`);
+  const [tradeBrandName, setTradeBrandName] = useState('');
+  const [legalBusinessName, setLegalBusinessName] = useState('');
   const [legalEntityType, setLegalEntityType] = useState<ProducerRegistrationRecord['legalEntityType']>('general_partnership_oe');
   const [countryCode, setCountryCode] = useState<'GR' | 'IT' | string>(
     defaultProducer.country === 'Italy' || defaultProducer.destination === 'tuscany' ? 'IT' : 'GR'
   );
-  const [vatNumber, setVatNumber] = useState('EL999999991');
-  const [taxOffice, setTaxOffice] = useState('Heraklion Tax Office');
-  const [gemiNumber, setGemiNumber] = useState('123456789001');
-  const [eoriNumber, setEoriNumber] = useState('EL999999991');
+  const [vatNumber, setVatNumber] = useState('');
+  const [taxOffice, setTaxOffice] = useState('');
+  const [gemiNumber, setGemiNumber] = useState('');
+  const [eoriNumber, setEoriNumber] = useState('');
   const [isCheckingVies, setIsCheckingVies] = useState(false);
   const [viesResult, setViesResult] = useState<ViesCheckResult | null>(null);
 
@@ -104,45 +106,45 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
   };
 
   // Step 2: Logistics & Dispatch
-  const [facilityName, setFacilityName] = useState(`${defaultProducer.name} Cellar & Dispatch Hub`);
-  const [streetAddress, setStreetAddress] = useState(defaultProducer.village || 'Melesses (Peza)');
-  const [postalCode, setPostalCode] = useState('70100');
-  const [cityOrVillage, setCityOrVillage] = useState(defaultProducer.region || 'Heraklion, Crete');
-  const [region, setRegion] = useState(defaultProducer.region || 'Crete');
+  const [facilityName, setFacilityName] = useState('');
+  const [streetAddress, setStreetAddress] = useState('');
+  const [postalCode, setPostalCode] = useState('');
+  const [cityOrVillage, setCityOrVillage] = useState('');
+  const [region, setRegion] = useState(defaultProducer.destination === 'tuscany' ? 'Tuscany' : 'Crete');
   const [accessType, setAccessType] = useState<ProducerRegistrationRecord['logistics']['accessType']>('standard_courier_van');
-  const [contactPersonName, setContactPersonName] = useState('Giorgos Paterianakis');
-  const [dispatchPhone, setDispatchPhone] = useState('+30 2810 000001');
-  const [dispatchEmail, setDispatchEmail] = useState('dispatch@fake-winery.com');
-  const [pickupTimeWindow, setPickupTimeWindow] = useState('09:00 - 15:30 Mon-Fri');
-  const [loadingNotes, setLoadingNotes] = useState('Direct ground-level courtyard access for DHL and freight vans.');
+  const [contactPersonName, setContactPersonName] = useState('');
+  const [dispatchPhone, setDispatchPhone] = useState('');
+  const [dispatchEmail, setDispatchEmail] = useState('');
+  const [pickupTimeWindow, setPickupTimeWindow] = useState('');
+  const [loadingNotes, setLoadingNotes] = useState('');
 
   // Step 3: Packaging & Order Fulfillment
-  const [supportsWineBottles, setSupportsWineBottles] = useState(true);
+  const [supportsWineBottles, setSupportsWineBottles] = useState(false);
   const [supportsBeerBottles, setSupportsBeerBottles] = useState(false);
   const [supportsColdChainCheese, setSupportsColdChainCheese] = useState(false);
   const [supportsHoneyJars, setSupportsHoneyJars] = useState(false);
   const [supportsOliveOilTins, setSupportsOliveOilTins] = useState(false);
-  const [maxDailyParcels, setMaxDailyParcels] = useState(25);
-  const [dispatchLeadTime, setDispatchLeadTime] = useState<ProducerRegistrationRecord['packaging']['dispatchLeadTime']>('same_day');
+  const [maxDailyParcels, setMaxDailyParcels] = useState<number | ''>('');
+  const [dispatchLeadTime, setDispatchLeadTime] = useState<ProducerRegistrationRecord['packaging']['dispatchLeadTime']>('next_day');
 
   // Step 4: Banking & Payouts (SEPA)
-  const [accountHolderName, setAccountHolderName] = useState(`${defaultProducer.name} O.E.`);
-  const [bankName, setBankName] = useState('National Bank of Greece');
-  const [iban, setIban] = useState('GR96 0110 1250 0000 0001 2345 678');
-  const [swiftBic, setSwiftBic] = useState('ETHNGRAA');
+  const [accountHolderName, setAccountHolderName] = useState('');
+  const [bankName, setBankName] = useState('');
+  const [iban, setIban] = useState('');
+  const [swiftBic, setSwiftBic] = useState('');
   const [payoutCurrency] = useState('EUR');
 
   // Step 5: Regulatory Permits & Legal
-  const [excisePermitNumber, setExcisePermitNumber] = useState('GR-EIDIK-2026-0012');
-  const [sanitaryPermitNumber, setSanitaryPermitNumber] = useState('EFET-HER-8899');
-  const [organicCertificationBody, setOrganicCertificationBody] = useState('BIO Hellas');
-  const [organicCertNumber, setOrganicCertNumber] = useState('BIO-GR-2026-7788');
-  const [representativeName, setRepresentativeName] = useState('Emmanuela Paterianaki');
-  const [representativeRole, setRepresentativeRole] = useState('Owner & Producer');
-  const [officialEmail, setOfficialEmail] = useState('producer@fake-winery.com');
-  const [websiteStoreUrl, setWebsiteStoreUrl] = useState('https://paterianakis.gr/shop');
+  const [excisePermitNumber, setExcisePermitNumber] = useState('');
+  const [sanitaryPermitNumber, setSanitaryPermitNumber] = useState('');
+  const [organicCertificationBody, setOrganicCertificationBody] = useState('');
+  const [organicCertNumber, setOrganicCertNumber] = useState('');
+  const [representativeName, setRepresentativeName] = useState('');
+  const [representativeRole, setRepresentativeRole] = useState('');
+  const [officialEmail, setOfficialEmail] = useState('');
+  const [websiteStoreUrl, setWebsiteStoreUrl] = useState('');
   const [notesFromProducer, setNotesFromProducer] = useState('');
-  const [termsAccepted, setTermsAccepted] = useState(true);
+  const [termsAccepted, setTermsAccepted] = useState(false);
 
   // Load existing database entry on mount or producer change
   useEffect(() => {
@@ -270,16 +272,55 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
     setFormError(null);
   };
 
+  // Clear / Reset all inputs so suggestive ghost text placeholders are fully visible
+  const clearForm = () => {
+    setTradeBrandName('');
+    setLegalBusinessName('');
+    setVatNumber('');
+    setTaxOffice('');
+    setGemiNumber('');
+    setEoriNumber('');
+    setFacilityName('');
+    setStreetAddress('');
+    setPostalCode('');
+    setCityOrVillage('');
+    setContactPersonName('');
+    setDispatchPhone('');
+    setDispatchEmail('');
+    setPickupTimeWindow('');
+    setLoadingNotes('');
+    setSupportsWineBottles(false);
+    setSupportsBeerBottles(false);
+    setSupportsColdChainCheese(false);
+    setSupportsHoneyJars(false);
+    setSupportsOliveOilTins(false);
+    setMaxDailyParcels('');
+    setAccountHolderName('');
+    setBankName('');
+    setIban('');
+    setSwiftBic('');
+    setExcisePermitNumber('');
+    setSanitaryPermitNumber('');
+    setOrganicCertificationBody('');
+    setOrganicCertNumber('');
+    setRepresentativeName('');
+    setRepresentativeRole('');
+    setOfficialEmail('');
+    setWebsiteStoreUrl('');
+    setNotesFromProducer('');
+    setTermsAccepted(false);
+    setViesResult(null);
+    setFormError(null);
+    setSubmitSuccess(null);
+  };
+
   const handleProducerSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const id = e.target.value;
     setSelectedProducerId(id);
     const p = allProducers.find((item: Producer) => item.id === id);
     if (p) {
-      setTradeBrandName(p.name);
       setProducerCategory((p.category as any) || 'winery');
       setCountryCode(p.country === 'Italy' || p.destination === 'tuscany' ? 'IT' : 'GR');
-      setStreetAddress(p.village);
-      setCityOrVillage(p.region);
       setRegion(p.destination === 'tuscany' ? 'Tuscany' : 'Crete');
     }
   };
@@ -449,7 +490,7 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
             </div>
           </div>
 
-          {/* Quick Demo Fill Buttons */}
+          {/* Quick Demo Fill Buttons & Reset */}
           <div className="flex items-center gap-1.5 flex-wrap">
             <span className="text-[10px] uppercase font-bold text-stone-500 mr-1">Demo Autofill:</span>
             <button
@@ -472,6 +513,15 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
               className="text-[10px] px-2.5 py-1 rounded-lg bg-stone-800 hover:bg-stone-700 text-amber-300 border border-white/10 font-semibold transition cursor-pointer"
             >
               🇮🇹 Monteraponi
+            </button>
+            <button
+              type="button"
+              onClick={clearForm}
+              className="text-[10px] px-2.5 py-1 rounded-lg bg-stone-900 hover:bg-stone-800 text-stone-400 hover:text-white border border-white/10 font-medium transition cursor-pointer flex items-center gap-1"
+              title="Clear all fields to inspect suggestive ghost text placeholders"
+            >
+              <RotateCcw className="w-3 h-3" />
+              <span>Clear Form</span>
             </button>
           </div>
         </div>
@@ -636,8 +686,8 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                   type="text"
                   value={tradeBrandName}
                   onChange={(e) => setTradeBrandName(e.target.value)}
-                  placeholder="e.g. Domaine Paterianakis"
-                  className="w-full bg-stone-900 border border-white/10 text-white rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
+                  placeholder={currentProducer ? `e.g. ${currentProducer.name}` : 'e.g. Domaine Paterianakis'}
+                  className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
                   required
                 />
               </div>
@@ -650,8 +700,8 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                   type="text"
                   value={legalBusinessName}
                   onChange={(e) => setLegalBusinessName(e.target.value)}
-                  placeholder="e.g. Domaine Paterianakis Partnership (Demo)"
-                  className="w-full bg-stone-900 border border-white/10 text-white rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
+                  placeholder={currentProducer ? `e.g. ${currentProducer.name} Estate Partnership (Demo)` : 'e.g. Domaine Paterianakis Partnership (Demo)'}
+                  className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
                   required
                 />
               </div>
@@ -701,8 +751,8 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                         setVatNumber(e.target.value.toUpperCase());
                         setViesResult(null);
                       }}
-                      placeholder="e.g. EL999999991 or IT99999999990 (Demo Tax ID)"
-                      className={`w-full bg-stone-900 border rounded-xl pl-9 pr-3 py-2.5 text-xs focus:outline-none transition ${
+                      placeholder={countryCode === 'IT' ? 'e.g. IT99999999990 (Demo Tax ID)' : 'e.g. EL999999991 (Demo Tax ID)'}
+                      className={`w-full bg-stone-900 border rounded-xl pl-9 pr-3 py-2.5 text-xs focus:outline-none placeholder:text-stone-500 transition ${
                         vatValidation.isValid
                           ? 'border-emerald-500/60 text-emerald-300'
                           : vatNumber.trim()
@@ -802,8 +852,8 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                   type="text"
                   value={taxOffice}
                   onChange={(e) => setTaxOffice(e.target.value)}
-                  placeholder="e.g. Heraklion Revenue Office or Tax Office of Siena"
-                  className="w-full bg-stone-900 border border-white/10 text-white rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
+                  placeholder={countryCode === 'IT' ? 'e.g. Tax Office of Siena or Florence' : 'e.g. Heraklion Revenue Office'}
+                  className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
                   required
                 />
               </div>
@@ -821,8 +871,8 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                   type="text"
                   value={gemiNumber}
                   onChange={(e) => setGemiNumber(e.target.value)}
-                  placeholder="e.g. 123456789001 (Commercial Registry Number)"
-                  className="w-full bg-stone-900 border border-white/10 text-white rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
+                  placeholder={countryCode === 'IT' ? 'e.g. REA SI-123456 (Registro Imprese)' : 'e.g. 123456789001 (Commercial Registry Number)'}
+                  className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
                 />
               </div>
 
@@ -834,8 +884,8 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                   type="text"
                   value={eoriNumber}
                   onChange={(e) => setEoriNumber(e.target.value.toUpperCase())}
-                  placeholder="e.g. EL999999991"
-                  className="w-full bg-stone-900 border border-white/10 text-white rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
+                  placeholder={countryCode === 'IT' ? 'e.g. IT99999999990' : 'e.g. EL999999991'}
+                  className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
                 />
                 <p className="text-[10px] text-stone-400 mt-1">
                   Required for international parcels shipping beyond EU customs borders.
@@ -865,8 +915,8 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                   type="text"
                   value={facilityName}
                   onChange={(e) => setFacilityName(e.target.value)}
-                  placeholder="e.g. Domaine Paterianakis Organic Cellar & Tasting Center"
-                  className="w-full bg-stone-900 border border-white/10 text-white rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
+                  placeholder={currentProducer ? `e.g. ${currentProducer.name} Cellar & Dispatch Hub` : 'e.g. Domaine Paterianakis Organic Cellar & Tasting Center'}
+                  className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
                 />
               </div>
 
@@ -878,8 +928,8 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                   type="text"
                   value={streetAddress}
                   onChange={(e) => setStreetAddress(e.target.value)}
-                  placeholder="e.g. Melesses, Peza Valley"
-                  className="w-full bg-stone-900 border border-white/10 text-white rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
+                  placeholder={currentProducer?.village ? `e.g. ${currentProducer.village}` : 'e.g. Melesses, Peza Valley'}
+                  className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
                   required
                 />
               </div>
@@ -893,8 +943,8 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                     type="text"
                     value={postalCode}
                     onChange={(e) => setPostalCode(e.target.value)}
-                    placeholder="e.g. 70100"
-                    className="w-full bg-stone-900 border border-white/10 text-white rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
+                    placeholder={countryCode === 'IT' ? 'e.g. 53017' : 'e.g. 70100'}
+                    className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
                     required
                   />
                 </div>
@@ -906,8 +956,8 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                     type="text"
                     value={cityOrVillage}
                     onChange={(e) => setCityOrVillage(e.target.value)}
-                    placeholder="e.g. Heraklion"
-                    className="w-full bg-stone-900 border border-white/10 text-white rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
+                    placeholder={currentProducer?.region ? `e.g. ${currentProducer.region}` : 'e.g. Heraklion'}
+                    className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
                     required
                   />
                 </div>
@@ -938,7 +988,7 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                   value={contactPersonName}
                   onChange={(e) => setContactPersonName(e.target.value)}
                   placeholder="e.g. Giorgos Paterianakis"
-                  className="w-full bg-stone-900 border border-white/10 text-white rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
+                  className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
                   required
                 />
               </div>
@@ -953,8 +1003,8 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                     type="tel"
                     value={dispatchPhone}
                     onChange={(e) => setDispatchPhone(e.target.value)}
-                    placeholder="e.g. +30 2810 000000"
-                    className="w-full bg-stone-900 border border-white/10 text-white rounded-xl pl-9 pr-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
+                    placeholder={countryCode === 'IT' ? 'e.g. +39 0577 000000' : 'e.g. +30 2810 000000'}
+                    className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl pl-9 pr-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
                     required
                   />
                 </div>
@@ -970,8 +1020,8 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                     type="email"
                     value={dispatchEmail}
                     onChange={(e) => setDispatchEmail(e.target.value)}
-                    placeholder="dispatch@fake-winery.com"
-                    className="w-full bg-stone-900 border border-white/10 text-white rounded-xl pl-9 pr-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
+                    placeholder={currentProducer ? `e.g. dispatch@${currentProducer.id.replace(/-/g, '')}.com` : 'e.g. dispatch@domainepaterianakis.com'}
+                    className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl pl-9 pr-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
                   />
                 </div>
               </div>
@@ -987,7 +1037,7 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                     value={pickupTimeWindow}
                     onChange={(e) => setPickupTimeWindow(e.target.value)}
                     placeholder="e.g. 09:00 - 15:30 Mon-Fri"
-                    className="w-full bg-stone-900 border border-white/10 text-white rounded-xl pl-9 pr-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
+                    className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl pl-9 pr-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
                   />
                 </div>
               </div>
@@ -1001,7 +1051,7 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                   value={loadingNotes}
                   onChange={(e) => setLoadingNotes(e.target.value)}
                   placeholder="e.g. Ring the bell at gate 2; cellar warehouse on the left courtyard."
-                  className="w-full bg-stone-900 border border-white/10 text-white rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
+                  className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
                 />
               </div>
             </div>
@@ -1110,8 +1160,9 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                   min={1}
                   max={500}
                   value={maxDailyParcels}
-                  onChange={(e) => setMaxDailyParcels(Number(e.target.value))}
-                  className="w-full bg-stone-900 border border-white/10 text-white rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
+                  onChange={(e) => setMaxDailyParcels(e.target.value === '' ? '' : Number(e.target.value))}
+                  placeholder="e.g. 25"
+                  className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
                 />
                 <p className="text-[10px] text-stone-400 mt-1">
                   Prevents overloading your estate during peak harvest periods.
@@ -1163,8 +1214,8 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                   type="text"
                   value={accountHolderName}
                   onChange={(e) => setAccountHolderName(e.target.value)}
-                  placeholder="e.g. Domaine Paterianakis Partnership"
-                  className="w-full bg-stone-900 border border-white/10 text-white rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
+                  placeholder={currentProducer ? `e.g. ${currentProducer.name} Partnership` : 'e.g. Domaine Paterianakis Partnership'}
+                  className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
                   required
                 />
               </div>
@@ -1177,8 +1228,8 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                   type="text"
                   value={bankName}
                   onChange={(e) => setBankName(e.target.value)}
-                  placeholder="e.g. National Bank of Greece / Piraeus / UniCredit"
-                  className="w-full bg-stone-900 border border-white/10 text-white rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
+                  placeholder={countryCode === 'IT' ? 'e.g. UniCredit / Intesa Sanpaolo' : 'e.g. National Bank of Greece / Piraeus'}
+                  className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
                   required
                 />
               </div>
@@ -1204,8 +1255,8 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                     type="text"
                     value={iban}
                     onChange={(e) => setIban(e.target.value.toUpperCase())}
-                    placeholder="e.g. GR96 0110 1250 0000 0001 2345 678"
-                    className={`w-full bg-stone-900 border rounded-xl pl-9 pr-3 py-2.5 text-xs focus:outline-none transition ${
+                    placeholder={countryCode === 'IT' ? 'e.g. IT02 L 1234 5678 0000 0001 2345 678' : 'e.g. GR96 0110 1250 0000 0001 2345 678'}
+                    className={`w-full bg-stone-900 border rounded-xl pl-9 pr-3 py-2.5 text-xs focus:outline-none placeholder:text-stone-500 transition ${
                       ibanValidation.isValid
                         ? 'border-emerald-500/60 text-emerald-300'
                         : iban.trim()
@@ -1225,8 +1276,8 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                   type="text"
                   value={swiftBic}
                   onChange={(e) => setSwiftBic(e.target.value.toUpperCase())}
-                  placeholder="e.g. ETHNGRAA"
-                  className="w-full bg-stone-900 border border-white/10 text-white rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
+                  placeholder={countryCode === 'IT' ? 'e.g. UNCRITM1' : 'e.g. ETHNGRAA'}
+                  className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
                   required
                 />
               </div>
@@ -1254,8 +1305,8 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                   type="text"
                   value={excisePermitNumber}
                   onChange={(e) => setExcisePermitNumber(e.target.value)}
-                  placeholder="e.g. GR-EIDIK-2026-0012"
-                  className="w-full bg-stone-900 border border-white/10 text-white rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
+                  placeholder={countryCode === 'IT' ? 'e.g. IT00SI000123A' : 'e.g. GR-EIDIK-2026-0012'}
+                  className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
                 />
                 <p className="text-[10px] text-stone-400 mt-1">
                   Issued by Customs or State Revenue Authority for licensed wineries and breweries.
@@ -1270,8 +1321,8 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                   type="text"
                   value={sanitaryPermitNumber}
                   onChange={(e) => setSanitaryPermitNumber(e.target.value)}
-                  placeholder="e.g. EFET-HER-8899"
-                  className="w-full bg-stone-900 border border-white/10 text-white rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
+                  placeholder={countryCode === 'IT' ? 'e.g. ASL-TOSC-7744' : 'e.g. EFET-HER-8899'}
+                  className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
                 />
               </div>
 
@@ -1283,8 +1334,8 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                   type="text"
                   value={organicCertificationBody}
                   onChange={(e) => setOrganicCertificationBody(e.target.value)}
-                  placeholder="e.g. BIO Hellas, DIO, ICEA"
-                  className="w-full bg-stone-900 border border-white/10 text-white rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
+                  placeholder={countryCode === 'IT' ? 'e.g. ICEA, CCPB, Bioagricert' : 'e.g. BIO Hellas, DIO, Q-Check'}
+                  className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
                 />
               </div>
 
@@ -1296,8 +1347,8 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                   type="text"
                   value={organicCertNumber}
                   onChange={(e) => setOrganicCertNumber(e.target.value)}
-                  placeholder="e.g. BIO-GR-2026-7788"
-                  className="w-full bg-stone-900 border border-white/10 text-white rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
+                  placeholder={countryCode === 'IT' ? 'e.g. ICEA-IT-2026-4455' : 'e.g. BIO-GR-2026-7788'}
+                  className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
                 />
               </div>
 
@@ -1310,7 +1361,7 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                   value={representativeName}
                   onChange={(e) => setRepresentativeName(e.target.value)}
                   placeholder="e.g. Emmanuela Paterianaki"
-                  className="w-full bg-stone-900 border border-white/10 text-white rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
+                  className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
                   required
                 />
               </div>
@@ -1324,7 +1375,7 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                   value={representativeRole}
                   onChange={(e) => setRepresentativeRole(e.target.value)}
                   placeholder="e.g. Owner & Producer, Master Brewer, Managing Director"
-                  className="w-full bg-stone-900 border border-white/10 text-white rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
+                  className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
                 />
               </div>
 
@@ -1336,8 +1387,8 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                   type="email"
                   value={officialEmail}
                   onChange={(e) => setOfficialEmail(e.target.value)}
-                  placeholder="producer@fake-winery.com"
-                  className="w-full bg-stone-900 border border-white/10 text-white rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
+                  placeholder={currentProducer ? `e.g. producer@${currentProducer.id.replace(/-/g, '')}.com` : 'e.g. producer@domainepaterianakis.com'}
+                  className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
                   required
                 />
               </div>
@@ -1350,8 +1401,8 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                   type="url"
                   value={websiteStoreUrl}
                   onChange={(e) => setWebsiteStoreUrl(e.target.value)}
-                  placeholder="https://yourestate.com/shop"
-                  className="w-full bg-stone-900 border border-white/10 text-white rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
+                  placeholder={currentProducer ? `e.g. https://${currentProducer.id.replace(/-/g, '')}.com/shop` : 'e.g. https://domainepaterianakis.com/shop'}
+                  className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
                 />
               </div>
 
@@ -1362,9 +1413,9 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                 <textarea
                   value={notesFromProducer}
                   onChange={(e) => setNotesFromProducer(e.target.value)}
-                  placeholder="Any special handling, seasonal closures, or custom box requests..."
+                  placeholder="e.g. Any special handling, seasonal closures, or custom box requests..."
                   rows={2}
-                  className="w-full bg-stone-900 border border-white/10 text-white rounded-xl p-3 text-xs focus:outline-none focus:border-amber-400"
+                  className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl p-3 text-xs focus:outline-none focus:border-amber-400"
                 />
               </div>
             </div>

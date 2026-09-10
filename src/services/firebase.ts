@@ -733,21 +733,20 @@ export const fetchProducerRegistrationFromCloud = async (
     }
   }
 
-  // 2. Fallback to localStorage or Seed Data
+  // 2. Fallback to localStorage if a saved registration exists
   try {
     const saved = localStorage.getItem(PRODUCER_REGISTRATIONS_KEY);
-    const existing: Record<string, ProducerRegistrationRecord> = saved
-      ? JSON.parse(saved)
-      : SEEDED_PRODUCER_REGISTRATIONS;
-
-    if (existing[producerId]) {
-      return existing[producerId];
+    if (saved) {
+      const existing: Record<string, ProducerRegistrationRecord> = JSON.parse(saved);
+      if (existing[producerId]) {
+        return existing[producerId];
+      }
     }
   } catch (e) {
     console.error('Error reading producer registration from localStorage:', e);
   }
 
-  return SEEDED_PRODUCER_REGISTRATIONS[producerId] || null;
+  return null;
 };
 
 /**
@@ -757,13 +756,12 @@ export const getAllProducerRegistrations = async (): Promise<Record<string, Prod
   try {
     const saved = localStorage.getItem(PRODUCER_REGISTRATIONS_KEY);
     if (!saved) {
-      localStorage.setItem(PRODUCER_REGISTRATIONS_KEY, JSON.stringify(SEEDED_PRODUCER_REGISTRATIONS));
-      return SEEDED_PRODUCER_REGISTRATIONS;
+      return {};
     }
     return JSON.parse(saved);
   } catch (e) {
     console.error('Error reading all producer registrations:', e);
-    return SEEDED_PRODUCER_REGISTRATIONS;
+    return {};
   }
 };
 
