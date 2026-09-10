@@ -337,10 +337,10 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
                 Winery, Brewery & Farm Portal
               </span>
               <h3 className="text-xl sm:text-2xl font-bold text-white font-serif-title">
-                Host & Winemaker Estate Center
+                Artisan Producer & Host Estate Center
               </h3>
               <p className="text-xs sm:text-sm text-stone-400 max-w-md mx-auto leading-relaxed">
-                Connect your estate profile to manage incoming guest tasting reservations, post live harvest notices, and configure direct bottle shop links with <strong className="text-emerald-400">0% platform commission</strong>.
+                Connect your estate profile to manage incoming guest tasting reservations, post live harvest notices, and configure direct artisan shop links with <strong className="text-emerald-400">0% platform commission</strong>.
               </p>
             </div>
 
@@ -855,16 +855,16 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
                     <textarea
                       value={customNotice}
                       onChange={(e) => setCustomNotice(e.target.value)}
-                      placeholder="e.g. 🍇 Fresh grape harvest & crush in progress! Stop by between 11:00-16:00 for barrel tastings with winemaker Emmanuela."
+                      placeholder="e.g. 🍇 Fresh seasonal harvest in progress! Stop by between 11:00-16:00 for tastings with producer Emmanuela."
                       rows={3}
                       className="w-full bg-stone-900 border border-white/10 text-white rounded-xl p-3 text-xs focus:outline-none focus:border-amber-400 transition"
                     />
                   </div>
 
-                  {/* Direct Bottle Shop E-Commerce URL */}
+                  {/* Direct Store E-Commerce URL */}
                   <div>
                     <label className="block text-stone-300 text-xs font-semibold mb-1">
-                      Direct Estate Bottle Shop URL (E-Commerce)
+                      Direct Estate Store URL (E-Commerce)
                     </label>
                     <div className="relative">
                       <Globe className="w-4 h-4 text-stone-500 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -872,12 +872,12 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
                         type="url"
                         value={directBottleShopUrl}
                         onChange={(e) => setDirectBottleShopUrl(e.target.value)}
-                        placeholder="https://shop.yourwinery.com"
+                        placeholder="https://shop.yourestate.com"
                         className="w-full bg-stone-900 border border-white/10 text-white rounded-xl pl-9 pr-3 py-2.5 text-xs focus:outline-none focus:border-amber-400 transition"
                       />
                     </div>
                     <p className="text-[10px] text-stone-400 mt-1">
-                      Allows travelers to order bottles directly from your webshop after their visit. TerroirTrail takes 0% commission on direct wine sales.
+                      Allows travelers to order products directly from your webshop after their visit. TerroirTrail takes 0% commission on direct artisan sales.
                     </p>
                   </div>
 
@@ -951,7 +951,7 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
                         </span>
                       </div>
                       <p className="text-[11px] text-stone-400 leading-relaxed">
-                        Private tour with the winemaker into the barrel cellar and vineyard rows. Includes rare library vintages paired with aged Graviera and sourdough.
+                        Private tour with the producer into the cellar and production rooms. Includes rare reserve batches paired with aged Graviera and sourdough.
                       </p>
                       <div className="flex items-center gap-3 text-[10px] text-stone-500 pt-1 border-t border-white/5">
                         <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> 90 Minutes</span>
@@ -1189,7 +1189,7 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
                               type="text"
                               value={taxVatNumber}
                               onChange={(e) => setTaxVatNumber(e.target.value.toUpperCase())}
-                              placeholder={portalCountryHint === 'IT' ? 'e.g. IT00987654321' : 'e.g. EL094412789'}
+                              placeholder={portalCountryHint === 'IT' ? 'e.g. IT99999999990' : 'e.g. EL999999991'}
                               className="w-full bg-stone-950 border border-white/10 text-white rounded-xl pl-9 pr-3 py-2.5 text-xs focus:outline-none focus:border-amber-400 transition"
                             />
                           </div>
@@ -1231,7 +1231,7 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
                             type="text"
                             value={taxEori}
                             onChange={(e) => setTaxEori(e.target.value.toUpperCase())}
-                            placeholder="e.g. EL094412789"
+                            placeholder="e.g. EL999999991"
                             className="w-full bg-stone-950 border border-white/10 text-white rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400 transition"
                           />
                         </div>
@@ -1243,12 +1243,12 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
                       <div className="flex items-center gap-2">
                         <Truck className="w-4 h-4 text-amber-400" />
                         <span className="font-bold text-white text-xs">
-                          Cellar Dispatch & Courier Pickup Address
+                          Estate Dispatch & Courier Pickup Address
                         </span>
                       </div>
 
                       <p className="text-[11px] text-stone-400 leading-relaxed">
-                        Where freight transport trucks and couriers (DHL / FedEx / TNT) arrive to pick up customer bottle shipments and curated Terroir Trail artisan boxes.
+                        Where freight transport trucks and couriers (DHL / FedEx / TNT) arrive to pick up customer order shipments and curated Terroir Trail artisan boxes.
                       </p>
 
                       <div>
@@ -1266,13 +1266,13 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
 
                       <div>
                         <label className="block text-stone-300 text-xs font-semibold mb-1">
-                          Cellar Dispatch Logistics Phone (Driver Contact)
+                          Estate Dispatch Logistics Phone (Driver Contact)
                         </label>
                         <input
                           type="tel"
                           value={taxPhone}
                           onChange={(e) => setTaxPhone(e.target.value)}
-                          placeholder="+30 2810 226674"
+                          placeholder="+30 2810 000000"
                           className="w-full bg-stone-950 border border-white/10 text-white rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400 transition"
                         />
                       </div>

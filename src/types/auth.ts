@@ -9,7 +9,7 @@ export type UserRole = 'traveler' | 'producer';
 export type HostClaimStatus = 'unclaimed' | 'pending_verification' | 'verified_host';
 
 export interface ProducerTaxDetails {
-  vatNumber: string;               // e.g. "EL094123456" (Greek ΑΦΜ) or "IT01234567890" (Partita IVA)
+  vatNumber: string;               // e.g. "EL999999991" (Demo Greek ΑΦΜ) or "IT99999999990" (Demo Partita IVA)
   legalBusinessName: string;       // Official registered business entity name (Επωνυμία)
   taxOffice?: string;              // e.g. "Δ.Ο.Υ. Ηρακλείου"
   registeredAddress?: string;      // Official fiscal seat & courier pickup location

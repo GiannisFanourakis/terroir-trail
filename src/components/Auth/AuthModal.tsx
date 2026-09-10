@@ -283,7 +283,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       return;
     }
     if (!producerHostName.trim()) {
-      setLocalError('Please enter the winemaker or host name.');
+      setLocalError('Please enter the producer or host name.');
       return;
     }
     if (!producerEmail.trim()) {
@@ -304,10 +304,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
     const taxDetails: ProducerTaxDetails | undefined = vatNumber.trim() ? {
       vatNumber: vatCheck?.formatted || vatNumber.trim(),
-      legalBusinessName: legalBusinessName.trim() || producer.name,
+      legalBusinessName: legalBusinessName.trim() || `${producer.name} (Demo Entity)`,
       taxOffice: taxOffice.trim() || undefined,
       registeredAddress: registeredAddress.trim() || `${producer.village}, ${producer.region}`,
-      dispatchContactPhone: dispatchContactPhone.trim() || producer.phone,
+      dispatchContactPhone: dispatchContactPhone.trim() || undefined,
       countryCode,
       isVatVerified: Boolean(vatCheck?.isValid),
       vatVerificationDate: vatCheck?.isValid ? new Date().toISOString() : undefined,
@@ -387,7 +387,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               travelerMode === 'login' ? 'Sign In to TerroirTrail' :
               travelerMode === 'signup' ? 'Create Explorer Account' : 'Reset Your Password'
             ) : (
-              producerMode === 'login' ? 'Winemaker & Host Sign In' :
+              producerMode === 'login' ? 'Artisan Producer & Host Sign In' :
               producerMode === 'claim' ? 'Claim Your Estate Listing' : 'Reset Host Password'
             )}
           </h2>
@@ -399,7 +399,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               'Enter your email address and we will send you a secure password reset link.'
             ) : (
               producerMode === 'login' ? 'Manage your cellar reservations, operating hours, and direct shop links.' :
-              producerMode === 'claim' ? 'Verify your winery or brewery to accept bookings and customize your story.' :
+              producerMode === 'claim' ? 'Verify your artisan estate to accept bookings, manage shop links, and setup logistics.' :
               'Enter your official estate email to reset your master password.'
             )}
           </p>
@@ -437,7 +437,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               }`}
             >
               <span>🏛️</span>
-              <span>Winemaker & Host</span>
+              <span>Artisan Producer & Host</span>
             </button>
           </div>
         </div>
@@ -784,7 +784,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           )}
 
           {/* ========================================================= */}
-          {/* SECTION B: WINEMAKER & ESTATE HOST FLOWS                  */}
+          {/* SECTION B: ARTISAN PRODUCER & ESTATE HOST FLOWS           */}
           {/* ========================================================= */}
           {accountType === 'producer' && (
             <>
@@ -821,7 +821,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   <form onSubmit={handleProducerLogin} className="space-y-3">
                     <div>
                       <label className="block text-stone-300 text-xs font-semibold mb-1">
-                        Official Estate or Winemaker Email
+                        Official Estate or Producer Email
                       </label>
                       <div className="relative">
                         <Mail className="w-4 h-4 text-stone-500 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -830,7 +830,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                           autoComplete="email"
                           value={producerEmail}
                           onChange={(e) => setProducerEmail(e.target.value)}
-                          placeholder="winemaker@fake-winery.com"
+                          placeholder="producer@fake-winery.com"
                           className="w-full bg-stone-900 border border-white/10 text-white rounded-xl pl-9 pr-3 py-2.5 text-xs focus:outline-none focus:border-amber-400 transition"
                           required
                         />
@@ -969,7 +969,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
                     <div>
                       <label className="block text-stone-300 text-xs font-semibold mb-1">
-                        Winemaker / Host Full Name
+                        Producer / Host Full Name
                       </label>
                       <div className="relative">
                         <User className="w-4 h-4 text-stone-500 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -994,7 +994,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                           type="email"
                           value={producerEmail}
                           onChange={(e) => setProducerEmail(e.target.value)}
-                          placeholder="winemaker@fake-winery.com"
+                          placeholder="producer@fake-winery.com"
                           className="w-full bg-stone-900 border border-white/10 text-white rounded-xl pl-9 pr-3 py-2.5 text-xs focus:outline-none focus:border-amber-400 transition"
                           required
                         />
@@ -1061,7 +1061,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                             type="text"
                             value={vatNumber}
                             onChange={(e) => setVatNumber(e.target.value.toUpperCase())}
-                            placeholder={countryHint === 'IT' ? 'e.g. IT00987654321 (11 digits)' : 'e.g. EL094412789 (9 digits)'}
+                            placeholder={countryHint === 'IT' ? 'e.g. IT99999999990 (Demo 11-digit P.IVA)' : 'e.g. EL999999991 (Demo 9-digit ΑΦΜ)'}
                             className={`w-full bg-stone-950 border rounded-xl pl-9 pr-3 py-2.5 text-xs focus:outline-none transition ${
                               vatValidation?.isValid
                                 ? 'border-emerald-500/60 text-emerald-300'
@@ -1097,7 +1097,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                             type="text"
                             value={legalBusinessName}
                             onChange={(e) => setLegalBusinessName(e.target.value)}
-                            placeholder={selectedProducer?.name || 'Domaine Paterianakis O.E.'}
+                            placeholder={selectedProducer ? `${selectedProducer.name} (Demo Entity)` : 'Artisan Producer O.E. (Demo)'}
                             className="w-full bg-stone-950 border border-white/10 text-white rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-amber-400 transition"
                           />
                         </div>
@@ -1112,7 +1112,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                               type="tel"
                               value={dispatchContactPhone}
                               onChange={(e) => setDispatchContactPhone(e.target.value)}
-                              placeholder={selectedProducer?.phone || '+30 2810 226674'}
+                              placeholder="+30 2810 000000"
                               className="w-full bg-stone-950 border border-white/10 text-white rounded-xl pl-8 pr-3 py-2 text-xs focus:outline-none focus:border-amber-400 transition"
                             />
                           </div>
@@ -1121,7 +1121,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
                       <div>
                         <label className="block text-stone-300 text-[11px] font-semibold mb-1">
-                          Cellar Dispatch Pickup Address (For Couriers & Invoices)
+                          Estate Dispatch Pickup Address (For Couriers & Invoices)
                         </label>
                         <input
                           type="text"
@@ -1183,7 +1183,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                           type="email"
                           value={producerEmail}
                           onChange={(e) => setProducerEmail(e.target.value)}
-                          placeholder="winemaker@fake-winery.com"
+                          placeholder="producer@fake-winery.com"
                           className="w-full bg-stone-900 border border-white/10 text-white rounded-xl pl-9 pr-3 py-2.5 text-xs focus:outline-none focus:border-amber-400 transition"
                           required
                         />

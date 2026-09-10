@@ -263,7 +263,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
       case 'winery':
       default:
         return {
-          makerTitle: 'winemaker or owner',
+          makerTitle: 'producer or owner',
           venueName: 'estate',
           productPlural: 'bottle',
           storeLabel: 'Direct Estate Bottle Store',
@@ -912,7 +912,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
               </div>
             )}
 
-            {/* Producer / Winemaker Login Prompt */}
+            {/* Producer / Estate Host Login Prompt */}
             {(!user?.isProducer || user.claimedProducerId !== producer.id) && (
               <div className="pt-3 border-t border-white/10 text-center">
                 <button
