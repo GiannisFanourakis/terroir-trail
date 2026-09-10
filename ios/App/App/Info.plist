@@ -66,5 +66,15 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>TerroirTrail uses your location to discover nearby wineries, craft breweries, and artisan producers on the map.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>TerroirTrail uses the camera to scan cellar-door QR passes and host verification codes.</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>comgooglemaps</string>
+		<string>maps</string>
+		<string>googlechromes</string>
+	</array>
 </dict>
 </plist>
