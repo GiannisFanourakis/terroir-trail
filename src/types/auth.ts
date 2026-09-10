@@ -42,10 +42,10 @@ export interface BankingDetails {
 }
 
 export interface RegulatoryPermits {
-  gemiNumber?: string;                 // Greek Commercial Registry (Γ.Ε.ΜΗ.) or Italian REA
-  excisePermitNumber?: string;         // Alcohol Warehouse / Excise Code (Άδεια Ειδικού Καθεστώτος)
-  sanitaryPermitNumber?: string;       // Food & Health Safety Permit (ΕΦΕΤ / HACCP)
-  organicCertificationBody?: string;   // e.g. BIO Hellas, DIO, ICEA
+  gemiNumber?: string;                 // National Commercial Company Registry
+  excisePermitNumber?: string;         // Regulated Alcohol Production / Excise Warehouse Permit
+  sanitaryPermitNumber?: string;       // Food & Health Safety Permit (HACCP / EFSA)
+  organicCertificationBody?: string;   // e.g. BIO Hellas, DIO, ICEA, Ecocert
   organicCertNumber?: string;          // Certification serial
 }
 
@@ -57,10 +57,10 @@ export interface ProducerRegistrationRecord {
   producerCategory: 'winery' | 'brewery' | 'distillery' | 'cheese_dairy' | 'apiary' | 'olive_oil';
   
   // 1. Fiscal & Legal
-  legalBusinessName: string;           // Επωνυμία
+  legalBusinessName: string;           // Registered corporate name
   legalEntityType: 'sole_proprietorship' | 'general_partnership_oe' | 'limited_partnership_ee' | 'private_company_ike' | 'corporation_ae' | 'agricultural_coop' | 'italian_srl' | 'other';
-  vatNumber: string;                   // ΑΦΜ or Partita IVA
-  taxOffice: string;                   // Δ.Ο.Υ.
+  vatNumber: string;                   // EU VAT or Tax ID
+  taxOffice: string;                   // Competent Tax Authority / Office
   countryCode: 'GR' | 'IT' | string;
   isVatVerified: boolean;
   vatVerificationDate?: string;
@@ -92,9 +92,9 @@ export interface ProducerRegistrationRecord {
 }
 
 export interface ProducerTaxDetails {
-  vatNumber: string;               // e.g. "EL999999991" (Demo Greek ΑΦΜ) or "IT99999999990" (Demo Partita IVA)
-  legalBusinessName: string;       // Official registered business entity name (Επωνυμία)
-  taxOffice?: string;              // e.g. "Δ.Ο.Υ. Ηρακλείου"
+  vatNumber: string;               // e.g. "EL999999991" (Demo VAT ID) or "IT99999999990" (Demo Partita IVA)
+  legalBusinessName: string;       // Official registered business entity name
+  taxOffice?: string;              // e.g. "Heraklion Tax Office" or "Tax Office of Siena"
   registeredAddress?: string;      // Official fiscal seat & courier pickup location
   dispatchContactPhone?: string;   // Cellar/dispatch contact for transport & courier logistics
   countryCode: 'GR' | 'IT' | string;

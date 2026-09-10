@@ -78,13 +78,13 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
     (defaultProducer.category as any) || 'winery'
   );
   const [tradeBrandName, setTradeBrandName] = useState(defaultProducer.name);
-  const [legalBusinessName, setLegalBusinessName] = useState(`${defaultProducer.name} O.E. (DEMO)`);
+  const [legalBusinessName, setLegalBusinessName] = useState(`${defaultProducer.name} Estate Partnership (DEMO)`);
   const [legalEntityType, setLegalEntityType] = useState<ProducerRegistrationRecord['legalEntityType']>('general_partnership_oe');
   const [countryCode, setCountryCode] = useState<'GR' | 'IT' | string>(
     defaultProducer.country === 'Italy' || defaultProducer.destination === 'tuscany' ? 'IT' : 'GR'
   );
   const [vatNumber, setVatNumber] = useState('EL999999991');
-  const [taxOffice, setTaxOffice] = useState('Δ.Ο.Υ. Ηρακλείου');
+  const [taxOffice, setTaxOffice] = useState('Heraklion Tax Office');
   const [gemiNumber, setGemiNumber] = useState('123456789001');
   const [eoriNumber, setEoriNumber] = useState('EL999999991');
   const [isCheckingVies, setIsCheckingVies] = useState(false);
@@ -295,7 +295,7 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
       return;
     }
     if (!legalBusinessName.trim()) {
-      setFormError('Please enter the official registered legal business name (Επωνυμία).');
+      setFormError('Please enter the official registered legal business name.');
       setActiveTab('fiscal');
       return;
     }
@@ -305,7 +305,7 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
       return;
     }
     if (!taxOffice.trim()) {
-      setFormError('Please specify the competent Tax Office (Δ.Ο.Υ.).');
+      setFormError('Please specify the competent Tax Authority or Tax Office.');
       setActiveTab('fiscal');
       return;
     }
@@ -407,7 +407,7 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
   };
 
   const tabs: { key: TabKey; label: string; icon: any; badge?: string }[] = [
-    { key: 'fiscal', label: '1. Fiscal & Entity', icon: Building2, badge: vatValidation.isValid ? '✓' : 'ΑΦΜ' },
+    { key: 'fiscal', label: '1. Fiscal & Entity', icon: Building2, badge: vatValidation.isValid ? '✓' : 'VAT' },
     { key: 'logistics', label: '2. Logistics & Pickup', icon: Truck },
     { key: 'packaging', label: '3. Packaging & Boxes', icon: Package },
     { key: 'banking', label: '4. Banking & Payouts', icon: CreditCard, badge: ibanValidation.isValid ? '✓' : 'IBAN' },
@@ -563,7 +563,7 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
               </button>
             </div>
             <p className="text-[11px] text-emerald-300/90 leading-relaxed">
-              Legal entity <strong>{submitSuccess.legalBusinessName}</strong> (ΑΦΜ/VAT: {submitSuccess.vatNumber}) has been stored in <strong>Cloud Firestore</strong> (collection: <code>producer_registrations/{submitSuccess.id}</code>) and synced with courier dispatch logistics.
+              Legal entity <strong>{submitSuccess.legalBusinessName}</strong> (Tax ID: {submitSuccess.vatNumber}) has been stored in <strong>Cloud Firestore</strong> (collection: <code>producer_registrations/{submitSuccess.id}</code>) and synced with courier dispatch logistics.
             </p>
             <div className="flex items-center gap-3 pt-1 text-[10px] text-emerald-400 font-mono">
               <span>Timestamp: {new Date(submitSuccess.updatedAt).toLocaleTimeString()}</span>
@@ -581,12 +581,35 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
             <div className="border-b border-white/10 pb-2 flex items-center justify-between">
               <h3 className="text-sm font-bold text-white flex items-center gap-2">
                 <Building2 className="w-4 h-4 text-amber-400" />
-                <span>Commercial Entity & Tax Identification (DAC7 / GEMI)</span>
+                <span>Commercial Entity & Tax Identification (DAC7 / Official Registry)</span>
               </h3>
               <span className="text-[10px] text-stone-400">EU Directive 2021/514 Compliant</span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-stone-300 text-xs font-semibold mb-1">
+                  Tax Residence & Country <span className="text-rose-400">*</span>
+                </label>
+                <select
+                  value={countryCode}
+                  onChange={(e) => {
+                    const c = e.target.value;
+                    setCountryCode(c);
+                    if (c === 'IT' && vatNumber.startsWith('EL')) setVatNumber('IT99999999990');
+                    if (c === 'GR' && vatNumber.startsWith('IT')) setVatNumber('EL999999991');
+                  }}
+                  className="w-full bg-stone-900 border border-white/10 text-white rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
+                >
+                  <option value="GR">🇬🇷 Greece</option>
+                  <option value="IT">🇮🇹 Italy</option>
+                  <option value="FR">🇫🇷 France</option>
+                  <option value="ES">🇪🇸 Spain</option>
+                  <option value="DE">🇩🇪 Germany</option>
+                  <option value="OTHER">🇪🇺 Other EU Member State</option>
+                </select>
+              </div>
+
               <div>
                 <label className="block text-stone-300 text-xs font-semibold mb-1">
                   Artisan Category <span className="text-rose-400">*</span>
@@ -598,10 +621,10 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                 >
                   <option value="winery">🍇 Organic Winery & Estate Cellar</option>
                   <option value="brewery">🍺 Independent Craft Brewery</option>
-                  <option value="distillery">🏺 Traditional Tsikoudia Distillery</option>
-                  <option value="cheese_dairy">🧀 Mountain Cheese Dairy (Mitato)</option>
-                  <option value="apiary">🍯 Nomadic Thyme Apiary</option>
-                  <option value="olive_oil">🫒 Ancestral Olive Mill</option>
+                  <option value="distillery">🏺 Traditional Spirit Distillery</option>
+                  <option value="cheese_dairy">🧀 Artisan Cheese Dairy</option>
+                  <option value="apiary">🍯 Natural Honey Apiary</option>
+                  <option value="olive_oil">🫒 Cold-Pressed Olive Mill</option>
                 </select>
               </div>
 
@@ -621,13 +644,13 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
 
               <div>
                 <label className="block text-stone-300 text-xs font-semibold mb-1">
-                  Legal Registered Entity Name (Επωνυμία) <span className="text-rose-400">*</span>
+                  Legal Registered Entity Name <span className="text-rose-400">*</span>
                 </label>
                 <input
                   type="text"
                   value={legalBusinessName}
                   onChange={(e) => setLegalBusinessName(e.target.value)}
-                  placeholder="e.g. ΚΤΗΜΑ ΠΑΤΕΡΙΑΝΑΚΗ Ο.Ε. (DEMO)"
+                  placeholder="e.g. Domaine Paterianakis Partnership (Demo)"
                   className="w-full bg-stone-900 border border-white/10 text-white rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
                   required
                 />
@@ -642,13 +665,13 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                   onChange={(e) => setLegalEntityType(e.target.value as any)}
                   className="w-full bg-stone-900 border border-white/10 text-white rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
                 >
-                  <option value="general_partnership_oe">Ο.Ε. (General Partnership)</option>
-                  <option value="private_company_ike">Ι.Κ.Ε. (Private Company)</option>
-                  <option value="limited_partnership_ee">Ε.Ε. (Limited Partnership)</option>
-                  <option value="corporation_ae">Α.Ε. (Corporation / S.A.)</option>
-                  <option value="sole_proprietorship">Ατομική Επιχείρηση (Sole Proprietorship)</option>
-                  <option value="agricultural_coop">Αγροτικός Συνεταιρισμός (Cooperative)</option>
-                  <option value="italian_srl">S.r.l. (Italian Limited Liability)</option>
+                  <option value="general_partnership_oe">General Partnership (GP)</option>
+                  <option value="private_company_ike">Private Limited Company (LLC / Ltd)</option>
+                  <option value="limited_partnership_ee">Limited Partnership (LP)</option>
+                  <option value="corporation_ae">Corporation / Public Limited Company (PLC / S.A.)</option>
+                  <option value="sole_proprietorship">Sole Proprietorship / Independent Artisan</option>
+                  <option value="agricultural_coop">Agricultural Cooperative</option>
+                  <option value="italian_srl">Limited Liability Company (S.r.l.)</option>
                   <option value="other">Other Legal Entity</option>
                 </select>
               </div>
@@ -656,7 +679,7 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
               <div>
                 <div className="flex items-center justify-between mb-1">
                   <label className="block text-stone-300 text-xs font-semibold">
-                    Tax ID (ΑΦΜ / Partita IVA) <span className="text-rose-400">*</span>
+                    Tax Identification Number (VAT ID / Tax ID) <span className="text-rose-400">*</span>
                   </label>
                   {vatValidation && (
                     <span
@@ -664,7 +687,7 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                         vatValidation.isValid ? 'text-emerald-400' : 'text-amber-400'
                       }`}
                     >
-                      {vatValidation.isValid ? '✓ Modulo 11 Verified' : 'Checking'}
+                      {vatValidation.isValid ? '✓ Valid Check Digit' : 'Checking'}
                     </span>
                   )}
                 </div>
@@ -678,7 +701,7 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                         setVatNumber(e.target.value.toUpperCase());
                         setViesResult(null);
                       }}
-                      placeholder="e.g. EL999999991 (Demo 9-digit ΑΦΜ)"
+                      placeholder="e.g. EL999999991 or IT99999999990 (Demo Tax ID)"
                       className={`w-full bg-stone-900 border rounded-xl pl-9 pr-3 py-2.5 text-xs focus:outline-none transition ${
                         vatValidation.isValid
                           ? 'border-emerald-500/60 text-emerald-300'
@@ -706,7 +729,7 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                 </div>
 
                 <div className="flex items-center justify-between mt-1 text-[10px] text-stone-400">
-                  <span>Client algorithm: Modulo 11 (EL) / Luhn (IT).</span>
+                  <span>Client algorithm: Modulo 11 / Luhn checksum.</span>
                   <span className="text-stone-500">Live API: ec.europa.eu/vies</span>
                 </div>
 
@@ -773,13 +796,13 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
 
               <div>
                 <label className="block text-stone-300 text-xs font-semibold mb-1">
-                  Competent Tax Authority (Δ.Ο.Υ.) <span className="text-rose-400">*</span>
+                  Competent Tax Office / Authority <span className="text-rose-400">*</span>
                 </label>
                 <input
                   type="text"
                   value={taxOffice}
                   onChange={(e) => setTaxOffice(e.target.value)}
-                  placeholder="e.g. Δ.Ο.Υ. Ηρακλείου or Ufficio di Siena"
+                  placeholder="e.g. Heraklion Revenue Office or Tax Office of Siena"
                   className="w-full bg-stone-900 border border-white/10 text-white rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
                   required
                 />
@@ -788,7 +811,7 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
               <div>
                 <div className="flex items-center justify-between mb-1">
                   <label className="block text-stone-300 text-xs font-semibold">
-                    Commercial Registry Number (Γ.Ε.ΜΗ. / REA)
+                    Commercial Company Registry Number
                   </label>
                   {gemiValidation.isValid && (
                     <span className="text-[10px] font-bold text-emerald-400">✓ Valid Format</span>
@@ -798,7 +821,7 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                   type="text"
                   value={gemiNumber}
                   onChange={(e) => setGemiNumber(e.target.value)}
-                  placeholder="e.g. 123456789001 (12 digits)"
+                  placeholder="e.g. 123456789001 (Commercial Registry Number)"
                   className="w-full bg-stone-900 border border-white/10 text-white rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
                 />
               </div>
@@ -1140,7 +1163,7 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                   type="text"
                   value={accountHolderName}
                   onChange={(e) => setAccountHolderName(e.target.value)}
-                  placeholder="e.g. ΚΤΗΜΑ ΠΑΤΕΡΙΑΝΑΚΗ Ο.Ε."
+                  placeholder="e.g. Domaine Paterianakis Partnership"
                   className="w-full bg-stone-900 border border-white/10 text-white rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
                   required
                 />
@@ -1160,10 +1183,10 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                 />
               </div>
 
-              <div className="sm:col-span-2">
+              <div>
                 <div className="flex items-center justify-between mb-1">
                   <label className="block text-stone-300 text-xs font-semibold">
-                    International Bank Account Number (IBAN) <span className="text-rose-400">*</span>
+                    IBAN (SEPA Account) <span className="text-rose-400">*</span>
                   </label>
                   {ibanValidation && (
                     <span
@@ -1171,27 +1194,27 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                         ibanValidation.isValid ? 'text-emerald-400' : 'text-amber-400'
                       }`}
                     >
-                      {ibanValidation.isValid ? '✓ Verified SEPA Format' : 'Check Length'}
+                      {ibanValidation.isValid ? '✓ Valid SEPA IBAN' : 'Checking'}
                     </span>
                   )}
                 </div>
-                <input
-                  type="text"
-                  value={iban}
-                  onChange={(e) => setIban(e.target.value.toUpperCase())}
-                  placeholder="e.g. GR96 0110 1250 0000 0001 2345 678"
-                  className={`w-full bg-stone-900 border rounded-xl px-3 py-2.5 text-xs font-mono focus:outline-none transition ${
-                    ibanValidation.isValid
-                      ? 'border-emerald-500/60 text-emerald-300'
-                      : iban.trim()
-                      ? 'border-amber-500/60 text-amber-300'
-                      : 'border-white/10 text-white focus:border-amber-400'
-                  }`}
-                  required
-                />
-                <p className="text-[10px] text-stone-400 mt-1">
-                  Must begin with country code (e.g. GR or IT) followed by 25 alphanumeric characters.
-                </p>
+                <div className="relative">
+                  <CreditCard className="w-4 h-4 text-stone-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="text"
+                    value={iban}
+                    onChange={(e) => setIban(e.target.value.toUpperCase())}
+                    placeholder="e.g. GR96 0110 1250 0000 0001 2345 678"
+                    className={`w-full bg-stone-900 border rounded-xl pl-9 pr-3 py-2.5 text-xs focus:outline-none transition ${
+                      ibanValidation.isValid
+                        ? 'border-emerald-500/60 text-emerald-300'
+                        : iban.trim()
+                        ? 'border-amber-500/60 text-amber-300'
+                        : 'border-white/10 text-white focus:border-amber-400'
+                    }`}
+                    required
+                  />
+                </div>
               </div>
 
               <div>
@@ -1203,27 +1226,15 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                   value={swiftBic}
                   onChange={(e) => setSwiftBic(e.target.value.toUpperCase())}
                   placeholder="e.g. ETHNGRAA"
-                  className="w-full bg-stone-900 border border-white/10 text-white rounded-xl px-3 py-2.5 text-xs font-mono focus:outline-none focus:border-amber-400"
+                  className="w-full bg-stone-900 border border-white/10 text-white rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
                   required
-                />
-              </div>
-
-              <div>
-                <label className="block text-stone-300 text-xs font-semibold mb-1">
-                  Settlement Currency
-                </label>
-                <input
-                  type="text"
-                  value="EUR (€) - European Euro"
-                  disabled
-                  className="w-full bg-stone-950 border border-white/5 text-stone-400 rounded-xl px-3 py-2.5 text-xs cursor-not-allowed"
                 />
               </div>
             </div>
           </div>
         )}
 
-        {/* TAB 5: PERMITS, REGULATORY & CONSENT */}
+        {/* TAB 5: LICENSES & REGULATORY PERMITS */}
         {activeTab === 'permits' && (
           <div className="space-y-4 animate-in fade-in">
             <div className="border-b border-white/10 pb-2 flex items-center justify-between">
@@ -1237,7 +1248,7 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-stone-300 text-xs font-semibold mb-1">
-                  Alcohol Excise / Special Regime Code (Άδεια Ειδικού Καθεστώτος)
+                  Alcohol Excise / Regulated Production Permit Number
                 </label>
                 <input
                   type="text"
@@ -1247,13 +1258,13 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                   className="w-full bg-stone-900 border border-white/10 text-white rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
                 />
                 <p className="text-[10px] text-stone-400 mt-1">
-                  Issued by General Chemical State Laboratory (ΓΧΚ) or Customs for wineries and breweries.
+                  Issued by Customs or State Revenue Authority for licensed wineries and breweries.
                 </p>
               </div>
 
               <div>
                 <label className="block text-stone-300 text-xs font-semibold mb-1">
-                  Sanitary & Food Safety Permit (ΕΦΕΤ / HACCP)
+                  Sanitary & Food Safety Permit (HACCP / Food Authority)
                 </label>
                 <input
                   type="text"
@@ -1312,7 +1323,7 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                   type="text"
                   value={representativeRole}
                   onChange={(e) => setRepresentativeRole(e.target.value)}
-                  placeholder="e.g. Owner & Winemaker, Head Brewer, Managing Director"
+                  placeholder="e.g. Owner & Producer, Master Brewer, Managing Director"
                   className="w-full bg-stone-900 border border-white/10 text-white rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
                 />
               </div>

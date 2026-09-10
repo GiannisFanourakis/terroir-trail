@@ -9,7 +9,7 @@ import {
   TrendingUp, DollarSign, Percent, Eye, Compass, Bell, CheckCheck, MapPin,
   Truck, FileText, Package, HelpCircle
 } from 'lucide-react';
-import { validateVatNumber } from '../../utils/vatValidator';
+import { validateVatNumber, getFiscalLabels } from '../../utils/vatValidator';
 import { ProducerRegistrationForm } from './ProducerRegistrationForm';
 
 interface ProducerPortalModalProps {
@@ -287,7 +287,7 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
                 {user?.taxDetails?.vatNumber && (
                   <span className="text-[9px] px-2 py-0.5 rounded-full bg-sky-500/15 text-sky-300 border border-sky-500/30 font-bold uppercase tracking-wider flex items-center gap-1 shrink-0" title={`Verified Legal Entity: ${user.taxDetails.legalBusinessName || ''}`}>
                     <ShieldCheck className="w-3 h-3 text-sky-400" />
-                    <span>ΑΦΜ/VAT: {user.taxDetails.vatNumber}</span>
+                    <span>{getFiscalLabels(user.taxDetails.countryCode || (user.taxDetails.vatNumber.startsWith('IT') ? 'IT' : 'GR')).shortVatLabel}: {user.taxDetails.vatNumber}</span>
                   </span>
                 )}
               </div>
@@ -607,7 +607,7 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
                 }`}
               >
                 <Truck className="w-3.5 h-3.5" />
-                <span>Shipping & Fiscal (ΑΦΜ)</span>
+                <span>Fiscal & Dispatch Registration</span>
                 {user?.taxDetails?.isVatVerified && (
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
                 )}

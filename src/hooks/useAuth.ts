@@ -79,8 +79,8 @@ export const DEMO_PRODUCER_PROFILES: Record<string, UserProfile> = {
     claimStatus: 'verified_host',
     taxDetails: {
       vatNumber: 'EL999999991',
-      legalBusinessName: 'ΚΤΗΜΑ ΠΑΤΕΡΙΑΝΑΚΗ Ο.Ε. (DEMO)',
-      taxOffice: 'Δ.Ο.Υ. Ηρακλείου',
+      legalBusinessName: 'DOMAINE PATERIANAKIS PARTNERSHIP (DEMO)',
+      taxOffice: 'Heraklion Tax Office',
       registeredAddress: 'Melesses (Peza), Heraklion, GR-70100, Crete',
       dispatchContactPhone: '+30 2810 000001',
       countryCode: 'GR',
@@ -107,7 +107,7 @@ export const DEMO_PRODUCER_PROFILES: Record<string, UserProfile> = {
     taxDetails: {
       vatNumber: 'EL999999992',
       legalBusinessName: 'MANOUSAKIS WINERY SINGLE MEMBER P.C. (DEMO)',
-      taxOffice: 'Δ.Ο.Υ. Χανίων',
+      taxOffice: 'Chania Tax Office',
       registeredAddress: 'Vatolakkos, Platanias, Chania, GR-73005, Crete',
       dispatchContactPhone: '+30 28210 000002',
       countryCode: 'GR',
@@ -134,7 +134,7 @@ export const DEMO_PRODUCER_PROFILES: Record<string, UserProfile> = {
     taxDetails: {
       vatNumber: 'EL999999993',
       legalBusinessName: 'CRETAN BREWERY S.A. (DEMO)',
-      taxOffice: 'Δ.Ο.Υ. Χανίων',
+      taxOffice: 'Chania Tax Office',
       registeredAddress: 'Zounaki, Platanias, Chania, GR-73002, Crete',
       dispatchContactPhone: '+30 28210 000003',
       countryCode: 'GR',

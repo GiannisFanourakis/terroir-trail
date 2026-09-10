@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 import { TravelerType, ProducerTaxDetails } from '../../types/auth';
 import { Producer } from '../../types/terroir';
-import { validateVatNumber } from '../../utils/vatValidator';
+import { validateVatNumber, getFiscalLabels } from '../../utils/vatValidator';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -79,7 +79,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   const [producerPassword, setProducerPassword] = useState('');
   const [showProducerPassword, setShowProducerPassword] = useState(false);
 
-  // Producer Fiscal & Shipping Registration Fields (VAT / ΑΦΜ)
+  // Producer Fiscal & Shipping Registration Fields (Pan-European VAT / Tax ID)
+  const [fiscalCountry, setFiscalCountry] = useState<string>('GR');
   const [vatNumber, setVatNumber] = useState('');
   const [legalBusinessName, setLegalBusinessName] = useState('');
   const [taxOffice, setTaxOffice] = useState('');
@@ -109,14 +110,16 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           setLegalBusinessName(p.name);
           setRegisteredAddress(`${p.village}, ${p.region} (${p.country || 'Greece'})`);
           setDispatchContactPhone(p.phone || '');
+          const initialCountry = (p.country === 'Italy' || p.destination === 'tuscany') ? 'IT' : 'GR';
+          setFiscalCountry(initialCountry);
         }
       }
     }
   }, [isOpen, initialRole, producers]);
 
   const selectedProducer = producers.find((p) => p.id === selectedProducerId) || producers[0];
-  const countryHint = (selectedProducer?.country === 'Italy' || selectedProducer?.destination === 'tuscany') ? 'IT' : 'GR';
-  const vatValidation = vatNumber.trim() ? validateVatNumber(vatNumber.trim(), countryHint) : null;
+  const fiscalLabels = getFiscalLabels(fiscalCountry);
+  const vatValidation = vatNumber.trim() ? validateVatNumber(vatNumber.trim(), fiscalCountry) : null;
 
   const handleSelectClaimProducer = (prodId: string) => {
     setSelectedProducerId(prodId);
@@ -125,6 +128,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       setLegalBusinessName(p.name);
       setRegisteredAddress(`${p.village}, ${p.region} (${p.country || 'Greece'})`);
       setDispatchContactPhone(p.phone || '');
+      const initialCountry = (p.country === 'Italy' || p.destination === 'tuscany') ? 'IT' : 'GR';
+      setFiscalCountry(initialCountry);
     }
   };
 
@@ -294,11 +299,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       setLocalError('Master password must be at least 6 characters long.');
       return;
     }
-    const countryCode = (producer.country === 'Italy' || producer.destination === 'tuscany') ? 'IT' : 'GR';
+    const countryCode = fiscalCountry || ((producer.country === 'Italy' || producer.destination === 'tuscany') ? 'IT' : 'GR');
     const vatCheck = vatNumber.trim() ? validateVatNumber(vatNumber.trim(), countryCode) : null;
 
     if (vatNumber.trim() && !vatCheck?.isValid) {
-      setLocalError(vatCheck?.error || 'Please enter a valid VAT / Tax ID (ΑΦΜ for Greece or Partita IVA for Italy).');
+      setLocalError(vatCheck?.error || `Please enter a valid ${fiscalLabels.shortVatLabel} for ${fiscalLabels.countryName}.`);
       return;
     }
 
@@ -1025,7 +1030,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                       </div>
                     </div>
 
-                    {/* Estate Fiscal & Shipping Logistics (ΑΦΜ / Partita IVA) */}
+                    {/* Estate Fiscal & Shipping Logistics (Pan-European VAT / Tax ID) */}
                     <div className="p-3.5 rounded-2xl bg-stone-900/90 border border-amber-500/20 space-y-3">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
@@ -1034,8 +1039,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                             Fiscal & Shipping Registration
                           </span>
                         </div>
-                        <span className="text-[9px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 font-bold uppercase tracking-wider">
-                          VAT / ΑΦΜ Verification
+                        <span className="text-[9px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 font-bold uppercase tracking-wider flex items-center gap-1">
+                          <span>{fiscalLabels.countryFlag}</span>
+                          <span>{fiscalLabels.shortVatLabel} Verification</span>
                         </span>
                       </div>
 
@@ -1043,15 +1049,53 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                         Tax ID verifies genuine estate ownership, qualifies your estate for 0% commission B2B statements, and activates direct bottle & artisan box parcel shipping.
                       </p>
 
-                      {/* VAT / AFM Field */}
+                      {/* Tax Residence Country Selector */}
+                      <div>
+                        <div className="flex items-center justify-between mb-1">
+                          <label className="block text-stone-300 text-[11px] font-semibold">
+                            Tax Residence / Country
+                          </label>
+                          <span className="text-[10px] text-stone-400 font-mono">
+                            {fiscalLabels.countryFlag} {fiscalLabels.countryName}
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-3 sm:grid-cols-5 gap-1.5 text-center">
+                          {[
+                            { code: 'GR', label: '🇬🇷 Greece' },
+                            { code: 'IT', label: '🇮🇹 Italy' },
+                            { code: 'FR', label: '🇫🇷 France' },
+                            { code: 'ES', label: '🇪🇸 Spain' },
+                            { code: 'OTHER', label: '🇪🇺 Other EU' },
+                          ].map((c) => (
+                            <button
+                              key={c.code}
+                              type="button"
+                              onClick={() => {
+                                setFiscalCountry(c.code);
+                                if (c.code === 'IT' && (vatNumber.startsWith('EL') || !vatNumber)) setVatNumber('IT99999999990');
+                                if (c.code === 'GR' && (vatNumber.startsWith('IT') || !vatNumber)) setVatNumber('EL999999991');
+                              }}
+                              className={`px-2 py-1.5 rounded-lg text-[11px] font-semibold border transition cursor-pointer ${
+                                fiscalCountry === c.code
+                                  ? 'bg-amber-500/20 border-amber-500/50 text-amber-300 font-bold'
+                                  : 'bg-stone-950/60 border-white/10 text-stone-400 hover:text-white hover:bg-white/5'
+                              }`}
+                            >
+                              {c.label}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* VAT / Tax ID Field */}
                       <div>
                         <div className="flex items-center justify-between mb-1">
                           <label className="block text-stone-300 text-xs font-semibold">
-                            {countryHint === 'IT' ? 'Partita IVA (P.IVA)' : 'Tax Identification Number (ΑΦΜ)'}
+                            {fiscalLabels.fullVatLabel} <span className="text-rose-400">*</span>
                           </label>
                           {vatValidation && (
                             <span className={`text-[10px] font-bold ${vatValidation.isValid ? 'text-emerald-400' : 'text-amber-400'}`}>
-                              {vatValidation.isValid ? '✓ Valid Check Digit' : 'Verification Needed'}
+                              {vatValidation.isValid ? '✓ Valid Format' : 'Verification Needed'}
                             </span>
                           )}
                         </div>
@@ -1061,7 +1105,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                             type="text"
                             value={vatNumber}
                             onChange={(e) => setVatNumber(e.target.value.toUpperCase())}
-                            placeholder={countryHint === 'IT' ? 'e.g. IT99999999990 (Demo 11-digit P.IVA)' : 'e.g. EL999999991 (Demo 9-digit ΑΦΜ)'}
+                            placeholder={fiscalLabels.placeholder}
                             className={`w-full bg-stone-950 border rounded-xl pl-9 pr-3 py-2.5 text-xs focus:outline-none transition ${
                               vatValidation?.isValid
                                 ? 'border-emerald-500/60 text-emerald-300'
@@ -1078,11 +1122,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                           </p>
                         ) : vatNumber.trim() ? (
                           <p className="text-[10px] text-amber-400 mt-1">
-                            {countryHint === 'IT' ? 'Italian P.IVA requires 11 digits' : 'Greek ΑΦΜ requires 9 digits (Modulo 11 verified)'}
+                            {fiscalLabels.formatHint}
                           </p>
                         ) : (
                           <p className="text-[10px] text-stone-400 mt-1">
-                            Used to verify authentic ownership against commercial registry (AADE / GEMI / VIES).
+                            Used to verify authentic ownership against commercial registry ({fiscalLabels.authoritiesNote}).
                           </p>
                         )}
                       </div>
@@ -1091,13 +1135,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
                         <div>
                           <label className="block text-stone-300 text-[11px] font-semibold mb-1">
-                            Legal Company Name (Επωνυμία)
+                            {fiscalLabels.companyNameLabel}
                           </label>
                           <input
                             type="text"
                             value={legalBusinessName}
                             onChange={(e) => setLegalBusinessName(e.target.value)}
-                            placeholder={selectedProducer ? `${selectedProducer.name} (Demo Entity)` : 'Artisan Producer O.E. (Demo)'}
+                            placeholder={selectedProducer ? `${selectedProducer.name} (Demo Entity)` : 'Artisan Producer (Demo)'}
                             className="w-full bg-stone-950 border border-white/10 text-white rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-amber-400 transition"
                           />
                         </div>
@@ -1112,12 +1156,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                               type="tel"
                               value={dispatchContactPhone}
                               onChange={(e) => setDispatchContactPhone(e.target.value)}
-                              placeholder="+30 2810 000000"
+                              placeholder={fiscalCountry === 'IT' ? '+39 0577 000000' : fiscalCountry === 'FR' ? '+33 1 00 00 00 00' : fiscalCountry === 'ES' ? '+34 910 000000' : '+30 2810 000000'}
                               className="w-full bg-stone-950 border border-white/10 text-white rounded-xl pl-8 pr-3 py-2 text-xs focus:outline-none focus:border-amber-400 transition"
                             />
                           </div>
                         </div>
                       </div>
+                    </div>
 
                       <div>
                         <label className="block text-stone-300 text-[11px] font-semibold mb-1">
@@ -1131,7 +1176,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                           className="w-full bg-stone-950 border border-white/10 text-white rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-amber-400 transition"
                         />
                       </div>
-                    </div>
 
                     <button
                       type="submit"
