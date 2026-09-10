@@ -27,7 +27,7 @@ interface ProducerDetailDrawerProps {
   customNotice?: string;
   isProTier?: boolean;
   directBottleShopUrl?: string;
-  onOpenWineBoxes?: (category?: 'wine' | 'beer' | 'olive_oil') => void;
+  onOpenWineBoxes?: (category?: 'wine' | 'beer' | 'olive_oil' | 'honey' | 'cheese') => void;
   hasExplorerPass?: boolean;
   onOpenExplorerPass?: () => void;
 }
@@ -236,12 +236,12 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
           discountLabel: 'Dairy Discount',
           tastingNotePlaceholder: 'Record your thoughts on their graviera, mizithra, or mountain milk traditions...',
           bookingLabel: 'Book Mitato Visit',
-          hasDeliveryBoxes: false,
-          deliveryCategory: undefined,
+          hasDeliveryBoxes: true,
+          deliveryCategory: 'cheese' as const,
           deliveryIcon: '🧀',
-          deliveryBoxTitle: '',
-          deliveryBadge: '',
-          deliveryBoxDesc: '',
+          deliveryBoxTitle: 'Cave-Aged Cheese & Pantry Delivery',
+          deliveryBadge: 'Vacuum Sealed',
+          deliveryBoxDesc: 'Certified vacuum-packed cave-cured graviera & shepherd pantry pairings shipped with cold-packs.',
         };
       case 'apiary':
         return {
@@ -253,12 +253,12 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
           discountLabel: 'Farm Discount',
           tastingNotePlaceholder: 'Record your thoughts on their thyme honey, aroma, or wild botanicals...',
           bookingLabel: 'Book Apiary Tour',
-          hasDeliveryBoxes: false,
-          deliveryCategory: undefined,
+          hasDeliveryBoxes: true,
+          deliveryCategory: 'honey' as const,
           deliveryIcon: '🍯',
-          deliveryBoxTitle: '',
-          deliveryBadge: '',
-          deliveryBoxDesc: '',
+          deliveryBoxTitle: 'Raw Mountain Honey & Herb Delivery',
+          deliveryBadge: 'Harvest Jars',
+          deliveryBoxDesc: 'Pure raw nomadic thyme honey & wild foraged mountain herbs shipped direct to your door.',
         };
       case 'winery':
       default:
@@ -994,8 +994,10 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
           >
             {producer.category === 'brewery' ? (
               <Beer className="w-4 h-4 shrink-0" />
-            ) : (
+            ) : producer.category === 'winery' ? (
               <Wine className="w-4 h-4 shrink-0" />
+            ) : (
+              <Sparkles className="w-4 h-4 shrink-0" />
             )}
             <span className="truncate">{term.bookingLabel}</span>
           </button>

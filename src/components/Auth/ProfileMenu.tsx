@@ -223,7 +223,7 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
                   <span>Artisan Boxes</span>
                 </span>
                 <span className="px-1.5 py-0.2 rounded-full bg-rose-500/20 text-rose-300 text-[10px] font-bold border border-rose-500/30">
-                  Wine, Beer & EVOO
+                  Greek Terroir
                 </span>
               </button>
             )}

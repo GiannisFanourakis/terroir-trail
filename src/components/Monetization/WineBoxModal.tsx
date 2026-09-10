@@ -10,7 +10,7 @@ import {
 interface WineBoxModalProps {
   isOpen: boolean;
   onClose: () => void;
-  initialCategory?: 'all' | 'wine' | 'beer' | 'olive_oil';
+  initialCategory?: 'all' | 'wine' | 'beer' | 'olive_oil' | 'honey' | 'cheese';
   user: UserProfile | null;
   onOrderBox: (order: WineBoxOrder) => Promise<void> | void;
   onOpenAuth: () => void;
@@ -26,7 +26,7 @@ export const WineBoxModal: React.FC<WineBoxModalProps> = ({
 }) => {
   if (!isOpen) return null;
 
-  const [categoryFilter, setCategoryFilter] = useState<'all' | 'wine' | 'beer' | 'olive_oil'>(initialCategory);
+  const [categoryFilter, setCategoryFilter] = useState<'all' | 'wine' | 'beer' | 'olive_oil' | 'honey' | 'cheese'>(initialCategory);
   const [selectedBoxId, setSelectedBoxId] = useState<string>(() => {
     const initialMatching = CURATED_WINE_BOXES.find(b => initialCategory === 'all' || b.category === initialCategory);
     return initialMatching ? initialMatching.id : CURATED_WINE_BOXES[0].id;
@@ -247,6 +247,36 @@ export const WineBoxModal: React.FC<WineBoxModalProps> = ({
                     >
                       🫒 EVOO
                     </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setCategoryFilter('honey');
+                        const firstHoney = CURATED_WINE_BOXES.find(b => b.category === 'honey');
+                        if (firstHoney) setSelectedBoxId(firstHoney.id);
+                      }}
+                      className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition cursor-pointer flex items-center gap-1 ${
+                        categoryFilter === 'honey'
+                          ? 'bg-amber-500 text-stone-950 shadow-sm'
+                          : 'text-stone-400 hover:text-white'
+                      }`}
+                    >
+                      🍯 Honey
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setCategoryFilter('cheese');
+                        const firstCheese = CURATED_WINE_BOXES.find(b => b.category === 'cheese');
+                        if (firstCheese) setSelectedBoxId(firstCheese.id);
+                      }}
+                      className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition cursor-pointer flex items-center gap-1 ${
+                        categoryFilter === 'cheese'
+                          ? 'bg-yellow-400 text-stone-950 shadow-sm'
+                          : 'text-stone-400 hover:text-white'
+                      }`}
+                    >
+                      🧀 Cheese & Pantry
+                    </button>
                   </div>
                 </div>
 
@@ -257,6 +287,10 @@ export const WineBoxModal: React.FC<WineBoxModalProps> = ({
                       ? `${box.bottlesCount} Fresh Cans & Bottles` 
                       : box.category === 'olive_oil'
                       ? `${box.bottlesCount} Single-Estate Harvest EVOOs`
+                      : box.category === 'honey'
+                      ? `${box.bottlesCount} Raw Jars & Herb Bundles`
+                      : box.category === 'cheese'
+                      ? `${box.bottlesCount} Cheese & Pantry Items`
                       : `${box.bottlesCount} Estate Bottles`;
 
                     return (
@@ -379,7 +413,17 @@ export const WineBoxModal: React.FC<WineBoxModalProps> = ({
               {/* Price Summary Bar */}
               <div className="p-3.5 rounded-2xl bg-stone-900/90 border border-white/10 space-y-2 text-xs">
                 <div className="flex items-center justify-between text-stone-400">
-                  <span>Artisan Box ({selectedBox.bottlesCount} {selectedBox.category === 'beer' ? 'Cans & Bottles' : selectedBox.category === 'olive_oil' ? 'Bottles & Tins' : 'Bottles'}):</span>
+                  <span>Artisan Box ({selectedBox.bottlesCount} {
+                    selectedBox.category === 'beer' 
+                      ? 'Cans & Bottles' 
+                      : selectedBox.category === 'olive_oil' 
+                      ? 'Bottles & Tins'
+                      : selectedBox.category === 'honey'
+                      ? 'Jars & Bundles'
+                      : selectedBox.category === 'cheese'
+                      ? 'Cheese & Pantry Items'
+                      : 'Bottles'
+                  }):</span>
                   <span className="font-semibold text-stone-200">€{selectedBox.priceEur}</span>
                 </div>
                 <div className="flex items-center justify-between text-stone-400">

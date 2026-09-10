@@ -218,7 +218,7 @@ export const Header: React.FC<HeaderProps> = ({
               <button
                 onClick={onOpenWineBoxes}
                 className="hidden xl:flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-bold rounded-xl border border-rose-500/30 hover:border-rose-400 bg-rose-950/20 hover:bg-rose-950/40 text-rose-300 transition shrink-0 cursor-pointer"
-                title="International Delivery: Wine, Craft Beer & EVOO Boxes (EU/UK/US)"
+                title="International Delivery: Wine, Craft Beer, EVOO, Honey & Cheese (EU/UK/US)"
               >
                 <Package className="w-3.5 h-3.5 text-rose-400 shrink-0" />
                 <span>Artisan Boxes</span>

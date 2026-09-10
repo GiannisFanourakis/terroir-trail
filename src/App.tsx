@@ -38,7 +38,7 @@ export const App: React.FC = () => {
   const [isPassModalOpen, setIsPassModalOpen] = useState<boolean>(false);
   const [isChauffeurModalOpen, setIsChauffeurModalOpen] = useState<boolean>(false);
   const [isWineBoxModalOpen, setIsWineBoxModalOpen] = useState<boolean>(false);
-  const [wineBoxCategory, setWineBoxCategory] = useState<'all' | 'wine' | 'beer' | 'olive_oil'>('all');
+  const [wineBoxCategory, setWineBoxCategory] = useState<'all' | 'wine' | 'beer' | 'olive_oil' | 'honey' | 'cheese'>('all');
   const [isExperiencesModalOpen, setIsExperiencesModalOpen] = useState<boolean>(false);
   const [isAboutFaqModalOpen, setIsAboutFaqModalOpen] = useState<boolean>(false);
   const [aboutFaqInitialTab, setAboutFaqInitialTab] = useState<'about' | 'faq'>('about');
