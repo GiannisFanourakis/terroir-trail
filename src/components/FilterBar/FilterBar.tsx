@@ -72,8 +72,8 @@ export const FilterBar: React.FC<FilterBarProps> = ({
     filters.favoritesOnly;
 
   return (
-    <div className="relative z-20 shrink-0 bg-stone-900/95 backdrop-blur-xl border-b border-white/10 px-3 sm:px-6 py-2 shadow-md">
-      <div className="max-w-7xl mx-auto flex flex-col gap-1.5">
+    <div className="relative z-20 shrink-0 bg-stone-900/95 backdrop-blur-xl border-b border-white/10 px-3 sm:px-6 lg:px-8 py-2 shadow-md w-full">
+      <div className="w-full flex flex-col gap-1.5">
         
         {/* Top Category Buttons & Pinned Action Controls */}
         <div className="flex items-center justify-between gap-2">

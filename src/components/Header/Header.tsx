@@ -69,8 +69,8 @@ export const Header: React.FC<HeaderProps> = ({
   ];
 
   return (
-    <header className="relative z-30 shrink-0 bg-stone-950 border-b border-white/10 px-3 sm:px-6 py-2 sm:py-2.5 shadow-2xl">
-      <div className="max-w-7xl mx-auto flex flex-col gap-2">
+    <header className="relative z-30 shrink-0 bg-stone-950 border-b border-white/10 px-3 sm:px-6 lg:px-8 py-2 sm:py-2.5 shadow-2xl w-full">
+      <div className="w-full flex flex-col gap-2">
         
         {/* Row 1: Brand & Top Action Center (Always Visible, Never Scrolled Away) */}
         <div className="flex items-center justify-between gap-2">
@@ -269,7 +269,7 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
 
           {/* Search Box */}
-          <div className="relative flex-1 min-w-[120px] sm:min-w-[200px] max-w-sm shrink-0">
+          <div className="relative flex-1 min-w-[120px] sm:min-w-[200px] max-w-sm sm:max-w-md shrink-0">
             <Search className="w-3.5 h-3.5 text-stone-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none shrink-0" />
             <input
               type="text"
