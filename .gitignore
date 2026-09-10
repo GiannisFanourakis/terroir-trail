@@ -27,3 +27,14 @@ dist-ssr
 .env
 .env.local
 .env.*.local
+
+# Android & Keystores
+*.keystore
+*.jks
+keystore.properties
+local.properties
+android/local.properties
+android/.gradle
+android/app/build
+android/build
+
