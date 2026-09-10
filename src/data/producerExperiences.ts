@@ -366,26 +366,26 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
   },
   {
     "id": "exp_tyrokomio-gasparis_1",
-    "title": "Gasparis Traditional Mountain Dairy - Artisan Raw Milk Graviera & Fresh Cheese Flight",
+    "title": "Mastorakis Traditional Dairy - Artisan Raw Milk Graviera & Fresh Cheese Flight",
     "durationMinutes": 50,
     "pricePerPerson": 16,
     "badge": "Dairy Flight",
-    "description": "Taste authentic raw sheep and goat cheeses crafted following traditional alpine pastoral methods at Gasparis Traditional Mountain Dairy.",
+    "description": "Taste authentic raw sheep and goat cheeses crafted following traditional alpine pastoral methods at Mastorakis Traditional Artisan Dairy.",
     "includes": [
       "Walkthrough of the cheese salting and temperature-controlled curing cellar",
-      "Tasting of 4 fresh and aged cheeses (Mizithra, Anthotiros, Graviera)",
+      "Tasting of 4 fresh and aged cheeses (Galomyzithra, Anthotiros, Graviera, Goat Kasseri)",
       "Crushed barley rusks, wild thyme honey & mountain tea"
     ],
     "producerId": "tyrokomio-gasparis",
-    "producerName": "Gasparis Traditional Mountain Dairy",
-    "producerGreekName": "Παραδοσιακό Τυροκομείο Γάσπαρης",
+    "producerName": "Mastorakis Traditional Artisan Dairy (Apokoronas)",
+    "producerGreekName": "Παραδοσιακό Τυροκομείο Μαστοράκη",
     "category": "cheese_dairy",
     "destination": "crete",
-    "location": "Chania, Gavalochori (Apokoronas)"
+    "location": "Chania, Tzitzifes (Apokoronas)"
   },
   {
     "id": "exp_tyrokomio-gasparis_2",
-    "title": "Gasparis Traditional Mountain Dairy - Shepherd Cauldron Workshop & Terroir Wine Pairing",
+    "title": "Mastorakis Traditional Dairy - Shepherd Cauldron Workshop & Terroir Wine Pairing",
     "durationMinutes": 80,
     "pricePerPerson": 32,
     "badge": "Master Cheesemaker",
@@ -396,11 +396,11 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
       "2 glasses of local wine paired with wild greens and artisan charcuterie"
     ],
     "producerId": "tyrokomio-gasparis",
-    "producerName": "Gasparis Traditional Mountain Dairy",
-    "producerGreekName": "Παραδοσιακό Τυροκομείο Γάσπαρης",
+    "producerName": "Mastorakis Traditional Artisan Dairy (Apokoronas)",
+    "producerGreekName": "Παραδοσιακό Τυροκομείο Μαστοράκη",
     "category": "cheese_dairy",
     "destination": "crete",
-    "location": "Chania, Gavalochori (Apokoronas)"
+    "location": "Chania, Tzitzifes (Apokoronas)"
   },
   {
     "id": "exp_estate-argyros-santorini_1",
@@ -1446,7 +1446,7 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "producerGreekName": "Οινοποιητική Μονεμβασιάς (Τσιμπίδη)",
     "category": "winery",
     "destination": "peloponnese",
-    "location": "Laconia, Velies (Monemvasia)",
+    "location": "Laconia, Velies / Aggelona (Monemvasia)",
     "badge": "Official 6-Wine Flight"
   },
   {
@@ -1465,7 +1465,7 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "producerGreekName": "Οινοποιητική Μονεμβασιάς (Τσιμπίδη)",
     "category": "winery",
     "destination": "peloponnese",
-    "location": "Laconia, Velies (Monemvasia)",
+    "location": "Laconia, Velies / Aggelona (Monemvasia)",
     "badge": "Byzantine Nectar"
   },
   {
@@ -1643,7 +1643,7 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "producerGreekName": "Κτήμα Καρανίκα",
     "category": "winery",
     "destination": "northern_greece",
-    "location": "Florina, Amyndeon (Florina)",
+    "location": "Florina, Levea / Vegora (Lake Vegoritis)",
     "badge": "Sparkling Master"
   },
   {
@@ -1663,46 +1663,46 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "producerGreekName": "Κτήμα Καρανίκα",
     "category": "winery",
     "destination": "northern_greece",
-    "location": "Florina, Amyndeon (Florina)",
+    "location": "Florina, Levea / Vegora (Lake Vegoritis)",
     "badge": "Sparkling & Fondue"
   },
   {
     "id": "exp_kazani-kokolakis_1",
-    "title": "Kazani Kokolakis - Copper Alembic Still Tour & Tsikoudia Flight",
+    "title": "Rakokazano Zargianaki - Copper Alembic Still Tour & Tsikoudia Flight",
     "durationMinutes": 45,
     "pricePerPerson": 14,
     "badge": "Still Tour",
-    "description": "Witness traditional wood-fired distillation in historic copper alembic stills at Kazani Kokolakis and taste crystal-clear grape spirit.",
+    "description": "Witness traditional wood-fired distillation in historic copper alembic stills at Rakokazano Zargianaki and taste crystal-clear grape spirit.",
     "includes": [
       "Walkthrough of the copper distillation pot and steam condensation coil",
       "Tasting of 3 distillates (pure tsikoudia, aged raki & herbal rakomelo)",
       "Local roasted nuts, dried figs & mountain honey"
     ],
     "producerId": "kazani-kokolakis",
-    "producerName": "Kazani Kokolakis",
-    "producerGreekName": "Παραδοσιακό Καζάνι Κοκολάκη",
+    "producerName": "Rakokazano Zargianaki",
+    "producerGreekName": "Παραδοσιακό Ρακοκάζανο Ζαργιανάκη",
     "category": "kazani",
     "destination": "crete",
-    "location": "Heraklion, Archanes Village"
+    "location": "Heraklion, Prinias (Malevizi)"
   },
   {
     "id": "exp_kazani-kokolakis_2",
-    "title": "Kazani Kokolakis - Village Rakokazano Feast & Oak-Aged Spirit Pairing",
+    "title": "Rakokazano Zargianaki - Village Rakokazano Feast & Oak-Aged Spirit Pairing",
     "durationMinutes": 90,
     "pricePerPerson": 38,
     "badge": "Kazani Feast",
-    "description": "An unforgettable evening of Greek hospitality: taste spirit fresh from the coil while meats roast over open embers in Heraklion.",
+    "description": "An unforgettable evening of Greek hospitality: taste spirit fresh from the coil while meats roast over open embers in Prinias.",
     "includes": [
       "Tasting of fresh warm distillate straight from the copper pipe",
       "Charcoal-grilled local meats, wood-roasted potatoes & village salad",
       "Tasting of oak-matured amber reserve tsikoudia"
     ],
     "producerId": "kazani-kokolakis",
-    "producerName": "Kazani Kokolakis",
-    "producerGreekName": "Παραδοσιακό Καζάνι Κοκολάκη",
+    "producerName": "Rakokazano Zargianaki",
+    "producerGreekName": "Παραδοσιακό Ρακοκάζανο Ζαργιανάκη",
     "category": "kazani",
     "destination": "crete",
-    "location": "Heraklion, Archanes Village"
+    "location": "Heraklion, Prinias (Malevizi)"
   },
   {
     "id": "exp_peskesi-farm-kazani_1",
@@ -1879,7 +1879,7 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "producerGreekName": "Ελαιοκτήματα Λιοκαρέα",
     "category": "olive_mill",
     "destination": "peloponnese",
-    "location": "Messinia, Mani Peninsula (Peloponnese)",
+    "location": "Messinia, Lagada (West Mani)",
     "badge": "EVOO Masterclass"
   },
   {
@@ -1899,7 +1899,7 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "producerGreekName": "Ελαιοκτήματα Λιοκαρέα",
     "category": "olive_mill",
     "destination": "peloponnese",
-    "location": "Messinia, Mani Peninsula (Peloponnese)",
+    "location": "Messinia, Lagada (West Mani)",
     "badge": "Agrumato Pairing"
   },
   {
@@ -2155,7 +2155,7 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "producerGreekName": "Χειροποίητη Ζυθοποιία Κύκαο",
     "category": "brewery",
     "destination": "peloponnese",
-    "location": "Achaia, Patras (Peloponnese)",
+    "location": "Achaia, Platani (Patras)",
     "badge": "Wild Ferment Flight"
   },
   {
@@ -2175,7 +2175,7 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "producerGreekName": "Χειροποίητη Ζυθοποιία Κύκαο",
     "category": "brewery",
     "destination": "peloponnese",
-    "location": "Achaia, Patras (Peloponnese)",
+    "location": "Achaia, Platani (Patras)",
     "badge": "Cellar Masterclass"
   },
   {
@@ -2235,7 +2235,7 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "producerGreekName": "Πρότυπη Μικροζυθοποιία (Μπίρα Σκνίπα)",
     "category": "brewery",
     "destination": "northern_greece",
-    "location": "Thessaloniki, Nea Raidestos (Thessaloniki)",
+    "location": "Thessaloniki, Thermi / Nea Raidestos",
     "badge": "Sknipa Flight (€12)"
   },
   {
@@ -2255,7 +2255,7 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "producerGreekName": "Πρότυπη Μικροζυθοποιία (Μπίρα Σκνίπα)",
     "category": "brewery",
     "destination": "northern_greece",
-    "location": "Thessaloniki, Nea Raidestos (Thessaloniki)",
+    "location": "Thessaloniki, Thermi / Nea Raidestos",
     "badge": "Brewer’s Table"
   }
 ];

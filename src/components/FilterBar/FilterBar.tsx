@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Category, RoadAccess, Ethos, FoodOption, FilterState } from '../../types/terroir';
-import { RotateCcw, Dog, Footprints, Caravan, SlidersHorizontal } from 'lucide-react';
+import { RotateCcw, Dog, Footprints, Caravan, SlidersHorizontal, Compass } from 'lucide-react';
 
 interface FilterBarProps {
   filters: FilterState;
@@ -8,6 +8,7 @@ interface FilterBarProps {
   onResetFilters: () => void;
   totalFiltered: number;
   totalCount: number;
+  onOpenLoops?: () => void;
 }
 
 export const FilterBar: React.FC<FilterBarProps> = ({
@@ -16,6 +17,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   onResetFilters,
   totalFiltered,
   totalCount,
+  onOpenLoops,
 }) => {
   const [isMoreFiltersOpen, setIsMoreFiltersOpen] = useState<boolean>(false);
 
@@ -103,6 +105,19 @@ export const FilterBar: React.FC<FilterBarProps> = ({
             <span className="text-[11px] font-semibold text-stone-400 hidden xl:inline">
               <span className="text-amber-400 font-bold">{totalFiltered}</span> of {totalCount} makers
             </span>
+
+            {/* Curated Routes */}
+            {onOpenLoops && (
+              <button
+                type="button"
+                onClick={onOpenLoops}
+                className="flex items-center gap-1.5 text-[11px] sm:text-xs px-2.5 py-1 rounded-full font-bold border border-amber-500/40 bg-gradient-to-r from-amber-500/20 via-amber-500/10 to-transparent hover:border-amber-400 text-amber-300 hover:text-white transition shrink-0 cursor-pointer shadow-sm active:scale-95"
+                title="Curated driving routes with turn-by-turn navigation"
+              >
+                <Compass className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                <span>Routes</span>
+              </button>
+            )}
 
             {/* Filter Toggle Button */}
             <button

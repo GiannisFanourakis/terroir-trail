@@ -154,6 +154,18 @@ export const Header: React.FC<HeaderProps> = ({
                 </button>
               )}
 
+              {/* Curated Routes */}
+              {onOpenLoops && (
+                <button
+                  onClick={onOpenLoops}
+                  className="hidden md:flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-bold bg-stone-900 hover:bg-stone-850 text-stone-300 hover:text-amber-300 border border-white/10 hover:border-amber-400/40 rounded-xl transition shrink-0 cursor-pointer shadow-sm"
+                  title="Curated driving routes with turn-by-turn navigation"
+                >
+                  <Compass className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                  <span>Curated Routes</span>
+                </button>
+              )}
+
               {/* About */}
               {onOpenAbout && (
                 <button
@@ -202,6 +214,7 @@ export const Header: React.FC<HeaderProps> = ({
                 onOpenAbout={onOpenAbout}
                 onOpenFaq={onOpenFaq}
                 onOpenLegal={onOpenLegal}
+                onOpenLoops={onOpenLoops}
               />
             </div>
 
@@ -223,6 +236,7 @@ export const Header: React.FC<HeaderProps> = ({
                 onOpenAbout={onOpenAbout}
                 onOpenFaq={onOpenFaq}
                 onOpenLegal={onOpenLegal}
+                onOpenLoops={onOpenLoops}
               />
 
               {/* Saved badge (always visible) */}
@@ -390,14 +404,14 @@ export const Header: React.FC<HeaderProps> = ({
                 <span>Terroir Passport</span>
               </button>
 
-              {/* Day-Trip Loops */}
+              {/* Curated Routes */}
               {onOpenLoops && (
                 <button
                   onClick={() => { onOpenLoops(); closeMenu(); }}
                   className="flex items-center gap-3 w-full px-3 py-3 text-sm font-semibold text-stone-200 hover:text-white bg-stone-900 hover:bg-stone-850 rounded-xl border border-white/10 hover:border-amber-400/40 transition cursor-pointer"
                 >
                   <Compass className="w-4 h-4 text-amber-400 shrink-0" />
-                  <span>Day-Trip Loops</span>
+                  <span>Curated Routes</span>
                 </button>
               )}
 

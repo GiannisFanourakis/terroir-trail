@@ -19,6 +19,7 @@ interface ProfileMenuProps {
   onOpenAbout?: () => void;
   onOpenFaq?: () => void;
   onOpenLegal?: (tab?: 'privacy' | 'terms' | 'licenses') => void;
+  onOpenLoops?: () => void;
 }
 
 export const ProfileMenu: React.FC<ProfileMenuProps> = ({
@@ -37,6 +38,7 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
   onOpenAbout,
   onOpenFaq,
   onOpenLegal,
+  onOpenLoops,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -270,6 +272,19 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
               <Compass className="w-3.5 h-3.5 text-amber-400" />
               <span>Terroir Passport Stamps</span>
             </button>
+
+            {onOpenLoops && (
+              <button
+                onClick={() => {
+                  setIsOpen(false);
+                  onOpenLoops();
+                }}
+                className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-stone-300 hover:text-amber-300 hover:bg-amber-500/10 transition cursor-pointer"
+              >
+                <Compass className="w-3.5 h-3.5 text-amber-400" />
+                <span>Curated Terroir Routes</span>
+              </button>
+            )}
 
             {onOpenExplorerPass && (
               <button

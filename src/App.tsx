@@ -283,7 +283,7 @@ export const App: React.FC = () => {
         onSelectDestination={(dest: Destination | 'all') => handleFilterChange('destination', dest)}
         searchQuery={filters.searchQuery}
         onSearchChange={(query: string) => handleFilterChange('searchQuery', query)}
-        /* onOpenLoops={() => setIsLoopsModalOpen(true)} - Commented out until deals are struck with chauffeurs/dealerships */
+        onOpenLoops={() => setIsLoopsModalOpen(true)}
         /* onOpenExperiences={() => setIsExperiencesModalOpen(true)} - Commented out until direct deals on experiences are made with producers */
         totalFilteredCount={filteredProducers.length}
         viewMode={viewMode}
@@ -343,6 +343,7 @@ export const App: React.FC = () => {
         onResetFilters={handleResetFilters}
         totalFiltered={filteredProducers.length}
         totalCount={producers.length}
+        onOpenLoops={() => setIsLoopsModalOpen(true)}
       />
 
       {/* 3. Main Workspace: Sidebar List + Leaflet Map Canvas */}
@@ -461,27 +462,25 @@ export const App: React.FC = () => {
         )}
       </main>
 
-      {/* 5. Day-Trip Loops Modal (Commented out until deals are struck with chauffeurs / dealerships) */}
-      {/*
-      <DayTripModal
-        isOpen={isLoopsModalOpen}
-        onClose={() => setIsLoopsModalOpen(false)}
-        onSelectLoop={handleSelectLoop}
-        onSelectProducer={(producer) => {
-          setSelectedProducer(producer);
-          setIsDrawerOpen(true);
-        }}
-        onBookChauffeur={(loop) => {
-          setChauffeurTargetCircuit(loop);
-          setIsChauffeurModalOpen(true);
-        }}
-        user={user}
-        onOpenExplorerPass={() => setIsPassModalOpen(true)}
-      />
-      */}
-
       {/* Lazy-Loaded Modals Suspense Boundary */}
       <Suspense fallback={null}>
+        {/* 5. Curated Terroir Routes Modal (Self-guided Google Maps navigation & optional chauffeur) */}
+        <DayTripModal
+          isOpen={isLoopsModalOpen}
+          onClose={() => setIsLoopsModalOpen(false)}
+          onSelectLoop={handleSelectLoop}
+          onSelectProducer={(producer) => {
+            setSelectedProducer(producer);
+            setIsDrawerOpen(true);
+          }}
+          onBookChauffeur={(loop) => {
+            setChauffeurTargetCircuit(loop);
+            setIsChauffeurModalOpen(true);
+          }}
+          user={user}
+          onOpenExplorerPass={() => setIsPassModalOpen(true)}
+          producers={producers}
+        />
         {/* 6. Explorer Auth & Profile Modal */}
         <AuthModal
         isOpen={isAuthModalOpen}
@@ -610,8 +609,7 @@ export const App: React.FC = () => {
         guestInfo={verifiedGuestInfo}
       />
 
-      {/* 12. Private Chauffeur & Mercedes Van Booking Modal (Commented out until deals are struck with chauffeurs / dealerships) */}
-      {/*
+      {/* 12. Optional Private Chauffeur & Mercedes Van Booking Modal */}
       <ChauffeurBookingModal
         isOpen={isChauffeurModalOpen}
         onClose={() => setIsChauffeurModalOpen(false)}
@@ -620,7 +618,6 @@ export const App: React.FC = () => {
         onOpenAuth={() => setIsAuthModalOpen(true)}
         onBookChauffeur={handleConfirmChauffeurBooking}
       />
-      */}
 
       {/* 13. Taste of the Trail - International Artisan Delivery Modal (Commented out until clientbase and international shipping logistics are established) */}
       {/*

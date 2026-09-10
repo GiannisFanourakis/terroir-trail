@@ -105,9 +105,9 @@ Empowers independent artisans to take control of their digital presence:
 * Certified temperature-controlled shipping of authentic small-batch wines and olive oils across the EU, UK, and US.
 * Direct cellar collaborations bundling rare indigenous varieties (Vidiano, Liatiko, Xinomavro, Chianti Classico Riserva) with sommelier tasting guides.
 
-### 4. 🚐 Private Mercedes Chauffeur Wine Circuits
-* On-demand private chauffeur options for winding mountain wine roads.
-* Eliminates the risk of drink-driving on narrow mountain serpentines, allowing visitors to enjoy wine tastings and distillery visits safely.
+### 4. 🚐 Optional Private Chauffeur & Mercedes Van Inquiries
+* Dedicated on-demand booking inquiries for travelers desiring private transit with a designated driver.
+* Completely decoupled from self-guided exploration: visitors can follow the itineraries in their own vehicles or inquire about luxury Mercedes vans to enjoy wine tastings and distillery visits without worrying about mountain serpentines or zero-tolerance BAC limits.
 
 ---
 
@@ -136,8 +136,10 @@ Empowers independent artisans to take control of their digital presence:
   * Browse curated tasting flights (e.g. *Indigenous White Flight*, *Vertical Reserve Tasting*, *Ancient Amphora Masterclass*).
   * Select dates, times, and guest counts with instant confirmation and producer dashboard management.
 
-* 🧭 **Curated Day-Trip Loops:**
-  * Pre-planned 3-stop day routes across Chania, Heraklion, Santorini, Nemea, and Chianti with realistic driving times and distances.
+* 🧭 **Curated Terroir Routes with Turn-by-Turn Google Maps Navigation:**
+  * Handcrafted self-guided day itineraries connecting 2 to 3 artisan cellars, stone oil mills, and scenic tasting rooms across Chania, Heraklion, Santorini Caldera, Peloponnese (Nemea & Mantinia), and Northern Greece (Naoussa & Thessaloniki).
+  * **1-Tap Direct Google Maps Driving Navigation:** Launches native multi-stop turn-by-turn driving directions in the Google Maps mobile app (Android & iOS) or desktop browser with zero API billing costs (€0.00/month).
+  * **Completely Decoupled & Free:** Routes are 100% accessible to all explorers, with optional private chauffeur inquiries available for groups preferring a designated driver.
 
 * ⚖️ **Full European Legal Compliance:**
   * Complete, legally compliant modal suite accessible from the drawer and footer:

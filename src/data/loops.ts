@@ -1,6 +1,6 @@
-import { DayTripLoop } from '../types/terroir';
+import { DayTripLoop, Producer } from '../types/terroir';
 
-export const CRETAN_DAY_TRIP_LOOPS: DayTripLoop[] = [
+export const CURATED_ROUTES: DayTripLoop[] = [
   {
     id: 'chania-craft-beer-olive-trail',
     title: 'Chania Craft Beer, Stone Mills & Mountain Romeiko',
@@ -114,7 +114,7 @@ export const CRETAN_DAY_TRIP_LOOPS: DayTripLoop[] = [
         activity: 'Gravity-flow cellar tour in Koutsi and tasting velvety reserve Agiorgitiko with local cheeses.'
       },
       {
-        producerId: 'ktima-skouras',
+        producerId: 'skouras-winery-nemea',
         suggestedTime: '1:00 PM - 2:30 PM',
         activity: 'Tasting of the mythical "Megas Oenos" (Agiorgitiko & Cabernet) in contemporary art tasting galleries.'
       },
@@ -148,7 +148,7 @@ export const CRETAN_DAY_TRIP_LOOPS: DayTripLoop[] = [
         activity: 'Tour the world-renowned corkscrew museum and taste the revived Malagousia facing Mount Olympus.'
       },
       {
-        producerId: 'thymiopoulos-vineyards',
+        producerId: 'thymiopoulos-naoussa',
         suggestedTime: '2:00 PM - 4:00 PM',
         activity: 'Biodynamic vineyard walk and tasting of "Earth and Sky" natural Xinomavro straight from old oak casks.'
       }
@@ -196,3 +196,45 @@ export const CRETAN_DAY_TRIP_LOOPS: DayTripLoop[] = [
     isVipOnly: true,
   }
 ];
+
+// Backwards compatibility alias
+export const CRETAN_DAY_TRIP_LOOPS = CURATED_ROUTES;
+
+/**
+ * Generates an official Google Maps universal multi-stop driving navigation URL.
+ * Automatically opens turn-by-turn driving mode with all waypoints sequentially loaded
+ * in the native Google Maps app (Android & iOS) or in browser tabs (desktop).
+ *
+ * @param loop The curated day trip route
+ * @param producers All available producers to resolve coordinates from
+ * @returns Google Maps directions URL string
+ */
+export function getGoogleMapsRouteUrl(loop: DayTripLoop, producers: Producer[]): string {
+  const producerMap = new Map(producers.map((p) => [p.id, p]));
+  const coordsList: string[] = [];
+
+  for (const stop of loop.stops) {
+    const producer = producerMap.get(stop.producerId);
+    if (producer && producer.coordinates && producer.coordinates.length === 2) {
+      const [lat, lng] = producer.coordinates;
+      if (typeof lat === 'number' && typeof lng === 'number' && !isNaN(lat) && !isNaN(lng)) {
+        coordsList.push(`${lat},${lng}`);
+      }
+    }
+  }
+
+  if (coordsList.length === 0) return '';
+  if (coordsList.length === 1) {
+    return `https://www.google.com/maps/search/?api=1&query=${coordsList[0]}`;
+  }
+
+  const origin = coordsList[0];
+  const destination = coordsList[coordsList.length - 1];
+  const waypoints = coordsList.slice(1, -1).join('|');
+
+  let url = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}&travelmode=driving`;
+  if (waypoints) {
+    url += `&waypoints=${waypoints}`;
+  }
+  return url;
+}
