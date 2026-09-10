@@ -784,18 +784,33 @@ export const useAuth = () => {
   // 9. VIP Explorer Pass Activation
   const activateExplorerPass = useCallback((durationDays: number = 365) => {
     setUser((prev) => {
-      if (!prev) return prev;
       const expiryDate = new Date();
       expiryDate.setDate(expiryDate.getDate() + durationDays);
+      const baseUser: UserProfile = prev || {
+        id: `guest_explorer_${Date.now()}`,
+        name: 'VIP Explorer',
+        email: 'explorer@terroirtrail.com',
+        avatar: '👑',
+        hometown: 'Mediterranean Explorer',
+        role: 'traveler',
+        isProducer: false,
+        travelerType: 'wine_enthusiast',
+        visitedProducers: [],
+        personalNotes: {},
+        memberSince: new Date().getFullYear().toString(),
+      };
+
       const newProfile: UserProfile = {
-        ...prev,
+        ...baseUser,
         hasExplorerPass: true,
         explorerPassUntil: expiryDate.toISOString(),
       };
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(newProfile));
-        saveUserData(newProfile.id, newProfile.visitedProducers, newProfile.personalNotes, newProfile);
-        saveUserProfileToCloud(newProfile);
+        if (prev?.id) {
+          saveUserData(newProfile.id, newProfile.visitedProducers, newProfile.personalNotes, newProfile);
+          saveUserProfileToCloud(newProfile);
+        }
       } catch (e) {
         console.error('Error saving updated explorer pass to localStorage:', e);
       }

@@ -1093,7 +1093,22 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
 
                       <button
                         type="button"
-                        onClick={() => setIsProTier(!isProTier)}
+                        onClick={() => {
+                          const stripeUrl = import.meta.env.VITE_STRIPE_PRODUCER_UPGRADE_URL;
+                          if (stripeUrl && !isProTier) {
+                            try {
+                              const targetUrl = new URL(stripeUrl);
+                              if (user?.email) targetUrl.searchParams.set('prefilled_email', user.email);
+                              if (selectedProducer?.id) targetUrl.searchParams.set('client_reference_id', selectedProducer.id);
+                              window.location.href = targetUrl.toString();
+                              return;
+                            } catch {
+                              window.location.href = stripeUrl;
+                              return;
+                            }
+                          }
+                          setIsProTier(!isProTier);
+                        }}
                         className={`w-full mt-3 py-2 rounded-xl text-xs font-bold transition cursor-pointer flex items-center justify-center gap-1.5 ${
                           isProTier
                             ? 'bg-emerald-500 text-stone-950 shadow-md'
@@ -1101,7 +1116,7 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
                         }`}
                       >
                         <Crown className="w-3.5 h-3.5" />
-                        <span>{isProTier ? '✓ Pro Active (Click to Pause)' : 'Upgrade to Host Pro (€39/mo excl. VAT)'}</span>
+                        <span>{isProTier ? '✓ Pro Active (Click to Pause)' : 'Upgrade to Host Pro (€199/yr)'}</span>
                       </button>
                     </div>
                   </div>

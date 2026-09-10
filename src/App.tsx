@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useProducers } from './hooks/useProducers';
 import { Producer, FilterState, Destination, DayTripLoop } from './types/terroir';
 import { Header } from './components/Header/Header';
@@ -80,6 +80,24 @@ export const App: React.FC = () => {
     getTastingNote,
     activateExplorerPass,
   } = useAuth();
+
+  // Listen for Stripe Checkout redirects (?vip=success or ?producer=upgraded)
+  const [stripeNotification, setStripeNotification] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('vip') === 'success') {
+      activateExplorerPass(14);
+      setStripeNotification('🎉 Welcome VIP Explorer! Your 14-Day Holiday Pass is active & all ads are removed.');
+      const cleanUrl = window.location.origin + window.location.pathname;
+      window.history.replaceState({}, document.title, cleanUrl);
+    } else if (params.get('producer') === 'upgraded') {
+      setStripeNotification('🌟 Welcome Featured Producer! Your premium listing is active.');
+      const cleanUrl = window.location.origin + window.location.pathname;
+      window.history.replaceState({}, document.title, cleanUrl);
+    }
+  }, [activateExplorerPass]);
 
   const handleConfirmChauffeurBooking = (booking: ChauffeurBooking) => {
     try {
@@ -258,6 +276,23 @@ export const App: React.FC = () => {
         }}
         onOpenLegal={handleOpenLegal}
       />
+
+      {/* Stripe Checkout VIP/Producer Success Banner */}
+      {stripeNotification && (
+        <div className="bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 text-stone-950 px-4 py-2 text-xs font-bold flex items-center justify-between shadow-lg animate-in slide-in-from-top duration-300 z-50">
+          <div className="flex items-center gap-2 mx-auto">
+            <span>{stripeNotification}</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => setStripeNotification(null)}
+            className="text-stone-950 hover:text-stone-800 text-sm font-bold ml-2 cursor-pointer"
+            aria-label="Dismiss banner"
+          >
+            ✕
+          </button>
+        </div>
+      )}
 
       {/* 2. Interactive Filter Bar */}
       <FilterBar

@@ -73,13 +73,32 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
   ];
 
   const handlePurchase = async () => {
+    const stripeUrl = selectedPlan === 'holiday'
+      ? import.meta.env.VITE_STRIPE_EXPLORER_PASS_URL
+      : import.meta.env.VITE_STRIPE_ANNUAL_PASS_URL || import.meta.env.VITE_STRIPE_EXPLORER_PASS_URL;
+
+    if (stripeUrl) {
+      setIsProcessing(true);
+      try {
+        const targetUrl = new URL(stripeUrl);
+        if (user?.email) targetUrl.searchParams.set('prefilled_email', user.email);
+        if (user?.id) targetUrl.searchParams.set('client_reference_id', user.id);
+        window.location.href = targetUrl.toString();
+        return;
+      } catch {
+        window.location.href = stripeUrl;
+        return;
+      }
+    }
+
     if (!user) {
       onOpenAuth();
       return;
     }
+
     setIsProcessing(true);
     try {
-      // Simulate high-speed Stripe Checkout authorization
+      // Fallback: simulated activation if no Stripe link configured yet
       await new Promise((res) => setTimeout(res, 900));
       await onActivatePass(selectedPlan === 'holiday' ? 14 : 365);
       setIsPurchased(true);
