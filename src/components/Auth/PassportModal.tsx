@@ -128,7 +128,7 @@ export const PassportModal: React.FC<PassportModalProps> = ({
                 </div>
                 <div>
                   <div className="text-xs font-bold text-amber-200">
-                    Terroir Holiday Pass (€14.99)
+                    Optional 14-Day VIP Pass (€14.99)
                   </div>
                   <div className="text-[11px] text-stone-400">
                     Free welcome pours, artisanal meze &amp; 10% off cellar bottles
@@ -141,7 +141,7 @@ export const PassportModal: React.FC<PassportModalProps> = ({
                   onClick={onOpenExplorerPass}
                   className="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs shadow-md shadow-amber-500/20 transition shrink-0 cursor-pointer"
                 >
-                  Upgrade
+                  Upgrade (€14.99)
                 </button>
               )}
             </div>

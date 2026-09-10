@@ -382,22 +382,27 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
 
               {/* Account Requirement Notice if not logged in */}
               {!user ? (
-                <div className="p-3 rounded-2xl bg-amber-500/15 border border-amber-500/30 text-amber-200 text-xs flex items-center gap-3 text-left my-2">
+                <div className="p-3.5 rounded-2xl bg-amber-500/15 border border-amber-500/30 text-amber-200 text-xs flex items-center gap-3 text-left my-2">
                   <div className="w-8 h-8 rounded-xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0">
                     <Lock className="w-4 h-4" />
                   </div>
                   <div className="leading-snug">
-                    <span className="font-bold text-white block">Traveler Account Required</span>
+                    <span className="font-bold text-white block">Traveler Account Required (100% Free)</span>
                     <span className="text-[11px] text-stone-300">
-                      You must sign in or create a traveler account to link and activate your VIP Pass across all devices.
+                      Creating an account is free. An account is required so your optional €14.99 VIP pass can be securely linked and synced across your devices.
                     </span>
                   </div>
                 </div>
               ) : (
-                <div className="p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-xs flex items-center gap-2 text-left my-1">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                  <span className="text-[10px]">
-                    Pass will be linked to: <strong className="text-white">{user.email || user.name}</strong>
+                <div className="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-xs flex items-center justify-between gap-2 text-left my-1">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                    <span className="text-[10px]">
+                      Pass will link to: <strong className="text-white">{user.email || user.name}</strong>
+                    </span>
+                  </div>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/30">
+                    Free Account
                   </span>
                 </div>
               )}
@@ -414,7 +419,7 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
                 ) : !user ? (
                   <>
                     <Lock className="w-4 h-4" />
-                    <span>Sign In to Get VIP Pass (€14.99)</span>
+                    <span>Sign In to Purchase Pass (€14.99)</span>
                   </>
                 ) : (
                   <>
@@ -428,9 +433,12 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
                 )}
               </button>
 
-              <div className="flex items-center justify-center gap-1.5 text-[10px] text-stone-500 pt-1">
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
-                <span>100% Guaranteed · Refundable if unused within 48 hours</span>
+              <div className="flex flex-col items-center justify-center gap-1 text-[10px] text-stone-400 pt-1 text-center">
+                <div className="flex items-center gap-1.5 text-stone-400">
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
+                  <span>Account registration is 100% free · Pass is an optional €14.99 upgrade</span>
+                </div>
+                <span className="text-stone-500">100% Guaranteed · Refundable if unused within 48 hours</span>
               </div>
 
             </div>

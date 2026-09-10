@@ -155,27 +155,27 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
             <div className={`mb-2.5 p-3 rounded-2xl border transition relative overflow-hidden text-left ${
               user.hasExplorerPass
                 ? 'bg-gradient-to-br from-amber-500/25 via-stone-900 to-stone-950 border-amber-400/50 shadow-lg shadow-amber-500/10'
-                : 'bg-stone-900/90 border-amber-500/30 hover:border-amber-400/50'
+                : 'bg-stone-900/90 border-white/10 hover:border-amber-500/30'
             }`}>
               <div className="flex items-center justify-between mb-1.5">
                 <div className="flex items-center gap-1.5">
-                  <Crown className="w-4 h-4 text-amber-400 animate-pulse" />
+                  <Crown className={`w-4 h-4 ${user.hasExplorerPass ? 'text-amber-400 animate-pulse' : 'text-stone-400'}`} />
                   <span className="font-bold text-white text-xs">
-                    {user.hasExplorerPass ? 'VIP Explorer Pass' : 'VIP Holiday Pass'}
+                    {user.hasExplorerPass ? 'VIP Explorer Pass' : 'VIP Holiday Pass (Optional)'}
                   </span>
                 </div>
                 <span className={`text-[9px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${
                   user.hasExplorerPass 
                     ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40' 
-                    : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                    : 'bg-stone-800 text-stone-300 border border-stone-700'
                 }`}>
-                  {user.hasExplorerPass ? 'Active' : '€14.99'}
+                  {user.hasExplorerPass ? 'Active' : 'Free Tier · No Pass'}
                 </span>
               </div>
               <p className="text-[10px] text-stone-300 mb-2 leading-relaxed">
                 {user.hasExplorerPass
                   ? '100% Ad-Free active · Complimentary pours, artisan discounts & VIP map filters unlocked.'
-                  : 'Remove all ads, unlock complimentary tasting pours & 10% cellar discounts across all regions.'}
+                  : 'You are on the Free Explorer Tier. Upgrade to the optional 14-day VIP Pass (€14.99) for ad-free exploration, complimentary pours & 10% cellar discounts.'}
               </p>
               {onOpenExplorerPass && (
                 <button
@@ -191,7 +191,7 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
                   }`}
                 >
                   <Sparkles className="w-3 h-3" />
-                  <span>{user.hasExplorerPass ? 'View VIP Pass Privileges' : 'Activate VIP Pass (€14.99)'}</span>
+                  <span>{user.hasExplorerPass ? 'View VIP Pass Privileges' : 'Get 14-Day VIP Pass (€14.99)'}</span>
                 </button>
               )}
             </div>
@@ -257,10 +257,14 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
               >
                 <span className="flex items-center gap-2">
                   <Crown className="w-3.5 h-3.5 text-amber-400" />
-                  <span>{user.hasExplorerPass ? 'VIP Pass Active' : 'VIP Explorer Pass'}</span>
+                  <span>{user.hasExplorerPass ? 'VIP Pass Active' : 'VIP Pass (Optional)'}</span>
                 </span>
-                <span className="px-1.5 py-0.2 rounded-full bg-amber-500/20 text-amber-300 text-[10px] font-bold border border-amber-500/30">
-                  {user.hasExplorerPass ? 'VIP' : '€14.99'}
+                <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
+                  user.hasExplorerPass 
+                    ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' 
+                    : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                }`}>
+                  {user.hasExplorerPass ? 'Active' : '€14.99'}
                 </span>
               </button>
             )}

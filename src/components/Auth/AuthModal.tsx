@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   X, Mail, Lock, User, ArrowRight, ShieldCheck, Loader2, AlertCircle, 
   Building2, Sparkles, Eye, EyeOff, CheckCircle2, ChevronDown, ChevronUp,
-  FileText, Truck, HelpCircle, Crown
+  FileText, Truck, HelpCircle, Crown, Compass
 } from 'lucide-react';
 import { TravelerType, ProducerTaxDetails } from '../../types/auth';
 import { Producer } from '../../types/terroir';
@@ -400,7 +400,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           <p className="text-xs text-stone-400 mt-1 max-w-xs mx-auto">
             {accountType === 'traveler' ? (
               travelerMode === 'login' ? 'Access your Terroir Passport, verified tasting notes, and bookings.' :
-              travelerMode === 'signup' ? 'Collect digital stamps and unlock VIP cellar perks across Greece & Italy.' :
+              travelerMode === 'signup' ? 'Create a 100% free account to save your passport stamps & tasting notes.' :
               'Enter your email address and we will send you a secure password reset link.'
             ) : (
               producerMode === 'login' ? 'Manage your cellar reservations, operating hours, and direct shop links.' :
@@ -476,23 +476,23 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           {/* ========================================================= */}
           {accountType === 'traveler' && (
             <>
-              {/* VIP Traveler Pass Benefit Callout */}
-              <div className="p-3 rounded-2xl bg-gradient-to-r from-amber-500/15 via-stone-900 to-amber-900/20 border border-amber-500/30 flex items-center justify-between gap-3 text-left">
+              {/* Free Account Notice & Optional VIP Pass Callout */}
+              <div className="p-3 rounded-2xl bg-gradient-to-r from-amber-500/10 via-stone-900 to-amber-900/15 border border-amber-500/25 flex items-center justify-between gap-3 text-left">
                 <div className="flex items-center gap-2.5 min-w-0">
-                  <div className="w-8 h-8 rounded-xl bg-amber-400/20 border border-amber-400/30 flex items-center justify-center text-amber-300 shrink-0">
-                    <Crown className="w-4 h-4" />
+                  <div className="w-8 h-8 rounded-xl bg-amber-400/15 border border-amber-400/25 flex items-center justify-center text-amber-300 shrink-0">
+                    <Compass className="w-4 h-4" />
                   </div>
                   <div className="min-w-0">
-                    <div className="text-xs font-bold text-amber-200 truncate">
-                      VIP Explorer Pass
+                    <div className="text-xs font-bold text-white flex items-center gap-1.5">
+                      <span>Free Traveler Account</span>
                     </div>
                     <div className="text-[10px] text-stone-400 truncate">
-                      Sign in to sync stamps & unlock 14-day ad-free tasting perks (€14.99)
+                      Sign in to save stamps & notes. (14-day VIP Pass €14.99 is an optional upgrade)
                     </div>
                   </div>
                 </div>
-                <span className="text-[9px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-bold border border-amber-500/30 shrink-0">
-                  VIP
+                <span className="text-[9px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/30 shrink-0">
+                  100% FREE
                 </span>
               </div>
 
