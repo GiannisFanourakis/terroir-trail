@@ -351,48 +351,28 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
                 </div>
               </div>
 
-              {/* Payment Methods */}
-              <div className="pt-2 border-t border-white/10 space-y-2.5">
-                <span className="text-stone-400 text-[11px] font-semibold block">
-                  Select Fast Checkout
-                </span>
-                <div className="grid grid-cols-3 gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setPaymentMethod('apple')}
-                    className={`py-2 px-3 rounded-xl border font-bold text-xs flex items-center justify-center gap-1.5 transition cursor-pointer ${
-                      paymentMethod === 'apple'
-                        ? 'bg-white text-stone-950 border-white shadow-md'
-                        : 'bg-stone-900 border-white/10 text-stone-300 hover:text-white'
-                    }`}
-                  >
-                    <span>Pay</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setPaymentMethod('google')}
-                    className={`py-2 px-3 rounded-xl border font-bold text-xs flex items-center justify-center gap-1.5 transition cursor-pointer ${
-                      paymentMethod === 'google'
-                        ? 'bg-white text-stone-950 border-white shadow-md'
-                        : 'bg-stone-900 border-white/10 text-stone-300 hover:text-white'
-                    }`}
-                  >
-                    <span>GPay</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setPaymentMethod('card')}
-                    className={`py-2 px-3 rounded-xl border font-bold text-xs flex items-center justify-center gap-1.5 transition cursor-pointer ${
-                      paymentMethod === 'card'
-                        ? 'bg-amber-500 text-stone-950 border-amber-500 shadow-md'
-                        : 'bg-stone-900 border-white/10 text-stone-300 hover:text-white'
-                    }`}
-                  >
-                    <CreditCard className="w-3.5 h-3.5" />
-                    <span>Card</span>
-                  </button>
+              {/* Secure Checkout Trust Badge */}
+              <div className="pt-3 border-t border-white/10 flex flex-col items-center justify-center text-center gap-2">
+                <div className="flex items-center justify-center gap-1.5 flex-wrap">
+                  <span className="px-2 py-0.5 rounded-md bg-white/10 text-stone-200 font-mono text-[10px] font-bold">
+                    Pay
+                  </span>
+                  <span className="px-2 py-0.5 rounded-md bg-white/10 text-stone-200 font-mono text-[10px] font-bold">
+                    GPay
+                  </span>
+                  <span className="px-2 py-0.5 rounded-md bg-white/10 text-stone-200 font-mono text-[10px] font-bold">
+                    Visa
+                  </span>
+                  <span className="px-2 py-0.5 rounded-md bg-white/10 text-stone-200 font-mono text-[10px] font-bold">
+                    Mastercard
+                  </span>
+                  <span className="px-2 py-0.5 rounded-md bg-white/10 text-stone-200 font-mono text-[10px] font-bold">
+                    AMEX
+                  </span>
+                </div>
+                <div className="flex items-center gap-1 text-[10px] text-stone-400">
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                  <span>256-Bit Encrypted Checkout Powered by <strong className="text-white">Stripe</strong></span>
                 </div>
               </div>
 
