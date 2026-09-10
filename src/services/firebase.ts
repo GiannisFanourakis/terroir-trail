@@ -3,6 +3,7 @@ import { getAuth, GoogleAuthProvider, OAuthProvider, Auth, sendPasswordResetEmai
 import {
   getFirestore,
   initializeFirestore,
+  persistentLocalCache,
   doc,
   setDoc,
   getDoc,
@@ -52,9 +53,13 @@ if (isFirebaseConfigured) {
   try {
     app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
     auth = getAuth(app);
-    db = initializeFirestore(app, {
-      experimentalAutoDetectLongPolling: true,
-    });
+    try {
+      db = initializeFirestore(app, {
+        localCache: persistentLocalCache(),
+      });
+    } catch {
+      db = getFirestore(app);
+    }
   } catch (error) {
     console.error('Firebase initialization error:', error);
   }

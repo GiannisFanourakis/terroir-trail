@@ -5,6 +5,7 @@ import {
   Plus, Minus, Navigation, Maximize2, Layers, MapPin, 
   Star, ArrowRight, ExternalLink, X, Compass, ChevronRight, Heart 
 } from 'lucide-react';
+import { getCategoryFallbackImage } from '../../utils/imageFallbacks';
 
 interface MapCanvasProps {
   producers: Producer[];
@@ -427,6 +428,14 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
                 src={selectedProducer.coverImage}
                 alt={selectedProducer.name}
                 className="w-full h-full object-cover"
+                loading="lazy"
+                decoding="async"
+                onError={(e) => {
+                  const fallback = getCategoryFallbackImage(selectedProducer.category);
+                  if (e.currentTarget.src !== fallback) {
+                    e.currentTarget.src = fallback;
+                  }
+                }}
               />
               <span className="absolute bottom-1 left-1 bg-black/70 backdrop-blur-md text-amber-400 text-[9px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded flex items-center gap-0.5">
                 <Star className="w-2.5 h-2.5 sm:w-3 sm:h-3 fill-amber-400" />

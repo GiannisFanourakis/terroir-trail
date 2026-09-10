@@ -9,6 +9,7 @@ import {
   Camera, ChevronLeft, ChevronRight, Beer, Mail, Calendar, QrCode
 } from 'lucide-react';
 import { useProducerPhotos } from '../../services/googlePlacesPhotos';
+import { getCategoryFallbackImage } from '../../utils/imageFallbacks';
 
 interface ProducerDetailDrawerProps {
   producer: Producer | null;
@@ -68,13 +69,25 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
     setActivePhotoIndex,
   } = useProducerPhotos(producer);
 
+  const [heroImgSrc, setHeroImgSrc] = useState<string>('');
+
   useEffect(() => {
     if (producer) {
       setActiveTab('story');
       setIsEditingNote(false);
       setNoteDraft(tastingNote);
+      setHeroImgSrc(activePhoto?.url || producer.coverImage);
     }
-  }, [producer, tastingNote]);
+  }, [producer, tastingNote, activePhoto]);
+
+  const handleHeroImgError = () => {
+    if (producer) {
+      const fallback = getCategoryFallbackImage(producer.category);
+      if (heroImgSrc !== fallback) {
+        setHeroImgSrc(fallback);
+      }
+    }
+  };
 
   // ESC key to close
   useEffect(() => {
@@ -301,9 +314,11 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
         {/* 1. Hero Gallery & Header */}
         <div className="relative h-48 sm:h-60 lg:h-64 w-full shrink-0 bg-stone-900 overflow-hidden group">
           <img
-            src={activePhoto?.url || producer.coverImage}
+            src={heroImgSrc || activePhoto?.url || producer.coverImage}
             alt={producer.name}
             className="w-full h-full object-cover transition-all duration-300"
+            decoding="async"
+            onError={handleHeroImgError}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/40 to-black/30" />
 
@@ -673,6 +688,13 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                         alt={`Photo ${i + 1}`}
                         className="w-full h-full object-cover"
                         loading="lazy"
+                        decoding="async"
+                        onError={(e) => {
+                          const fallback = getCategoryFallbackImage(producer.category);
+                          if (e.currentTarget.src !== fallback) {
+                            e.currentTarget.src = fallback;
+                          }
+                        }}
                       />
                     </button>
                   ))}
@@ -1063,7 +1085,10 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
       </div>
 
       {/* 4. Action Bar (Sticky Footer) */}
-      <div className="p-3 sm:p-4 bg-stone-900/95 backdrop-blur-xl border-t border-white/10 shrink-0 flex items-center gap-1.5 sm:gap-2.5">
+      <div 
+        className="p-3 sm:p-4 bg-stone-900/95 backdrop-blur-xl border-t border-white/10 shrink-0 flex items-center gap-1.5 sm:gap-2.5"
+        style={{ paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom, 0.75rem))' }}
+      >
         {/* Primary Action: Get Directions (Google Maps) */}
         <a
           href={producer.googleMapsUrl}

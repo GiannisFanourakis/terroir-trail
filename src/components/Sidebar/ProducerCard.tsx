@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Producer } from '../../types/terroir';
 import { MapPin, Star, ArrowUpRight, Car, Heart } from 'lucide-react';
+import { getCategoryFallbackImage } from '../../utils/imageFallbacks';
 
 interface ProducerCardProps {
   producer: Producer;
@@ -17,6 +18,19 @@ export const ProducerCard: React.FC<ProducerCardProps> = ({
   isFavorite,
   onToggleFavorite,
 }) => {
+  const [imgSrc, setImgSrc] = useState<string>(producer.coverImage);
+
+  useEffect(() => {
+    setImgSrc(producer.coverImage);
+  }, [producer.coverImage]);
+
+  const handleImageError = () => {
+    const fallback = getCategoryFallbackImage(producer.category);
+    if (imgSrc !== fallback) {
+      setImgSrc(fallback);
+    }
+  };
+
   const getCategoryBadge = (cat: Producer['category']) => {
     switch (cat) {
       case 'winery':
@@ -48,10 +62,12 @@ export const ProducerCard: React.FC<ProducerCardProps> = ({
       {/* Cover Image */}
       <div className="relative h-40 w-full overflow-hidden bg-stone-950">
         <img
-          src={producer.coverImage}
+          src={imgSrc}
           alt={producer.name}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           loading="lazy"
+          decoding="async"
+          onError={handleImageError}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/30 to-transparent" />
 

@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, Suspense, lazy } from 'react';
 import { useProducers } from './hooks/useProducers';
 import { Producer, FilterState, Destination, DayTripLoop } from './types/terroir';
 import { Header } from './components/Header/Header';
@@ -6,27 +6,30 @@ import { FilterBar } from './components/FilterBar/FilterBar';
 import { MapCanvas } from './components/Map/MapCanvas';
 import { ProducerList } from './components/Sidebar/ProducerList';
 import { ProducerDetailDrawer } from './components/Drawer/ProducerDetailDrawer';
-import { DayTripModal } from './components/Loops/DayTripModal';
 import { useFavorites } from './hooks/useFavorites';
 import { useAuth } from './hooks/useAuth';
 import { useBookings } from './hooks/useBookings';
 import { useProducerPortal } from './hooks/useProducerPortal';
-import { AuthModal } from './components/Auth/AuthModal';
-import { PassportModal } from './components/Auth/PassportModal';
-import { BookingModal } from './components/Bookings/BookingModal';
-import { ProducerPortalModal } from './components/Portal/ProducerPortalModal';
-import { MyBookingsModal } from './components/Bookings/MyBookingsModal';
-import { ExplorerPassModal } from './components/Monetization/ExplorerPassModal';
-import { DigitalPassModal } from './components/Monetization/DigitalPassModal';
-import { HostVerificationModal, VerifiedPassInfo } from './components/Monetization/HostVerificationModal';
-import { ChauffeurBookingModal } from './components/Monetization/ChauffeurBookingModal';
-import { WineBoxModal } from './components/Monetization/WineBoxModal';
-import { ExperienceExplorerModal } from './components/Experiences/ExperienceExplorerModal';
-import { AboutFaqModal } from './components/About/AboutFaqModal';
-import { LegalModal } from './components/Legal/LegalModal';
 import { GoogleAdSlot } from './components/Monetization/GoogleAdSlot';
 import { CRETAN_DAY_TRIP_LOOPS } from './data/loops';
 import { ChauffeurBooking, WineBoxOrder } from './types/monetization';
+import type { VerifiedPassInfo } from './components/Monetization/HostVerificationModal';
+
+// Performance optimization: lazy-load modals on demand to shrink initial bundle
+const DayTripModal = lazy(() => import('./components/Loops/DayTripModal').then(m => ({ default: m.DayTripModal })));
+const AuthModal = lazy(() => import('./components/Auth/AuthModal').then(m => ({ default: m.AuthModal })));
+const PassportModal = lazy(() => import('./components/Auth/PassportModal').then(m => ({ default: m.PassportModal })));
+const BookingModal = lazy(() => import('./components/Bookings/BookingModal').then(m => ({ default: m.BookingModal })));
+const ProducerPortalModal = lazy(() => import('./components/Portal/ProducerPortalModal').then(m => ({ default: m.ProducerPortalModal })));
+const MyBookingsModal = lazy(() => import('./components/Bookings/MyBookingsModal').then(m => ({ default: m.MyBookingsModal })));
+const ExplorerPassModal = lazy(() => import('./components/Monetization/ExplorerPassModal').then(m => ({ default: m.ExplorerPassModal })));
+const DigitalPassModal = lazy(() => import('./components/Monetization/DigitalPassModal').then(m => ({ default: m.DigitalPassModal })));
+const HostVerificationModal = lazy(() => import('./components/Monetization/HostVerificationModal').then(m => ({ default: m.HostVerificationModal })));
+const ChauffeurBookingModal = lazy(() => import('./components/Monetization/ChauffeurBookingModal').then(m => ({ default: m.ChauffeurBookingModal })));
+const WineBoxModal = lazy(() => import('./components/Monetization/WineBoxModal').then(m => ({ default: m.WineBoxModal })));
+const ExperienceExplorerModal = lazy(() => import('./components/Experiences/ExperienceExplorerModal').then(m => ({ default: m.ExperienceExplorerModal })));
+const AboutFaqModal = lazy(() => import('./components/About/AboutFaqModal').then(m => ({ default: m.AboutFaqModal })));
+const LegalModal = lazy(() => import('./components/Legal/LegalModal').then(m => ({ default: m.LegalModal })));
 import { List, MapPin } from 'lucide-react';
 
 export const App: React.FC = () => {
@@ -398,7 +401,10 @@ export const App: React.FC = () => {
 
         {/* Floating Map/List View Switcher on < lg screens (Hidden when an estate tile is selected on map so it never obscures the tile!) */}
         {(!selectedProducer || viewMode === 'list') && (
-          <div className="lg:hidden absolute bottom-5 left-1/2 -translate-x-1/2 z-30 pointer-events-auto transition-all animate-in fade-in duration-200">
+          <div 
+            className="lg:hidden absolute left-1/2 -translate-x-1/2 z-30 pointer-events-auto transition-all animate-in fade-in duration-200"
+            style={{ bottom: 'max(1.25rem, calc(1.25rem + env(safe-area-inset-bottom, 0px)))' }}
+          >
             <button
               onClick={() => setViewMode((prev) => (prev === 'map' ? 'list' : 'map'))}
               className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-stone-900/95 text-stone-100 border border-white/20 shadow-2xl backdrop-blur-xl font-bold text-xs hover:bg-stone-800 hover:text-white active:scale-95 transition-all cursor-pointer select-none"
@@ -474,8 +480,10 @@ export const App: React.FC = () => {
       />
       */}
 
-      {/* 6. Explorer Auth & Profile Modal */}
-      <AuthModal
+      {/* Lazy-Loaded Modals Suspense Boundary */}
+      <Suspense fallback={null}>
+        {/* 6. Explorer Auth & Profile Modal */}
+        <AuthModal
         isOpen={isAuthModalOpen}
         onClose={() => setIsAuthModalOpen(false)}
         initialRole={authInitialRole}
@@ -668,6 +676,7 @@ export const App: React.FC = () => {
         onClose={() => setIsLegalModalOpen(false)}
         initialTab={legalInitialTab}
       />
+      </Suspense>
     </div>
   );
 };

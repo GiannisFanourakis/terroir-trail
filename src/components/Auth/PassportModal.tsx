@@ -3,6 +3,7 @@ import { Producer } from '../../types/terroir';
 import { UserProfile } from '../../types/auth';
 import { X, Award, CheckCircle2, Circle, MapPin, Edit3, Save, Compass, Crown, Sparkles, QrCode } from 'lucide-react';
 import { UserAvatar } from '../Common/UserAvatar';
+import { getCategoryFallbackImage } from '../../utils/imageFallbacks';
 
 interface PassportModalProps {
   isOpen: boolean;
@@ -242,6 +243,14 @@ export const PassportModal: React.FC<PassportModalProps> = ({
                         src={producer.coverImage}
                         alt={producer.name}
                         className="w-full h-full object-cover"
+                        loading="lazy"
+                        decoding="async"
+                        onError={(e) => {
+                          const fallback = getCategoryFallbackImage(producer.category);
+                          if (e.currentTarget.src !== fallback) {
+                            e.currentTarget.src = fallback;
+                          }
+                        }}
                       />
                     </div>
                     <div className="min-w-0 flex-1">
