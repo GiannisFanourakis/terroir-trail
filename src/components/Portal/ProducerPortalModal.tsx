@@ -965,7 +965,7 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
                     <Sparkles className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
                     <div>
                       <span className="font-semibold text-white">Custom Flight Editing: </span>
-                      <span>To modify tasting flight prices, add seasonal vertical flights, or change cheese pairings, contact our editorial curator team at <a href="mailto:hosts@terroirtrail.com" className="text-amber-400 underline">hosts@terroirtrail.com</a>.</span>
+                      <span>To modify tasting flight prices, add seasonal vertical flights, or change cheese pairings, contact our editorial curator team at <a href="mailto:terroirtrail@gmail.com" className="text-amber-400 underline">terroirtrail@gmail.com</a>.</span>
                     </div>
                   </div>
                 </div>
