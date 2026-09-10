@@ -1097,6 +1097,10 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
                       <button
                         type="button"
                         onClick={() => {
+                          if (!user || !user.isProducer) {
+                            if (onOpenAuth) onOpenAuth('producer');
+                            return;
+                          }
                           const stripeUrl = import.meta.env.VITE_STRIPE_PRODUCER_UPGRADE_URL;
                           if (stripeUrl && !isProTier) {
                             try {

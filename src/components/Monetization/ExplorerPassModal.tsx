@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { UserProfile } from '../../types/auth';
 import { 
   X, Award, CheckCircle2, Sparkles, ShieldCheck, 
-  Wine, Gift, Compass, CreditCard, Apple, ArrowRight, Star 
+  Wine, Gift, Compass, CreditCard, Apple, ArrowRight, Star, Lock
 } from 'lucide-react';
 
 interface ExplorerPassModalProps {
@@ -10,7 +10,7 @@ interface ExplorerPassModalProps {
   onClose: () => void;
   user: UserProfile | null;
   onActivatePass: (days?: number) => Promise<void> | void;
-  onOpenAuth: () => void;
+  onOpenAuth: (role?: 'traveler' | 'producer') => void;
 }
 
 export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
@@ -73,6 +73,13 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
   ];
 
   const handlePurchase = async () => {
+    // 1. Mandatory requirement: User must have an authenticated account to obtain a pass
+    if (!user) {
+      onClose();
+      onOpenAuth('traveler');
+      return;
+    }
+
     const stripeUrl = selectedPlan === 'holiday'
       ? import.meta.env.VITE_STRIPE_EXPLORER_PASS_URL
       : import.meta.env.VITE_STRIPE_ANNUAL_PASS_URL || import.meta.env.VITE_STRIPE_EXPLORER_PASS_URL;
@@ -89,11 +96,6 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
         window.location.href = stripeUrl;
         return;
       }
-    }
-
-    if (!user) {
-      onOpenAuth();
-      return;
     }
 
     setIsProcessing(true);
@@ -378,15 +380,42 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
                 </div>
               </div>
 
+              {/* Account Requirement Notice if not logged in */}
+              {!user ? (
+                <div className="p-3 rounded-2xl bg-amber-500/15 border border-amber-500/30 text-amber-200 text-xs flex items-center gap-3 text-left my-2">
+                  <div className="w-8 h-8 rounded-xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0">
+                    <Lock className="w-4 h-4" />
+                  </div>
+                  <div className="leading-snug">
+                    <span className="font-bold text-white block">Traveler Account Required</span>
+                    <span className="text-[11px] text-stone-300">
+                      You must sign in or create a traveler account to link and activate your VIP Pass across all devices.
+                    </span>
+                  </div>
+                </div>
+              ) : (
+                <div className="p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-xs flex items-center gap-2 text-left my-1">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                  <span className="text-[10px]">
+                    Pass will be linked to: <strong className="text-white">{user.email || user.name}</strong>
+                  </span>
+                </div>
+              )}
+
               {/* CTA Button */}
               <button
                 type="button"
                 onClick={handlePurchase}
                 disabled={isProcessing}
-                className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 text-stone-950 font-bold text-xs shadow-xl shadow-amber-500/25 transition transform active:scale-98 disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer mt-2"
+                className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 text-stone-950 font-bold text-xs shadow-xl shadow-amber-500/25 transition transform active:scale-98 disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer mt-1"
               >
                 {isProcessing ? (
                   <span>Authorizing VIP Pass...</span>
+                ) : !user ? (
+                  <>
+                    <Lock className="w-4 h-4" />
+                    <span>Sign In to Get VIP Pass (€14.99)</span>
+                  </>
                 ) : (
                   <>
                     <span>
