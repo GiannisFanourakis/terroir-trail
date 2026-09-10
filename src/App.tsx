@@ -22,7 +22,7 @@ import { WineBoxModal } from './components/Monetization/WineBoxModal';
 import { ExperienceExplorerModal } from './components/Experiences/ExperienceExplorerModal';
 import { AboutFaqModal } from './components/About/AboutFaqModal';
 import { LegalModal } from './components/Legal/LegalModal';
-import { SponsorBanner } from './components/Monetization/SponsorBanner';
+import { GoogleAdSlot } from './components/Monetization/GoogleAdSlot';
 import { CRETAN_DAY_TRIP_LOOPS } from './data/loops';
 import { ChauffeurBooking, WineBoxOrder } from './types/monetization';
 import { List, MapPin } from 'lucide-react';
@@ -298,7 +298,7 @@ export const App: React.FC = () => {
           {/* Sponsor / Travel Partner Ad Banner (Ad-Free for VIP Passholders) */}
           <div className="absolute top-2.5 left-0 right-0 z-20 pointer-events-none flex justify-center px-3">
             <div className="pointer-events-auto w-full max-w-3xl">
-              <SponsorBanner
+              <GoogleAdSlot
                 hasExplorerPass={!!user?.hasExplorerPass}
                 onOpenExplorerPass={() => setIsPassModalOpen(true)}
               />
