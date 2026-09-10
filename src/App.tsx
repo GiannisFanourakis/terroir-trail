@@ -71,6 +71,7 @@ export const App: React.FC = () => {
     loginAsDemoProducer,
     loginAsProducer,
     claimAndRegisterProducer,
+    updateProducerTaxDetails,
     logout,
     toggleVisited,
     isVisited,
@@ -455,6 +456,7 @@ export const App: React.FC = () => {
         onUpdateBookingStatus={setStatus}
         onSaveProducerOverride={updateOverride}
         getProducerOverride={getOverride}
+        onUpdateProducerTaxDetails={updateProducerTaxDetails}
         onSelectProducerForDrawer={(producer) => {
           setSelectedProducer(producer);
           setIsDrawerOpen(true);

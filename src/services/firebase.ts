@@ -92,6 +92,8 @@ export const saveUserProfileToCloud = async (profile: Partial<UserProfile> & { i
     if (profile.hasExplorerPass !== undefined) dataToSave.hasExplorerPass = profile.hasExplorerPass;
     if (profile.explorerPassUntil !== undefined) dataToSave.explorerPassUntil = profile.explorerPassUntil;
     if (profile.memberSince !== undefined) dataToSave.memberSince = profile.memberSince;
+    if (profile.claimStatus !== undefined) dataToSave.claimStatus = profile.claimStatus;
+    if (profile.taxDetails !== undefined) dataToSave.taxDetails = profile.taxDetails;
 
     await setDoc(userRef, dataToSave, { merge: true });
   } catch (error) {

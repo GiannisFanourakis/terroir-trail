@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { 
   X, Mail, Lock, User, ArrowRight, ShieldCheck, Loader2, AlertCircle, 
-  Building2, Sparkles, Eye, EyeOff, CheckCircle2, ChevronDown, ChevronUp 
+  Building2, Sparkles, Eye, EyeOff, CheckCircle2, ChevronDown, ChevronUp,
+  FileText, Truck, HelpCircle
 } from 'lucide-react';
-import { TravelerType } from '../../types/auth';
+import { TravelerType, ProducerTaxDetails } from '../../types/auth';
 import { Producer } from '../../types/terroir';
+import { validateVatNumber } from '../../utils/vatValidator';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -16,7 +18,14 @@ interface AuthModalProps {
   onLogin: (email: string, password?: string) => Promise<any> | void;
   onSignup: (name: string, email: string, password?: string, travelerType?: TravelerType) => Promise<any> | void;
   onLoginAsProducer?: (email: string, password?: string, producerId?: string, producerName?: string) => Promise<any> | void;
-  onClaimProducer?: (producerId: string, producerName: string, hostName: string, email: string, password?: string) => Promise<any> | void;
+  onClaimProducer?: (
+    producerId: string, 
+    producerName: string, 
+    hostName: string, 
+    email: string, 
+    password?: string,
+    taxDetails?: ProducerTaxDetails
+  ) => Promise<any> | void;
   onResetPassword?: (email: string) => Promise<any> | void;
   onLoginWithGoogle?: (role?: 'traveler' | 'producer', claimedProducerId?: string, producerName?: string) => Promise<any>;
   onLoginWithApple?: (role?: 'traveler' | 'producer', claimedProducerId?: string, producerName?: string) => Promise<any>;
@@ -70,6 +79,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   const [producerPassword, setProducerPassword] = useState('');
   const [showProducerPassword, setShowProducerPassword] = useState(false);
 
+  // Producer Fiscal & Shipping Registration Fields (VAT / ΑΦΜ)
+  const [vatNumber, setVatNumber] = useState('');
+  const [legalBusinessName, setLegalBusinessName] = useState('');
+  const [taxOffice, setTaxOffice] = useState('');
+  const [registeredAddress, setRegisteredAddress] = useState('');
+  const [dispatchContactPhone, setDispatchContactPhone] = useState('');
+
   // Statuses
   const [localError, setLocalError] = useState<string>('');
   const [resetSuccessEmail, setResetSuccessEmail] = useState<string | null>(null);
@@ -85,11 +101,32 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       setLocalError('');
       setResetSuccessEmail(null);
       setShowDemoSection(false);
-      if (producers.length > 0 && !selectedProducerId) {
-        setSelectedProducerId(producers[0].id);
+      const initialProdId = selectedProducerId || (producers.length > 0 ? producers[0].id : '');
+      if (initialProdId) {
+        setSelectedProducerId(initialProdId);
+        const p = producers.find((prod) => prod.id === initialProdId);
+        if (p) {
+          setLegalBusinessName(p.name);
+          setRegisteredAddress(`${p.village}, ${p.region} (${p.country || 'Greece'})`);
+          setDispatchContactPhone(p.phone || '');
+        }
       }
     }
   }, [isOpen, initialRole, producers]);
+
+  const selectedProducer = producers.find((p) => p.id === selectedProducerId) || producers[0];
+  const countryHint = (selectedProducer?.country === 'Italy' || selectedProducer?.destination === 'tuscany') ? 'IT' : 'GR';
+  const vatValidation = vatNumber.trim() ? validateVatNumber(vatNumber.trim(), countryHint) : null;
+
+  const handleSelectClaimProducer = (prodId: string) => {
+    setSelectedProducerId(prodId);
+    const p = producers.find((prod) => prod.id === prodId);
+    if (p) {
+      setLegalBusinessName(p.name);
+      setRegisteredAddress(`${p.village}, ${p.region} (${p.country || 'Greece'})`);
+      setDispatchContactPhone(p.phone || '');
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -257,6 +294,25 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       setLocalError('Master password must be at least 6 characters long.');
       return;
     }
+    const countryCode = (producer.country === 'Italy' || producer.destination === 'tuscany') ? 'IT' : 'GR';
+    const vatCheck = vatNumber.trim() ? validateVatNumber(vatNumber.trim(), countryCode) : null;
+
+    if (vatNumber.trim() && !vatCheck?.isValid) {
+      setLocalError(vatCheck?.error || 'Please enter a valid VAT / Tax ID (ΑΦΜ for Greece or Partita IVA for Italy).');
+      return;
+    }
+
+    const taxDetails: ProducerTaxDetails | undefined = vatNumber.trim() ? {
+      vatNumber: vatCheck?.formatted || vatNumber.trim(),
+      legalBusinessName: legalBusinessName.trim() || producer.name,
+      taxOffice: taxOffice.trim() || undefined,
+      registeredAddress: registeredAddress.trim() || `${producer.village}, ${producer.region}`,
+      dispatchContactPhone: dispatchContactPhone.trim() || producer.phone,
+      countryCode,
+      isVatVerified: Boolean(vatCheck?.isValid),
+      vatVerificationDate: vatCheck?.isValid ? new Date().toISOString() : undefined,
+      eoriNumber: vatCheck?.isValid ? vatCheck.formatted : undefined,
+    } : undefined;
 
     try {
       setLocalLoading('form');
@@ -266,7 +322,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           producer.name,
           producerHostName.trim(),
           producerEmail.trim(),
-          producerPassword
+          producerPassword,
+          taxDetails
         );
       }
       onClose();
@@ -862,7 +919,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                     </label>
                     <select
                       value={selectedProducerId}
-                      onChange={(e) => setSelectedProducerId(e.target.value)}
+                      onChange={(e) => handleSelectClaimProducer(e.target.value)}
                       className="w-full bg-stone-900 border border-amber-500/30 text-white font-bold rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400 transition cursor-pointer"
                       required
                     >
@@ -904,7 +961,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   <div className="relative flex items-center justify-center">
                     <div className="w-full border-t border-white/10"></div>
                     <span className="relative px-3 bg-stone-950 text-[10px] uppercase font-bold tracking-wider text-stone-500">
-                      or 2. Register with host password
+                      or 2. Register with host password & VAT
                     </span>
                   </div>
 
@@ -965,6 +1022,114 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                         >
                           {showProducerPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                         </button>
+                      </div>
+                    </div>
+
+                    {/* Estate Fiscal & Shipping Logistics (ΑΦΜ / Partita IVA) */}
+                    <div className="p-3.5 rounded-2xl bg-stone-900/90 border border-amber-500/20 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                          <span className="font-bold text-white text-xs">
+                            Fiscal & Shipping Registration
+                          </span>
+                        </div>
+                        <span className="text-[9px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 font-bold uppercase tracking-wider">
+                          VAT / ΑΦΜ Verification
+                        </span>
+                      </div>
+
+                      <p className="text-[11px] text-stone-300 leading-relaxed">
+                        Tax ID verifies genuine estate ownership, qualifies your estate for 0% commission B2B statements, and activates direct bottle & artisan box parcel shipping.
+                      </p>
+
+                      {/* VAT / AFM Field */}
+                      <div>
+                        <div className="flex items-center justify-between mb-1">
+                          <label className="block text-stone-300 text-xs font-semibold">
+                            {countryHint === 'IT' ? 'Partita IVA (P.IVA)' : 'Tax Identification Number (ΑΦΜ)'}
+                          </label>
+                          {vatValidation && (
+                            <span className={`text-[10px] font-bold ${vatValidation.isValid ? 'text-emerald-400' : 'text-amber-400'}`}>
+                              {vatValidation.isValid ? '✓ Valid Check Digit' : 'Verification Needed'}
+                            </span>
+                          )}
+                        </div>
+                        <div className="relative">
+                          <FileText className="w-4 h-4 text-stone-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                          <input
+                            type="text"
+                            value={vatNumber}
+                            onChange={(e) => setVatNumber(e.target.value.toUpperCase())}
+                            placeholder={countryHint === 'IT' ? 'e.g. IT00987654321 (11 digits)' : 'e.g. EL094412789 (9 digits)'}
+                            className={`w-full bg-stone-950 border rounded-xl pl-9 pr-3 py-2.5 text-xs focus:outline-none transition ${
+                              vatValidation?.isValid
+                                ? 'border-emerald-500/60 text-emerald-300'
+                                : vatNumber.trim()
+                                ? 'border-amber-500/60 text-amber-300'
+                                : 'border-white/10 text-white focus:border-amber-400'
+                            }`}
+                          />
+                        </div>
+                        {vatValidation?.isValid ? (
+                          <p className="text-[10px] text-emerald-400 mt-1 flex items-center gap-1">
+                            <CheckCircle2 className="w-3 h-3 text-emerald-400 shrink-0" />
+                            <span>Verified format ({vatValidation.formatted}) · Qualified for B2B Invoicing & Parcel Logistics</span>
+                          </p>
+                        ) : vatNumber.trim() ? (
+                          <p className="text-[10px] text-amber-400 mt-1">
+                            {countryHint === 'IT' ? 'Italian P.IVA requires 11 digits' : 'Greek ΑΦΜ requires 9 digits (Modulo 11 verified)'}
+                          </p>
+                        ) : (
+                          <p className="text-[10px] text-stone-400 mt-1">
+                            Used to verify authentic ownership against commercial registry (AADE / GEMI / VIES).
+                          </p>
+                        )}
+                      </div>
+
+                      {/* Legal Company Name & Registered Address */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                        <div>
+                          <label className="block text-stone-300 text-[11px] font-semibold mb-1">
+                            Legal Company Name (Επωνυμία)
+                          </label>
+                          <input
+                            type="text"
+                            value={legalBusinessName}
+                            onChange={(e) => setLegalBusinessName(e.target.value)}
+                            placeholder={selectedProducer?.name || 'Domaine Paterianakis O.E.'}
+                            className="w-full bg-stone-950 border border-white/10 text-white rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-amber-400 transition"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-stone-300 text-[11px] font-semibold mb-1">
+                            Courier Dispatch Phone
+                          </label>
+                          <div className="relative">
+                            <Truck className="w-3.5 h-3.5 text-stone-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                            <input
+                              type="tel"
+                              value={dispatchContactPhone}
+                              onChange={(e) => setDispatchContactPhone(e.target.value)}
+                              placeholder={selectedProducer?.phone || '+30 2810 226674'}
+                              className="w-full bg-stone-950 border border-white/10 text-white rounded-xl pl-8 pr-3 py-2 text-xs focus:outline-none focus:border-amber-400 transition"
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-stone-300 text-[11px] font-semibold mb-1">
+                          Cellar Dispatch Pickup Address (For Couriers & Invoices)
+                        </label>
+                        <input
+                          type="text"
+                          value={registeredAddress}
+                          onChange={(e) => setRegisteredAddress(e.target.value)}
+                          placeholder={selectedProducer ? `${selectedProducer.village}, ${selectedProducer.region}` : 'Facility street address, Postal code, Region'}
+                          className="w-full bg-stone-950 border border-white/10 text-white rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-amber-400 transition"
+                        />
                       </div>
                     </div>
 

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { UserProfile, TravelerType } from '../types/auth';
+import { UserProfile, TravelerType, ProducerTaxDetails, HostClaimStatus } from '../types/auth';
 import { 
   auth, 
   googleProvider, 
@@ -75,7 +75,19 @@ export const DEMO_PRODUCER_PROFILES: Record<string, UserProfile> = {
     role: 'producer',
     isProducer: true,
     claimedProducerId: 'domaine-paterianakis',
-    producerName: 'Fake Winery (Demo Estate)',
+    producerName: 'Domaine Paterianakis (Organic Winery)',
+    claimStatus: 'verified_host',
+    taxDetails: {
+      vatNumber: 'EL094412789',
+      legalBusinessName: 'ΚΤΗΜΑ ΠΑΤΕΡΙΑΝΑΚΗ Ο.Ε. / DOMAINE PATERIANAKIS',
+      taxOffice: 'Δ.Ο.Υ. Ηρακλείου',
+      registeredAddress: 'Melesses (Peza), Heraklion, GR-70100, Crete',
+      dispatchContactPhone: '+30 2810 226674',
+      countryCode: 'GR',
+      isVatVerified: true,
+      vatVerificationDate: '2026-01-15',
+      eoriNumber: 'EL094412789',
+    },
     travelerType: 'wine_enthusiast',
     visitedProducers: ['domaine-paterianakis'],
     personalNotes: {},
@@ -90,7 +102,19 @@ export const DEMO_PRODUCER_PROFILES: Record<string, UserProfile> = {
     role: 'producer',
     isProducer: true,
     claimedProducerId: 'manousakis-winery',
-    producerName: 'Valley Vineyard (Demo)',
+    producerName: 'Manousakis Winery (Nostos Wines)',
+    claimStatus: 'verified_host',
+    taxDetails: {
+      vatNumber: 'EL099781234',
+      legalBusinessName: 'MANOUSAKIS WINERY SINGLE MEMBER P.C.',
+      taxOffice: 'Δ.Ο.Υ. Χανίων',
+      registeredAddress: 'Vatolakkos, Platanias, Chania, GR-73005, Crete',
+      dispatchContactPhone: '+30 28210 77977',
+      countryCode: 'GR',
+      isVatVerified: true,
+      vatVerificationDate: '2025-11-20',
+      eoriNumber: 'EL099781234',
+    },
     travelerType: 'wine_enthusiast',
     visitedProducers: ['manousakis-winery'],
     personalNotes: {},
@@ -105,7 +129,19 @@ export const DEMO_PRODUCER_PROFILES: Record<string, UserProfile> = {
     role: 'producer',
     isProducer: true,
     claimedProducerId: 'cretan-brewery-charma',
-    producerName: 'Craft Brewing Co. (Demo)',
+    producerName: 'Cretan Brewery (Charma Beer)',
+    claimStatus: 'verified_host',
+    taxDetails: {
+      vatNumber: 'EL998341567',
+      legalBusinessName: 'CRETAN BREWERY S.A. / ΚΡΗΤΙΚΗ ΖΥΘΟΠΟΙΙΑ Α.Ε.',
+      taxOffice: 'Δ.Ο.Υ. Χανίων',
+      registeredAddress: 'Zounaki, Platanias, Chania, GR-73002, Crete',
+      dispatchContactPhone: '+30 28210 77977',
+      countryCode: 'GR',
+      isVatVerified: true,
+      vatVerificationDate: '2025-09-10',
+      eoriNumber: 'EL998341567',
+    },
     travelerType: 'craft_beer_explorer',
     visitedProducers: ['cretan-brewery-charma'],
     personalNotes: {},
@@ -120,7 +156,19 @@ export const DEMO_PRODUCER_PROFILES: Record<string, UserProfile> = {
     role: 'producer',
     isProducer: true,
     claimedProducerId: 'monteraponi-tuscany',
-    producerName: 'Tuscan Hillside Estate (Demo)',
+    producerName: 'Azienda Agricola Monteraponi',
+    claimStatus: 'verified_host',
+    taxDetails: {
+      vatNumber: 'IT00987654321',
+      legalBusinessName: 'AZIENDA AGRICOLA MONTERAPONI DI MICHELE BRAGANTI',
+      taxOffice: 'Ufficio di Siena',
+      registeredAddress: 'Località Monteraponi, 53017 Radda in Chianti (SI), Tuscany, Italy',
+      dispatchContactPhone: '+39 0577 738208',
+      countryCode: 'IT',
+      isVatVerified: true,
+      vatVerificationDate: '2025-08-01',
+      eoriNumber: 'IT00987654321',
+    },
     travelerType: 'wine_enthusiast',
     visitedProducers: ['monteraponi-tuscany'],
     personalNotes: {},
@@ -224,6 +272,8 @@ export const useAuth = () => {
       isProducer: cloudProfile?.isProducer ?? existing.isProducer ?? false,
       claimedProducerId: cloudProfile?.claimedProducerId || existing.claimedProducerId,
       producerName: cloudProfile?.producerName || existing.producerName,
+      claimStatus: cloudProfile?.claimStatus || existing.claimStatus || (cloudProfile?.isProducer ? 'verified_host' : undefined),
+      taxDetails: cloudProfile?.taxDetails || existing.taxDetails,
       travelerType: customType || cloudProfile?.travelerType || existing.travelerType || 'culinary_nomad',
       visitedProducers: cloudProfile?.visitedProducers || existing.visitedProducers || [],
       personalNotes: cloudProfile?.personalNotes || existing.personalNotes || {},
@@ -286,6 +336,8 @@ export const useAuth = () => {
           isProducer: cloudData.isProducer ?? prev.isProducer,
           claimedProducerId: cloudData.claimedProducerId || prev.claimedProducerId,
           producerName: cloudData.producerName || prev.producerName,
+          claimStatus: cloudData.claimStatus || prev.claimStatus,
+          taxDetails: cloudData.taxDetails || prev.taxDetails,
           travelerType: cloudData.travelerType || prev.travelerType,
           visitedProducers: cloudData.visitedProducers || prev.visitedProducers,
           personalNotes: { ...prev.personalNotes, ...(cloudData.personalNotes || {}) },
@@ -584,17 +636,24 @@ export const useAuth = () => {
     }
   }, []);
 
-  // 6d. Real Claim & Register Estate Host
+  // 6d. Real Claim & Register Estate Host with Fiscal / VAT Verification
   const claimAndRegisterProducer = useCallback(async (
     producerId: string,
     producerName: string,
     hostName: string,
     email: string,
-    password?: string
+    password?: string,
+    taxDetails?: ProducerTaxDetails
   ) => {
     setIsLoading(true);
     setAuthError(null);
     try {
+      const claimStatus: HostClaimStatus = taxDetails?.isVatVerified
+        ? 'verified_host'
+        : taxDetails?.vatNumber
+        ? 'pending_verification'
+        : 'pending_verification';
+
       if (isFirebaseConfigured && auth && password) {
         const cred = await createUserWithEmailAndPassword(auth, email, password);
         await firebaseUpdateProfile(cred.user, { displayName: hostName });
@@ -607,6 +666,8 @@ export const useAuth = () => {
           isProducer: true,
           claimedProducerId: producerId,
           producerName,
+          claimStatus,
+          taxDetails,
           travelerType: 'wine_enthusiast',
           visitedProducers: [producerId],
         };
@@ -625,6 +686,8 @@ export const useAuth = () => {
           isProducer: true,
           claimedProducerId: producerId,
           producerName,
+          claimStatus,
+          taxDetails,
           travelerType: 'wine_enthusiast',
           visitedProducers: [producerId],
           personalNotes: {},
@@ -644,7 +707,22 @@ export const useAuth = () => {
     }
   }, []);
 
-  // 6. Sign Out
+  // 6e. Update Producer Fiscal & Shipping Details
+  const updateProducerTaxDetails = useCallback(async (taxDetails: ProducerTaxDetails) => {
+    setUser((prev) => {
+      if (!prev) return prev;
+      const updated: UserProfile = {
+        ...prev,
+        taxDetails,
+        claimStatus: taxDetails.isVatVerified ? 'verified_host' : (prev.claimStatus || 'pending_verification'),
+      };
+      saveUserData(updated.id, updated.visitedProducers, updated.personalNotes, updated);
+      saveUserProfileToCloud(updated);
+      return updated;
+    });
+  }, []);
+
+  // 6f. Sign Out
   const logout = useCallback(async () => {
     try {
       if (isFirebaseConfigured && auth) {
@@ -741,6 +819,7 @@ export const useAuth = () => {
     loginAsDemoProducer,
     loginAsProducer,
     claimAndRegisterProducer,
+    updateProducerTaxDetails,
     logout,
     toggleVisited,
     isVisited,
