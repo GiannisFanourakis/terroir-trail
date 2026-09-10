@@ -414,7 +414,10 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
 
       {/* Floating Bottom Quick-Card (Airbnb / Apple Maps 2026 Style) */}
       {selectedProducer && (
-        <div className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-30 w-[95%] sm:w-[480px] max-w-lg animate-in slide-in-from-bottom-6 duration-300">
+        <div
+          className="absolute left-1/2 -translate-x-1/2 z-30 w-[95%] sm:w-[480px] max-w-lg animate-in slide-in-from-bottom-6 duration-300"
+          style={{ bottom: 'max(1rem, env(safe-area-inset-bottom, 1rem))' }}
+        >
           <div className="glass-panel p-2.5 sm:p-3.5 rounded-2xl sm:rounded-3xl shadow-2xl border border-white/15 text-stone-100 flex gap-2.5 sm:gap-3.5 items-center relative overflow-hidden">
             
             <div className="absolute -right-10 -bottom-10 w-36 h-36 bg-amber-500/20 rounded-full blur-3xl pointer-events-none" />

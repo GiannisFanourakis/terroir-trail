@@ -286,6 +286,8 @@ export const App: React.FC = () => {
             onResetFilters={handleResetFilters}
             isFavorite={isFavorite}
             onToggleFavorite={toggleFavorite}
+            hasExplorerPass={!!user?.hasExplorerPass}
+            onOpenExplorerPass={() => setIsPassModalOpen(true)}
           />
         </div>
 
@@ -295,9 +297,9 @@ export const App: React.FC = () => {
             viewMode === 'map' ? 'block' : 'hidden lg:block'
           }`}
         >
-          {/* Sponsor / Travel Partner Ad Banner (Ad-Free for VIP Passholders) */}
-          <div className="absolute top-2.5 left-0 right-0 z-20 pointer-events-none flex justify-center px-3">
-            <div className="pointer-events-auto w-full max-w-3xl">
+          {/* Desktop-only Sponsor / Travel Partner Ad Banner (Placed on left so it never overlaps map controls on the right) */}
+          <div className="hidden lg:flex absolute top-3 left-3 z-10 pointer-events-none">
+            <div className="pointer-events-auto max-w-sm xl:max-w-md">
               <GoogleAdSlot
                 hasExplorerPass={!!user?.hasExplorerPass}
                 onOpenExplorerPass={() => setIsPassModalOpen(true)}
@@ -322,25 +324,27 @@ export const App: React.FC = () => {
           />
         </div>
 
-        {/* Floating Map/List View Switcher on < lg screens */}
-        <div className="lg:hidden absolute bottom-5 left-1/2 -translate-x-1/2 z-30 pointer-events-auto">
-          <button
-            onClick={() => setViewMode((prev) => (prev === 'map' ? 'list' : 'map'))}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-stone-900/95 text-stone-100 border border-white/20 shadow-2xl backdrop-blur-xl font-bold text-xs hover:bg-stone-800 hover:text-white active:scale-95 transition-all cursor-pointer select-none"
-          >
-            {viewMode === 'map' ? (
-              <>
-                <List className="w-4 h-4 text-amber-400" />
-                <span>Show List ({filteredProducers.length})</span>
-              </>
-            ) : (
-              <>
-                <MapPin className="w-4 h-4 text-amber-400" />
-                <span>Show Map</span>
-              </>
-            )}
-          </button>
-        </div>
+        {/* Floating Map/List View Switcher on < lg screens (Hidden when an estate tile is selected on map so it never obscures the tile!) */}
+        {(!selectedProducer || viewMode === 'list') && (
+          <div className="lg:hidden absolute bottom-5 left-1/2 -translate-x-1/2 z-30 pointer-events-auto transition-all animate-in fade-in duration-200">
+            <button
+              onClick={() => setViewMode((prev) => (prev === 'map' ? 'list' : 'map'))}
+              className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-stone-900/95 text-stone-100 border border-white/20 shadow-2xl backdrop-blur-xl font-bold text-xs hover:bg-stone-800 hover:text-white active:scale-95 transition-all cursor-pointer select-none"
+            >
+              {viewMode === 'map' ? (
+                <>
+                  <List className="w-4 h-4 text-amber-400" />
+                  <span>Show List ({filteredProducers.length})</span>
+                </>
+              ) : (
+                <>
+                  <MapPin className="w-4 h-4 text-amber-400" />
+                  <span>Show Map</span>
+                </>
+              )}
+            </button>
+          </div>
+        )}
 
         {/* 4. Slide-Out Detailed Producer Drawer */}
         {isDrawerOpen && (

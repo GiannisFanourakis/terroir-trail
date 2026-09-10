@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Producer } from '../../types/terroir';
 import { ProducerCard } from './ProducerCard';
+import { GoogleAdSlot } from '../Monetization/GoogleAdSlot';
 import { ArrowUpDown, SearchX, Heart } from 'lucide-react';
 
 interface ProducerListProps {
@@ -10,6 +11,8 @@ interface ProducerListProps {
   onResetFilters: () => void;
   isFavorite: (id: string) => boolean;
   onToggleFavorite: (id: string) => void;
+  hasExplorerPass?: boolean;
+  onOpenExplorerPass?: () => void;
 }
 
 export const ProducerList: React.FC<ProducerListProps> = ({
@@ -19,6 +22,8 @@ export const ProducerList: React.FC<ProducerListProps> = ({
   onResetFilters,
   isFavorite,
   onToggleFavorite,
+  hasExplorerPass = false,
+  onOpenExplorerPass,
 }) => {
   const [sortBy, setSortBy] = useState<'rating' | 'reviews' | 'name'>('rating');
 
@@ -52,6 +57,14 @@ export const ProducerList: React.FC<ProducerListProps> = ({
 
       {/* Cards Scrollable Feed */}
       <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 pb-24 lg:pb-4">
+        {!hasExplorerPass && (
+          <div className="pb-1">
+            <GoogleAdSlot
+              hasExplorerPass={hasExplorerPass}
+              onOpenExplorerPass={onOpenExplorerPass}
+            />
+          </div>
+        )}
         {sortedProducers.length > 0 ? (
           sortedProducers.map((producer) => (
             <ProducerCard
