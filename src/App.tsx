@@ -223,7 +223,7 @@ export const App: React.FC = () => {
         onSelectDestination={(dest: Destination | 'all') => handleFilterChange('destination', dest)}
         searchQuery={filters.searchQuery}
         onSearchChange={(query: string) => handleFilterChange('searchQuery', query)}
-        onOpenLoops={() => setIsLoopsModalOpen(true)}
+        /* onOpenLoops={() => setIsLoopsModalOpen(true)} - Commented out until deals are struck with chauffeurs/dealerships */
         /* onOpenExperiences={() => setIsExperiencesModalOpen(true)} - Commented out until direct deals on experiences are made with producers */
         totalFilteredCount={filteredProducers.length}
         viewMode={viewMode}
@@ -367,7 +367,8 @@ export const App: React.FC = () => {
         )}
       </main>
 
-      {/* 5. Day-Trip Loops Modal */}
+      {/* 5. Day-Trip Loops Modal (Commented out until deals are struck with chauffeurs / dealerships) */}
+      {/*
       <DayTripModal
         isOpen={isLoopsModalOpen}
         onClose={() => setIsLoopsModalOpen(false)}
@@ -383,6 +384,7 @@ export const App: React.FC = () => {
         user={user}
         onOpenExplorerPass={() => setIsPassModalOpen(true)}
       />
+      */}
 
       {/* 6. Explorer Auth & Profile Modal */}
       <AuthModal
@@ -485,7 +487,8 @@ export const App: React.FC = () => {
         onActivatePass={(days = 14) => activateExplorerPass(days)}
       />
 
-      {/* 12. Private Chauffeur & Mercedes Van Booking Modal */}
+      {/* 12. Private Chauffeur & Mercedes Van Booking Modal (Commented out until deals are struck with chauffeurs / dealerships) */}
+      {/*
       <ChauffeurBookingModal
         isOpen={isChauffeurModalOpen}
         onClose={() => setIsChauffeurModalOpen(false)}
@@ -494,6 +497,7 @@ export const App: React.FC = () => {
         onOpenAuth={() => setIsAuthModalOpen(true)}
         onBookChauffeur={handleConfirmChauffeurBooking}
       />
+      */}
 
       {/* 13. Taste of the Trail - International Artisan Delivery Modal */}
       <WineBoxModal
@@ -530,7 +534,7 @@ export const App: React.FC = () => {
         isOpen={isAboutFaqModalOpen}
         onClose={() => setIsAboutFaqModalOpen(false)}
         initialTab={aboutFaqInitialTab}
-        onOpenLoops={() => setIsLoopsModalOpen(true)}
+        /* onOpenLoops={() => setIsLoopsModalOpen(true)} - Commented out until deals are struck with chauffeurs/dealerships */
         /* onOpenExperiences={() => setIsExperiencesModalOpen(true)} */
         onOpenAuth={(role) => {
           setAuthInitialRole(role || 'traveler');

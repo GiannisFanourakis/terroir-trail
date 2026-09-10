@@ -32,7 +32,7 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
     {
       icon: '🍷',
       title: 'Complimentary Welcome Pours',
-      desc: 'An extra cellar-reserve glass at 20+ participating boutique wineries.',
+      desc: 'An extra cellar-reserve glass at participating boutique wineries.',
     },
     {
       icon: '🧀',
@@ -45,31 +45,30 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
       desc: 'Direct savings on bottle purchases to pack in your suitcase or cellar.',
     },
     {
-      icon: '🚐',
-      title: '€30 Off Private Mercedes Chauffeur',
-      desc: 'Discount voucher applied automatically to private wine circuit bookings.',
+      icon: '🛂',
+      title: 'Unlimited Terroir Passport & Cellar Journal',
+      desc: 'Collect unlimited digital artisan stamps and record sommelier tasting notes.',
     },
     {
       icon: '✈️',
-      title: '€15 Off International Wine Delivery',
-      desc: 'Temperature-controlled certified wine boxes shipped directly to your door.',
+      title: '€15 Off International Artisan Delivery',
+      desc: 'Temperature-controlled certified artisan boxes shipped directly to your door.',
     },
     {
-      icon: '⚡',
-      title: 'All Curated Day Loops & Unlimited Passport Stamps',
-      desc: 'Unlock Heraklion, Chania, and Santorini circuits with sommelier notes.',
+      icon: '✨',
+      title: 'VIP Estate Host Welcome',
+      desc: 'Recognized guest status and personalized hospitality with family makers.',
     },
   ];
 
   const comparisonRows = [
     { feature: 'Interactive Artisanal Map & GPS', free: '✅ Included', vip: '✅ Included' },
-    { feature: 'Curated Day-Trip Circuits', free: '1 Starter Circuit', vip: '⭐ All 5+ Curated Routes' },
+    { feature: 'Verified Family Producer Directory', free: '✅ Included', vip: '✅ Included' },
     { feature: 'Welcome Pour of Library Wine', free: '❌ Standard Tasting', vip: '⭐ Complimentary Glass' },
     { feature: 'Artisanal Meze Pairing', free: '❌ Extra Charge', vip: '⭐ Free Graviera & Olives' },
     { feature: 'Direct Cellar Bottle Purchases', free: '❌ 0% Discount', vip: '⭐ 10% Off All Bottles' },
     { feature: 'Passport Stamps & Journal', free: 'Up to 3 Stamps', vip: '⭐ Unlimited Stamps' },
-    { feature: 'Private Mercedes Chauffeur', free: 'Full Rate (€280)', vip: '⭐ €30 Discount Voucher' },
-    { feature: 'International Wine Delivery', free: 'Standard Shipping', vip: '⭐ €15 Discount Voucher' },
+    { feature: 'International Artisan Box Delivery', free: 'Standard Shipping', vip: '⭐ €15 Discount Voucher' },
     { feature: 'Digital Holographic Wallet Pass', free: '❌ None', vip: '⭐ Instant Apple/Google Pass' },
   ];
 
@@ -303,7 +302,7 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
                     For local residents, sommeliers & repeat travelers in Greece/Italy.
                   </p>
                   <span className="mt-2 inline-block text-[10px] text-amber-300 font-semibold">
-                    ✓ All circuits & harvest invites
+                    ✓ Year-round perks & harvest invites
                   </span>
                 </button>
               </div>

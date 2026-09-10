@@ -1060,7 +1060,7 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
                         <li>Interactive map marker & producer profile</li>
                         <li>Direct tasting reservation reception</li>
                         <li>0% commission on tasting bookings</li>
-                        <li>Standard Day Circuit inclusion</li>
+                        <li>Regional directory & GPS map listing</li>
                       </ul>
                       {!isProTier && (
                         <span className="mt-3 block text-center py-1.5 rounded-xl bg-stone-800 text-stone-300 text-[11px] font-bold">
@@ -1081,12 +1081,12 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
                           <span className="font-bold text-white text-xs">Verified Host Pro</span>
                         </div>
                         <span className="font-serif-title text-amber-300 font-bold text-sm">
-                          €39<span className="text-[10px] text-stone-400">/mo</span>
+                          €39<span className="text-[10px] text-stone-400">/mo (excl. VAT)</span>
                         </span>
                       </div>
                       <ul className="text-[11px] text-stone-300 space-y-1.5 list-disc list-inside">
                         <li><strong className="text-amber-300">Gold Glowing Badge</strong> on the interactive map</li>
-                        <li><strong className="text-amber-300">Featured Day Circuit</strong> priority recommendation</li>
+                        <li><strong className="text-amber-300">Priority Placement</strong> in regional search & directory</li>
                         <li><strong className="text-amber-300">Direct Bottle Shop</strong> button on mobile drawer</li>
                         <li>Advanced traveler demographic analytics</li>
                       </ul>
@@ -1101,7 +1101,7 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
                         }`}
                       >
                         <Crown className="w-3.5 h-3.5" />
-                        <span>{isProTier ? '✓ Pro Active (Click to Pause)' : 'Upgrade to Host Pro (€39/mo)'}</span>
+                        <span>{isProTier ? '✓ Pro Active (Click to Pause)' : 'Upgrade to Host Pro (€39/mo excl. VAT)'}</span>
                       </button>
                     </div>
                   </div>

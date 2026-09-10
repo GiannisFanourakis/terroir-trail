@@ -38,8 +38,8 @@ const FAQ_DATA: FaqItem[] = [
     question: 'What is TerroirTrail and how is it different from Tripadvisor or Google Maps?',
     answer: 'Standard mapping and travel portals list commercial mass-tourist wine factories alongside bus tour traps. TerroirTrail is an exclusively curated agritourism discovery platform strictly dedicated to independent, family-owned, and sustainable producers. Every winery, craft brewery, rakokazano distillery, and mountain dairy on TerroirTrail has been hand-selected for authentic hospitality, low-intervention methods, and estate-bottled craftsmanship.',
     highlight: 'Strictly zero commercial bulk factories or mass-bus tour traps.',
-    actionText: 'Explore Curated Day Circuits',
-    actionType: 'loops',
+    actionText: 'View VIP Pass Privileges',
+    actionType: 'explorer_pass',
   },
   {
     id: 'how-producers-selected',
@@ -102,7 +102,7 @@ const FAQ_DATA: FaqItem[] = [
     category: 'passport',
     categoryLabel: 'Passport & VIP Pass',
     question: 'What is the Terroir Holiday Pass (€14.99)?',
-    answer: 'The VIP Explorer Pass is an optional annual membership for passionate travelers. It unlocks exclusive benefits across participating partner estates: complimentary welcome library wine pours, free artisan graviera meze platters, 10% off cellar-door bottle purchases, a €30 discount voucher on private Mercedes chauffeurs, and access to all curated Day-Trip driving routes.',
+    answer: 'The Terroir Holiday Pass (€14.99) is an optional 14-day holiday pass for passionate travelers. It unlocks exclusive privileges across participating partner estates: complimentary welcome reserve pours, free artisan graviera meze platters, 10% off cellar-door bottle purchases, unlimited passport stamps, and a €15 discount voucher on international artisan delivery boxes.',
     actionText: 'Learn About VIP Pass Perks',
     actionType: 'explorer_pass',
   },
@@ -111,11 +111,9 @@ const FAQ_DATA: FaqItem[] = [
   {
     id: 'chauffeur-service',
     category: 'logistics',
-    categoryLabel: 'Chauffeurs & Delivery',
-    question: 'Can I hire a private chauffeur for mountain winery routes?',
-    answer: 'Yes! Mountain roads in rural Crete, Nemea, and Tuscany can be narrow and winding. To allow everyone in your party to taste wine responsibly, TerroirTrail offers private luxury Mercedes van chauffeurs for our curated Day-Trip circuits. The driver picks you up directly at your hotel or villa, guides you along the route, and keeps all purchased bottles securely temperature-controlled.',
-    actionText: 'Explore Day Circuits & Chauffeurs',
-    actionType: 'loops',
+    categoryLabel: 'Artisan Delivery & Logistics',
+    question: 'Can I hire a private chauffeur or book vehicle routes?',
+    answer: 'Official private chauffeur partnerships and guided vehicle routes are currently in development as we establish agreements with certified passenger transport operators and luxury vehicle dealerships. In the meantime, each estate listing includes verified GPS coordinates and navigation links so travelers can easily plan their journey with a designated driver.',
   },
   {
     id: 'international-wine-shipping',
@@ -177,7 +175,7 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
     { id: 'about', label: '🌍 About & Vetting' },
     { id: 'tastings', label: '🍷 Tastings & Visits' },
     { id: 'passport', label: '🎖️ Passport & VIP' },
-    { id: 'logistics', label: '🚐 Chauffeurs & Wine Delivery' },
+    { id: 'logistics', label: '📦 Delivery & Logistics' },
     { id: 'producers', label: '🏛️ For Estate Hosts' },
   ];
 
@@ -428,7 +426,7 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
               <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-3 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30">
                 <div className="text-xs text-stone-300 text-center sm:text-left">
                   <span className="font-bold text-white">Ready to begin your journey?</span>
-                  <span className="hidden sm:inline"> Explore curated Day-Trip circuits or dive into our FAQ.</span>
+                  <span className="hidden sm:inline"> Discover authentic artisan estates or explore our FAQ.</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <button

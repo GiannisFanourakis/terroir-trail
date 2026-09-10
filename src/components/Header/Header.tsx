@@ -9,7 +9,7 @@ interface HeaderProps {
   onSelectDestination: (dest: Destination | 'all') => void;
   searchQuery: string;
   onSearchChange: (query: string) => void;
-  onOpenLoops: () => void;
+  onOpenLoops?: () => void;
   onOpenExperiences?: () => void;
   totalFilteredCount: number;
   viewMode: 'map' | 'list';
@@ -120,15 +120,19 @@ export const Header: React.FC<HeaderProps> = ({
               )}
             </button>
 
-            {/* Day-Trip Loops / Circuits */}
-            <button
-              onClick={onOpenLoops}
-              className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-bold bg-amber-500 hover:bg-amber-400 text-stone-950 rounded-xl shadow-md transition transform active:scale-95 shrink-0 cursor-pointer"
-              title="Day-Trip Circuits"
-            >
-              <Compass className="w-3.5 h-3.5 shrink-0" />
-              <span className="hidden sm:inline">Circuits</span>
-            </button>
+            {/* Day-Trip Loops / Circuits commented out until deals are struck with chauffeurs / dealerships */}
+            {/*
+            {onOpenLoops && (
+              <button
+                onClick={onOpenLoops}
+                className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-bold bg-amber-500 hover:bg-amber-400 text-stone-950 rounded-xl shadow-md transition transform active:scale-95 shrink-0 cursor-pointer"
+                title="Day-Trip Circuits"
+              >
+                <Compass className="w-3.5 h-3.5 shrink-0" />
+                <span className="hidden sm:inline">Circuits</span>
+              </button>
+            )}
+            */}
 
             {/* Curated Experiences button commented out for now until clientbase is built and direct deals on experiences are made with producers */}
             {/*
