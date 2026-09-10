@@ -163,10 +163,10 @@ export const BookingModal: React.FC<BookingModalProps> = ({
             <div>
               <div className="flex items-center gap-1.5">
                 <h2 className="font-serif-title text-base sm:text-lg font-bold text-white leading-tight">
-                  Book Tasting & Estate Visit
+                  Tasting & Visit Inquiry
                 </h2>
                 <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-bold border border-amber-500/30">
-                  Instant Request
+                  Direct Inquiry
                 </span>
               </div>
               <p className="text-[11px] text-stone-400">
@@ -177,7 +177,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
 
           <button
             onClick={resetAndClose}
-            className="w-8 h-8 rounded-full bg-stone-800 hover:bg-stone-700 text-stone-300 flex items-center justify-center transition border border-white/5 cursor-pointer"
+            className="w-8 h-8 rounded-full bg-stone-800 hover:bg-stone-750 text-stone-300 flex items-center justify-center transition border border-white/5 cursor-pointer"
             aria-label="Close modal"
           >
             <X className="w-4 h-4" />
@@ -196,10 +196,10 @@ export const BookingModal: React.FC<BookingModalProps> = ({
 
               <div className="space-y-1">
                 <h3 className="font-serif-title text-xl font-bold text-white">
-                  Tasting Request Sent to Estate!
+                  Visit Inquiry Recorded!
                 </h3>
                 <p className="text-xs text-stone-400 max-w-md mx-auto">
-                  Your tasting appointment has been received by <span className="text-amber-300 font-bold">{producer.name}</span>. The estate team will confirm availability directly with you.
+                  Your visit inquiry has been saved for <span className="text-amber-300 font-bold">{producer.name}</span>. Tasting fees are payable directly at the cellar door with zero middleman fees.
                 </p>
               </div>
 
@@ -260,6 +260,29 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                 <div className="p-3 rounded-xl bg-rose-500/20 border border-rose-500/30 text-rose-300 text-xs flex items-center gap-2">
                   <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
                   <span>{error}</span>
+                </div>
+              )}
+
+              {/* Direct Cellar Door Contact Banner */}
+              {producer.phone && (
+                <div className="p-3.5 rounded-2xl bg-gradient-to-r from-emerald-950/40 via-stone-900 to-stone-900 border border-emerald-500/30 flex items-start gap-3 shadow-md">
+                  <div className="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 border border-emerald-500/30">
+                    <Phone className="w-4 h-4" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-2 flex-wrap">
+                      <span className="font-bold text-white text-xs">Need Same-Day or Quick Confirmation?</span>
+                      <a
+                        href={`tel:${producer.phone}`}
+                        className="text-[11px] font-bold text-emerald-400 hover:text-emerald-300 underline"
+                      >
+                        Call {producer.phone}
+                      </a>
+                    </div>
+                    <p className="text-[11px] text-stone-300 mt-0.5 leading-relaxed">
+                      Artisanal winemakers and shepherds are often working in the cellars or groves. Calling directly is the fastest way to confirm availability today.
+                    </p>
+                  </div>
                 </div>
               )}
 

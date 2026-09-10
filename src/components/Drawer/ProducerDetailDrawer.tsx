@@ -6,7 +6,7 @@ import {
   X, MapPin, Star, Phone, Globe, Navigation, Clock, 
   Dog, Footprints, Caravan, Car, Sparkles, Share2, Check, Heart, Award, 
   CheckCircle2, Wine, ShoppingBag, ArrowRight, Crown, Building2,
-  Camera, ChevronLeft, ChevronRight, Beer
+  Camera, ChevronLeft, ChevronRight, Beer, Mail, Calendar
 } from 'lucide-react';
 import { useProducerPhotos } from '../../services/googlePlacesPhotos';
 
@@ -816,20 +816,24 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                   <Wine className="w-3.5 h-3.5 text-amber-400 shrink-0" />
                   Tastings & Cellar Visits
                 </h3>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 font-bold border border-emerald-500/20">
-                  0% Commission
+                <span className={`text-[10px] px-2.5 py-0.5 rounded-full font-bold border ${
+                  producer.walkInFriendly
+                    ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30'
+                    : 'bg-amber-500/15 text-amber-300 border-amber-500/30'
+                }`}>
+                  {producer.walkInFriendly ? '🟢 Walk-in Welcome' : '🟡 By Appointment'}
                 </span>
               </div>
 
               <p className="text-xs text-stone-300 leading-relaxed">
-                Tastings, cellar walks, and estate visits are hosted directly by {producer.name}. Tasting options and fees are set independently by the estate and payable directly at the cellar door.
+                Tastings, cellar walks, and estate visits are hosted directly by {producer.name}. Tasting fees are set independently by the estate and payable directly at the cellar door with zero middleman fees.
               </p>
 
               <div className="grid grid-cols-2 gap-2 text-[11px] pt-1 border-t border-white/5">
                 <div className="space-y-0.5">
                   <span className="text-[10px] text-stone-400 block font-medium">Visiting Style</span>
                   <span className="font-semibold text-stone-200">
-                    {producer.walkInFriendly ? 'Walk-in Welcome' : 'By Appointment'}
+                    {producer.walkInFriendly ? 'No reservation required' : 'Call ahead to confirm'}
                   </span>
                 </div>
                 <div className="space-y-0.5">
@@ -840,16 +844,28 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                 </div>
               </div>
 
-              {onOpenBooking && (
-                <button
-                  type="button"
-                  onClick={() => onOpenBooking(producer)}
-                  className="w-full mt-1 py-2.5 px-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs shadow-sm transition active:scale-98 cursor-pointer flex items-center justify-center gap-1.5"
-                >
-                  <Wine className="w-3.5 h-3.5" />
-                  <span>Request Tasting Visit</span>
-                </button>
-              )}
+              {/* Direct Connect Buttons */}
+              <div className="flex flex-col sm:flex-row gap-2 pt-1">
+                {producer.phone && (
+                  <a
+                    href={`tel:${producer.phone}`}
+                    className="flex-1 py-2.5 px-3 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 font-bold text-xs transition flex items-center justify-center gap-1.5 active:scale-98"
+                  >
+                    <Phone className="w-3.5 h-3.5" />
+                    <span>Call Cellar Door</span>
+                  </a>
+                )}
+                {onOpenBooking && (
+                  <button
+                    type="button"
+                    onClick={() => onOpenBooking(producer)}
+                    className="py-2.5 px-3 rounded-xl bg-stone-800 hover:bg-stone-750 border border-white/10 text-stone-300 hover:text-white font-medium text-xs transition flex items-center justify-center gap-1.5 cursor-pointer active:scale-98"
+                  >
+                    <Mail className="w-3.5 h-3.5 text-amber-400" />
+                    <span>Send Visit Inquiry</span>
+                  </button>
+                )}
+              </div>
             </div>
 
             {/* VIP Terroir Explorer Pass Perks Card (Freemium Privilege) */}
@@ -1035,33 +1051,41 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
 
       {/* 4. Action Bar (Sticky Footer) */}
       <div className="p-3 sm:p-4 bg-stone-900/95 backdrop-blur-xl border-t border-white/10 shrink-0 flex items-center gap-1.5 sm:gap-2.5">
-        {onOpenBooking && (
-          <button
-            type="button"
-            onClick={() => onOpenBooking(producer)}
-            className="flex-1 min-w-0 flex items-center justify-center gap-1.5 py-3 px-2.5 sm:px-3.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-stone-950 font-bold text-xs rounded-2xl shadow-xl shadow-amber-500/20 transition transform active:scale-98 cursor-pointer whitespace-nowrap"
-          >
-            {producer.category === 'brewery' ? (
-              <Beer className="w-4 h-4 shrink-0" />
-            ) : producer.category === 'winery' ? (
-              <Wine className="w-4 h-4 shrink-0" />
-            ) : (
-              <Sparkles className="w-4 h-4 shrink-0" />
-            )}
-            <span className="truncate">{term.bookingLabel}</span>
-          </button>
-        )}
-
+        {/* Primary Action: Get Directions (Google Maps) */}
         <a
           href={producer.googleMapsUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex-1 min-w-0 flex items-center justify-center gap-1.5 py-3 px-2.5 sm:px-3.5 bg-stone-800 hover:bg-stone-700 text-stone-100 font-bold text-xs rounded-2xl border border-white/10 transition transform active:scale-98 whitespace-nowrap"
+          className="flex-1 min-w-0 flex items-center justify-center gap-1.5 py-3 px-2.5 sm:px-3.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-stone-950 font-bold text-xs rounded-2xl shadow-xl shadow-amber-500/20 transition transform active:scale-98 whitespace-nowrap"
         >
-          <Navigation className="w-4 h-4 text-amber-400 shrink-0" />
+          <Navigation className="w-4 h-4 text-stone-950 shrink-0" />
           <span className="truncate">Directions</span>
         </a>
 
+        {/* Secondary Action: Call Cellar Door or Website */}
+        {producer.phone ? (
+          <a
+            href={`tel:${producer.phone}`}
+            className="flex-1 min-w-0 flex items-center justify-center gap-1.5 py-3 px-2.5 sm:px-3.5 bg-stone-800 hover:bg-stone-750 text-stone-100 font-bold text-xs rounded-2xl border border-white/10 transition transform active:scale-98 whitespace-nowrap"
+            title={`Call ${producer.phone}`}
+          >
+            <Phone className="w-4 h-4 text-emerald-400 shrink-0" />
+            <span className="truncate">Call Cellar</span>
+          </a>
+        ) : producer.website ? (
+          <a
+            href={producer.website}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex-1 min-w-0 flex items-center justify-center gap-1.5 py-3 px-2.5 sm:px-3.5 bg-stone-800 hover:bg-stone-750 text-stone-100 font-bold text-xs rounded-2xl border border-white/10 transition transform active:scale-98 whitespace-nowrap"
+            title="Visit Website"
+          >
+            <Globe className="w-4 h-4 text-sky-400 shrink-0" />
+            <span className="truncate">Website</span>
+          </a>
+        ) : null}
+
+        {/* Direct bottle shop link if available */}
         {directBottleShopUrl && (
           <a
             href={directBottleShopUrl}
@@ -1074,26 +1098,29 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
           </a>
         )}
 
-        {producer.phone && (
-          <a
-            href={`tel:${producer.phone}`}
-            className="p-3 rounded-2xl bg-stone-800 hover:bg-stone-700 border border-white/10 text-stone-200 transition shrink-0"
-            title={`Call ${producer.phone}`}
-          >
-            <Phone className="w-4 h-4 shrink-0" />
-          </a>
-        )}
-
-        {producer.website && (
+        {/* Website button if phone was already shown */}
+        {producer.phone && producer.website && (
           <a
             href={producer.website}
             target="_blank"
             rel="noopener noreferrer"
-            className="p-3 rounded-2xl bg-stone-800 hover:bg-stone-700 border border-white/10 text-stone-200 transition shrink-0"
-            title="Visit Website"
+            className="p-3 rounded-2xl bg-stone-800 hover:bg-stone-750 border border-white/10 text-stone-200 transition shrink-0"
+            title="Visit Official Website"
           >
             <Globe className="w-4 h-4 shrink-0" />
           </a>
+        )}
+
+        {/* Send Visit Inquiry */}
+        {onOpenBooking && (
+          <button
+            type="button"
+            onClick={() => onOpenBooking(producer)}
+            className="p-3 rounded-2xl bg-stone-800 hover:bg-stone-750 border border-white/10 text-stone-200 transition shrink-0 cursor-pointer"
+            title="Send Tasting Visit Inquiry"
+          >
+            <Mail className="w-4 h-4 text-amber-400 shrink-0" />
+          </button>
         )}
       </div>
 
