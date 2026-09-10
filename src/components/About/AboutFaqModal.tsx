@@ -26,7 +26,7 @@ interface FaqItem {
   answer: string;
   highlight?: string;
   actionText?: string;
-  actionType?: 'loops' | 'experiences' | 'producer_portal' | 'explorer_pass' | 'auth';
+  actionType?: 'loops' | 'experiences' | 'producer_portal' | 'explorer_pass' | 'auth' | 'auth_traveler';
 }
 
 const FAQ_DATA: FaqItem[] = [
@@ -95,16 +95,27 @@ const FAQ_DATA: FaqItem[] = [
     category: 'passport',
     categoryLabel: 'Passport & VIP Pass',
     question: 'What is the Terroir Digital Passport?',
-    answer: 'The Terroir Passport is your personal agritourism journal. As you explore estates, you collect verified digital stamps, log sommelier tasting notes (vintage, nose, palate, pairings), and unlock milestone badges—from "Crete Explorer" to "Master of Mountain Terroir". Your journal stays permanently saved in your account.',
+    answer: 'The Terroir Passport is your personal agritourism journal. As you explore estates, you collect verified digital cellar stamps, log sommelier tasting notes (vintage, nose, palate, pairings), and unlock milestone badges—from "Crete Explorer" to "Master of Mountain Terroir". Your journal stays permanently saved in your traveler account.',
   },
   {
     id: 'what-is-vip-explorer-pass',
     category: 'passport',
     categoryLabel: 'Passport & VIP Pass',
-    question: 'What is the Terroir Holiday Pass (€14.99)?',
-    answer: 'The Terroir Holiday Pass (€14.99) is an optional 14-day holiday pass for passionate travelers. It unlocks exclusive privileges across participating partner estates: complimentary welcome reserve pours, free artisan graviera meze platters, 10% off cellar-door bottle purchases, unlimited passport stamps, and a €15 discount voucher on international artisan delivery boxes.',
-    actionText: 'Learn About VIP Pass Perks',
+    question: 'What is the VIP Explorer Pass (€14.99)?',
+    answer: 'The VIP Explorer Pass (€14.99 for 14 days) is our dedicated digital pass for passionate travelers. It unlocks exclusive privileges across participating partner estates: complimentary welcome reserve pours, free artisan graviera meze platters, 10% off cellar-door bottle purchases, unlimited verified passport stamps, and a 100% ad-free exploration experience with full mobile syncing.',
+    highlight: '14 days of VIP cellar privileges, 100% ad-free experience, and instant pass activation.',
+    actionText: 'View VIP Pass Privileges',
     actionType: 'explorer_pass',
+  },
+  {
+    id: 'do-i-need-account-for-vip-pass',
+    category: 'passport',
+    categoryLabel: 'Passport & VIP Pass',
+    question: 'Do I need an account to get the VIP Explorer Pass?',
+    answer: 'Yes. An authenticated Traveler Account is required to purchase and activate the VIP Explorer Pass. Linking your pass to your personal profile ensures that your 14-day VIP status, 100% ad-free experience, sommelier tasting logs, and collected cellar stamps sync seamlessly across all your devices and remain permanently preserved.',
+    highlight: 'Traveler account required for cross-device syncing and permanent stamp preservation.',
+    actionText: 'Sign In / Traveler Account',
+    actionType: 'auth_traveler',
   },
 
   // 4. Logistics & Delivery
@@ -129,8 +140,9 @@ const FAQ_DATA: FaqItem[] = [
     category: 'producers',
     categoryLabel: 'For Estate Hosts',
     question: 'I own a family winery, craft brewery, or farmstead. How can I join TerroirTrail?',
-    answer: 'We warmly welcome independent producers who meet our authenticity and sustainability standards. You can apply or claim an existing estate listing through our Producer Portal. Our team reviews all applications within 48 hours.',
-    actionText: 'Open Producer Portal',
+    answer: 'We warmly welcome independent producers who meet our authenticity and sustainability standards. You can apply or claim an existing estate listing directly through our Host Portal. Our editorial team reviews all applications within 48 hours.',
+    highlight: 'Curated exclusively for independent agricultural producers and artisanal makers.',
+    actionText: 'Open Host Portal',
     actionType: 'producer_portal',
   },
   {
@@ -139,15 +151,33 @@ const FAQ_DATA: FaqItem[] = [
     categoryLabel: 'For Estate Hosts',
     question: 'Does TerroirTrail charge a commission on tasting bookings?',
     answer: 'Zero commission. We never take a 20% to 30% cut like generic tour platforms. We believe that independent agricultural families should keep 100% of the revenue from their cellar doors. Estate hosts are free to set their own tasting prices, operating hours, and booking requirements.',
+    highlight: '0% commission on direct bookings — 100% of tasting fees stay with the producer.',
   },
   {
     id: 'host-portal-features',
     category: 'producers',
     categoryLabel: 'For Estate Hosts',
-    question: 'What tools are included in the Host Portal?',
-    answer: 'Verified hosts receive a dedicated estate dashboard to: (1) Manage incoming guest reservation requests; (2) Adjust seasonal opening hours and tasting flight menus; (3) Publish live Harvest & Vintage Bulletins; (4) Link direct cellar bottle sales and contact information.',
-    actionText: 'Host Sign In / Claim Estate',
-    actionType: 'auth',
+    question: 'What tools and privileges are included in the Host Portal?',
+    answer: 'The Host Portal provides verified estate hosts with an intuitive dashboard to: (1) Manage incoming guest reservation inquiries at 0% commission; (2) Update seasonal opening hours and tasting flight menus; (3) Publish live Harvest & Vintage Bulletins; (4) Link direct online bottle shop sales; (5) Upgrade to Verified Host Pro (€199/yr) for a glowing gold map pin, top-of-page regional directory ranking, and direct bottle shop links.',
+    highlight: 'Host Pro membership (€199/yr) includes top directory placement, glowing gold pin, and bottle shop links.',
+    actionText: 'Open Host Portal',
+    actionType: 'producer_portal',
+  },
+  {
+    id: 'host-pro-tax-deductible',
+    category: 'producers',
+    categoryLabel: 'For Estate Hosts',
+    question: 'Is the Verified Host Pro subscription tax-deductible for my estate?',
+    answer: 'Yes, 100%. The TerroirTrail Verified Host Pro subscription (€199/year) is fully deductible as a digital advertising and promotional business expense. Through our automated Elorus billing integration, an official Greek Service Invoice (ΤΠΥ - Τιμολόγιο Παροχής Υπηρεσιών) is automatically generated and electronically transmitted to the AADE myDATA tax authority, complete with an official QR verification code and unique MARK transmission code for seamless accounting compliance.',
+    highlight: '100% tax-deductible with official AADE myDATA electronic invoice (ΤΠΥ) with QR & MARK.',
+  },
+  {
+    id: 'how-payments-processed',
+    category: 'producers',
+    categoryLabel: 'Payments & Security',
+    question: 'How are payments processed for Host Pro and VIP Passes?',
+    answer: 'All payments on TerroirTrail are processed exclusively through Stripe, the global leader in encrypted financial infrastructure. We support corporate and personal credit/debit cards (Visa, Mastercard, American Express) as well as Apple Pay and Google Pay. All transactions use bank-grade 256-bit SSL encryption, ensuring your card data is never stored on our servers.',
+    highlight: 'Encrypted checkout powered exclusively by Stripe with instant automated receipts.',
   },
 ];
 
@@ -204,6 +234,7 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
     if (type === 'explorer_pass' && onOpenExplorerPass) onOpenExplorerPass();
     if (type === 'producer_portal' && onOpenProducerPortal) onOpenProducerPortal();
     if (type === 'auth' && onOpenAuth) onOpenAuth('producer');
+    if (type === 'auth_traveler' && onOpenAuth) onOpenAuth('traveler');
   };
 
   return (
@@ -296,20 +327,20 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
                 {/* Key Metrics Pill Badges */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-6 mt-6 border-t border-white/10">
                   <div className="p-3 rounded-2xl bg-stone-950/60 border border-white/10 text-center">
-                    <div className="text-amber-400 text-lg sm:text-xl font-mono font-bold">135+</div>
-                    <div className="text-[10px] text-stone-400 uppercase font-semibold tracking-wider">Vetted Estates</div>
+                    <div className="text-amber-400 text-lg sm:text-xl font-mono font-bold">58+</div>
+                    <div className="text-[10px] text-stone-400 uppercase font-semibold tracking-wider">Vetted Producers</div>
                   </div>
                   <div className="p-3 rounded-2xl bg-stone-950/60 border border-white/10 text-center">
                     <div className="text-emerald-400 text-lg sm:text-xl font-mono font-bold">0%</div>
                     <div className="text-[10px] text-stone-400 uppercase font-semibold tracking-wider">Booking Commission</div>
                   </div>
                   <div className="p-3 rounded-2xl bg-stone-950/60 border border-white/10 text-center">
-                    <div className="text-rose-400 text-lg sm:text-xl font-mono font-bold">25+</div>
-                    <div className="text-[10px] text-stone-400 uppercase font-semibold tracking-wider">Native Grapes</div>
+                    <div className="text-rose-400 text-lg sm:text-xl font-mono font-bold">30+</div>
+                    <div className="text-[10px] text-stone-400 uppercase font-semibold tracking-wider">Native Cultivars</div>
                   </div>
                   <div className="p-3 rounded-2xl bg-stone-950/60 border border-white/10 text-center">
                     <div className="text-sky-400 text-lg sm:text-xl font-mono font-bold">100%</div>
-                    <div className="text-[10px] text-stone-400 uppercase font-semibold tracking-wider">Family Owned</div>
+                    <div className="text-[10px] text-stone-400 uppercase font-semibold tracking-wider">Family & Artisan Owned</div>
                   </div>
                 </div>
               </div>
@@ -365,9 +396,9 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
                     <div className="w-9 h-9 rounded-xl bg-sky-500/15 border border-sky-500/30 text-sky-400 flex items-center justify-center">
                       <Building2 className="w-5 h-5" />
                     </div>
-                    <h4 className="font-bold text-white text-sm">4. Zero-Commission Host Empowerment</h4>
+                    <h4 className="font-bold text-white text-sm">4. Host Portal & 0% Commission</h4>
                     <p className="text-xs text-stone-300 leading-relaxed">
-                      Middlemen booking platforms extract up to 30% of artisan revenue. TerroirTrail takes 0% commission on direct tastings. Artisanal producers and farmers retain 100% of the value they cultivate.
+                      Middlemen booking platforms extract up to 30% of artisan revenue. TerroirTrail takes 0% commission on direct bookings. Through the Host Portal, family producers manage reservations, publish harvest bulletins, and keep 100% of their cellar revenue.
                     </p>
                   </div>
 
@@ -464,7 +495,7 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Search questions, topics (e.g., booking, passport, chauffeur, wine delivery, commission)..."
+                    placeholder="Search questions (e.g., booking, VIP pass, Host Portal, tax deduction, Stripe, wine delivery)..."
                     className="w-full pl-10 pr-4 py-2.5 rounded-2xl bg-stone-900 border border-white/15 text-white placeholder-stone-400 text-xs focus:outline-none focus:border-amber-400/80 transition"
                   />
                   {searchQuery && (
@@ -588,14 +619,21 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
                   >
                     Email Concierge
                   </a>
-                  {onOpenAuth && (
+                  {onOpenProducerPortal ? (
+                    <button
+                      onClick={() => handleAction('producer_portal')}
+                      className="px-3.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 text-xs font-bold shadow-sm transition cursor-pointer"
+                    >
+                      Host Portal
+                    </button>
+                  ) : onOpenAuth ? (
                     <button
                       onClick={() => handleAction('auth')}
-                      className="px-3.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 text-xs font-bold shadow-sm transition"
+                      className="px-3.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 text-xs font-bold shadow-sm transition cursor-pointer"
                     >
-                      Host Sign In
+                      Host Portal
                     </button>
-                  )}
+                  ) : null}
                 </div>
               </div>
 
