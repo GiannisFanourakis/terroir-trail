@@ -21,6 +21,9 @@ import {
   Phone,
   Mail,
   Copy,
+  Search,
+  Globe,
+  RefreshCw,
 } from 'lucide-react';
 import { Producer } from '../../types/terroir';
 import { ProducerRegistrationRecord } from '../../types/auth';
@@ -36,6 +39,7 @@ import {
   isFirebaseConfigured,
   SEEDED_PRODUCER_REGISTRATIONS,
 } from '../../services/firebase';
+import { checkVatAgainstVies, ViesCheckResult } from '../../services/viesService';
 
 interface ProducerRegistrationFormProps {
   initialProducerId?: string;
@@ -83,6 +87,21 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
   const [taxOffice, setTaxOffice] = useState('Δ.Ο.Υ. Ηρακλείου');
   const [gemiNumber, setGemiNumber] = useState('123456789001');
   const [eoriNumber, setEoriNumber] = useState('EL999999991');
+  const [isCheckingVies, setIsCheckingVies] = useState(false);
+  const [viesResult, setViesResult] = useState<ViesCheckResult | null>(null);
+
+  const handleVerifyVies = async () => {
+    if (!vatNumber.trim()) return;
+    setIsCheckingVies(true);
+    try {
+      const res = await checkVatAgainstVies(vatNumber, countryCode);
+      setViesResult(res);
+    } catch (err) {
+      console.error('VIES verification error:', err);
+    } finally {
+      setIsCheckingVies(false);
+    }
+  };
 
   // Step 2: Logistics & Dispatch
   const [facilityName, setFacilityName] = useState(`${defaultProducer.name} Cellar & Dispatch Hub`);
@@ -645,30 +664,111 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                         vatValidation.isValid ? 'text-emerald-400' : 'text-amber-400'
                       }`}
                     >
-                      {vatValidation.isValid ? '✓ Check Digit Verified' : 'Checking'}
+                      {vatValidation.isValid ? '✓ Modulo 11 Verified' : 'Checking'}
                     </span>
                   )}
                 </div>
-                <div className="relative">
-                  <FileText className="w-4 h-4 text-stone-500 absolute left-3 top-1/2 -translate-y-1/2" />
-                  <input
-                    type="text"
-                    value={vatNumber}
-                    onChange={(e) => setVatNumber(e.target.value.toUpperCase())}
-                    placeholder="e.g. EL999999991 (Demo 9-digit ΑΦΜ)"
-                    className={`w-full bg-stone-900 border rounded-xl pl-9 pr-3 py-2.5 text-xs focus:outline-none transition ${
-                      vatValidation.isValid
-                        ? 'border-emerald-500/60 text-emerald-300'
-                        : vatNumber.trim()
-                        ? 'border-amber-500/60 text-amber-300'
-                        : 'border-white/10 text-white focus:border-amber-400'
-                    }`}
-                    required
-                  />
+                <div className="flex items-center gap-2">
+                  <div className="relative flex-1">
+                    <FileText className="w-4 h-4 text-stone-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                    <input
+                      type="text"
+                      value={vatNumber}
+                      onChange={(e) => {
+                        setVatNumber(e.target.value.toUpperCase());
+                        setViesResult(null);
+                      }}
+                      placeholder="e.g. EL999999991 (Demo 9-digit ΑΦΜ)"
+                      className={`w-full bg-stone-900 border rounded-xl pl-9 pr-3 py-2.5 text-xs focus:outline-none transition ${
+                        vatValidation.isValid
+                          ? 'border-emerald-500/60 text-emerald-300'
+                          : vatNumber.trim()
+                          ? 'border-amber-500/60 text-amber-300'
+                          : 'border-white/10 text-white focus:border-amber-400'
+                      }`}
+                      required
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleVerifyVies}
+                    disabled={isCheckingVies || !vatNumber.trim()}
+                    className="px-3 py-2.5 bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-amber-300 hover:text-amber-200 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer disabled:opacity-50 shrink-0"
+                    title="Validate against official European Commission VIES database"
+                  >
+                    {isCheckingVies ? (
+                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                    ) : (
+                      <Globe className="w-3.5 h-3.5" />
+                    )}
+                    <span>{isCheckingVies ? 'Querying...' : 'Verify EU VIES'}</span>
+                  </button>
                 </div>
-                <p className="text-[10px] text-stone-400 mt-1">
-                  Validated against Modulo 11 check digit (Greece) or Luhn (Italy). Use synthetic values for testing.
-                </p>
+
+                <div className="flex items-center justify-between mt-1 text-[10px] text-stone-400">
+                  <span>Client algorithm: Modulo 11 (EL) / Luhn (IT).</span>
+                  <span className="text-stone-500">Live API: ec.europa.eu/vies</span>
+                </div>
+
+                {/* Live VIES Verification Result Card */}
+                {viesResult && (
+                  <div
+                    className={`mt-2.5 p-3 rounded-xl border text-xs space-y-1.5 animate-in fade-in ${
+                      viesResult.isValid
+                        ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-200'
+                        : 'bg-rose-500/10 border-rose-500/40 text-rose-300'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between font-semibold">
+                      <div className="flex items-center gap-1.5">
+                        {viesResult.isValid ? (
+                          <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                        ) : (
+                          <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
+                        )}
+                        <span>
+                          {viesResult.isValid
+                            ? 'Official EU Registry: Active & Valid'
+                            : 'VIES Registry: Inactive or Invalid'}
+                        </span>
+                      </div>
+                      <span className="text-[10px] font-mono opacity-70">
+                        {viesResult.source === 'eu_vies_live'
+                          ? 'Live VIES REST API'
+                          : viesResult.source === 'synthetic_demo_registry'
+                          ? 'Demo Sandbox'
+                          : 'Algorithmic Validated'}
+                      </span>
+                    </div>
+
+                    {viesResult.name && (
+                      <div className="text-[11px] pt-1">
+                        <span className="text-stone-400">Official Registered Name: </span>
+                        <strong className="text-white">{viesResult.name}</strong>
+                      </div>
+                    )}
+                    {viesResult.address && (
+                      <div className="text-[11px]">
+                        <span className="text-stone-400">Official Tax Address: </span>
+                        <span className="text-stone-300">{viesResult.address}</span>
+                      </div>
+                    )}
+
+                    {viesResult.isValid && viesResult.name && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (viesResult.name) setLegalBusinessName(viesResult.name);
+                          if (viesResult.address) setStreetAddress(viesResult.address);
+                        }}
+                        className="mt-1 text-[10px] px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 font-semibold flex items-center gap-1 transition cursor-pointer"
+                      >
+                        <Sparkles className="w-3 h-3" />
+                        <span>Auto-fill Official Business Name & Address</span>
+                      </button>
+                    )}
+                  </div>
+                )}
               </div>
 
               <div>
