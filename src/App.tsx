@@ -43,9 +43,9 @@ export const App: React.FC = () => {
   const [isAboutFaqModalOpen, setIsAboutFaqModalOpen] = useState<boolean>(false);
   const [aboutFaqInitialTab, setAboutFaqInitialTab] = useState<'about' | 'faq'>('about');
   const [isLegalModalOpen, setIsLegalModalOpen] = useState<boolean>(false);
-  const [legalInitialTab, setLegalInitialTab] = useState<'privacy' | 'terms' | 'licenses'>('privacy');
+  const [legalInitialTab, setLegalInitialTab] = useState<'privacy' | 'terms' | 'producers' | 'licenses'>('privacy');
 
-  const handleOpenLegal = (tab: 'privacy' | 'terms' | 'licenses' = 'privacy') => {
+  const handleOpenLegal = (tab: 'privacy' | 'terms' | 'producers' | 'licenses' = 'privacy') => {
     setLegalInitialTab(tab);
     setIsLegalModalOpen(true);
   };

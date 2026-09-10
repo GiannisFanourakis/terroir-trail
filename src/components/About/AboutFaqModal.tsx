@@ -46,7 +46,7 @@ const FAQ_DATA: FaqItem[] = [
     category: 'about',
     categoryLabel: 'About & Vetting',
     question: 'How do you choose which producers make it onto TerroirTrail?',
-    answer: 'Our editorial committee vets every producer against four non-negotiable pillars: (1) 100% Independent or Family Ownership; (2) Estate-Grown or Hyper-Local Sourcing with full traceability; (3) Commitment to organic, biodynamic, or ancestral low-intervention practices; and (4) Authentic on-site hospitality where travelers meet the actual makers, winemakers, or shepherd cheesemakers.',
+    answer: 'Our editorial committee vets every producer against four non-negotiable pillars: (1) 100% Independent or Family Ownership; (2) Estate-Grown or Hyper-Local Sourcing with full traceability; (3) Commitment to organic, biodynamic, or ancestral low-intervention practices; and (4) Authentic on-site hospitality where travelers meet the actual makers, artisanal producers, or shepherd cheesemakers.',
   },
   {
     id: 'is-terroir-only-greece',
@@ -62,7 +62,7 @@ const FAQ_DATA: FaqItem[] = [
     category: 'tastings',
     categoryLabel: 'Tastings & Visits',
     question: 'Do I need to book my tastings in advance?',
-    answer: 'For most boutique estates, yes. Unlike commercial visitor centers with shifts of staff, our independent winemakers and cheesemakers are often actively in the vineyards, barrel cellar, or milking barns. Booking in advance through TerroirTrail guarantees that a host is on site, a table is reserved, and your personalized tasting flight is prepared.',
+    answer: 'For most boutique estates, yes. Unlike commercial visitor centers with shifts of staff, our independent producers and artisans are often actively in the vineyards, barrel cellar, or milking barns. Booking in advance through TerroirTrail guarantees that a host is on site, a table is reserved, and your personalized tasting flight is prepared.',
     highlight: 'Tastings are booked directly with the estate with zero markup.',
   },
   {
@@ -369,7 +369,7 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
                     </div>
                     <h4 className="font-bold text-white text-sm">4. Zero-Commission Host Empowerment</h4>
                     <p className="text-xs text-stone-300 leading-relaxed">
-                      Middlemen booking platforms extract up to 30% of artisan revenue. TerroirTrail takes 0% commission on direct tastings. Winemakers and farmers retain 100% of the value they cultivate.
+                      Middlemen booking platforms extract up to 30% of artisan revenue. TerroirTrail takes 0% commission on direct tastings. Artisanal producers and farmers retain 100% of the value they cultivate.
                     </p>
                   </div>
 

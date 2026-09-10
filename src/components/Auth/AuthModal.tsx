@@ -1072,8 +1072,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                               type="button"
                               onClick={() => {
                                 setFiscalCountry(c.code);
-                                if (c.code === 'IT' && (vatNumber.startsWith('EL') || !vatNumber)) setVatNumber('IT99999999990');
-                                if (c.code === 'GR' && (vatNumber.startsWith('IT') || !vatNumber)) setVatNumber('EL999999991');
                               }}
                               className={`px-2 py-1.5 rounded-lg text-[11px] font-semibold border transition cursor-pointer ${
                                 fiscalCountry === c.code

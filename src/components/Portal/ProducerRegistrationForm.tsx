@@ -1433,7 +1433,7 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                   required
                 />
                 <span className="text-xs text-stone-300 leading-relaxed">
-                  I certify that all fiscal details, tax identification numbers, and courier loading coordinates provided are accurate for commercial registration. I acknowledge that under EU DAC7 (Directive 2021/514) and Greek tax legislation, commercial revenue data is reported in compliance with AADE / Agenzia delle Entrate rules. I agree to the <strong className="text-emerald-400">0% platform commission policy</strong> for direct visitor orders.
+                  I certify and legally warrant that I am the authorized legal representative or owner of this artisan estate, with full power to submit fiscal and logistics records. All tax identification numbers, commercial registry details, and courier coordinates provided are truthful and accurate. I acknowledge that under EU DAC7 (Directive 2021/514) and national revenue legislation, platform revenue data is recorded in compliance with tax authorities (AADE / Agenzia delle Entrate). I agree to the <strong className="text-emerald-400">0% platform commission policy</strong> for direct visitor orders and understand that TerroirTrail acts solely as an independent discovery connection platform and not as a merchant of record.
                 </span>
               </label>
             </div>
