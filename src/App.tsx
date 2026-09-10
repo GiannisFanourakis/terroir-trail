@@ -215,6 +215,25 @@ export const App: React.FC = () => {
     });
   }, [producers, filters, isFavorite]);
 
+  // Deep-linking: Automatically select and open producer from URL query (e.g. ?estate=domaine-paterianakis or ?producer=douloufakis)
+  useEffect(() => {
+    if (typeof window === 'undefined' || producers.length === 0) return;
+    const params = new URLSearchParams(window.location.search);
+    const target = params.get('estate') || params.get('producer');
+    if (target && target !== 'upgraded') {
+      const match = producers.find(
+        (p) =>
+          p.id.toLowerCase() === target.toLowerCase() ||
+          p.name.toLowerCase().includes(target.toLowerCase()) ||
+          p.id.toLowerCase().includes(target.toLowerCase())
+      );
+      if (match) {
+        setSelectedProducer(match);
+        setIsDrawerOpen(true);
+      }
+    }
+  }, [producers]);
+
   // Load a curated loop
   const handleSelectLoop = (loop: DayTripLoop) => {
     // Filter to this destination

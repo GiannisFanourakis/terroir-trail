@@ -1080,9 +1080,12 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
                           <Crown className="w-4 h-4 text-amber-400" />
                           <span className="font-bold text-white text-xs">Verified Host Pro</span>
                         </div>
-                        <span className="font-serif-title text-amber-300 font-bold text-sm">
-                          €39<span className="text-[10px] text-stone-400">/mo (excl. VAT)</span>
-                        </span>
+                        <div className="text-right">
+                          <span className="font-serif-title text-amber-300 font-bold text-sm">
+                            €199<span className="text-[10px] text-stone-400">/year</span>
+                          </span>
+                          <div className="text-[9px] text-stone-400">(μόλις ~€16.50/mo)</div>
+                        </div>
                       </div>
                       <ul className="text-[11px] text-stone-300 space-y-1.5 list-disc list-inside">
                         <li><strong className="text-amber-300">Gold Glowing Badge</strong> on the interactive map</li>
@@ -1118,6 +1121,17 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
                         <Crown className="w-3.5 h-3.5" />
                         <span>{isProTier ? '✓ Pro Active (Click to Pause)' : 'Upgrade to Host Pro (€199/yr)'}</span>
                       </button>
+
+                      {/* Greek Fiscal / myDATA Tax Deduction Badge */}
+                      <div className="mt-3 p-2.5 rounded-xl bg-stone-950/80 border border-emerald-500/30 text-[11px] space-y-1 text-left">
+                        <div className="flex items-center gap-1.5 text-emerald-400 font-semibold text-[11px]">
+                          <ShieldCheck className="w-3.5 h-3.5 shrink-0" />
+                          <span>100% Εκπιπτόμενη Επαγγελματική Δαπάνη</span>
+                        </div>
+                        <p className="text-stone-300 text-[10px] leading-relaxed">
+                          Εκδίδεται επίσημο <strong>Τιμολόγιο Παροχής Υπηρεσιών (ΤΠΥ)</strong> με QR Code & MARK διαβιβασμένο στην ΑΑΔΕ (myDATA). Η πληρωμή μέσω Stripe με εταιρική κάρτα αναγνωρίζεται απόλυτα από τον λογιστή σας ως έξοδο προβολής/διαφήμισης.
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
