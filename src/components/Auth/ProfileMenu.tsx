@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { UserProfile } from '../../types/auth';
-import { User, LogOut, Compass, Heart, Award, ChevronDown, Calendar, Building2, Crown, Package, LogIn, BookOpen, HelpCircle, Scale } from 'lucide-react';
+import { User, LogOut, Compass, Heart, Award, ChevronDown, Calendar, Building2, Crown, Package, LogIn, BookOpen, HelpCircle, Scale, Sparkles, ShieldCheck } from 'lucide-react';
 import { UserAvatar } from '../Common/UserAvatar';
 
 interface ProfileMenuProps {
@@ -58,35 +58,34 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
         {onOpenAbout && (
           <button
             onClick={onOpenAbout}
-            className="flex md:hidden items-center gap-1 px-2.5 py-1.5 text-xs font-semibold rounded-xl border border-white/10 bg-stone-900 text-stone-300 hover:text-white transition cursor-pointer"
-            title="About TerroirTrail & FAQ"
+            className="hidden md:flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-bold bg-stone-900 hover:bg-stone-850 text-stone-300 hover:text-white border border-white/10 hover:border-amber-400/40 rounded-xl transition shrink-0 cursor-pointer"
           >
-            <BookOpen className="w-3.5 h-3.5 text-amber-400" />
-            <span className="text-[11px]">About</span>
+            <BookOpen className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+            <span>About & FAQ</span>
           </button>
         )}
 
         <button
           onClick={() => onOpenAuth('traveler')}
-          className="flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 text-xs font-bold rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 shadow-md shadow-amber-500/25 border border-amber-400/80 transition-all transform active:scale-95 shrink-0 cursor-pointer"
-          title="Sign in / Explorer Account"
+          className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 active:scale-95 text-stone-950 text-xs font-bold transition shadow-md shadow-amber-500/20 shrink-0 cursor-pointer"
         >
-          <LogIn className="w-3.5 h-3.5 shrink-0 stroke-[2.5]" />
-          <span className="font-bold tracking-tight whitespace-nowrap">Log In</span>
+          <User className="w-3.5 h-3.5" />
+          <span>Sign In</span>
         </button>
       </div>
     );
   }
 
   const visitedCount = user.visitedProducers.length;
-  const progressPercent = Math.round((visitedCount / (totalProducersCount || 1)) * 100);
+  const progressPercent = Math.min(100, Math.round((visitedCount / (totalProducersCount || 1)) * 100));
 
-  const getBadgeLabel = (type: UserProfile['travelerType']) => {
+  const getBadgeLabel = (type: string) => {
     switch (type) {
-      case 'crete_local': return 'Crete Local';
-      case 'wine_enthusiast': return 'Sommelier';
-      case 'craft_beer_explorer': return 'Brewer';
-      case 'culinary_nomad': return 'Agritourist';
+      case 'crete_local': return 'Crete Local Explorer';
+      case 'wine_enthusiast': return 'Heritage Wine Enthusiast';
+      case 'craft_beer_explorer': return 'Craft Beer Explorer';
+      case 'culinary_nomad': return 'Artisan Culinary Nomad';
+      default: return 'Terroir Explorer';
     }
   };
 
@@ -106,7 +105,7 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
 
       {/* Popover Menu */}
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-64 bg-stone-950/95 backdrop-blur-2xl border border-white/15 rounded-2xl shadow-2xl p-3 animate-in fade-in slide-in-from-top-2 duration-150 text-xs">
+        <div className="absolute right-0 mt-2 w-72 sm:w-80 bg-stone-950/95 backdrop-blur-2xl border border-white/15 rounded-2xl shadow-2xl p-3 animate-in fade-in slide-in-from-top-2 duration-150 text-xs">
           
           {/* User Info */}
           <div className="pb-3 border-b border-white/10 mb-2.5">
@@ -126,12 +125,89 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
                 </span>
               ) : (
                 <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-bold border border-amber-500/30">
-                  {getBadgeLabel(user.travelerType)}
+                  {getBadgeLabel(user.travelerType || '')}
                 </span>
               )}
               <span className="text-stone-400 font-medium">Member {user.memberSince}</span>
             </div>
           </div>
+
+          {/* DEDICATED VIP PASS CARD (BEHIND LOGIN) */}
+          {user.isProducer ? (
+            /* PRODUCER VIP PASS: HOST PRO TIER */
+            <div className="mb-2.5 p-3 rounded-2xl bg-gradient-to-br from-amber-500/20 via-stone-900 to-stone-950 border border-amber-400/40 shadow-lg shadow-amber-500/10 text-left">
+              <div className="flex items-center justify-between mb-1.5">
+                <div className="flex items-center gap-1.5">
+                  <Crown className="w-4 h-4 text-amber-400" />
+                  <span className="font-bold text-white text-xs">Host Pro VIP Tier</span>
+                </div>
+                <span className="text-[9px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                  €199/yr
+                </span>
+              </div>
+              <p className="text-[10px] text-stone-300 mb-2 leading-relaxed">
+                Gold glowing map marker, direct bottle shop button & 0% tasting commission. 100% Tax Deductible (myDATA).
+              </p>
+              {onOpenProducerPortal && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsOpen(false);
+                    onOpenProducerPortal();
+                  }}
+                  className="w-full py-1.5 rounded-xl text-[11px] font-bold bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-stone-950 shadow-md flex items-center justify-center gap-1.5 transition cursor-pointer"
+                >
+                  <Building2 className="w-3 h-3" />
+                  <span>Manage Host Pro & Invoices</span>
+                </button>
+              )}
+            </div>
+          ) : (
+            /* TRAVELLER VIP PASS: 14-DAY EXPLORER PASS */
+            <div className={`mb-2.5 p-3 rounded-2xl border transition relative overflow-hidden text-left ${
+              user.hasExplorerPass
+                ? 'bg-gradient-to-br from-amber-500/25 via-stone-900 to-stone-950 border-amber-400/50 shadow-lg shadow-amber-500/10'
+                : 'bg-stone-900/90 border-amber-500/30 hover:border-amber-400/50'
+            }`}>
+              <div className="flex items-center justify-between mb-1.5">
+                <div className="flex items-center gap-1.5">
+                  <Crown className="w-4 h-4 text-amber-400 animate-pulse" />
+                  <span className="font-bold text-white text-xs">
+                    {user.hasExplorerPass ? 'VIP Explorer Pass' : 'VIP Holiday Pass'}
+                  </span>
+                </div>
+                <span className={`text-[9px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${
+                  user.hasExplorerPass 
+                    ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40' 
+                    : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                }`}>
+                  {user.hasExplorerPass ? 'Active' : '€14.99'}
+                </span>
+              </div>
+              <p className="text-[10px] text-stone-300 mb-2 leading-relaxed">
+                {user.hasExplorerPass
+                  ? '100% Ad-Free active · Complimentary pours, artisan discounts & VIP map filters unlocked.'
+                  : 'Remove all ads, unlock complimentary tasting pours & 10% cellar discounts across all regions.'}
+              </p>
+              {onOpenExplorerPass && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsOpen(false);
+                    onOpenExplorerPass();
+                  }}
+                  className={`w-full py-1.5 rounded-xl text-[11px] font-bold flex items-center justify-center gap-1.5 transition cursor-pointer ${
+                    user.hasExplorerPass
+                      ? 'bg-stone-800 hover:bg-stone-750 text-amber-300 border border-amber-400/30'
+                      : 'bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-stone-950 shadow-md font-extrabold'
+                  }`}
+                >
+                  <Sparkles className="w-3 h-3" />
+                  <span>{user.hasExplorerPass ? 'View VIP Pass Privileges' : 'Activate VIP Pass (€14.99)'}</span>
+                </button>
+              )}
+            </div>
+          )}
 
           {/* Terroir Passport Progress */}
           <button

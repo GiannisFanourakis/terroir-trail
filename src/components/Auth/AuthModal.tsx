@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   X, Mail, Lock, User, ArrowRight, ShieldCheck, Loader2, AlertCircle, 
   Building2, Sparkles, Eye, EyeOff, CheckCircle2, ChevronDown, ChevronUp,
-  FileText, Truck, HelpCircle
+  FileText, Truck, HelpCircle, Crown
 } from 'lucide-react';
 import { TravelerType, ProducerTaxDetails } from '../../types/auth';
 import { Producer } from '../../types/terroir';
@@ -476,6 +476,26 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           {/* ========================================================= */}
           {accountType === 'traveler' && (
             <>
+              {/* VIP Traveler Pass Benefit Callout */}
+              <div className="p-3 rounded-2xl bg-gradient-to-r from-amber-500/15 via-stone-900 to-amber-900/20 border border-amber-500/30 flex items-center justify-between gap-3 text-left">
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div className="w-8 h-8 rounded-xl bg-amber-400/20 border border-amber-400/30 flex items-center justify-center text-amber-300 shrink-0">
+                    <Crown className="w-4 h-4" />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="text-xs font-bold text-amber-200 truncate">
+                      VIP Explorer Pass
+                    </div>
+                    <div className="text-[10px] text-stone-400 truncate">
+                      Sign in to sync stamps & unlock 14-day ad-free tasting perks (€14.99)
+                    </div>
+                  </div>
+                </div>
+                <span className="text-[9px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-bold border border-amber-500/30 shrink-0">
+                  VIP
+                </span>
+              </div>
+
               {/* 1. TRAVELER LOGIN */}
               {travelerMode === 'login' && (
                 <div className="space-y-4">
@@ -793,6 +813,26 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           {/* ========================================================= */}
           {accountType === 'producer' && (
             <>
+              {/* VIP Producer Host Pro Benefit Callout */}
+              <div className="p-3 rounded-2xl bg-gradient-to-r from-amber-500/15 via-stone-900 to-amber-900/20 border border-amber-500/30 flex items-center justify-between gap-3 text-left">
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div className="w-8 h-8 rounded-xl bg-amber-400/20 border border-amber-400/30 flex items-center justify-center text-amber-300 shrink-0">
+                    <Building2 className="w-4 h-4 text-amber-400" />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="text-xs font-bold text-amber-200 truncate">
+                      Verified Host Pro VIP
+                    </div>
+                    <div className="text-[10px] text-stone-400 truncate">
+                      0% tasting commission, gold map marker & myDATA invoicing (€199/yr)
+                    </div>
+                  </div>
+                </div>
+                <span className="text-[9px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-bold border border-amber-500/30 shrink-0">
+                  HOST
+                </span>
+              </div>
+
               {/* 1. PRODUCER HOST SIGN IN */}
               {producerMode === 'login' && (
                 <div className="space-y-4">
