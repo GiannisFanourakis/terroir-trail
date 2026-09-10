@@ -206,6 +206,9 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
         setWebsiteStoreUrl(existing.websiteStoreUrl || '');
         setNotesFromProducer(existing.notesFromProducer || '');
         setTermsAccepted(Boolean(existing.termsAccepted));
+      } else if (isMounted) {
+        // If not registered in cloud/localStorage, start with empty fields so ghost text is visible
+        clearForm();
       }
     }
     loadData();
@@ -224,7 +227,6 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
     const preset = SEEDED_PRODUCER_REGISTRATIONS[presetKey];
     if (!preset) return;
 
-    setSelectedProducerId(preset.producerId);
     setTradeBrandName(preset.tradeBrandName);
     setProducerCategory(preset.producerCategory);
     setLegalBusinessName(preset.legalBusinessName);
@@ -495,24 +497,24 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
             <span className="text-[10px] uppercase font-bold text-stone-500 mr-1">Demo Autofill:</span>
             <button
               type="button"
-              onClick={() => applyPreset('domaine-paterianakis')}
+              onClick={() => applyPreset('demo-producer-el')}
               className="text-[10px] px-2.5 py-1 rounded-lg bg-stone-800 hover:bg-stone-700 text-amber-300 border border-white/10 font-semibold transition cursor-pointer"
             >
-              🍇 Paterianakis
+              🍇 Demo Producer (GR)
             </button>
             <button
               type="button"
-              onClick={() => applyPreset('cretan-brewery-charma')}
+              onClick={() => applyPreset('demo-brewery-el')}
               className="text-[10px] px-2.5 py-1 rounded-lg bg-stone-800 hover:bg-stone-700 text-amber-300 border border-white/10 font-semibold transition cursor-pointer"
             >
-              🍺 Charma Beer
+              🍺 Demo Brewery (GR)
             </button>
             <button
               type="button"
-              onClick={() => applyPreset('monteraponi-tuscany')}
+              onClick={() => applyPreset('demo-estate-it')}
               className="text-[10px] px-2.5 py-1 rounded-lg bg-stone-800 hover:bg-stone-700 text-amber-300 border border-white/10 font-semibold transition cursor-pointer"
             >
-              🇮🇹 Monteraponi
+              🇮🇹 Demo Producer (IT)
             </button>
             <button
               type="button"
@@ -686,7 +688,7 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                   type="text"
                   value={tradeBrandName}
                   onChange={(e) => setTradeBrandName(e.target.value)}
-                  placeholder={currentProducer ? `e.g. ${currentProducer.name}` : 'e.g. Domaine Paterianakis'}
+                  placeholder="e.g. Artisan Heritage Estate"
                   className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
                   required
                 />
@@ -700,7 +702,7 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                   type="text"
                   value={legalBusinessName}
                   onChange={(e) => setLegalBusinessName(e.target.value)}
-                  placeholder={currentProducer ? `e.g. ${currentProducer.name} Estate Partnership (Demo)` : 'e.g. Domaine Paterianakis Partnership (Demo)'}
+                  placeholder="e.g. Artisan Heritage Estate O.E. (Demo Entity)"
                   className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
                   required
                 />
@@ -915,7 +917,7 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                   type="text"
                   value={facilityName}
                   onChange={(e) => setFacilityName(e.target.value)}
-                  placeholder={currentProducer ? `e.g. ${currentProducer.name} Cellar & Dispatch Hub` : 'e.g. Domaine Paterianakis Organic Cellar & Tasting Center'}
+                  placeholder="e.g. Central Cellar & Dispatch Hub Gate 1"
                   className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
                 />
               </div>
@@ -928,7 +930,7 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                   type="text"
                   value={streetAddress}
                   onChange={(e) => setStreetAddress(e.target.value)}
-                  placeholder={currentProducer?.village ? `e.g. ${currentProducer.village}` : 'e.g. Melesses, Peza Valley'}
+                  placeholder="e.g. 124 Wine Route, Dispatch Bay 2"
                   className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
                   required
                 />
@@ -956,7 +958,7 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                     type="text"
                     value={cityOrVillage}
                     onChange={(e) => setCityOrVillage(e.target.value)}
-                    placeholder={currentProducer?.region ? `e.g. ${currentProducer.region}` : 'e.g. Heraklion'}
+                    placeholder="e.g. Regional Logistics District"
                     className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
                     required
                   />
@@ -987,7 +989,7 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                   type="text"
                   value={contactPersonName}
                   onChange={(e) => setContactPersonName(e.target.value)}
-                  placeholder="e.g. Giorgos Paterianakis"
+                  placeholder="e.g. Alex Miller (Logistics Manager)"
                   className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
                   required
                 />
@@ -1020,7 +1022,7 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                     type="email"
                     value={dispatchEmail}
                     onChange={(e) => setDispatchEmail(e.target.value)}
-                    placeholder={currentProducer ? `e.g. dispatch@${currentProducer.id.replace(/-/g, '')}.com` : 'e.g. dispatch@domainepaterianakis.com'}
+                    placeholder="e.g. dispatch@example-artisan.com"
                     className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl pl-9 pr-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
                   />
                 </div>
@@ -1214,7 +1216,7 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                   type="text"
                   value={accountHolderName}
                   onChange={(e) => setAccountHolderName(e.target.value)}
-                  placeholder={currentProducer ? `e.g. ${currentProducer.name} Partnership` : 'e.g. Domaine Paterianakis Partnership'}
+                  placeholder="e.g. Artisan Heritage Estate Partnership"
                   className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
                   required
                 />
@@ -1360,7 +1362,7 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                   type="text"
                   value={representativeName}
                   onChange={(e) => setRepresentativeName(e.target.value)}
-                  placeholder="e.g. Emmanuela Paterianaki"
+                  placeholder="e.g. Maria Smith (Authorized Representative)"
                   className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
                   required
                 />
@@ -1387,7 +1389,7 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                   type="email"
                   value={officialEmail}
                   onChange={(e) => setOfficialEmail(e.target.value)}
-                  placeholder={currentProducer ? `e.g. producer@${currentProducer.id.replace(/-/g, '')}.com` : 'e.g. producer@domainepaterianakis.com'}
+                  placeholder="e.g. producer@example-artisan.com"
                   className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
                   required
                 />
@@ -1401,7 +1403,7 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                   type="url"
                   value={websiteStoreUrl}
                   onChange={(e) => setWebsiteStoreUrl(e.target.value)}
-                  placeholder={currentProducer ? `e.g. https://${currentProducer.id.replace(/-/g, '')}.com/shop` : 'e.g. https://domainepaterianakis.com/shop'}
+                  placeholder="e.g. https://example-estate.com/shop"
                   className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
                 />
               </div>

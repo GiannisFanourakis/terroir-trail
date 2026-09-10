@@ -20,20 +20,20 @@ export interface ViesCheckResult {
 // Synthetic demo records for sandbox development & offline verification
 const SYNTHETIC_DEMO_RECORDS: Record<string, { name: string; address: string }> = {
   '999999991': {
-    name: 'DOMAINE PATERIANAKIS O.E. (DEMO)',
-    address: 'MELESSES, PEZA, 70100 HERAKLION, CRETE',
+    name: 'ARTISAN HERITAGE ESTATE O.E. (DEMO ENTITY)',
+    address: '124 WINE ROUTE, DISPATCH BAY 2, 70100 HERAKLION, CRETE',
   },
   '999999992': {
-    name: 'MANOUSAKIS WINERY SINGLE MEMBER P.C. (DEMO)',
-    address: 'VATOLAKKOS, PLATANIAS, 73005 CHANIA, CRETE',
+    name: 'AEGEAN ARTISAN PRODUCER P.C. (DEMO ENTITY)',
+    address: '45 OLIVE GROVE WAY, LOADING DOCK, 73005 CHANIA, CRETE',
   },
   '999999993': {
-    name: 'CRETAN BREWERY S.A. (DEMO)',
-    address: 'ZOUNAKI, PLATANIAS, 73002 CHANIA, CRETE',
+    name: 'HELLENIC CRAFT BREWING S.A. (DEMO ENTITY)',
+    address: '88 BREWERY BOULEVARD, BAY 4, 73002 CHANIA, CRETE',
   },
   '99999999990': {
-    name: 'AZIENDA AGRICOLA MONTERAPONI (DEMO)',
-    address: 'LOCALITA MONTERAPONI, 53017 RADDA IN CHIANTI (SI), ITALY',
+    name: 'AZIENDA AGRICOLA ARTIGIANALE SRL (DEMO ENTITY)',
+    address: 'VIA DELLA CANTINA 12, GATE 1, 53017 SIENA, ITALY',
   },
 };
 

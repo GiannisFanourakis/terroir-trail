@@ -309,9 +309,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
     const taxDetails: ProducerTaxDetails | undefined = vatNumber.trim() ? {
       vatNumber: vatCheck?.formatted || vatNumber.trim(),
-      legalBusinessName: legalBusinessName.trim() || `${producer.name} (Demo Entity)`,
+      legalBusinessName: legalBusinessName.trim() || 'Artisan Producer Estate O.E. (Demo Entity)',
       taxOffice: taxOffice.trim() || undefined,
-      registeredAddress: registeredAddress.trim() || `${producer.village}, ${producer.region}`,
+      registeredAddress: registeredAddress.trim() || '124 Wine Route, Dispatch Bay 2, 70100',
       dispatchContactPhone: dispatchContactPhone.trim() || undefined,
       countryCode,
       isVatVerified: Boolean(vatCheck?.isValid),
@@ -835,7 +835,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                           autoComplete="email"
                           value={producerEmail}
                           onChange={(e) => setProducerEmail(e.target.value)}
-                          placeholder="producer@fake-winery.com"
+                          placeholder="e.g. producer@example-artisan.com"
                           className="w-full bg-stone-900 border border-white/10 text-white rounded-xl pl-9 pr-3 py-2.5 text-xs focus:outline-none focus:border-amber-400 transition"
                           required
                         />
@@ -999,7 +999,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                           type="email"
                           value={producerEmail}
                           onChange={(e) => setProducerEmail(e.target.value)}
-                          placeholder="producer@fake-winery.com"
+                          placeholder="e.g. producer@example-artisan.com"
                           className="w-full bg-stone-900 border border-white/10 text-white rounded-xl pl-9 pr-3 py-2.5 text-xs focus:outline-none focus:border-amber-400 transition"
                           required
                         />
@@ -1141,7 +1141,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                             type="text"
                             value={legalBusinessName}
                             onChange={(e) => setLegalBusinessName(e.target.value)}
-                            placeholder={selectedProducer ? `e.g. ${selectedProducer.name} Estate Partnership (Demo)` : 'e.g. Artisan Producer (Demo)'}
+                            placeholder="e.g. Artisan Producer Estate O.E. (Demo Entity)"
                             className="w-full bg-stone-950 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-amber-400 transition"
                           />
                         </div>
@@ -1172,7 +1172,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                           type="text"
                           value={registeredAddress}
                           onChange={(e) => setRegisteredAddress(e.target.value)}
-                          placeholder={selectedProducer ? `e.g. ${selectedProducer.village}, ${selectedProducer.region}` : 'e.g. Facility street address, Postal code, Region'}
+                          placeholder="e.g. 124 Wine Route, Dispatch Bay 2, 70100"
                           className="w-full bg-stone-950 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-amber-400 transition"
                         />
                       </div>
@@ -1227,7 +1227,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                           type="email"
                           value={producerEmail}
                           onChange={(e) => setProducerEmail(e.target.value)}
-                          placeholder="producer@fake-winery.com"
+                          placeholder="e.g. producer@example-artisan.com"
                           className="w-full bg-stone-900 border border-white/10 text-white rounded-xl pl-9 pr-3 py-2.5 text-xs focus:outline-none focus:border-amber-400 transition"
                           required
                         />
