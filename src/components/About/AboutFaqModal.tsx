@@ -49,11 +49,11 @@ const FAQ_DATA: FaqItem[] = [
     answer: 'Our editorial committee vets every producer against four non-negotiable pillars: (1) 100% Independent or Family Ownership; (2) Estate-Grown or Hyper-Local Sourcing with full traceability; (3) Commitment to organic, biodynamic, or ancestral low-intervention practices; and (4) Authentic on-site hospitality where travelers meet the actual makers, artisanal producers, or shepherd cheesemakers.',
   },
   {
-    id: 'is-terroir-only-greece',
+    id: 'regions-terroir-coverage',
     category: 'about',
     categoryLabel: 'About & Vetting',
-    question: 'Is TerroirTrail only in Greece?',
-    answer: 'TerroirTrail was founded in Greece—celebrating Crete, Santorini, Nemea in the Peloponnese, and Northern Greece. However, our architecture is built to support independent European terroir. We recently launched our first cross-border Italian estates in Tuscany, with future curated expansions planned for Portugal, Spain, France, and Slovenia. Wherever we expand, our strict independent family vetting remains uncompromising.',
+    question: 'Which regions and terroirs does TerroirTrail cover?',
+    answer: 'TerroirTrail is a pan-Mediterranean and European agritourism discovery platform. We currently feature curated independent wine roads, olive mills, and craft farmsteads across Crete, Santorini, the Peloponnese (Nemea), Northern Greece, and Tuscany (Italy), with ongoing expansions across Portugal, Spain, France, and Slovenia. Wherever you travel, our strict independent family maker vetting remains uncompromising.',
   },
 
   // 2. Tastings & Visiting
@@ -418,7 +418,7 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
                   <h4 className="font-bold text-white text-sm">Expanding European Terroir</h4>
                 </div>
                 <p className="text-xs text-stone-300 leading-relaxed">
-                  While our roots run deep in Greek soil—spanning the sun-drenched terraced hills of Crete, the volcanic caldera of Santorini, the ancient valleys of Nemea, and the alpine amphitheaters of Northern Greece—we are now removing the fence. With our pilot in Tuscany, Italy, and future curated expansions across Portugal, Spain, France, and Slovenia, TerroirTrail is becoming the definitive European home for independent artisanal discovery.
+                  From the sun-drenched terraced vineyards of Crete and the volcanic caldera of Santorini, to the rolling hills and ancient olive groves of Tuscany, Italy, TerroirTrail connects you directly with the soul of Mediterranean and European agritourism. With ongoing expansions across Portugal, Spain, France, and Slovenia, TerroirTrail is the definitive international home for independent artisanal discovery.
                 </p>
               </div>
 

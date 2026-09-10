@@ -130,7 +130,7 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
                   </span>
                 </div>
                 <p className="text-xs text-amber-200/80 mt-0.5">
-                  The ultimate 14-day holiday pass for authentic Greek agritourism
+                  The ultimate 14-day holiday pass for authentic Mediterranean agritourism
                 </p>
               </div>
             </div>
@@ -185,7 +185,7 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
                   VIP Explorer Pass Activated!
                 </h3>
                 <p className="text-xs text-stone-300 max-w-sm mx-auto">
-                  Welcome, <span className="text-amber-400 font-bold">{user?.name}</span>. Your VIP pass is active across all 20+ participating Cretan and Greek estates.
+                  Welcome, <span className="text-amber-400 font-bold">{user?.name}</span>. Your VIP pass is active across all participating estates and artisan destinations.
                 </p>
               </div>
 
@@ -193,10 +193,12 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
               <div className="p-5 rounded-3xl bg-gradient-to-tr from-amber-600/30 via-stone-900 to-amber-900/40 border-2 border-amber-400/50 shadow-2xl max-w-sm mx-auto text-left relative overflow-hidden">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-1.5">
-                    <span className="text-xl">🍇</span>
-                    <span className="font-serif-title font-bold text-white text-sm">TerroirTrail VIP</span>
+                    <span className="text-sm">👑</span>
+                    <span className="font-serif-title font-bold text-white text-xs tracking-wider uppercase">
+                      Terroir Explorer
+                    </span>
                   </div>
-                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-400 text-stone-950 font-bold">
+                  <span className="text-[9px] px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/40 font-bold uppercase tracking-wider">
                     VALID · 14 DAYS
                   </span>
                 </div>
@@ -204,7 +206,7 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
                 <div className="space-y-1 my-3">
                   <div className="text-[10px] uppercase tracking-wider text-amber-200/70 font-semibold">Passholder</div>
                   <div className="font-bold text-white text-base">{user?.name}</div>
-                  <div className="text-[10px] text-stone-400 font-mono">PASS #GR-2026-{user?.id.slice(-6).toUpperCase()}</div>
+                  <div className="text-[10px] text-stone-400 font-mono">PASS #TR-2026-{user?.id.slice(-6).toUpperCase()}</div>
                 </div>
 
                 <div className="pt-2 border-t border-white/10 flex items-center justify-between text-[10px] text-amber-300 font-medium">
@@ -318,7 +320,7 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
                     <span className="text-[10px] text-stone-400">/year</span>
                   </div>
                   <p className="text-[11px] text-stone-300 mt-1 leading-tight">
-                    For local residents, sommeliers & repeat travelers in Greece/Italy.
+                    For local residents, sommeliers & passionate travelers exploring authentic terroirs.
                   </p>
                   <span className="mt-2 inline-block text-[10px] text-amber-300 font-semibold">
                     ✓ Year-round perks & harvest invites

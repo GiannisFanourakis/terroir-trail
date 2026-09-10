@@ -380,7 +380,7 @@ export const ChauffeurBookingModal: React.FC<ChauffeurBookingModalProps> = ({
 
               <div className="flex items-center justify-center gap-1.5 text-[10px] text-stone-500 pt-1">
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
-                <span>Fully licensed Greek tourist transport operator · Free cancellation up to 24h prior</span>
+                <span>Fully licensed professional tourist transport operator · Free cancellation up to 24h prior</span>
               </div>
             </form>
           )}
