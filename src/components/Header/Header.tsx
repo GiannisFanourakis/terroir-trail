@@ -75,29 +75,29 @@ export const Header: React.FC<HeaderProps> = ({
         {/* Row 1: Brand & Top Action Center (Always Visible, Never Scrolled Away) */}
         <div className="flex items-center justify-between gap-2">
           
-          {/* Brand & Subtitle */}
-          <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+          {/* Brand & Subtitle (Clickable to refresh page) */}
+          <button
+            type="button"
+            onClick={() => window.location.reload()}
+            className="flex items-center gap-2.5 sm:gap-3 min-w-0 text-left bg-transparent border-none p-0 cursor-pointer group focus:outline-none select-none"
+            title="Refresh TerroirTrail"
+          >
             <div className="w-9 h-9 sm:w-10 sm:h-10 shrink-0 flex items-center justify-center">
               <img
                 src="/logo.png"
                 alt="TerroirTrail Emblem"
-                className="w-full h-full object-contain drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)] transition-transform hover:scale-105 duration-200"
+                className="w-full h-full object-contain drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)] transition-transform group-hover:scale-105 duration-200"
               />
             </div>
             <div className="min-w-0">
-              <div className="flex items-center gap-1.5">
-                <h1 className="font-serif-title text-base sm:text-xl font-bold tracking-tight text-white flex items-center gap-1 shrink-0">
-                  Terroir<span className="text-amber-400 font-sans font-light">Trail</span>
-                </h1>
-                <span className="text-[9px] sm:text-[10px] uppercase tracking-wider px-1.5 sm:px-2 py-0.5 rounded-full bg-amber-400/15 text-amber-400 font-bold border border-amber-400/30 shrink-0">
-                  Greece
-                </span>
-              </div>
-              <p className="text-[10px] text-stone-400 font-medium hidden md:block truncate">
+              <h1 className="font-serif-title text-base sm:text-xl font-bold tracking-tight text-white flex items-center gap-1 shrink-0 group-hover:text-amber-200 transition-colors">
+                Terroir<span className="text-amber-400 font-sans font-light">Trail</span>
+              </h1>
+              <p className="text-[10px] text-stone-400 font-medium hidden md:block truncate group-hover:text-stone-300 transition-colors">
                 Curated Wineries, Craft Breweries, Rakokazana & Mountain Dairies
               </p>
             </div>
-          </div>
+          </button>
 
           {/* Right Action Bar (Saved, Circuits, VIP status, Host, Wine & Clear Login) */}
           <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
