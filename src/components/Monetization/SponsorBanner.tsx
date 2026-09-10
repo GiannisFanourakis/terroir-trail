@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ExternalLink, X, Crown, Sparkles, Plane, Car, Home } from 'lucide-react';
+import { ExternalLink, Crown, Sparkles, Plane, Car, Home } from 'lucide-react';
 
 interface SponsorBannerProps {
   hasExplorerPass?: boolean;
@@ -59,13 +59,6 @@ export const SponsorBanner: React.FC<SponsorBannerProps> = ({
   // If the user is a VIP Passholder, they enjoy an entirely ad-free experience!
   if (hasExplorerPass) return null;
 
-  const [isDismissed, setIsDismissed] = useState<boolean>(() => {
-    try {
-      return sessionStorage.getItem('terroir_sponsor_dismissed') === 'true';
-    } catch {
-      return false;
-    }
-  });
   const [currentIdx, setCurrentIdx] = useState<number>(0);
 
   // Rotate sponsor every 14 seconds
@@ -76,18 +69,7 @@ export const SponsorBanner: React.FC<SponsorBannerProps> = ({
     return () => clearInterval(timer);
   }, []);
 
-  if (isDismissed) return null;
-
   const sponsor = SPONSOR_CAMPAIGNS[currentIdx];
-
-  const handleDismiss = () => {
-    setIsDismissed(true);
-    try {
-      sessionStorage.setItem('terroir_sponsor_dismissed', 'true');
-    } catch {
-      // ignore
-    }
-  };
 
   const renderIcon = (sizeClass = 'w-3.5 h-3.5') => {
     switch (sponsor.iconType) {
@@ -122,15 +104,17 @@ export const SponsorBanner: React.FC<SponsorBannerProps> = ({
           <ExternalLink className="w-2.5 h-2.5 text-stone-400 shrink-0 ml-0.5" />
         </a>
 
-        <button
-          type="button"
-          onClick={handleDismiss}
-          className="text-stone-500 hover:text-white p-0.5 ml-1 shrink-0 transition"
-          aria-label="Dismiss sponsor"
-          title="Dismiss ad"
-        >
-          <X className="w-3 h-3" />
-        </button>
+        {onOpenExplorerPass && (
+          <button
+            type="button"
+            onClick={onOpenExplorerPass}
+            className="flex items-center gap-1 text-[9px] font-bold text-amber-300 bg-amber-500/15 border border-amber-500/30 hover:bg-amber-500/25 px-2 py-0.5 rounded-full shrink-0 transition cursor-pointer"
+            title="Remove ads with Terroir Holiday Pass (€14.99)"
+          >
+            <Crown className="w-2.5 h-2.5 text-amber-400 shrink-0" />
+            <span>VIP</span>
+          </button>
+        )}
       </div>
 
       {/* ── Desktop View (≥ sm): Full rich sponsor card in top-middle of web app ── */}
@@ -181,24 +165,13 @@ export const SponsorBanner: React.FC<SponsorBannerProps> = ({
             <button
               type="button"
               onClick={onOpenExplorerPass}
-              className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-[11px] font-bold transition active:scale-95 cursor-pointer"
-              title="Upgrade to Terroir Holiday Pass for a 100% Ad-Free Experience"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-[11px] font-bold transition active:scale-95 cursor-pointer"
+              title="Upgrade to Terroir Holiday Pass (€14.99) for a 100% Ad-Free Experience"
             >
-              <Crown className="w-3 h-3 text-amber-400" />
-              <span>VIP</span>
+              <Crown className="w-3.5 h-3.5 text-amber-400" />
+              <span>Ad-Free VIP</span>
             </button>
           )}
-
-          {/* Dismiss button */}
-          <button
-            type="button"
-            onClick={handleDismiss}
-            className="w-6 h-6 rounded-full bg-stone-900/80 hover:bg-stone-800 text-stone-400 hover:text-white flex items-center justify-center transition border border-white/5 cursor-pointer"
-            aria-label="Dismiss sponsor banner"
-            title="Dismiss ad"
-          >
-            <X className="w-3 h-3" />
-          </button>
         </div>
       </div>
     </div>
