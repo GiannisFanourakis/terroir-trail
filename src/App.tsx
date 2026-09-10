@@ -555,6 +555,7 @@ export const App: React.FC = () => {
           setSelectedProducer(producer);
           setIsDrawerOpen(true);
         }}
+        onPassVerified={(info) => setVerifiedGuestInfo(info)}
       />
 
       {/* 10. Explorer My Bookings & Visits Modal */}

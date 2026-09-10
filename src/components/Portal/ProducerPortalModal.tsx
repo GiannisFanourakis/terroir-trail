@@ -7,10 +7,12 @@ import {
   Sparkles, CheckCircle2, XCircle, Building2, ChevronDown, Save, Send, 
   Crown, Globe, ExternalLink, ShieldCheck, ArrowRight, LogIn, Wine,
   TrendingUp, DollarSign, Percent, Eye, Compass, Bell, CheckCheck, MapPin,
-  Truck, FileText, Package, HelpCircle
+  Truck, FileText, Package, HelpCircle, QrCode, Camera
 } from 'lucide-react';
 import { validateVatNumber, getFiscalLabels, calculateEntityTaxBreakdown, EntityTaxBreakdown } from '../../utils/vatValidator';
 import { ProducerRegistrationForm } from './ProducerRegistrationForm';
+import { HostQrScannerModal } from './HostQrScannerModal';
+import { HostVerificationModal, VerifiedPassInfo } from '../Monetization/HostVerificationModal';
 
 interface ProducerPortalModalProps {
   isOpen: boolean;
@@ -27,6 +29,7 @@ interface ProducerPortalModalProps {
   getProducerOverride: (producerId: string) => ProducerOverride | undefined;
   onUpdateProducerTaxDetails?: (taxDetails: ProducerTaxDetails) => Promise<void> | void;
   onSelectProducerForDrawer?: (producer: Producer) => void;
+  onPassVerified?: (info: VerifiedPassInfo) => void;
 }
 
 export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
@@ -44,10 +47,23 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
   getProducerOverride,
   onUpdateProducerTaxDetails,
   onSelectProducerForDrawer,
+  onPassVerified,
 }) => {
   if (!isOpen) return null;
 
   const isProducerAuthenticated = Boolean(user && user.isProducer && user.claimedProducerId);
+
+  const [isScannerOpen, setIsScannerOpen] = useState<boolean>(false);
+  const [verifiedGuest, setVerifiedGuest] = useState<VerifiedPassInfo | null>(null);
+
+  const handlePassVerified = (info: VerifiedPassInfo) => {
+    setIsScannerOpen(false);
+    if (onPassVerified) {
+      onPassVerified(info);
+    } else {
+      setVerifiedGuest(info);
+    }
+  };
 
   // Initialize selected producer to the authenticated user's claimed estate
   const [selectedProducerId, setSelectedProducerId] = useState<string>(() => {
@@ -310,6 +326,18 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
+            {isProducerAuthenticated && (
+              <button
+                type="button"
+                onClick={() => setIsScannerOpen(true)}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-stone-950 font-bold text-xs shadow-md transition cursor-pointer active:scale-95"
+                title="Scan guest VIP QR code with device camera"
+              >
+                <Camera className="w-3.5 h-3.5 text-stone-950" />
+                <span>Scan Guest Pass</span>
+              </button>
+            )}
+
             {isProducerAuthenticated && selectedProducer && onSelectProducerForDrawer && (
               <button
                 onClick={() => {
@@ -481,8 +509,18 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
                 </div>
               </div>
 
-              {/* Live Reservation Status Switch */}
-              <div className="flex items-center gap-3 shrink-0 self-end md:self-auto">
+              {/* Live Reservation Status Switch & Quick VIP QR Scanner */}
+              <div className="flex items-center gap-2.5 shrink-0 self-end md:self-auto">
+                <button
+                  type="button"
+                  onClick={() => setIsScannerOpen(true)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/30 text-xs font-semibold transition cursor-pointer active:scale-95 shadow-sm"
+                  title="Scan visitor VIP QR code with device camera"
+                >
+                  <QrCode className="w-3.5 h-3.5 text-amber-400" />
+                  <span>Scan VIP Pass</span>
+                </button>
+
                 <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-stone-950 border border-white/10">
                   <span className={`w-2 h-2 rounded-full ${isAcceptingBookings ? 'bg-emerald-400 animate-pulse' : 'bg-stone-500'}`} />
                   <span className="text-[11px] font-semibold text-stone-300">
@@ -1281,6 +1319,20 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
         )}
 
       </div>
+
+      {/* In-Portal Camera Scanner Modal */}
+      <HostQrScannerModal
+        isOpen={isScannerOpen}
+        onClose={() => setIsScannerOpen(false)}
+        onPassVerified={handlePassVerified}
+      />
+
+      {/* Fallback Internal Verification Modal */}
+      <HostVerificationModal
+        isOpen={!!verifiedGuest}
+        onClose={() => setVerifiedGuest(null)}
+        guestInfo={verifiedGuest}
+      />
     </div>
   );
 };
