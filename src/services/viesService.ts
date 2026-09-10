@@ -55,6 +55,22 @@ export async function checkVatAgainstVies(
   } else if (trimmed.startsWith('IT')) {
     countryCode = 'IT';
     cleanVat = trimmed.replace(/^IT/, '');
+  } else if (trimmed.startsWith('GB')) {
+    countryCode = 'GB';
+    cleanVat = trimmed.replace(/^GB/, '');
+  }
+
+  // Handle Extra-EU countries (US, UK, CH, CA, AU, Worldwide)
+  const EXTRA_EU = ['US', 'GB', 'CH', 'CA', 'AU', 'OTHER'];
+  if (EXTRA_EU.includes(countryCode)) {
+    return {
+      isValid: true,
+      userError: 'VALID (Extra-EU Entity / 0% Export of Services)',
+      requestDate: new Date().toISOString(),
+      countryCode,
+      vatNumber: cleanVat,
+      source: 'offline_fallback',
+    };
   }
 
   // 1. Check for synthetic demo test numbers

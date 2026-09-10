@@ -32,6 +32,8 @@ import {
   validateVatNumber,
   validateIban,
   validateGemiNumber,
+  calculateEntityTaxBreakdown,
+  getFiscalLabels,
 } from '../../utils/vatValidator';
 import {
   saveProducerRegistrationToCloud,
@@ -650,15 +652,28 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                     setCountryCode(c);
                     if (c === 'IT' && vatNumber.startsWith('EL')) setVatNumber('IT99999999990');
                     if (c === 'GR' && vatNumber.startsWith('IT')) setVatNumber('EL999999991');
+                    if (c === 'US') setVatNumber('12-3456789');
+                    if (c === 'GB') setVatNumber('GB123456789');
+                    setViesResult(null);
                   }}
                   className="w-full bg-stone-900 border border-white/10 text-white rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
                 >
-                  <option value="GR">🇬🇷 Greece</option>
-                  <option value="IT">🇮🇹 Italy</option>
-                  <option value="FR">🇫🇷 France</option>
-                  <option value="ES">🇪🇸 Spain</option>
-                  <option value="DE">🇩🇪 Germany</option>
-                  <option value="OTHER">🇪🇺 Other EU Member State</option>
+                  <optgroup label="European Union (Domestic & VIES)">
+                    <option value="GR">🇬🇷 Greece (Domestic EU - 24% VAT)</option>
+                    <option value="IT">🇮🇹 Italy (EU B2B Reverse Charge)</option>
+                    <option value="FR">🇫🇷 France (EU B2B Reverse Charge)</option>
+                    <option value="ES">🇪🇸 Spain (EU B2B Reverse Charge)</option>
+                    <option value="DE">🇩🇪 Germany (EU B2B Reverse Charge)</option>
+                    <option value="OTHER_EU">🇪🇺 Other EU Member State (VIES)</option>
+                  </optgroup>
+                  <optgroup label="Worldwide / Extra-EU (0% Export of Services)">
+                    <option value="US">🇺🇸 United States (IRS EIN / 0% VAT)</option>
+                    <option value="GB">🇬🇧 United Kingdom (HMRC / 0% VAT)</option>
+                    <option value="CH">🇨🇭 Switzerland (UID / 0% VAT)</option>
+                    <option value="CA">🇨🇦 Canada (CRA BN / 0% VAT)</option>
+                    <option value="AU">🇦🇺 Australia (ABN / 0% VAT)</option>
+                    <option value="OTHER">🌐 Other Third Country / Worldwide</option>
+                  </optgroup>
                 </select>
               </div>
 
@@ -724,126 +739,183 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                   <option value="sole_proprietorship">Sole Proprietorship / Independent Artisan</option>
                   <option value="agricultural_coop">Agricultural Cooperative</option>
                   <option value="italian_srl">Limited Liability Company (S.r.l.)</option>
-                  <option value="other">Other Legal Entity</option>
+                  <option value="other">Other Legal Entity (US Corp / LLC / Foreign Corp)</option>
                 </select>
               </div>
 
               <div>
-                <div className="flex items-center justify-between mb-1">
-                  <label className="block text-stone-300 text-xs font-semibold">
-                    Tax Identification Number (VAT ID / Tax ID) <span className="text-rose-400">*</span>
-                  </label>
-                  {vatValidation && (
-                    <span
-                      className={`text-[10px] font-bold ${
-                        vatValidation.isValid ? 'text-emerald-400' : 'text-amber-400'
-                      }`}
-                    >
-                      {vatValidation.isValid ? '✓ Valid Check Digit' : 'Checking'}
-                    </span>
-                  )}
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="relative flex-1">
-                    <FileText className="w-4 h-4 text-stone-500 absolute left-3 top-1/2 -translate-y-1/2" />
-                    <input
-                      type="text"
-                      value={vatNumber}
-                      onChange={(e) => {
-                        setVatNumber(e.target.value.toUpperCase());
-                        setViesResult(null);
-                      }}
-                      placeholder={countryCode === 'IT' ? 'e.g. IT99999999990 (Demo Tax ID)' : 'e.g. EL999999991 (Demo Tax ID)'}
-                      className={`w-full bg-stone-900 border rounded-xl pl-9 pr-3 py-2.5 text-xs focus:outline-none placeholder:text-stone-500 transition ${
-                        vatValidation.isValid
-                          ? 'border-emerald-500/60 text-emerald-300'
-                          : vatNumber.trim()
-                          ? 'border-amber-500/60 text-amber-300'
-                          : 'border-white/10 text-white focus:border-amber-400'
-                      }`}
-                      required
-                    />
-                  </div>
-                  <button
-                    type="button"
-                    onClick={handleVerifyVies}
-                    disabled={isCheckingVies || !vatNumber.trim()}
-                    className="px-3 py-2.5 bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-amber-300 hover:text-amber-200 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer disabled:opacity-50 shrink-0"
-                    title="Validate against official European Commission VIES database"
-                  >
-                    {isCheckingVies ? (
-                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                    ) : (
-                      <Globe className="w-3.5 h-3.5" />
-                    )}
-                    <span>{isCheckingVies ? 'Querying...' : 'Verify EU VIES'}</span>
-                  </button>
-                </div>
+                {(() => {
+                  const fiscalCfg = getFiscalLabels(countryCode);
+                  const taxSummary = calculateEntityTaxBreakdown(countryCode, vatValidation.isValid);
 
-                <div className="flex items-center justify-between mt-1 text-[10px] text-stone-400">
-                  <span>Client algorithm: Modulo 11 / Luhn checksum.</span>
-                  <span className="text-stone-500">Live API: ec.europa.eu/vies</span>
-                </div>
-
-                {/* Live VIES Verification Result Card */}
-                {viesResult && (
-                  <div
-                    className={`mt-2.5 p-3 rounded-xl border text-xs space-y-1.5 animate-in fade-in ${
-                      viesResult.isValid
-                        ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-200'
-                        : 'bg-rose-500/10 border-rose-500/40 text-rose-300'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between font-semibold">
-                      <div className="flex items-center gap-1.5">
-                        {viesResult.isValid ? (
-                          <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                        ) : (
-                          <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
+                  return (
+                    <>
+                      <div className="flex items-center justify-between mb-1">
+                        <label className="block text-stone-300 text-xs font-semibold">
+                          {fiscalCfg.fullVatLabel} <span className="text-rose-400">*</span>
+                        </label>
+                        {vatValidation && (
+                          <span
+                            className={`text-[10px] font-bold ${
+                              vatValidation.isValid ? 'text-emerald-400' : 'text-amber-400'
+                            }`}
+                          >
+                            {vatValidation.isValid ? '✓ Valid Format' : 'Checking'}
+                          </span>
                         )}
-                        <span>
-                          {viesResult.isValid
-                            ? 'Official EU Registry: Active & Valid'
-                            : 'VIES Registry: Inactive or Invalid'}
-                        </span>
                       </div>
-                      <span className="text-[10px] font-mono opacity-70">
-                        {viesResult.source === 'eu_vies_live'
-                          ? 'Live VIES REST API'
-                          : viesResult.source === 'synthetic_demo_registry'
-                          ? 'Demo Sandbox'
-                          : 'Algorithmic Validated'}
-                      </span>
-                    </div>
+                      <div className="flex items-center gap-2">
+                        <div className="relative flex-1">
+                          <FileText className="w-4 h-4 text-stone-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                          <input
+                            type="text"
+                            value={vatNumber}
+                            onChange={(e) => {
+                              setVatNumber(e.target.value.toUpperCase());
+                              setViesResult(null);
+                            }}
+                            placeholder={fiscalCfg.placeholder}
+                            className={`w-full bg-stone-900 border rounded-xl pl-9 pr-3 py-2.5 text-xs focus:outline-none placeholder:text-stone-500 transition ${
+                              vatValidation.isValid
+                                ? 'border-emerald-500/60 text-emerald-300'
+                                : vatNumber.trim()
+                                ? 'border-amber-500/60 text-amber-300'
+                                : 'border-white/10 text-white focus:border-amber-400'
+                            }`}
+                            required
+                          />
+                        </div>
+                        <button
+                          type="button"
+                          onClick={handleVerifyVies}
+                          disabled={isCheckingVies || !vatNumber.trim()}
+                          className="px-3 py-2.5 bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-amber-300 hover:text-amber-200 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer disabled:opacity-50 shrink-0"
+                          title={fiscalCfg.isEuMember ? "Validate against official European Commission VIES database" : "Validate Tax ID format"}
+                        >
+                          {isCheckingVies ? (
+                            <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                          ) : (
+                            <Globe className="w-3.5 h-3.5" />
+                          )}
+                          <span>
+                            {fiscalCfg.isEuMember
+                              ? (isCheckingVies ? 'Querying...' : 'Verify EU VIES')
+                              : (isCheckingVies ? 'Checking...' : 'Validate Tax ID')}
+                          </span>
+                        </button>
+                      </div>
 
-                    {viesResult.name && (
-                      <div className="text-[11px] pt-1">
-                        <span className="text-stone-400">Official Registered Name: </span>
-                        <strong className="text-white">{viesResult.name}</strong>
+                      <div className="flex items-center justify-between mt-1 text-[10px] text-stone-400">
+                        <span>{fiscalCfg.formatHint}</span>
+                        <span className="text-stone-500">{fiscalCfg.authoritiesNote}</span>
                       </div>
-                    )}
-                    {viesResult.address && (
-                      <div className="text-[11px]">
-                        <span className="text-stone-400">Official Tax Address: </span>
-                        <span className="text-stone-300">{viesResult.address}</span>
-                      </div>
-                    )}
 
-                    {viesResult.isValid && viesResult.name && (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          if (viesResult.name) setLegalBusinessName(viesResult.name);
-                          if (viesResult.address) setStreetAddress(viesResult.address);
-                        }}
-                        className="mt-1 text-[10px] px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 font-semibold flex items-center gap-1 transition cursor-pointer"
-                      >
-                        <Sparkles className="w-3 h-3" />
-                        <span>Auto-fill Official Business Name & Address</span>
-                      </button>
-                    )}
-                  </div>
-                )}
+                      {/* Live VIES Verification Result Card */}
+                      {viesResult && (
+                        <div
+                          className={`mt-2.5 p-3 rounded-xl border text-xs space-y-1.5 animate-in fade-in ${
+                            viesResult.isValid
+                              ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-200'
+                              : 'bg-rose-500/10 border-rose-500/40 text-rose-300'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between font-semibold">
+                            <div className="flex items-center gap-1.5">
+                              {viesResult.isValid ? (
+                                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                              ) : (
+                                <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
+                              )}
+                              <span>
+                                {viesResult.isValid
+                                  ? 'Official Registry: Active & Valid'
+                                  : 'Tax Registry: Inactive or Invalid'}
+                              </span>
+                            </div>
+                            <span className="text-[10px] font-mono opacity-70">
+                              {viesResult.source === 'eu_vies_live'
+                                ? 'Live VIES REST API'
+                                : viesResult.source === 'synthetic_demo_registry'
+                                ? 'Demo Sandbox'
+                                : 'Algorithmic Validated'}
+                            </span>
+                          </div>
+
+                          {viesResult.name && (
+                            <div className="text-[11px] pt-1">
+                              <span className="text-stone-400">Registered Name:</span>{' '}
+                              <strong className="text-white">{viesResult.name}</strong>
+                            </div>
+                          )}
+
+                          {viesResult.address && (
+                            <div className="text-[11px]">
+                              <span className="text-stone-400">Registered Address:</span>{' '}
+                              <span className="text-stone-300">{viesResult.address}</span>
+                            </div>
+                          )}
+
+                          {(viesResult.name || viesResult.address) && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (viesResult.name) setLegalBusinessName(viesResult.name);
+                                if (viesResult.address) setStreetAddress(viesResult.address);
+                              }}
+                              className="mt-1 text-[10px] px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 font-semibold flex items-center gap-1 transition cursor-pointer"
+                            >
+                              <Sparkles className="w-3 h-3" />
+                              <span>Auto-fill Official Business Name & Address</span>
+                            </button>
+                          )}
+                        </div>
+                      )}
+
+                      {/* Live Worldwide Entity Tax & Invoicing Summary Card */}
+                      <div className="mt-3 p-3.5 rounded-2xl bg-stone-950/80 border border-amber-500/30 space-y-2 text-xs">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-1.5 font-bold text-amber-300">
+                            <span>{taxSummary.countryFlag}</span>
+                            <span>{taxSummary.regionName}</span>
+                          </div>
+                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/30 font-mono font-bold">
+                            {taxSummary.regionType === 'domestic_gr' ? '24% Greek VAT' : '0% VAT Rate'}
+                          </span>
+                        </div>
+
+                        <div className="grid grid-cols-3 gap-2 text-[11px] p-2 rounded-xl bg-stone-900 border border-white/5 font-mono">
+                          <div>
+                            <div className="text-[9px] text-stone-400">Net Fee:</div>
+                            <div className="text-white font-bold">{taxSummary.currencySymbol}{taxSummary.basePrice.toFixed(2)}</div>
+                          </div>
+                          <div>
+                            <div className="text-[9px] text-stone-400">VAT ({taxSummary.vatRatePercent}%):</div>
+                            <div className={taxSummary.vatAmount > 0 ? 'text-amber-400 font-bold' : 'text-emerald-400 font-bold'}>
+                              {taxSummary.vatAmount > 0 ? `+${taxSummary.currencySymbol}${taxSummary.vatAmount.toFixed(2)}` : '€0.00 (Exempt)'}
+                            </div>
+                          </div>
+                          <div>
+                            <div className="text-[9px] text-stone-400">Total You Pay:</div>
+                            <div className="text-amber-300 font-bold">{taxSummary.currencySymbol}{taxSummary.totalPrice.toFixed(2)} {taxSummary.currency}</div>
+                          </div>
+                        </div>
+
+                        <div className="text-[10px] text-stone-300 space-y-1">
+                          <div className="flex items-center gap-1 text-emerald-400 font-semibold">
+                            <ShieldCheck className="w-3.5 h-3.5 shrink-0" />
+                            <span>100% Tax-Deductible Business Expense</span>
+                          </div>
+                          <p className="text-stone-400 leading-relaxed">
+                            {taxSummary.accountantGuidance}
+                          </p>
+                          <div className="text-[9px] text-stone-500 font-mono">
+                            Legal Basis: {taxSummary.legalBasis} · Invoice: {taxSummary.invoiceType}
+                          </div>
+                        </div>
+                      </div>
+                    </>
+                  );
+                })()}
               </div>
 
               <div>

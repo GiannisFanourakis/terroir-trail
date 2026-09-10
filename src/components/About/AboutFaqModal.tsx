@@ -167,9 +167,9 @@ const FAQ_DATA: FaqItem[] = [
     id: 'host-pro-tax-deductible',
     category: 'producers',
     categoryLabel: 'For Estate Hosts',
-    question: 'Is the Verified Host Pro subscription tax-deductible for my estate?',
-    answer: 'Yes, 100%. The TerroirTrail Verified Host Pro subscription (€199/year) is fully deductible as a digital advertising and promotional business expense. Through our automated Elorus billing integration, an official Greek Service Invoice (ΤΠΥ - Τιμολόγιο Παροχής Υπηρεσιών) is automatically generated and electronically transmitted to the AADE myDATA tax authority, complete with an official QR verification code and unique MARK transmission code for seamless accounting compliance.',
-    highlight: '100% tax-deductible with official AADE myDATA electronic invoice (ΤΠΥ) with QR & MARK.',
+    question: 'Is the Verified Host Pro subscription tax-deductible worldwide (Greece, EU, US, UK)?',
+    answer: 'Yes, 100%. The TerroirTrail Verified Host Pro subscription (€199/year or USD/GBP equivalent) is fully tax-deductible as an operating business advertising and software expense: (1) Greek entities receive an official Service Invoice (ΤΠΥ) transmitted to AADE myDATA with QR & MARK; (2) EU businesses with a valid VIES VAT ID receive an Intra-Community B2B invoice with 0% VAT under the Reverse Charge mechanism; (3) US, UK, and worldwide businesses receive an international B2B export commercial invoice with 0% VAT (out-of-scope under Article 14 / Article 44) and IRS W-8BEN-E compliance certification upon request.',
+    highlight: '100% tax-deductible worldwide with AADE myDATA, EU VIES Reverse Charge, and US W-8BEN-E compliance.',
   },
   {
     id: 'how-payments-processed',

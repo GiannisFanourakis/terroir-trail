@@ -9,7 +9,7 @@ import {
   TrendingUp, DollarSign, Percent, Eye, Compass, Bell, CheckCheck, MapPin,
   Truck, FileText, Package, HelpCircle
 } from 'lucide-react';
-import { validateVatNumber, getFiscalLabels } from '../../utils/vatValidator';
+import { validateVatNumber, getFiscalLabels, calculateEntityTaxBreakdown, EntityTaxBreakdown } from '../../utils/vatValidator';
 import { ProducerRegistrationForm } from './ProducerRegistrationForm';
 
 interface ProducerPortalModalProps {
@@ -102,6 +102,16 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
 
   const portalCountryHint = (selectedProducer?.country === 'Italy' || selectedProducer?.destination === 'tuscany') ? 'IT' : 'GR';
   const portalVatValidation = taxVatNumber.trim() ? validateVatNumber(taxVatNumber.trim(), portalCountryHint) : null;
+
+  const [selectedEntityRegion, setSelectedEntityRegion] = useState<'GR' | 'IT' | 'US' | 'GB' | 'OTHER'>(() => {
+    if (selectedProducer?.country === 'Italy' || selectedProducer?.destination === 'tuscany') return 'IT';
+    return 'GR';
+  });
+
+  const entityTaxBreakdown: EntityTaxBreakdown = calculateEntityTaxBreakdown(
+    selectedEntityRegion,
+    portalVatValidation ? portalVatValidation.isValid : true
+  );
 
   // Sync tax state when user or selectedProducer changes
   useEffect(() => {
@@ -1082,9 +1092,12 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
                         </div>
                         <div className="text-right">
                           <span className="font-serif-title text-amber-300 font-bold text-sm">
-                            €199<span className="text-[10px] text-stone-400">/year</span>
+                            {entityTaxBreakdown.currencySymbol}{entityTaxBreakdown.totalPrice.toFixed(2)}
+                            <span className="text-[10px] text-stone-400">/year</span>
                           </span>
-                          <div className="text-[9px] text-stone-400">(μόλις ~€16.50/mo)</div>
+                          <div className="text-[9px] text-stone-400">
+                            (~{entityTaxBreakdown.currencySymbol}{(entityTaxBreakdown.totalPrice / 12).toFixed(2)}/mo)
+                          </div>
                         </div>
                       </div>
                       <ul className="text-[11px] text-stone-300 space-y-1.5 list-disc list-inside">
@@ -1093,6 +1106,103 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
                         <li><strong className="text-amber-300">Direct Bottle Shop</strong> button on mobile drawer</li>
                         <li>Advanced traveler demographic analytics</li>
                       </ul>
+
+                      {/* DEDICATED WORLDWIDE ENTITY JURISDICTION SELECTOR */}
+                      <div className="mt-3 pt-3 border-t border-white/10 space-y-2">
+                        <div className="flex items-center justify-between text-[11px]">
+                          <span className="font-bold text-stone-200">Business Tax Jurisdiction:</span>
+                          <span className="text-[10px] text-amber-400 font-mono">Worldwide Entities</span>
+                        </div>
+                        <div className="grid grid-cols-5 gap-1 text-[10px] font-semibold">
+                          <button
+                            type="button"
+                            onClick={() => setSelectedEntityRegion('GR')}
+                            className={`px-1.5 py-1.5 rounded-lg border transition text-center cursor-pointer ${
+                              selectedEntityRegion === 'GR'
+                                ? 'bg-amber-500/25 border-amber-400 text-amber-300 font-bold'
+                                : 'bg-stone-950 border-white/10 text-stone-400 hover:text-stone-200'
+                            }`}
+                          >
+                            🇬🇷 Greece
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setSelectedEntityRegion('IT')}
+                            className={`px-1.5 py-1.5 rounded-lg border transition text-center cursor-pointer ${
+                              selectedEntityRegion === 'IT'
+                                ? 'bg-amber-500/25 border-amber-400 text-amber-300 font-bold'
+                                : 'bg-stone-950 border-white/10 text-stone-400 hover:text-stone-200'
+                            }`}
+                          >
+                            🇪🇺 EU B2B
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setSelectedEntityRegion('US')}
+                            className={`px-1.5 py-1.5 rounded-lg border transition text-center cursor-pointer ${
+                              selectedEntityRegion === 'US'
+                                ? 'bg-amber-500/25 border-amber-400 text-amber-300 font-bold'
+                                : 'bg-stone-950 border-white/10 text-stone-400 hover:text-stone-200'
+                            }`}
+                          >
+                            🇺🇸 USA
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setSelectedEntityRegion('GB')}
+                            className={`px-1.5 py-1.5 rounded-lg border transition text-center cursor-pointer ${
+                              selectedEntityRegion === 'GB'
+                                ? 'bg-amber-500/25 border-amber-400 text-amber-300 font-bold'
+                                : 'bg-stone-950 border-white/10 text-stone-400 hover:text-stone-200'
+                            }`}
+                          >
+                            🇬🇧 UK
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setSelectedEntityRegion('OTHER')}
+                            className={`px-1.5 py-1.5 rounded-lg border transition text-center cursor-pointer ${
+                              selectedEntityRegion === 'OTHER'
+                                ? 'bg-amber-500/25 border-amber-400 text-amber-300 font-bold'
+                                : 'bg-stone-950 border-white/10 text-stone-400 hover:text-stone-200'
+                            }`}
+                          >
+                            🌐 Global
+                          </button>
+                        </div>
+
+                        {/* Dedicated Entity Tax & Compliance Breakdown Box */}
+                        <div className="p-2.5 rounded-xl bg-stone-950/90 border border-white/10 text-[11px] space-y-1.5 text-left">
+                          <div className="flex items-center justify-between font-mono text-[10px]">
+                            <span className="text-stone-400">Net Host Pro Fee:</span>
+                            <span className="text-stone-200 font-bold">{entityTaxBreakdown.currencySymbol}{entityTaxBreakdown.basePrice.toFixed(2)}</span>
+                          </div>
+                          <div className="flex items-center justify-between font-mono text-[10px]">
+                            <span className="text-stone-400">VAT / Sales Tax ({entityTaxBreakdown.vatRatePercent}%):</span>
+                            <span className={entityTaxBreakdown.vatAmount > 0 ? 'text-amber-400 font-bold' : 'text-emerald-400 font-bold'}>
+                              {entityTaxBreakdown.vatAmount > 0
+                                ? `+${entityTaxBreakdown.currencySymbol}${entityTaxBreakdown.vatAmount.toFixed(2)} (24% Greek VAT)`
+                                : '€0.00 (Exempt / Reverse Charge)'}
+                            </span>
+                          </div>
+                          <div className="flex items-center justify-between font-mono text-xs pt-1 border-t border-white/10 font-bold">
+                            <span className="text-white">Amount You Pay:</span>
+                            <span className="text-amber-300">{entityTaxBreakdown.currencySymbol}{entityTaxBreakdown.totalPrice.toFixed(2)} {entityTaxBreakdown.currency}</span>
+                          </div>
+                          <div className="text-[10px] text-stone-300 pt-1 border-t border-white/5 space-y-1">
+                            <div className="flex items-center gap-1.5 text-emerald-400 font-semibold">
+                              <ShieldCheck className="w-3.5 h-3.5 shrink-0" />
+                              <span>100% Tax-Deductible Business Expense</span>
+                            </div>
+                            <p className="text-stone-400 leading-relaxed text-[10px]">
+                              {entityTaxBreakdown.accountantGuidance}
+                            </p>
+                            <div className="text-[9px] text-stone-500 font-mono">
+                              Invoice: {entityTaxBreakdown.invoiceType} · Authority: {entityTaxBreakdown.reportingAuthority}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
 
                       <button
                         type="button"
@@ -1123,19 +1233,8 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
                         }`}
                       >
                         <Crown className="w-3.5 h-3.5" />
-                        <span>{isProTier ? '✓ Pro Active (Click to Pause)' : 'Upgrade to Host Pro (€199/yr)'}</span>
+                        <span>{isProTier ? '✓ Pro Active (Click to Pause)' : `Upgrade to Host Pro (${entityTaxBreakdown.currencySymbol}${entityTaxBreakdown.totalPrice.toFixed(2)}/yr)`}</span>
                       </button>
-
-                      {/* Greek Fiscal / myDATA Tax Deduction Badge */}
-                      <div className="mt-3 p-2.5 rounded-xl bg-stone-950/80 border border-emerald-500/30 text-[11px] space-y-1 text-left">
-                        <div className="flex items-center gap-1.5 text-emerald-400 font-semibold text-[11px]">
-                          <ShieldCheck className="w-3.5 h-3.5 shrink-0" />
-                          <span>100% Εκπιπτόμενη Επαγγελματική Δαπάνη</span>
-                        </div>
-                        <p className="text-stone-300 text-[10px] leading-relaxed">
-                          Εκδίδεται επίσημο <strong>Τιμολόγιο Παροχής Υπηρεσιών (ΤΠΥ)</strong> με QR Code & MARK διαβιβασμένο στην ΑΑΔΕ (myDATA). Η πληρωμή μέσω Stripe με εταιρική κάρτα αναγνωρίζεται απόλυτα από τον λογιστή σας ως έξοδο προβολής/διαφήμισης.
-                        </p>
-                      </div>
                     </div>
                   </div>
                 </div>
