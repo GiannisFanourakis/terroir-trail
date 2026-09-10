@@ -159,3 +159,61 @@ export function validateVatNumber(vatInput: string, countryHint: 'GR' | 'IT' | s
     error: isGenericEuValid ? undefined : 'Invalid EU VAT format',
   };
 }
+
+/**
+ * Validates an International Bank Account Number (IBAN)
+ * Supports Greek (GR 27 chars) and Italian (IT 27 chars) formats
+ */
+export function validateIban(input: string): { isValid: boolean; formatted: string; error?: string } {
+  if (!input) {
+    return { isValid: false, formatted: '', error: 'IBAN cannot be empty' };
+  }
+
+  const clean = input.trim().toUpperCase().replace(/[^A-Z0-9]/g, '');
+
+  if (clean.length < 15 || clean.length > 34) {
+    return { isValid: false, formatted: clean, error: 'IBAN length must be between 15 and 34 characters' };
+  }
+
+  if (clean.startsWith('GR') && clean.length !== 27) {
+    return { isValid: false, formatted: clean, error: 'Greek IBAN must be exactly 27 characters (GR + 25 digits)' };
+  }
+
+  if (clean.startsWith('IT') && clean.length !== 27) {
+    return { isValid: false, formatted: clean, error: 'Italian IBAN must be exactly 27 characters (IT + 25 alphanumeric)' };
+  }
+
+  // Format with spaces in groups of 4: GR96 0110 1250 ...
+  const formatted = clean.match(/.{1,4}/g)?.join(' ') || clean;
+
+  return {
+    isValid: true,
+    formatted,
+  };
+}
+
+/**
+ * Validates Greek GEMI (Γ.Ε.ΜΗ.) number (typically 12 digits) or Italian REA number
+ */
+export function validateGemiNumber(input: string, country: 'GR' | 'IT' | string = 'GR'): { isValid: boolean; formatted: string; error?: string } {
+  const clean = input.trim().toUpperCase().replace(/[\s-]/g, '');
+  if (!clean) {
+    return { isValid: false, formatted: '', error: 'Registry number cannot be empty' };
+  }
+
+  if (country === 'GR') {
+    const isDigits = /^\d{8,12}$/.test(clean);
+    return {
+      isValid: isDigits,
+      formatted: clean,
+      error: isDigits ? undefined : 'Greek Γ.Ε.ΜΗ. number must be between 8 and 12 digits',
+    };
+  }
+
+  return {
+    isValid: clean.length >= 5,
+    formatted: clean,
+    error: clean.length >= 5 ? undefined : 'Italian REA number must have at least 5 characters',
+  };
+}
+

@@ -10,6 +10,7 @@ import {
   Truck, FileText, Package, HelpCircle
 } from 'lucide-react';
 import { validateVatNumber } from '../../utils/vatValidator';
+import { ProducerRegistrationForm } from './ProducerRegistrationForm';
 
 interface ProducerPortalModalProps {
   isOpen: boolean;
@@ -1110,182 +1111,36 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
               {/* TAB 6: SHIPPING & FISCAL LOGISTICS */}
               {activeTab === 'shipping' && (
                 <div className="space-y-4">
-                  {/* Fiscal Compliance & Verification Status Banner */}
-                  <div className="p-4 rounded-2xl bg-gradient-to-br from-sky-500/15 via-stone-900 to-stone-900 border border-sky-500/30 space-y-2">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <ShieldCheck className="w-4 h-4 text-sky-400" />
-                        <span className="font-bold text-white text-xs">
-                          EU Fiscal & Shipping Compliance (ΑΦΜ / P.IVA)
-                        </span>
-                      </div>
-                      <span className={`text-[9px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${
-                        user?.taxDetails?.isVatVerified
-                          ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
-                          : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
-                      }`}>
-                        {user?.taxDetails?.isVatVerified ? '✓ Verified Tax Entity' : 'Pending Verification'}
-                      </span>
-                    </div>
+                  <ProducerRegistrationForm
+                    initialProducerId={selectedProducer?.id}
+                    userId={user?.id}
+                    producersList={producers}
+                    onSaved={(record) => {
+                      setTaxVatNumber(record.vatNumber);
+                      setTaxLegalName(record.legalBusinessName);
+                      setTaxOffice(record.taxOffice);
+                      setTaxAddress(`${record.logistics.streetAddress}, ${record.logistics.cityOrVillage}, ${record.logistics.postalCode}`);
+                      setTaxPhone(record.logistics.dispatchPhone);
+                      setTaxEori(record.eoriNumber || '');
 
-                    <p className="text-[11px] text-stone-300 leading-relaxed">
-                      Your registered Tax ID (ΑΦΜ for Greece, Partita IVA for Italy) is required under <strong>EU DAC7 regulations</strong> and cross-border alcohol excise laws. It enables <strong>0% booking commission invoicing</strong> and unlocks direct bottle & artisan box parcel shipping with transport carriers (DHL/FedEx/Courier).
-                    </p>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1 text-[11px]">
-                      <div className="p-2.5 rounded-xl bg-stone-950/80 border border-white/5">
-                        <span className="text-[10px] text-stone-400 block font-semibold">Registered Tax ID:</span>
-                        <span className="font-bold text-white text-xs">{taxVatNumber || 'Not specified'}</span>
-                      </div>
-                      <div className="p-2.5 rounded-xl bg-stone-950/80 border border-white/5">
-                        <span className="text-[10px] text-stone-400 block font-semibold">Invoicing Status:</span>
-                        <span className="font-bold text-emerald-400 text-xs">
-                          {portalCountryHint === 'GR' ? '24% Greek VAT / myDATA' : 'EU VIES Reverse Charge (0%)'}
-                        </span>
-                      </div>
-                      <div className="p-2.5 rounded-xl bg-stone-950/80 border border-white/5">
-                        <span className="text-[10px] text-stone-400 block font-semibold">Parcel Dispatch:</span>
-                        <span className="font-bold text-sky-400 text-xs">Courier Dispatch Ready</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {taxSaveSuccess && (
-                    <div className="p-3 rounded-xl bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-xs flex items-center gap-2 animate-in fade-in">
-                      <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-400" />
-                      <span>Fiscal credentials and cellar dispatch address successfully saved!</span>
-                    </div>
-                  )}
-
-                  {taxError && (
-                    <div className="p-3 rounded-xl bg-rose-500/20 border border-rose-500/30 text-rose-300 text-xs flex items-center gap-2">
-                      <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
-                      <span>{taxError}</span>
-                    </div>
-                  )}
-
-                  {/* Fiscal & Shipping Edit Form */}
-                  <form onSubmit={handleSaveTaxDetails} className="space-y-3.5">
-                    <div className="p-4 rounded-2xl bg-stone-900 border border-white/10 space-y-3">
-                      <span className="font-bold text-white text-xs block">
-                        Estate Fiscal Credentials
-                      </span>
-
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <div>
-                          <div className="flex items-center justify-between mb-1">
-                            <label className="block text-stone-300 text-xs font-semibold">
-                              {portalCountryHint === 'IT' ? 'Partita IVA (P.IVA)' : 'Tax Identification Number (ΑΦΜ)'}
-                            </label>
-                            {portalVatValidation && (
-                              <span className={`text-[10px] font-bold ${portalVatValidation.isValid ? 'text-emerald-400' : 'text-amber-400'}`}>
-                                {portalVatValidation.isValid ? '✓ Valid Check Digit' : 'Check Digits'}
-                              </span>
-                            )}
-                          </div>
-                          <div className="relative">
-                            <FileText className="w-4 h-4 text-stone-500 absolute left-3 top-1/2 -translate-y-1/2" />
-                            <input
-                              type="text"
-                              value={taxVatNumber}
-                              onChange={(e) => setTaxVatNumber(e.target.value.toUpperCase())}
-                              placeholder={portalCountryHint === 'IT' ? 'e.g. IT99999999990' : 'e.g. EL999999991'}
-                              className="w-full bg-stone-950 border border-white/10 text-white rounded-xl pl-9 pr-3 py-2.5 text-xs focus:outline-none focus:border-amber-400 transition"
-                            />
-                          </div>
-                        </div>
-
-                        <div>
-                          <label className="block text-stone-300 text-xs font-semibold mb-1">
-                            Legal Company Name (Επωνυμία)
-                          </label>
-                          <input
-                            type="text"
-                            value={taxLegalName}
-                            onChange={(e) => setTaxLegalName(e.target.value)}
-                            placeholder="Official Registered Business Name"
-                            className="w-full bg-stone-950 border border-white/10 text-white rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400 transition"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <div>
-                          <label className="block text-stone-300 text-xs font-semibold mb-1">
-                            Tax Authority Office (Δ.Ο.Υ.)
-                          </label>
-                          <input
-                            type="text"
-                            value={taxOffice}
-                            onChange={(e) => setTaxOffice(e.target.value)}
-                            placeholder={portalCountryHint === 'IT' ? 'e.g. Ufficio di Siena' : 'e.g. Δ.Ο.Υ. Ηρακλείου'}
-                            className="w-full bg-stone-950 border border-white/10 text-white rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400 transition"
-                          />
-                        </div>
-
-                        <div>
-                          <label className="block text-stone-300 text-xs font-semibold mb-1">
-                            EU Customs EORI Number (Optional for International Export)
-                          </label>
-                          <input
-                            type="text"
-                            value={taxEori}
-                            onChange={(e) => setTaxEori(e.target.value.toUpperCase())}
-                            placeholder="e.g. EL999999991"
-                            className="w-full bg-stone-950 border border-white/10 text-white rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400 transition"
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Logistics & Cellar Dispatch Pickup Address */}
-                    <div className="p-4 rounded-2xl bg-stone-900 border border-white/10 space-y-3">
-                      <div className="flex items-center gap-2">
-                        <Truck className="w-4 h-4 text-amber-400" />
-                        <span className="font-bold text-white text-xs">
-                          Estate Dispatch & Courier Pickup Address
-                        </span>
-                      </div>
-
-                      <p className="text-[11px] text-stone-400 leading-relaxed">
-                        Where freight transport trucks and couriers (DHL / FedEx / TNT) arrive to pick up customer order shipments and curated Terroir Trail artisan boxes.
-                      </p>
-
-                      <div>
-                        <label className="block text-stone-300 text-xs font-semibold mb-1">
-                          Full Dispatch Street Address & Postal Code
-                        </label>
-                        <input
-                          type="text"
-                          value={taxAddress}
-                          onChange={(e) => setTaxAddress(e.target.value)}
-                          placeholder="e.g. Melesses, Peza, Heraklion, GR-70100, Crete"
-                          className="w-full bg-stone-950 border border-white/10 text-white rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400 transition"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-stone-300 text-xs font-semibold mb-1">
-                          Estate Dispatch Logistics Phone (Driver Contact)
-                        </label>
-                        <input
-                          type="tel"
-                          value={taxPhone}
-                          onChange={(e) => setTaxPhone(e.target.value)}
-                          placeholder="+30 2810 000000"
-                          className="w-full bg-stone-950 border border-white/10 text-white rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400 transition"
-                        />
-                      </div>
-                    </div>
-
-                    <button
-                      type="submit"
-                      className="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs shadow-lg transition active:scale-98 flex items-center justify-center gap-2 cursor-pointer"
-                    >
-                      <Save className="w-4 h-4" />
-                      <span>Save Fiscal & Shipping Logistics</span>
-                    </button>
-                  </form>
+                      if (onUpdateProducerTaxDetails) {
+                        onUpdateProducerTaxDetails({
+                          vatNumber: record.vatNumber,
+                          legalBusinessName: record.legalBusinessName,
+                          taxOffice: record.taxOffice,
+                          registeredAddress: `${record.logistics.streetAddress}, ${record.logistics.cityOrVillage}, ${record.logistics.postalCode}`,
+                          dispatchContactPhone: record.logistics.dispatchPhone,
+                          countryCode: record.countryCode,
+                          isVatVerified: record.isVatVerified,
+                          vatVerificationDate: record.vatVerificationDate,
+                          eoriNumber: record.eoriNumber,
+                          gemiNumber: record.permits?.gemiNumber,
+                          iban: record.banking?.iban,
+                          registrationRecord: record,
+                        });
+                      }
+                    }}
+                  />
                 </div>
               )}
 

@@ -8,6 +8,89 @@ export type UserRole = 'traveler' | 'producer';
 
 export type HostClaimStatus = 'unclaimed' | 'pending_verification' | 'verified_host';
 
+export interface LogisticsPickupDetails {
+  facilityName: string;
+  streetAddress: string;
+  postalCode: string;
+  cityOrVillage: string;
+  region: string;
+  countryCode: 'GR' | 'IT' | string;
+  accessType: 'standard_courier_van' | 'large_truck_ramp' | 'narrow_street_van_only' | 'forklift_available';
+  contactPersonName: string;
+  dispatchPhone: string;
+  dispatchEmail: string;
+  pickupTimeWindow: string; // e.g. "09:00 - 15:00 Mon-Fri"
+  loadingNotes?: string;
+}
+
+export interface PackagingCapabilities {
+  supportsWineBottles?: boolean;       // Standard 0.75L wine bottles (1, 3, 6, 12 cartons)
+  supportsBeerBottles?: boolean;       // 0.33L / 0.5L craft beer bottles
+  supportsColdChainCheese?: boolean;   // Vacuum-sealed with thermal liner + ice packs
+  supportsHoneyJars?: boolean;         // Break-resistant air-cushioned jar packaging
+  supportsOliveOilTins?: boolean;      // Metal canisters / dark glass bottles
+  maxDailyParcels: number;             // e.g. 25 parcels / day
+  dispatchLeadTime: 'same_day' | 'next_day' | 'two_days';
+}
+
+export interface BankingDetails {
+  accountHolderName: string;
+  bankName: string;
+  iban: string;
+  swiftBic: string;
+  payoutCurrency: 'EUR' | string;
+}
+
+export interface RegulatoryPermits {
+  gemiNumber?: string;                 // Greek Commercial Registry (Γ.Ε.ΜΗ.) or Italian REA
+  excisePermitNumber?: string;         // Alcohol Warehouse / Excise Code (Άδεια Ειδικού Καθεστώτος)
+  sanitaryPermitNumber?: string;       // Food & Health Safety Permit (ΕΦΕΤ / HACCP)
+  organicCertificationBody?: string;   // e.g. BIO Hellas, DIO, ICEA
+  organicCertNumber?: string;          // Certification serial
+}
+
+export interface ProducerRegistrationRecord {
+  id: string;                          // Primary key, matches producerId
+  producerId: string;                  // e.g. 'domaine-paterianakis'
+  userId?: string;                     // Claiming user profile ID
+  tradeBrandName: string;              // e.g. 'Domaine Paterianakis'
+  producerCategory: 'winery' | 'brewery' | 'distillery' | 'cheese_dairy' | 'apiary' | 'olive_oil';
+  
+  // 1. Fiscal & Legal
+  legalBusinessName: string;           // Επωνυμία
+  legalEntityType: 'sole_proprietorship' | 'general_partnership_oe' | 'limited_partnership_ee' | 'private_company_ike' | 'corporation_ae' | 'agricultural_coop' | 'italian_srl' | 'other';
+  vatNumber: string;                   // ΑΦΜ or Partita IVA
+  taxOffice: string;                   // Δ.Ο.Υ.
+  countryCode: 'GR' | 'IT' | string;
+  isVatVerified: boolean;
+  vatVerificationDate?: string;
+  eoriNumber?: string;                 // Customs EORI
+  
+  // 2. Logistics & Courier Pickup
+  logistics: LogisticsPickupDetails;
+  
+  // 3. Packaging & Box Capabilities
+  packaging: PackagingCapabilities;
+  
+  // 4. Banking & Direct Payouts
+  banking: BankingDetails;
+  
+  // 5. Licenses & Certifications
+  permits: RegulatoryPermits;
+  
+  // 6. Representative & Audit
+  representativeName: string;
+  representativeRole: string;
+  officialEmail: string;
+  websiteStoreUrl?: string;
+  
+  status: 'draft' | 'pending_verification' | 'verified_active';
+  submittedAt: string;
+  updatedAt: string;
+  notesFromProducer?: string;
+  termsAccepted: boolean;
+}
+
 export interface ProducerTaxDetails {
   vatNumber: string;               // e.g. "EL999999991" (Demo Greek ΑΦΜ) or "IT99999999990" (Demo Partita IVA)
   legalBusinessName: string;       // Official registered business entity name (Επωνυμία)
@@ -18,6 +101,9 @@ export interface ProducerTaxDetails {
   isVatVerified: boolean;
   vatVerificationDate?: string;
   eoriNumber?: string;             // EU Customs EORI for international alcohol shipping
+  gemiNumber?: string;
+  iban?: string;
+  registrationRecord?: Partial<ProducerRegistrationRecord>;
 }
 
 export interface UserProfile {

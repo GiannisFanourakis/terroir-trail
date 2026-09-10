@@ -15,7 +15,7 @@ import {
   Firestore,
 } from 'firebase/firestore';
 import { TastingBooking, ProducerOverride } from '../types/booking';
-import { UserProfile } from '../types/auth';
+import { UserProfile, ProducerRegistrationRecord } from '../types/auth';
 
 const getEnv = (key: string): string => {
   if (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env[key]) {
@@ -427,4 +427,345 @@ export const getLocalProducerOverrides = (): Record<string, ProducerOverride> =>
   }
 };
 
+// =========================================================
+// SCENARIO C: Producer Fiscal & Logistics Database Registry
+// =========================================================
+
+const PRODUCER_REGISTRATIONS_KEY = 'terroir_trail_producer_registrations';
+
+export const SEEDED_PRODUCER_REGISTRATIONS: Record<string, ProducerRegistrationRecord> = {
+  'domaine-paterianakis': {
+    id: 'domaine-paterianakis',
+    producerId: 'domaine-paterianakis',
+    userId: 'producer_fake_winery',
+    tradeBrandName: 'Domaine Paterianakis',
+    producerCategory: 'winery',
+    legalBusinessName: 'ΚΤΗΜΑ ΠΑΤΕΡΙΑΝΑΚΗ Ο.Ε. (DEMO)',
+    legalEntityType: 'general_partnership_oe',
+    vatNumber: 'EL999999991',
+    taxOffice: 'Δ.Ο.Υ. Ηρακλείου',
+    countryCode: 'GR',
+    isVatVerified: true,
+    vatVerificationDate: '2026-01-15',
+    eoriNumber: 'EL999999991',
+    logistics: {
+      facilityName: 'Domaine Paterianakis Organic Cellar & Tasting Center',
+      streetAddress: 'Melesses (Peza)',
+      postalCode: '70100',
+      cityOrVillage: 'Heraklion',
+      region: 'Crete',
+      countryCode: 'GR',
+      accessType: 'standard_courier_van',
+      contactPersonName: 'Giorgos Paterianakis',
+      dispatchPhone: '+30 2810 000001',
+      dispatchEmail: 'dispatch@fake-winery.com',
+      pickupTimeWindow: '09:00 - 15:30 Mon-Fri',
+      loadingNotes: 'Wine cellar dispatch loading bay at main entrance courtyard.',
+    },
+    packaging: {
+      supportsWineBottles: true,
+      maxDailyParcels: 30,
+      dispatchLeadTime: 'same_day',
+    },
+    banking: {
+      accountHolderName: 'ΚΤΗΜΑ ΠΑΤΕΡΙΑΝΑΚΗ Ο.Ε.',
+      bankName: 'National Bank of Greece',
+      iban: 'GR96 0110 1250 0000 0001 2345 678',
+      swiftBic: 'ETHNGRAA',
+      payoutCurrency: 'EUR',
+    },
+    permits: {
+      gemiNumber: '123456789001',
+      excisePermitNumber: 'GR-EIDIK-2026-0012',
+      sanitaryPermitNumber: 'EFET-HER-8899',
+      organicCertificationBody: 'BIO Hellas',
+      organicCertNumber: 'BIO-GR-2026-7788',
+    },
+    representativeName: 'Emmanuela Paterianaki',
+    representativeRole: 'Owner & Winemaker',
+    officialEmail: 'producer@fake-winery.com',
+    websiteStoreUrl: 'https://paterianakis.gr/shop',
+    status: 'verified_active',
+    submittedAt: '2026-01-15T10:00:00Z',
+    updatedAt: '2026-01-15T10:00:00Z',
+    termsAccepted: true,
+  },
+  'manousakis-winery': {
+    id: 'manousakis-winery',
+    producerId: 'manousakis-winery',
+    tradeBrandName: 'Manousakis Winery (Nostos)',
+    producerCategory: 'winery',
+    legalBusinessName: 'MANOUSAKIS WINERY SINGLE MEMBER P.C. (DEMO)',
+    legalEntityType: 'private_company_ike',
+    vatNumber: 'EL999999992',
+    taxOffice: 'Δ.Ο.Υ. Χανίων',
+    countryCode: 'GR',
+    isVatVerified: true,
+    vatVerificationDate: '2025-11-20',
+    eoriNumber: 'EL999999992',
+    logistics: {
+      facilityName: 'Manousakis Cellar & Tasting Terrace',
+      streetAddress: 'Vatolakkos, Platanias',
+      postalCode: '73005',
+      cityOrVillage: 'Chania',
+      region: 'Crete',
+      countryCode: 'GR',
+      accessType: 'large_truck_ramp',
+      contactPersonName: 'Alexandra Manousakis',
+      dispatchPhone: '+30 28210 000002',
+      dispatchEmail: 'dispatch@fake-manousakis.com',
+      pickupTimeWindow: '09:00 - 16:00 Mon-Fri',
+      loadingNotes: 'Dedicated loading dock at winery rear gate.',
+    },
+    packaging: {
+      supportsWineBottles: true,
+      maxDailyParcels: 50,
+      dispatchLeadTime: 'same_day',
+    },
+    banking: {
+      accountHolderName: 'MANOUSAKIS WINERY P.C.',
+      bankName: 'Piraeus Bank',
+      iban: 'GR44 0172 0120 0050 1234 5678 901',
+      swiftBic: 'PIRAGRAA',
+      payoutCurrency: 'EUR',
+    },
+    permits: {
+      gemiNumber: '123456789002',
+      excisePermitNumber: 'GR-EIDIK-2026-0013',
+      sanitaryPermitNumber: 'EFET-CHA-4411',
+      organicCertificationBody: 'DIO Organic',
+      organicCertNumber: 'DIO-GR-2025-1102',
+    },
+    representativeName: 'Alexandra Manousakis',
+    representativeRole: 'Managing Director',
+    officialEmail: 'info@fake-manousakis.com',
+    websiteStoreUrl: 'https://nostoswines.com/shop',
+    status: 'verified_active',
+    submittedAt: '2025-11-20T10:00:00Z',
+    updatedAt: '2025-11-20T10:00:00Z',
+    termsAccepted: true,
+  },
+  'cretan-brewery-charma': {
+    id: 'cretan-brewery-charma',
+    producerId: 'cretan-brewery-charma',
+    tradeBrandName: 'Cretan Brewery (Charma Beer)',
+    producerCategory: 'brewery',
+    legalBusinessName: 'CRETAN BREWERY S.A. (DEMO)',
+    legalEntityType: 'corporation_ae',
+    vatNumber: 'EL999999993',
+    taxOffice: 'Δ.Ο.Υ. Χανίων',
+    countryCode: 'GR',
+    isVatVerified: true,
+    vatVerificationDate: '2025-09-10',
+    eoriNumber: 'EL999999993',
+    logistics: {
+      facilityName: 'Cretan Brewery Brewhouse & Logistics Hub',
+      streetAddress: 'Zounaki, Platanias',
+      postalCode: '73002',
+      cityOrVillage: 'Chania',
+      region: 'Crete',
+      countryCode: 'GR',
+      accessType: 'large_truck_ramp',
+      contactPersonName: 'Ioannis Lionakis',
+      dispatchPhone: '+30 28210 000003',
+      dispatchEmail: 'dispatch@fake-charma.com',
+      pickupTimeWindow: '08:30 - 15:00 Mon-Fri',
+      loadingNotes: 'Forklift available on site for freight pallet and parcel loading.',
+    },
+    packaging: {
+      supportsBeerBottles: true,
+      maxDailyParcels: 60,
+      dispatchLeadTime: 'same_day',
+    },
+    banking: {
+      accountHolderName: 'CRETAN BREWERY S.A.',
+      bankName: 'Alpha Bank',
+      iban: 'GR16 0140 1030 1030 0200 3004 005',
+      swiftBic: 'CRBAGRAA',
+      payoutCurrency: 'EUR',
+    },
+    permits: {
+      gemiNumber: '123456789003',
+      excisePermitNumber: 'GR-ZYTH-2026-0005',
+      sanitaryPermitNumber: 'EFET-CHA-7722',
+    },
+    representativeName: 'Ioannis Lionakis',
+    representativeRole: 'Founder & Brewmaster',
+    officialEmail: 'info@fake-charma.com',
+    websiteStoreUrl: 'https://cretanbeer.gr/store',
+    status: 'verified_active',
+    submittedAt: '2025-09-10T10:00:00Z',
+    updatedAt: '2025-09-10T10:00:00Z',
+    termsAccepted: true,
+  },
+  'monteraponi-tuscany': {
+    id: 'monteraponi-tuscany',
+    producerId: 'monteraponi-tuscany',
+    tradeBrandName: 'Azienda Agricola Monteraponi',
+    producerCategory: 'winery',
+    legalBusinessName: 'AZIENDA AGRICOLA MONTERAPONI (DEMO)',
+    legalEntityType: 'italian_srl',
+    vatNumber: 'IT99999999990',
+    taxOffice: 'Ufficio di Siena',
+    countryCode: 'IT',
+    isVatVerified: true,
+    vatVerificationDate: '2025-08-01',
+    eoriNumber: 'IT99999999990',
+    logistics: {
+      facilityName: 'Monteraponi Cellar & Cantina',
+      streetAddress: 'Località Monteraponi',
+      postalCode: '53017',
+      cityOrVillage: 'Radda in Chianti (SI)',
+      region: 'Tuscany',
+      countryCode: 'IT',
+      accessType: 'standard_courier_van',
+      contactPersonName: 'Michele Braganti',
+      dispatchPhone: '+39 055 0000000',
+      dispatchEmail: 'logistica@fake-monteraponi.it',
+      pickupTimeWindow: '09:00 - 16:30 Mon-Fri',
+      loadingNotes: 'Historic medieval estate driveway; standard sprinter vans and courier trucks welcome.',
+    },
+    packaging: {
+      supportsWineBottles: true,
+      maxDailyParcels: 35,
+      dispatchLeadTime: 'same_day',
+    },
+    banking: {
+      accountHolderName: 'AZIENDA AGRICOLA MONTERAPONI',
+      bankName: 'Intesa Sanpaolo / UniCredit',
+      iban: 'IT60 X054 2811 1010 0000 0123 456',
+      swiftBic: 'UNCRITM1',
+      payoutCurrency: 'EUR',
+    },
+    permits: {
+      gemiNumber: 'REA-SI-999999',
+      excisePermitNumber: 'IT-ACC-2026-0089',
+      organicCertificationBody: 'ICEA Bio',
+      organicCertNumber: 'ICEA-TUS-2025-4422',
+    },
+    representativeName: 'Michele Braganti',
+    representativeRole: 'Owner & Vignaiolo',
+    officialEmail: 'info@fake-monteraponi.it',
+    websiteStoreUrl: 'https://monteraponi.it/store',
+    status: 'verified_active',
+    submittedAt: '2025-08-01T10:00:00Z',
+    updatedAt: '2025-08-01T10:00:00Z',
+    termsAccepted: true,
+  },
+};
+
+/**
+ * Saves complete producer registration record to Cloud Firestore database and local cache
+ */
+export const saveProducerRegistrationToCloud = async (
+  record: ProducerRegistrationRecord
+): Promise<ProducerRegistrationRecord> => {
+  const updatedRecord: ProducerRegistrationRecord = {
+    ...record,
+    updatedAt: new Date().toISOString(),
+    status: record.isVatVerified ? 'verified_active' : 'pending_verification',
+  };
+
+  // 1. Persist to localStorage
+  try {
+    const saved = localStorage.getItem(PRODUCER_REGISTRATIONS_KEY);
+    const existing: Record<string, ProducerRegistrationRecord> = saved ? JSON.parse(saved) : { ...SEEDED_PRODUCER_REGISTRATIONS };
+    existing[record.producerId] = updatedRecord;
+    localStorage.setItem(PRODUCER_REGISTRATIONS_KEY, JSON.stringify(existing));
+  } catch (e) {
+    console.error('Error persisting producer registration to localStorage:', e);
+  }
+
+  // 2. Persist to Cloud Firestore (collection: 'producer_registrations')
+  if (isFirebaseConfigured && db) {
+    try {
+      const docRef = doc(db, 'producer_registrations', record.producerId);
+      await setDoc(docRef, updatedRecord, { merge: true });
+    } catch (e) {
+      console.warn('Firestore producer registration write error, preserved locally:', e);
+    }
+  }
+
+  // 3. Automatically link with user profile if userId provided
+  if (record.userId) {
+    await saveUserProfileToCloud({
+      id: record.userId,
+      isProducer: true,
+      claimedProducerId: record.producerId,
+      producerName: record.tradeBrandName,
+      claimStatus: updatedRecord.status === 'verified_active' ? 'verified_host' : 'pending_verification',
+      taxDetails: {
+        vatNumber: record.vatNumber,
+        legalBusinessName: record.legalBusinessName,
+        taxOffice: record.taxOffice,
+        registeredAddress: `${record.logistics.streetAddress}, ${record.logistics.cityOrVillage}, ${record.logistics.postalCode}`,
+        dispatchContactPhone: record.logistics.dispatchPhone,
+        countryCode: record.countryCode,
+        isVatVerified: record.isVatVerified,
+        vatVerificationDate: record.vatVerificationDate,
+        eoriNumber: record.eoriNumber,
+        gemiNumber: record.permits.gemiNumber,
+        iban: record.banking.iban,
+        registrationRecord: updatedRecord,
+      },
+    });
+  }
+
+  return updatedRecord;
+};
+
+/**
+ * Fetches a producer registration record from Cloud Firestore or fallback local storage
+ */
+export const fetchProducerRegistrationFromCloud = async (
+  producerId: string
+): Promise<ProducerRegistrationRecord | null> => {
+  // 1. Try Cloud Firestore
+  if (isFirebaseConfigured && db && producerId) {
+    try {
+      const docRef = doc(db, 'producer_registrations', producerId);
+      const snap = await getDoc(docRef);
+      if (snap.exists()) {
+        return snap.data() as ProducerRegistrationRecord;
+      }
+    } catch (e) {
+      console.warn('Firestore fetch producer registration error, checking cache:', e);
+    }
+  }
+
+  // 2. Fallback to localStorage or Seed Data
+  try {
+    const saved = localStorage.getItem(PRODUCER_REGISTRATIONS_KEY);
+    const existing: Record<string, ProducerRegistrationRecord> = saved
+      ? JSON.parse(saved)
+      : SEEDED_PRODUCER_REGISTRATIONS;
+
+    if (existing[producerId]) {
+      return existing[producerId];
+    }
+  } catch (e) {
+    console.error('Error reading producer registration from localStorage:', e);
+  }
+
+  return SEEDED_PRODUCER_REGISTRATIONS[producerId] || null;
+};
+
+/**
+ * Returns all producer registration records from database/cache
+ */
+export const getAllProducerRegistrations = async (): Promise<Record<string, ProducerRegistrationRecord>> => {
+  try {
+    const saved = localStorage.getItem(PRODUCER_REGISTRATIONS_KEY);
+    if (!saved) {
+      localStorage.setItem(PRODUCER_REGISTRATIONS_KEY, JSON.stringify(SEEDED_PRODUCER_REGISTRATIONS));
+      return SEEDED_PRODUCER_REGISTRATIONS;
+    }
+    return JSON.parse(saved);
+  } catch (e) {
+    console.error('Error reading all producer registrations:', e);
+    return SEEDED_PRODUCER_REGISTRATIONS;
+  }
+};
+
 export { app, auth, db };
+
