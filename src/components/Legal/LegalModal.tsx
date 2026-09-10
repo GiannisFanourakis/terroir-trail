@@ -152,7 +152,7 @@ export const LegalModal: React.FC<LegalModalProps> = ({
                 <div>
                   <h4 className="font-bold text-white text-sm mb-1.5">1. Data Controller</h4>
                   <p>
-                    TerroirTrail is operated as an independent Mediterranean agritourism platform. For any inquiries regarding personal data processing, privacy rights, or data deletion requests, contact our Data Protection Officer at: <a href="mailto:terroirtrail@gmail.com" className="text-amber-400 underline font-mono">terroirtrail@gmail.com</a>.
+                    TerroirTrail is operated as an independent Mediterranean agritourism platform. For any inquiries regarding personal data processing, privacy rights, or data deletion requests, contact our Data Protection Officer at: <a href="mailto:gian.fanourakis@gmail.com" className="text-amber-400 underline font-mono">gian.fanourakis@gmail.com</a>.
                   </p>
                 </div>
 
@@ -296,7 +296,7 @@ export const LegalModal: React.FC<LegalModalProps> = ({
                 <div>
                   <h4 className="font-bold text-white text-sm mb-1.5">3. Notice & Takedown Protocol (Listing Removal within 48 Hours)</h4>
                   <p>
-                    TerroirTrail respects the autonomy of every agricultural producer. If you are an authorized representative of a listed estate and wish to update your visitor information, correct descriptions, or request the immediate removal and deletion of your profile from our directory, please email our legal team at <a href="mailto:terroirtrail@gmail.com" className="text-amber-400 underline font-mono">terroirtrail@gmail.com</a> with proof of business ownership. Verified removal requests are executed within 48 business hours with zero fees.
+                    TerroirTrail respects the autonomy of every agricultural producer. If you are an authorized representative of a listed estate and wish to update your visitor information, correct descriptions, or request the immediate removal and deletion of your profile from our directory, please email our legal team at <a href="mailto:gian.fanourakis@gmail.com" className="text-amber-400 underline font-mono">gian.fanourakis@gmail.com</a> with proof of business ownership. Verified removal requests are executed within 48 business hours with zero fees.
                   </p>
                 </div>
 
