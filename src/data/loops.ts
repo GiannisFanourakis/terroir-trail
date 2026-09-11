@@ -2,6 +2,46 @@ import { DayTripLoop, Producer } from '../types/terroir';
 
 export const CURATED_ROUTES: DayTripLoop[] = [
   {
+    id: 'heraklion-grand-terroir-trail',
+    title: 'The Heraklion Grand Artisan & Terroir Trail',
+    greekTitle: 'Ηρακλειώτικη Διαδρομή Τερουάρ & Χειροποίητης Παράδοσης',
+    subtitle: 'Cold-Pressed Koroneiki EVOO, Mountain Thyme Honey, Ancient Grapes & Copper Rakokazano',
+    destination: 'crete',
+    region: 'Heraklion (Peza, Alagni & Kounavoi)',
+    totalDuration: '5.0 hours',
+    drivingDistance: '36 km (All paved scenic village roads)',
+    stops: [
+      {
+        producerId: 'peza-artisanal-olive-mill',
+        suggestedTime: '10:00 AM - 11:15 AM',
+        activity: 'Cold-pressed early-harvest Koroneiki EVOO tasting with warm village sourdough bread, oregano, and mountain sea salt.'
+      },
+      {
+        producerId: 'meligyris-apiary',
+        suggestedTime: '11:45 AM - 1:00 PM',
+        activity: 'Meet 3rd-generation nomadic beekeepers, view live observation hives, and taste rare raw mountain thyme & pine honey.'
+      },
+      {
+        producerId: 'lyrarakis-winery',
+        suggestedTime: '1:30 PM - 3:00 PM',
+        activity: 'Walk through plots of rescued ancient Cretan grapes (Vidiano, Dafni, Plyto) and enjoy a vineyard terrace wine tasting.'
+      },
+      {
+        producerId: 'kazani-stilianou',
+        suggestedTime: '3:30 PM - 5:00 PM',
+        activity: 'Experience traditional wood-fired copper pot Tsikoudia distillation, wild thyme rakomelo, and authentic grilled village mezedes.'
+      }
+    ],
+    description: 'The definitive Cretan culinary & agritourism day loop just 20 minutes from Heraklion and Knossos. Connect single-estate liquid gold olive oil, raw mountain thyme honey, ancient indigenous wines, and wood-fired copper still raki into one seamless, scenic countryside loop.',
+    highlightPointers: [
+      'Four distinct Cretan artisan disciplines in one compact 36km loop',
+      'Taste fresh unfiltered Koroneiki green olive oil with warm sourdough',
+      'Ancient indigenous grapes (Vidiano, Dafni, Plyto) facing Mount Juktas',
+      'Soulful wood-fired copper pot distillation & warm village hospitality'
+    ],
+    isVipOnly: false,
+  },
+  {
     id: 'chania-craft-beer-olive-trail',
     title: 'Chania Craft Beer, Stone Mills & Mountain Romeiko',
     greekTitle: 'Μικροζυθοποιία, Ελαιόλαδο & Ρωμαίικο Χανίων',

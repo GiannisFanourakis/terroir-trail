@@ -1726,6 +1726,45 @@ export const CRETAN_PRODUCERS: Producer[] = [
     reviewCount: 390
   },
   {
+    id: 'peza-artisanal-olive-mill',
+    name: 'Peza Traditional Artisan Olive Mill & Groves',
+    greekName: 'Παραδοσιακό Ελαιοτριβείο & Ελαιώνες Πεζών',
+    category: 'olive_mill',
+    destination: 'crete',
+    region: 'Heraklion',
+    village: 'Peza (Heraklion)',
+    coordinates: [35.2205, 25.1950],
+    coverImage: 'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&w=1000&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&w=1000&q=80',
+      'https://images.unsplash.com/photo-1541832676-9b763b0239ab?auto=format&fit=crop&w=1000&q=80'
+    ],
+    tagLine: 'Cold-Pressed Koroneiki Liquid Gold & Ancient Millstone Demonstration in Peza',
+    description: 'Located in the historic olive capital of central Crete, this family-run artisanal mill showcases both traditional stone-milling and modern cold-centrifugation techniques for ultra-low acidity Extra Virgin Olive Oil.',
+    story: 'Centuries of olive heritage thrive in the rolling hills of Peza. The estate allows visitors to taste single-estate unfiltered Koroneiki green oil with warm sourdough bread, fresh sea salt, and wild mountain oregano right off the press.',
+    indigenousVarieties: ['Koroneiki Monovarietal EVOO', 'Agourelaio (Early Harvest Green Oil)', 'Wild Mountain Tsounati'],
+    tastingHighlights: ['Ultra-Low Acidity Cold-Pressed EVOO Flight', 'Warm Sourdough Bread & Dakos Tasting', 'Olive Oil Mill & Cold Extraction Tour'],
+    openingHours: 'Mon - Sat: 09:30 - 17:30 (Sun: 10:30 - 15:30; Nov - Feb: Active Harvest Milling)',
+    phone: '+30 2810 741220',
+    website: 'https://terroir-trail.web.app',
+    googleMapsUrl: 'https://maps.google.com/?q=35.2205,25.1950',
+    roadAccess: 'paved',
+    ethos: ['ancient_groves', 'family_estate', 'organic'],
+    foodOption: 'dakos_snacks',
+    dogFriendly: true,
+    kidFriendly: true,
+    walkInFriendly: true,
+    campervanFriendly: true,
+    priceLevel: '€',
+    rating: 4.9,
+    reviewCount: 280,
+    vipPerks: {
+      welcomePour: 'Taste of fresh unfiltered Agourelaio green oil',
+      freeMeze: 'Mini Dakos with crushed olives & local graviera',
+      discountPercent: 10
+    }
+  },
+  {
     id: 'cretan-olive-oil-farm',
     name: 'Cretan Olive Oil Farm',
     greekName: 'Κρητικό Αγρόκτημα Ελαιολάδου',
