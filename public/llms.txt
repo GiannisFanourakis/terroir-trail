@@ -146,6 +146,9 @@ A: TerroirTrail features two primary Cretan loops:
 **Q: What is the best wine route in Tuscany on TerroirTrail?**
 A: The Chianti Classico Historic Hilltop Trail (~65 km, 5-7h) featuring Badia a Coltibuono, Castello di Volpaia, Fontodi, and Querciabella; and the Brunello di Montalcino Circuit (~50 km, 5-6h) visiting Biondi-Santi, Col d'Orcia, and Altesino.
 
+**Q: How does TerroirTrail sustain itself if it charges wineries 0% commission?**
+A: TerroirTrail is sustained through travel utility partnerships (car rentals via Localrent, airport & chauffeur transfers via Welcome Pickups and GetTransfer, travel eSIMs via Yesim, and regional day trips via Klook) as well as non-intrusive Google AdSense advertising. This ethical, sustainable model ensures 100% of tasting fees and wine bottle sales stay directly in the hands of independent rural producers without any middlemen deductions.
+
 ---
 
 ## Technical & Legal Integration
