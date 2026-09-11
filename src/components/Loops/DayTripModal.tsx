@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { CURATED_ROUTES, getGoogleMapsRouteUrl } from '../../data/loops';
 import { producerService } from '../../services/producerService';
 import { DayTripLoop, Producer } from '../../types/terroir';
-import { X, Clock, Compass, ArrowRight, CheckCircle2, Car, Crown, ExternalLink, MapPin, Navigation } from 'lucide-react';
+import { X, Clock, Compass, ArrowRight, CheckCircle2, Car, Crown, ExternalLink, MapPin, Navigation, Wifi } from 'lucide-react';
 import { UserProfile } from '../../types/auth';
 
 interface DayTripModalProps {
@@ -322,6 +322,34 @@ export const DayTripModal: React.FC<DayTripModalProps> = ({
                 <ArrowRight className="w-3.5 h-3.5" />
               </button>
             )}
+          </div>
+
+          {/* Rural Route Connectivity Tip (Yesim eSIM Partner) */}
+          <div className="p-3.5 rounded-2xl bg-stone-900/60 border border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-xl bg-cyan-500/15 text-cyan-400 border border-cyan-500/20 flex items-center justify-center shrink-0">
+                <Wifi className="w-4 h-4" />
+              </div>
+              <div>
+                <div className="font-semibold text-stone-200 flex items-center gap-1.5">
+                  <span>Reliable GPS on Rural Backroads</span>
+                  <span className="text-[10px] font-bold text-cyan-400 bg-cyan-500/10 px-1.5 py-0.2 rounded border border-cyan-500/25">Partner</span>
+                </div>
+                <p className="text-stone-400 text-[11px] leading-relaxed">
+                  Navigating mountain wine trails? Activate a high-speed travel eSIM with Yesim for reliable navigation without roaming fees.
+                </p>
+              </div>
+            </div>
+
+            <a
+              href="https://yesim.tpx.lv/xKgaRoiL"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full sm:w-auto px-3.5 py-2 rounded-xl bg-stone-800 hover:bg-stone-750 text-cyan-300 hover:text-cyan-200 border border-cyan-500/30 text-xs font-semibold whitespace-nowrap transition cursor-pointer flex items-center justify-center gap-1.5 shrink-0"
+            >
+              <span>Get Travel eSIM</span>
+              <ExternalLink className="w-3.5 h-3.5" />
+            </a>
           </div>
 
         </div>

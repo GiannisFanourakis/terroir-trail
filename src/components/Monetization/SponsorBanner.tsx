@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ExternalLink, Crown, Sparkles, Plane, Car, Home, Wine } from 'lucide-react';
+import { ExternalLink, Crown, Sparkles, Plane, Car, Home, Wine, Wifi } from 'lucide-react';
 
 interface SponsorBannerProps {
   hasExplorerPass?: boolean;
@@ -14,7 +14,7 @@ interface SponsorCampaign {
   desc: string;
   ctaText: string;
   ctaUrl: string;
-  iconType: 'flight' | 'car' | 'villa' | 'gastronomy';
+  iconType: 'flight' | 'car' | 'villa' | 'gastronomy' | 'esim';
   accentColor: string;
 }
 
@@ -48,6 +48,16 @@ const SPONSOR_CAMPAIGNS: SponsorCampaign[] = [
     ctaUrl: 'https://www.agriturismo.it',
     iconType: 'villa',
     accentColor: 'from-amber-500/20 via-stone-900 to-stone-950 border-amber-500/30',
+  },
+  {
+    id: 'yesim-esim',
+    tag: 'Official Partner · Global Connectivity',
+    title: 'Stay Connected on Rural Wine Trails: Yesim Travel eSIM',
+    desc: 'Instant 5G/4G data across Greece & Italy. Avoid roaming fees while navigating rural backroads.',
+    ctaText: 'Get Travel eSIM',
+    ctaUrl: 'https://yesim.tpx.lv/xKgaRoiL',
+    iconType: 'esim',
+    accentColor: 'from-cyan-500/20 via-stone-900 to-stone-950 border-cyan-500/30',
   },
   {
     id: 'aegean-routes',
@@ -91,6 +101,8 @@ export const SponsorBanner: React.FC<SponsorBannerProps> = ({
         return <Home className={`${sizeClass} text-amber-400`} />;
       case 'gastronomy':
         return <Wine className={`${sizeClass} text-rose-400`} />;
+      case 'esim':
+        return <Wifi className={`${sizeClass} text-cyan-400`} />;
       default:
         return <Sparkles className={`${sizeClass} text-amber-400`} />;
     }
