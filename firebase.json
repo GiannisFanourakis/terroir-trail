@@ -17,11 +17,28 @@
     ],
     "headers": [
       {
+        "source": "**",
+        "headers": [
+          {
+            "key": "Access-Control-Allow-Origin",
+            "value": "*"
+          },
+          {
+            "key": "X-Robots-Tag",
+            "value": "all"
+          }
+        ]
+      },
+      {
         "source": "**/*.@(js|css|woff2|png|jpg|webp|svg)",
         "headers": [
           {
             "key": "Cache-Control",
             "value": "public, max-age=31536000, immutable"
+          },
+          {
+            "key": "Access-Control-Allow-Origin",
+            "value": "*"
           }
         ]
       },
@@ -31,6 +48,14 @@
           {
             "key": "Cache-Control",
             "value": "no-cache, no-store, must-revalidate"
+          },
+          {
+            "key": "Access-Control-Allow-Origin",
+            "value": "*"
+          },
+          {
+            "key": "X-Robots-Tag",
+            "value": "all"
           }
         ]
       },
@@ -42,8 +67,16 @@
             "value": "application/xml; charset=utf-8"
           },
           {
+            "key": "Access-Control-Allow-Origin",
+            "value": "*"
+          },
+          {
             "key": "Cache-Control",
             "value": "no-cache, no-store, must-revalidate"
+          },
+          {
+            "key": "X-Robots-Tag",
+            "value": "all"
           }
         ]
       },
@@ -55,8 +88,16 @@
             "value": "text/plain; charset=utf-8"
           },
           {
+            "key": "Access-Control-Allow-Origin",
+            "value": "*"
+          },
+          {
             "key": "Cache-Control",
             "value": "no-cache, no-store, must-revalidate"
+          },
+          {
+            "key": "X-Robots-Tag",
+            "value": "all"
           }
         ]
       },
@@ -68,8 +109,16 @@
             "value": "text/plain; charset=utf-8"
           },
           {
+            "key": "Access-Control-Allow-Origin",
+            "value": "*"
+          },
+          {
             "key": "Cache-Control",
             "value": "no-cache, no-store, must-revalidate"
+          },
+          {
+            "key": "X-Robots-Tag",
+            "value": "all"
           }
         ]
       }
