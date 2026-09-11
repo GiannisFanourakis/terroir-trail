@@ -1,41 +1,41 @@
 {
   "project_info": {
-    "project_number": "536226653448",
-    "project_id": "terroir-trail",
-    "storage_bucket": "terroir-trail.firebasestorage.app"
+    "project_number": "000000000000",
+    "project_id": "terroir-trail-example",
+    "storage_bucket": "terroir-trail-example.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:536226653448:android:bdbea699218d6eea1938bd",
+        "mobilesdk_app_id": "1:000000000000:android:0000000000000000000000",
         "android_client_info": {
           "package_name": "com.terroirtrail.app"
         }
       },
       "oauth_client": [
         {
-          "client_id": "536226653448-dr4tlaogefa1n9fmib27ipm51ui11kke.apps.googleusercontent.com",
+          "client_id": "000000000000-example.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.terroirtrail.app",
-            "certificate_hash": "dacac0f618fa41258ffe5043afc9cea0da1215d4"
+            "certificate_hash": "0000000000000000000000000000000000000000"
           }
         },
         {
-          "client_id": "536226653448-h1hujhl09fral37ci38gobngs8v3g851.apps.googleusercontent.com",
+          "client_id": "000000000000-example.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCEC7l4mRwfEpb8Bsnlqnz1_15e-BK9jiw"
+          "current_key": "YOUR_FIREBASE_ANDROID_API_KEY"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "536226653448-h1hujhl09fral37ci38gobngs8v3g851.apps.googleusercontent.com",
+              "client_id": "000000000000-example.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
