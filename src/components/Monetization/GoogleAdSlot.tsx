@@ -22,7 +22,7 @@ interface GoogleAdSlotProps {
 }
 
 export const GoogleAdSlot: React.FC<GoogleAdSlotProps> = ({
-  client = import.meta.env.VITE_ADSENSE_CLIENT_ID,
+  client = import.meta.env.VITE_ADSENSE_CLIENT_ID || 'ca-pub-1608902378435149',
   slot = import.meta.env.VITE_ADSENSE_SLOT_ID,
   format = 'auto',
   hasExplorerPass = false,
@@ -36,7 +36,7 @@ export const GoogleAdSlot: React.FC<GoogleAdSlotProps> = ({
   const [adError, setAdError] = useState<boolean>(false);
   const adRef = useRef<HTMLModElement | null>(null);
 
-  // If no AdSense publisher ID is configured yet in environment, show the curated sponsor banner
+  // If no slot ID is configured yet or on error, show the curated sponsor banner
   if (!client || !slot || adError) {
     return (
       <SponsorBanner
@@ -48,12 +48,11 @@ export const GoogleAdSlot: React.FC<GoogleAdSlotProps> = ({
   }
 
   useEffect(() => {
-    // 1. Inject AdSense library script if not already in document
-    const scriptId = 'google-adsense-script';
-    let script = document.getElementById(scriptId) as HTMLScriptElement | null;
-    if (!script) {
-      script = document.createElement('script');
-      script.id = scriptId;
+    // 1. Ensure AdSense script is present
+    const existingScript = document.querySelector('script[src*="pagead2.googlesyndication.com"]');
+    if (!existingScript) {
+      const script = document.createElement('script');
+      script.id = 'google-adsense-script';
       script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${client}`;
       script.async = true;
       script.crossOrigin = 'anonymous';
@@ -61,11 +60,14 @@ export const GoogleAdSlot: React.FC<GoogleAdSlotProps> = ({
       document.head.appendChild(script);
     }
 
-    // 2. Request ad fill from Google
+    // 2. Safely request ad fill without duplicate pushes in React StrictMode
     try {
-      if (typeof window !== 'undefined') {
-        (window.adsbygoogle = window.adsbygoogle || []).push({});
-        setAdLoaded(true);
+      if (typeof window !== 'undefined' && adRef.current) {
+        const isProcessed = adRef.current.getAttribute('data-adsbygoogle-status');
+        if (!isProcessed) {
+          (window.adsbygoogle = window.adsbygoogle || []).push({});
+          setAdLoaded(true);
+        }
       }
     } catch (e) {
       console.warn('Google AdSense render fallback:', e);
