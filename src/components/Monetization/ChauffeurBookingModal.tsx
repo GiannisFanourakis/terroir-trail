@@ -383,26 +383,49 @@ export const ChauffeurBookingModal: React.FC<ChauffeurBookingModalProps> = ({
                 <span>Fully licensed professional tourist transport operator · Free cancellation up to 24h prior</span>
               </div>
 
-              {/* Partner Alternative: Welcome Pickups */}
-              <div className="mt-3 p-3 rounded-xl bg-stone-900/60 border border-white/10 flex items-center justify-between gap-2 text-xs">
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-1.5 font-semibold text-stone-200 text-[11px]">
-                    <span>Need an airport or city transfer?</span>
-                    <span className="text-[9px] font-bold text-amber-400 bg-amber-500/10 px-1.5 py-0.2 rounded border border-amber-500/25">Partner</span>
+              {/* Partner Alternatives: Welcome Pickups & GetTransfer */}
+              <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <div className="p-2.5 rounded-xl bg-stone-900/60 border border-white/10 flex items-center justify-between gap-2 text-xs">
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-1.5 font-semibold text-stone-200 text-[11px]">
+                      <span>Airport VIP Pickup</span>
+                      <span className="text-[9px] font-bold text-amber-400 bg-amber-500/10 px-1 py-0.2 rounded border border-amber-500/25">Partner</span>
+                    </div>
+                    <p className="text-[10px] text-stone-400 truncate mt-0.5">
+                      Welcome Pickups fixed-rate rides
+                    </p>
                   </div>
-                  <p className="text-[10px] text-stone-400 truncate mt-0.5">
-                    Book trusted airport pickups and intercity transfers with Welcome Pickups
-                  </p>
+                  <a
+                    href="https://tpx.lv/75XqHdHY"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-2 py-1 rounded-lg bg-stone-800 hover:bg-stone-750 text-amber-300 hover:text-amber-200 border border-amber-500/30 text-[10px] font-medium flex items-center gap-1 shrink-0"
+                  >
+                    <span>Book</span>
+                    <ExternalLink className="w-2.5 h-2.5" />
+                  </a>
                 </div>
-                <a
-                  href="https://tpx.lv/75XqHdHY"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-2.5 py-1.5 rounded-lg bg-stone-800 hover:bg-stone-750 text-amber-300 hover:text-amber-200 border border-amber-500/30 text-[11px] font-medium flex items-center gap-1 shrink-0"
-                >
-                  <span>Book Transfer</span>
-                  <ExternalLink className="w-3 h-3" />
-                </a>
+
+                <div className="p-2.5 rounded-xl bg-stone-900/60 border border-white/10 flex items-center justify-between gap-2 text-xs">
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-1.5 font-semibold text-stone-200 text-[11px]">
+                      <span>Intercity & Group Vans</span>
+                      <span className="text-[9px] font-bold text-emerald-400 bg-emerald-500/10 px-1 py-0.2 rounded border border-emerald-500/25">Partner</span>
+                    </div>
+                    <p className="text-[10px] text-stone-400 truncate mt-0.5">
+                      Compare driver bids on GetTransfer
+                    </p>
+                  </div>
+                  <a
+                    href="https://gettransfer.tpx.lv/PB1EGU6f"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-2 py-1 rounded-lg bg-stone-800 hover:bg-stone-750 text-emerald-300 hover:text-emerald-200 border border-emerald-500/30 text-[10px] font-medium flex items-center gap-1 shrink-0"
+                  >
+                    <span>Compare</span>
+                    <ExternalLink className="w-2.5 h-2.5" />
+                  </a>
+                </div>
               </div>
             </form>
           )}

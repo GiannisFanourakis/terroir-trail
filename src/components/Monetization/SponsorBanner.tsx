@@ -50,6 +50,16 @@ const SPONSOR_CAMPAIGNS: SponsorCampaign[] = [
     accentColor: 'from-amber-500/20 via-stone-900 to-stone-950 border-amber-500/30',
   },
   {
+    id: 'gettransfer-rides',
+    tag: 'Official Partner · Global Transfers',
+    title: 'Compare Private Chauffeur & Minibus Rates: GetTransfer',
+    desc: 'Local licensed drivers bid on your itinerary. Best rates for group wine tours and long-distance transfers.',
+    ctaText: 'Compare Rates',
+    ctaUrl: 'https://gettransfer.tpx.lv/PB1EGU6f',
+    iconType: 'car',
+    accentColor: 'from-emerald-500/20 via-stone-900 to-stone-950 border-emerald-500/30',
+  },
+  {
     id: 'agriturismo-stays',
     tag: 'Partner · Vineyard Lodging',
     title: 'Stay in Restored Olive Mills & Vineyard Stone Villas',
