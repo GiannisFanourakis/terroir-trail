@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ExternalLink, Crown, Sparkles, Plane, Car, Home } from 'lucide-react';
+import { ExternalLink, Crown, Sparkles, Plane, Car, Home, Wine } from 'lucide-react';
 
 interface SponsorBannerProps {
   hasExplorerPass?: boolean;
@@ -20,14 +20,14 @@ interface SponsorCampaign {
 
 const SPONSOR_CAMPAIGNS: SponsorCampaign[] = [
   {
-    id: 'aegean-routes',
-    tag: 'Official Partner · Island Travel',
-    title: 'Fly to the Terroir: Direct Routes to Crete & Tuscany',
-    desc: 'Boutique flights with dedicated regional wine & olive oil luggage allowances.',
-    ctaText: 'View Flight Fares',
-    ctaUrl: 'https://en.aegeanair.com',
-    iconType: 'flight',
-    accentColor: 'from-sky-500/20 via-stone-900 to-stone-950 border-sky-500/30',
+    id: 'klook-experiences',
+    tag: 'Official Partner · Curated Experiences',
+    title: 'Book Guided Wine Tastings, Truffle Hunts & Day Tours',
+    desc: 'Handcrafted culinary masterclasses, private vineyard transfers, and guided artisan tours.',
+    ctaText: 'Browse Experiences',
+    ctaUrl: 'https://klook.tpx.lv/evzPnWq1',
+    iconType: 'gastronomy',
+    accentColor: 'from-rose-500/20 via-stone-900 to-stone-950 border-rose-500/30',
   },
   {
     id: 'hybrid-car-rentals',
@@ -48,6 +48,16 @@ const SPONSOR_CAMPAIGNS: SponsorCampaign[] = [
     ctaUrl: 'https://www.agriturismo.it',
     iconType: 'villa',
     accentColor: 'from-amber-500/20 via-stone-900 to-stone-950 border-amber-500/30',
+  },
+  {
+    id: 'aegean-routes',
+    tag: 'Official Partner · Island Travel',
+    title: 'Fly to the Terroir: Direct Routes to Crete & Tuscany',
+    desc: 'Boutique flights with dedicated regional wine & olive oil luggage allowances.',
+    ctaText: 'View Flight Fares',
+    ctaUrl: 'https://en.aegeanair.com',
+    iconType: 'flight',
+    accentColor: 'from-sky-500/20 via-stone-900 to-stone-950 border-sky-500/30',
   },
 ];
 
@@ -79,6 +89,8 @@ export const SponsorBanner: React.FC<SponsorBannerProps> = ({
         return <Car className={`${sizeClass} text-emerald-400`} />;
       case 'villa':
         return <Home className={`${sizeClass} text-amber-400`} />;
+      case 'gastronomy':
+        return <Wine className={`${sizeClass} text-rose-400`} />;
       default:
         return <Sparkles className={`${sizeClass} text-amber-400`} />;
     }

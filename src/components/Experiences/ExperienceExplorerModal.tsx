@@ -6,7 +6,7 @@ import { Producer, ProducerCategory, Destination } from '../../types/terroir';
 import { 
   X, Search, Sparkles, Clock, MapPin, Check, Wine, 
   Beer, Flame, Disc, Flower2, SlidersHorizontal, ArrowRight,
-  Filter, Tag
+  Filter, Tag, ExternalLink
 } from 'lucide-react';
 
 interface ExperienceExplorerModalProps {
@@ -460,6 +460,33 @@ export const ExperienceExplorerModal: React.FC<ExperienceExplorerModalProps> = (
               })}
             </div>
           )}
+
+          {/* Partner Experiences via Klook (Affiliate) */}
+          <div className="mt-8 p-4 rounded-2xl bg-gradient-to-r from-rose-950/40 via-stone-900 to-stone-950 border border-rose-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-rose-500/15 text-rose-400 border border-rose-500/25 flex items-center justify-center shrink-0">
+                <Sparkles className="w-5 h-5" />
+              </div>
+              <div>
+                <div className="font-semibold text-stone-200 flex items-center gap-2">
+                  <span>Looking for guided wine day trips, boat tours, or private drivers?</span>
+                  <span className="text-[10px] uppercase tracking-wider font-bold text-rose-400 bg-rose-500/10 px-1.5 py-0.5 rounded border border-rose-500/25">Partner</span>
+                </div>
+                <p className="text-stone-400 text-[11px] leading-relaxed mt-0.5">
+                  Explore thousands of verified local tours, cooking masterclasses, and regional transfers with instant mobile confirmation.
+                </p>
+              </div>
+            </div>
+            <a
+              href="https://klook.tpx.lv/evzPnWq1"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full sm:w-auto px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs shadow-md transition flex items-center justify-center gap-1.5 shrink-0 hover:scale-102"
+            >
+              <span>Explore on Klook</span>
+              <ExternalLink className="w-3.5 h-3.5" />
+            </a>
+          </div>
         </div>
 
         {/* Modal Footer */}
