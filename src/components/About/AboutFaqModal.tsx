@@ -614,7 +614,7 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
                   <a
-                    href="mailto:gian.fanourakis@gmail.com"
+                    href="mailto:terroirtrail@gmail.com"
                     className="px-3.5 py-1.5 rounded-xl bg-stone-800 hover:bg-stone-750 text-stone-200 border border-white/15 text-xs font-bold transition"
                   >
                     Email Concierge
