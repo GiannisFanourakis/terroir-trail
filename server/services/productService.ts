@@ -14,7 +14,12 @@ export interface CreateProductParams {
 export async function createProductAndPrice(params?: CreateProductParams): Promise<StripeProductRecord> {
   const existing = datastore.getProduct();
   if (existing) {
-    return existing;
+    try {
+      await stripe.products.retrieve(existing.productId);
+      return existing;
+    } catch {
+      // Product does not exist on this Stripe account (e.g., switched from test to live or mock), recreate
+    }
   }
 
   const productName = params?.name || 'Example Product';

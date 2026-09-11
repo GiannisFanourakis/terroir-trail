@@ -6,6 +6,8 @@ import Stripe from 'stripe';
 async function runUnitTests() {
   console.log('Running Stripe integration contract tests...\n');
 
+  const previousProduct = datastore.getProduct();
+  
   // Test 1: Datastore Product Record Persistence
   console.log('Test 1: Datastore product persistence');
   const mockProduct = {
@@ -23,6 +25,11 @@ async function runUnitTests() {
   assert.strictEqual(retrievedProduct?.name, 'Example Product');
   assert.strictEqual(retrievedProduct?.unitAmount, 2000);
   console.log('✓ Test 1 passed: Product persisted and retrieved correctly.');
+
+  // Restore previous product if it was a real product
+  if (previousProduct && !previousProduct.productId.startsWith('prod_test_')) {
+    datastore.saveProduct(previousProduct);
+  }
 
   // Test 2: Checkout Session Datastore Persistence
   console.log('\nTest 2: Datastore checkout session persistence');
