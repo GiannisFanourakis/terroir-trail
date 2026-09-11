@@ -4,7 +4,7 @@ import { ChauffeurBooking } from '../../types/monetization';
 import { DayTripLoop, Producer } from '../../types/terroir';
 import { 
   X, Car, ShieldCheck, MapPin, Calendar, Users, 
-  CheckCircle2, ArrowRight, Phone, Mail, Clock, Sparkles, Navigation 
+  CheckCircle2, ArrowRight, Phone, Mail, Clock, Sparkles, Navigation, ExternalLink 
 } from 'lucide-react';
 
 interface ChauffeurBookingModalProps {
@@ -381,6 +381,28 @@ export const ChauffeurBookingModal: React.FC<ChauffeurBookingModalProps> = ({
               <div className="flex items-center justify-center gap-1.5 text-[10px] text-stone-500 pt-1">
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
                 <span>Fully licensed professional tourist transport operator · Free cancellation up to 24h prior</span>
+              </div>
+
+              {/* Partner Alternative: Welcome Pickups */}
+              <div className="mt-3 p-3 rounded-xl bg-stone-900/60 border border-white/10 flex items-center justify-between gap-2 text-xs">
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-1.5 font-semibold text-stone-200 text-[11px]">
+                    <span>Need an airport or city transfer?</span>
+                    <span className="text-[9px] font-bold text-amber-400 bg-amber-500/10 px-1.5 py-0.2 rounded border border-amber-500/25">Partner</span>
+                  </div>
+                  <p className="text-[10px] text-stone-400 truncate mt-0.5">
+                    Book trusted airport pickups and intercity transfers with Welcome Pickups
+                  </p>
+                </div>
+                <a
+                  href="https://tpx.lv/75XqHdHY"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-2.5 py-1.5 rounded-lg bg-stone-800 hover:bg-stone-750 text-amber-300 hover:text-amber-200 border border-amber-500/30 text-[11px] font-medium flex items-center gap-1 shrink-0"
+                >
+                  <span>Book Transfer</span>
+                  <ExternalLink className="w-3 h-3" />
+                </a>
               </div>
             </form>
           )}
