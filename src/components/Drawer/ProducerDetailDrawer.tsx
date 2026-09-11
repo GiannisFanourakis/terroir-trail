@@ -28,7 +28,6 @@ interface ProducerDetailDrawerProps {
   customNotice?: string;
   isProTier?: boolean;
   directBottleShopUrl?: string;
-  onOpenWineBoxes?: (category?: 'wine' | 'beer' | 'olive_oil' | 'honey' | 'cheese') => void;
   hasExplorerPass?: boolean;
   onOpenExplorerPass?: () => void;
   onOpenDigitalPass?: () => void;
@@ -51,7 +50,6 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
   customNotice,
   isProTier = false,
   directBottleShopUrl,
-  onOpenWineBoxes,
   hasExplorerPass = false,
   onOpenExplorerPass,
   onOpenDigitalPass,
@@ -919,33 +917,6 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
               </a>
             )}
 
-            {/* Delivery Box commented out until clientbase and international courier logistics are established */}
-            {/*
-            {onOpenWineBoxes && term.hasDeliveryBoxes && (
-              <div
-                onClick={() => onOpenWineBoxes(term.deliveryCategory)}
-                className="p-3.5 rounded-2xl bg-gradient-to-br from-stone-900 via-rose-950/20 to-stone-900 border border-rose-500/20 hover:border-rose-500/40 transition cursor-pointer group"
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-xl bg-rose-500/20 flex items-center justify-center text-rose-300 shrink-0 text-base">
-                      {term.deliveryIcon}
-                    </div>
-                    <div>
-                      <div className="text-xs font-bold text-stone-100 flex items-center gap-1.5">
-                        {term.deliveryBoxTitle}
-                        <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-rose-500/20 text-rose-300 font-medium">{term.deliveryBadge}</span>
-                      </div>
-                      <p className="text-[11px] text-stone-400 mt-0.5">
-                        {term.deliveryBoxDesc}
-                      </p>
-                    </div>
-                  </div>
-                  <ArrowRight className="w-4 h-4 text-rose-400 group-hover:translate-x-0.5 transition shrink-0 mt-1" />
-                </div>
-              </div>
-            )}
-            */}
 
             {/* Producer / Estate Host Login Prompt */}
             {(!user?.isProducer || user.claimedProducerId !== producer.id) && (

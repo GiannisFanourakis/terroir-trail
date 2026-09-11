@@ -28,7 +28,6 @@ interface HeaderProps {
   bookingsCount?: number;
   onOpenExplorerPass?: () => void;
   onOpenDigitalPass?: () => void;
-  onOpenWineBoxes?: () => void;
   onOpenAbout?: () => void;
   onOpenFaq?: () => void;
   onOpenLegal?: (tab?: 'privacy' | 'terms' | 'licenses') => void;
@@ -57,7 +56,6 @@ export const Header: React.FC<HeaderProps> = ({
   bookingsCount = 0,
   onOpenExplorerPass,
   onOpenDigitalPass,
-  onOpenWineBoxes,
   onOpenAbout,
   onOpenFaq,
   onOpenLegal,

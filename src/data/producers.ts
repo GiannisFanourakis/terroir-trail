@@ -2219,3 +2219,6 @@ export const CRETAN_PRODUCERS: Producer[] = [
     }
   }
 ];
+
+export const allProducers = CRETAN_PRODUCERS;
+export const producers = CRETAN_PRODUCERS;

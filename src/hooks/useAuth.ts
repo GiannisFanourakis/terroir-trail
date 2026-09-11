@@ -22,162 +22,13 @@ import {
   User as FirebaseUser,
   GoogleAuthProvider
 } from 'firebase/auth';
+import { DEMO_PROFILES, DEMO_PRODUCER_PROFILES } from '../data/demoProfiles';
+import { formatAuthError } from '../utils/authErrors';
+
+export { DEMO_PROFILES, DEMO_PRODUCER_PROFILES };
 
 const STORAGE_KEY = 'terroir_trail_user';
 
-export const DEMO_PROFILES: Record<string, UserProfile> = {
-  giannis: {
-    id: 'user_john_smith',
-    name: 'John Smith',
-    email: 'john.smith@example.com',
-    avatar: '🧭',
-    hometown: 'Heraklion, Crete',
-    travelerType: 'crete_local',
-    visitedProducers: ['cretan-brewery-charma', 'domaine-paterianakis', 'gasparis-dairy'],
-    personalNotes: {
-      'cretan-brewery-charma': 'Fresh unpasteurized draft on the open-air deck is unbeatable on a warm afternoon.',
-      'domaine-paterianakis': 'Indigenous organic Vidiano fermented in oak has incredible minerality.',
-    },
-    memberSince: '2026',
-  },
-  elena: {
-    id: 'user_jane_doe',
-    name: 'Jane Doe',
-    email: 'jane.doe@example.com',
-    avatar: '🍷',
-    hometown: 'Athens / Santorini',
-    travelerType: 'wine_enthusiast',
-    visitedProducers: ['vassaltis-santorini', 'skouras-nemea'],
-    personalNotes: {
-      'vassaltis-santorini': 'Pure volcanic salinity and razor-sharp acidity. World-class Assyrtiko.',
-    },
-    memberSince: '2026',
-  },
-  markos: {
-    id: 'user_alex_miller',
-    name: 'Alex Miller',
-    email: 'alex.miller@example.com',
-    avatar: '🍺',
-    hometown: 'Chania, Crete',
-    travelerType: 'craft_beer_explorer',
-    visitedProducers: ['cretan-brewery-charma', 'santorini-brewing'],
-    personalNotes: {
-      'cretan-brewery-charma': 'Exceptional fresh unfiltered lager with local Cretan barley.',
-    },
-    memberSince: '2026',
-  },
-};
-
-export const DEMO_PRODUCER_PROFILES: Record<string, UserProfile> = {
-  paterianakis: {
-    id: 'producer_fake_winery',
-    name: 'John Smith',
-    email: 'producer@fake-winery.com',
-    avatar: '🍇',
-    hometown: 'Peza Valley, Crete',
-    role: 'producer',
-    isProducer: true,
-    claimedProducerId: 'domaine-paterianakis',
-    producerName: 'Domaine Paterianakis (Organic Winery)',
-    claimStatus: 'verified_host',
-    taxDetails: {
-      vatNumber: 'EL999999991',
-      legalBusinessName: 'ARTISAN HERITAGE ESTATE O.E. (DEMO ENTITY)',
-      taxOffice: 'Regional Tax Directorate',
-      registeredAddress: '124 Wine Route, Dispatch Bay 2, 70100 Heraklion, Crete',
-      dispatchContactPhone: '+30 2810 000000',
-      countryCode: 'GR',
-      isVatVerified: true,
-      vatVerificationDate: '2026-01-15',
-      eoriNumber: 'EL999999991',
-    },
-    travelerType: 'wine_enthusiast',
-    visitedProducers: ['domaine-paterianakis'],
-    personalNotes: {},
-    memberSince: '2024',
-  },
-  manousakis: {
-    id: 'producer_valley_vineyard',
-    name: 'Jane Miller',
-    email: 'host@demo-vineyard.com',
-    avatar: '🍷',
-    hometown: 'Regional Valley, Crete',
-    role: 'producer',
-    isProducer: true,
-    claimedProducerId: 'manousakis-winery',
-    producerName: 'Manousakis Winery (Nostos Wines)',
-    claimStatus: 'verified_host',
-    taxDetails: {
-      vatNumber: 'EL999999992',
-      legalBusinessName: 'AEGEAN ARTISAN PRODUCER P.C. (DEMO ENTITY)',
-      taxOffice: 'Regional Tax Directorate',
-      registeredAddress: '45 Olive Grove Way, Loading Dock, 73005 Chania, Crete',
-      dispatchContactPhone: '+30 28210 000000',
-      countryCode: 'GR',
-      isVatVerified: true,
-      vatVerificationDate: '2025-11-20',
-      eoriNumber: 'EL999999992',
-    },
-    travelerType: 'wine_enthusiast',
-    visitedProducers: ['manousakis-winery'],
-    personalNotes: {},
-    memberSince: '2023',
-  },
-  charma: {
-    id: 'producer_craft_brewery',
-    name: 'David Wilson',
-    email: 'brewer@demo-brewery.com',
-    avatar: '🍺',
-    hometown: 'Craft Brewery District, Crete',
-    role: 'producer',
-    isProducer: true,
-    claimedProducerId: 'cretan-brewery-charma',
-    producerName: 'Cretan Brewery (Charma Beer)',
-    claimStatus: 'verified_host',
-    taxDetails: {
-      vatNumber: 'EL999999993',
-      legalBusinessName: 'HELLENIC CRAFT BREWING S.A. (DEMO ENTITY)',
-      taxOffice: 'Regional Tax Directorate',
-      registeredAddress: '88 Brewery Boulevard, Bay 4, 73002 Chania, Crete',
-      dispatchContactPhone: '+30 28210 000000',
-      countryCode: 'GR',
-      isVatVerified: true,
-      vatVerificationDate: '2025-09-10',
-      eoriNumber: 'EL999999993',
-    },
-    travelerType: 'craft_beer_explorer',
-    visitedProducers: ['cretan-brewery-charma'],
-    personalNotes: {},
-    memberSince: '2025',
-  },
-  monteraponi: {
-    id: 'producer_tuscan_estate',
-    name: 'Marco Rossi',
-    email: 'host@tuscany-estate-demo.it',
-    avatar: '🏰',
-    hometown: 'Chianti Hills, Tuscany',
-    role: 'producer',
-    isProducer: true,
-    claimedProducerId: 'monteraponi-tuscany',
-    producerName: 'Azienda Agricola Monteraponi',
-    claimStatus: 'verified_host',
-    taxDetails: {
-      vatNumber: 'IT99999999990',
-      legalBusinessName: 'AZIENDA AGRICOLA ARTIGIANALE SRL (DEMO ENTITY)',
-      taxOffice: 'Ufficio Territoriale',
-      registeredAddress: 'Via della Cantina 12, Gate 1, 53017 Siena, Tuscany, Italy',
-      dispatchContactPhone: '+39 055 0000000',
-      countryCode: 'IT',
-      isVatVerified: true,
-      vatVerificationDate: '2025-08-01',
-      eoriNumber: 'IT99999999990',
-    },
-    travelerType: 'wine_enthusiast',
-    visitedProducers: ['monteraponi-tuscany'],
-    personalNotes: {},
-    memberSince: '2024',
-  },
-};
 
 // Helper to load user stamps and notes from local storage by user ID
 const getUserData = (userId: string) => {
@@ -221,42 +72,7 @@ export const useAuth = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [authError, setAuthError] = useState<string | null>(null);
 
-  // Helper for human-readable Firebase Auth error messages
-  const formatAuthError = (error: any): string => {
-    if (!error) return 'An unexpected error occurred. Please try again.';
-    const code = error.code || '';
-    switch (code) {
-      case 'auth/invalid-credential':
-      case 'auth/user-not-found':
-      case 'auth/wrong-password':
-        return 'Incorrect email or password. Please verify your credentials.';
-      case 'auth/email-already-in-use':
-        return 'An account with this email address already exists. Please sign in instead.';
-      case 'auth/weak-password':
-        return 'Password is too weak. Please choose at least 6 characters.';
-      case 'auth/invalid-email':
-        return 'Please enter a valid email address.';
-      case 'auth/popup-closed-by-user':
-        return 'The sign-in popup was closed before completing.';
-      case 'auth/popup-blocked':
-        return 'The sign-in popup was blocked by your browser. Please allow popups for this site.';
-      case 'auth/unauthorized-domain':
-        return 'Unauthorized domain. Please add this domain to authorized domains in Firebase Console.';
-      case 'auth/configuration-not-found':
-        return 'Authentication is not yet enabled in Firebase Console. Go to Build ➔ Authentication to enable Email/Password and Google.';
-      case 'auth/operation-not-allowed':
-        return 'Apple Sign-In is not enabled yet in your Firebase Console. Please enable Apple in Firebase Console ➔ Authentication ➔ Sign-in method (requires Apple Developer credentials), or sign in with Google or Email.';
-      case 'auth/too-many-requests':
-        return 'Access has been temporarily disabled due to many failed attempts. Please reset your password or try again later.';
-      case 'auth/network-request-failed':
-        return 'Network connection error. Please check your internet connection.';
-      default:
-        if (error.message?.includes('cancel') || error.code === '16' || error.message?.includes('16:')) {
-          return 'Sign-in was cancelled.';
-        }
-        return error.message || 'Authentication failed. Please try again.';
-    }
-  };
+
 
   // Helper to map a Firebase User + Cloud Firestore Profile to our UserProfile model
   const mapFirebaseUser = (

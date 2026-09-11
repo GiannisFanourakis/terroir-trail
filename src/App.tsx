@@ -11,9 +11,9 @@ import { useAuth } from './hooks/useAuth';
 import { useBookings } from './hooks/useBookings';
 import { useProducerPortal } from './hooks/useProducerPortal';
 import { GoogleAdSlot } from './components/Monetization/GoogleAdSlot';
-import { CRETAN_DAY_TRIP_LOOPS } from './data/loops';
-import { ChauffeurBooking, WineBoxOrder } from './types/monetization';
+import { ChauffeurBooking } from './types/monetization';
 import type { VerifiedPassInfo } from './components/Monetization/HostVerificationModal';
+import { List, MapPin } from 'lucide-react';
 
 // Performance optimization: lazy-load modals on demand to shrink initial bundle
 const DayTripModal = lazy(() => import('./components/Loops/DayTripModal').then(m => ({ default: m.DayTripModal })));
@@ -26,42 +26,31 @@ const ExplorerPassModal = lazy(() => import('./components/Monetization/ExplorerP
 const DigitalPassModal = lazy(() => import('./components/Monetization/DigitalPassModal').then(m => ({ default: m.DigitalPassModal })));
 const HostVerificationModal = lazy(() => import('./components/Monetization/HostVerificationModal').then(m => ({ default: m.HostVerificationModal })));
 const ChauffeurBookingModal = lazy(() => import('./components/Monetization/ChauffeurBookingModal').then(m => ({ default: m.ChauffeurBookingModal })));
-const WineBoxModal = lazy(() => import('./components/Monetization/WineBoxModal').then(m => ({ default: m.WineBoxModal })));
-const ExperienceExplorerModal = lazy(() => import('./components/Experiences/ExperienceExplorerModal').then(m => ({ default: m.ExperienceExplorerModal })));
 const AboutFaqModal = lazy(() => import('./components/About/AboutFaqModal').then(m => ({ default: m.AboutFaqModal })));
 const LegalModal = lazy(() => import('./components/Legal/LegalModal').then(m => ({ default: m.LegalModal })));
-import { List, MapPin } from 'lucide-react';
+
+export type ActiveModal =
+  | { type: 'loops' }
+  | { type: 'auth'; initialRole?: 'traveler' | 'producer' }
+  | { type: 'passport' }
+  | { type: 'booking'; producer?: Producer | null; experienceId?: string }
+  | { type: 'portal' }
+  | { type: 'my_bookings' }
+  | { type: 'pass' }
+  | { type: 'digital_pass' }
+  | { type: 'host_verify'; guestInfo: VerifiedPassInfo }
+  | { type: 'chauffeur'; circuit?: DayTripLoop | null; producer?: Producer | null }
+  | { type: 'about_faq'; initialTab?: 'about' | 'faq' }
+  | { type: 'legal'; initialTab?: 'privacy' | 'terms' | 'producers' | 'licenses' }
+  | null;
 
 export const App: React.FC = () => {
   const [selectedProducer, setSelectedProducer] = useState<Producer | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
-  const [isLoopsModalOpen, setIsLoopsModalOpen] = useState<boolean>(false);
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
-  const [isPassportModalOpen, setIsPassportModalOpen] = useState<boolean>(false);
-  const [isBookingModalOpen, setIsBookingModalOpen] = useState<boolean>(false);
-  const [isPortalModalOpen, setIsPortalModalOpen] = useState<boolean>(false);
-  const [isMyBookingsModalOpen, setIsMyBookingsModalOpen] = useState<boolean>(false);
-  const [isPassModalOpen, setIsPassModalOpen] = useState<boolean>(false);
-  const [isDigitalPassModalOpen, setIsDigitalPassModalOpen] = useState<boolean>(false);
-  const [verifiedGuestInfo, setVerifiedGuestInfo] = useState<VerifiedPassInfo | null>(null);
-  const [isChauffeurModalOpen, setIsChauffeurModalOpen] = useState<boolean>(false);
-  const [isWineBoxModalOpen, setIsWineBoxModalOpen] = useState<boolean>(false);
-  const [wineBoxCategory, setWineBoxCategory] = useState<'all' | 'wine' | 'beer' | 'olive_oil' | 'honey' | 'cheese'>('all');
-  const [isExperiencesModalOpen, setIsExperiencesModalOpen] = useState<boolean>(false);
-  const [isAboutFaqModalOpen, setIsAboutFaqModalOpen] = useState<boolean>(false);
-  const [aboutFaqInitialTab, setAboutFaqInitialTab] = useState<'about' | 'faq'>('about');
-  const [isLegalModalOpen, setIsLegalModalOpen] = useState<boolean>(false);
-  const [legalInitialTab, setLegalInitialTab] = useState<'privacy' | 'terms' | 'producers' | 'licenses'>('privacy');
-
-  const handleOpenLegal = (tab: 'privacy' | 'terms' | 'producers' | 'licenses' = 'privacy') => {
-    setLegalInitialTab(tab);
-    setIsLegalModalOpen(true);
-  };
-  const [bookingTargetExperienceId, setBookingTargetExperienceId] = useState<string | undefined>(undefined);
-  const [chauffeurTargetCircuit, setChauffeurTargetCircuit] = useState<DayTripLoop | null>(null);
-  const [bookingTargetProducer, setBookingTargetProducer] = useState<Producer | null>(null);
   const [viewMode, setViewMode] = useState<'map' | 'list'>('map');
-  const [authInitialRole, setAuthInitialRole] = useState<'traveler' | 'producer'>('traveler');
+  const [activeModal, setActiveModal] = useState<ActiveModal>(null);
+
+  const closeModal = () => setActiveModal(null);
 
   const { favorites, toggleFavorite, isFavorite } = useFavorites();
   const {
@@ -101,7 +90,10 @@ export const App: React.FC = () => {
     if (verifyPassId) {
       const guestName = params.get('name') || 'Valued Explorer';
       const tier = params.get('tier') === 'annual' ? 'Annual VIP Explorer (365 Days)' : '14-Day VIP Holiday Pass';
-      setVerifiedGuestInfo({ passId: verifyPassId, name: guestName, tier });
+      setActiveModal({
+        type: 'host_verify',
+        guestInfo: { passId: verifyPassId, name: guestName, tier }
+      });
       const cleanUrl = window.location.origin + window.location.pathname;
       window.history.replaceState({}, document.title, cleanUrl);
     } else if (vipParam === 'annual' || (vipParam === 'success' && planParam === 'annual')) {
@@ -127,15 +119,6 @@ export const App: React.FC = () => {
       localStorage.setItem('terroir_chauffeur_bookings', JSON.stringify([booking, ...existing]));
     } catch (e) {
       console.error('Error saving chauffeur booking:', e);
-    }
-  };
-
-  const handleConfirmWineOrder = (order: WineBoxOrder) => {
-    try {
-      const existing = JSON.parse(localStorage.getItem('terroir_wine_orders') || '[]');
-      localStorage.setItem('terroir_wine_orders', JSON.stringify([order, ...existing]));
-    } catch (e) {
-      console.error('Error saving wine order:', e);
     }
   };
 
@@ -166,7 +149,7 @@ export const App: React.FC = () => {
 
   const [filters, setFilters] = useState<FilterState>(initialFilters);
 
-  const { producers, isLive } = useProducers({
+  const { producers } = useProducers({
     destination: filters.destination,
     category: filters.category,
     searchQuery: filters.searchQuery,
@@ -209,44 +192,61 @@ export const App: React.FC = () => {
         return false;
       }
 
-      // Toggles
-      if (filters.dogFriendlyOnly && !producer.dogFriendly) return false;
-      if (filters.walkInOnly && !producer.walkInFriendly) return false;
-      if (filters.campervanOnly && !producer.campervanFriendly) return false;
-      if (filters.favoritesOnly && !isFavorite(producer.id)) return false;
+      // Dog friendly
+      if (filters.dogFriendlyOnly && !producer.dogFriendly) {
+        return false;
+      }
 
-      // Search Query
+      // Walk-in friendly
+      if (filters.walkInOnly && !producer.walkInFriendly) {
+        return false;
+      }
+
+      // Campervan friendly
+      if (filters.campervanOnly && !producer.campervanFriendly) {
+        return false;
+      }
+
+      // Favorites only
+      if (filters.favoritesOnly && !isFavorite(producer.id)) {
+        return false;
+      }
+
+      // Search Query filter (matches name, greek name, region, village, varieties)
       if (filters.searchQuery.trim() !== '') {
         const q = filters.searchQuery.toLowerCase().trim();
         const matchesName = producer.name.toLowerCase().includes(q);
         const matchesGreekName = producer.greekName.toLowerCase().includes(q);
-        const matchesVillage = producer.village.toLowerCase().includes(q);
         const matchesRegion = producer.region.toLowerCase().includes(q);
-        const matchesCountry = (producer.country || '').toLowerCase().includes(q);
-        const matchesDescription = producer.description.toLowerCase().includes(q);
-        const matchesVariety = producer.indigenousVarieties.some((v) =>
+        const matchesVillage = producer.village.toLowerCase().includes(q);
+        const matchesVarieties = producer.indigenousVarieties.some((v) =>
           v.toLowerCase().includes(q)
         );
+        const matchesTagline = producer.tagLine.toLowerCase().includes(q);
 
-        if (!matchesName && !matchesGreekName && !matchesVillage && !matchesRegion && !matchesCountry && !matchesDescription && !matchesVariety) {
-          return false;
-        }
+        return (
+          matchesName ||
+          matchesGreekName ||
+          matchesRegion ||
+          matchesVillage ||
+          matchesVarieties ||
+          matchesTagline
+        );
       }
 
       return true;
     });
   }, [producers, filters, isFavorite]);
 
-  // Deep-linking: Automatically select and open producer from URL query (e.g. ?estate=domaine-paterianakis or ?producer=douloufakis)
+  // Deep Link handler: ?producer=<id>
   useEffect(() => {
-    if (typeof window === 'undefined' || producers.length === 0) return;
+    if (typeof window === 'undefined') return;
     const params = new URLSearchParams(window.location.search);
-    const target = params.get('estate') || params.get('producer');
-    if (target && target !== 'upgraded') {
+    const target = params.get('producer');
+    if (target && producers.length > 0) {
       const match = producers.find(
         (p) =>
           p.id.toLowerCase() === target.toLowerCase() ||
-          p.name.toLowerCase().includes(target.toLowerCase()) ||
           p.id.toLowerCase().includes(target.toLowerCase())
       );
       if (match) {
@@ -258,7 +258,6 @@ export const App: React.FC = () => {
 
   // Load a curated loop
   const handleSelectLoop = (loop: DayTripLoop) => {
-    // Filter to this destination
     setFilters((prev) => ({
       ...prev,
       destination: loop.destination,
@@ -267,7 +266,6 @@ export const App: React.FC = () => {
       searchQuery: '',
     }));
 
-    // Find and select the first producer in the loop
     const firstProducer = producers.find((p) => p.id === loop.stops[0]?.producerId);
     if (firstProducer) {
       setSelectedProducer(firstProducer);
@@ -283,8 +281,7 @@ export const App: React.FC = () => {
         onSelectDestination={(dest: Destination | 'all') => handleFilterChange('destination', dest)}
         searchQuery={filters.searchQuery}
         onSearchChange={(query: string) => handleFilterChange('searchQuery', query)}
-        onOpenLoops={() => setIsLoopsModalOpen(true)}
-        /* onOpenExperiences={() => setIsExperiencesModalOpen(true)} - Commented out until direct deals on experiences are made with producers */
+        onOpenLoops={() => setActiveModal({ type: 'loops' })}
         totalFilteredCount={filteredProducers.length}
         viewMode={viewMode}
         onToggleViewMode={() => setViewMode((prev) => (prev === 'map' ? 'list' : 'map'))}
@@ -292,31 +289,18 @@ export const App: React.FC = () => {
         favoritesOnly={filters.favoritesOnly}
         onToggleFavoritesOnly={() => handleFilterChange('favoritesOnly', !filters.favoritesOnly)}
         user={user}
-        onOpenAuth={(role) => {
-          setAuthInitialRole(role || 'traveler');
-          setIsAuthModalOpen(true);
-        }}
-        onOpenPassport={() => setIsPassportModalOpen(true)}
+        onOpenAuth={(role) => setActiveModal({ type: 'auth', initialRole: role || 'traveler' })}
+        onOpenPassport={() => setActiveModal({ type: 'passport' })}
         onLogout={logout}
         totalProducersCount={producers.length}
-        onOpenMyBookings={() => setIsMyBookingsModalOpen(true)}
-        onOpenProducerPortal={() => setIsPortalModalOpen(true)}
+        onOpenMyBookings={() => setActiveModal({ type: 'my_bookings' })}
+        onOpenProducerPortal={() => setActiveModal({ type: 'portal' })}
         bookingsCount={userBookings.length}
-        onOpenExplorerPass={() => setIsPassModalOpen(true)}
-        onOpenDigitalPass={() => setIsDigitalPassModalOpen(true)}
-        onOpenWineBoxes={() => {
-          setWineBoxCategory('all');
-          setIsWineBoxModalOpen(true);
-        }}
-        onOpenAbout={() => {
-          setAboutFaqInitialTab('about');
-          setIsAboutFaqModalOpen(true);
-        }}
-        onOpenFaq={() => {
-          setAboutFaqInitialTab('faq');
-          setIsAboutFaqModalOpen(true);
-        }}
-        onOpenLegal={handleOpenLegal}
+        onOpenExplorerPass={() => setActiveModal({ type: 'pass' })}
+        onOpenDigitalPass={() => setActiveModal({ type: 'digital_pass' })}
+        onOpenAbout={() => setActiveModal({ type: 'about_faq', initialTab: 'about' })}
+        onOpenFaq={() => setActiveModal({ type: 'about_faq', initialTab: 'faq' })}
+        onOpenLegal={(tab) => setActiveModal({ type: 'legal', initialTab: tab || 'privacy' })}
       />
 
       {/* Stripe Checkout VIP/Producer Success Banner */}
@@ -343,7 +327,7 @@ export const App: React.FC = () => {
         onResetFilters={handleResetFilters}
         totalFiltered={filteredProducers.length}
         totalCount={producers.length}
-        onOpenLoops={() => setIsLoopsModalOpen(true)}
+        onOpenLoops={() => setActiveModal({ type: 'loops' })}
       />
 
       {/* 3. Main Workspace: Sidebar List + Leaflet Map Canvas */}
@@ -378,7 +362,7 @@ export const App: React.FC = () => {
             <div className="pointer-events-auto w-full max-w-2xl">
               <GoogleAdSlot
                 hasExplorerPass={!!user?.hasExplorerPass}
-                onOpenExplorerPass={() => setIsPassModalOpen(true)}
+                onOpenExplorerPass={() => setActiveModal({ type: 'pass' })}
               />
             </div>
           </div>
@@ -400,7 +384,7 @@ export const App: React.FC = () => {
           />
         </div>
 
-        {/* Floating Map/List View Switcher on < lg screens (Hidden when an estate tile is selected on map so it never obscures the tile!) */}
+        {/* Floating Map/List View Switcher on < lg screens */}
         {(!selectedProducer || viewMode === 'list') && (
           <div 
             className="lg:hidden absolute left-1/2 -translate-x-1/2 z-30 pointer-events-auto transition-all animate-in fade-in duration-200"
@@ -431,7 +415,7 @@ export const App: React.FC = () => {
             producer={selectedProducer}
             onClose={() => setIsDrawerOpen(false)}
             user={user}
-            onOpenProducerPortal={() => setIsPortalModalOpen(true)}
+            onOpenProducerPortal={() => setActiveModal({ type: 'portal' })}
             isFavorite={selectedProducer ? isFavorite(selectedProducer.id) : false}
             onToggleFavorite={toggleFavorite}
             isVisited={selectedProducer ? isVisited(selectedProducer.id) : false}
@@ -439,240 +423,204 @@ export const App: React.FC = () => {
             tastingNote={selectedProducer ? getTastingNote(selectedProducer.id) : ''}
             onSaveTastingNote={saveTastingNote}
             isAuthenticated={isAuthenticated}
-            onOpenAuth={(role) => {
-              setAuthInitialRole(role || 'traveler');
-              setIsAuthModalOpen(true);
-            }}
+            onOpenAuth={(role) => setActiveModal({ type: 'auth', initialRole: role || 'traveler' })}
             onOpenBooking={(producer, experienceId) => {
-              setBookingTargetProducer(producer);
-              setBookingTargetExperienceId(experienceId);
-              setIsBookingModalOpen(true);
+              setActiveModal({ type: 'booking', producer, experienceId });
             }}
             customNotice={selectedProducer ? getOverride(selectedProducer.id)?.customNotice : undefined}
             isProTier={selectedProducer ? (getOverride(selectedProducer.id)?.isProTier ?? false) : false}
             directBottleShopUrl={selectedProducer ? getOverride(selectedProducer.id)?.directBottleShopUrl : undefined}
-            onOpenWineBoxes={(category) => {
-              setWineBoxCategory(category || 'all');
-              setIsWineBoxModalOpen(true);
-            }}
             hasExplorerPass={!!user?.hasExplorerPass}
-            onOpenExplorerPass={() => setIsPassModalOpen(true)}
-            onOpenDigitalPass={() => setIsDigitalPassModalOpen(true)}
+            onOpenExplorerPass={() => setActiveModal({ type: 'pass' })}
+            onOpenDigitalPass={() => setActiveModal({ type: 'digital_pass' })}
           />
         )}
       </main>
 
       {/* Lazy-Loaded Modals Suspense Boundary */}
       <Suspense fallback={null}>
-        {/* 5. Curated Terroir Routes Modal (Self-guided Google Maps navigation & optional chauffeur) */}
-        <DayTripModal
-          isOpen={isLoopsModalOpen}
-          onClose={() => setIsLoopsModalOpen(false)}
-          onSelectLoop={handleSelectLoop}
-          onSelectProducer={(producer) => {
-            setSelectedProducer(producer);
-            setIsDrawerOpen(true);
-          }}
-          onBookChauffeur={(loop) => {
-            setChauffeurTargetCircuit(loop);
-            setIsChauffeurModalOpen(true);
-          }}
-          user={user}
-          onOpenExplorerPass={() => setIsPassModalOpen(true)}
-          producers={producers}
-        />
-        {/* 6. Explorer Auth & Profile Modal */}
-        <AuthModal
-        isOpen={isAuthModalOpen}
-        onClose={() => setIsAuthModalOpen(false)}
-        initialRole={authInitialRole}
-        producers={producers}
-        onLoginAsDemo={loginAsDemo}
-        onLoginAsDemoProducer={loginAsDemoProducer}
-        onLogin={loginWithEmail}
-        onSignup={(name, email, password, travelerType) => signupWithEmail(name, email, password, travelerType)}
-        onLoginAsProducer={loginAsProducer}
-        onClaimProducer={claimAndRegisterProducer}
-        onResetPassword={sendPasswordResetLink}
-        onLoginWithGoogle={loginWithGoogle}
-        onLoginWithApple={loginWithApple}
-        onOpenPrivacyNotice={() => handleOpenLegal('privacy')}
-        onOpenTerms={() => handleOpenLegal('terms')}
-        onOpenLicenses={() => handleOpenLegal('licenses')}
-        isLoading={isAuthLoading}
-        authError={authError}
-        isFirebaseConfigured={isFirebaseConfigured}
-      />
+        {/* Curated Terroir Routes Modal */}
+        {activeModal?.type === 'loops' && (
+          <DayTripModal
+            isOpen
+            onClose={closeModal}
+            onSelectLoop={handleSelectLoop}
+            onSelectProducer={(producer) => {
+              setSelectedProducer(producer);
+              setIsDrawerOpen(true);
+              closeModal();
+            }}
+            onBookChauffeur={(loop) => setActiveModal({ type: 'chauffeur', circuit: loop })}
+            user={user}
+            onOpenExplorerPass={() => setActiveModal({ type: 'pass' })}
+            producers={producers}
+          />
+        )}
 
-      {/* 7. Terroir Passport Stamps Modal */}
-      <PassportModal
-        isOpen={isPassportModalOpen}
-        onClose={() => setIsPassportModalOpen(false)}
-        user={user}
-        producers={producers}
-        onToggleVisited={toggleVisited}
-        onSaveTastingNote={saveTastingNote}
-        onSelectProducer={(producer) => {
-          setSelectedProducer(producer);
-          setIsDrawerOpen(true);
-        }}
-        onOpenExplorerPass={() => setIsPassModalOpen(true)}
-        onOpenDigitalPass={() => {
-          setIsPassportModalOpen(false);
-          setIsDigitalPassModalOpen(true);
-        }}
-      />
+        {/* Explorer Auth & Profile Modal */}
+        {activeModal?.type === 'auth' && (
+          <AuthModal
+            isOpen
+            onClose={closeModal}
+            initialRole={activeModal.initialRole || 'traveler'}
+            producers={producers}
+            onLoginAsDemo={loginAsDemo}
+            onLoginAsDemoProducer={loginAsDemoProducer}
+            onLogin={loginWithEmail}
+            onSignup={(name, email, password, travelerType) => signupWithEmail(name, email, password, travelerType)}
+            onLoginAsProducer={loginAsProducer}
+            onClaimProducer={claimAndRegisterProducer}
+            onResetPassword={sendPasswordResetLink}
+            onLoginWithGoogle={loginWithGoogle}
+            onLoginWithApple={loginWithApple}
+            onOpenPrivacyNotice={() => setActiveModal({ type: 'legal', initialTab: 'privacy' })}
+            onOpenTerms={() => setActiveModal({ type: 'legal', initialTab: 'terms' })}
+            onOpenLicenses={() => setActiveModal({ type: 'legal', initialTab: 'licenses' })}
+            isLoading={isAuthLoading}
+            authError={authError}
+            isFirebaseConfigured={isFirebaseConfigured}
+          />
+        )}
 
-      {/* 8. Tasting Reservation Modal */}
-      <BookingModal
-        isOpen={isBookingModalOpen}
-        onClose={() => {
-          setIsBookingModalOpen(false);
-          setBookingTargetExperienceId(undefined);
-        }}
-        producer={bookingTargetProducer}
-        user={user}
-        initialExperienceId={bookingTargetExperienceId}
-        onBookTasting={bookTasting}
-        onOpenAuth={() => {
-          setAuthInitialRole('traveler');
-          setIsAuthModalOpen(true);
-        }}
-      />
+        {/* Terroir Passport Stamps Modal */}
+        {activeModal?.type === 'passport' && (
+          <PassportModal
+            isOpen
+            onClose={closeModal}
+            user={user}
+            producers={producers}
+            onToggleVisited={toggleVisited}
+            onSaveTastingNote={saveTastingNote}
+            onSelectProducer={(producer) => {
+              setSelectedProducer(producer);
+              setIsDrawerOpen(true);
+              closeModal();
+            }}
+            onOpenExplorerPass={() => setActiveModal({ type: 'pass' })}
+            onOpenDigitalPass={() => setActiveModal({ type: 'digital_pass' })}
+          />
+        )}
 
-      {/* 9. Host & Winery/Brewery Management Portal */}
-      <ProducerPortalModal
-        isOpen={isPortalModalOpen}
-        onClose={() => setIsPortalModalOpen(false)}
-        user={user}
-        onOpenAuth={(role) => {
-          setAuthInitialRole(role || 'producer');
-          setIsAuthModalOpen(true);
-        }}
-        onLoginAsDemoProducer={loginAsDemoProducer}
-        onLoginWithGoogle={loginWithGoogle}
-        onLoginWithApple={loginWithApple}
-        producers={producers}
-        bookings={bookings}
-        onUpdateBookingStatus={setStatus}
-        onSaveProducerOverride={updateOverride}
-        getProducerOverride={getOverride}
-        onUpdateProducerTaxDetails={updateProducerTaxDetails}
-        onSelectProducerForDrawer={(producer) => {
-          setSelectedProducer(producer);
-          setIsDrawerOpen(true);
-        }}
-        onPassVerified={(info) => setVerifiedGuestInfo(info)}
-      />
+        {/* Tasting Reservation Modal */}
+        {activeModal?.type === 'booking' && (
+          <BookingModal
+            isOpen
+            onClose={closeModal}
+            producer={activeModal.producer || selectedProducer}
+            user={user}
+            initialExperienceId={activeModal.experienceId}
+            onBookTasting={bookTasting}
+            onOpenAuth={() => setActiveModal({ type: 'auth', initialRole: 'traveler' })}
+          />
+        )}
 
-      {/* 10. Explorer My Bookings & Visits Modal */}
-      <MyBookingsModal
-        isOpen={isMyBookingsModalOpen}
-        onClose={() => setIsMyBookingsModalOpen(false)}
-        bookings={userBookings}
-        producers={producers}
-        onCancelBooking={(id) => setStatus(id, 'cancelled')}
-        onSelectProducer={(producer) => {
-          setSelectedProducer(producer);
-          setIsDrawerOpen(true);
-        }}
-      />
+        {/* Host & Winery/Brewery Management Portal */}
+        {activeModal?.type === 'portal' && (
+          <ProducerPortalModal
+            isOpen
+            onClose={closeModal}
+            user={user}
+            onOpenAuth={(role) => setActiveModal({ type: 'auth', initialRole: role || 'producer' })}
+            onLoginAsDemoProducer={loginAsDemoProducer}
+            onLoginWithGoogle={loginWithGoogle}
+            onLoginWithApple={loginWithApple}
+            producers={producers}
+            bookings={bookings}
+            onUpdateBookingStatus={setStatus}
+            onSaveProducerOverride={updateOverride}
+            getProducerOverride={getOverride}
+            onUpdateProducerTaxDetails={updateProducerTaxDetails}
+            onSelectProducerForDrawer={(producer) => {
+              setSelectedProducer(producer);
+              setIsDrawerOpen(true);
+              closeModal();
+            }}
+            onPassVerified={(info) => setActiveModal({ type: 'host_verify', guestInfo: info })}
+          />
+        )}
 
-      {/* 11. VIP Terroir Holiday Pass Modal (€14.99 B2C Pass) */}
-      <ExplorerPassModal
-        isOpen={isPassModalOpen}
-        onClose={() => setIsPassModalOpen(false)}
-        user={user}
-        onOpenAuth={() => setIsAuthModalOpen(true)}
-        onActivatePass={(days = 14) => activateExplorerPass(days)}
-        onOpenDigitalPass={() => {
-          setIsPassModalOpen(false);
-          setIsDigitalPassModalOpen(true);
-        }}
-      />
+        {/* Explorer My Bookings & Visits Modal */}
+        {activeModal?.type === 'my_bookings' && (
+          <MyBookingsModal
+            isOpen
+            onClose={closeModal}
+            bookings={userBookings}
+            producers={producers}
+            onCancelBooking={(id) => setStatus(id, 'cancelled')}
+            onSelectProducer={(producer) => {
+              setSelectedProducer(producer);
+              setIsDrawerOpen(true);
+              closeModal();
+            }}
+          />
+        )}
 
-      {/* 11.1 Digital VIP Explorer Pass & Offline QR Modal */}
-      <DigitalPassModal
-        isOpen={isDigitalPassModalOpen}
-        onClose={() => setIsDigitalPassModalOpen(false)}
-        user={user}
-        onOpenExplorerPass={() => {
-          setIsDigitalPassModalOpen(false);
-          setIsPassModalOpen(true);
-        }}
-      />
+        {/* VIP Terroir Holiday Pass Modal */}
+        {activeModal?.type === 'pass' && (
+          <ExplorerPassModal
+            isOpen
+            onClose={closeModal}
+            user={user}
+            onOpenAuth={() => setActiveModal({ type: 'auth', initialRole: 'traveler' })}
+            onActivatePass={(days = 14) => activateExplorerPass(days)}
+            onOpenDigitalPass={() => setActiveModal({ type: 'digital_pass' })}
+          />
+        )}
 
-      {/* 11.2 Host Cellar Door Pass Verification Modal (When cellar master scans guest QR code) */}
-      <HostVerificationModal
-        isOpen={!!verifiedGuestInfo}
-        onClose={() => setVerifiedGuestInfo(null)}
-        guestInfo={verifiedGuestInfo}
-      />
+        {/* Digital VIP Explorer Pass & Offline QR Modal */}
+        {activeModal?.type === 'digital_pass' && (
+          <DigitalPassModal
+            isOpen
+            onClose={closeModal}
+            user={user}
+            onOpenExplorerPass={() => setActiveModal({ type: 'pass' })}
+          />
+        )}
 
-      {/* 12. Optional Private Chauffeur & Mercedes Van Booking Modal */}
-      <ChauffeurBookingModal
-        isOpen={isChauffeurModalOpen}
-        onClose={() => setIsChauffeurModalOpen(false)}
-        initialCircuit={chauffeurTargetCircuit}
-        user={user}
-        onOpenAuth={() => setIsAuthModalOpen(true)}
-        onBookChauffeur={handleConfirmChauffeurBooking}
-      />
+        {/* Host Cellar Door Pass Verification Modal */}
+        {activeModal?.type === 'host_verify' && (
+          <HostVerificationModal
+            isOpen
+            onClose={closeModal}
+            guestInfo={activeModal.guestInfo}
+          />
+        )}
 
-      {/* 13. Taste of the Trail - International Artisan Delivery Modal (Commented out until clientbase and international shipping logistics are established) */}
-      {/*
-      <WineBoxModal
-        isOpen={isWineBoxModalOpen}
-        onClose={() => setIsWineBoxModalOpen(false)}
-        initialCategory={wineBoxCategory}
-        user={user}
-        onOpenAuth={() => setIsAuthModalOpen(true)}
-        onOrderBox={handleConfirmWineOrder}
-      />
-      */}
+        {/* Optional Private Chauffeur & Mercedes Van Booking Modal */}
+        {activeModal?.type === 'chauffeur' && (
+          <ChauffeurBookingModal
+            isOpen
+            onClose={closeModal}
+            initialCircuit={activeModal.circuit}
+            initialProducer={activeModal.producer}
+            user={user}
+            onOpenAuth={() => setActiveModal({ type: 'auth', initialRole: 'traveler' })}
+            onBookChauffeur={handleConfirmChauffeurBooking}
+          />
+        )}
 
-      {/* 14. 135+ Curated Terroir & Tasting Experiences Explorer Modal (Commented out until clientbase is built and direct deals on experiences are made with producers) */}
-      {/*
-      <ExperienceExplorerModal
-        isOpen={isExperiencesModalOpen}
-        onClose={() => setIsExperiencesModalOpen(false)}
-        onBookExperience={(exp) => {
-          const producer = producers.find((p) => p.id === exp.producerId) || producers[0];
-          setBookingTargetProducer(producer);
-          setBookingTargetExperienceId(exp.id);
-          setIsExperiencesModalOpen(false);
-          setIsBookingModalOpen(true);
-        }}
-        onSelectProducer={(prod) => {
-          setSelectedProducer(prod);
-          setIsDrawerOpen(true);
-          setIsExperiencesModalOpen(false);
-        }}
-      />
-      */}
+        {/* About Us & Frequently Asked Questions Modal */}
+        {activeModal?.type === 'about_faq' && (
+          <AboutFaqModal
+            isOpen
+            onClose={closeModal}
+            initialTab={activeModal.initialTab || 'about'}
+            onOpenLoops={() => setActiveModal({ type: 'loops' })}
+            onOpenAuth={(role) => setActiveModal({ type: 'auth', initialRole: role || 'traveler' })}
+            onOpenExplorerPass={() => setActiveModal({ type: 'pass' })}
+            onOpenProducerPortal={() => setActiveModal({ type: 'portal' })}
+            onOpenLegal={(tab) => setActiveModal({ type: 'legal', initialTab: tab })}
+          />
+        )}
 
-      {/* 15. About Us & Frequently Asked Questions Modal */}
-      <AboutFaqModal
-        isOpen={isAboutFaqModalOpen}
-        onClose={() => setIsAboutFaqModalOpen(false)}
-        initialTab={aboutFaqInitialTab}
-        /* onOpenLoops={() => setIsLoopsModalOpen(true)} - Commented out until deals are struck with chauffeurs/dealerships */
-        /* onOpenExperiences={() => setIsExperiencesModalOpen(true)} */
-        onOpenAuth={(role) => {
-          setAuthInitialRole(role || 'traveler');
-          setIsAuthModalOpen(true);
-        }}
-        onOpenExplorerPass={() => setIsPassModalOpen(true)}
-        onOpenProducerPortal={() => setIsPortalModalOpen(true)}
-        onOpenLegal={handleOpenLegal}
-      />
-
-      {/* 16. Legal Notice, GDPR Privacy Policy & Open Source Licenses Modal */}
-      <LegalModal
-        isOpen={isLegalModalOpen}
-        onClose={() => setIsLegalModalOpen(false)}
-        initialTab={legalInitialTab}
-      />
+        {/* Legal Notice, GDPR Privacy Policy & Open Source Licenses Modal */}
+        {activeModal?.type === 'legal' && (
+          <LegalModal
+            isOpen
+            onClose={closeModal}
+            initialTab={activeModal.initialTab || 'privacy'}
+          />
+        )}
       </Suspense>
     </div>
   );

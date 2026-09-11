@@ -15,7 +15,6 @@ interface ProfileMenuProps {
   bookingsCount?: number;
   onOpenExplorerPass?: () => void;
   onOpenDigitalPass?: () => void;
-  onOpenWineBoxes?: () => void;
   onOpenAbout?: () => void;
   onOpenFaq?: () => void;
   onOpenLegal?: (tab?: 'privacy' | 'terms' | 'licenses') => void;
@@ -34,7 +33,6 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
   bookingsCount = 0,
   onOpenExplorerPass,
   onOpenDigitalPass,
-  onOpenWineBoxes,
   onOpenAbout,
   onOpenFaq,
   onOpenLegal,
@@ -262,26 +260,7 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
               </button>
             )}
 
-            {/* Artisan Boxes commented out until clientbase and shipping logistics are established */}
-            {/*
-            {onOpenWineBoxes && (
-              <button
-                onClick={() => {
-                  setIsOpen(false);
-                  onOpenWineBoxes();
-                }}
-                className="w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-stone-300 hover:text-rose-300 hover:bg-rose-500/10 transition cursor-pointer"
-              >
-                <span className="flex items-center gap-2">
-                  <Package className="w-3.5 h-3.5 text-rose-400" />
-                  <span>Artisan Boxes</span>
-                </span>
-                <span className="px-1.5 py-0.2 rounded-full bg-rose-500/20 text-rose-300 text-[10px] font-bold border border-rose-500/30">
-                  Greek Terroir
-                </span>
-              </button>
-            )}
-            */}
+
 
             {onOpenMyBookings && (
               <button
