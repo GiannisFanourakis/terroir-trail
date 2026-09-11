@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { CURATED_ROUTES, getGoogleMapsRouteUrl } from '../../data/loops';
 import { producerService } from '../../services/producerService';
 import { DayTripLoop, Producer } from '../../types/terroir';
-import { X, Clock, Compass, ArrowRight, CheckCircle2, Car, Crown, ExternalLink, MapPin, Navigation, Wifi } from 'lucide-react';
+import { X, Clock, Compass, ArrowRight, CheckCircle2, Car, ExternalLink, MapPin, Navigation, Wifi } from 'lucide-react';
 import { UserProfile } from '../../types/auth';
 
 interface DayTripModalProps {
@@ -110,11 +110,7 @@ export const DayTripModal: React.FC<DayTripModalProps> = ({
               >
                 <span>{getDestinationFlag(loop.destination)}</span>
                 <span>{loop.region.toUpperCase()}</span>
-                {loop.isVipOnly && (
-                  <span className="text-[9px] px-1.5 py-0.2 rounded bg-amber-400/20 text-amber-300 font-bold flex items-center gap-0.5">
-                    <Crown className="w-2.5 h-2.5" /> VIP
-                  </span>
-                )}
+
                 <span className="text-[11px] text-stone-500 font-normal">({loop.totalDuration})</span>
               </button>
             );
@@ -191,44 +187,7 @@ export const DayTripModal: React.FC<DayTripModalProps> = ({
             </div>
           </div>
 
-          {/* VIP Cellar Perks & Route Savings Callout */}
-          <div className="p-4 rounded-2xl bg-gradient-to-r from-amber-500/15 via-stone-900 to-amber-950/20 border border-amber-400/35 shadow-md flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div className="flex items-start gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-amber-400/20 flex items-center justify-center text-amber-300 shrink-0 mt-0.5">
-                <Crown className="w-4 h-4" />
-              </div>
-              <div className="space-y-0.5">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-bold text-amber-200">
-                    Passholders save ~€25–€35 on this loop
-                  </span>
-                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-300 font-bold border border-amber-400/30">
-                    {currentLoop.stops.length} VIP Stops
-                  </span>
-                </div>
-                <p className="text-[11px] text-stone-300 leading-snug">
-                  Unlock complimentary cellar reserve welcome pours, artisan meze platters &amp; 10% off bottle purchases across all {currentLoop.stops.length} stops.
-                </p>
-              </div>
-            </div>
-            <div className="shrink-0">
-              {user?.hasExplorerPass ? (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/20 text-emerald-300 font-bold text-xs border border-emerald-500/30">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                  <span>Pass Active For Route</span>
-                </span>
-              ) : onOpenExplorerPass ? (
-                <button
-                  type="button"
-                  onClick={onOpenExplorerPass}
-                  className="w-full sm:w-auto px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-stone-950 font-bold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-amber-500/20 transition active:scale-95 cursor-pointer"
-                >
-                  <Crown className="w-3.5 h-3.5" />
-                  <span>Get Holiday Pass (€14.99)</span>
-                </button>
-              ) : null}
-            </div>
-          </div>
+
 
           {/* 3-Stop Route Timeline */}
           <div>

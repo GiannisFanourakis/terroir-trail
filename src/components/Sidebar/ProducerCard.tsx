@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Producer } from '../../types/terroir';
-import { MapPin, Star, ArrowUpRight, Car, Heart, Crown } from 'lucide-react';
+import { MapPin, Star, ArrowUpRight, Car, Heart } from 'lucide-react';
 import { getCategoryFallbackImage } from '../../utils/imageFallbacks';
 
 interface ProducerCardProps {
@@ -76,10 +76,6 @@ export const ProducerCard: React.FC<ProducerCardProps> = ({
           <span className={`flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-full font-bold border backdrop-blur-md ${badge.bg}`}>
             <span>{badge.icon}</span>
             <span>{badge.label}</span>
-          </span>
-          <span className="flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full font-bold border backdrop-blur-md bg-black/60 text-amber-300 border-amber-400/30">
-            <Crown className="w-3 h-3 text-amber-400" />
-            <span>VIP</span>
           </span>
         </div>
 
@@ -162,11 +158,7 @@ export const ProducerCard: React.FC<ProducerCardProps> = ({
           )}
         </div>
 
-        {/* VIP Passholder Callout */}
-        <div className="flex items-center gap-1.5 text-[10px] text-amber-300/90 font-medium pt-1">
-          <Crown className="w-3 h-3 text-amber-400 shrink-0" />
-          <span className="truncate">VIP Pass: Welcome pour · Free meze · 10% off</span>
-        </div>
+
 
         {/* Card Footer */}
         <div className="flex items-center justify-between pt-2.5 border-t border-white/5 text-[11px]">

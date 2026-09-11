@@ -3,7 +3,7 @@ import { Destination } from '../../types/terroir';
 import { UserProfile } from '../../types/auth';
 import { ProfileMenu } from '../Auth/ProfileMenu';
 import { UserAvatar } from '../Common/UserAvatar';
-import { Compass, Search, X, Heart, Building2, Calendar, Crown, Package, Sparkles, BookOpen, HelpCircle, Menu, Award, QrCode, LogOut, User } from 'lucide-react';
+import { Compass, Search, X, Heart, Building2, Calendar, Package, Sparkles, BookOpen, HelpCircle, Menu, Award, QrCode, LogOut, User } from 'lucide-react';
 
 interface HeaderProps {
   selectedDestination: Destination | 'all';
@@ -125,38 +125,6 @@ export const Header: React.FC<HeaderProps> = ({
                 )}
               </button>
 
-              {/* VIP Pass */}
-              {onOpenExplorerPass && (
-                <button
-                  onClick={() => {
-                    if (user?.hasExplorerPass && onOpenDigitalPass) {
-                      onOpenDigitalPass();
-                    } else {
-                      onOpenExplorerPass();
-                    }
-                  }}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-xl border transition shrink-0 cursor-pointer active:scale-95 shadow-sm group ${
-                    user?.hasExplorerPass
-                      ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40 hover:border-emerald-400 shadow-emerald-500/10'
-                      : 'bg-gradient-to-r from-amber-500/20 via-stone-900 to-amber-500/15 text-amber-300 border-amber-500/40 hover:border-amber-400 hover:shadow-amber-500/15'
-                  }`}
-                  title={user?.hasExplorerPass ? 'View Digital VIP Pass & QR' : 'Terroir Holiday Pass (€14.99): Complimentary welcome pours, free meze & 10% off bottles at 58 family estates'}
-                >
-                  <Crown className={`w-3.5 h-3.5 shrink-0 ${user?.hasExplorerPass ? 'text-amber-400 animate-pulse' : 'text-amber-400 group-hover:scale-110 transition-transform'}`} />
-                  {user?.hasExplorerPass ? (
-                    <span className="flex items-center gap-1.5 font-bold text-emerald-300">
-                      <span>VIP Pass</span>
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />
-                    </span>
-                  ) : (
-                    <span className="flex items-center gap-1.5">
-                      <span className="font-bold text-amber-200">VIP Pass</span>
-                      <span className="text-[10px] font-mono px-1.5 py-0.2 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/30">€14.99</span>
-                    </span>
-                  )}
-                </button>
-              )}
-
               {/* Curated Routes */}
               {onOpenLoops && (
                 <button
@@ -242,37 +210,7 @@ export const Header: React.FC<HeaderProps> = ({
                 onOpenLoops={onOpenLoops}
               />
 
-              {/* VIP Pass (Mobile Top Bar) */}
-              {onOpenExplorerPass && (
-                <button
-                  onClick={() => {
-                    if (user?.hasExplorerPass && onOpenDigitalPass) {
-                      onOpenDigitalPass();
-                    } else {
-                      onOpenExplorerPass();
-                    }
-                  }}
-                  className={`flex items-center gap-1 px-2 py-1.5 text-xs font-bold rounded-xl border transition shrink-0 cursor-pointer active:scale-95 ${
-                    user?.hasExplorerPass
-                      ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40 shadow-sm'
-                      : 'bg-gradient-to-r from-amber-500/20 via-stone-900 to-amber-500/15 text-amber-300 border-amber-500/40 shadow-sm'
-                  }`}
-                  title={user?.hasExplorerPass ? 'View Digital VIP Pass & QR' : 'Holiday VIP Pass (€14.99)'}
-                >
-                  <Crown className={`w-3.5 h-3.5 shrink-0 ${user?.hasExplorerPass ? 'text-amber-400 animate-pulse' : 'text-amber-400'}`} />
-                  {user?.hasExplorerPass ? (
-                    <span className="flex items-center gap-1 text-[11px] font-bold">
-                      <span>VIP</span>
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />
-                    </span>
-                  ) : (
-                    <span className="flex items-center gap-1 text-[11px] font-bold">
-                      <span>Pass</span>
-                      <span className="text-[9px] font-mono text-amber-200/90">€14.99</span>
-                    </span>
-                  )}
-                </button>
-              )}
+
 
               {/* Saved badge (always visible) */}
               <button
@@ -372,47 +310,7 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Drawer items */}
             <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-2">
 
-              {/* VIP Pass */}
-              {onOpenExplorerPass && (
-                <button
-                  onClick={() => { 
-                    if (user?.hasExplorerPass && onOpenDigitalPass) {
-                      onOpenDigitalPass();
-                    } else {
-                      onOpenExplorerPass();
-                    }
-                    closeMenu(); 
-                  }}
-                  className={`p-3.5 rounded-2xl border transition text-left flex items-start gap-3 cursor-pointer ${
-                    user?.hasExplorerPass
-                      ? 'bg-gradient-to-r from-emerald-500/20 via-stone-900 to-amber-950/20 text-emerald-200 border-emerald-500/40'
-                      : 'bg-gradient-to-r from-amber-500/15 via-stone-900 to-amber-950/20 text-white border-amber-500/35 hover:border-amber-400'
-                  }`}
-                >
-                  <div className="w-9 h-9 rounded-xl bg-amber-400/20 flex items-center justify-center text-amber-300 shrink-0 mt-0.5">
-                    <Crown className="w-4 h-4" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between gap-1 mb-0.5">
-                      <span className="font-bold text-xs text-amber-300">
-                        {user?.hasExplorerPass ? 'Digital VIP Pass & QR' : 'Terroir Holiday Pass'}
-                      </span>
-                      <span className={`text-[10px] font-bold px-1.5 py-0.2 rounded-full ${
-                        user?.hasExplorerPass
-                          ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
-                          : 'bg-amber-400/20 text-amber-300 border border-amber-400/30 font-mono'
-                      }`}>
-                        {user?.hasExplorerPass ? 'ACTIVE' : '€14.99'}
-                      </span>
-                    </div>
-                    <p className="text-[11px] text-stone-300 leading-snug">
-                      {user?.hasExplorerPass
-                        ? 'Tap to open your holographic wallet card & offline QR code'
-                        : 'Free reserve welcome pours, artisan meze & 10% off bottles across 58 family estates'}
-                    </p>
-                  </div>
-                </button>
-              )}
+
 
               {/* About & FAQ */}
               {onOpenAbout && (

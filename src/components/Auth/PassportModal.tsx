@@ -103,7 +103,7 @@ export const PassportModal: React.FC<PassportModalProps> = ({
         {/* Passport Progress & Filter Tabs */}
         <div className="px-5 py-3.5 bg-stone-900/60 border-b border-white/10 shrink-0 space-y-3">
           {/* VIP Explorer Pass Banner */}
-          {user.hasExplorerPass ? (
+          {user.hasExplorerPass && (
             <div className="p-3 rounded-2xl bg-gradient-to-r from-amber-500/20 via-stone-900 to-amber-900/25 border border-amber-400/40 flex items-center justify-between gap-3 shadow-inner">
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-xl bg-amber-400/20 border border-amber-400/30 flex items-center justify-center text-amber-300 shrink-0">
@@ -137,31 +137,6 @@ export const PassportModal: React.FC<PassportModalProps> = ({
                   ACTIVE
                 </span>
               </div>
-            </div>
-          ) : (
-            <div className="p-3 rounded-2xl bg-gradient-to-r from-amber-500/15 via-stone-900 to-amber-950/20 border border-amber-500/30 flex items-center justify-between gap-3">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-amber-400/20 border border-amber-400/30 flex items-center justify-center text-amber-300 shrink-0">
-                  <Crown className="w-4 h-4" />
-                </div>
-                <div>
-                  <div className="text-xs font-bold text-amber-200">
-                    Optional 14-Day VIP Pass (€14.99)
-                  </div>
-                  <div className="text-[11px] text-stone-400">
-                    Free welcome pours, artisanal meze &amp; 10% off cellar bottles
-                  </div>
-                </div>
-              </div>
-              {onOpenExplorerPass && (
-                <button
-                  type="button"
-                  onClick={onOpenExplorerPass}
-                  className="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs shadow-md shadow-amber-500/20 transition shrink-0 cursor-pointer"
-                >
-                  Upgrade (€14.99)
-                </button>
-              )}
             </div>
           )}
 

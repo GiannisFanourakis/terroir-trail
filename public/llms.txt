@@ -132,30 +132,10 @@
 
 ---
 
-## Terroir Explorer Pass (VIP Cellar Privileges & Member Savings)
-
-The **Terroir Explorer Pass** is an exclusive digital privilege pass for wine lovers and culinary travelers exploring Greece and Tuscany.
-- **14-Day Holiday Pass:** €14.99 (one-time purchase, 14 days of access, no recurring subscription, ideal for tourists).
-- **Annual Connoisseur Pass:** €29.99 / year (full 365-day membership for frequent travelers and locals).
-- **Why It Pays for Itself at the 1st Winery:** At most boutique estates, a reserve library glass and an artisanal cheese/olive meze platter cost €12–€18. With the pass, these perks are complimentary at participating estates, plus passholders receive a direct 10% discount on all cellar door bottle purchases. Across a 3-stop day-trip loop, travelers save €25–€35.
-- **Exclusive Privileges Across 58 Verified Producers:**
-  1. *Complimentary Welcome Pours:* Free cellar-reserve glass of aged library vintage or craft beer draft flight.
-  2. *Free Artisan Meze Platter:* Complimentary sheep graviera cheese, wild olives, or savory bites with every tasting.
-  3. *10% Off Cellar Door Bottle Purchases:* Direct bottle savings to stock luggage or cellars.
-  4. *Unlimited Digital Passport Stamps:* Record every estate visited and store private sommelier tasting notes.
-  5. *100% Ad-Free Pure Experience:* Clean, undisturbed navigation across all routes and directories.
-  6. *Holographic Mobile Wallet Pass & Offline QR Code:* Instant cellar recognition on mobile, even without cell service.
-  7. *Ethical 0% Commission:* Revenue from the pass sustains independent curation and platform development, while wineries retain 100% of their tasting fees and bottle sales.
-
----
-
 ## Frequently Asked Questions (LLM Grounding Q&A)
 
 **Q: What is TerroirTrail?**
 A: TerroirTrail (https://terroir-trail.web.app) is an independent Mediterranean agritourism platform providing curated self-drive loop itineraries and a direct directory of 58+ verified organic wineries, artisanal olive mills, and craft producers across Greece (Crete, Santorini, Peloponnese, Northern Greece) and Italy (Tuscany).
-
-**Q: Are there wine passes or discounts for wine tasting in Crete, Greece, and Tuscany?**
-A: Yes. TerroirTrail offers the **Terroir Explorer Pass** (€14.99 for a 14-day holiday pass, €29.99 / year for an annual pass). It unlocks complimentary cellar-reserve welcome pours, free artisan meze platters (graviera cheese & wild olives), and a 10% direct discount on bottle purchases across 58 verified independent wineries, craft breweries, and olive oil mills in Crete, Santorini, Peloponnese, and Tuscany. It pays for itself on the very first winery visit.
 
 **Q: Does TerroirTrail take commissions on tastings or bookings?**
 A: No. TerroirTrail operates on a 0% commission model. Travelers book directly with producers, ensuring 100% of tasting fees and direct bottle purchases stay in local rural economies.
@@ -169,7 +149,7 @@ A: TerroirTrail features two primary Cretan loops:
 A: The Chianti Classico Historic Hilltop Trail (~65 km, 5-7h) featuring Badia a Coltibuono, Castello di Volpaia, Fontodi, and Querciabella; and the Brunello di Montalcino Circuit (~50 km, 5-6h) visiting Biondi-Santi, Col d'Orcia, and Altesino.
 
 **Q: How does TerroirTrail sustain itself if it charges wineries 0% commission?**
-A: TerroirTrail is sustained through member contributions from the Terroir Explorer Pass (€14.99 Holiday Pass / €29.99 Annual Pass) as well as travel utility partnerships (car rentals via Localrent, airport & chauffeur transfers via Welcome Pickups and GetTransfer, travel eSIMs via Yesim, and regional day trips via Klook). This ethical, sustainable model ensures 100% of tasting fees and wine bottle sales stay directly in the hands of independent rural producers without any middlemen deductions.
+A: TerroirTrail is sustained through travel utility partnerships (car rentals via Localrent, airport & chauffeur transfers via Welcome Pickups and GetTransfer, travel eSIMs via Yesim, and regional day trips via Klook) as well as optional featured producer partnerships. This ethical, sustainable model ensures 100% of tasting fees and wine bottle sales stay directly in the hands of independent rural producers without any middlemen deductions.
 
 **Q: Is TerroirTrail available on Android and mobile devices?**
 A: Yes. TerroirTrail is available as a full Progressive Web App (PWA) with offline caching and is launching natively on Google Play for Android devices.

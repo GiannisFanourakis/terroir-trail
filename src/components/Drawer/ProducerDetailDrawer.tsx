@@ -5,8 +5,8 @@ import { getExperiencesForProducer } from '../../data/experiences';
 import { 
   X, MapPin, Star, Phone, Globe, Navigation, Clock, 
   Dog, Footprints, Caravan, Car, Sparkles, Share2, Check, Heart, Award, 
-  CheckCircle2, Wine, ShoppingBag, ArrowRight, Crown, Building2,
-  Camera, ChevronLeft, ChevronRight, Beer, Mail, Calendar, QrCode
+  CheckCircle2, Wine, ShoppingBag, ArrowRight, Building2,
+  Camera, ChevronLeft, ChevronRight, Beer, Mail, Calendar
 } from 'lucide-react';
 import { useProducerPhotos } from '../../services/googlePlacesPhotos';
 import { getCategoryFallbackImage } from '../../utils/imageFallbacks';
@@ -298,7 +298,6 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
 
   const cat = getCategoryDetails(producer.category);
   const road = getRoadAccessDetails(producer.roadAccess);
-  const vipPerks = getVipPerks(producer);
   const term = getCategoryTerminology(producer.category, producer.name);
 
   return (
@@ -542,76 +541,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
           </div>
         </div>
 
-        {/* VIP Terroir Explorer Pass Perks Highlight Banner */}
-        <div className={`p-4 rounded-2xl border transition-all ${
-          hasExplorerPass
-            ? 'bg-gradient-to-r from-emerald-500/20 via-stone-900 to-amber-950/20 border-emerald-500/40 shadow-md'
-            : 'bg-gradient-to-r from-amber-500/15 via-stone-900 to-amber-950/25 border-amber-400/40 shadow-md'
-        }`}>
-          <div className="flex items-start justify-between gap-3 mb-2.5">
-            <div className="flex items-center gap-2.5 min-w-0">
-              <div className="w-8 h-8 rounded-xl bg-amber-400/20 flex items-center justify-center text-amber-300 shrink-0">
-                <Crown className="w-4 h-4" />
-              </div>
-              <div className="min-w-0">
-                <h4 className="font-bold text-xs text-amber-200 flex items-center gap-1.5 flex-wrap">
-                  <span>Passholder Cellar Privileges</span>
-                  <span className={`text-[9px] px-1.5 py-0.2 rounded font-extrabold uppercase ${
-                    hasExplorerPass
-                      ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
-                      : 'bg-amber-400/20 text-amber-300 border border-amber-400/30 font-mono'
-                  }`}>
-                    {hasExplorerPass ? 'ACTIVE' : '€14.99 PASS'}
-                  </span>
-                </h4>
-                <span className="text-[10px] text-stone-400 block truncate">
-                  {hasExplorerPass
-                    ? 'Show your digital QR card at this estate to claim'
-                    : 'Pays for itself on your first cellar visit'}
-                </span>
-              </div>
-            </div>
 
-            <div className="shrink-0">
-              {hasExplorerPass ? (
-                onOpenDigitalPass && (
-                  <button
-                    type="button"
-                    onClick={onOpenDigitalPass}
-                    className="px-3 py-1.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-stone-950 font-bold text-xs shadow-sm transition flex items-center gap-1.5 cursor-pointer active:scale-95"
-                  >
-                    <QrCode className="w-3.5 h-3.5 text-stone-950" />
-                    <span>Show QR</span>
-                  </button>
-                )
-              ) : onOpenExplorerPass && (
-                <button
-                  type="button"
-                  onClick={onOpenExplorerPass}
-                  className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-stone-950 font-bold text-xs shadow-md shadow-amber-500/20 transition flex items-center gap-1 cursor-pointer active:scale-95"
-                >
-                  <Crown className="w-3 h-3 text-stone-950" />
-                  <span>Get Pass</span>
-                </button>
-              )}
-            </div>
-          </div>
-
-          <div className="space-y-1.5 pt-2 border-t border-white/5 text-[11px] text-stone-200">
-            <div className="flex items-start gap-2">
-              <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
-              <span><strong>Welcome Pour:</strong> {vipPerks.welcomePour}</span>
-            </div>
-            <div className="flex items-start gap-2">
-              <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
-              <span><strong>Free Meze:</strong> {vipPerks.freeMeze}</span>
-            </div>
-            <div className="flex items-start gap-2">
-              <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
-              <span><strong>{term.discountLabel}:</strong> {vipPerks.discountPercent}% off all {term.productPlural} purchases</span>
-            </div>
-          </div>
-        </div>
 
         {/* Passport Stamp & Tasting Notes Action */}
         <div className="p-3.5 rounded-2xl bg-gradient-to-r from-amber-950/30 to-stone-900 border border-amber-500/20 flex flex-col gap-2.5">
@@ -963,73 +893,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
               </div>
             </div>
 
-            {/* VIP Terroir Explorer Pass Perks Card (Freemium Privilege) */}
-            <div className={`p-4 rounded-2xl border transition-all ${
-              hasExplorerPass
-                ? 'bg-gradient-to-r from-amber-500/20 via-stone-900 to-amber-950/30 border-amber-400/50 shadow-lg'
-                : 'bg-stone-900/90 border-amber-500/30'
-            }`}>
-              <div className="flex items-start justify-between gap-3 mb-2.5">
-                <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-lg bg-amber-400/20 flex items-center justify-center text-amber-300 shrink-0">
-                    <Crown className="w-3.5 h-3.5" />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-xs text-amber-200 flex items-center gap-1.5">
-                      VIP Pass Privileges
-                      <span className="text-[9px] px-1.5 py-0.2 rounded bg-amber-400/20 text-amber-300 font-bold uppercase">
-                        {hasExplorerPass ? 'ACTIVE' : 'MEMBER EXCLUSIVE'}
-                      </span>
-                    </h4>
-                    <span className="text-[10px] text-stone-400">
-                      {hasExplorerPass
-                        ? 'Show digital card at counter to claim'
-                        : 'Included with Terroir Holiday Pass (€14.99)'}
-                    </span>
-                  </div>
-                </div>
 
-                {hasExplorerPass ? (
-                  onOpenDigitalPass ? (
-                    <button
-                      type="button"
-                      onClick={onOpenDigitalPass}
-                      className="px-2.5 py-1 rounded-xl bg-amber-400 hover:bg-amber-300 text-stone-950 font-bold text-[11px] shadow-sm transition shrink-0 cursor-pointer flex items-center gap-1.5 active:scale-95"
-                    >
-                      <QrCode className="w-3 h-3 text-stone-950" />
-                      <span>Show Pass</span>
-                    </button>
-                  ) : (
-                    <span className="px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-400 font-bold text-[10px] border border-emerald-500/30 shrink-0">
-                      CLAIMABLE
-                    </span>
-                  )
-                ) : onOpenExplorerPass && (
-                  <button
-                    type="button"
-                    onClick={onOpenExplorerPass}
-                    className="px-2.5 py-1 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-[11px] shadow-sm transition shrink-0 cursor-pointer active:scale-95"
-                  >
-                    Unlock VIP
-                  </button>
-                )}
-              </div>
-
-              <div className="space-y-1.5 pt-1 text-[11px]">
-                <div className="flex items-center gap-2 text-stone-200">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                  <span><strong>Welcome Pour:</strong> {vipPerks.welcomePour}</span>
-                </div>
-                <div className="flex items-center gap-2 text-stone-200">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                  <span><strong>Free Meze:</strong> {vipPerks.freeMeze}</span>
-                </div>
-                <div className="flex items-center gap-2 text-stone-200">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                  <span><strong>{term.discountLabel}:</strong> {vipPerks.discountPercent}% off all {term.productPlural} purchases</span>
-                </div>
-              </div>
-            </div>
 
             {/* Direct Bottle Shop Link (Pro Tier) */}
             {directBottleShopUrl && (

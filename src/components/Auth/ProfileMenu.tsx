@@ -142,9 +142,8 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
             </div>
           </div>
 
-          {/* DEDICATED VIP PASS CARD (BEHIND LOGIN) */}
-          {user.isProducer ? (
-            /* PRODUCER VIP PASS: HOST PRO TIER */
+          {/* PRODUCER VIP PASS: HOST PRO TIER */}
+          {user.isProducer && user.claimedProducerId && (
             <div className="mb-2.5 p-3 rounded-2xl bg-gradient-to-br from-amber-500/20 via-stone-900 to-stone-950 border border-amber-400/40 shadow-lg shadow-amber-500/10 text-left">
               <div className="flex items-center justify-between mb-1.5">
                 <div className="flex items-center gap-1.5">
@@ -169,55 +168,6 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
                 >
                   <Building2 className="w-3 h-3" />
                   <span>Manage Host Pro & Invoices</span>
-                </button>
-              )}
-            </div>
-          ) : (
-            /* TRAVELLER VIP PASS: 14-DAY EXPLORER PASS */
-            <div className={`mb-2.5 p-3 rounded-2xl border transition relative overflow-hidden text-left ${
-              user.hasExplorerPass
-                ? 'bg-gradient-to-br from-amber-500/25 via-stone-900 to-stone-950 border-amber-400/50 shadow-lg shadow-amber-500/10'
-                : 'bg-stone-900/90 border-white/10 hover:border-amber-500/30'
-            }`}>
-              <div className="flex items-center justify-between mb-1.5">
-                <div className="flex items-center gap-1.5">
-                  <Crown className={`w-4 h-4 ${user.hasExplorerPass ? 'text-amber-400 animate-pulse' : 'text-stone-400'}`} />
-                  <span className="font-bold text-white text-xs">
-                    {user.hasExplorerPass ? 'VIP Explorer Pass' : 'VIP Holiday Pass (Optional)'}
-                  </span>
-                </div>
-                <span className={`text-[9px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${
-                  user.hasExplorerPass 
-                    ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40' 
-                    : 'bg-stone-800 text-stone-300 border border-stone-700'
-                }`}>
-                  {user.hasExplorerPass ? 'Active' : 'Free Tier · No Pass'}
-                </span>
-              </div>
-              <p className="text-[10px] text-stone-300 mb-2 leading-relaxed">
-                {user.hasExplorerPass
-                  ? '100% Ad-Free active · Complimentary pours, artisan discounts & VIP map filters unlocked.'
-                  : 'You are on the Free Explorer Tier. Upgrade to the optional 14-day VIP Pass (€14.99) for ad-free exploration, complimentary pours & 10% cellar discounts.'}
-              </p>
-              {onOpenExplorerPass && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsOpen(false);
-                    if (user.hasExplorerPass && onOpenDigitalPass) {
-                      onOpenDigitalPass();
-                    } else {
-                      onOpenExplorerPass();
-                    }
-                  }}
-                  className={`w-full py-1.5 rounded-xl text-[11px] font-bold flex items-center justify-center gap-1.5 transition cursor-pointer ${
-                    user.hasExplorerPass
-                      ? 'bg-stone-800 hover:bg-stone-750 text-amber-300 border border-amber-400/30 shadow-md'
-                      : 'bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-stone-950 shadow-md font-extrabold'
-                  }`}
-                >
-                  <Sparkles className="w-3 h-3" />
-                  <span>{user.hasExplorerPass ? 'View Digital VIP Pass & QR' : 'Get 14-Day VIP Pass (€14.99)'}</span>
                 </button>
               )}
             </div>

@@ -85,13 +85,10 @@ TerroirTrail uses a **Zero-Risk, High-Performance Media Architecture**:
 
 TerroirTrail balances traveler savings with a fair-trade, sustainable economic model for rural producers:
 
-### 1. 👑 Terroir Holiday Pass (€14.99 / 14-Day Trip Access)
-Designed for vacationers and culinary tourists exploring wine regions:
-* **Complimentary Welcome Pours:** Library or cellar-reserve pour at 20+ participating boutique estates.
-* **Free Artisan Meze Pairings:** Complimentary sheep graviera cheese, rusks, and organic olive pairings with every booked tasting.
-* **10% Cellar-Door Bottle Discount:** Direct 10% savings on wine, beer, and olive oil bottle purchases to take home.
-* **€30 Chauffeur Voucher & €15 Wine Box Voucher:** Instant credit towards private transit or temperature-controlled international shipping.
-* **Digital Holographic Wallet Pass:** Apple Wallet and Google Wallet compatible pass with instant QR verification for cellar masters.
+### 1. 👑 Terroir Holiday Pass (Pilot / In Preparation)
+Designed for vacationers and culinary tourists exploring wine regions (launching upon completion of formal cellar door agreements):
+* **Cellar Perks:** Curated welcome pours, seasonal meze pairings, and cellar door discounts across participating estates.
+* **Digital Holographic Wallet Pass:** Digital pass with QR verification for participating cellar doors.
 
 ### 2. 🛡️ Producer Portal & Verified Host Pro (€39/mo or €19.99/yr)
 Empowers independent artisans to take control of their digital presence:
