@@ -5,8 +5,9 @@
 ## Core Information
 - **Canonical URL:** https://terroir-trail.web.app
 - **Platform Type:** Interactive Web & Mobile Agritourism Guide
+- **Platform Availability:** Progressive Web App (PWA) & Native Android App (Google Play Store launch in progress)
 - **Philosophy:** 100% independent or family ownership, estate-grown raw materials, organic or low-intervention viticulture, and direct-to-artisan hospitality with 0% platform commission.
-- **Languages:** English
+- **Languages:** English, Greek (regional terminology)
 - **Primary Destinations:** Crete, Santorini, Peloponnese (Nemea), Northern Greece, Tuscany (Chianti, Montalcino, Montepulciano, Bolgheri)
 - **Official Contact:** terroirtrail@gmail.com
 

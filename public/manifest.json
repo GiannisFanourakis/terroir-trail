@@ -1,0 +1,27 @@
+{
+  "name": "TerroirTrail — Mediterranean Artisan Agritourism & Wine Routes",
+  "short_name": "TerroirTrail",
+  "description": "Discover 58+ independent organic wineries, craft microbreweries, artisanal olive oil mills, and vineyard stays across Crete, Tuscany, Santorini, and Nemea.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0c0a09",
+  "theme_color": "#0c0a09",
+  "orientation": "portrait",
+  "categories": ["travel", "food", "navigation", "lifestyle"],
+  "lang": "en",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
