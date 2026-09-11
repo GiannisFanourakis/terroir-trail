@@ -10,11 +10,18 @@
     "deploy": "npm run build && npx firebase-tools deploy --only hosting",
     "sync:android": "npm run build && npx cap sync android",
     "sync:ios": "npm run build && npx cap sync ios",
-    "sync:all": "npm run build && npx cap sync"
+    "sync:all": "npm run build && npx cap sync",
+    "server": "tsx server/index.ts",
+    "stripe:test": "tsx scripts/test_stripe_integration.ts",
+    "stripe:flow": "tsx scripts/run_checkout_flow.ts"
   },
   "devDependencies": {
     "@capacitor/cli": "^8.5.1",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
     "@types/google.maps": "^3.66.2",
+    "@types/node": "^22.20.2",
+    "tsx": "^4.23.13",
     "typescript": "~6.0.2",
     "vite": "^8.2.2"
   },
@@ -33,6 +40,9 @@
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.7",
     "@vitejs/plugin-react": "^6.1.1",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
     "firebase": "^12.18.0",
     "html5-qrcode": "^2.3.8",
     "leaflet": "^1.9.4",
@@ -40,6 +50,7 @@
     "qrcode": "^1.5.4",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
+    "stripe": "^22.6.2",
     "tailwindcss": "^4.3.3"
   }
 }
