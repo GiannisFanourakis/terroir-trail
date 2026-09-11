@@ -7,7 +7,7 @@ export const CURATED_ROUTES: DayTripLoop[] = [
     greekTitle: 'Ηρακλειώτικη Διαδρομή Τερουάρ & Χειροποίητης Παράδοσης',
     subtitle: 'Cold-Pressed Koroneiki EVOO, Mountain Thyme Honey, Ancient Grapes & Copper Rakokazano',
     destination: 'crete',
-    region: 'Heraklion (Peza, Alagni & Kounavoi)',
+    region: 'Heraklion East',
     totalDuration: '5.0 hours',
     drivingDistance: '36 km (All paved scenic village roads)',
     stops: [
@@ -42,125 +42,186 @@ export const CURATED_ROUTES: DayTripLoop[] = [
     isVipOnly: false,
   },
   {
-    id: 'chania-craft-beer-olive-trail',
-    title: 'Chania Craft Beer, Stone Mills & Mountain Romeiko',
-    greekTitle: 'Μικροζυθοποιία, Ελαιόλαδο & Ρωμαίικο Χανίων',
-    subtitle: 'Unpasteurized Fresh Draft, 3,000-Yr Olive Tree & Orange Groves',
+    id: 'heraklion-west-slopes-trail',
+    title: 'Heraklion Mountain Slopes: Dafnes Amphora & Malevizi Raki',
+    greekTitle: 'Δυτικό Ηράκλειο: Αμφορείς Δαφνών & Ρακοκάζανο Πρινιά',
+    subtitle: 'Single-Vineyard Vidiano, Amphora Aging & Mountain Rakokazano',
     destination: 'crete',
-    region: 'Chania',
-    totalDuration: '5.5 hours',
-    drivingDistance: '46 km (All paved roads)',
-    stops: [
-      {
-        producerId: 'biolea-estate',
-        suggestedTime: '10:30 AM - 12:00 PM',
-        activity: 'Watch granite millstones crush organic Koroneiki olives with bread tasting on the terrace.'
-      },
-      {
-        producerId: 'monumental-olive-tree-vouves',
-        suggestedTime: '12:30 PM - 1:30 PM',
-        activity: 'Stand beside a 3,000-year-old living tree and visit the historic cooperative mill.'
-      },
-      {
-        producerId: 'cretan-brewery-charma',
-        suggestedTime: '2:00 PM - 4:00 PM',
-        activity: 'Fresh unpasteurized Charma draft flight & smoked Cretan sausages in the olive grove taproom.'
-      }
-    ],
-    description: 'A perfect western Crete day route combining historic liquid gold and modern craft beer innovation in the lush foothills of the White Mountains.',
-    highlightPointers: [
-      'Gorge of Roka panoramic views',
-      'The world’s oldest documented olive tree',
-      'Fresh unfiltered draft beer straight from the conditioning tank'
-    ],
-    isVipOnly: false,
-  },
-  {
-    id: 'heraklion-terroir-circuit',
-    title: 'The Heraklion Wine & Ancient Press Circuit',
-    greekTitle: 'Οινική Διαδρομή & Αρχαία Πατητήρια Ηρακλείου',
-    subtitle: 'From Amphora Vidiano to Wood-Fired Kazani Meze',
-    destination: 'crete',
-    region: 'Heraklion',
-    totalDuration: '5.5 hours',
-    drivingDistance: '48 km (Paved roads)',
+    region: 'Heraklion West',
+    totalDuration: '5.0 hours',
+    drivingDistance: '42 km (Paved mountain route)',
     stops: [
       {
         producerId: 'douloufakis-winery',
         suggestedTime: '11:00 AM - 12:30 PM',
-        activity: 'Tasting of single-vineyard Vidiano and clay amphora whites in Dafnes.'
+        activity: 'Tasting of single-vineyard Vidiano and clay amphora fermented whites in historic Dafnes.'
       },
       {
-        producerId: 'lyrarakis-winery',
+        producerId: 'silva-daskalaki-winery',
         suggestedTime: '1:00 PM - 2:30 PM',
-        activity: 'Walk through surviving plots of rescued Dafni & Plyto with local cheese board.'
+        activity: 'Biodynamic and organic high-altitude vineyard walk in Siva village with aged Liatiko tasting.'
       },
       {
-        producerId: 'kazani-stilianou',
+        producerId: 'kazani-kokolakis',
         suggestedTime: '3:00 PM - 4:30 PM',
-        activity: 'Wood-fired copper pot Tsikoudia demonstration with village grilled mezedes.'
+        activity: 'Visit an authentic mountain rakokazano in Prinias with wood smoke, copper stills, and rustic meze.'
       }
     ],
-    description: 'This circuit takes you through the rolling vineyard hills of Heraklion, the heart of Minoan and contemporary Cretan winemaking. Experience indigenous grapes preserved nowhere else on earth, followed by an authentic village kazani feast.',
+    description: 'Explore the western mountain foothills of Heraklion. From clay amphora wines in Dafnes to biodynamic plots in Siva and a wild mountain distillery in Prinias.',
     highlightPointers: [
-      'Stunning view of Mount Juktas (the sleeping face of Zeus)',
-      'Taste wines made in authentic terracotta amphorae',
-      'Warm wood-fired hospitality with local raki'
+      'Clay amphora-fermented Vidiano whites',
+      'Biodynamic vineyards in the shadow of Mount Psiloritis',
+      'Authentic mountain village hospitality and wood-fired raki'
     ],
-    isVipOnly: true,
+    isVipOnly: false,
+  },
+  {
+    id: 'chania-craft-beer-olive-trail',
+    title: 'Chania Heritage Oil, Orange Groves & Fresh Craft Beer',
+    greekTitle: 'Ελαιόλαδο, Πορτοκαλεώνες & Μπίρα Χανίων',
+    subtitle: 'Granite Millstones, 3,000-Yr Olive Tree & Fresh Draft in Groves',
+    destination: 'crete',
+    region: 'Chania',
+    totalDuration: '5.5 hours',
+    drivingDistance: '44 km (All paved roads)',
+    stops: [
+      {
+        producerId: 'biolea-estate',
+        suggestedTime: '10:30 AM - 12:00 PM',
+        activity: 'Watch granite millstones crush organic Koroneiki olives with bread tasting on the scenic stone terrace.'
+      },
+      {
+        producerId: 'monumental-olive-tree-vouves',
+        suggestedTime: '12:30 PM - 1:30 PM',
+        activity: 'Stand beside a 3,000-year-old living tree and visit the historic cooperative mill museum.'
+      },
+      {
+        producerId: 'cretan-brewery-charma',
+        suggestedTime: '2:00 PM - 3:30 PM',
+        activity: 'Fresh unpasteurized Charma draft flight & smoked Cretan sausages in the olive grove taproom.'
+      },
+      {
+        producerId: 'manousakis-winery',
+        suggestedTime: '4:00 PM - 5:30 PM',
+        activity: 'Organic Romeiko wine tasting and farm-to-table vineyard snacks in the orange grove garden of Vatolakkos.'
+      }
+    ],
+    description: 'A perfect western Crete day route combining historic liquid gold olive oil, monumental heritage, and modern craft brewing in the lush foothills of the White Mountains.',
+    highlightPointers: [
+      'Panoramic views across the foothills of the White Mountains',
+      'The world’s oldest documented living olive tree',
+      'Fresh unfiltered draft beer straight from the conditioning tank',
+      'Organic orange-grove vineyard dining in Vatolakkos'
+    ],
+    isVipOnly: false,
+  },
+  {
+    id: 'rethymno-mountain-cheese-mill-trail',
+    title: 'Rethymno Heritage Mills & Ida Mountain Cave Cheese',
+    greekTitle: 'Ελαιοτριβεία & Τυροκομεία Ρεθύμνου & Ψηλορείτη',
+    subtitle: 'Cold Olive Pressing, Raw Sheep Milk & Cave-Aged Graviera',
+    destination: 'crete',
+    region: 'Rethymno',
+    totalDuration: '5.0 hours',
+    drivingDistance: '48 km (Scenic foothills)',
+    stops: [
+      {
+        producerId: 'paraschakis-olive-mill',
+        suggestedTime: '10:30 AM - 12:00 PM',
+        activity: 'Explore the historic 19th-century olive press museum and taste cold-extracted extra virgin olive oil.'
+      },
+      {
+        producerId: 'tzourmpakis-dairy-amari',
+        suggestedTime: '12:30 PM - 2:00 PM',
+        activity: 'Sample artisanal raw-milk Graviera, velvety Galeni, and smoked goat cheese in the pristine Amari Valley.'
+      },
+      {
+        producerId: 'aerakis-dairy-anogeia',
+        suggestedTime: '2:30 PM - 4:00 PM',
+        activity: 'Taste legendary 18-month cave-aged Graviera and warm sheep Mizithra from the alpine slopes of Mount Ida.'
+      }
+    ],
+    description: 'Journey through the historic heart of rural Crete. Taste award-winning cold-pressed olive oils in Melidoni, followed by two legendary artisan cheese makers preserving ancient mountain shepherd traditions.',
+    highlightPointers: [
+      'Historic olive mill museum in Melidoni',
+      'Pure raw-milk Graviera and Galeni in Amari Valley',
+      'Cave-aged alpine cheeses on Mount Psiloritis'
+    ],
+    isVipOnly: false,
   },
   {
     id: 'santorini-volcanic-terroir',
-    title: 'Santorini Volcanic Caldera & Donkey Beer Trail',
-    greekTitle: 'Ηφαιστειακό Terroir & Μπίρα Donkey Σαντορίνης',
-    subtitle: '150-Yr Ungrafted Kouloura Vines to Volcanic Microbrews',
+    title: 'Santorini Complete Volcanic Caldera & Donkey Beer Trail',
+    greekTitle: 'Ηφαιστειακό Terroir, Αποστάγματα & Μπίρα Donkey Σαντορίνης',
+    subtitle: '150-Yr Kouloura Vines, Volcanic Ales & Sunset Caldera Cellars',
     destination: 'santorini',
     region: 'Santorini',
-    totalDuration: '4.5 hours',
-    drivingDistance: '22 km (Paved roads)',
+    totalDuration: '5.0 hours',
+    drivingDistance: '24 km (Paved island roads)',
     stops: [
       {
-        producerId: 'estate-argyros-santorini',
-        suggestedTime: '11:00 AM - 1:00 PM',
-        activity: 'Explore 150-year-old ungrafted bush vines and taste mineral-rich volcanic Assyrtiko.'
+        producerId: 'domaine-sigalas-santorini',
+        suggestedTime: '10:30 AM - 12:00 PM',
+        activity: 'Walk through ungrafted basket vines (kouloura) on the Oia plains and taste bone-dry volcanic Assyrtiko.'
+      },
+      {
+        producerId: 'vassaltis-vineyards',
+        suggestedTime: '12:30 PM - 1:45 PM',
+        activity: 'Contemporary architecture winery tasting mineral-rich Nassitis and barrel-aged Assyrtiko in Vourvoulos.'
       },
       {
         producerId: 'santorini-brewing-company',
-        suggestedTime: '1:30 PM - 3:30 PM',
+        suggestedTime: '2:15 PM - 3:30 PM',
         activity: 'Taste Yellow, Red, and Crazy Donkey unpasteurized craft ales with local volcanic tomato fritters.'
+      },
+      {
+        producerId: 'canava-santorini-distillery',
+        suggestedTime: '3:45 PM - 4:45 PM',
+        activity: 'Historic copper stills tour with saffron-infused Tsikoudia and traditional volcanic ouzo.'
+      },
+      {
+        producerId: 'venetsanos-winery-santorini',
+        suggestedTime: '5:00 PM - 6:30 PM (Sunset)',
+        activity: 'Cliffside gravity cellars walk and sunset Nykteri tasting on the sheer edge of the Caldera.'
       }
     ],
-    description: 'Experience the extreme volcanic terroir of Santorini—from dry mineral wines that taste of pumice and sea spray to the island’s famous Donkey craft ales.',
+    description: 'The definitive volcanic circuit across Santorini: from ungrafted basket vines in Oia to the famous Donkey craft ales, saffron distillates, and a front-row sunset tasting over the submerged volcano.',
     highlightPointers: [
-      'Woven basket vines (kouloura) unique to Santorini',
-      'The famous Yellow & Crazy Donkey microbrews',
-      'Epic volcanic Aegean light'
+      'Ancient basket vines (kouloura) unique to Santorini',
+      'Fresh unpasteurized Donkey craft microbrews',
+      'Handcrafted saffron-infused Tsikoudia in copper stills',
+      'Unmatched panoramic sunset seat over the Caldera cliffs'
     ],
-    isVipOnly: true,
+    isVipOnly: false,
   },
   {
     id: 'peloponnese-mythic-trail',
-    title: 'Peloponnese Mythic Terroir: Blood of Hercules & Arcadia Moschofilero',
-    greekTitle: 'Μυθικό Terroir Πελοποννήσου: Αιγιωργίτικο & Μοσχοφίλερο',
-    subtitle: 'Nemea Grand Cru Slopes (650m) to High Arcadia Champagne-Method Sparkling',
+    title: 'Peloponnese Mythic Terroir: Blood of Hercules & High Arcadia',
+    greekTitle: 'Μυθικό Terroir Πελοποννήσου: Αγιωργίτικο & Μοσχοφίλερο',
+    subtitle: 'Nemea Limestone Hills (650m) to High Arcadia Sparkling',
     destination: 'peloponnese',
-    region: 'Nemea & Mantinia',
+    region: 'Peloponnese',
     totalDuration: '6.0 hours',
     drivingDistance: '64 km (Scenic paved mountain pass)',
     stops: [
       {
         producerId: 'gaia-wines-nemea',
-        suggestedTime: '10:30 AM - 12:30 PM',
+        suggestedTime: '10:30 AM - 12:00 PM',
         activity: 'Gravity-flow cellar tour in Koutsi and tasting velvety reserve Agiorgitiko with local cheeses.'
       },
       {
         producerId: 'skouras-winery-nemea',
-        suggestedTime: '1:00 PM - 2:30 PM',
+        suggestedTime: '12:30 PM - 2:00 PM',
         activity: 'Tasting of the mythical "Megas Oenos" (Agiorgitiko & Cabernet) in contemporary art tasting galleries.'
       },
       {
+        producerId: 'semeli-estate-nemea',
+        suggestedTime: '2:30 PM - 3:45 PM',
+        activity: 'High-altitude panoramic tasting (650m) overlooking the entire Nemean valley.'
+      },
+      {
         producerId: 'ktima-tselepos',
-        suggestedTime: '3:30 PM - 5:00 PM',
+        suggestedTime: '4:15 PM - 5:30 PM',
         activity: 'Cold continental Mantinia plateau tasting of traditional method Amalia Brut sparkling and wild Moschofilero.'
       }
     ],
@@ -170,70 +231,70 @@ export const CURATED_ROUTES: DayTripLoop[] = [
       'The legendary "Megas Oenos" vertical library',
       'Champagne-method sparkling wine at 750m elevation'
     ],
-    isVipOnly: true,
+    isVipOnly: false,
   },
   {
     id: 'northern-greece-royal-trail',
     title: 'Kingdom of Macedonia: Epanomi Malagousia & Naoussa Royal Xinomavro',
     greekTitle: 'Μακεδονία: Μαλαγουζιά Επανομής & Βασιλικό Ξινόμαυρο',
-    subtitle: 'From Thermaic Gulf Sea-Breeze Whites to Mount Vermio Old Vines',
+    subtitle: 'Sea-Breeze Revived Whites, Fresh Craft Brews & Mount Vermio Old Vines',
     destination: 'northern_greece',
-    region: 'Thessaloniki & Naoussa',
-    totalDuration: '6.5 hours',
-    drivingDistance: '85 km (Highway & wine slopes)',
+    region: 'Macedonia',
+    totalDuration: '6.0 hours',
+    drivingDistance: '75 km (Highway & wine slopes)',
     stops: [
       {
         producerId: 'ktima-gerovassiliou',
         suggestedTime: '10:00 AM - 12:30 PM',
-        activity: 'Tour the world-renowned corkscrew museum and taste the revived Malagousia facing Mount Olympus.'
+        activity: 'Tour the world-renowned corkscrew museum (2,600+ pieces) and taste the revived Malagousia facing Mount Olympus.'
+      },
+      {
+        producerId: 'propator-sknipa-brewery',
+        suggestedTime: '1:00 PM - 2:30 PM',
+        activity: 'Sample unpasteurized, unfiltered Sknipa craft beers fresh from the tanks in Thermi.'
       },
       {
         producerId: 'thymiopoulos-naoussa',
-        suggestedTime: '2:00 PM - 4:00 PM',
+        suggestedTime: '3:30 PM - 5:00 PM',
         activity: 'Biodynamic vineyard walk and tasting of "Earth and Sky" natural Xinomavro straight from old oak casks.'
+      },
+      {
+        producerId: 'kir-yianni-naoussa',
+        suggestedTime: '5:15 PM - 6:30 PM',
+        activity: 'High-elevation vineyard stroll facing Mount Vermio tasting legendary single-vineyard Ramnista.'
       }
     ],
-    description: 'Northern Greece is the land of Alexander the Great and Dionysian mystery. This route pairs the world’s benchmark aromatic Malagousia with the legendary structured Xinomavro of Naoussa.',
+    description: 'Northern Greece is the land of Alexander the Great and Dionysian mystery. This route pairs the world’s benchmark aromatic Malagousia and craft brews with the legendary structured Xinomavro of Naoussa.',
     highlightPointers: [
       'The world’s premier private corkscrew museum (2,600+ pieces)',
       'Mount Olympus panoramic sea-view terraces',
-      'Biodynamic century-old Xinomavro vines'
+      'Biodynamic century-old Xinomavro vines in Naoussa'
     ],
     isVipOnly: false,
   },
   {
-    id: 'santorini-caldera-sunset-trail',
-    title: 'Santorini Sunset Caldera & Saffron Distillation Trail',
-    greekTitle: 'Διαδρομή Καλντέρας & Αποστάγματα Σαφράν Σαντορίνης',
-    subtitle: 'Cliffside Gravity Winery, Volcanic Black Beach & Saffron Tsikoudia',
-    destination: 'santorini',
-    region: 'Santorini',
-    totalDuration: '5.0 hours',
-    drivingDistance: '28 km (Paved caldera roads)',
+    id: 'tuscany-chianti-classico-trail',
+    title: 'Tuscany Chianti Classico: Cypress Hills & Organic Sangiovese',
+    greekTitle: 'Κλασικό Κιάντι Τοσκάνης: Βιολογικό Sangiovese',
+    subtitle: '10th-Century Stone Watchtower & High-Altitude Terraced Vineyards',
+    destination: 'tuscany',
+    region: 'Tuscany',
+    totalDuration: '4.5 hours',
+    drivingDistance: '25 km (Scenic Tuscan hills)',
     stops: [
       {
-        producerId: 'gaia-wines-santorini',
-        suggestedTime: '11:00 AM - 1:00 PM',
-        activity: 'Beachfront industrial canava tasting of sea-submerged Thalassitis right by crashing volcanic surf.'
-      },
-      {
-        producerId: 'canava-santorini-distillery',
-        suggestedTime: '1:30 PM - 3:00 PM',
-        activity: 'Explore 19th-century copper stills and sample Assyrtiko Tsikoudia infused with Greek red saffron.'
-      },
-      {
-        producerId: 'venetsanos-winery-santorini',
-        suggestedTime: '4:00 PM - 6:00 PM (Sunset)',
-        activity: 'Cliffside gravity cellars walk and sunset Nykteri tasting on the sheer edge of the Caldera.'
+        producerId: 'monteraponi-tuscany',
+        suggestedTime: '11:00 AM - 2:00 PM',
+        activity: 'Tour a medieval 10th-century hamlet, ancient stone cellars, and taste organic Chianti Classico paired with local pecorino and olive oil.'
       }
     ],
-    description: 'The definitive luxury circuit on Santorini: from volcanic beach surf to centuries-old saffron copper stills, culminating in a front-row sunset seat on the edge of the Caldera cliffs.',
+    description: 'An idyllic journey through the heart of Chianti Classico. Experience high-altitude organic Sangiovese farmed on limestone terraces surrounding a historic stone watchtower.',
     highlightPointers: [
-      'Wines submerged 25m under the Aegean Sea',
-      'Handcrafted saffron & fig tsikoudia',
-      'Front-row cliffside sunset over the sunken volcano'
+      '10th-century medieval watchtower and stone cellars',
+      'Organic high-altitude Sangiovese and Chianti Classico Riserva',
+      'Panoramic cypress-lined views of the Tuscan hills'
     ],
-    isVipOnly: true,
+    isVipOnly: false,
   }
 ];
 

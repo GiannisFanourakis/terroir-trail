@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { CURATED_ROUTES, getGoogleMapsRouteUrl } from '../../data/loops';
 import { producerService } from '../../services/producerService';
 import { DayTripLoop, Producer } from '../../types/terroir';
-import { X, Clock, Compass, ArrowRight, CheckCircle2, Car, ExternalLink, MapPin, Navigation, Wifi } from 'lucide-react';
+import { 
+  X, Clock, Compass, ArrowRight, CheckCircle2, Car, 
+  ExternalLink, MapPin, Navigation, Wifi, ChevronLeft, ChevronRight 
+} from 'lucide-react';
 import { UserProfile } from '../../types/auth';
 
 interface DayTripModalProps {
@@ -29,6 +32,14 @@ export const DayTripModal: React.FC<DayTripModalProps> = ({
   loops = CURATED_ROUTES,
 }) => {
   const [activeLoopIndex, setActiveLoopIndex] = useState<number>(0);
+  const tabsRef = useRef<HTMLDivElement>(null);
+
+  const scrollTabs = (direction: 'left' | 'right') => {
+    if (tabsRef.current) {
+      const offset = direction === 'left' ? -220 : 220;
+      tabsRef.current.scrollBy({ left: offset, behavior: 'smooth' });
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -94,27 +105,58 @@ export const DayTripModal: React.FC<DayTripModalProps> = ({
           </button>
         </div>
 
-        {/* Route Selector Tabs */}
-        <div className="flex border-b border-white/10 bg-stone-900/60 overflow-x-auto scrollbar-none px-3 sm:px-4 pt-2 shrink-0">
-          {loops.map((loop, idx) => {
-            const isActive = idx === activeLoopIndex;
-            return (
-              <button
-                key={loop.id}
-                onClick={() => setActiveLoopIndex(idx)}
-                className={`flex items-center gap-2 px-3.5 py-2.5 text-xs font-semibold whitespace-nowrap border-b-2 transition cursor-pointer ${
-                  isActive
-                    ? 'border-amber-400 text-amber-400 bg-white/5 rounded-t-xl font-bold'
-                    : 'border-transparent text-stone-400 hover:text-white hover:bg-white/5'
-                }`}
-              >
-                <span>{getDestinationFlag(loop.destination)}</span>
-                <span>{loop.region.toUpperCase()}</span>
+        {/* Route Selector Tabs with visible smooth scroll & arrow controls */}
+        <div className="relative flex items-center border-b border-white/10 bg-stone-900/90 px-2 shrink-0">
+          {/* Scroll Left Button */}
+          <button
+            type="button"
+            onClick={() => scrollTabs('left')}
+            className="p-1.5 rounded-lg text-stone-400 hover:text-amber-400 hover:bg-white/5 transition shrink-0 cursor-pointer"
+            title="Scroll routes left"
+            aria-label="Scroll routes left"
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </button>
 
-                <span className="text-[11px] text-stone-500 font-normal">({loop.totalDuration})</span>
-              </button>
-            );
-          })}
+          {/* Scrollable Tabs */}
+          <div
+            ref={tabsRef}
+            className="flex-1 flex overflow-x-auto scroll-smooth py-2 px-1 gap-1.5 scrollbar-thin scrollbar-thumb-amber-500/40 scrollbar-track-stone-900/60"
+            style={{ scrollbarWidth: 'thin' }}
+          >
+            {loops.map((loop, idx) => {
+              const isActive = idx === activeLoopIndex;
+              return (
+                <button
+                  key={loop.id}
+                  onClick={(e) => {
+                    setActiveLoopIndex(idx);
+                    e.currentTarget.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                  }}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition cursor-pointer shrink-0 ${
+                    isActive
+                      ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 font-bold shadow-sm'
+                      : 'text-stone-400 hover:text-white hover:bg-white/5 border border-transparent'
+                  }`}
+                >
+                  <span>{getDestinationFlag(loop.destination)}</span>
+                  <span>{loop.region}</span>
+                  <span className="text-[10px] text-stone-500 font-normal">({loop.totalDuration})</span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Scroll Right Button */}
+          <button
+            type="button"
+            onClick={() => scrollTabs('right')}
+            className="p-1.5 rounded-lg text-stone-400 hover:text-amber-400 hover:bg-white/5 transition shrink-0 cursor-pointer"
+            title="Scroll routes right"
+            aria-label="Scroll routes right"
+          >
+            <ChevronRight className="w-4 h-4" />
+          </button>
         </div>
 
         {/* Modal Body (Scrollable) */}
