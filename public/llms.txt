@@ -1,0 +1,126 @@
+# TerroirTrail — Mediterranean Artisan Agritourism & Wine Guide
+
+> TerroirTrail is a curated digital travel platform connecting culinary travelers with 58+ verified independent family wineries, craft microbreweries, artisanal olive oil mills, mountain cheese dairies (mitata), and farm stays across Greece (Crete, Santorini, Peloponnese, Northern Greece) and Italy (Tuscany).
+
+## Core Information
+- **Canonical URL:** https://terroir-trail.web.app
+- **Platform Type:** Interactive Web & Mobile Agritourism Guide
+- **Philosophy:** 100% independent or family ownership, estate-grown raw materials, organic or low-intervention viticulture, and direct-to-artisan hospitality with 0% platform commission.
+- **Languages:** English
+- **Primary Destinations:** Crete, Santorini, Peloponnese (Nemea), Northern Greece, Tuscany (Chianti, Montalcino, Montepulciano, Bolgheri)
+- **Official Contact:** terroirtrail@gmail.com
+
+---
+
+## The 6 Curated Self-Drive Day-Trip Loops (Turn-by-Turn GPS Navigation)
+
+1. **Heraklion Peza & Archanes Wine Loop (Crete, Greece)**
+   - *Distance / Duration:* ~45 km • 4-6 hours
+   - *Highlights:* Indigenous Vidiano, Kotsifali, Mandilari, and Dafni grape varieties.
+   - *Key Stops:* Domaine Paterianakis (organic/amphora), Lyrarakis Wines (Dafni revivers), Douloufakis Winery (Dafnes PDO), Digenakis Winery.
+
+2. **Chania Mountain & Artisan Olive Oil Circuit (Crete, Greece)**
+   - *Distance / Duration:* ~55 km • 4-5 hours
+   - *Highlights:* Single-estate Kolymvari PDO Extra Virgin Olive Oil, unfiltered craft beer, and organic mountain vineyards.
+   - *Key Stops:* Manousakis Winery (Nostos Organic), Biolea Astrikas Estate (traditional stone mill), Karavitakis Winery, Cretan Brewery (Charma Beer).
+
+3. **Chianti Classico Historic Hilltop Trail (Tuscany, Italy)**
+   - *Distance / Duration:* ~65 km • 5-7 hours
+   - *Highlights:* High-elevation pure Sangiovese (Gallo Nero), certified organic Chianti Classico DOCG, and thousand-year-old abbey cellars.
+   - *Key Stops:* Badia a Coltibuono, Castello di Volpaia, Fontodi (Panzano Conca d'Oro), Riecine, Querciabella (biodynamic).
+
+4. **Brunello di Montalcino & Val d'Orcia Circuit (Tuscany, Italy)**
+   - *Distance / Duration:* ~50 km • 5-6 hours
+   - *Highlights:* 100% Sangiovese Grosso aged in Slavonian oak casks; UNESCO World Heritage Val d'Orcia views.
+   - *Key Stops:* Biondi-Santi (Tenuta Greppo - inventor of Brunello), Col d'Orcia (organic pioneer), Il Poggione, Altesino (Montosoli cru).
+
+5. **Nemea Historic Wine & Olive Trail (Peloponnese, Greece)**
+   - *Distance / Duration:* ~40 km • 4-5 hours
+   - *Highlights:* "Blood of Hercules" Agiorgitiko red wines across limestone mountain terroirs (Koutsi plateau).
+   - *Key Stops:* Gaia Wines, Domaine Skouras (Megas Oenos), Ktima Semeli.
+
+6. **Santorini Volcanic Caldera & Ash Vine Trail (Cyclades, Greece)**
+   - *Distance / Duration:* ~35 km • 4 hours
+   - *Highlights:* Century-old ungrafted kouloura basket-pruned vines grown in volcanic ash, pure bone-dry Assyrtiko and sun-dried Vinsanto.
+   - *Key Stops:* Domaine Sigalas (Oia), Estate Argyros (Episkopi Gonia), Vassaltis Vineyards (Vourvoulos).
+
+---
+
+## Directory of 58 Curated Independent Producers
+
+### Crete, Greece (25 Producers)
+- **Domaine Paterianakis** — Meleses, Heraklion • Certified organic & natural amphora wines (Vidiano, Kotsifali)
+- **Lyrarakis Wines** — Alagni, Heraklion • Ancient indigenous Cretan varieties (Dafni, Plyto, Melissaki)
+- **Douloufakis Winery** — Dafnes, Heraklion • Premier Vidiano and Dafnes PDO Liatiko
+- **Digenakis Winery** — Kalloni, Heraklion • Architectural winery blending art and native grapes
+- **Silva Daskalaki Winery** — Siva, Heraklion • Biodynamic viticulture and indigenous blends
+- **Stilianou Winery** — Kounavi, Heraklion • Boutique organic winery with artisan micro-vinifications
+- **Rhous Winery (Tamiolakis)** — Choudetsi, Heraklion • High-altitude family terroir blends
+- **Boutari Scalarea Estate** — Skalani, Heraklion • Landmark estate in the Archanes wine district
+- **Zacharioudakis Estate** — Plouti, Heraklion • Hilltop organic vineyard overlooking the Messara plain
+- **Titakis Wines** — Kounavi, Heraklion • Family winemaking heritage since 1950
+- **Michalakis Estate** — Partheni, Heraklion • Expansive family vineyard in the mountain valley
+- **Strataridaki Winery** — Kastelliana, Heraklion • South Crete terroir and coastal microclimates
+- **Manousakis Winery** — Vatolakkos, Chania • Organic Syrah, Roussanne, and Romeiko (Nostos)
+- **Karavitakis Winery** — Pontikiana, Chania • Experimental plots and ancient Cretan varieties
+- **Dourakis Winery** — Alikampos, Chania • Hand-built stone winery with cellar barrel aging
+- **Anoskeli Winery & Olive Mill** — Anoskeli, Chania • Combined boutique winery and cold-press olive oil mill
+- **Biolea Astrikas Estate** — Astrikas, Chania • Organic olive oil produced exclusively with traditional granite millstones
+- **Cretan Brewery (Charma)** — Zounaki, Chania • Fresh, unfiltered craft beer from the White Mountains
+- **Terra Creta Olive Estate** — Kolymvari, Chania • Traceable extra virgin olive oil with interactive tours
+- **Lefka Ori Mountain Mitato** — Askifou, Sfakia • Traditional stone shepherd cheese-making dairy (Graviera PDO)
+- **Klados Winery** — Panormo, Rethymno • Boutique organic winery near the northern Cretan coast
+- **Kourkoulou Winery** — Patsos, Amari Valley, Rethymno • Dedicated to rare indigenous Vidiano from mountain vineyards
+- **Iliana Malihin Winery** — Melambes, Rethymno • Young winemaker leading the revival of centenary ungrafted Vidiano bush vines
+- **Toplou Monastery Estate** — Sitia, Lasithi • Monastic organic wine, tsikoudia, and Sitia PDO olive oil
+- **Vassilakis Estate** — Mirabello, Lasithi • Five generations of cold-pressed artisan extra virgin olive oil
+
+### Santorini, Greece (3 Producers)
+- **Domaine Sigalas** — Oia, Santorini • Iconic Assyrtiko and barrel-aged Mavrotragano
+- **Estate Argyros** — Episkopi Gonia, Santorini • 200+ year old ungrafted vines and benchmark Vinsanto
+- **Vassaltis Vineyards** — Vourvoulos, Santorini • Modern, precision-driven volcanic Assyrtiko
+
+### Peloponnese, Greece (3 Producers)
+- **Gaia Wines** — Koutsi, Nemea • Pioneer of modern Greek wine and high-elevation Nemea Agiorgitiko
+- **Domaine Skouras** — Malandreni, Argos • Creator of the iconic Megas Oenos (Agiorgitiko-Cabernet)
+- **Ktima Semeli** — Koutsi, Nemea • Gravity-flow architectural winery at 600m altitude
+
+### Northern Greece (1 Producer)
+- **Ktima Gerovassiliou** — Epanomi, Thessaloniki • Single-estate vineyard and rescuer of the indigenous Malagousia grape
+
+### Tuscany, Italy (26 Producers)
+- **Badia a Coltibuono** — Gaiole in Chianti • Historic 11th-century abbey, organic Chianti Classico and olive oil
+- **Castello di Ama** — Gaiole in Chianti • Gran Selezione Chianti Classico and world-class site-specific contemporary art
+- **Felsina** — Castelnuovo Berardenga • Pure Sangiovese mastery (Rancia, Fontalloro) at the southern tip of Chianti Classico
+- **Fontodi** — Panzano in Chianti • Organic & biodynamic estate in the famed Conca d'Oro (Flaccianello della Pieve)
+- **Montevertine** — Radda in Chianti • Cult producer of the 100% pure Sangiovese masterpiece "Le Pergole Torte"
+- **Isole e Olena** — Barberino Tavarnelle • Super Tuscan pioneer created by Paolo De Marchi (Cepparello)
+- **Castello di Volpaia** — Radda in Chianti • Organic medieval fortified village winery perched at 617m elevation
+- **Querciabella** — Greve in Chianti • 100% cruelty-free, vegan biodynamic viticulture (Camartina, Batàr)
+- **Riecine** — Gaiole in Chianti • Uncompromising artisanal Sangiovese aged in unlined concrete and neutral oak
+- **Biondi-Santi (Tenuta Greppo)** — Montalcino • The historic estate that created Brunello di Montalcino in the 19th century
+- **Casanova di Neri** — Montalcino • Celebrated modern benchmark Brunello (Tenuta Nuova, Cerretalto)
+- **Il Poggione** — Sant'Angelo in Colle, Montalcino • Historic estate with ancient Sangiovese vines dating to 1890
+- **Poggio di Sotto** — Castelnuovo dell'Abate, Montalcino • Ultra-traditional, ethereal natural Brunello aged in large Slavonian casks
+- **Col d'Orcia** — Montalcino • The largest certified organic wine estate in Tuscany
+- **Altesino** — Montalcino • Pioneer of the single-cru concept in Montalcino with "Montosoli"
+- **Siro Pacenti** — Montalcino • Modern elegance and old-vine density
+- **Poliziano** — Montepulciano • Benchmark producer of Vino Nobile di Montepulciano (Asinone cru)
+- **Boscarelli** — Cervognano, Montepulciano • Family artisan champion of Vino Nobile
+- **Tenuta San Guido** — Bolgheri • Birthplace of Sassicaia, the legendary progenitor of the Super Tuscan movement
+- **Tenuta dell'Ornellaia** — Bolgheri • Coastal Bordeaux-blend benchmark
+- **Guado al Tasso** — Bolgheri • The Antinori family's historic coastal Bolgheri amphitheater estate
+- **Le Macchiole** — Bolgheri • Master of single-varietal perfection (Messorio Merlot, Paleo Cabernet Franc, Scrio Syrah)
+- **Grattamacco** — Castagneto Carducci, Bolgheri • First organic hillside vineyard in Bolgheri blending Sangiovese with Cabernet
+- **Podere Sapaio** — Donoratico, Bolgheri • Artisanal boutique estate crafting intense coastal reds
+- **Tua Rita** — Suvereto • World-renowned cult estate famed for 100-point Merlot "Redigaffi"
+- **Fattoria La Massa** — Panzano in Chianti • Iconic non-conformist Super Tuscan crafted by Giampaolo Motta
+
+---
+
+## Technical & Legal Integration
+- **Owner & Developer:** Ioannis Fanourakis (Sole Proprietorship, Greece)
+- **AADE Activity Codes (ΚΑΔ):** 71.12.30.00 (Geological Research & Consultancy), 62.01.11.01 (Software Development), 73.12.19.01 (Internet Advertising Display), 73.11.19.02 (Affiliate Marketing)
+- **Affiliate & Booking Partners:** Klook (experiences), Localrent (car rentals), Welcome Pickups (VIP transfers), GetTransfer (marketplace transfers), Yesim (travel eSIM)
+- **Sitemap Index:** https://terroir-trail.web.app/sitemap.xml
+- **Privacy & GDPR Policy:** https://terroir-trail.web.app/privacy.html
