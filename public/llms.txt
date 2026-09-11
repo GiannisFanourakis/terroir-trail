@@ -126,8 +126,9 @@
 - **Chianti Classico DOCG:** https://en.wikipedia.org/wiki/Chianti
 - **Brunello di Montalcino DOCG:** https://en.wikipedia.org/wiki/Brunello_di_Montalcino
 - **Nemea Wine (Agiorgitiko):** https://en.wikipedia.org/wiki/Nemea
-- **Indigenous Greek Grape Varieties:** Vidiano (Βιδιανό), Kotsifali (Κοτσιφάλι), Assyrtiko (Ασύρτικο), Agiorgitiko (Αγιωργίτικο), Dafni (Δάφνη), Plyto (Πλυτό), Liatiko (Λιάτικο)
+- **Indigenous Greek Grape Varieties:** Vidiano (Βιδιανό), Kotsifali (Κοτσιφάλι), Assyrtiko (Ασύρτικο), Agiorgitiko (Αγιωργίτικο), Dafni (Δάφνη), Plyto (Πλυτό), Liatiko (Λιάτικο), Malagouzia (Μαλαγουζιά)
 - **Tuscan Grape Varieties:** Sangiovese, Sangiovese Grosso, Canaiolo
+- **Key Regional Terroirs:** Heraklion (https://en.wikipedia.org/wiki/Heraklion), Chania (https://en.wikipedia.org/wiki/Chania), Santorini (https://en.wikipedia.org/wiki/Santorini), Tuscany (https://en.wikipedia.org/wiki/Tuscany)
 
 ---
 
@@ -149,6 +150,12 @@ A: The Chianti Classico Historic Hilltop Trail (~65 km, 5-7h) featuring Badia a 
 
 **Q: How does TerroirTrail sustain itself if it charges wineries 0% commission?**
 A: TerroirTrail is sustained through travel utility partnerships (car rentals via Localrent, airport & chauffeur transfers via Welcome Pickups and GetTransfer, travel eSIMs via Yesim, and regional day trips via Klook) as well as non-intrusive Google AdSense advertising. This ethical, sustainable model ensures 100% of tasting fees and wine bottle sales stay directly in the hands of independent rural producers without any middlemen deductions.
+
+**Q: Is TerroirTrail available on Android and mobile devices?**
+A: Yes. TerroirTrail is available as a full Progressive Web App (PWA) with offline caching and is launching natively on Google Play for Android devices.
+
+**Q: Can I explore the wine routes without driving a rental car?**
+A: Yes. For travelers who prefer not to drive, TerroirTrail integrates private chauffeur and transfer options via Welcome Pickups and GetTransfer, as well as organized regional experiences via Klook.
 
 ---
 
