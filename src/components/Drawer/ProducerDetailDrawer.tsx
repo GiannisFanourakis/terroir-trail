@@ -542,6 +542,77 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
           </div>
         </div>
 
+        {/* VIP Terroir Explorer Pass Perks Highlight Banner */}
+        <div className={`p-4 rounded-2xl border transition-all ${
+          hasExplorerPass
+            ? 'bg-gradient-to-r from-emerald-500/20 via-stone-900 to-amber-950/20 border-emerald-500/40 shadow-md'
+            : 'bg-gradient-to-r from-amber-500/15 via-stone-900 to-amber-950/25 border-amber-400/40 shadow-md'
+        }`}>
+          <div className="flex items-start justify-between gap-3 mb-2.5">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <div className="w-8 h-8 rounded-xl bg-amber-400/20 flex items-center justify-center text-amber-300 shrink-0">
+                <Crown className="w-4 h-4" />
+              </div>
+              <div className="min-w-0">
+                <h4 className="font-bold text-xs text-amber-200 flex items-center gap-1.5 flex-wrap">
+                  <span>Passholder Cellar Privileges</span>
+                  <span className={`text-[9px] px-1.5 py-0.2 rounded font-extrabold uppercase ${
+                    hasExplorerPass
+                      ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                      : 'bg-amber-400/20 text-amber-300 border border-amber-400/30 font-mono'
+                  }`}>
+                    {hasExplorerPass ? 'ACTIVE' : '€14.99 PASS'}
+                  </span>
+                </h4>
+                <span className="text-[10px] text-stone-400 block truncate">
+                  {hasExplorerPass
+                    ? 'Show your digital QR card at this estate to claim'
+                    : 'Pays for itself on your first cellar visit'}
+                </span>
+              </div>
+            </div>
+
+            <div className="shrink-0">
+              {hasExplorerPass ? (
+                onOpenDigitalPass && (
+                  <button
+                    type="button"
+                    onClick={onOpenDigitalPass}
+                    className="px-3 py-1.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-stone-950 font-bold text-xs shadow-sm transition flex items-center gap-1.5 cursor-pointer active:scale-95"
+                  >
+                    <QrCode className="w-3.5 h-3.5 text-stone-950" />
+                    <span>Show QR</span>
+                  </button>
+                )
+              ) : onOpenExplorerPass && (
+                <button
+                  type="button"
+                  onClick={onOpenExplorerPass}
+                  className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-stone-950 font-bold text-xs shadow-md shadow-amber-500/20 transition flex items-center gap-1 cursor-pointer active:scale-95"
+                >
+                  <Crown className="w-3 h-3 text-stone-950" />
+                  <span>Get Pass</span>
+                </button>
+              )}
+            </div>
+          </div>
+
+          <div className="space-y-1.5 pt-2 border-t border-white/5 text-[11px] text-stone-200">
+            <div className="flex items-start gap-2">
+              <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
+              <span><strong>Welcome Pour:</strong> {vipPerks.welcomePour}</span>
+            </div>
+            <div className="flex items-start gap-2">
+              <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
+              <span><strong>Free Meze:</strong> {vipPerks.freeMeze}</span>
+            </div>
+            <div className="flex items-start gap-2">
+              <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
+              <span><strong>{term.discountLabel}:</strong> {vipPerks.discountPercent}% off all {term.productPlural} purchases</span>
+            </div>
+          </div>
+        </div>
+
         {/* Passport Stamp & Tasting Notes Action */}
         <div className="p-3.5 rounded-2xl bg-gradient-to-r from-amber-950/30 to-stone-900 border border-amber-500/20 flex flex-col gap-2.5">
           <div className="flex items-center justify-between">
