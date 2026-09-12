@@ -28,6 +28,7 @@ import {
 import { Producer } from '../../types/terroir';
 import { ProducerRegistrationRecord } from '../../types/auth';
 import { CRETAN_PRODUCERS } from '../../data/producers';
+import { producerService } from '../../services/producerService';
 import {
   validateVatNumber,
   validateIban,
@@ -59,7 +60,12 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
   onSaved,
   onCancel,
 }) => {
-  const allProducers = producersList && producersList.length > 0 ? producersList : CRETAN_PRODUCERS;
+  const allProducers =
+    producersList && producersList.length > 0
+      ? producersList
+      : producerService.getCachedProducers().length > 0
+        ? producerService.getCachedProducers()
+        : CRETAN_PRODUCERS;
   // Determine starting producer
   const defaultProducer = allProducers.find((p: Producer) => p.id === initialProducerId) || allProducers[0];
 

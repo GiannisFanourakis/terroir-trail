@@ -254,6 +254,35 @@ terroir-trail/
 
 ---
 
+## 🏛️ Data Ownership & Sources of Truth
+
+TerroirTrail establishes one clear, authoritative datastore per functional domain to prevent duplicate or conflicting authorities. No table is synchronized bidirectionally between Supabase and Firestore; **producer IDs** serve as the stable cross-system reference key.
+
+### Authority Matrix
+
+| Domain / Entity | Authoritative Datastore | Description / Access Rules |
+| :--- | :--- | :--- |
+| **Producers Catalogue** | **Supabase / PostGIS** | Durable editorial directory, geographic coordinates, polygons, and spatial queries. Read-only for browser clients via public SELECT. Writes performed solely via administrative/migration tooling. |
+| **Experiences Catalogue** | **Supabase / PostgreSQL** | Curated tasting packages, cellar tours, and workshop flights. Read-only for browser clients via public SELECT. |
+| **Identity & Authentication** | **Firebase Auth** | Universal sign-in (Email/password, native Google Credential Bridge, Apple). Supabase Auth is strictly disabled. |
+| **Traveler Profiles & Passport** | **Firestore `users/{uid}`** | Traveler preferences, collection stamps, and private tasting notes. Secured by Firestore Rules (`request.auth.uid == uid`). |
+| **Host Authorization** | **Firestore `producer_owners/{producerId}`** | Server-verified host ownership linking a Firebase user UID to a claimed estate ID. |
+| **Producer Applications** | **Firestore `producer_registrations`** | Estate onboarding requests and official business verification submissions. |
+| **Operational Overlays** | **Firestore `producer_overrides/{producerId}`** | Live host bulletins, temporary tasting hours, booking availability toggles, and direct bottle shop links. |
+| **Tasting Bookings** | **Firestore `bookings`** | Traveler tasting reservations and booking inquiries. (Supabase `bookings` table is locked and deprecated). |
+| **Explorer Pass Entitlements** | **Firestore `explorerPasses`** | Server-managed paid pass entitlements fulfilled via secure Cloud Run / Stripe webhooks. Client direct write denied. |
+| **Static TypeScript Data** | **Bundled Seed / Fallback** | `src/data/producers.ts` and `src/data/experiences.ts` provide offline demo seeding and network-failure fallback only. When Supabase responds successfully, live records are authoritative and zero rows means zero rows. |
+
+### Operational Overlay Flow
+```
+Supabase Base Producer  ──┐
+                          ├─► Rendered Client View
+Firestore Operational     ──┘
+Overlay (Overrides)
+```
+
+---
+
 ## 💻 Getting Started Locally
 
 ### Prerequisites

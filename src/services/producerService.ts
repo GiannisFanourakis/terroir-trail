@@ -20,6 +20,8 @@ export interface ProducerQueryOptions {
   offset?: number;
 }
 
+export type DataProvenance = 'fallback' | 'live';
+
 /**
  * Transforms a Supabase PostgreSQL row into the frontend Producer type
  */
@@ -67,29 +69,126 @@ export function mapRowToProducer(row: any): Producer {
 }
 
 /**
- * In-memory client cache to prevent redundant fetches and ensure instant 0ms responses
+ * Transforms a Supabase PostgreSQL row into the frontend TastingExperience type
  */
-const producerCache = new Map<string, Producer>();
-let allProducersLoaded = false;
+export function mapRowToExperience(row: any): TastingExperience {
+  return {
+    id: row.id,
+    title: row.title,
+    durationMinutes: row.duration_minutes,
+    pricePerPerson: Number(row.price_per_person),
+    description: row.description,
+    includes: Array.isArray(row.includes) ? row.includes : [],
+    badge: row.badge,
+    producerId: row.producer_id,
+    producerName: row.producer_name,
+    producerGreekName: row.producer_greek_name,
+    category: row.category as Category,
+    destination: row.destination as Destination,
+    location: row.location,
+  };
+}
 
-// Pre-fill cache with static seed data for instant offline startup
-CRETAN_PRODUCERS.forEach((p) => producerCache.set(p.id, p));
+/**
+ * Helper to filter a list of producers based on standard query options
+ */
+function filterProducersList(producers: Producer[], options: ProducerQueryOptions): Producer[] {
+  const { destination, category, searchQuery, bounds, limit = 1000, offset = 0 } = options;
+  let list = [...producers];
+
+  if (destination && destination !== 'all') {
+    list = list.filter((p) => p.destination === destination);
+  }
+  if (category && category !== 'all') {
+    list = list.filter((p) => p.category === category);
+  }
+  if (bounds) {
+    list = list.filter(
+      (p) =>
+        p.coordinates[0] >= bounds.south &&
+        p.coordinates[0] <= bounds.north &&
+        p.coordinates[1] >= bounds.west &&
+        p.coordinates[1] <= bounds.east
+    );
+  }
+  if (searchQuery && searchQuery.trim()) {
+    const q = searchQuery.toLowerCase().trim();
+    list = list.filter(
+      (p) =>
+        p.name.toLowerCase().includes(q) ||
+        p.greekName.toLowerCase().includes(q) ||
+        p.region.toLowerCase().includes(q) ||
+        p.village.toLowerCase().includes(q) ||
+        (p.country && p.country.toLowerCase().includes(q)) ||
+        p.indigenousVarieties.some((v) => v.toLowerCase().includes(q))
+    );
+  }
+
+  return list.slice(offset, offset + limit);
+}
+
+/**
+ * Authoritative in-memory state and provenance tracking.
+ *
+ * Architecture:
+ * - 'fallback': Supabase is unconfigured, initial startup before live fetch, or request failed.
+ *               Static seed data (CRETAN_PRODUCERS / ALL_EXPERIENCES) serves as offline fallback.
+ * - 'live':     Supabase successfully returned data. Supabase is the SOLE authority:
+ *               zero rows means zero rows, live values replace seed values, and bundled-only
+ *               producers that Supabase did not return are NEVER merged in.
+ */
+let cacheProvenance: DataProvenance = 'fallback';
+const liveProducersCache = new Map<string, Producer>();
+
+let experienceProvenance: DataProvenance = 'fallback';
+let liveExperiencesCache: TastingExperience[] = [];
 
 export const producerService = {
   /**
-   * Check if live database is active
+   * Check if live database is configured and client exists
    */
   isLiveDb(): boolean {
     return isSupabaseConfigured && Boolean(supabase);
   },
 
   /**
-   * Fetch producers with optional spatial bounding box or filters
+   * Get the current producer cache provenance ('fallback' | 'live')
+   */
+  getCacheProvenance(): DataProvenance {
+    return cacheProvenance;
+  },
+
+  /**
+   * Get the current experience cache provenance ('fallback' | 'live')
+   */
+  getExperienceProvenance(): DataProvenance {
+    return experienceProvenance;
+  },
+
+  /**
+   * Reset cache state (primarily for automated unit and integration tests)
+   */
+  resetCacheForTesting(): void {
+    cacheProvenance = 'fallback';
+    liveProducersCache.clear();
+    experienceProvenance = 'fallback';
+    liveExperiencesCache = [];
+  },
+
+  /**
+   * Fetch producers with optional spatial bounding box or filters.
+   *
+   * When Supabase is configured and succeeds:
+   * - Supabase response is authoritative.
+   * - Zero rows means zero rows (empty array).
+   * - Live values replace seed values; bundled-only records not returned by Supabase are excluded.
+   *
+   * When Supabase is unconfigured or request genuinely fails:
+   * - Falls back to bundled static seed producers.
    */
   async getProducers(options: ProducerQueryOptions = {}): Promise<Producer[]> {
     const { destination, category, searchQuery, bounds, limit = 1000, offset = 0 } = options;
 
-    // 1. If Supabase is connected, attempt remote fetch
     if (this.isLiveDb() && supabase) {
       try {
         let query = supabase.from('producers').select('*');
@@ -100,8 +199,6 @@ export const producerService = {
         if (category && category !== 'all') {
           query = query.eq('category', category);
         }
-
-        // Bounding box filter (if viewport is provided)
         if (bounds) {
           query = query
             .gte('lat', bounds.south)
@@ -109,7 +206,6 @@ export const producerService = {
             .gte('lng', bounds.west)
             .lte('lng', bounds.east);
         }
-
         if (searchQuery && searchQuery.trim()) {
           const q = searchQuery.trim();
           query = query.or(`name.ilike.%${q}%,greek_name.ilike.%${q}%,village.ilike.%${q}%,region.ilike.%${q}%`);
@@ -118,75 +214,75 @@ export const producerService = {
         query = query.range(offset, offset + limit - 1);
 
         const { data, error } = await query;
-        if (!error && data && data.length > 0) {
+        if (error) {
+          throw error;
+        }
+
+        if (data !== null && data !== undefined) {
           const remoteProducers = data.map(mapRowToProducer);
-          remoteProducers.forEach((p) => producerCache.set(p.id, p));
-          let list = Array.from(producerCache.values());
-          if (destination && destination !== 'all') {
-            list = list.filter((p) => p.destination === destination);
+
+          const isFullCatalogue =
+            (!destination || destination === 'all') &&
+            (!category || category === 'all') &&
+            !bounds &&
+            !searchQuery &&
+            offset === 0;
+
+          if (isFullCatalogue) {
+            liveProducersCache.clear();
+            remoteProducers.forEach((p) => liveProducersCache.set(p.id, p));
+            cacheProvenance = 'live';
+          } else {
+            remoteProducers.forEach((p) => liveProducersCache.set(p.id, p));
+            cacheProvenance = 'live';
           }
-          if (category && category !== 'all') {
-            list = list.filter((p) => p.category === category);
-          }
-          return list;
+
+          return remoteProducers;
         }
       } catch (err) {
-        console.warn('Supabase fetch failed, falling back to local cache/seed:', err);
+        console.warn('Supabase fetch failed, falling back to static seed data:', err);
       }
     }
 
-    // 2. Fallback to local memory / seed data (100% offline-ready)
-    let list = Array.from(producerCache.values());
-
-    if (destination && destination !== 'all') {
-      list = list.filter((p) => p.destination === destination);
-    }
-    if (category && category !== 'all') {
-      list = list.filter((p) => p.category === category);
-    }
-    if (bounds) {
-      list = list.filter(
-        (p) =>
-          p.coordinates[0] >= bounds.south &&
-          p.coordinates[0] <= bounds.north &&
-          p.coordinates[1] >= bounds.west &&
-          p.coordinates[1] <= bounds.east
-      );
-    }
-    if (searchQuery && searchQuery.trim()) {
-      const q = searchQuery.toLowerCase().trim();
-      list = list.filter(
-        (p) =>
-          p.name.toLowerCase().includes(q) ||
-          p.greekName.toLowerCase().includes(q) ||
-          p.region.toLowerCase().includes(q) ||
-          p.village.toLowerCase().includes(q) ||
-          (p.country && p.country.toLowerCase().includes(q)) ||
-          p.indigenousVarieties.some((v) => v.toLowerCase().includes(q))
-      );
-    }
-
-    return list.slice(offset, offset + limit);
+    // Fallback: Supabase unconfigured or request failed
+    return filterProducersList(CRETAN_PRODUCERS, options);
   },
 
   /**
-   * Get single producer by ID
+   * Get single producer by ID.
+   *
+   * When Supabase is configured:
+   * - Checks live cache first if live catalogue is already loaded.
+   * - Otherwise queries Supabase directly.
+   * - If Supabase returns null / no rows without error, returns null (authoritative zero rows).
+   * - If query genuinely fails, falls back to static seed data.
+   *
+   * When Supabase is unconfigured:
+   * - Falls back to static seed data.
    */
   async getProducerById(id: string): Promise<Producer | null> {
-    if (producerCache.has(id)) {
-      return producerCache.get(id) || null;
-    }
-
     if (this.isLiveDb() && supabase) {
+      if (cacheProvenance === 'live' && liveProducersCache.has(id)) {
+        return liveProducersCache.get(id) || null;
+      }
+
       try {
-        const { data, error } = await supabase.from('producers').select('*').eq('id', id).single();
-        if (!error && data) {
-          const prod = mapRowToProducer(data);
-          producerCache.set(prod.id, prod);
-          return prod;
+        const { data, error } = await supabase.from('producers').select('*').eq('id', id).maybeSingle();
+        if (!error) {
+          if (data) {
+            const prod = mapRowToProducer(data);
+            liveProducersCache.set(prod.id, prod);
+            cacheProvenance = 'live';
+            return prod;
+          }
+          // Supabase is authoritative and answered that this record does not exist
+          return null;
         }
+        console.warn('Supabase getProducerById failed, falling back to static seed:', error);
+        return CRETAN_PRODUCERS.find((p) => p.id === id) || null;
       } catch (err) {
-        console.warn('Error fetching producer from Supabase:', err);
+        console.warn('Supabase getProducerById error, falling back to static seed:', err);
+        return CRETAN_PRODUCERS.find((p) => p.id === id) || null;
       }
     }
 
@@ -194,7 +290,15 @@ export const producerService = {
   },
 
   /**
-   * Get experiences (optionally filtered by producer)
+   * Get experiences (optionally filtered by producer).
+   *
+   * When Supabase is configured and succeeds:
+   * - Supabase response is authoritative.
+   * - Zero rows means zero rows.
+   * - Does NOT fall back to ALL_EXPERIENCES on empty response.
+   *
+   * When Supabase is unconfigured or request genuinely fails:
+   * - Falls back to ALL_EXPERIENCES static seed data.
    */
   async getExperiences(producerId?: string): Promise<TastingExperience[]> {
     if (this.isLiveDb() && supabase) {
@@ -204,28 +308,23 @@ export const producerService = {
           query = query.eq('producer_id', producerId);
         }
         const { data, error } = await query;
-        if (!error && data && data.length > 0) {
-          return data.map((row: any) => ({
-            id: row.id,
-            title: row.title,
-            durationMinutes: row.duration_minutes,
-            pricePerPerson: Number(row.price_per_person),
-            description: row.description,
-            includes: Array.isArray(row.includes) ? row.includes : [],
-            badge: row.badge,
-            producerId: row.producer_id,
-            producerName: row.producer_name,
-            producerGreekName: row.producer_greek_name,
-            category: row.category as Category,
-            destination: row.destination as Destination,
-            location: row.location,
-          }));
+        if (error) {
+          throw error;
+        }
+        if (data !== null && data !== undefined) {
+          const remote = data.map(mapRowToExperience);
+          if (!producerId) {
+            liveExperiencesCache = remote;
+            experienceProvenance = 'live';
+          }
+          return remote;
         }
       } catch (err) {
-        console.warn('Error fetching experiences from Supabase:', err);
+        console.warn('Error fetching experiences from Supabase, falling back to static seed:', err);
       }
     }
 
+    // Fallback path
     if (producerId) {
       return ALL_EXPERIENCES.filter((e) => e.producerId === producerId);
     }
@@ -233,16 +332,41 @@ export const producerService = {
   },
 
   /**
-   * Synchronous getter for instant React renders where data is already cached
+   * Synchronous getter for instant React renders.
+   * Returns live cached producers if live catalogue has resolved,
+   * or static bundled seed producers if still in fallback state.
    */
   getCachedProducers(): Producer[] {
-    return Array.from(producerCache.values());
+    if (cacheProvenance === 'live') {
+      return Array.from(liveProducersCache.values());
+    }
+    return CRETAN_PRODUCERS;
   },
 
   /**
-   * Synchronous getter for a single cached producer
+   * Synchronous getter for a single cached producer.
+   * In 'live' mode, only returns records known to the live database.
    */
   getCachedProducer(id: string): Producer | undefined {
-    return producerCache.get(id) || CRETAN_PRODUCERS.find((p) => p.id === id);
+    if (cacheProvenance === 'live') {
+      return liveProducersCache.get(id);
+    }
+    return CRETAN_PRODUCERS.find((p) => p.id === id);
+  },
+
+  /**
+   * Synchronous getter for cached experiences.
+   */
+  getCachedExperiences(producerId?: string): TastingExperience[] {
+    if (experienceProvenance === 'live') {
+      if (producerId) {
+        return liveExperiencesCache.filter((e) => e.producerId === producerId);
+      }
+      return liveExperiencesCache;
+    }
+    if (producerId) {
+      return ALL_EXPERIENCES.filter((e) => e.producerId === producerId);
+    }
+    return ALL_EXPERIENCES;
   },
 };

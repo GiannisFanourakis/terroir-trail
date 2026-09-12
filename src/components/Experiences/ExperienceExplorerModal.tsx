@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { ALL_EXPERIENCES } from '../../data/experiences';
+import { useExperiences } from '../../hooks/useExperiences';
 import { producerService } from '../../services/producerService';
 import { TastingExperience } from '../../types/booking';
 import { Producer, ProducerCategory, Destination } from '../../types/terroir';
@@ -14,6 +14,7 @@ interface ExperienceExplorerModalProps {
   onClose: () => void;
   onBookExperience: (experience: TastingExperience) => void;
   onSelectProducer?: (producer: Producer) => void;
+  experiences?: TastingExperience[];
 }
 
 type PriceFilter = 'all' | 'under20' | '20to40' | 'over40';
@@ -46,7 +47,11 @@ export const ExperienceExplorerModal: React.FC<ExperienceExplorerModalProps> = (
   onClose,
   onBookExperience,
   onSelectProducer,
+  experiences: propExperiences,
 }) => {
+  const { experiences: hookExperiences, loading } = useExperiences();
+  const experiences = propExperiences ?? hookExperiences;
+
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<ProducerCategory | 'all'>('all');
   const [selectedDestination, setSelectedDestination] = useState<Destination | 'all'>('all');
@@ -64,7 +69,7 @@ export const ExperienceExplorerModal: React.FC<ExperienceExplorerModalProps> = (
 
   // Filter and sort experiences
   const filteredExperiences = useMemo(() => {
-    return ALL_EXPERIENCES.filter((exp) => {
+    return experiences.filter((exp) => {
       // Category filter
       if (selectedCategory !== 'all' && exp.category !== selectedCategory) {
         return false;
@@ -109,17 +114,17 @@ export const ExperienceExplorerModal: React.FC<ExperienceExplorerModalProps> = (
       if (sortBy === 'duration_desc') return b.durationMinutes - a.durationMinutes;
       return 0; // featured default
     });
-  }, [searchQuery, selectedCategory, selectedDestination, selectedPrice, selectedDuration, sortBy]);
+  }, [experiences, searchQuery, selectedCategory, selectedDestination, selectedPrice, selectedDuration, sortBy]);
 
   // Counts by category
   const countsByCategory = useMemo(() => {
-    const counts: Record<string, number> = { all: ALL_EXPERIENCES.length };
-    ALL_EXPERIENCES.forEach((e) => {
+    const counts: Record<string, number> = { all: experiences.length };
+    experiences.forEach((e) => {
       const cat = e.category || 'winery';
       counts[cat] = (counts[cat] || 0) + 1;
     });
     return counts;
-  }, []);
+  }, [experiences]);
 
   if (!isOpen) return null;
 
@@ -139,7 +144,7 @@ export const ExperienceExplorerModal: React.FC<ExperienceExplorerModalProps> = (
                   Terroir & Tasting Experiences
                 </h2>
                 <span className="px-2.5 py-0.5 rounded-full text-[11px] font-mono font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">
-                  {ALL_EXPERIENCES.length} Curated
+                  {experiences.length} Curated
                 </span>
               </div>
               <p className="text-xs text-stone-400">
