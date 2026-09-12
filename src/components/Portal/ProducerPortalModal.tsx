@@ -1143,7 +1143,7 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
                         <li><strong className="text-amber-300">Gold Glowing Badge</strong> on the interactive map</li>
                         <li><strong className="text-amber-300">Priority Placement</strong> in regional search & directory</li>
                         <li><strong className="text-amber-300">Direct Bottle Shop</strong> button on mobile drawer</li>
-                        <li>Advanced traveler demographic analytics</li>
+                        <li>Traveler analytics (planned pilot feature)</li>
                       </ul>
 
                       {/* DEDICATED WORLDWIDE ENTITY JURISDICTION SELECTOR */}
@@ -1231,10 +1231,10 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
                           <div className="text-[10px] text-stone-300 pt-1 border-t border-white/5 space-y-1">
                             <div className="flex items-center gap-1.5 text-emerald-400 font-semibold">
                               <ShieldCheck className="w-3.5 h-3.5 shrink-0" />
-                              <span>100% Tax-Deductible Business Expense</span>
+                              <span>Business Expense (Consult Adviser)</span>
                             </div>
                             <p className="text-stone-400 leading-relaxed text-[10px]">
-                              {entityTaxBreakdown.accountantGuidance}
+                              {entityTaxBreakdown.deductionExplanation} {entityTaxBreakdown.accountantGuidance}
                             </p>
                             <div className="text-[9px] text-stone-500 font-mono">
                               Invoice: {entityTaxBreakdown.invoiceType} · Authority: {entityTaxBreakdown.reportingAuthority}

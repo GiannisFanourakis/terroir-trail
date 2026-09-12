@@ -136,7 +136,7 @@ export const DigitalPassModal: React.FC<DigitalPassModalProps> = ({
 
       ctx.fillStyle = '#ffffff';
       ctx.font = '28px sans-serif';
-      ctx.fillText(isAnnual ? 'ANNUAL VIP PASS' : '14-DAY HOLIDAY PASS', 60, 145);
+      ctx.fillText(isAnnual ? 'ANNUAL EXPLORER PASS' : '14-DAY HOLIDAY PASS', 60, 145);
 
       // Passholder Box
       ctx.fillStyle = '#292524';
@@ -150,7 +150,7 @@ export const DigitalPassModal: React.FC<DigitalPassModalProps> = ({
 
       ctx.fillStyle = '#ffffff';
       ctx.font = 'bold 42px sans-serif';
-      ctx.fillText(user?.name || 'VIP Explorer', 90, 290);
+      ctx.fillText(user?.name || 'Terroir Explorer', 90, 290);
 
       ctx.fillStyle = '#f59e0b';
       ctx.font = '20px monospace';
@@ -170,13 +170,13 @@ export const DigitalPassModal: React.FC<DigitalPassModalProps> = ({
           // Perks list
           ctx.fillStyle = '#ffffff';
           ctx.font = 'bold 28px sans-serif';
-          ctx.fillText('VIP CELLAR PRIVILEGES', 60, 900);
+          ctx.fillText('EXPLORER PASS PRIVILEGES', 60, 900);
 
           const perksText = [
-            '🍷 Complimentary Cellar Welcome Pour',
-            '🧀 Free Artisan Graviera & Olive Meze Platter',
-            '🏷️ 10% Off Cellar-Door Bottle Purchases',
-            '🛂 Unlimited Digital Terroir Passport Stamps'
+            '✓ Server-verified digital pass QR',
+            '✓ Account-linked pass entitlement',
+            '✓ Cellar door check-in verification',
+            '✓ Eligible for pilot partner benefits'
           ];
           ctx.font = '24px sans-serif';
           ctx.fillStyle = '#e7e5e4';
@@ -191,7 +191,7 @@ export const DigitalPassModal: React.FC<DigitalPassModalProps> = ({
 
           // Trigger download
           const link = document.createElement('a');
-          link.download = `TerroirTrail-VIP-Pass-${user?.name?.replace(/\\s+/g, '_') || 'Explorer'}.png`;
+          link.download = `TerroirTrail-Explorer-Pass-${user?.name?.replace(/\\s+/g, '_') || 'Explorer'}.png`;
           link.href = canvas.toDataURL('image/png');
           link.click();
           setIsDownloading(false);
@@ -251,7 +251,7 @@ export const DigitalPassModal: React.FC<DigitalPassModalProps> = ({
         {/* Scrollable Pass Area */}
         <div className="p-4 sm:p-6 overflow-y-auto flex-1 min-h-0 space-y-4">
           
-          {/* Holographic Wallet Pass Card */}
+          {/* Digital Wallet Pass Card */}
           <div 
             ref={cardRef}
             className="relative rounded-3xl bg-gradient-to-br from-stone-900 via-stone-950 to-amber-950/60 border-2 border-amber-400/60 shadow-2xl p-5 sm:p-6 overflow-hidden text-left"
@@ -269,15 +269,15 @@ export const DigitalPassModal: React.FC<DigitalPassModalProps> = ({
                     Terroir<span className="text-amber-400 font-sans font-light">Trail</span>
                   </div>
                   <div className="text-[10px] text-amber-300 font-semibold tracking-wider uppercase">
-                    {isAnnual ? 'Annual VIP Explorer Pass' : '14-Day VIP Holiday Pass'}
+                    {isAnnual ? 'Annual Explorer Pass' : '14-Day Holiday Pass'}
                   </div>
                 </div>
               </div>
 
               {/* Status Badge */}
               <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-[10px] font-bold">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping shrink-0" />
-                <span>ACTIVE VIP</span>
+                <span className="w-2 h-2 rounded-full bg-emerald-400 shrink-0" />
+                <span>ACTIVE PASS</span>
               </div>
             </div>
 
@@ -303,7 +303,7 @@ export const DigitalPassModal: React.FC<DigitalPassModalProps> = ({
                   {expiryDateString}
                 </span>
                 <span className="text-[9px] text-stone-400 block">
-                  All Mediterranean regions
+                  Participating regions
                 </span>
               </div>
             </div>
@@ -322,19 +322,19 @@ export const DigitalPassModal: React.FC<DigitalPassModalProps> = ({
                 </div>
               )}
               <span className="text-[9px] font-bold uppercase tracking-wider text-stone-600 mt-1">
-                Scan to Verify Privileges
+                Scan to Verify Pass
               </span>
             </div>
 
-            {/* Live Dynamic Security Timestamp (Fraud Prevention) */}
+            {/* Live Timestamp & Verification indicator */}
             <div className="mt-3 pt-2 border-t border-white/10 flex items-center justify-between text-[10px] text-stone-400 relative z-10">
               <div className="flex items-center gap-1 text-emerald-400 font-mono">
-                <Clock className="w-3 h-3 animate-pulse" />
-                <span>LIVE TIMESTAMP: {currentTime || 'SECURE'}</span>
+                <Clock className="w-3 h-3" />
+                <span>TIME: {currentTime || 'ACTIVE'}</span>
               </div>
               <div className="flex items-center gap-1 text-stone-400">
                 <ShieldCheck className="w-3 h-3 text-amber-400" />
-                <span>Verified 256-Bit Pass</span>
+                <span>Server-Verified Pass</span>
               </div>
             </div>
 
@@ -344,38 +344,38 @@ export const DigitalPassModal: React.FC<DigitalPassModalProps> = ({
           <div className="p-3.5 rounded-2xl bg-stone-900/60 border border-white/10 space-y-2 text-left">
             <span className="text-xs font-bold text-white flex items-center gap-1.5">
               <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-              <span>Privileges to Show Cellar Master & Hosts</span>
+              <span>Passholder Capabilities & Pilot Benefits</span>
             </span>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 text-[11px]">
               <div className="p-2 rounded-xl bg-stone-850/80 border border-white/5 flex items-start gap-2">
-                <span className="text-sm">🍷</span>
+                <span className="text-sm">🎫</span>
                 <div>
-                  <strong className="text-white block">Welcome Tasting Pour</strong>
-                  <span className="text-stone-400 text-[10px]">Complimentary reserve vintage</span>
+                  <strong className="text-white block">Digital Pass Entitlement</strong>
+                  <span className="text-stone-400 text-[10px]">{isAnnual ? '365-day annual pass' : '14-day holiday pass'}</span>
                 </div>
               </div>
 
               <div className="p-2 rounded-xl bg-stone-850/80 border border-white/5 flex items-start gap-2">
-                <span className="text-sm">🧀</span>
+                <span className="text-sm">🛡️</span>
                 <div>
-                  <strong className="text-white block">Free Meze Platter</strong>
-                  <span className="text-stone-400 text-[10px]">Artisanal graviera & olives</span>
+                  <strong className="text-white block">Server-Verified QR</strong>
+                  <span className="text-stone-400 text-[10px]">Secure check-in at cellar doors</span>
                 </div>
               </div>
 
               <div className="p-2 rounded-xl bg-stone-850/80 border border-white/5 flex items-start gap-2">
-                <span className="text-sm">🏷️</span>
+                <span className="text-sm">📱</span>
                 <div>
-                  <strong className="text-white block">10% Bottle Discount</strong>
-                  <span className="text-stone-400 text-[10px]">Direct cellar-door savings</span>
+                  <strong className="text-white block">Cross-Device Sync</strong>
+                  <span className="text-stone-400 text-[10px]">Linked to your verified account</span>
                 </div>
               </div>
 
               <div className="p-2 rounded-xl bg-stone-850/80 border border-white/5 flex items-start gap-2">
-                <span className="text-sm">🛂</span>
+                <span className="text-sm">🍇</span>
                 <div>
-                  <strong className="text-white block">Unlimited Passport</strong>
-                  <span className="text-stone-400 text-[10px]">Collect all digital stamps</span>
+                  <strong className="text-white block">Pilot Partner Benefits</strong>
+                  <span className="text-stone-400 text-[10px]">Offered during regional pilots</span>
                 </div>
               </div>
             </div>
@@ -421,11 +421,11 @@ export const DigitalPassModal: React.FC<DigitalPassModalProps> = ({
             </button>
           </div>
 
-          {/* Apple / Google Wallet Instructions Tip */}
+          {/* Quick Access Tip */}
           <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-stone-300 text-[10px] flex items-center gap-2 text-left">
             <Smartphone className="w-4 h-4 text-amber-400 shrink-0" />
             <span>
-              <strong>Tip for Apple & Google Wallet:</strong> Tap <em>Save to Photos</em> or add this page to your phone&apos;s Home Screen via your browser menu for instant 1-tap offline cellar access!
+              <strong>Quick Access:</strong> Tap <em>Save to Photos</em> or add this page to your phone&apos;s Home Screen via your browser menu for quick access when visiting estates.
             </span>
           </div>
 

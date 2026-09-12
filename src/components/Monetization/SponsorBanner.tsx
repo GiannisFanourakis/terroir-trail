@@ -204,16 +204,16 @@ export const SponsorBanner: React.FC<SponsorBannerProps> = ({
             <ExternalLink className="w-3 h-3 text-stone-400" />
           </a>
 
-          {/* Ad-Free Upgrade Hook for VIP Pass */}
+          {/* Upgrade Hook for Explorer Pass */}
           {onOpenExplorerPass && (
             <button
               type="button"
               onClick={onOpenExplorerPass}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-[11px] font-bold transition active:scale-95 cursor-pointer"
-              title="Upgrade to Terroir Holiday Pass (€14.99) for a 100% Ad-Free Experience"
+              title="Learn more about the Terroir Explorer Pass"
             >
               <Crown className="w-3.5 h-3.5 text-amber-400" />
-              <span>Ad-Free VIP</span>
+              <span>Explorer Pass</span>
             </button>
           )}
         </div>

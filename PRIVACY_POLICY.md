@@ -85,7 +85,7 @@ To exercise any of these rights, contact our Data Protection Officer at:
 
 TerroirTrail avoids intrusive advertising trackers. We utilize **browser Local Storage** and secure authentication session cookies solely for:
 * Remembering your active login session.
-* Caching your saved favorite estates for instant offline map rendering.
+* Caching your saved favorite estates and preserving preferences across sessions.
 * Preserving your active filter choices (e.g. Organic only, Crete, Santorini).
 
 ---

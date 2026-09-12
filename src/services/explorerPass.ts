@@ -27,8 +27,16 @@ async function request<T>(path: string, options: RequestInit = {}, authenticated
   return data as T;
 }
 
-export const startPassCheckout = (plan: ExplorerPass['plan']) =>
-  request<{ url: string }>('/checkout', { method: 'POST', body: JSON.stringify({ plan }) });
+export const isExplorerPassPurchasesEnabled = (): boolean => {
+  return import.meta.env.VITE_ENABLE_EXPLORER_PASS_PURCHASES === 'true';
+};
+
+export const startPassCheckout = async (plan: ExplorerPass['plan']) => {
+  if (!isExplorerPassPurchasesEnabled()) {
+    throw new Error('Explorer Pass purchases are currently in private pilot and closed to new public orders.');
+  }
+  return request<{ url: string }>('/checkout', { method: 'POST', body: JSON.stringify({ plan }) });
+};
 
 export const fetchExplorerPass = () => request<{ pass: ExplorerPass | null }>('/me');
 
@@ -51,6 +59,6 @@ export async function verifyExplorerPass(input: string) {
   }
   return {
     passId: pass.passId, name: pass.name, expiresAt: pass.expiresAt,
-    tier: pass.plan === 'annual' ? 'Annual VIP Explorer (365 Days)' : '14-Day VIP Holiday Pass',
+    tier: pass.plan === 'annual' ? 'Annual Explorer Pass (365 Days)' : '14-Day Holiday Pass',
   };
 }

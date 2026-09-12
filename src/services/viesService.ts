@@ -8,6 +8,7 @@
 
 export interface ViesCheckResult {
   isValid: boolean;
+  status: 'verified' | 'invalid' | 'unavailable' | 'not_applicable' | 'demo';
   userError?: string;
   name?: string;
   address?: string;
@@ -40,6 +41,7 @@ const SYNTHETIC_DEMO_RECORDS: Record<string, { name: string; address: string }> 
 /**
  * Checks a VAT number against the official European Commission VIES REST API.
  * Falls back to synthetic registry for reserved demo numbers.
+ * Distinguishes verified, invalid, unavailable, not_applicable, and demo.
  */
 export async function checkVatAgainstVies(
   rawVatInput: string,
@@ -64,8 +66,9 @@ export async function checkVatAgainstVies(
   const EXTRA_EU = ['US', 'GB', 'CH', 'CA', 'AU', 'OTHER'];
   if (EXTRA_EU.includes(countryCode)) {
     return {
-      isValid: true,
-      userError: 'VALID (Extra-EU Entity / 0% Export of Services)',
+      isValid: false,
+      status: 'not_applicable',
+      userError: 'Tax ID supplied — manual review required.',
       requestDate: new Date().toISOString(),
       countryCode,
       vatNumber: cleanVat,
@@ -81,7 +84,8 @@ export async function checkVatAgainstVies(
     };
     return {
       isValid: true,
-      userError: 'VALID (Demo Test Registry)',
+      status: 'demo',
+      userError: 'DEMO ENTITY (Sandbox Test)',
       name: demo.name,
       address: demo.address,
       requestDate: new Date().toISOString(),
@@ -110,9 +114,11 @@ export async function checkVatAgainstVies(
 
     if (response.ok) {
       const data = await response.json();
+      const isValid = Boolean(data.isValid);
       return {
-        isValid: Boolean(data.isValid),
-        userError: data.userError || (data.isValid ? 'VALID' : 'INVALID'),
+        isValid,
+        status: isValid ? 'verified' : 'invalid',
+        userError: isValid ? undefined : (data.userError || 'VAT number was reported as invalid or inactive by national registry.'),
         name: data.name !== '---' ? data.name : undefined,
         address: data.address !== '---' ? data.address : undefined,
         requestDate: data.requestDate || new Date().toISOString(),
@@ -122,15 +128,15 @@ export async function checkVatAgainstVies(
       };
     }
   } catch (err: any) {
-    // In browser environments, direct cross-origin calls to ec.europa.eu may trigger CORS.
-    // In production, this call routes through a Firebase Cloud Function proxy (/api/verify-vies).
-    console.warn('VIES direct query exception (likely browser CORS or timeout):', err.message);
+    // In browser environments, direct cross-origin calls to ec.europa.eu may trigger CORS or network error.
+    console.warn('VIES direct query exception (likely browser CORS or timeout):', err?.message);
   }
 
-  // Fallback if network or CORS prevents direct browser access
+  // Fallback if network, timeout, or CORS prevents direct browser access
   return {
-    isValid: true,
-    userError: 'OFFLINE_VERIFIED_CHECK_DIGIT',
+    isValid: false,
+    status: 'unavailable',
+    userError: 'VAT format accepted, but official VIES verification is currently unavailable.',
     requestDate: new Date().toISOString(),
     countryCode,
     vatNumber: cleanVat,

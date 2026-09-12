@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { UserProfile } from '../../types/auth';
-import { startPassCheckout } from '../../services/explorerPass';
+import { startPassCheckout, isExplorerPassPurchasesEnabled } from '../../services/explorerPass';
 import { 
   X, Award, CheckCircle2, Sparkles, ShieldCheck, 
   Wine, Gift, Compass, CreditCard, Apple, ArrowRight, Star, Lock, QrCode
@@ -27,51 +27,40 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const isPurchased = false;
   const [purchaseError, setPurchaseError] = useState<string | null>(null);
+  const purchasesEnabled = isExplorerPassPurchasesEnabled();
 
   if (!isOpen) return null;
 
   const perks = [
     {
-      icon: '🍷',
-      title: 'Complimentary Welcome Pours',
-      desc: 'An extra cellar-reserve glass at participating boutique wineries.',
-    },
-    {
-      icon: '🧀',
-      title: 'Free Artisan Meze Platter',
-      desc: 'Complimentary sheep graviera cheese & organic olives with any tasting.',
-    },
-    {
-      icon: '🏷️',
-      title: '10% Cellar-Door Bottle Discount',
-      desc: 'Direct savings on bottle purchases to pack in your suitcase or cellar.',
-    },
-    {
-      icon: '🛂',
-      title: 'Unlimited Terroir Passport & Cellar Journal',
-      desc: 'Collect unlimited digital artisan stamps and record sommelier tasting notes.',
+      icon: '🎫',
+      title: 'Digital Explorer Pass Entitlement',
+      desc: '14-day holiday pass or 365-day annual pass entitlement linked to your verified account.',
     },
     {
       icon: '🛡️',
-      title: '100% Ad-Free Pure Experience',
-      desc: 'Explore the map, directory, and estate profiles completely free of sponsor ads.',
+      title: 'Server-Verified QR Code',
+      desc: 'Opaque Pass ID and cryptographically verified QR code for check-in at partner cellar doors.',
     },
     {
-      icon: '✨',
-      title: 'VIP Estate Host Welcome',
-      desc: 'Recognized guest status and personalized hospitality with family makers.',
+      icon: '📱',
+      title: 'Cross-Device Account Sync',
+      desc: 'Access your active digital pass and saved records across mobile and desktop devices.',
+    },
+    {
+      icon: '🍇',
+      title: 'Agritourism Pilot Partner Privileges',
+      desc: 'Planned partner benefits during active agritourism pilot programs at participating estates.',
     },
   ];
 
   const comparisonRows = [
-    { feature: 'Interactive Artisanal Map & GPS', free: '✅ Included', vip: '✅ Included' },
-    { feature: 'Verified Family Producer Directory', free: '✅ Included', vip: '✅ Included' },
-    { feature: 'Welcome Pour of Library Wine', free: '❌ Standard Tasting', vip: '⭐ Complimentary Glass' },
-    { feature: 'Artisanal Meze Pairing', free: '❌ Extra Charge', vip: '⭐ Free Graviera & Olives' },
-    { feature: 'Direct Cellar Bottle Purchases', free: '❌ 0% Discount', vip: '⭐ 10% Off All Bottles' },
-    { feature: 'Passport Stamps & Journal', free: 'Up to 3 Stamps', vip: '⭐ Unlimited Stamps' },
-    { feature: 'Sponsor & Partner Ads', free: 'Standard Ads', vip: '⭐ 100% Ad-Free' },
-    { feature: 'Digital Holographic Wallet Pass', free: '❌ None', vip: '⭐ Instant Apple/Google Pass' },
+    { feature: 'Interactive Artisanal Map & Directory', free: '✅ Included', pass: '✅ Included' },
+    { feature: 'Direct Producer Reservation Inquiries', free: '✅ Included', pass: '✅ Included' },
+    { feature: 'Digital Explorer Pass & Unique ID', free: '❌ None', pass: '⭐ 14-Day or 365-Day' },
+    { feature: 'Cellar Door QR Verification', free: '❌ None', pass: '⭐ Server-Verified' },
+    { feature: 'Cross-Device Pass Sync', free: 'Account Only', pass: '⭐ Full Pass Sync' },
+    { feature: 'Pilot Partner Benefits (Where Offered)', free: '❌ None', pass: '⭐ Participating Estates' },
   ];
 
   const handlePurchase = async () => {
@@ -111,11 +100,11 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
                     Terroir Explorer Pass
                   </h2>
                   <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-400 text-stone-950 font-bold tracking-wider uppercase">
-                    VIP 2026
+                    Pilot
                   </span>
                 </div>
                 <p className="text-xs text-amber-200/80 mt-0.5">
-                  The ultimate 14-day holiday pass for authentic Mediterranean agritourism
+                  Digital agritourism pass for authentic Mediterranean estates
                 </p>
               </div>
             </div>
@@ -142,7 +131,7 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
                   : 'border-transparent text-stone-400 hover:text-white'
               }`}
             >
-              👑 Holiday Pass (€14.99)
+              👑 Pass Overview
             </button>
             <button
               onClick={() => setActiveTab('compare')}
@@ -152,7 +141,7 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
                   : 'border-transparent text-stone-400 hover:text-white'
               }`}
             >
-              ⚖️ Free vs VIP Comparison
+              ⚖️ Free vs Pass Comparison
             </button>
           </div>
         )}
@@ -169,10 +158,10 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
 
               <div className="space-y-1">
                 <h3 className="font-serif-title text-xl font-bold text-white">
-                  VIP Explorer Pass Activated!
+                  Explorer Pass Activated!
                 </h3>
                 <p className="text-xs text-stone-300 max-w-sm mx-auto">
-                  Welcome, <span className="text-amber-400 font-bold">{user?.name}</span>. Your VIP pass is active across all participating estates and artisan destinations.
+                  Welcome, <span className="text-amber-400 font-bold">{user?.name}</span>. Your Explorer Pass is active and verifiable across participating pilot estates.
                 </p>
               </div>
 
@@ -186,7 +175,7 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
                     </span>
                   </div>
                   <span className="text-[9px] px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/40 font-bold uppercase tracking-wider">
-                    {user?.explorerPassUntil && (new Date(user.explorerPassUntil).getTime() - Date.now()) > 35 * 86400000 
+                    {user?.explorerPassPlan === 'annual' 
                       ? 'VALID · 365 DAYS' 
                       : 'VALID · 14 DAYS'}
                   </span>
@@ -199,8 +188,8 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
                 </div>
 
                 <div className="pt-2 border-t border-white/10 flex items-center justify-between text-[10px] text-amber-300 font-medium">
-                  <span>Show at estate cellar doors</span>
-                  <span>10% Off Bottles & Free Meze</span>
+                  <span>Show at participating cellar doors</span>
+                  <span>Server-verified digital pass</span>
                 </div>
               </div>
 
@@ -233,7 +222,7 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
                   Choose the Perfect Agritourism Experience
                 </h3>
                 <p className="text-[11px] text-stone-400">
-                  Explore basic makers for free or upgrade to the full VIP agritourism trail
+                  Explore independent makers for free or add an optional Explorer Pass
                 </p>
               </div>
 
@@ -241,7 +230,7 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
                 <div className="grid grid-cols-12 bg-stone-900 p-2.5 border-b border-white/10 text-[11px] font-bold">
                   <div className="col-span-6 text-stone-400">Platform Feature</div>
                   <div className="col-span-3 text-center text-stone-300">Free (€0)</div>
-                  <div className="col-span-3 text-center text-amber-400">VIP Pass</div>
+                  <div className="col-span-3 text-center text-amber-400">Explorer Pass</div>
                 </div>
 
                 <div className="divide-y divide-white/5 text-[11px]">
@@ -249,7 +238,7 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
                     <div key={i} className="grid grid-cols-12 p-2.5 items-center hover:bg-white/5 transition">
                       <div className="col-span-6 font-medium text-stone-300">{row.feature}</div>
                       <div className="col-span-3 text-center text-stone-400 text-[10px]">{row.free}</div>
-                      <div className="col-span-3 text-center text-amber-300 font-semibold text-[10px]">{row.vip}</div>
+                      <div className="col-span-3 text-center text-amber-300 font-semibold text-[10px]">{row.pass}</div>
                     </div>
                   ))}
                 </div>
@@ -260,7 +249,7 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
                 onClick={() => setActiveTab('upgrade')}
                 className="w-full py-3 rounded-2xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs shadow-lg transition active:scale-98 cursor-pointer flex items-center justify-center gap-1.5"
               >
-                <span>Get Terroir Holiday Pass (€14.99)</span>
+                <span>View Explorer Pass Plans</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
             </div>
@@ -296,7 +285,7 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
                     Perfect for your vacation. <strong>No subscription</strong>, no auto-renew.
                   </p>
                   <span className="mt-2 inline-block text-[10px] text-emerald-400 font-semibold">
-                    ✓ Pays for itself at 1st winery
+                    ✓ 14 days active duration
                   </span>
                 </button>
 
@@ -326,7 +315,7 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
                     For local residents, sommeliers & passionate travelers exploring authentic terroirs.
                   </p>
                   <span className="mt-2 inline-block text-[10px] text-amber-300 font-semibold">
-                    ✓ Year-round perks & harvest invites
+                    ✓ 365 days active duration
                   </span>
                 </button>
               </div>
@@ -334,7 +323,7 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
               {/* Perks List */}
               <div className="space-y-2">
                 <span className="text-stone-400 text-[11px] font-semibold block">
-                  Included VIP Privileges
+                  Included Pass Privileges
                 </span>
                 <div className="space-y-2">
                   {perks.map((p, idx) => (
@@ -377,9 +366,24 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
                 </div>
                 <div className="flex items-center gap-1 text-[10px] text-stone-400">
                   <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                  <span>256-Bit Encrypted Checkout Powered by <strong className="text-white">Stripe</strong></span>
+                  <span>Encrypted Checkout Powered by <strong className="text-white">Stripe</strong></span>
                 </div>
               </div>
+
+              {/* Pilot Notice when purchases are gated */}
+              {!purchasesEnabled && (
+                <div className="p-3.5 rounded-2xl bg-amber-500/15 border border-amber-500/30 text-amber-200 text-xs flex items-center gap-3 text-left my-2">
+                  <div className="w-8 h-8 rounded-xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0">
+                    <ShieldCheck className="w-4 h-4" />
+                  </div>
+                  <div className="leading-snug">
+                    <span className="font-bold text-white block">Explorer Pass Pilot</span>
+                    <span className="text-[11px] text-stone-300">
+                      Pass purchases are currently in private pilot validation while partner estate onboarding is underway. Existing pass holders can present active passes.
+                    </span>
+                  </div>
+                </div>
+              )}
 
               {/* Account Requirement Notice if not logged in */}
               {!user ? (
@@ -390,7 +394,7 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
                   <div className="leading-snug">
                     <span className="font-bold text-white block">Traveler Account Required (100% Free)</span>
                     <span className="text-[11px] text-stone-300">
-                      Creating an account is free. An account is required so your optional €14.99 VIP pass can be securely linked and synced across your devices.
+                      Creating an account is free. An account is required so your digital pass can be securely linked and synced across your devices.
                     </span>
                   </div>
                 </div>
@@ -412,15 +416,17 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
               <button
                 type="button"
                 onClick={handlePurchase}
-                disabled={isProcessing}
-                className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 text-stone-950 font-bold text-xs shadow-xl shadow-amber-500/25 transition transform active:scale-98 disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer mt-1"
+                disabled={isProcessing || !purchasesEnabled}
+                className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 text-stone-950 font-bold text-xs shadow-xl shadow-amber-500/25 transition transform active:scale-98 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer mt-1"
               >
-                {isProcessing ? (
-                  <span>Authorizing VIP Pass...</span>
+                {!purchasesEnabled ? (
+                  <span>Pass Purchases Closed (Pilot In Progress)</span>
+                ) : isProcessing ? (
+                  <span>Authorizing Explorer Pass...</span>
                 ) : !user ? (
                   <>
                     <Lock className="w-4 h-4" />
-                    <span>Sign In to Purchase Pass (€14.99)</span>
+                    <span>Sign In to Purchase Pass</span>
                   </>
                 ) : (
                   <>
@@ -437,9 +443,9 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
               <div className="flex flex-col items-center justify-center gap-1 text-[10px] text-stone-400 pt-1 text-center">
                 <div className="flex items-center gap-1.5 text-stone-400">
                   <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
-                  <span>Account registration is 100% free · Pass is an optional €14.99 upgrade</span>
+                  <span>Account registration is free · Explorer Pass is an optional upgrade</span>
                 </div>
-                <span className="text-stone-500">100% Guaranteed · Refundable if unused within 48 hours</span>
+                <span className="text-stone-500">Refundable if unused within 48 hours</span>
               </div>
 
             </div>

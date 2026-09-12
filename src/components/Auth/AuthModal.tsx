@@ -477,7 +477,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                       <span>Free Traveler Account</span>
                     </div>
                     <div className="text-[10px] text-stone-400 truncate">
-                      Sign in to save stamps & notes. (14-day VIP Pass €14.99 is an optional upgrade)
+                      Sign in to save stamps & notes. (Explorer Pass is an optional upgrade)
                     </div>
                   </div>
                 </div>
@@ -803,7 +803,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           {/* ========================================================= */}
           {accountType === 'producer' && (
             <>
-              {/* VIP Producer Host Pro Benefit Callout */}
+              {/* Producer Host Pro Benefit Callout */}
               <div className="p-3 rounded-2xl bg-gradient-to-r from-amber-500/15 via-stone-900 to-amber-900/20 border border-amber-500/30 flex items-center justify-between gap-3 text-left">
                 <div className="flex items-center gap-2.5 min-w-0">
                   <div className="w-8 h-8 rounded-xl bg-amber-400/20 border border-amber-400/30 flex items-center justify-center text-amber-300 shrink-0">
@@ -811,10 +811,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   </div>
                   <div className="min-w-0">
                     <div className="text-xs font-bold text-amber-200 truncate">
-                      Verified Host Pro VIP
+                      Verified Host Pro
                     </div>
                     <div className="text-[10px] text-stone-400 truncate">
-                      0% tasting commission, gold map marker & myDATA invoicing (€199/yr)
+                      0% booking commission, gold map marker & bottle shop links (pilot €199/yr)
                     </div>
                   </div>
                 </div>

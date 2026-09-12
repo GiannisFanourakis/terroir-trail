@@ -5,7 +5,7 @@ const { auth } = vi.hoisted(() => ({ auth: {
   currentUser: null as null | { getIdToken: () => Promise<string> },
 } }));
 vi.mock('./firebase', () => ({ auth }));
-import { startPassCheckout, fetchExplorerPass, confirmExplorerPass, verifyExplorerPass } from './explorerPass';
+import { startPassCheckout, fetchExplorerPass, confirmExplorerPass, verifyExplorerPass, isExplorerPassPurchasesEnabled } from './explorerPass';
 
 const passId = '78e4a766-e771-4f50-9f7b-b367e027f507';
 const pass = { passId, name: 'Verified Explorer', plan: 'holiday', expiresAt: '2099-01-01T00:00:00Z' };
@@ -14,9 +14,26 @@ const fetchMock = vi.fn();
 beforeEach(() => {
   vi.stubGlobal('fetch', fetchMock);
   vi.stubEnv('VITE_API_BASE_URL', 'https://api.example.test/');
+  vi.stubEnv('VITE_ENABLE_EXPLORER_PASS_PURCHASES', 'true');
   auth.currentUser = { getIdToken: vi.fn().mockResolvedValue('firebase-token') };
 });
 afterEach(() => { vi.clearAllMocks(); vi.unstubAllGlobals(); vi.unstubAllEnvs(); });
+
+describe('explorer pass purchase gating', () => {
+  it('detects when purchases are enabled or disabled via environment flag', () => {
+    vi.stubEnv('VITE_ENABLE_EXPLORER_PASS_PURCHASES', 'false');
+    expect(isExplorerPassPurchasesEnabled()).toBe(false);
+
+    vi.stubEnv('VITE_ENABLE_EXPLORER_PASS_PURCHASES', 'true');
+    expect(isExplorerPassPurchasesEnabled()).toBe(true);
+  });
+
+  it('blocks startPassCheckout when purchases are disabled without a network request', async () => {
+    vi.stubEnv('VITE_ENABLE_EXPLORER_PASS_PURCHASES', 'false');
+    await expect(startPassCheckout('holiday')).rejects.toThrow('private pilot');
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+});
 
 describe('authenticated pass requests', () => {
   it('sends only the chosen plan with a Firebase bearer token', async () => {
@@ -56,7 +73,7 @@ describe('QR verification', () => {
     fetchMock.mockResolvedValueOnce(Response.json({ pass }));
     const result = await verifyExplorerPass(`https://example.test/?verify_pass=${passId}&name=Fake&tier=annual`);
     expect(result.name).toBe('Verified Explorer');
-    expect(result.tier).toBe('14-Day VIP Holiday Pass');
+    expect(result.tier).toBe('14-Day Holiday Pass');
     const [url, options] = fetchMock.mock.calls[0];
     expect(url).toBe(`https://api.example.test/api/passes/verify/${passId}`);
     expect(options.headers.has('Authorization')).toBe(false);

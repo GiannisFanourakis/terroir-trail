@@ -368,12 +368,12 @@ export function calculateEntityTaxBreakdown(countryCode: string = 'GR', hasValid
       vatAmount,
       totalPrice,
       taxNote: 'Standard 24% Greek VAT applies (€47.76). Total payable is €246.76.',
-      legalBasis: 'Greek VAT Code (Law 2859/2000) / AADE myDATA',
-      invoiceType: 'Service Invoice (ΤΠΥ) with QR & MARK',
-      reportingAuthority: 'AADE myDATA (Independent Authority for Public Revenue)',
+      legalBasis: 'Greek VAT Code (Law 2859/2000)',
+      invoiceType: 'Commercial Invoice / Service Invoice (ΤΠΥ)',
+      reportingAuthority: 'AADE (Greek Independent Authority for Public Revenue)',
       isTaxDeductible: true,
-      deductionExplanation: '100% tax-deductible as an operating business advertising and digital promotion expense.',
-      accountantGuidance: 'Your accountant records the gross invoice in expenses, deducts 100% from corporate taxable profit, and offsets the €47.76 VAT in your periodic VAT declaration (ΦΠΑ).',
+      deductionExplanation: 'Business tax treatment depends on your jurisdiction and circumstances. Consult your accountant or tax adviser.',
+      accountantGuidance: 'Your accountant records the invoice as an operating business expense according to applicable Greek tax regulations.',
     };
   }
 
@@ -399,8 +399,8 @@ export function calculateEntityTaxBreakdown(countryCode: string = 'GR', hasValid
         invoiceType: 'Intra-Community B2B Service Invoice',
         reportingAuthority: 'European Commission VIES & National Tax Authority',
         isTaxDeductible: true,
-        deductionExplanation: '100% deductible operating expense under European cross-border B2B rules.',
-        accountantGuidance: 'Your accountant books this under Reverse Charge (Intra-Community acquisition of services). No cash VAT is paid; VAT is self-assessed and simultaneously deducted on your national VAT return.',
+        deductionExplanation: 'Business tax treatment depends on your jurisdiction and circumstances. Consult your accountant or tax adviser.',
+        accountantGuidance: 'Your accountant books this under Reverse Charge (Intra-Community acquisition of services). Cross-border tax treatment should be confirmed with your local tax adviser.',
       };
     } else {
       const basePrice = 199.00;
@@ -420,9 +420,9 @@ export function calculateEntityTaxBreakdown(countryCode: string = 'GR', hasValid
         taxNote: 'Standard 24% VAT applies (€47.76) until a valid VIES VAT number is provided.',
         legalBasis: 'EU Directive 2006/112/EC - Non-taxable B2C rule',
         invoiceType: 'Standard Retail Service Invoice',
-        reportingAuthority: 'AADE myDATA',
+        reportingAuthority: 'Tax Authority',
         isTaxDeductible: false,
-        deductionExplanation: 'Provide a valid VIES VAT ID to automatically remove VAT and pay only the €199 net price.',
+        deductionExplanation: 'Provide a valid VIES VAT ID to switch to 0% B2B reverse charge.',
         accountantGuidance: 'Enter a valid corporate EU VAT ID to switch to 0% B2B reverse charge.',
       };
     }
@@ -432,23 +432,23 @@ export function calculateEntityTaxBreakdown(countryCode: string = 'GR', hasValid
   let currency = 'EUR';
   let currencySymbol = '€';
   let authority = 'National Revenue Authority';
-  let extraHint = 'Certificate of Tax Residence & IRS W-8BEN-E provided upon request';
+  let extraHint = 'Commercial invoice for business services (invoicing setup planned)';
 
   if (code === 'US') {
     currency = 'USD';
     currencySymbol = '$';
     authority = 'Internal Revenue Service (IRS)';
-    extraHint = 'TerroirTrail provides an IRS Form W-8BEN-E certifying foreign corporate status for zero US withholding';
+    extraHint = 'Commercial invoice provided; cross-border tax treatment should be confirmed with your local tax adviser';
   } else if (code === 'GB') {
     currency = 'GBP';
     currencySymbol = '£';
     authority = 'HM Revenue & Customs (HMRC)';
-    extraHint = 'UK Reverse Charge applies for UK VAT registered businesses under Section 8 of VATA 1994';
+    extraHint = 'UK Reverse Charge may apply for UK VAT registered businesses under Section 8 of VATA 1994';
   } else if (code === 'CH') {
     currency = 'CHF';
     currencySymbol = 'CHF ';
     authority = 'Federal Tax Administration (ESTV)';
-    extraHint = 'Swiss Bezugsteuer (reverse charge) rules apply for Swiss taxable enterprises';
+    extraHint = 'Swiss Bezugsteuer (reverse charge) rules may apply for Swiss taxable enterprises';
   } else if (code === 'CA') {
     currency = 'CAD';
     currencySymbol = 'C$';
@@ -475,8 +475,8 @@ export function calculateEntityTaxBreakdown(countryCode: string = 'GR', hasValid
     invoiceType: 'International B2B Commercial Export Invoice',
     reportingAuthority: authority,
     isTaxDeductible: true,
-    deductionExplanation: '100% tax-deductible as an ordinary and necessary business advertising and software service expense.',
-    accountantGuidance: `Book as a foreign digital marketing expense with 0% foreign VAT. ${extraHint}.`,
+    deductionExplanation: 'Business tax treatment depends on your jurisdiction and circumstances. Consult your accountant or tax adviser.',
+    accountantGuidance: `Book as a business software and digital service expense with 0% foreign VAT. ${extraHint}.`,
   };
 }
 

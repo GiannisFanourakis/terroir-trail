@@ -140,20 +140,20 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
             </div>
           </div>
 
-          {/* PRODUCER VIP PASS: HOST PRO TIER */}
+          {/* PRODUCER PASS: HOST PRO TIER */}
           {user.isProducer && user.claimedProducerId && (
             <div className="mb-2.5 p-3 rounded-2xl bg-gradient-to-br from-amber-500/20 via-stone-900 to-stone-950 border border-amber-400/40 shadow-lg shadow-amber-500/10 text-left">
               <div className="flex items-center justify-between mb-1.5">
                 <div className="flex items-center gap-1.5">
                   <Crown className="w-4 h-4 text-amber-400" />
-                  <span className="font-bold text-white text-xs">Host Pro VIP Tier</span>
+                  <span className="font-bold text-white text-xs">Host Pro</span>
                 </div>
                 <span className="text-[9px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider bg-amber-500/20 text-amber-300 border border-amber-500/30">
                   €199/yr
                 </span>
               </div>
               <p className="text-[10px] text-stone-300 mb-2 leading-relaxed">
-                Gold glowing map marker, direct bottle shop button & 0% tasting commission. 100% Tax Deductible (myDATA).
+                Gold glowing map marker, direct bottle shop button & 0% tasting commission. Business invoicing upon request.
               </p>
               {onOpenProducerPortal && (
                 <button
@@ -248,7 +248,7 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
               >
                 <span className="flex items-center gap-2">
                   <Crown className="w-3.5 h-3.5 text-amber-400" />
-                  <span>{user.hasExplorerPass ? 'Digital VIP Pass & QR' : 'VIP Pass (Optional)'}</span>
+                  <span>{user.hasExplorerPass ? 'Digital Explorer Pass' : 'Explorer Pass (Optional)'}</span>
                 </span>
                 <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
                   user.hasExplorerPass 

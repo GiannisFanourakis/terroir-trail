@@ -600,7 +600,7 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 font-bold text-sm text-emerald-300">
                 <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
-                <span>Database Record Successfully Saved & Verified!</span>
+                <span>Registration Application Submitted</span>
               </div>
               <button
                 type="button"
@@ -616,12 +616,12 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
               </button>
             </div>
             <p className="text-[11px] text-emerald-300/90 leading-relaxed">
-              Legal entity <strong>{submitSuccess.legalBusinessName}</strong> (Tax ID: {submitSuccess.vatNumber}) has been stored in <strong>Cloud Firestore</strong> (collection: <code>producer_registrations/{submitSuccess.id}</code>) and synced with courier dispatch logistics.
+              Legal entity <strong>{submitSuccess.legalBusinessName}</strong> (Tax ID: {submitSuccess.vatNumber}) has been submitted for review. Submitting an application does not grant host access. TerroirTrail reviews ownership before activation.
             </p>
             <div className="flex items-center gap-3 pt-1 text-[10px] text-emerald-400 font-mono">
               <span>Timestamp: {new Date(submitSuccess.updatedAt).toLocaleTimeString()}</span>
               <span>•</span>
-              <span>Status: Active & Verified</span>
+              <span>Status: Submitted — Pending Review</span>
               <span>•</span>
               <span>SEPA IBAN: {submitSuccess.banking.iban}</span>
             </div>
@@ -815,6 +815,8 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                           className={`mt-2.5 p-3 rounded-xl border text-xs space-y-1.5 animate-in fade-in ${
                             viesResult.isValid
                               ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-200'
+                              : viesResult.status === 'unavailable' || viesResult.status === 'not_applicable'
+                              ? 'bg-amber-500/10 border-amber-500/40 text-amber-200'
                               : 'bg-rose-500/10 border-rose-500/40 text-rose-300'
                           }`}
                         >
@@ -822,23 +824,36 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                             <div className="flex items-center gap-1.5">
                               {viesResult.isValid ? (
                                 <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                              ) : viesResult.status === 'unavailable' || viesResult.status === 'not_applicable' ? (
+                                <AlertCircle className="w-4 h-4 text-amber-400 shrink-0" />
                               ) : (
                                 <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
                               )}
                               <span>
-                                {viesResult.isValid
-                                  ? 'Official Registry: Active & Valid'
+                                {viesResult.status === 'verified'
+                                  ? 'Official VIES Registry: Active & Valid'
+                                  : viesResult.status === 'demo'
+                                  ? 'Demo Sandbox Entity: Valid Test Record'
+                                  : viesResult.status === 'unavailable'
+                                  ? 'VIES Verification: Currently Unavailable'
+                                  : viesResult.status === 'not_applicable'
+                                  ? 'Non-EU Entity: Manual Review Required'
                                   : 'Tax Registry: Inactive or Invalid'}
                               </span>
                             </div>
                             <span className="text-[10px] font-mono opacity-70">
-                              {viesResult.source === 'eu_vies_live'
+                              {viesResult.status === 'verified'
                                 ? 'Live VIES REST API'
-                                : viesResult.source === 'synthetic_demo_registry'
+                                : viesResult.status === 'demo'
                                 ? 'Demo Sandbox'
-                                : 'Algorithmic Validated'}
+                                : viesResult.status === 'not_applicable'
+                                ? 'Non-EU ID'
+                                : 'VIES Offline'}
                             </span>
                           </div>
+                          {viesResult.userError && (
+                            <p className="text-[11px] opacity-90">{viesResult.userError}</p>
+                          )}
 
                           {viesResult.name && (
                             <div className="text-[11px] pt-1">
@@ -902,10 +917,10 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                         <div className="text-[10px] text-stone-300 space-y-1">
                           <div className="flex items-center gap-1 text-emerald-400 font-semibold">
                             <ShieldCheck className="w-3.5 h-3.5 shrink-0" />
-                            <span>100% Tax-Deductible Business Expense</span>
+                            <span>Business Expense (Consult Adviser)</span>
                           </div>
                           <p className="text-stone-400 leading-relaxed">
-                            {taxSummary.accountantGuidance}
+                            {taxSummary.deductionExplanation} {taxSummary.accountantGuidance}
                           </p>
                           <div className="text-[9px] text-stone-500 font-mono">
                             Legal Basis: {taxSummary.legalBasis} · Invoice: {taxSummary.invoiceType}

@@ -85,22 +85,23 @@ TerroirTrail uses a **Zero-Risk, High-Performance Media Architecture**:
 
 TerroirTrail balances traveler savings with a fair-trade, sustainable economic model for rural producers:
 
-### 1. 👑 Terroir Holiday Pass (Pilot / In Preparation)
-Designed for vacationers and culinary tourists exploring wine regions (launching upon completion of formal cellar door agreements):
-* **Cellar Perks:** Curated welcome pours, seasonal meze pairings, and cellar door discounts across participating estates.
-* **Digital Holographic Wallet Pass:** Digital pass with QR verification for participating cellar doors.
+### 1. 👑 Explorer Pass (Pilot / In Preparation)
+Designed for vacationers and culinary tourists exploring wine regions:
+* **Digital Pass Entitlement:** Account-linked pass entitlement with cross-device synchronization.
+* **Server-Verified QR Code:** Dynamic pass with server-side validation for participating cellar doors.
+* **Pilot Partner Benefits:** Cellar privileges, welcome pours, and partner perks where participating.
 
-### 2. 🛡️ Producer Portal & Verified Host Pro (€39/mo or €19.99/yr)
+### 2. 🛡️ Producer Portal & Verified Host Pro (Pilot — €199/year)
 Empowers independent artisans to take control of their digital presence:
-* **0% Commission Agritourism:** While major online travel agencies (OTAs like TripAdvisor, Viator, and GetYourGuide) take **20% to 25% commissions** on every tasting, TerroirTrail charges **0% booking commission**, keeping 100% of tasting revenue in the hands of the producer.
+* **0% Commission Agritourism:** While major online travel agencies charge heavy commissions, TerroirTrail charges **0% booking commission on direct reservation requests**, keeping tasting revenue directly with the producer.
 * **Claim Listing & Live Cellar Bulletin:** Estates can publish real-time notices on the interactive map (e.g., *"Harvest in progress: barrel room walk-ins welcome today"*, *"Grape stomp dinner Friday"*).
-* **Direct Bottle Shop Link:** 0% commission direct link button on the producer drawer steering travelers directly to the estate's own online cellar shop.
+* **Direct Bottle Shop Link:** Direct link button on the producer drawer steering travelers directly to the estate's own online cellar shop.
 * **Verified Gold Badge:** Glowing gold border and icon on the interactive map with featured priority in Day-Trip Circuits.
-* **Visitor Analytics:** Live breakdown of visitor origins (Germany, UK, USA, France) and reservation volumes.
+* **Visitor Analytics:** Analytics dashboard (planned pilot feature).
 
-### 3. 📦 "Taste of the Trail" Curated Wine Boxes
-* Certified temperature-controlled shipping of authentic small-batch wines and olive oils across the EU, UK, and US.
-* Direct cellar collaborations bundling rare indigenous varieties (Vidiano, Liatiko, Xinomavro, Chianti Classico Riserva) with sommelier tasting guides.
+### 3. 📦 "Taste of the Trail" Curated Showcase
+* Showcase of authentic small-batch wines and regional specialties from featured producers.
+* International bottle shipping is not provided directly by TerroirTrail; travelers coordinate directly with individual producers or regional distributors.
 
 ### 4. 🚐 Optional Private Chauffeur & Mercedes Van Inquiries
 * Dedicated on-demand booking inquiries for travelers desiring private transit with a designated driver.
@@ -149,7 +150,7 @@ Empowers independent artisans to take control of their digital presence:
 
 ## 🛠️ Hybrid Cloud & Architecture
 
-TerroirTrail is built with an **Offline-First, Cloud-Synced Hybrid Architecture**:
+TerroirTrail is built as a **responsive web application** with bundled static data and local storage caching for preferences. Online connectivity is required for map tile loading, account authentication, live booking inquiries, and pass verification:
 
 ```
                                  ┌─────────────────────────────────┐

@@ -147,7 +147,7 @@ export const HostQrScannerModal: React.FC<HostQrScannerModalProps> = ({
             </div>
             <div>
               <h3 className="font-serif-title font-bold text-white text-sm">
-                Scan Guest VIP Pass
+                Scan Guest Explorer Pass
               </h3>
               <p className="text-[11px] text-stone-400">
                 Point camera at explorer's digital pass
@@ -242,9 +242,9 @@ export const HostQrScannerModal: React.FC<HostQrScannerModalProps> = ({
           <div className="flex items-center justify-between text-[10px] text-stone-400 pt-1">
             <span className="flex items-center gap-1">
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Real-time on-device verification</span>
+              <span>Live server-verified pass</span>
             </span>
-            <span className="text-stone-500 font-mono">0% Commission Host Tool</span>
+            <span className="text-stone-500 font-mono">Host Verification Tool</span>
           </div>
         </div>
 

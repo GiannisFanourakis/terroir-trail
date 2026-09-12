@@ -38,7 +38,7 @@ const FAQ_DATA: FaqItem[] = [
     question: 'What is TerroirTrail and how is it different from Tripadvisor or Google Maps?',
     answer: 'Standard mapping and travel portals list commercial mass-tourist wine factories alongside bus tour traps. TerroirTrail is an exclusively curated agritourism discovery platform strictly dedicated to independent, family-owned, and sustainable producers. Every winery, craft brewery, rakokazano distillery, and mountain dairy on TerroirTrail has been hand-selected for authentic hospitality, low-intervention methods, and estate-bottled craftsmanship.',
     highlight: 'Strictly zero commercial bulk factories or mass-bus tour traps.',
-    actionText: 'View VIP Pass Privileges',
+    actionText: 'View Explorer Pass',
     actionType: 'explorer_pass',
   },
   {
@@ -89,31 +89,31 @@ const FAQ_DATA: FaqItem[] = [
     actionType: 'loops',
   },
 
-  // 3. Terroir Passport & VIP Pass
+  // 3. Terroir Passport & Explorer Pass
   {
     id: 'what-is-passport',
     category: 'passport',
-    categoryLabel: 'Passport & VIP Pass',
+    categoryLabel: 'Passport & Pass',
     question: 'What is the Terroir Digital Passport?',
     answer: 'The Terroir Passport is your personal agritourism journal. As you explore estates, you collect verified digital cellar stamps, log sommelier tasting notes (vintage, nose, palate, pairings), and unlock milestone badges—from "Crete Explorer" to "Master of Mountain Terroir". Your journal stays permanently saved in your traveler account.',
   },
   {
     id: 'what-is-vip-explorer-pass',
     category: 'passport',
-    categoryLabel: 'Passport & VIP Pass',
-    question: 'What is the VIP Explorer Pass (€14.99)?',
-    answer: 'The VIP Explorer Pass (€14.99 for 14 days) is our dedicated digital pass for passionate travelers. It unlocks exclusive privileges across participating partner estates: complimentary welcome reserve pours, free artisan graviera meze platters, 10% off cellar-door bottle purchases, unlimited verified passport stamps, and a 100% ad-free exploration experience with full mobile syncing.',
-    highlight: '14 days of VIP cellar privileges, 100% ad-free experience, and instant pass activation.',
-    actionText: 'View VIP Pass Privileges',
+    categoryLabel: 'Passport & Pass',
+    question: 'What is the Explorer Pass?',
+    answer: 'The Explorer Pass (€14.99 for 14 days or €29.99 for an annual pass) provides a digital pass entitlement with a server-verified QR code and cross-device account synchronization. Passholders can present their QR code to participating agritourism pilot partners for cellar-door privileges where available, and keep their verified visit record synced across devices.',
+    highlight: 'Server-verified digital pass with QR verification and pilot partner privileges.',
+    actionText: 'View Explorer Pass',
     actionType: 'explorer_pass',
   },
   {
     id: 'do-i-need-account-for-vip-pass',
     category: 'passport',
-    categoryLabel: 'Passport & VIP Pass',
-    question: 'Do I need an account to get the VIP Pass? Does logging in automatically give me the pass?',
-    answer: 'Accounts on TerroirTrail are 100% free. Logging in or creating an account does NOT automatically grant you the 14-day VIP Explorer Pass. All accounts start on the Free Explorer Tier (unlimited basic map navigation, saving favorites, and collecting digital passport stamps). An authenticated account is simply a prerequisite so that when you choose to purchase the optional €14.99 VIP Pass, your 14-day cellar perks, 100% ad-free experience, and sommelier tasting logs can be securely linked and synced across all your devices.',
-    highlight: 'Accounts are 100% free. The 14-day VIP Pass (€14.99) is an optional upgrade that links to your free account.',
+    categoryLabel: 'Passport & Pass',
+    question: 'Do I need an account to get the Explorer Pass? Does logging in automatically give me the pass?',
+    answer: 'Accounts on TerroirTrail are free. Creating an account does not automatically grant you an Explorer Pass. Free accounts can explore the map directory, view producer details, and submit direct visit inquiries. An authenticated account is required to link an Explorer Pass so your server-verified QR pass and account entitlements can be synchronized across your devices.',
+    highlight: 'Accounts are free. The Explorer Pass is an optional entitlement that links to your account.',
     actionText: 'Sign In / Free Account',
     actionType: 'auth_traveler',
   },
@@ -131,7 +131,7 @@ const FAQ_DATA: FaqItem[] = [
     category: 'logistics',
     categoryLabel: 'Chauffeurs & Delivery',
     question: 'Can I ship wine bottles back to my home country?',
-    answer: 'Yes! Through our "Taste of the Trail" service, you can order curated 6-bottle and 12-bottle discovery cases featuring rare indigenous varieties (such as Vidiano, Liatiko, Assyrtiko, and Mandilaria) delivered directly to your door in the EU, UK, and USA in certified temperature-protected packaging with all customs and duties managed.',
+    answer: 'International bottle shipping is not currently offered through TerroirTrail. Some producers may offer their own shipping or courier arrangements; check directly with each producer during your visit or contact them through their listed details.',
   },
 
   // 5. For Producers & Estate Hosts
@@ -150,8 +150,8 @@ const FAQ_DATA: FaqItem[] = [
     category: 'producers',
     categoryLabel: 'For Estate Hosts',
     question: 'Does TerroirTrail charge a commission on tasting bookings?',
-    answer: 'Zero commission. We never take a 20% to 30% cut like generic tour platforms. We believe that independent agricultural families should keep 100% of the revenue from their cellar doors. Estate hosts are free to set their own tasting prices, operating hours, and booking requirements.',
-    highlight: '0% commission on direct bookings — 100% of tasting fees stay with the producer.',
+    answer: 'Zero booking commissions are charged on direct reservation requests. Independent producers retain all direct tasting and cellar door sales. Estate hosts set their own visiting terms, hours, and tasting prices.',
+    highlight: '0% commission on direct reservation requests.',
   },
   {
     id: 'host-portal-features',
@@ -167,15 +167,15 @@ const FAQ_DATA: FaqItem[] = [
     id: 'host-pro-tax-deductible',
     category: 'producers',
     categoryLabel: 'For Estate Hosts',
-    question: 'Is the Verified Host Pro subscription tax-deductible worldwide (Greece, EU, US, UK)?',
-    answer: 'Yes, 100%. The TerroirTrail Verified Host Pro subscription (€199/year or USD/GBP equivalent) is fully tax-deductible as an operating business advertising and software expense: (1) Greek entities receive an official Service Invoice (ΤΠΥ) transmitted to AADE myDATA with QR & MARK; (2) EU businesses with a valid VIES VAT ID receive an Intra-Community B2B invoice with 0% VAT under the Reverse Charge mechanism; (3) US, UK, and worldwide businesses receive an international B2B export commercial invoice with 0% VAT (out-of-scope under Article 14 / Article 44) and IRS W-8BEN-E compliance certification upon request.',
-    highlight: '100% tax-deductible worldwide with AADE myDATA, EU VIES Reverse Charge, and US W-8BEN-E compliance.',
+    question: 'Is the Verified Host Pro subscription tax-deductible?',
+    answer: 'Business tax treatment depends on your jurisdiction and business circumstances. TerroirTrail provides commercial invoices for business subscriptions. Consult your accountant or tax adviser to determine how software and advertising expenses are treated for your entity under local tax law.',
+    highlight: 'Commercial invoices provided for business subscriptions. Tax deductibility depends on local rules.',
   },
   {
     id: 'how-payments-processed',
     category: 'producers',
     categoryLabel: 'Payments & Security',
-    question: 'How are payments processed for Host Pro and VIP Passes?',
+    question: 'How are payments processed for Host Pro and Explorer Passes?',
     answer: 'All payments on TerroirTrail are processed exclusively through Stripe, the global leader in encrypted financial infrastructure. We support corporate and personal credit/debit cards (Visa, Mastercard, American Express) as well as Apple Pay and Google Pay. All transactions use bank-grade 256-bit SSL encryption, ensuring your card data is never stored on our servers.',
     highlight: 'Encrypted checkout powered exclusively by Stripe with instant automated receipts.',
   },
@@ -204,7 +204,7 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
     { id: 'all', label: 'All Questions' },
     { id: 'about', label: '🌍 About & Vetting' },
     { id: 'tastings', label: '🍷 Tastings & Visits' },
-    { id: 'passport', label: '🎖️ Passport & VIP' },
+    { id: 'passport', label: '🎖️ Passport & Pass' },
     { id: 'logistics', label: '📦 Delivery & Logistics' },
     { id: 'producers', label: '🏛️ For Estate Hosts' },
   ];
@@ -495,7 +495,7 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Search questions (e.g., booking, VIP pass, Host Portal, tax deduction, Stripe, wine delivery)..."
+                    placeholder="Search questions (e.g., booking, Explorer Pass, Host Portal, tax deduction, Stripe)..."
                     className="w-full pl-10 pr-4 py-2.5 rounded-2xl bg-stone-900 border border-white/15 text-white placeholder-stone-400 text-xs focus:outline-none focus:border-amber-400/80 transition"
                   />
                   {searchQuery && (
