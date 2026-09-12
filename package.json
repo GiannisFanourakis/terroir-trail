@@ -6,9 +6,10 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && tsc -p tsconfig.server.json && vite build",
-    "test": "npm run test:frontend && npm run test:server",
-    "test:frontend": "vitest run src/services/explorerPass.test.ts",
-    "test:server": "tsx --test server/tests/*.test.ts && vitest run server/tests/passService.spec.ts",
+    "test": "npm run test:frontend && npm run test:server && npm run test:rules",
+    "test:frontend": "vitest run src/",
+    "test:server": "tsx --test server/tests/*.test.ts && vitest run server/tests/passService.spec.ts server/tests/approveProducerRegistration.spec.ts",
+    "test:rules": "tsx scripts/run_rules_tests.ts",
     "preview": "vite preview",
     "deploy": "npm run build && npx -y firebase-tools deploy --only hosting",
     "sync:android": "npm run build && npx cap sync android",
@@ -20,6 +21,7 @@
   },
   "devDependencies": {
     "@capacitor/cli": "^8.5.1",
+    "@firebase/rules-unit-testing": "^5.0.2",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/google.maps": "^3.66.2",

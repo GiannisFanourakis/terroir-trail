@@ -119,11 +119,16 @@ export const App: React.FC = () => {
   };
 
   const {
-    bookings,
+    travelerBookings,
     userBookings,
+    hostBookings,
     bookTasting,
-    setStatus,
-  } = useBookings(user?.id);
+    cancelBooking,
+    setHostStatus,
+  } = useBookings({
+    userId: user?.id,
+    trustedProducerId: user?.isProducer ? user.claimedProducerId : undefined,
+  });
 
   const {
     getOverride,
@@ -521,8 +526,8 @@ export const App: React.FC = () => {
             onLoginWithGoogle={loginWithGoogle}
             onLoginWithApple={loginWithApple}
             producers={producers}
-            bookings={bookings}
-            onUpdateBookingStatus={setStatus}
+            bookings={hostBookings}
+            onUpdateBookingStatus={setHostStatus}
             onSaveProducerOverride={updateOverride}
             getProducerOverride={getOverride}
             onUpdateProducerTaxDetails={updateProducerTaxDetails}
@@ -540,9 +545,9 @@ export const App: React.FC = () => {
           <MyBookingsModal
             isOpen
             onClose={closeModal}
-            bookings={userBookings}
+            bookings={travelerBookings}
             producers={producers}
-            onCancelBooking={(id) => setStatus(id, 'cancelled')}
+            onCancelBooking={cancelBooking}
             onSelectProducer={(producer) => {
               setSelectedProducer(producer);
               setIsDrawerOpen(true);

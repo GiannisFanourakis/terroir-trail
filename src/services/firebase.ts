@@ -7,9 +7,9 @@ import {
   doc,
   setDoc,
   getDoc,
+  getDocs,
   onSnapshot,
   collection,
-  addDoc,
   updateDoc,
   query,
   where,
@@ -74,39 +74,57 @@ appleProvider.addScope('email');
 appleProvider.addScope('name');
 
 // =========================================================
-// SCENARIO A: Cloud Firestore Traveler & Host Profile Sync
+// SCENARIO A: Cloud Firestore Traveler Profile Sync
 // =========================================================
 
 /**
- * Saves complete user profile (traveler or verified estate host) to Cloud Firestore
+ * Saves ordinary traveler profile fields to Cloud Firestore.
+ * Privileged fields (roles, claims, tax, passes) are strictly excluded from client writes.
  */
 export const saveUserProfileToCloud = async (profile: Partial<UserProfile> & { id: string }) => {
   if (!isFirebaseConfigured || !db || !profile.id) return;
-  try {
-    const userRef = doc(db, 'users', profile.id);
-    const dataToSave: Record<string, any> = {
-      updatedAt: new Date().toISOString(),
-    };
-    if (profile.name !== undefined) dataToSave.name = profile.name;
-    if (profile.email !== undefined) dataToSave.email = profile.email;
-    if (profile.avatar !== undefined) dataToSave.avatar = profile.avatar;
-    if (profile.hometown !== undefined) dataToSave.hometown = profile.hometown;
-    if (profile.role !== undefined) dataToSave.role = profile.role;
-    if (profile.isProducer !== undefined) dataToSave.isProducer = profile.isProducer;
-    if (profile.claimedProducerId !== undefined) dataToSave.claimedProducerId = profile.claimedProducerId;
-    if (profile.producerName !== undefined) dataToSave.producerName = profile.producerName;
-    if (profile.travelerType !== undefined) dataToSave.travelerType = profile.travelerType;
-    if (profile.visitedProducers !== undefined) dataToSave.visitedProducers = profile.visitedProducers;
-    if (profile.personalNotes !== undefined) dataToSave.personalNotes = profile.personalNotes;
-    // Paid pass records are written only by the API to explorerPasses.
-    if (profile.memberSince !== undefined) dataToSave.memberSince = profile.memberSince;
-    if (profile.claimStatus !== undefined) dataToSave.claimStatus = profile.claimStatus;
-    if (profile.taxDetails !== undefined) dataToSave.taxDetails = profile.taxDetails;
+  const userRef = doc(db, 'users', profile.id);
+  const dataToSave: Record<string, any> = {
+    updatedAt: new Date().toISOString(),
+  };
+  if (profile.name !== undefined) dataToSave.name = profile.name;
+  if (profile.email !== undefined) dataToSave.email = profile.email;
+  if (profile.avatar !== undefined) dataToSave.avatar = profile.avatar;
+  if (profile.hometown !== undefined) dataToSave.hometown = profile.hometown;
+  if (profile.travelerType !== undefined) dataToSave.travelerType = profile.travelerType;
+  if (profile.visitedProducers !== undefined) dataToSave.visitedProducers = profile.visitedProducers;
+  if (profile.personalNotes !== undefined) dataToSave.personalNotes = profile.personalNotes;
+  if (profile.memberSince !== undefined) dataToSave.memberSince = profile.memberSince;
 
-    await setDoc(userRef, dataToSave, { merge: true });
+  await setDoc(userRef, dataToSave, { merge: true });
+};
+
+export interface ProducerOwnershipRecord {
+  producerId: string;
+  ownerUid: string;
+  status: 'active';
+  approvedAt: string;
+}
+
+/**
+ * Fetches trusted producer ownership from Cloud Firestore producer_owners collection
+ */
+export const fetchUserProducerOwnership = async (userId: string): Promise<ProducerOwnershipRecord | null> => {
+  if (!isFirebaseConfigured || !db || !userId) return null;
+  try {
+    const q = query(
+      collection(db, 'producer_owners'),
+      where('ownerUid', '==', userId),
+      where('status', '==', 'active')
+    );
+    const snap = await getDocs(q);
+    if (!snap.empty) {
+      return snap.docs[0].data() as ProducerOwnershipRecord;
+    }
   } catch (error) {
-    console.error('Error saving user profile to Firestore:', error);
+    console.warn('Error fetching producer ownership from Firestore:', error);
   }
+  return null;
 };
 
 /**
@@ -344,43 +362,90 @@ export const saveLocalBookings = (bookings: TastingBooking[]) => {
 };
 
 /**
- * Creates a new tasting booking, persisting to Firestore if available and always updating local storage
+ * Creates a new tasting booking.
+ * In cloud mode: derives userId strictly from auth.currentUser.uid, enforces status 'pending',
+ * strips any host lifecycle fields, and propagates Firestore errors.
  */
 export const createTastingBooking = async (
   booking: Omit<TastingBooking, 'id' | 'createdAt' | 'status'>
 ): Promise<TastingBooking> => {
+  if (isFirebaseConfigured && db) {
+    if (!auth?.currentUser) {
+      throw new Error('Authentication required to create a tasting reservation.');
+    }
+    const currentUid = auth.currentUser.uid;
+    const newBooking: TastingBooking = {
+      ...booking,
+      id: `book_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
+      userId: currentUid,
+      status: 'pending',
+      createdAt: new Date().toISOString(),
+    };
+    // Strip host lifecycle fields
+    delete (newBooking as any).confirmedAt;
+    delete (newBooking as any).completedAt;
+
+    const docRef = doc(db, 'bookings', newBooking.id);
+    await setDoc(docRef, newBooking);
+
+    // Update local storage cache on success
+    const localList = getLocalBookings();
+    saveLocalBookings([newBooking, ...localList]);
+    return newBooking;
+  }
+
+  // Fallback for demo mode
   const newBooking: TastingBooking = {
     ...booking,
     id: `book_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
     status: 'pending',
     createdAt: new Date().toISOString(),
   };
-
-  // 1. Update local storage cache
   const localList = getLocalBookings();
-  const updatedList = [newBooking, ...localList];
-  saveLocalBookings(updatedList);
-
-  // 2. Sync to Cloud Firestore if connected
-  if (isFirebaseConfigured && db) {
-    try {
-      const docRef = doc(db, 'bookings', newBooking.id);
-      await setDoc(docRef, newBooking);
-    } catch (e) {
-      console.warn('Firestore booking save error, stored locally:', e);
-    }
-  }
-
+  saveLocalBookings([newBooking, ...localList]);
   return newBooking;
 };
 
 /**
- * Updates the status of a tasting booking (e.g. winery owner confirms or declines)
+ * Traveler cancellation: pending -> cancelled.
+ * Propagates Firestore errors.
  */
-export const updateBookingStatus = async (
+export const cancelTastingBookingByTraveler = async (bookingId: string): Promise<void> => {
+  if (isFirebaseConfigured && db) {
+    if (!auth?.currentUser) {
+      throw new Error('Authentication required to cancel a reservation.');
+    }
+    const docRef = doc(db, 'bookings', bookingId);
+    await updateDoc(docRef, { status: 'cancelled' });
+  }
+
+  const localList = getLocalBookings();
+  const updated = localList.map((b) =>
+    b.id === bookingId ? { ...b, status: 'cancelled' as const } : b
+  );
+  saveLocalBookings(updated);
+};
+
+/**
+ * Approved host updates reservation status (pending -> confirmed/cancelled, confirmed -> completed/cancelled).
+ * Propagates Firestore errors.
+ */
+export const updateBookingStatusByHost = async (
   bookingId: string,
-  status: TastingBooking['status']
+  status: 'confirmed' | 'cancelled' | 'completed'
 ): Promise<void> => {
+  if (isFirebaseConfigured && db) {
+    if (!auth?.currentUser) {
+      throw new Error('Authentication required to update reservation status.');
+    }
+    const docRef = doc(db, 'bookings', bookingId);
+    const updates: Record<string, any> = { status };
+    if (status === 'confirmed') {
+      updates.confirmedAt = new Date().toISOString();
+    }
+    await updateDoc(docRef, updates);
+  }
+
   const localList = getLocalBookings();
   const updated = localList.map((b) =>
     b.id === bookingId
@@ -392,36 +457,39 @@ export const updateBookingStatus = async (
       : b
   );
   saveLocalBookings(updated);
-
-  if (isFirebaseConfigured && db) {
-    try {
-      const docRef = doc(db, 'bookings', bookingId);
-      await updateDoc(docRef, {
-        status,
-        ...(status === 'confirmed' ? { confirmedAt: new Date().toISOString() } : {}),
-      });
-    } catch (e) {
-      console.warn('Firestore booking status update error, updated locally:', e);
-    }
-  }
 };
 
 /**
- * Save custom winery/brewery announcement or schedule override
+ * Backwards-compatible alias for host booking updates
+ */
+export const updateBookingStatus = updateBookingStatusByHost;
+
+/**
+ * Save custom winery/brewery announcement or schedule override.
+ * Omits isProTier from ordinary client writes.
  */
 export const saveProducerOverride = async (override: ProducerOverride): Promise<void> => {
+  const { isProTier: _ignoredProTier, ...cleanOverride } = override;
+
   try {
     const saved = localStorage.getItem(OVERRIDES_LOCAL_KEY);
     const existing: Record<string, ProducerOverride> = saved ? JSON.parse(saved) : {};
     existing[override.producerId] = override;
     localStorage.setItem(OVERRIDES_LOCAL_KEY, JSON.stringify(existing));
-
-    if (isFirebaseConfigured && db) {
-      const docRef = doc(db, 'producer_overrides', override.producerId);
-      await setDoc(docRef, override, { merge: true });
-    }
   } catch (e) {
-    console.error('Error saving producer override:', e);
+    console.error('Error caching producer override:', e);
+  }
+
+  if (isFirebaseConfigured && db) {
+    if (!auth?.currentUser) {
+      // Demo host identity does not perform cloud writes
+      return;
+    }
+    const docRef = doc(db, 'producer_overrides', override.producerId);
+    await setDoc(docRef, {
+      ...cleanOverride,
+      producerId: override.producerId,
+    }, { merge: true });
   }
 };
 
@@ -443,18 +511,26 @@ const PRODUCER_REGISTRATIONS_KEY = 'terroir_trail_producer_registrations';
 
 export { SEEDED_PRODUCER_REGISTRATIONS };
 
-
 /**
- * Saves complete producer registration record to Cloud Firestore database and local cache
+ * Saves complete producer registration record to Cloud Firestore database and local cache.
+ * Status is submitted as 'pending_verification' and isVatVerified is false.
+ * Does NOT self-promote the user profile.
  */
 export const saveProducerRegistrationToCloud = async (
   record: ProducerRegistrationRecord
 ): Promise<ProducerRegistrationRecord> => {
+  const currentUid = auth?.currentUser?.uid || record.userId;
   const updatedRecord: ProducerRegistrationRecord = {
     ...record,
+    userId: currentUid,
+    status: 'pending_verification',
+    isVatVerified: false,
     updatedAt: new Date().toISOString(),
-    status: record.isVatVerified ? 'verified_active' : 'pending_verification',
   };
+
+  // Strip any authoritative approval fields
+  delete (updatedRecord as any).approvedAt;
+  delete (updatedRecord as any).approvedBy;
 
   // 1. Persist to localStorage
   try {
@@ -466,39 +542,13 @@ export const saveProducerRegistrationToCloud = async (
     console.error('Error persisting producer registration to localStorage:', e);
   }
 
-  // 2. Persist to Cloud Firestore (collection: 'producer_registrations')
+  // 2. Persist to Cloud Firestore if connected
   if (isFirebaseConfigured && db) {
-    try {
-      const docRef = doc(db, 'producer_registrations', record.producerId);
-      await setDoc(docRef, updatedRecord, { merge: true });
-    } catch (e) {
-      console.warn('Firestore producer registration write error, preserved locally:', e);
+    if (!auth?.currentUser) {
+      throw new Error('Authentication required to submit producer registration.');
     }
-  }
-
-  // 3. Automatically link with user profile if userId provided
-  if (record.userId) {
-    await saveUserProfileToCloud({
-      id: record.userId,
-      isProducer: true,
-      claimedProducerId: record.producerId,
-      producerName: record.tradeBrandName,
-      claimStatus: updatedRecord.status === 'verified_active' ? 'verified_host' : 'pending_verification',
-      taxDetails: {
-        vatNumber: record.vatNumber,
-        legalBusinessName: record.legalBusinessName,
-        taxOffice: record.taxOffice,
-        registeredAddress: `${record.logistics.streetAddress}, ${record.logistics.cityOrVillage}, ${record.logistics.postalCode}`,
-        dispatchContactPhone: record.logistics.dispatchPhone,
-        countryCode: record.countryCode,
-        isVatVerified: record.isVatVerified,
-        vatVerificationDate: record.vatVerificationDate,
-        eoriNumber: record.eoriNumber,
-        gemiNumber: record.permits.gemiNumber,
-        iban: record.banking.iban,
-        registrationRecord: updatedRecord,
-      },
-    });
+    const docRef = doc(db, 'producer_registrations', record.producerId);
+    await setDoc(docRef, updatedRecord, { merge: true });
   }
 
   return updatedRecord;
@@ -529,17 +579,6 @@ export const fetchProducerRegistrationFromCloud = async (
     if (saved) {
       const existing: Record<string, ProducerRegistrationRecord> = JSON.parse(saved);
       if (existing[producerId]) {
-        // Sanitize legacy cache entries that might have real winery names
-        const legalName = existing[producerId].legalBusinessName || '';
-        if (
-          legalName.toUpperCase().includes('PATERIANAKIS') ||
-          legalName.toUpperCase().includes('MANOUSAKIS') ||
-          legalName.toUpperCase().includes('MONTERAPONI')
-        ) {
-          delete existing[producerId];
-          localStorage.setItem(PRODUCER_REGISTRATIONS_KEY, JSON.stringify(existing));
-          return null;
-        }
         return existing[producerId];
       }
     }
@@ -567,4 +606,3 @@ export const getAllProducerRegistrations = async (): Promise<Record<string, Prod
 };
 
 export { app, auth, db };
-

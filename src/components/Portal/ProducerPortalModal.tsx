@@ -190,7 +190,10 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
   }, [selectedProducerId, getProducerOverride]);
 
   const handleSelectProducer = (id: string) => {
-    setSelectedProducerId(id);
+    // Prevent real users from switching to another producer in the host portal
+    if (user?.id?.startsWith('producer_')) {
+      setSelectedProducerId(id);
+    }
   };
 
   const estateBookings = selectedProducer ? bookings.filter((b) => b.producerId === selectedProducer.id) : [];
@@ -218,7 +221,6 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
       producerId: selectedProducer.id,
       customNotice: customNotice.trim(),
       isAcceptingBookings,
-      isProTier,
       directBottleShopUrl: directBottleShopUrl.trim(),
       updatedAt: new Date().toISOString(),
     });
@@ -234,7 +236,6 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
         producerId: selectedProducer.id,
         customNotice: customNotice.trim(),
         isAcceptingBookings: nextVal,
-        isProTier,
         directBottleShopUrl: directBottleShopUrl.trim(),
         updatedAt: new Date().toISOString(),
       });
@@ -248,7 +249,7 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
     setOauthError(null);
     try {
       setOauthLoading('google');
-      await onLoginWithGoogle('producer', selectedProducerId, selectedProducer?.name);
+      await onLoginWithGoogle();
     } catch (err: any) {
       if (err.message === 'FIREBASE_NOT_CONFIGURED') {
         setOauthError('Google sign-in requires Firebase credentials. Check your .env file or use 1-Click Host Demo.');
@@ -265,7 +266,7 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
     setOauthError(null);
     try {
       setOauthLoading('apple');
-      await onLoginWithApple('producer', selectedProducerId, selectedProducer?.name);
+      await onLoginWithApple();
     } catch (err: any) {
       if (err.message === 'FIREBASE_NOT_CONFIGURED') {
         setOauthError('Apple sign-in requires Firebase credentials. Check your .env file or use 1-Click Host Demo.');
@@ -1262,16 +1263,16 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
                               return;
                             }
                           }
-                          setIsProTier(!isProTier);
                         }}
-                        className={`w-full mt-3 py-2 rounded-xl text-xs font-bold transition cursor-pointer flex items-center justify-center gap-1.5 ${
+                        disabled={isProTier}
+                        className={`w-full mt-3 py-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 ${
                           isProTier
-                            ? 'bg-emerald-500 text-stone-950 shadow-md'
-                            : 'bg-amber-500 hover:bg-amber-400 text-stone-950 shadow-lg'
+                            ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 cursor-default'
+                            : 'bg-amber-500 hover:bg-amber-400 text-stone-950 shadow-lg cursor-pointer'
                         }`}
                       >
                         <Crown className="w-3.5 h-3.5" />
-                        <span>{isProTier ? '✓ Pro Active (Click to Pause)' : `Upgrade to Host Pro (${entityTaxBreakdown.currencySymbol}${entityTaxBreakdown.totalPrice.toFixed(2)}/yr)`}</span>
+                        <span>{isProTier ? '✓ Verified Host Pro Active' : `Upgrade to Host Pro (${entityTaxBreakdown.currencySymbol}${entityTaxBreakdown.totalPrice.toFixed(2)}/yr)`}</span>
                       </button>
                     </div>
                   </div>

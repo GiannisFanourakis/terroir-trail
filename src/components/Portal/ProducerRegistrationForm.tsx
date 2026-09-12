@@ -386,8 +386,7 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
       vatNumber: vatValidation.formatted || vatNumber.trim().toUpperCase(),
       taxOffice: taxOffice.trim(),
       countryCode,
-      isVatVerified: true,
-      vatVerificationDate: new Date().toISOString(),
+      isVatVerified: false,
       eoriNumber: eoriNumber.trim().toUpperCase() || undefined,
       logistics: {
         facilityName: facilityName.trim() || `${tradeBrandName} Facility`,
@@ -430,7 +429,7 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
       representativeRole: representativeRole.trim() || 'Producer & Owner',
       officialEmail: officialEmail.trim(),
       websiteStoreUrl: websiteStoreUrl.trim() || undefined,
-      status: 'verified_active',
+      status: 'pending_verification',
       submittedAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       notesFromProducer: notesFromProducer.trim() || undefined,

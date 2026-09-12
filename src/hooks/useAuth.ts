@@ -8,6 +8,9 @@ import {
   isFirebaseConfigured,
   saveUserProfileToCloud,
   fetchUserProfileFromCloud,
+  fetchUserProducerOwnership,
+  ProducerOwnershipRecord,
+  saveProducerRegistrationToCloud,
   sendPasswordReset,
   subscribeToCloudUserProfile
 } from '../services/firebase';
@@ -29,7 +32,6 @@ import { useExplorerPass } from './useExplorerPass';
 export { DEMO_PROFILES, DEMO_PRODUCER_PROFILES };
 
 const STORAGE_KEY = 'terroir_trail_user';
-
 
 // Helper to load user stamps and notes from local storage by user ID
 const getUserData = (userId: string) => {
@@ -74,30 +76,33 @@ export const useAuth = () => {
   const [authError, setAuthError] = useState<string | null>(null);
   const { pass, refreshExplorerPass } = useExplorerPass(user?.id);
 
-
-
-  // Helper to map a Firebase User + Cloud Firestore Profile to our UserProfile model
+  // Helper to map a Firebase User + Cloud Firestore Profile + Trusted Ownership to our UserProfile model
   const mapFirebaseUser = (
     fbUser: FirebaseUser, 
     customType?: TravelerType,
-    cloudProfile?: Partial<UserProfile> | null
+    cloudProfile?: Partial<UserProfile> | null,
+    trustedOwnership?: ProducerOwnershipRecord | null
   ): UserProfile => {
     const existing = getUserData(fbUser.uid);
     const displayName = cloudProfile?.name || fbUser.displayName || existing.name || fbUser.email?.split('@')[0] || 'Terroir Explorer';
     const photo = fbUser.photoURL || cloudProfile?.avatar || existing.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=d97706&color=ffffff&bold=true&format=svg`;
     
+    // Cloud host privileges are derived exclusively from trusted producer_owners
+    const isTrustedHost = Boolean(trustedOwnership && trustedOwnership.status === 'active');
+    const trustedProducerId = isTrustedHost ? trustedOwnership?.producerId : undefined;
+
     return {
       id: fbUser.uid,
       name: displayName,
       email: fbUser.email || cloudProfile?.email || existing.email || '',
       avatar: photo,
       hometown: cloudProfile?.hometown || existing.hometown || 'Explorer',
-      role: cloudProfile?.role || existing.role || 'traveler',
-      isProducer: cloudProfile?.isProducer ?? existing.isProducer ?? false,
-      claimedProducerId: cloudProfile?.claimedProducerId || existing.claimedProducerId,
-      producerName: cloudProfile?.producerName || existing.producerName,
-      claimStatus: cloudProfile?.claimStatus || existing.claimStatus || (cloudProfile?.isProducer ? 'verified_host' : undefined),
-      taxDetails: cloudProfile?.taxDetails || existing.taxDetails,
+      role: isTrustedHost ? 'producer' : 'traveler',
+      isProducer: isTrustedHost,
+      claimedProducerId: trustedProducerId,
+      producerName: isTrustedHost ? (cloudProfile?.producerName || existing.producerName) : undefined,
+      claimStatus: isTrustedHost ? 'verified_host' : (existing.claimStatus || 'unclaimed'),
+      taxDetails: isTrustedHost ? existing.taxDetails : undefined,
       travelerType: customType || cloudProfile?.travelerType || existing.travelerType || 'culinary_nomad',
       visitedProducers: cloudProfile?.visitedProducers || existing.visitedProducers || [],
       personalNotes: cloudProfile?.personalNotes || existing.personalNotes || {},
@@ -114,8 +119,11 @@ export const useAuth = () => {
     const unsubscribe = onAuthStateChanged(auth, async (fbUser) => {
       if (fbUser) {
         try {
-          const cloudProfile = await fetchUserProfileFromCloud(fbUser.uid);
-          const mapped = mapFirebaseUser(fbUser, undefined, cloudProfile);
+          const [cloudProfile, trustedOwnership] = await Promise.all([
+            fetchUserProfileFromCloud(fbUser.uid),
+            fetchUserProducerOwnership(fbUser.uid),
+          ]);
+          const mapped = mapFirebaseUser(fbUser, undefined, cloudProfile, trustedOwnership);
           setUser(mapped);
           saveUserData(mapped.id, mapped.visitedProducers, mapped.personalNotes, mapped);
           if (!cloudProfile) {
@@ -156,17 +164,9 @@ export const useAuth = () => {
           ...prev,
           name: cloudData.name || prev.name,
           email: cloudData.email || prev.email,
-          role: cloudData.role || prev.role,
-          isProducer: cloudData.isProducer ?? prev.isProducer,
-          claimedProducerId: cloudData.claimedProducerId || prev.claimedProducerId,
-          producerName: cloudData.producerName || prev.producerName,
-          claimStatus: cloudData.claimStatus || prev.claimStatus,
-          taxDetails: cloudData.taxDetails || prev.taxDetails,
           travelerType: cloudData.travelerType || prev.travelerType,
           visitedProducers: cloudData.visitedProducers || prev.visitedProducers,
           personalNotes: { ...prev.personalNotes, ...(cloudData.personalNotes || {}) },
-          hasExplorerPass: cloudData.hasExplorerPass ?? prev.hasExplorerPass,
-          explorerPassUntil: cloudData.explorerPassUntil || prev.explorerPassUntil,
         };
         saveUserData(merged.id, merged.visitedProducers, merged.personalNotes, merged);
         return merged;
@@ -177,11 +177,7 @@ export const useAuth = () => {
   }, [user?.id]);
 
   // 1. Google (Gmail) Sign-In
-  const loginWithGoogle = useCallback(async (
-    role: 'traveler' | 'producer' = 'traveler',
-    claimedProducerId?: string,
-    producerName?: string
-  ) => {
+  const loginWithGoogle = useCallback(async () => {
     setIsLoading(true);
     setAuthError(null);
     try {
@@ -209,25 +205,16 @@ export const useAuth = () => {
         firebaseUser = result.user;
       }
 
-      const cloudProfile = await fetchUserProfileFromCloud(firebaseUser.uid);
-      const mapped = mapFirebaseUser(firebaseUser, 'culinary_nomad', cloudProfile);
+      const [cloudProfile, trustedOwnership] = await Promise.all([
+        fetchUserProfileFromCloud(firebaseUser.uid),
+        fetchUserProducerOwnership(firebaseUser.uid),
+      ]);
+      const mapped = mapFirebaseUser(firebaseUser, 'culinary_nomad', cloudProfile, trustedOwnership);
 
-      const isProducerRole = role === 'producer' || Boolean(cloudProfile?.isProducer);
-      const resolvedProducerId = cloudProfile?.claimedProducerId || claimedProducerId;
-      const resolvedProducerName = cloudProfile?.producerName || producerName;
-
-      const finalUser: UserProfile = {
-        ...mapped,
-        role: isProducerRole ? 'producer' : (cloudProfile?.role || 'traveler'),
-        isProducer: isProducerRole,
-        claimedProducerId: resolvedProducerId,
-        producerName: resolvedProducerName,
-      };
-
-      await saveUserProfileToCloud(finalUser);
-      setUser(finalUser);
-      saveUserData(finalUser.id, finalUser.visitedProducers, finalUser.personalNotes, finalUser);
-      return finalUser;
+      await saveUserProfileToCloud(mapped);
+      setUser(mapped);
+      saveUserData(mapped.id, mapped.visitedProducers, mapped.personalNotes, mapped);
+      return mapped;
     } catch (error: any) {
       console.error('Google Sign-in error:', error);
       const message = formatAuthError(error);
@@ -239,11 +226,7 @@ export const useAuth = () => {
   }, []);
 
   // 2. Apple Sign-In
-  const loginWithApple = useCallback(async (
-    role: 'traveler' | 'producer' = 'traveler',
-    claimedProducerId?: string,
-    producerName?: string
-  ) => {
+  const loginWithApple = useCallback(async () => {
     setIsLoading(true);
     setAuthError(null);
     try {
@@ -251,25 +234,16 @@ export const useAuth = () => {
         throw new Error('FIREBASE_NOT_CONFIGURED');
       }
       const result = await signInWithPopup(auth, appleProvider);
-      const cloudProfile = await fetchUserProfileFromCloud(result.user.uid);
-      const mapped = mapFirebaseUser(result.user, 'culinary_nomad', cloudProfile);
+      const [cloudProfile, trustedOwnership] = await Promise.all([
+        fetchUserProfileFromCloud(result.user.uid),
+        fetchUserProducerOwnership(result.user.uid),
+      ]);
+      const mapped = mapFirebaseUser(result.user, 'culinary_nomad', cloudProfile, trustedOwnership);
 
-      const isProducerRole = role === 'producer' || Boolean(cloudProfile?.isProducer);
-      const resolvedProducerId = cloudProfile?.claimedProducerId || claimedProducerId;
-      const resolvedProducerName = cloudProfile?.producerName || producerName;
-
-      const finalUser: UserProfile = {
-        ...mapped,
-        role: isProducerRole ? 'producer' : (cloudProfile?.role || 'traveler'),
-        isProducer: isProducerRole,
-        claimedProducerId: resolvedProducerId,
-        producerName: resolvedProducerName,
-      };
-
-      await saveUserProfileToCloud(finalUser);
-      setUser(finalUser);
-      saveUserData(finalUser.id, finalUser.visitedProducers, finalUser.personalNotes, finalUser);
-      return finalUser;
+      await saveUserProfileToCloud(mapped);
+      setUser(mapped);
+      saveUserData(mapped.id, mapped.visitedProducers, mapped.personalNotes, mapped);
+      return mapped;
     } catch (error: any) {
       console.error('Apple Sign-in error:', error);
       const message = formatAuthError(error);
@@ -287,8 +261,11 @@ export const useAuth = () => {
     try {
       if (isFirebaseConfigured && auth && password) {
         const cred = await signInWithEmailAndPassword(auth, email, password);
-        const cloudProfile = await fetchUserProfileFromCloud(cred.user.uid);
-        const mapped = mapFirebaseUser(cred.user, undefined, cloudProfile);
+        const [cloudProfile, trustedOwnership] = await Promise.all([
+          fetchUserProfileFromCloud(cred.user.uid),
+          fetchUserProducerOwnership(cred.user.uid),
+        ]);
+        const mapped = mapFirebaseUser(cred.user, undefined, cloudProfile, trustedOwnership);
         setUser(mapped);
         saveUserData(mapped.id, mapped.visitedProducers, mapped.personalNotes, mapped);
         return mapped;
@@ -398,7 +375,6 @@ export const useAuth = () => {
   }, []);
 
   // 6c. Real Producer Sign In
-  // Accepts (email, password) OR legacy (producerId, producerName, email, password)
   const loginAsProducer = useCallback(async (
     arg1: string,
     arg2?: string,
@@ -408,7 +384,6 @@ export const useAuth = () => {
     setIsLoading(true);
     setAuthError(null);
 
-    // Resolve arguments
     let targetEmail = '';
     let targetPassword = '';
     let targetProducerId: string | undefined;
@@ -420,7 +395,6 @@ export const useAuth = () => {
       targetProducerId = arg3;
       targetProducerName = arg4;
     } else {
-      // Legacy: (producerId, producerName, email, password)
       targetProducerId = arg1;
       targetProducerName = arg2;
       targetEmail = arg3 || '';
@@ -430,24 +404,15 @@ export const useAuth = () => {
     try {
       if (isFirebaseConfigured && auth && targetPassword) {
         const cred = await signInWithEmailAndPassword(auth, targetEmail, targetPassword);
-        const cloudProfile = await fetchUserProfileFromCloud(cred.user.uid);
-        const mapped = mapFirebaseUser(cred.user, undefined, cloudProfile);
+        const [cloudProfile, trustedOwnership] = await Promise.all([
+          fetchUserProfileFromCloud(cred.user.uid),
+          fetchUserProducerOwnership(cred.user.uid),
+        ]);
+        const mapped = mapFirebaseUser(cred.user, undefined, cloudProfile, trustedOwnership);
         
-        const resolvedProducerId = cloudProfile?.claimedProducerId || mapped.claimedProducerId || targetProducerId;
-        const resolvedProducerName = cloudProfile?.producerName || mapped.producerName || targetProducerName;
-
-        const producerUser: UserProfile = {
-          ...mapped,
-          role: 'producer',
-          isProducer: true,
-          claimedProducerId: resolvedProducerId,
-          producerName: resolvedProducerName,
-        };
-
-        await saveUserProfileToCloud(producerUser);
-        saveUserData(producerUser.id, producerUser.visitedProducers, producerUser.personalNotes, producerUser);
-        setUser(producerUser);
-        return producerUser;
+        saveUserData(mapped.id, mapped.visitedProducers, mapped.personalNotes, mapped);
+        setUser(mapped);
+        return mapped;
       } else {
         // Fallback local authentication
         const inferredName = targetEmail.split('@')[0];
@@ -492,33 +457,56 @@ export const useAuth = () => {
     setIsLoading(true);
     setAuthError(null);
     try {
-      const claimStatus: HostClaimStatus = taxDetails?.isVatVerified
-        ? 'verified_host'
-        : taxDetails?.vatNumber
-        ? 'pending_verification'
-        : 'pending_verification';
-
       if (isFirebaseConfigured && auth && password) {
         const cred = await createUserWithEmailAndPassword(auth, email, password);
         await firebaseUpdateProfile(cred.user, { displayName: hostName });
         const mapped = mapFirebaseUser(cred.user);
-        const producerUser: UserProfile = {
-          ...mapped,
-          name: hostName,
-          email,
-          role: 'producer',
-          isProducer: true,
-          claimedProducerId: producerId,
-          producerName,
-          claimStatus,
-          taxDetails,
-          travelerType: 'wine_enthusiast',
-          visitedProducers: [producerId],
-        };
-        await saveUserProfileToCloud(producerUser);
-        saveUserData(producerUser.id, producerUser.visitedProducers, producerUser.personalNotes, producerUser);
-        setUser(producerUser);
-        return producerUser;
+        mapped.name = hostName;
+        mapped.email = email;
+        mapped.claimStatus = 'pending_verification';
+
+        // Submit registration to cloud
+        await saveProducerRegistrationToCloud({
+          id: producerId,
+          producerId,
+          userId: cred.user.uid,
+          tradeBrandName: producerName,
+          producerCategory: 'winery',
+          legalBusinessName: taxDetails?.legalBusinessName || producerName,
+          legalEntityType: 'private_company_ike',
+          vatNumber: taxDetails?.vatNumber || '',
+          taxOffice: taxDetails?.taxOffice || '',
+          countryCode: taxDetails?.countryCode || 'GR',
+          isVatVerified: false,
+          logistics: {
+            facilityName: producerName,
+            streetAddress: taxDetails?.registeredAddress || '',
+            postalCode: '',
+            cityOrVillage: '',
+            region: '',
+            countryCode: taxDetails?.countryCode || 'GR',
+            accessType: 'standard_courier_van',
+            contactPersonName: hostName,
+            dispatchPhone: taxDetails?.dispatchContactPhone || '',
+            dispatchEmail: email,
+            pickupTimeWindow: '09:00 - 15:00',
+          },
+          packaging: { maxDailyParcels: 10, dispatchLeadTime: 'next_day' },
+          banking: { accountHolderName: hostName, bankName: '', iban: '', swiftBic: '', payoutCurrency: 'EUR' },
+          permits: {},
+          representativeName: hostName,
+          representativeRole: 'Owner',
+          officialEmail: email,
+          status: 'pending_verification',
+          submittedAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          termsAccepted: true,
+        });
+
+        await saveUserProfileToCloud(mapped);
+        saveUserData(mapped.id, mapped.visitedProducers, mapped.personalNotes, mapped);
+        setUser(mapped);
+        return mapped;
       } else {
         const producerUser: UserProfile = {
           id: `producer_${producerId}_${Date.now()}`,
@@ -530,7 +518,7 @@ export const useAuth = () => {
           isProducer: true,
           claimedProducerId: producerId,
           producerName,
-          claimStatus,
+          claimStatus: 'pending_verification',
           taxDetails,
           travelerType: 'wine_enthusiast',
           visitedProducers: [producerId],
@@ -551,17 +539,15 @@ export const useAuth = () => {
     }
   }, []);
 
-  // 6e. Update Producer Fiscal & Shipping Details
+  // 6e. Update Producer Fiscal & Shipping Details (Local demo only)
   const updateProducerTaxDetails = useCallback(async (taxDetails: ProducerTaxDetails) => {
     setUser((prev) => {
       if (!prev) return prev;
       const updated: UserProfile = {
         ...prev,
         taxDetails,
-        claimStatus: taxDetails.isVatVerified ? 'verified_host' : (prev.claimStatus || 'pending_verification'),
       };
       saveUserData(updated.id, updated.visitedProducers, updated.personalNotes, updated);
-      saveUserProfileToCloud(updated);
       return updated;
     });
   }, []);
@@ -634,7 +620,6 @@ export const useAuth = () => {
   }, [user]);
 
   return {
-    // Cached profiles and demo accounts cannot grant paid entitlements.
     user: user ? {
       ...user,
       hasExplorerPass: !!pass,
@@ -665,4 +650,3 @@ export const useAuth = () => {
     refreshExplorerPass,
   };
 };
-

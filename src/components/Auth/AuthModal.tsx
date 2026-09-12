@@ -145,12 +145,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     if (!onLoginWithGoogle) return;
     try {
       setLocalLoading('google');
-      const targetProducer = producers.find((p) => p.id === selectedProducerId);
-      await onLoginWithGoogle(
-        accountType,
-        accountType === 'producer' ? selectedProducerId : undefined,
-        accountType === 'producer' ? targetProducer?.name : undefined
-      );
+      await onLoginWithGoogle();
       onClose();
     } catch (err: any) {
       if (err.message === 'FIREBASE_NOT_CONFIGURED') {
@@ -170,12 +165,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     if (!onLoginWithApple) return;
     try {
       setLocalLoading('apple');
-      const targetProducer = producers.find((p) => p.id === selectedProducerId);
-      await onLoginWithApple(
-        accountType,
-        accountType === 'producer' ? selectedProducerId : undefined,
-        accountType === 'producer' ? targetProducer?.name : undefined
-      );
+      await onLoginWithApple();
       onClose();
     } catch (err: any) {
       if (err.message === 'FIREBASE_NOT_CONFIGURED') {

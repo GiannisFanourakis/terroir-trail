@@ -3,30 +3,184 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // 1. Traveler Passport & Notes
-    // Users can strictly ONLY read and write their own stamps and notes
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isProducerOwner(producerId) {
+      return isAuthenticated()
+        && exists(/databases/$(database)/documents/producer_owners/$(producerId))
+        && get(/databases/$(database)/documents/producer_owners/$(producerId)).data.ownerUid == request.auth.uid
+        && get(/databases/$(database)/documents/producer_owners/$(producerId)).data.status == 'active';
+    }
+
+    // 1. Traveler Passport & Profile
+    // Users can strictly read their own profile.
+    // Ordinary traveler profile fields are writable, but all authorization and role fields are blocked.
     match /users/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+      allow read: if isOwner(userId);
+
+      allow create: if isOwner(userId)
+        && !request.resource.data.keys().hasAny([
+          'role',
+          'isProducer',
+          'claimedProducerId',
+          'producerName',
+          'claimStatus',
+          'taxDetails',
+          'hasExplorerPass',
+          'explorerPassUntil',
+          'explorerPassId',
+          'explorerPassPlan'
+        ]);
+
+      allow update: if isOwner(userId)
+        && !request.resource.data.diff(resource.data).affectedKeys().hasAny([
+          'role',
+          'isProducer',
+          'claimedProducerId',
+          'producerName',
+          'claimStatus',
+          'taxDetails',
+          'hasExplorerPass',
+          'explorerPassUntil',
+          'explorerPassId',
+          'explorerPassPlan'
+        ]);
+
+      allow delete: if false;
     }
 
-    // 2. Tasting Reservations
-    // Any traveler can submit a booking request
-    match /bookings/{bookingId} {
-      allow create: if true;
-      allow read, update: if request.auth != null && (
-        request.auth.uid == resource.data.userId || 
-        request.auth.token.email == resource.data.userEmail
+    // 2. Trusted Producer Ownership (producerId <-> ownerUid mapping)
+    // Only Admin SDK code may write ownership records.
+    // Verified owners can read their own ownership records.
+    match /producer_owners/{producerId} {
+      allow read: if isAuthenticated() && resource.data.ownerUid == request.auth.uid;
+      allow write: if false;
+    }
+
+    // 3. Producer Registrations & Claims
+    // Authenticated applicants submit claims in pending_verification status with isVatVerified = false.
+    // Applicants can read/edit their submission but cannot modify protected verification/approval fields.
+    // Verified owners can view/update operational details while protected fields stay immutable.
+    match /producer_registrations/{producerId} {
+      allow read: if isAuthenticated() && (
+        resource.data.userId == request.auth.uid ||
+        isProducerOwner(producerId)
       );
-      allow delete: if request.auth != null && request.auth.uid == resource.data.userId;
+
+      allow create: if isAuthenticated()
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.producerId == producerId
+        && request.resource.data.status == 'pending_verification'
+        && request.resource.data.isVatVerified == false
+        && !('approvedAt' in request.resource.data)
+        && !('approvedBy' in request.resource.data);
+
+      allow update: if isAuthenticated() && (
+        resource.data.userId == request.auth.uid ||
+        isProducerOwner(producerId)
+      )
+        && request.resource.data.userId == resource.data.userId
+        && request.resource.data.producerId == resource.data.producerId
+        && request.resource.data.status == resource.data.status
+        && request.resource.data.isVatVerified == resource.data.isVatVerified
+        && !request.resource.data.diff(resource.data).affectedKeys().hasAny([
+          'userId',
+          'producerId',
+          'status',
+          'isVatVerified',
+          'approvedAt',
+          'approvedBy'
+        ]);
+
+      allow delete: if false;
     }
 
-    // 3. Producer Overrides (Special hours, closures)
-    // Publicly readable for all travelers; only authenticated users can edit
+    // 4. Producer Overrides (Special hours, notices, booking pause)
+    // Publicly readable for all travelers.
+    // Writable only by verified active owner from producer_owners.
+    // Requires document ID == embedded producerId. Client cannot set or mutate isProTier.
     match /producer_overrides/{producerId} {
       allow read: if true;
-      allow write: if request.auth != null;
+
+      allow create: if isProducerOwner(producerId)
+        && request.resource.data.producerId == producerId
+        && !('isProTier' in request.resource.data);
+
+      allow update: if isProducerOwner(producerId)
+        && request.resource.data.producerId == producerId
+        && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['isProTier']);
+
+      allow delete: if false;
     }
 
+    // 5. Tasting Reservations / Bookings
+    match /bookings/{bookingId} {
+      // Authenticated traveler can create a pending booking for themselves
+      allow create: if isAuthenticated()
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.status == 'pending'
+        && !('confirmedAt' in request.resource.data)
+        && !('completedAt' in request.resource.data);
+
+      // Traveler reads own bookings; Host reads bookings for owned producer
+      allow read: if isAuthenticated() && (
+        resource.data.userId == request.auth.uid ||
+        isProducerOwner(resource.data.producerId)
+      );
+
+      // Status updates:
+      // - Traveler may only transition pending -> cancelled
+      // - Approved host may transition pending -> confirmed/cancelled, confirmed -> completed/cancelled
+      // Neither actor may change ownership, producer ID, contact details, booking details, or amounts
+      allow update: if isAuthenticated() && (
+        // Case A: Traveler cancels own pending reservation
+        (
+          resource.data.userId == request.auth.uid
+          && resource.data.status == 'pending'
+          && request.resource.data.status == 'cancelled'
+          && request.resource.data.userId == resource.data.userId
+          && request.resource.data.producerId == resource.data.producerId
+          && !request.resource.data.diff(resource.data).affectedKeys().hasAny([
+            'id', 'userId', 'producerId', 'producerName', 'producerCategory',
+            'producerLocation', 'userName', 'userEmail', 'userPhone',
+            'date', 'timeSlot', 'experienceId', 'experienceTitle',
+            'pricePerPerson', 'guestsCount', 'totalEstimated', 'specialRequests',
+            'createdAt', 'confirmedAt', 'completedAt'
+          ])
+        )
+        ||
+        // Case B: Approved Host manages reservation lifecycle
+        (
+          isProducerOwner(resource.data.producerId)
+          && request.resource.data.userId == resource.data.userId
+          && request.resource.data.producerId == resource.data.producerId
+          && (
+            (resource.data.status == 'pending' && (request.resource.data.status == 'confirmed' || request.resource.data.status == 'cancelled'))
+            ||
+            (resource.data.status == 'confirmed' && (request.resource.data.status == 'completed' || request.resource.data.status == 'cancelled'))
+          )
+          && !request.resource.data.diff(resource.data).affectedKeys().hasAny([
+            'id', 'userId', 'producerId', 'producerName', 'producerCategory',
+            'producerLocation', 'userName', 'userEmail', 'userPhone',
+            'date', 'timeSlot', 'experienceId', 'experienceTitle',
+            'pricePerPerson', 'guestsCount', 'totalEstimated', 'specialRequests',
+            'createdAt'
+          ])
+        )
+      );
+
+      // Deletion is denied; cancellation is the implemented workflow
+      allow delete: if false;
+    }
+
+    // 6. Paid Explorer Passes (Issue #1 Protection)
     // Paid entitlements are private and are issued/read only through the Admin SDK API.
     match /explorerPasses/{sessionId} {
       allow read, write: if false;

@@ -106,6 +106,11 @@ export const BookingModal: React.FC<BookingModalProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!user) {
+      setError('Please sign in to submit a tasting reservation.');
+      onOpenAuth();
+      return;
+    }
     if (!name.trim()) {
       setError('Please enter your full name.');
       return;
@@ -123,7 +128,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
         producerName: producer.name,
         producerCategory: producer.category,
         producerLocation: `${producer.village}, ${producer.region}`,
-        userId: user?.id || `anon_${Date.now()}`,
+        userId: user.id,
         userName: name.trim(),
         userEmail: email.trim(),
         userPhone: phone.trim(),

@@ -13,7 +13,7 @@ export const useProducerPortal = () => {
     getLocalProducerOverrides()
   );
 
-  // Sync with Firestore if active
+  // Sync with Firestore public overrides (public read for map/details)
   useEffect(() => {
     if (isFirebaseConfigured && db) {
       try {
@@ -22,9 +22,7 @@ export const useProducerPortal = () => {
           snapshot.forEach((docSnap) => {
             map[docSnap.id] = docSnap.data() as ProducerOverride;
           });
-          if (Object.keys(map).length > 0) {
-            setOverrides(map);
-          }
+          setOverrides(map);
         });
         return () => unsubscribe();
       } catch (e) {
@@ -36,8 +34,8 @@ export const useProducerPortal = () => {
   const updateOverride = useCallback(
     async (override: ProducerOverride) => {
       const producerId = override.producerId;
-      setOverrides((prev) => ({ ...prev, [producerId]: override }));
       await saveProducerOverride(override);
+      setOverrides((prev) => ({ ...prev, [producerId]: override }));
     },
     []
   );
