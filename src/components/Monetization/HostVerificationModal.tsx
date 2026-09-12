@@ -5,6 +5,7 @@ export interface VerifiedPassInfo {
   passId: string;
   name: string;
   tier: string;
+  expiresAt: string;
 }
 
 interface HostVerificationModalProps {
@@ -68,6 +69,7 @@ export const HostVerificationModal: React.FC<HostVerificationModalProps> = ({
               <span>{guestInfo.passId}</span>
               <span className="text-amber-400 font-sans font-semibold">{guestInfo.tier}</span>
             </div>
+            <p className="text-stone-400 text-[10px]">Verified online · Expires {new Date(guestInfo.expiresAt).toLocaleString()}</p>
           </div>
 
           {/* Guaranteed Host Privileges Checklist */}

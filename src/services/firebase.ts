@@ -98,8 +98,7 @@ export const saveUserProfileToCloud = async (profile: Partial<UserProfile> & { i
     if (profile.travelerType !== undefined) dataToSave.travelerType = profile.travelerType;
     if (profile.visitedProducers !== undefined) dataToSave.visitedProducers = profile.visitedProducers;
     if (profile.personalNotes !== undefined) dataToSave.personalNotes = profile.personalNotes;
-    if (profile.hasExplorerPass !== undefined) dataToSave.hasExplorerPass = profile.hasExplorerPass;
-    if (profile.explorerPassUntil !== undefined) dataToSave.explorerPassUntil = profile.explorerPassUntil;
+    // Paid pass records are written only by the API to explorerPasses.
     if (profile.memberSince !== undefined) dataToSave.memberSince = profile.memberSince;
     if (profile.claimStatus !== undefined) dataToSave.claimStatus = profile.claimStatus;
     if (profile.taxDetails !== undefined) dataToSave.taxDetails = profile.taxDetails;

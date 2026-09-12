@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Html5Qrcode } from 'html5-qrcode';
 import { X, Camera, SwitchCamera, AlertCircle, Sparkles, Check, ArrowRight, ShieldCheck, QrCode } from 'lucide-react';
 import { VerifiedPassInfo } from '../Monetization/HostVerificationModal';
+import { verifyExplorerPass } from '../../services/explorerPass';
 
 interface HostQrScannerModalProps {
   isOpen: boolean;
@@ -19,43 +20,30 @@ export const HostQrScannerModal: React.FC<HostQrScannerModalProps> = ({
   const [manualCode, setManualCode] = useState<string>('');
   const [facingMode, setFacingMode] = useState<'environment' | 'user'>('environment');
   const scannerRef = useRef<Html5Qrcode | null>(null);
+  const verifyingRef = useRef(false);
+  const openRef = useRef(isOpen);
+  openRef.current = isOpen;
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [verificationError, setVerificationError] = useState<string | null>(null);
   const readerElementId = 'terroir-qr-reader-viewport';
 
-  const parseAndVerify = (rawText: string) => {
-    let passId = rawText.trim();
-    let name = 'Valued Explorer';
-    let tier = 'Annual VIP Explorer (365 Days)';
-
+  const parseAndVerify = async (rawText: string) => {
+    if (verifyingRef.current) return;
+    verifyingRef.current = true;
+    setIsVerifying(true);
+    setVerificationError(null);
     try {
-      if (rawText.includes('?')) {
-        const urlString = rawText.startsWith('http') ? rawText : `https://${rawText}`;
-        const parsedUrl = new URL(urlString);
-        const idParam = parsedUrl.searchParams.get('verify_pass');
-        if (idParam) passId = idParam;
-        const nameParam = parsedUrl.searchParams.get('name');
-        if (nameParam) name = decodeURIComponent(nameParam);
-        const tierParam = parsedUrl.searchParams.get('tier');
-        if (tierParam) {
-          tier = tierParam === 'annual' ? 'Annual VIP Explorer (365 Days)' : '14-Day VIP Holiday Pass';
-        }
-      } else if (rawText.toLowerCase().includes('holiday')) {
-        tier = '14-Day VIP Holiday Pass';
-      }
+      const info = await verifyExplorerPass(rawText);
+      if (!openRef.current) return;
+      navigator.vibrate?.([40, 60, 40]);
+      onPassVerified(info);
+      onClose();
     } catch (e) {
-      // Fallback to raw string
+      if (openRef.current) setVerificationError(e instanceof Error ? e.message : 'Unable to verify this pass.');
+    } finally {
+      verifyingRef.current = false;
+      if (openRef.current) setIsVerifying(false);
     }
-
-    // Gentle audio/haptic confirmation if supported
-    try {
-      if (typeof window !== 'undefined' && 'navigator' in window && 'vibrate' in navigator) {
-        navigator.vibrate([40, 60, 40]);
-      }
-    } catch (e) {
-      // Ignore
-    }
-
-    onPassVerified({ passId, name, tier });
-    onClose();
   };
 
   useEffect(() => {
@@ -232,20 +220,21 @@ export const HostQrScannerModal: React.FC<HostQrScannerModalProps> = ({
 
         {/* Manual Code Entry & Tips */}
         <div className="p-4 bg-stone-900/90 border-t border-white/10 space-y-3">
+          {verificationError && <p role="alert" className="text-xs text-rose-300">{verificationError}</p>}
           <form onSubmit={handleManualSubmit} className="flex gap-2">
             <input
               type="text"
               value={manualCode}
               onChange={(e) => setManualCode(e.target.value)}
-              placeholder="Or enter Pass ID (e.g. TR-VIP-...)"
+              placeholder="Enter pass ID or verification link"
               className="flex-1 bg-stone-950 border border-white/15 rounded-xl px-3 py-2 text-xs text-white placeholder-stone-500 focus:outline-none focus:border-amber-400 transition"
             />
             <button
               type="submit"
-              disabled={!manualCode.trim()}
+              disabled={!manualCode.trim() || isVerifying}
               className="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 disabled:opacity-40 text-stone-950 font-bold text-xs transition flex items-center gap-1.5 cursor-pointer shrink-0"
             >
-              <span>Verify</span>
+              <span>{isVerifying ? 'Checking…' : 'Verify'}</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </form>

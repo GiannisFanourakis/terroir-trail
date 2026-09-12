@@ -13,6 +13,7 @@ import { useProducerPortal } from './hooks/useProducerPortal';
 import { GoogleAdSlot } from './components/Monetization/GoogleAdSlot';
 import { ChauffeurBooking } from './types/monetization';
 import type { VerifiedPassInfo } from './components/Monetization/HostVerificationModal';
+import { verifyExplorerPass } from './services/explorerPass';
 import { List, MapPin } from 'lucide-react';
 
 // Performance optimization: lazy-load modals on demand to shrink initial bundle
@@ -74,7 +75,7 @@ export const App: React.FC = () => {
     isVisited,
     saveTastingNote,
     getTastingNote,
-    activateExplorerPass,
+    refreshExplorerPass,
   } = useAuth();
 
   // Listen for Stripe Checkout redirects (?vip=success or ?producer=upgraded) or QR Pass Verifications (?verify_pass=...)
@@ -83,35 +84,30 @@ export const App: React.FC = () => {
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const params = new URLSearchParams(window.location.search);
-    const vipParam = params.get('vip');
-    const planParam = params.get('plan');
+    const sessionId = params.get('checkout_session_id');
     const verifyPassId = params.get('verify_pass');
-
+    let cancelled = false;
     if (verifyPassId) {
-      const guestName = params.get('name') || 'Valued Explorer';
-      const tier = params.get('tier') === 'annual' ? 'Annual VIP Explorer (365 Days)' : '14-Day VIP Holiday Pass';
-      setActiveModal({
-        type: 'host_verify',
-        guestInfo: { passId: verifyPassId, name: guestName, tier }
-      });
-      const cleanUrl = window.location.origin + window.location.pathname;
-      window.history.replaceState({}, document.title, cleanUrl);
-    } else if (vipParam === 'annual' || (vipParam === 'success' && planParam === 'annual')) {
-      activateExplorerPass(365);
-      setStripeNotification('🎉 Welcome VIP Explorer! Your 365-Day Annual Pass is active & all ads are removed.');
-      const cleanUrl = window.location.origin + window.location.pathname;
-      window.history.replaceState({}, document.title, cleanUrl);
-    } else if (vipParam === 'success') {
-      activateExplorerPass(14);
-      setStripeNotification('🎉 Welcome VIP Explorer! Your 14-Day Holiday Pass is active & all ads are removed.');
-      const cleanUrl = window.location.origin + window.location.pathname;
-      window.history.replaceState({}, document.title, cleanUrl);
-    } else if (params.get('producer') === 'upgraded') {
-      setStripeNotification('🌟 Welcome Featured Producer! Your premium listing is active.');
-      const cleanUrl = window.location.origin + window.location.pathname;
-      window.history.replaceState({}, document.title, cleanUrl);
+      setStripeNotification('Checking Explorer pass…');
+      void verifyExplorerPass(verifyPassId).then(info => {
+        if (cancelled) return;
+        setStripeNotification(null);
+        setActiveModal({ type: 'host_verify', guestInfo: info });
+      }).catch(error => { if (!cancelled) setStripeNotification(error.message); });
+    } else if (sessionId && user?.id) {
+      setStripeNotification('Confirming your payment…');
+      void refreshExplorerPass(sessionId).then(pass => {
+        if (cancelled) return;
+        setStripeNotification(pass ? 'Your payment is verified and your Explorer pass is active.' : 'No active pass was found.');
+        if (pass) window.history.replaceState({}, document.title, window.location.pathname);
+      }).catch(error => { if (!cancelled) setStripeNotification(error.message); });
+    } else if (sessionId) {
+      setStripeNotification('Sign in to the account used at checkout to retrieve your pass.');
+    } else if (params.has('vip') || params.get('producer') === 'upgraded') {
+      setStripeNotification('A return link does not confirm payment. Sign in to check your purchase status.');
     }
-  }, [activateExplorerPass]);
+    return () => { cancelled = true; };
+  }, [refreshExplorerPass, user?.id]);
 
   const handleConfirmChauffeurBooking = (booking: ChauffeurBooking) => {
     try {
@@ -562,7 +558,6 @@ export const App: React.FC = () => {
             onClose={closeModal}
             user={user}
             onOpenAuth={() => setActiveModal({ type: 'auth', initialRole: 'traveler' })}
-            onActivatePass={(days = 14) => activateExplorerPass(days)}
             onOpenDigitalPass={() => setActiveModal({ type: 'digital_pass' })}
           />
         )}

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { UserProfile } from '../../types/auth';
+import { startPassCheckout } from '../../services/explorerPass';
 import { 
   X, Award, CheckCircle2, Sparkles, ShieldCheck, 
   Wine, Gift, Compass, CreditCard, Apple, ArrowRight, Star, Lock, QrCode
@@ -9,7 +10,6 @@ interface ExplorerPassModalProps {
   isOpen: boolean;
   onClose: () => void;
   user: UserProfile | null;
-  onActivatePass: (days?: number) => Promise<void> | void;
   onOpenAuth: (role?: 'traveler' | 'producer') => void;
   onOpenDigitalPass?: () => void;
 }
@@ -18,17 +18,17 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
   isOpen,
   onClose,
   user,
-  onActivatePass,
   onOpenAuth,
   onOpenDigitalPass,
 }) => {
-  if (!isOpen) return null;
-
   const [activeTab, setActiveTab] = useState<'upgrade' | 'compare'>('upgrade');
   const [selectedPlan, setSelectedPlan] = useState<'holiday' | 'annual'>('holiday');
   const [paymentMethod, setPaymentMethod] = useState<'apple' | 'google' | 'card'>('apple');
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
-  const [isPurchased, setIsPurchased] = useState<boolean>(false);
+  const isPurchased = false;
+  const [purchaseError, setPurchaseError] = useState<string | null>(null);
+
+  if (!isOpen) return null;
 
   const perks = [
     {
@@ -82,32 +82,13 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
       return;
     }
 
-    const stripeUrl = selectedPlan === 'holiday'
-      ? import.meta.env.VITE_STRIPE_EXPLORER_PASS_URL
-      : import.meta.env.VITE_STRIPE_ANNUAL_PASS_URL;
-
-    if (stripeUrl) {
-      setIsProcessing(true);
-      try {
-        const targetUrl = new URL(stripeUrl);
-        if (user?.email) targetUrl.searchParams.set('prefilled_email', user.email);
-        if (user?.id) targetUrl.searchParams.set('client_reference_id', user.id);
-        window.location.href = targetUrl.toString();
-        return;
-      } catch {
-        window.location.href = stripeUrl;
-        return;
-      }
-    }
-
+    setPurchaseError(null);
     setIsProcessing(true);
     try {
-      // Fallback: simulated activation if no Stripe link configured yet
-      await new Promise((res) => setTimeout(res, 900));
-      await onActivatePass(selectedPlan === 'holiday' ? 14 : 365);
-      setIsPurchased(true);
+      const { url } = await startPassCheckout(selectedPlan);
+      window.location.assign(url);
     } catch (e) {
-      console.error('Pass activation failed:', e);
+      setPurchaseError(e instanceof Error ? e.message : 'Unable to start checkout. Please try again.');
     } finally {
       setIsProcessing(false);
     }
@@ -147,6 +128,8 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
             </button>
           </div>
         </div>
+
+        {purchaseError && <p role="alert" className="px-6 py-3 text-sm text-rose-300">{purchaseError}</p>}
 
         {/* Tab Toggle: Upgrade vs Comparison */}
         {!isPurchased && !user?.hasExplorerPass && (

@@ -24,6 +24,7 @@ import {
 } from 'firebase/auth';
 import { DEMO_PROFILES, DEMO_PRODUCER_PROFILES } from '../data/demoProfiles';
 import { formatAuthError } from '../utils/authErrors';
+import { useExplorerPass } from './useExplorerPass';
 
 export { DEMO_PROFILES, DEMO_PRODUCER_PROFILES };
 
@@ -71,6 +72,7 @@ export const useAuth = () => {
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [authError, setAuthError] = useState<string | null>(null);
+  const { pass, refreshExplorerPass } = useExplorerPass(user?.id);
 
 
 
@@ -631,45 +633,15 @@ export const useAuth = () => {
     return user?.personalNotes[producerId] || '';
   }, [user]);
 
-  // 9. VIP Explorer Pass Activation
-  const activateExplorerPass = useCallback((durationDays: number = 365) => {
-    setUser((prev) => {
-      const expiryDate = new Date();
-      expiryDate.setDate(expiryDate.getDate() + durationDays);
-      const baseUser: UserProfile = prev || {
-        id: `guest_explorer_${Date.now()}`,
-        name: 'VIP Explorer',
-        email: 'explorer@terroirtrail.com',
-        avatar: '👑',
-        hometown: 'Mediterranean Explorer',
-        role: 'traveler',
-        isProducer: false,
-        travelerType: 'wine_enthusiast',
-        visitedProducers: [],
-        personalNotes: {},
-        memberSince: new Date().getFullYear().toString(),
-      };
-
-      const newProfile: UserProfile = {
-        ...baseUser,
-        hasExplorerPass: true,
-        explorerPassUntil: expiryDate.toISOString(),
-      };
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(newProfile));
-        if (prev?.id) {
-          saveUserData(newProfile.id, newProfile.visitedProducers, newProfile.personalNotes, newProfile);
-          saveUserProfileToCloud(newProfile);
-        }
-      } catch (e) {
-        console.error('Error saving updated explorer pass to localStorage:', e);
-      }
-      return newProfile;
-    });
-  }, []);
-
   return {
-    user,
+    // Cached profiles and demo accounts cannot grant paid entitlements.
+    user: user ? {
+      ...user,
+      hasExplorerPass: !!pass,
+      explorerPassUntil: pass?.expiresAt,
+      explorerPassId: pass?.passId,
+      explorerPassPlan: pass?.plan,
+    } : null,
     isAuthenticated: !!user,
     isFirebaseConfigured,
     isLoading,
@@ -690,7 +662,7 @@ export const useAuth = () => {
     isVisited,
     saveTastingNote,
     getTastingNote,
-    activateExplorerPass,
+    refreshExplorerPass,
   };
 };
 

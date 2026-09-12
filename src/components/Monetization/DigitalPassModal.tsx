@@ -26,7 +26,7 @@ export const DigitalPassModal: React.FC<DigitalPassModalProps> = ({
   const [isDownloading, setIsDownloading] = useState<boolean>(false);
   const cardRef = useRef<HTMLDivElement>(null);
 
-  // Live security clock (ticking every second to prevent fraudulent screenshots)
+  // Display clock; validity is checked by the server when a host scans the QR.
   useEffect(() => {
     if (!isOpen) return;
     const updateTime = () => {
@@ -39,20 +39,15 @@ export const DigitalPassModal: React.FC<DigitalPassModalProps> = ({
   }, [isOpen]);
 
   // Determine pass tier, expiry, and unique ID
-  const passId = user?.id 
-    ? `TR-VIP-${user.id.slice(-6).toUpperCase()}-${new Date().getFullYear()}`
-    : `TR-VIP-DEMO-${new Date().getFullYear()}`;
+  const passId = user?.explorerPassId || '';
 
-  const isVip = !!user?.hasExplorerPass;
+  const isVip = !!user?.hasExplorerPass && !!passId && Date.parse(user.explorerPassUntil || '') > Date.now();
 
   // Calculate validity period
   let expiryDateString = 'Active (14 Days)';
-  let isAnnual = false;
+  const isAnnual = user?.explorerPassPlan === 'annual';
   if (user?.explorerPassUntil) {
     const expiryDate = new Date(user.explorerPassUntil);
-    const now = new Date();
-    const diffDays = Math.ceil((expiryDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-    isAnnual = diffDays > 35;
     expiryDateString = expiryDate.toLocaleDateString(undefined, { 
       year: 'numeric', 
       month: 'short', 
@@ -60,11 +55,12 @@ export const DigitalPassModal: React.FC<DigitalPassModalProps> = ({
     });
   }
 
-  const verificationUrl = `https://terroir-trail.web.app/?verify_pass=${encodeURIComponent(passId)}&name=${encodeURIComponent(user?.name || 'Explorer')}&tier=${isAnnual ? 'annual' : 'holiday'}`;
+  const passWebUrl = import.meta.env.VITE_PUBLIC_APP_URL || 'https://terroir-trail.web.app/';
+  const verificationUrl = `${passWebUrl.replace(/\/$/, '')}/?verify_pass=${encodeURIComponent(passId)}`;
 
   // Generate crisp QR code on mount / user change
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen || !isVip) { setQrDataUrl(''); return; }
     QRCode.toDataURL(verificationUrl, {
       width: 280,
       margin: 1.5,
@@ -76,7 +72,7 @@ export const DigitalPassModal: React.FC<DigitalPassModalProps> = ({
     })
       .then((url) => setQrDataUrl(url))
       .catch((err) => console.error('Error generating pass QR code:', err));
-  }, [isOpen, verificationUrl]);
+  }, [isOpen, isVip, verificationUrl]);
 
   if (!isOpen) return null;
 

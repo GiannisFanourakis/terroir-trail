@@ -5,14 +5,17 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "tsc && tsc -p tsconfig.server.json && vite build",
+    "test": "npm run test:frontend && npm run test:server",
+    "test:frontend": "vitest run src/services/explorerPass.test.ts",
+    "test:server": "tsx --test server/tests/*.test.ts && vitest run server/tests/passService.spec.ts",
     "preview": "vite preview",
     "deploy": "npm run build && npx -y firebase-tools deploy --only hosting",
     "sync:android": "npm run build && npx cap sync android",
     "sync:ios": "npm run build && npx cap sync ios",
     "sync:all": "npm run build && npx cap sync",
     "server": "tsx server/index.ts",
-    "stripe:test": "tsx scripts/test_stripe_integration.ts",
+    "stripe:test": "npm test",
     "stripe:flow": "tsx scripts/run_checkout_flow.ts"
   },
   "devDependencies": {
@@ -23,7 +26,8 @@
     "@types/node": "^22.20.2",
     "tsx": "^4.23.13",
     "typescript": "~6.0.2",
-    "vite": "^8.2.2"
+    "vite": "^8.2.2",
+    "vitest": "^5.0.0"
   },
   "dependencies": {
     "@capacitor-firebase/authentication": "^8.5.1",
@@ -44,6 +48,7 @@
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "firebase": "^12.18.0",
+    "firebase-admin": "^14.4.0",
     "html5-qrcode": "^2.3.8",
     "leaflet": "^1.9.4",
     "lucide-react": "^1.43.0",

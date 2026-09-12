@@ -1,79 +1,93 @@
-import express, { Request, Response } from 'express';
+import express, { type Request, type Response, type NextFunction } from 'express';
 import cors from 'cors';
-import { createProductAndPrice } from './services/productService';
-import { createCheckoutSession } from './services/checkoutService';
+import { adminAuth } from './firebaseAdmin';
+import { createPassCheckout, fulfillPass, getExplorerPass, verifyExplorerPass } from './services/passService';
 import { handleWebhookEvent } from './services/webhookService';
-import { datastore } from './datastore';
 
-export const app = express();
+const defaults = {
+  verifyToken: (token: string) => adminAuth().verifyIdToken(token, true),
+  createPassCheckout, fulfillPass, getExplorerPass, verifyExplorerPass, handleWebhookEvent,
+};
 
-app.use(cors());
+export function createApp(deps = defaults) {
+  const app = express();
+  const origins = (process.env.ALLOWED_ORIGINS || 'http://localhost:5173,https://localhost,capacitor://localhost')
+    .split(',').map(origin => origin.trim());
+  if (process.env.APP_URL) origins.push(new URL(process.env.APP_URL).origin);
+  app.use(cors({ origin: origins }));
+  app.use('/api', (_req, res, next) => { res.set('Cache-Control', 'no-store'); next(); });
 
-// Webhook endpoint requires raw body for signature verification
-app.post(
-  '/api/webhook',
-  express.raw({ type: 'application/json' }),
-  async (req: Request, res: Response): Promise<void> => {
-    const signature = req.headers['stripe-signature'] as string | undefined;
-
+  app.post('/api/webhook', express.raw({ type: 'application/json', limit: '256kb' }), async (req, res) => {
     try {
-      const result = await handleWebhookEvent(req.body, signature);
-      res.status(200).json({ received: true, ...result });
-    } catch (err: any) {
-      console.error('Webhook processing error:', err.message);
-      res.status(400).send(Webhook Error: );
+      const result = await deps.handleWebhookEvent(req.body, req.get('stripe-signature'));
+      res.json({ received: true, ...result });
+    } catch (error) {
+      console.error('Webhook rejected:', error);
+      res.status(400).json({ error: 'Webhook could not be verified or processed.' });
     }
-  }
-);
+  });
 
-// JSON body parser for regular API routes
-app.use(express.json());
+  app.use(express.json({ limit: '16kb' }));
+  const requireAuth = async (req: Request, res: Response, next: NextFunction) => {
+    const bearer = req.get('authorization');
+    if (!bearer?.startsWith('Bearer ')) {
+      res.status(401).json({ error: 'Sign in to manage your Explorer pass.' });
+      return;
+    }
+    try {
+      res.locals.identity = await deps.verifyToken(bearer.slice(7));
+      next();
+    } catch {
+      res.status(401).json({ error: 'Your session has expired. Please sign in again.' });
+    }
+  };
 
-// 1. Create Product & Price endpoint
-app.post('/api/create-product', async (req: Request, res: Response): Promise<void> => {
-  try {
-    const { name, currency, unitAmount } = req.body || {};
-    const product = await createProductAndPrice({ name, currency, unitAmount });
-    res.status(201).json(product);
-  } catch (err: any) {
-    console.error('Error creating product:', err.message);
-    res.status(500).json({ error: err.message });
-  }
-});
+  app.post('/api/passes/checkout', requireAuth, async (req, res) => {
+    if (req.body?.plan !== 'holiday' && req.body?.plan !== 'annual') {
+      res.status(400).json({ error: 'Choose a holiday or annual pass.' });
+      return;
+    }
+    try {
+      const identity = res.locals.identity;
+      res.json(await deps.createPassCheckout(identity.uid, identity.name || 'Explorer', req.body.plan));
+    } catch (error) {
+      console.error('Pass checkout unavailable:', error);
+      res.status(503).json({ error: 'Pass checkout is currently unavailable. Please try again later.' });
+    }
+  });
 
-// 2. Create Checkout Session endpoint
-app.post('/api/create-checkout-session', async (req: Request, res: Response): Promise<void> => {
-  try {
-    const { priceId, successUrl, cancelUrl } = req.body || {};
-    const session = await createCheckoutSession({ priceId, successUrl, cancelUrl });
-    res.status(200).json(session);
-  } catch (err: any) {
-    console.error('Error creating checkout session:', err.message);
-    res.status(500).json({ error: err.message });
-  }
-});
+  app.post('/api/passes/confirm', requireAuth, async (req, res) => {
+    if (typeof req.body?.sessionId !== 'string') {
+      res.status(400).json({ error: 'A checkout session is required.' });
+      return;
+    }
+    try {
+      res.json({ pass: await deps.fulfillPass(req.body.sessionId, res.locals.identity.uid) });
+    } catch (error) {
+      console.error('Pass confirmation failed:', error);
+      res.status(409).json({ error: 'Payment is not verified yet. Your pass will appear once payment is confirmed.' });
+    }
+  });
 
-// Retrieve single checkout session status
-app.get('/api/checkout-session/:id', (req: Request, res: Response): void => {
-  const session = datastore.getCheckoutSession(req.params.id);
-  if (!session) {
-    res.status(404).json({ error: 'Checkout session not found' });
-    return;
-  }
-  res.status(200).json(session);
-});
+  app.get('/api/passes/me', requireAuth, async (_req, res) => {
+    try { res.json({ pass: await deps.getExplorerPass(res.locals.identity.uid) }); }
+    catch (error) {
+      console.error('Pass lookup unavailable:', error);
+      res.status(503).json({ error: 'Unable to check your pass. Please try again when connected.' });
+    }
+  });
 
-// Retrieve default product info
-app.get('/api/product', async (_req: Request, res: Response): Promise<void> => {
-  try {
-    const product = await createProductAndPrice();
-    res.status(200).json(product);
-  } catch (err: any) {
-    res.status(500).json({ error: err.message });
-  }
-});
+  app.get('/api/passes/verify/:passId', async (req, res) => {
+    try {
+      const pass = await deps.verifyExplorerPass(String(req.params.passId));
+      if (!pass) { res.status(404).json({ error: 'This pass is invalid or expired.' }); return; }
+      res.json({ pass });
+    } catch {
+      res.status(503).json({ error: 'This pass could not be verified. Do not accept it until verification succeeds.' });
+    }
+  });
+  app.get('/api/health', (_req, res) => { res.json({ status: 'ok' }); });
+  return app;
+}
 
-// Health check endpoint
-app.get('/api/health', (_req: Request, res: Response): void => {
-  res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
-});
+export const app = createApp();

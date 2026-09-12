@@ -124,10 +124,11 @@ export interface UserProfile {
   memberSince: string;
   hasExplorerPass?: boolean;
   explorerPassUntil?: string;
+  explorerPassId?: string;
+  explorerPassPlan?: 'holiday' | 'annual';
 }
 
 export interface AuthState {
   user: UserProfile | null;
   isAuthenticated: boolean;
 }
-
