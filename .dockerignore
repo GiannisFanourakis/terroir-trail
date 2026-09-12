@@ -1,0 +1,14 @@
+.git
+.github
+.env*
+node_modules
+dist
+dist-server
+android
+ios
+tests
+coverage
+*.log
+serviceAccount*.json
+*.pem
+*.key
