@@ -168,8 +168,8 @@ const FAQ_DATA: FaqItem[] = [
     category: 'producers',
     categoryLabel: 'For Estate Hosts',
     question: 'Is the Verified Host Pro subscription tax-deductible?',
-    answer: 'Business tax treatment depends on your jurisdiction and business circumstances. TerroirTrail provides commercial invoices for business subscriptions. Consult your accountant or tax adviser to determine how software and advertising expenses are treated for your entity under local tax law.',
-    highlight: 'Commercial invoices provided for business subscriptions. Tax deductibility depends on local rules.',
+    answer: 'Business tax treatment depends on your jurisdiction and business circumstances. Billing and tax documentation will depend on the final Host Pro payment setup. Consult your accountant or tax adviser regarding tax treatment.',
+    highlight: 'Tax and billing treatment depends on final payment setup. Consult your accountant or tax adviser.',
   },
   {
     id: 'how-payments-processed',

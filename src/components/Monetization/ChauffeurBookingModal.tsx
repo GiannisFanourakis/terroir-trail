@@ -76,14 +76,14 @@ export const ChauffeurBookingModal: React.FC<ChauffeurBookingModalProps> = ({
             <div>
               <div className="flex items-center gap-2 flex-wrap">
                 <h2 className="font-serif-title text-base sm:text-lg font-bold text-white leading-tight">
-                  Licensed Private Chauffeurs & Transfers
+                  Third-Party Transfer Options
                 </h2>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-bold border border-emerald-500/30">
-                  100% Insured Fleet
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-stone-800 text-stone-300 font-bold border border-white/10">
+                  External Referral
                 </span>
               </div>
               <p className="text-[11px] text-stone-400">
-                Door-to-door designated drivers across mountain vineyards, olive mills & island trails
+                Independent driver and transfer marketplace links for winery, olive mill & island visits
               </p>
             </div>
           </div>
@@ -162,20 +162,20 @@ export const ChauffeurBookingModal: React.FC<ChauffeurBookingModalProps> = ({
             </div>
           )}
 
-          {/* Licensed Carrier Information Banner */}
-          <div className="p-3.5 rounded-2xl bg-stone-900/70 border border-emerald-500/25 flex items-start gap-3">
-            <ShieldCheck className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
+          {/* Third-Party Transport Disclosure Banner */}
+          <div className="p-3.5 rounded-2xl bg-stone-900/70 border border-amber-500/25 flex items-start gap-3">
+            <ShieldCheck className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
             <div className="space-y-1">
               <div className="flex items-center gap-1.5 font-bold text-white text-xs">
-                <span>Licensed Commercial Carrier Partners</span>
+                <span>Third-Party Transport Disclosure</span>
               </div>
               <p className="text-stone-400 text-[11px] leading-relaxed">
-                In Greece, passenger transport without a certified commercial carrier license (Ε.Ι.Χ.) is strictly regulated. To avoid unlicensed freelance drivers in remote areas, TerroirTrail connects travelers with licensed commercial transport operators and booking platforms.
+                TerroirTrail provides itinerary tools and links to independent transport marketplaces. Availability, licensing, insurance, prices, cancellation terms and booking confirmation are determined by the external provider.
               </p>
             </div>
           </div>
 
-          {/* Two Licensed Partner Options */}
+          {/* Two Transport Options */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 pt-1">
             
             {/* Option 1: Welcome Pickups */}
@@ -189,7 +189,7 @@ export const ChauffeurBookingModal: React.FC<ChauffeurBookingModalProps> = ({
                     <div>
                       <h3 className="font-bold text-white text-sm">Welcome Pickups</h3>
                       <span className="text-[10px] text-amber-400 font-semibold block">
-                        Fixed Fare • Vetted English Drivers
+                        Private Sedans & Minivans
                       </span>
                     </div>
                   </div>
@@ -199,25 +199,25 @@ export const ChauffeurBookingModal: React.FC<ChauffeurBookingModalProps> = ({
                 </div>
 
                 <p className="text-stone-400 text-[11px] leading-relaxed">
-                  Best for couples & small groups (1–8 guests). Dedicated Mercedes sedans & minivans with hand-picked local drivers who know the island's wine roads.
+                  Suitable for couples & small groups (1–8 guests). Request private sedans or minivans for wine route visits.
                 </p>
 
                 <div className="space-y-1.5 pt-1 border-t border-white/5 text-[11px] text-stone-300">
                   <div className="flex items-center gap-2">
                     <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                    <span>Fixed upfront price (no meter, no surge)</span>
+                    <span>Upfront pricing shown on provider checkout</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                    <span>Flight & hotel monitoring (zero no-shows)</span>
+                    <span>Flight & hotel pickup coordination</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                    <span>Free cancellation up to 24h prior</span>
+                    <span>Cancellation terms subject to provider policy</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                    <span>Bottled cold water & executive AC comfort</span>
+                    <span>Private air-conditioned vehicles</span>
                   </div>
                 </div>
               </div>
@@ -233,7 +233,7 @@ export const ChauffeurBookingModal: React.FC<ChauffeurBookingModalProps> = ({
                   <ExternalLink className="w-3.5 h-3.5" />
                 </a>
                 <span className="text-[10px] text-stone-500 text-center block mt-1.5">
-                  Official Licensed Partner • Instant Confirmation
+                  External Booking Link • Provider Terms Apply
                 </span>
               </div>
             </div>
@@ -249,7 +249,7 @@ export const ChauffeurBookingModal: React.FC<ChauffeurBookingModalProps> = ({
                     <div>
                       <h3 className="font-bold text-white text-sm">GetTransfer</h3>
                       <span className="text-[10px] text-emerald-400 font-semibold block">
-                        Competitive Bids • Large Vans
+                        Marketplace Bids • Vans & Minibuses
                       </span>
                     </div>
                   </div>
@@ -259,25 +259,25 @@ export const ChauffeurBookingModal: React.FC<ChauffeurBookingModalProps> = ({
                 </div>
 
                 <p className="text-stone-400 text-[11px] leading-relaxed">
-                  Best for parties of 6–16+ guests or custom hourly hiring. Certified local transport carriers bid directly on your custom itinerary to give you the lowest rate.
+                  Option for groups of 6–16+ guests or custom hourly hiring. Independent drivers and fleets submit bids on your custom itinerary.
                 </p>
 
                 <div className="space-y-1.5 pt-1 border-t border-white/5 text-[11px] text-stone-300">
                   <div className="flex items-center gap-2">
                     <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                    <span>Mercedes Sprinter & V-Class vans</span>
+                    <span>Van & minibus options available from bidders</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                    <span>Compare quotes from certified local fleets</span>
+                    <span>Compare marketplace bids from independent carriers</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                    <span>Hourly hire: driver waits at all wineries</span>
+                    <span>Hourly hire options for multi-stop winery itineraries</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                    <span>Ample luggage room for wine boxes & oil tins</span>
+                    <span>Luggage space for wine cases and tasting purchases</span>
                   </div>
                 </div>
               </div>
@@ -293,7 +293,7 @@ export const ChauffeurBookingModal: React.FC<ChauffeurBookingModalProps> = ({
                   <ExternalLink className="w-3.5 h-3.5" />
                 </a>
                 <span className="text-[10px] text-stone-500 text-center block mt-1.5">
-                  Direct Marketplace Bids • Minivans & Minibuses
+                  External Marketplace • Provider Terms Apply
                 </span>
               </div>
             </div>

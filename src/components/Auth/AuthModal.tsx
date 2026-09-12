@@ -1146,7 +1146,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                         {vatValidation?.isValid ? (
                           <p className="text-[10px] text-emerald-400 mt-1 flex items-center gap-1">
                             <CheckCircle2 className="w-3 h-3 text-emerald-400 shrink-0" />
-                            <span>Verified format ({vatValidation.formatted}) · Qualified for B2B Invoicing & Parcel Logistics</span>
+                            <span>Tax ID format accepted — official business verification occurs during review.</span>
                           </p>
                         ) : vatNumber.trim() ? (
                           <p className="text-[10px] text-amber-400 mt-1">
@@ -1154,7 +1154,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                           </p>
                         ) : (
                           <p className="text-[10px] text-stone-400 mt-1">
-                            Used to verify authentic ownership against commercial registry ({fiscalLabels.authoritiesNote}).
+                            Submitted for business review ({fiscalLabels.authoritiesNote}).
                           </p>
                         )}
                       </div>

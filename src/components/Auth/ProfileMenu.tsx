@@ -153,7 +153,7 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
                 </span>
               </div>
               <p className="text-[10px] text-stone-300 mb-2 leading-relaxed">
-                Pro Estate badge styling, direct bottle shop links & 0% booking commission. Business invoicing upon request.
+                Pro Estate badge styling, direct bottle shop links & 0% booking commission.
               </p>
               {onOpenProducerPortal && (
                 <button
@@ -165,7 +165,7 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
                   className="w-full py-1.5 rounded-xl text-[11px] font-bold bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-stone-950 shadow-md flex items-center justify-center gap-1.5 transition cursor-pointer"
                 >
                   <Building2 className="w-3 h-3" />
-                  <span>Manage Host Pro & Invoices</span>
+                  <span>View Host Pro Pilot</span>
                 </button>
               )}
             </div>
