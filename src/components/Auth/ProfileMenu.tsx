@@ -153,7 +153,7 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
                 </span>
               </div>
               <p className="text-[10px] text-stone-300 mb-2 leading-relaxed">
-                Gold glowing map marker, direct bottle shop button & 0% tasting commission. Business invoicing upon request.
+                Pro Estate badge styling, direct bottle shop links & 0% booking commission. Business invoicing upon request.
               </p>
               {onOpenProducerPortal && (
                 <button

@@ -225,7 +225,7 @@ export const DigitalPassModal: React.FC<DigitalPassModalProps> = ({
                 </span>
               </h2>
               <p className="text-[10px] text-stone-400">
-                Official agritourism pass for boutique estates
+                TerroirTrail Digital Explorer Pass
               </p>
             </div>
           </div>
@@ -303,7 +303,7 @@ export const DigitalPassModal: React.FC<DigitalPassModalProps> = ({
                   {expiryDateString}
                 </span>
                 <span className="text-[9px] text-stone-400 block">
-                  Participating regions
+                  Where available during partner pilots
                 </span>
               </div>
             </div>
@@ -375,7 +375,7 @@ export const DigitalPassModal: React.FC<DigitalPassModalProps> = ({
                 <span className="text-sm">🍇</span>
                 <div>
                   <strong className="text-white block">Pilot Partner Benefits</strong>
-                  <span className="text-stone-400 text-[10px]">Offered during regional pilots</span>
+                  <span className="text-stone-400 text-[10px]">Where available during partner pilots</span>
                 </div>
               </div>
             </div>
@@ -434,7 +434,7 @@ export const DigitalPassModal: React.FC<DigitalPassModalProps> = ({
         {/* Modal Footer */}
         <div className="p-3 bg-stone-900/90 border-t border-white/10 flex items-center justify-between text-xs shrink-0">
           <span className="text-stone-400 text-[10px]">
-            Show this pass at any participating cellar door
+            Show this pass where available during partner pilots
           </span>
           <button
             onClick={onClose}

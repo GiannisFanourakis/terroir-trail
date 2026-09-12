@@ -34,26 +34,26 @@ const FAQ_DATA: FaqItem[] = [
   {
     id: 'what-is-terroirtrail',
     category: 'about',
-    categoryLabel: 'About & Vetting',
+    categoryLabel: 'About & Curation',
     question: 'What is TerroirTrail and how is it different from Tripadvisor or Google Maps?',
-    answer: 'Standard mapping and travel portals list commercial mass-tourist wine factories alongside bus tour traps. TerroirTrail is an exclusively curated agritourism discovery platform strictly dedicated to independent, family-owned, and sustainable producers. Every winery, craft brewery, rakokazano distillery, and mountain dairy on TerroirTrail has been hand-selected for authentic hospitality, low-intervention methods, and estate-bottled craftsmanship.',
-    highlight: 'Strictly zero commercial bulk factories or mass-bus tour traps.',
+    answer: 'TerroirTrail focuses on curated independent and small-scale producers. Listings are assembled from available producer information and may be updated as producers claim and verify their profiles. The platform highlights authentic hospitality, low-intervention methods, and estate-bottled craftsmanship rather than commercial mass-tourism stops.',
+    highlight: 'Curated focus on independent makers and authentic agritourism.',
     actionText: 'View Explorer Pass',
     actionType: 'explorer_pass',
   },
   {
     id: 'how-producers-selected',
     category: 'about',
-    categoryLabel: 'About & Vetting',
+    categoryLabel: 'About & Curation',
     question: 'How do you choose which producers make it onto TerroirTrail?',
-    answer: 'Our editorial committee vets every producer against four non-negotiable pillars: (1) 100% Independent or Family Ownership; (2) Estate-Grown or Hyper-Local Sourcing with full traceability; (3) Commitment to organic, biodynamic, or ancestral low-intervention practices; and (4) Authentic on-site hospitality where travelers meet the actual makers, artisanal producers, or shepherd cheesemakers.',
+    answer: 'TerroirTrail focuses on curated independent and small-scale producers. Listings are assembled from available producer information and may be updated as producers claim and verify their profiles. We look for independent ownership, estate-grown or local sourcing, low-intervention agricultural practices, and authentic on-site hospitality.',
   },
   {
     id: 'regions-terroir-coverage',
     category: 'about',
-    categoryLabel: 'About & Vetting',
+    categoryLabel: 'About & Curation',
     question: 'Which regions and terroirs does TerroirTrail cover?',
-    answer: 'TerroirTrail is a pan-Mediterranean and European agritourism discovery platform. We currently feature curated independent wine roads, olive mills, and craft farmsteads across Crete, Santorini, the Peloponnese (Nemea), Northern Greece, and Tuscany (Italy), with ongoing expansions across Portugal, Spain, France, and Slovenia. Wherever you travel, our strict independent family maker vetting remains uncompromising.',
+    answer: 'TerroirTrail is a pan-Mediterranean and European agritourism discovery platform. We currently feature curated independent wine roads, olive mills, and craft farmsteads across Crete, Santorini, the Peloponnese (Nemea), Northern Greece, and Tuscany (Italy), with planned expansions across additional European regions.',
   },
 
   // 2. Tastings & Visiting
@@ -62,15 +62,15 @@ const FAQ_DATA: FaqItem[] = [
     category: 'tastings',
     categoryLabel: 'Tastings & Visits',
     question: 'Do I need to book my tastings in advance?',
-    answer: 'For most boutique estates, yes. Unlike commercial visitor centers with shifts of staff, our independent producers and artisans are often actively in the vineyards, barrel cellar, or milking barns. Booking in advance through TerroirTrail guarantees that a host is on site, a table is reserved, and your personalized tasting flight is prepared.',
-    highlight: 'Tastings are booked directly with the estate with zero markup.',
+    answer: 'For most boutique estates, yes. Unlike commercial visitor centers with shifts of staff, independent producers and artisans are often actively in the vineyards, barrel cellar, or milking barns. TerroirTrail sends a reservation inquiry directly to the producer. Your visit is confirmed only after the host accepts it.',
+    highlight: 'Direct reservation inquiries sent straight to the estate with zero booking markup.',
   },
   {
     id: 'tasting-costs',
     category: 'tastings',
     categoryLabel: 'Tastings & Visits',
     question: 'How much do tastings cost?',
-    answer: 'Tasting flights typically range from €10 to €35 per person depending on the tier. A standard flight includes 4–5 estate wines with rusks and olive oil; reserve and premium flights include library vintages, barrel samples, and full artisanal sheep graviera pairings. TerroirTrail charges 0% booking fees—100% of your tasting fee goes directly to the artisan.',
+    answer: 'Tasting flights typically range from €10 to €35 per person depending on the tier. A standard flight includes 4–5 estate wines with rusks and olive oil; reserve and premium flights include library vintages, barrel samples, and full artisanal sheep graviera pairings. TerroirTrail charges 0% commission on direct reservation inquiries.',
   },
   {
     id: 'children-and-accessibility',
@@ -102,8 +102,8 @@ const FAQ_DATA: FaqItem[] = [
     category: 'passport',
     categoryLabel: 'Passport & Pass',
     question: 'What is the Explorer Pass?',
-    answer: 'The Explorer Pass (€14.99 for 14 days or €29.99 for an annual pass) provides a digital pass entitlement with a server-verified QR code and cross-device account synchronization. Passholders can present their QR code to participating agritourism pilot partners for cellar-door privileges where available, and keep their verified visit record synced across devices.',
-    highlight: 'Server-verified digital pass with QR verification and pilot partner privileges.',
+    answer: 'The Explorer Pass (€14.99 for 14 days or €29.99 for an annual pass) provides a digital pass entitlement with a server-verified QR code and cross-device account synchronization. Passholders can present their QR code where available during partner pilots for cellar-door privileges, and keep their verified visit record synced across devices.',
+    highlight: 'Server-verified digital pass with QR verification and privileges where available during partner pilots.',
     actionText: 'View Explorer Pass',
     actionType: 'explorer_pass',
   },
@@ -140,7 +140,7 @@ const FAQ_DATA: FaqItem[] = [
     category: 'producers',
     categoryLabel: 'For Estate Hosts',
     question: 'I own a family winery, craft brewery, or farmstead. How can I join TerroirTrail?',
-    answer: 'We warmly welcome independent producers who meet our authenticity and sustainability standards. You can apply or claim an existing estate listing directly through our Host Portal. Our editorial team reviews all applications within 48 hours.',
+    answer: 'We warmly welcome independent producers who share our focus on authentic agritourism and craftsmanship. You can apply or claim an existing estate listing directly through our Host Portal. Producer applications and claimed listings are reviewed before activation.',
     highlight: 'Curated exclusively for independent agricultural producers and artisanal makers.',
     actionText: 'Open Host Portal',
     actionType: 'producer_portal',
@@ -158,8 +158,8 @@ const FAQ_DATA: FaqItem[] = [
     category: 'producers',
     categoryLabel: 'For Estate Hosts',
     question: 'What tools and privileges are included in the Host Portal?',
-    answer: 'The Host Portal provides verified estate hosts with an intuitive dashboard to: (1) Manage incoming guest reservation inquiries at 0% commission; (2) Update seasonal opening hours and tasting flight menus; (3) Publish live Harvest & Vintage Bulletins; (4) Link direct online bottle shop sales; (5) Upgrade to Verified Host Pro (€199/yr) for a glowing gold map pin, top-of-page regional directory ranking, and direct bottle shop links.',
-    highlight: 'Host Pro membership (€199/yr) includes top directory placement, glowing gold pin, and bottle shop links.',
+    answer: 'The Host Portal provides estate hosts with tools to: (1) Manage incoming guest reservation inquiries at 0% commission; (2) Update seasonal opening hours and tasting flight menus; (3) Publish live Harvest & Vintage Bulletins; (4) Link direct online bottle shop sales; (5) Upgrade to Verified Host Pro (€199/yr pilot) with Pro Estate badge styling, direct bottle shop links, and planned pilot features including priority directory placement.',
+    highlight: 'Host Pro pilot membership (€199/yr) includes Pro Estate badge styling, bottle shop links, and planned pilot features.',
     actionText: 'Open Host Portal',
     actionType: 'producer_portal',
   },
@@ -176,8 +176,8 @@ const FAQ_DATA: FaqItem[] = [
     category: 'producers',
     categoryLabel: 'Payments & Security',
     question: 'How are payments processed for Host Pro and Explorer Passes?',
-    answer: 'All payments on TerroirTrail are processed exclusively through Stripe, the global leader in encrypted financial infrastructure. We support corporate and personal credit/debit cards (Visa, Mastercard, American Express) as well as Apple Pay and Google Pay. All transactions use bank-grade 256-bit SSL encryption, ensuring your card data is never stored on our servers.',
-    highlight: 'Encrypted checkout powered exclusively by Stripe with instant automated receipts.',
+    answer: 'Payments are handled securely by Stripe Checkout. Available payment methods are shown by Stripe during checkout. TerroirTrail does not store card details.',
+    highlight: 'Secure checkout handled by Stripe Checkout.',
   },
 ];
 
@@ -202,7 +202,7 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
   // Categories list
   const categories = [
     { id: 'all', label: 'All Questions' },
-    { id: 'about', label: '🌍 About & Vetting' },
+    { id: 'about', label: '🌍 About & Curation' },
     { id: 'tastings', label: '🍷 Tastings & Visits' },
     { id: 'passport', label: '🎖️ Passport & Pass' },
     { id: 'logistics', label: '📦 Delivery & Logistics' },
@@ -328,7 +328,7 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-6 mt-6 border-t border-white/10">
                   <div className="p-3 rounded-2xl bg-stone-950/60 border border-white/10 text-center">
                     <div className="text-amber-400 text-lg sm:text-xl font-mono font-bold">58+</div>
-                    <div className="text-[10px] text-stone-400 uppercase font-semibold tracking-wider">Vetted Producers</div>
+                    <div className="text-[10px] text-stone-400 uppercase font-semibold tracking-wider">Featured Producers</div>
                   </div>
                   <div className="p-3 rounded-2xl bg-stone-950/60 border border-white/10 text-center">
                     <div className="text-emerald-400 text-lg sm:text-xl font-mono font-bold">0%</div>
@@ -339,20 +339,20 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
                     <div className="text-[10px] text-stone-400 uppercase font-semibold tracking-wider">Native Cultivars</div>
                   </div>
                   <div className="p-3 rounded-2xl bg-stone-950/60 border border-white/10 text-center">
-                    <div className="text-sky-400 text-lg sm:text-xl font-mono font-bold">100%</div>
-                    <div className="text-[10px] text-stone-400 uppercase font-semibold tracking-wider">Family & Artisan Owned</div>
+                    <div className="text-sky-400 text-lg sm:text-xl font-mono font-bold">Artisan</div>
+                    <div className="text-[10px] text-stone-400 uppercase font-semibold tracking-wider">Independent Makers & Artisans</div>
                   </div>
                 </div>
               </div>
 
-              {/* The 4 Pillars of TerroirTrail */}
+              {/* The Four Pillars of TerroirTrail */}
               <div className="space-y-4">
                 <div className="text-center sm:text-left">
                   <h3 className="text-lg sm:text-xl font-bold font-serif-title text-white">
                     The Four Pillars of TerroirTrail
                   </h3>
                   <p className="text-xs text-stone-400">
-                    How we vet, protect, and celebrate genuine agritourism
+                    How we curate, protect, and celebrate genuine agritourism
                   </p>
                 </div>
 
@@ -363,9 +363,9 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
                     <div className="w-9 h-9 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-400 flex items-center justify-center">
                       <ShieldCheck className="w-5 h-5" />
                     </div>
-                    <h4 className="font-bold text-white text-sm">1. Strict Uncompromising Curation</h4>
+                    <h4 className="font-bold text-white text-sm">1. Focused Independent Curation</h4>
                     <p className="text-xs text-stone-300 leading-relaxed">
-                      We say "no" to 80% of applicants. We only feature independent family estates who bottle their own harvest, respect organic or ancestral low-intervention farming, and invite travelers into their actual cellars.
+                      TerroirTrail focuses on curated independent and small-scale producers. Listings are assembled from available producer information and may be updated as producers claim and verify their profiles.
                     </p>
                   </div>
 
@@ -398,7 +398,7 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
                     </div>
                     <h4 className="font-bold text-white text-sm">4. Host Portal & 0% Commission</h4>
                     <p className="text-xs text-stone-300 leading-relaxed">
-                      Middlemen booking platforms extract up to 30% of artisan revenue. TerroirTrail takes 0% commission on direct bookings. Through the Host Portal, family producers manage reservations, publish harvest bulletins, and keep 100% of their cellar revenue.
+                      Middlemen booking platforms extract up to 30% of artisan revenue. TerroirTrail charges 0% booking commission on direct reservation inquiries. Through the Host Portal, producers manage inquiries, update opening hours, and publish harvest bulletins.
                     </p>
                   </div>
 

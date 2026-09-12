@@ -27,7 +27,7 @@ While mass tourism concentrates in coastal resort bubbles, discerning travelers,
 * 🧀 **Mountain Shepherd Mitata & Dairies:** Raw-milk Graviera, Pichtogalo, and Anthotyros hand-crafted in stone alpine huts (*mitata*) and remote mountain valleys.
 * 🍯 **Wild Herb Foragers & Apiaries:** Rare single-origin mountain thyme honeys and wild foraged Malotira (Cretan mountain tea), Diktamos, and wild mountain oregano.
 
-### Curated Macro Regions (58 Hand-Vetted Producers)
+### Curated Macro Regions (58 Featured Producers)
 
 1. **Crete:** Chania (Kissamos, Apokoronas, Platanias), Rethymno (Amari Valley, Spili), Heraklion (Archanes, Peza, Malevizi), and Lasithi (Sitia, Mirabello).
 2. **Santorini:** Volcanic micro-terroirs of Mesa Gonia, Pyrgos Kallistis, Megalochori, and Oia (*Kouloura* basket vine training).
@@ -88,15 +88,15 @@ TerroirTrail balances traveler savings with a fair-trade, sustainable economic m
 ### 1. 👑 Explorer Pass (Pilot / In Preparation)
 Designed for vacationers and culinary tourists exploring wine regions:
 * **Digital Pass Entitlement:** Account-linked pass entitlement with cross-device synchronization.
-* **Server-Verified QR Code:** Dynamic pass with server-side validation for participating cellar doors.
-* **Pilot Partner Benefits:** Cellar privileges, welcome pours, and partner perks where participating.
+* **Server-Verified QR Code:** Dynamic pass with server-side validation where available during partner pilots.
+* **Pilot Partner Benefits:** Cellar privileges and partner perks where available during partner pilots.
 
 ### 2. 🛡️ Producer Portal & Verified Host Pro (Pilot — €199/year)
 Empowers independent artisans to take control of their digital presence:
 * **0% Commission Agritourism:** While major online travel agencies charge heavy commissions, TerroirTrail charges **0% booking commission on direct reservation requests**, keeping tasting revenue directly with the producer.
 * **Claim Listing & Live Cellar Bulletin:** Estates can publish real-time notices on the interactive map (e.g., *"Harvest in progress: barrel room walk-ins welcome today"*, *"Grape stomp dinner Friday"*).
 * **Direct Bottle Shop Link:** Direct link button on the producer drawer steering travelers directly to the estate's own online cellar shop.
-* **Verified Gold Badge:** Glowing gold border and icon on the interactive map with featured priority in Day-Trip Circuits.
+* **Verified Host Badge:** Pro Estate styling on the interactive map and producer profile (priority placement — planned pilot feature).
 * **Visitor Analytics:** Analytics dashboard (planned pilot feature).
 
 ### 3. 📦 "Taste of the Trail" Curated Showcase
@@ -132,12 +132,12 @@ Empowers independent artisans to take control of their digital presence:
 
 * 🍷 **Direct Tasting & Tour Reservations:**
   * Browse curated tasting flights (e.g. *Indigenous White Flight*, *Vertical Reserve Tasting*, *Ancient Amphora Masterclass*).
-  * Select dates, times, and guest counts with instant confirmation and producer dashboard management.
+  * Select dates, times, and guest counts with direct inquiry delivery and producer dashboard management.
 
 * 🧭 **Curated Terroir Routes with Turn-by-Turn Google Maps Navigation:**
   * Handcrafted self-guided day itineraries connecting 2 to 3 artisan cellars, stone oil mills, and scenic tasting rooms across Chania, Heraklion, Santorini Caldera, Peloponnese (Nemea & Mantinia), and Northern Greece (Naoussa & Thessaloniki).
   * **1-Tap Direct Google Maps Driving Navigation:** Launches native multi-stop turn-by-turn driving directions in the Google Maps mobile app (Android & iOS) or desktop browser with zero API billing costs (€0.00/month).
-  * **Completely Decoupled & Free:** Routes are 100% accessible to all explorers, with optional private chauffeur inquiries available for groups preferring a designated driver.
+  * **Completely Decoupled & Free:** Routes are accessible to all explorers, with optional private chauffeur inquiries available for groups preferring a designated driver.
 
 * ⚖️ **Full European Legal Compliance:**
   * Complete, legally compliant modal suite accessible from the drawer and footer:

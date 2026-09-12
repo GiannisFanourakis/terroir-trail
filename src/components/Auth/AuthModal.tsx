@@ -390,7 +390,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           <p className="text-xs text-stone-400 mt-1 max-w-xs mx-auto">
             {accountType === 'traveler' ? (
               travelerMode === 'login' ? 'Access your Terroir Passport, verified tasting notes, and bookings.' :
-              travelerMode === 'signup' ? 'Create a 100% free account to save your passport stamps & tasting notes.' :
+              travelerMode === 'signup' ? 'Create a free account to save your passport stamps & tasting notes.' :
               'Enter your email address and we will send you a secure password reset link.'
             ) : (
               producerMode === 'login' ? 'Manage your cellar reservations, operating hours, and direct shop links.' :
@@ -482,7 +482,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   </div>
                 </div>
                 <span className="text-[9px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/30 shrink-0">
-                  100% FREE
+                  FREE
                 </span>
               </div>
 
@@ -814,7 +814,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                       Verified Host Pro
                     </div>
                     <div className="text-[10px] text-stone-400 truncate">
-                      0% booking commission, gold map marker & bottle shop links (pilot €199/yr)
+                      0% booking commission, Pro Estate styling & bottle shop links (pilot €199/yr)
                     </div>
                   </div>
                 </div>

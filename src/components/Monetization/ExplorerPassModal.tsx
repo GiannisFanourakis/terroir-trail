@@ -23,7 +23,6 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState<'upgrade' | 'compare'>('upgrade');
   const [selectedPlan, setSelectedPlan] = useState<'holiday' | 'annual'>('holiday');
-  const [paymentMethod, setPaymentMethod] = useState<'apple' | 'google' | 'card'>('apple');
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const isPurchased = false;
   const [purchaseError, setPurchaseError] = useState<string | null>(null);
@@ -40,7 +39,7 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
     {
       icon: '🛡️',
       title: 'Server-Verified QR Code',
-      desc: 'Opaque Pass ID and cryptographically verified QR code for check-in at partner cellar doors.',
+      desc: 'Opaque Pass ID and server-verified QR code for check-in at partner cellar doors.',
     },
     {
       icon: '📱',
@@ -50,7 +49,7 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
     {
       icon: '🍇',
       title: 'Agritourism Pilot Partner Privileges',
-      desc: 'Planned partner benefits during active agritourism pilot programs at participating estates.',
+      desc: 'Partner privileges where available during partner pilots.',
     },
   ];
 
@@ -60,7 +59,7 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
     { feature: 'Digital Explorer Pass & Unique ID', free: '❌ None', pass: '⭐ 14-Day or 365-Day' },
     { feature: 'Cellar Door QR Verification', free: '❌ None', pass: '⭐ Server-Verified' },
     { feature: 'Cross-Device Pass Sync', free: 'Account Only', pass: '⭐ Full Pass Sync' },
-    { feature: 'Pilot Partner Benefits (Where Offered)', free: '❌ None', pass: '⭐ Participating Estates' },
+    { feature: 'Pilot Partner Benefits', free: '❌ None', pass: '⭐ Where available during partner pilots' },
   ];
 
   const handlePurchase = async () => {
@@ -161,7 +160,7 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
                   Explorer Pass Activated!
                 </h3>
                 <p className="text-xs text-stone-300 max-w-sm mx-auto">
-                  Welcome, <span className="text-amber-400 font-bold">{user?.name}</span>. Your Explorer Pass is active and verifiable across participating pilot estates.
+                  Welcome, <span className="text-amber-400 font-bold">{user?.name}</span>. Your Explorer Pass is active and verifiable where available during partner pilots.
                 </p>
               </div>
 
@@ -188,7 +187,7 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
                 </div>
 
                 <div className="pt-2 border-t border-white/10 flex items-center justify-between text-[10px] text-amber-300 font-medium">
-                  <span>Show at participating cellar doors</span>
+                  <span>Show where available during partner pilots</span>
                   <span>Server-verified digital pass</span>
                 </div>
               </div>
@@ -346,28 +345,14 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
               </div>
 
               {/* Secure Checkout Trust Badge */}
-              <div className="pt-3 border-t border-white/10 flex flex-col items-center justify-center text-center gap-2">
-                <div className="flex items-center justify-center gap-1.5 flex-wrap">
-                  <span className="px-2 py-0.5 rounded-md bg-white/10 text-stone-200 font-mono text-[10px] font-bold">
-                    Pay
-                  </span>
-                  <span className="px-2 py-0.5 rounded-md bg-white/10 text-stone-200 font-mono text-[10px] font-bold">
-                    GPay
-                  </span>
-                  <span className="px-2 py-0.5 rounded-md bg-white/10 text-stone-200 font-mono text-[10px] font-bold">
-                    Visa
-                  </span>
-                  <span className="px-2 py-0.5 rounded-md bg-white/10 text-stone-200 font-mono text-[10px] font-bold">
-                    Mastercard
-                  </span>
-                  <span className="px-2 py-0.5 rounded-md bg-white/10 text-stone-200 font-mono text-[10px] font-bold">
-                    AMEX
-                  </span>
-                </div>
-                <div className="flex items-center gap-1 text-[10px] text-stone-400">
+              <div className="pt-3 border-t border-white/10 flex flex-col items-center justify-center text-center gap-1.5">
+                <div className="flex items-center gap-1 text-[10px] text-stone-300">
                   <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                  <span>Encrypted Checkout Powered by <strong className="text-white">Stripe</strong></span>
+                  <span>Secure checkout powered by <strong className="text-white">Stripe Checkout</strong></span>
                 </div>
+                <p className="text-[10px] text-stone-400 max-w-xs">
+                  Available payment methods are presented by Stripe during checkout. TerroirTrail does not store card details.
+                </p>
               </div>
 
               {/* Pilot Notice when purchases are gated */}
@@ -392,7 +377,7 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
                     <Lock className="w-4 h-4" />
                   </div>
                   <div className="leading-snug">
-                    <span className="font-bold text-white block">Traveler Account Required (100% Free)</span>
+                    <span className="font-bold text-white block">Traveler Account Required (Free)</span>
                     <span className="text-[11px] text-stone-300">
                       Creating an account is free. An account is required so your digital pass can be securely linked and synced across your devices.
                     </span>
@@ -445,7 +430,6 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
                   <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
                   <span>Account registration is free · Explorer Pass is an optional upgrade</span>
                 </div>
-                <span className="text-stone-500">Refundable if unused within 48 hours</span>
               </div>
 
             </div>

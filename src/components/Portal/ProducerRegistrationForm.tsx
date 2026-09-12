@@ -32,7 +32,6 @@ import {
   validateVatNumber,
   validateIban,
   validateGemiNumber,
-  calculateEntityTaxBreakdown,
   getFiscalLabels,
 } from '../../utils/vatValidator';
 import {
@@ -658,19 +657,19 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                   className="w-full bg-stone-900 border border-white/10 text-white rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
                 >
                   <optgroup label="European Union (Domestic & VIES)">
-                    <option value="GR">🇬🇷 Greece (Domestic EU - 24% VAT)</option>
-                    <option value="IT">🇮🇹 Italy (EU B2B Reverse Charge)</option>
-                    <option value="FR">🇫🇷 France (EU B2B Reverse Charge)</option>
-                    <option value="ES">🇪🇸 Spain (EU B2B Reverse Charge)</option>
-                    <option value="DE">🇩🇪 Germany (EU B2B Reverse Charge)</option>
-                    <option value="OTHER_EU">🇪🇺 Other EU Member State (VIES)</option>
+                    <option value="GR">🇬🇷 Greece</option>
+                    <option value="IT">🇮🇹 Italy</option>
+                    <option value="FR">🇫🇷 France</option>
+                    <option value="ES">🇪🇸 Spain</option>
+                    <option value="DE">🇩🇪 Germany</option>
+                    <option value="OTHER_EU">🇪🇺 Other EU Member State</option>
                   </optgroup>
-                  <optgroup label="Worldwide / Extra-EU (0% Export of Services)">
-                    <option value="US">🇺🇸 United States (IRS EIN / 0% VAT)</option>
-                    <option value="GB">🇬🇧 United Kingdom (HMRC / 0% VAT)</option>
-                    <option value="CH">🇨🇭 Switzerland (UID / 0% VAT)</option>
-                    <option value="CA">🇨🇦 Canada (CRA BN / 0% VAT)</option>
-                    <option value="AU">🇦🇺 Australia (ABN / 0% VAT)</option>
+                  <optgroup label="Worldwide / Extra-EU">
+                    <option value="US">🇺🇸 United States</option>
+                    <option value="GB">🇬🇧 United Kingdom</option>
+                    <option value="CH">🇨🇭 Switzerland</option>
+                    <option value="CA">🇨🇦 Canada</option>
+                    <option value="AU">🇦🇺 Australia</option>
                     <option value="OTHER">🌐 Other Third Country / Worldwide</option>
                   </optgroup>
                 </select>
@@ -745,7 +744,6 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
               <div>
                 {(() => {
                   const fiscalCfg = getFiscalLabels(countryCode);
-                  const taxSummary = calculateEntityTaxBreakdown(countryCode, vatValidation.isValid);
 
                   return (
                     <>
@@ -885,47 +883,15 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                         </div>
                       )}
 
-                      {/* Live Worldwide Entity Tax & Invoicing Summary Card */}
-                      <div className="mt-3 p-3.5 rounded-2xl bg-stone-950/80 border border-amber-500/30 space-y-2 text-xs">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-1.5 font-bold text-amber-300">
-                            <span>{taxSummary.countryFlag}</span>
-                            <span>{taxSummary.regionName}</span>
-                          </div>
-                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/30 font-mono font-bold">
-                            {taxSummary.regionType === 'domestic_gr' ? '24% Greek VAT' : '0% VAT Rate'}
-                          </span>
+                      {/* Neutral Billing & Tax Notice */}
+                      <div className="mt-3 p-3.5 rounded-2xl bg-stone-950/80 border border-white/10 space-y-2 text-xs">
+                        <div className="flex items-center gap-1.5 font-semibold text-stone-200">
+                          <ShieldCheck className="w-4 h-4 text-amber-400 shrink-0" />
+                          <span>Billing & Tax Notice</span>
                         </div>
-
-                        <div className="grid grid-cols-3 gap-2 text-[11px] p-2 rounded-xl bg-stone-900 border border-white/5 font-mono">
-                          <div>
-                            <div className="text-[9px] text-stone-400">Net Fee:</div>
-                            <div className="text-white font-bold">{taxSummary.currencySymbol}{taxSummary.basePrice.toFixed(2)}</div>
-                          </div>
-                          <div>
-                            <div className="text-[9px] text-stone-400">VAT ({taxSummary.vatRatePercent}%):</div>
-                            <div className={taxSummary.vatAmount > 0 ? 'text-amber-400 font-bold' : 'text-emerald-400 font-bold'}>
-                              {taxSummary.vatAmount > 0 ? `+${taxSummary.currencySymbol}${taxSummary.vatAmount.toFixed(2)}` : '€0.00 (Exempt)'}
-                            </div>
-                          </div>
-                          <div>
-                            <div className="text-[9px] text-stone-400">Total You Pay:</div>
-                            <div className="text-amber-300 font-bold">{taxSummary.currencySymbol}{taxSummary.totalPrice.toFixed(2)} {taxSummary.currency}</div>
-                          </div>
-                        </div>
-
-                        <div className="text-[10px] text-stone-300 space-y-1">
-                          <div className="flex items-center gap-1 text-emerald-400 font-semibold">
-                            <ShieldCheck className="w-3.5 h-3.5 shrink-0" />
-                            <span>Business Expense (Consult Adviser)</span>
-                          </div>
-                          <p className="text-stone-400 leading-relaxed">
-                            {taxSummary.deductionExplanation} {taxSummary.accountantGuidance}
-                          </p>
-                          <div className="text-[9px] text-stone-500 font-mono">
-                            Legal Basis: {taxSummary.legalBasis} · Invoice: {taxSummary.invoiceType}
-                          </div>
-                        </div>
+                        <p className="text-stone-400 text-[11px] leading-relaxed">
+                          Tax and VAT treatment depends on your business location, tax status, billing details and applicable law. Final tax treatment is determined during invoicing/payment setup. Consult your accountant or tax adviser.
+                        </p>
                       </div>
                     </>
                   );

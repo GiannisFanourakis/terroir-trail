@@ -162,15 +162,15 @@ export const ChauffeurBookingModal: React.FC<ChauffeurBookingModalProps> = ({
             </div>
           )}
 
-          {/* Legal & Anti-Bailer Trust Guarantee Banner */}
+          {/* Licensed Carrier Information Banner */}
           <div className="p-3.5 rounded-2xl bg-stone-900/70 border border-emerald-500/25 flex items-start gap-3">
             <ShieldCheck className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
             <div className="space-y-1">
               <div className="flex items-center gap-1.5 font-bold text-white text-xs">
-                <span>Zero "Bailer" Guarantee & 100% Licensed Commercial Fleets</span>
+                <span>Licensed Commercial Carrier Partners</span>
               </div>
               <p className="text-stone-400 text-[11px] leading-relaxed">
-                In Greece, passenger transport without a certified commercial carrier license (Ε.Ι.Χ.) is strictly illegal. To ensure you never get stranded by unlicensed freelance drivers or sudden cancellations in remote mountains, Terroir Trail partners directly with vetted commercial fleets featuring guaranteed 24/7 automated backup dispatch and full passenger insurance.
+                In Greece, passenger transport without a certified commercial carrier license (Ε.Ι.Χ.) is strictly regulated. To avoid unlicensed freelance drivers in remote areas, TerroirTrail connects travelers with licensed commercial transport operators and booking platforms.
               </p>
             </div>
           </div>
@@ -293,7 +293,7 @@ export const ChauffeurBookingModal: React.FC<ChauffeurBookingModalProps> = ({
                   <ExternalLink className="w-3.5 h-3.5" />
                 </a>
                 <span className="text-[10px] text-stone-500 text-center block mt-1.5">
-                  Best Rate Guarantee • Minivans & Minibuses
+                  Direct Marketplace Bids • Minivans & Minibuses
                 </span>
               </div>
             </div>
@@ -305,7 +305,7 @@ export const ChauffeurBookingModal: React.FC<ChauffeurBookingModalProps> = ({
             <div className="flex items-center gap-2">
               <Compass className="w-4 h-4 text-stone-400 shrink-0" />
               <span>
-                Prefer to drive yourself? All curated trails are 100% free with one-click Google Maps navigation. Please designate a sober driver if tasting.
+                Prefer to drive yourself? All curated trails are free to explore with one-click Google Maps navigation. Please designate a sober driver if tasting.
               </span>
             </div>
             <button

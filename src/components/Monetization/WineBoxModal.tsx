@@ -476,7 +476,7 @@ export const WineBoxModal: React.FC<WineBoxModalProps> = ({
 
               <div className="flex items-center justify-center gap-1.5 text-[10px] text-stone-500 pt-1">
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
-                <span>Certified temperature-controlled transport · 100% Item Breakage & Cold-Chain Guarantee</span>
+                <span>Certified packaging & transport assistance</span>
               </div>
             </form>
           )}

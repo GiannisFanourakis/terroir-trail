@@ -141,7 +141,7 @@ export const LegalModal: React.FC<LegalModalProps> = ({
               <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-start gap-3">
                 <ShieldCheck className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
                 <div className="space-y-1">
-                  <h3 className="font-bold text-white text-sm">GDPR Compliance & Zero-Data-Selling Guarantee</h3>
+                  <h3 className="font-bold text-white text-sm">GDPR Compliance & Data Protection Policy</h3>
                   <p className="text-stone-300 text-[11px] leading-relaxed">
                     TerroirTrail complies strictly with the European Union General Data Protection Regulation (EU 2016/679). We do not sell, rent, or trade your personal data to data brokers or advertising networks.
                   </p>

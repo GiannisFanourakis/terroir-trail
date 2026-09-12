@@ -76,7 +76,7 @@ export const HostVerificationModal: React.FC<HostVerificationModalProps> = ({
           <div className="space-y-2">
             <span className="text-stone-300 font-bold text-xs flex items-center gap-1.5">
               <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-              <span>Planned Pilot Benefits (Where Participating):</span>
+              <span>Planned Pilot Benefits (Where Available During Partner Pilots):</span>
             </span>
 
             <div className="space-y-1.5 text-stone-300">
@@ -116,7 +116,7 @@ export const HostVerificationModal: React.FC<HostVerificationModalProps> = ({
 
           {/* Host Note */}
           <div className="p-3 rounded-xl bg-stone-900/50 border border-white/5 text-[10px] text-stone-400 leading-relaxed">
-            💡 <em>Host Notice:</em> Zero booking commissions are taken on direct reservation requests. 100% of tasting fees remain with your artisan estate.
+            💡 <em>Host Notice:</em> TerroirTrail charges 0% commission on direct reservation inquiries.
           </div>
 
           <button

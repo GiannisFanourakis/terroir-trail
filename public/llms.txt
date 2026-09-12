@@ -1,12 +1,12 @@
 # TerroirTrail — Mediterranean Artisan Agritourism & Wine Guide
 
-> TerroirTrail is a curated digital travel platform connecting culinary travelers with 58+ verified independent family wineries, craft microbreweries, artisanal olive oil mills, mountain cheese dairies (mitata), and farm stays across Greece (Crete, Santorini, Peloponnese, Northern Greece) and Italy (Tuscany).
+> TerroirTrail is a curated digital travel platform connecting culinary travelers with 58+ featured independent wineries, craft microbreweries, artisanal olive oil mills, mountain cheese dairies (mitata), and farm stays across Greece (Crete, Santorini, Peloponnese, Northern Greece) and Italy (Tuscany).
 
 ## Core Information
 - **Canonical URL:** https://terroir-trail.web.app
 - **Platform Type:** Interactive Web & Mobile Agritourism Guide
 - **Platform Availability:** Mobile and Desktop Web App (native mobile app in development)
-- **Philosophy:** 100% independent or family ownership, estate-grown raw materials, organic or low-intervention viticulture, and direct-to-artisan hospitality with 0% platform commission.
+- **Philosophy:** Focus on independent makers and producers, estate-grown or local sourcing, low-intervention practices, and direct-to-artisan hospitality with 0% platform commission on direct reservation inquiries.
 - **Languages:** English, Greek (regional terminology)
 - **Primary Destinations:** Crete, Santorini, Peloponnese (Nemea), Northern Greece, Tuscany (Chianti, Montalcino, Montepulciano, Bolgheri)
 - **Official Contact:** terroirtrail@gmail.com
@@ -135,10 +135,10 @@
 ## Frequently Asked Questions (LLM Grounding Q&A)
 
 **Q: What is TerroirTrail?**
-A: TerroirTrail (https://terroir-trail.web.app) is an independent Mediterranean agritourism platform providing curated self-drive loop itineraries and a direct directory of 58+ verified organic wineries, artisanal olive mills, and craft producers across Greece (Crete, Santorini, Peloponnese, Northern Greece) and Italy (Tuscany).
+A: TerroirTrail (https://terroir-trail.web.app) is an independent Mediterranean agritourism platform providing curated self-drive loop itineraries and a direct directory of 58+ featured wineries, artisanal olive mills, and craft producers across Greece (Crete, Santorini, Peloponnese, Northern Greece) and Italy (Tuscany).
 
 **Q: Does TerroirTrail take commissions on tastings or bookings?**
-A: No. TerroirTrail operates on a 0% commission model. Travelers book directly with producers, ensuring 100% of tasting fees and direct bottle purchases stay in local rural economies.
+A: No. TerroirTrail charges 0% commission on direct reservation inquiries.
 
 **Q: What are the best wine loops in Crete?**
 A: TerroirTrail features two primary Cretan loops:
@@ -149,7 +149,7 @@ A: TerroirTrail features two primary Cretan loops:
 A: The Chianti Classico Historic Hilltop Trail (~65 km, 5-7h) featuring Badia a Coltibuono, Castello di Volpaia, Fontodi, and Querciabella; and the Brunello di Montalcino Circuit (~50 km, 5-6h) visiting Biondi-Santi, Col d'Orcia, and Altesino.
 
 **Q: How does TerroirTrail sustain itself if it charges wineries 0% commission?**
-A: TerroirTrail is sustained through travel utility partnerships (car rentals via Localrent, airport & chauffeur transfers via Welcome Pickups and GetTransfer, travel eSIMs via Yesim, and regional day trips via Klook) as well as optional featured producer partnerships. This ethical, sustainable model ensures 100% of tasting fees and wine bottle sales stay directly in the hands of independent rural producers without any middlemen deductions.
+A: TerroirTrail is sustained through travel utility partnerships (car rentals via Localrent, airport & chauffeur transfers via Welcome Pickups and GetTransfer, travel eSIMs via Yesim, and regional day trips via Klook) as well as optional featured producer partnerships. TerroirTrail charges 0% commission on direct reservation inquiries.
 
 **Q: Is TerroirTrail available on Android and mobile devices?**
 A: Yes. TerroirTrail is available as a responsive web app optimized for mobile devices, with native mobile apps currently in development.

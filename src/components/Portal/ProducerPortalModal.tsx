@@ -9,7 +9,7 @@ import {
   TrendingUp, DollarSign, Percent, Eye, Compass, Bell, CheckCheck, MapPin,
   Truck, FileText, Package, HelpCircle, QrCode, Camera
 } from 'lucide-react';
-import { validateVatNumber, getFiscalLabels, calculateEntityTaxBreakdown, EntityTaxBreakdown } from '../../utils/vatValidator';
+import { validateVatNumber, getFiscalLabels } from '../../utils/vatValidator';
 import { ProducerRegistrationForm } from './ProducerRegistrationForm';
 import { HostQrScannerModal } from './HostQrScannerModal';
 import { HostVerificationModal, VerifiedPassInfo } from '../Monetization/HostVerificationModal';
@@ -119,15 +119,6 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
   const portalCountryHint = (selectedProducer?.country === 'Italy' || selectedProducer?.destination === 'tuscany') ? 'IT' : 'GR';
   const portalVatValidation = taxVatNumber.trim() ? validateVatNumber(taxVatNumber.trim(), portalCountryHint) : null;
 
-  const [selectedEntityRegion, setSelectedEntityRegion] = useState<'GR' | 'IT' | 'US' | 'GB' | 'OTHER'>(() => {
-    if (selectedProducer?.country === 'Italy' || selectedProducer?.destination === 'tuscany') return 'IT';
-    return 'GR';
-  });
-
-  const entityTaxBreakdown: EntityTaxBreakdown = calculateEntityTaxBreakdown(
-    selectedEntityRegion,
-    portalVatValidation ? portalVatValidation.isValid : true
-  );
 
   // Sync tax state when user or selectedProducer changes
   useEffect(() => {
@@ -1036,7 +1027,7 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
                     </div>
 
                     <p className="text-[11px] text-stone-300 leading-relaxed">
-                      Global booking agencies (TripAdvisor, Viator, GetYourGuide) typically demand <strong className="text-rose-400">20% to 25% commissions</strong> on every tasting. TerroirTrail charges <strong>0% booking commission</strong> to independent producers, leaving 100% of cellar revenue where it belongs—in your hands.
+                      Global booking agencies (TripAdvisor, Viator, GetYourGuide) typically demand <strong className="text-rose-400">20% to 25% commissions</strong> on every tasting. TerroirTrail charges <strong>0% booking commission</strong> on direct reservation inquiries.
                     </p>
 
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 pt-1">
@@ -1131,116 +1122,30 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
                         </div>
                         <div className="text-right">
                           <span className="font-serif-title text-amber-300 font-bold text-sm">
-                            {entityTaxBreakdown.currencySymbol}{entityTaxBreakdown.totalPrice.toFixed(2)}
+                            €199
                             <span className="text-[10px] text-stone-400">/year</span>
                           </span>
                           <div className="text-[9px] text-stone-400">
-                            (~{entityTaxBreakdown.currencySymbol}{(entityTaxBreakdown.totalPrice / 12).toFixed(2)}/mo)
+                            Pilot subscription
                           </div>
                         </div>
                       </div>
                       <ul className="text-[11px] text-stone-300 space-y-1.5 list-disc list-inside">
                         <li><strong className="text-amber-300">Gold Glowing Badge</strong> on the interactive map</li>
-                        <li><strong className="text-amber-300">Priority Placement</strong> in regional search & directory</li>
                         <li><strong className="text-amber-300">Direct Bottle Shop</strong> button on mobile drawer</li>
-                        <li>Traveler analytics (planned pilot feature)</li>
+                        <li>Priority placement — planned pilot feature</li>
+                        <li>Traveler analytics — planned pilot feature</li>
                       </ul>
 
-                      {/* DEDICATED WORLDWIDE ENTITY JURISDICTION SELECTOR */}
-                      <div className="mt-3 pt-3 border-t border-white/10 space-y-2">
-                        <div className="flex items-center justify-between text-[11px]">
-                          <span className="font-bold text-stone-200">Business Tax Jurisdiction:</span>
-                          <span className="text-[10px] text-amber-400 font-mono">Worldwide Entities</span>
+                      {/* Neutral Billing & Tax Notice */}
+                      <div className="mt-3 p-3 rounded-xl bg-stone-950/90 border border-white/10 text-[11px] space-y-1 text-left">
+                        <div className="flex items-center gap-1.5 font-semibold text-stone-200">
+                          <ShieldCheck className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                          <span>Billing & Tax Notice</span>
                         </div>
-                        <div className="grid grid-cols-5 gap-1 text-[10px] font-semibold">
-                          <button
-                            type="button"
-                            onClick={() => setSelectedEntityRegion('GR')}
-                            className={`px-1.5 py-1.5 rounded-lg border transition text-center cursor-pointer ${
-                              selectedEntityRegion === 'GR'
-                                ? 'bg-amber-500/25 border-amber-400 text-amber-300 font-bold'
-                                : 'bg-stone-950 border-white/10 text-stone-400 hover:text-stone-200'
-                            }`}
-                          >
-                            🇬🇷 Greece
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setSelectedEntityRegion('IT')}
-                            className={`px-1.5 py-1.5 rounded-lg border transition text-center cursor-pointer ${
-                              selectedEntityRegion === 'IT'
-                                ? 'bg-amber-500/25 border-amber-400 text-amber-300 font-bold'
-                                : 'bg-stone-950 border-white/10 text-stone-400 hover:text-stone-200'
-                            }`}
-                          >
-                            🇪🇺 EU B2B
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setSelectedEntityRegion('US')}
-                            className={`px-1.5 py-1.5 rounded-lg border transition text-center cursor-pointer ${
-                              selectedEntityRegion === 'US'
-                                ? 'bg-amber-500/25 border-amber-400 text-amber-300 font-bold'
-                                : 'bg-stone-950 border-white/10 text-stone-400 hover:text-stone-200'
-                            }`}
-                          >
-                            🇺🇸 USA
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setSelectedEntityRegion('GB')}
-                            className={`px-1.5 py-1.5 rounded-lg border transition text-center cursor-pointer ${
-                              selectedEntityRegion === 'GB'
-                                ? 'bg-amber-500/25 border-amber-400 text-amber-300 font-bold'
-                                : 'bg-stone-950 border-white/10 text-stone-400 hover:text-stone-200'
-                            }`}
-                          >
-                            🇬🇧 UK
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setSelectedEntityRegion('OTHER')}
-                            className={`px-1.5 py-1.5 rounded-lg border transition text-center cursor-pointer ${
-                              selectedEntityRegion === 'OTHER'
-                                ? 'bg-amber-500/25 border-amber-400 text-amber-300 font-bold'
-                                : 'bg-stone-950 border-white/10 text-stone-400 hover:text-stone-200'
-                            }`}
-                          >
-                            🌐 Global
-                          </button>
-                        </div>
-
-                        {/* Dedicated Entity Tax & Compliance Breakdown Box */}
-                        <div className="p-2.5 rounded-xl bg-stone-950/90 border border-white/10 text-[11px] space-y-1.5 text-left">
-                          <div className="flex items-center justify-between font-mono text-[10px]">
-                            <span className="text-stone-400">Net Host Pro Fee:</span>
-                            <span className="text-stone-200 font-bold">{entityTaxBreakdown.currencySymbol}{entityTaxBreakdown.basePrice.toFixed(2)}</span>
-                          </div>
-                          <div className="flex items-center justify-between font-mono text-[10px]">
-                            <span className="text-stone-400">VAT / Sales Tax ({entityTaxBreakdown.vatRatePercent}%):</span>
-                            <span className={entityTaxBreakdown.vatAmount > 0 ? 'text-amber-400 font-bold' : 'text-emerald-400 font-bold'}>
-                              {entityTaxBreakdown.vatAmount > 0
-                                ? `+${entityTaxBreakdown.currencySymbol}${entityTaxBreakdown.vatAmount.toFixed(2)} (24% Greek VAT)`
-                                : '€0.00 (Exempt / Reverse Charge)'}
-                            </span>
-                          </div>
-                          <div className="flex items-center justify-between font-mono text-xs pt-1 border-t border-white/10 font-bold">
-                            <span className="text-white">Amount You Pay:</span>
-                            <span className="text-amber-300">{entityTaxBreakdown.currencySymbol}{entityTaxBreakdown.totalPrice.toFixed(2)} {entityTaxBreakdown.currency}</span>
-                          </div>
-                          <div className="text-[10px] text-stone-300 pt-1 border-t border-white/5 space-y-1">
-                            <div className="flex items-center gap-1.5 text-emerald-400 font-semibold">
-                              <ShieldCheck className="w-3.5 h-3.5 shrink-0" />
-                              <span>Business Expense (Consult Adviser)</span>
-                            </div>
-                            <p className="text-stone-400 leading-relaxed text-[10px]">
-                              {entityTaxBreakdown.deductionExplanation} {entityTaxBreakdown.accountantGuidance}
-                            </p>
-                            <div className="text-[9px] text-stone-500 font-mono">
-                              Invoice: {entityTaxBreakdown.invoiceType} · Authority: {entityTaxBreakdown.reportingAuthority}
-                            </div>
-                          </div>
-                        </div>
+                        <p className="text-stone-400 text-[10px] leading-relaxed">
+                          Tax and VAT treatment depends on your business location, tax status, billing details and applicable law. Final tax treatment is determined during invoicing/payment setup. Consult your accountant or tax adviser.
+                        </p>
                       </div>
 
                       <button
@@ -1272,7 +1177,7 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
                         }`}
                       >
                         <Crown className="w-3.5 h-3.5" />
-                        <span>{isProTier ? '✓ Verified Host Pro Active' : `Upgrade to Host Pro (${entityTaxBreakdown.currencySymbol}${entityTaxBreakdown.totalPrice.toFixed(2)}/yr)`}</span>
+                        <span>{isProTier ? '✓ Verified Host Pro Active' : 'Upgrade to Host Pro (€199/yr pilot)'}</span>
                       </button>
                     </div>
                   </div>
