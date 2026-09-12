@@ -121,13 +121,74 @@ service cloud.firestore {
     }
 
     // 5. Tasting Reservations / Bookings
+    // Strict allow-list validation on create and lifecycle updates.
     match /bookings/{bookingId} {
+      function isValidNewBooking() {
+        let d = request.resource.data;
+        return d.keys().hasAll([
+            'id', 'producerId', 'producerName', 'producerCategory', 'producerLocation',
+            'userId', 'userName', 'userEmail', 'userPhone', 'date', 'timeSlot',
+            'experienceId', 'experienceTitle', 'pricePerPerson', 'guestsCount',
+            'totalEstimated', 'status', 'createdAt'
+          ])
+          && d.keys().hasOnly([
+            'id', 'producerId', 'producerName', 'producerCategory', 'producerLocation',
+            'userId', 'userName', 'userEmail', 'userPhone', 'date', 'timeSlot',
+            'experienceId', 'experienceTitle', 'pricePerPerson', 'guestsCount',
+            'totalEstimated', 'status', 'createdAt', 'specialRequests'
+          ])
+          && d.id == bookingId
+          && d.userId == request.auth.uid
+          && d.status == 'pending'
+          && d.id is string
+          && d.producerId is string
+          && d.producerName is string
+          && d.producerCategory is string
+          && d.producerLocation is string
+          && d.userName is string
+          && d.userEmail is string
+          && d.userPhone is string
+          && d.date is string
+          && d.timeSlot is string
+          && d.experienceId is string
+          && d.experienceTitle is string
+          && d.pricePerPerson is number
+          && d.guestsCount is number && d.guestsCount > 0
+          && d.totalEstimated is number
+          && d.createdAt is string
+          && (!('specialRequests' in d) || d.specialRequests is string);
+      }
+
+      function isValidTravelerCancellation() {
+        return resource.data.userId == request.auth.uid
+          && resource.data.status == 'pending'
+          && request.resource.data.status == 'cancelled'
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status']);
+      }
+
+      function isValidHostLifecycleUpdate() {
+        let diff = request.resource.data.diff(resource.data);
+        return isProducerOwner(resource.data.producerId)
+          && (
+            (
+              resource.data.status == 'pending'
+              && (
+                (request.resource.data.status == 'confirmed' && diff.affectedKeys().hasOnly(['status', 'confirmedAt']) && request.resource.data.confirmedAt is string)
+                ||
+                (request.resource.data.status == 'cancelled' && diff.affectedKeys().hasOnly(['status']))
+              )
+            )
+            ||
+            (
+              resource.data.status == 'confirmed'
+              && diff.affectedKeys().hasOnly(['status'])
+              && (request.resource.data.status == 'completed' || request.resource.data.status == 'cancelled')
+            )
+          );
+      }
+
       // Authenticated traveler can create a pending booking for themselves
-      allow create: if isAuthenticated()
-        && request.resource.data.userId == request.auth.uid
-        && request.resource.data.status == 'pending'
-        && !('confirmedAt' in request.resource.data)
-        && !('completedAt' in request.resource.data);
+      allow create: if isAuthenticated() && isValidNewBooking();
 
       // Traveler reads own bookings; Host reads bookings for owned producer
       allow read: if isAuthenticated() && (
@@ -136,44 +197,12 @@ service cloud.firestore {
       );
 
       // Status updates:
-      // - Traveler may only transition pending -> cancelled
-      // - Approved host may transition pending -> confirmed/cancelled, confirmed -> completed/cancelled
-      // Neither actor may change ownership, producer ID, contact details, booking details, or amounts
+      // - Traveler may only transition pending -> cancelled (affectedKeys must be ONLY status)
+      // - Approved host may transition pending -> confirmed (with confirmedAt) or cancelled,
+      //   and confirmed -> completed or cancelled (affectedKeys must be ONLY status)
+      // All other fields remain strictly immutable.
       allow update: if isAuthenticated() && (
-        // Case A: Traveler cancels own pending reservation
-        (
-          resource.data.userId == request.auth.uid
-          && resource.data.status == 'pending'
-          && request.resource.data.status == 'cancelled'
-          && request.resource.data.userId == resource.data.userId
-          && request.resource.data.producerId == resource.data.producerId
-          && !request.resource.data.diff(resource.data).affectedKeys().hasAny([
-            'id', 'userId', 'producerId', 'producerName', 'producerCategory',
-            'producerLocation', 'userName', 'userEmail', 'userPhone',
-            'date', 'timeSlot', 'experienceId', 'experienceTitle',
-            'pricePerPerson', 'guestsCount', 'totalEstimated', 'specialRequests',
-            'createdAt', 'confirmedAt', 'completedAt'
-          ])
-        )
-        ||
-        // Case B: Approved Host manages reservation lifecycle
-        (
-          isProducerOwner(resource.data.producerId)
-          && request.resource.data.userId == resource.data.userId
-          && request.resource.data.producerId == resource.data.producerId
-          && (
-            (resource.data.status == 'pending' && (request.resource.data.status == 'confirmed' || request.resource.data.status == 'cancelled'))
-            ||
-            (resource.data.status == 'confirmed' && (request.resource.data.status == 'completed' || request.resource.data.status == 'cancelled'))
-          )
-          && !request.resource.data.diff(resource.data).affectedKeys().hasAny([
-            'id', 'userId', 'producerId', 'producerName', 'producerCategory',
-            'producerLocation', 'userName', 'userEmail', 'userPhone',
-            'date', 'timeSlot', 'experienceId', 'experienceTitle',
-            'pricePerPerson', 'guestsCount', 'totalEstimated', 'specialRequests',
-            'createdAt'
-          ])
-        )
+        isValidTravelerCancellation() || isValidHostLifecycleUpdate()
       );
 
       // Deletion is denied; cancellation is the implemented workflow

@@ -471,6 +471,39 @@ export const updateBookingStatus = updateBookingStatusByHost;
 export const saveProducerOverride = async (override: ProducerOverride): Promise<void> => {
   const { isProTier: _ignoredProTier, ...cleanOverride } = override;
 
+  if (isFirebaseConfigured && db) {
+    if (!auth?.currentUser) {
+      // Demo host identity: persist to local cache only without cloud writes
+      try {
+        const saved = localStorage.getItem(OVERRIDES_LOCAL_KEY);
+        const existing: Record<string, ProducerOverride> = saved ? JSON.parse(saved) : {};
+        existing[override.producerId] = override;
+        localStorage.setItem(OVERRIDES_LOCAL_KEY, JSON.stringify(existing));
+      } catch (e) {
+        console.error('Error caching producer override:', e);
+      }
+      return;
+    }
+
+    // Authenticated cloud write first: only update local cache after Firestore succeeds
+    const docRef = doc(db, 'producer_overrides', override.producerId);
+    await setDoc(docRef, {
+      ...cleanOverride,
+      producerId: override.producerId,
+    }, { merge: true });
+
+    try {
+      const saved = localStorage.getItem(OVERRIDES_LOCAL_KEY);
+      const existing: Record<string, ProducerOverride> = saved ? JSON.parse(saved) : {};
+      existing[override.producerId] = override;
+      localStorage.setItem(OVERRIDES_LOCAL_KEY, JSON.stringify(existing));
+    } catch (e) {
+      console.error('Error caching producer override:', e);
+    }
+    return;
+  }
+
+  // Firebase not configured: fallback local cache
   try {
     const saved = localStorage.getItem(OVERRIDES_LOCAL_KEY);
     const existing: Record<string, ProducerOverride> = saved ? JSON.parse(saved) : {};
@@ -478,18 +511,6 @@ export const saveProducerOverride = async (override: ProducerOverride): Promise<
     localStorage.setItem(OVERRIDES_LOCAL_KEY, JSON.stringify(existing));
   } catch (e) {
     console.error('Error caching producer override:', e);
-  }
-
-  if (isFirebaseConfigured && db) {
-    if (!auth?.currentUser) {
-      // Demo host identity does not perform cloud writes
-      return;
-    }
-    const docRef = doc(db, 'producer_overrides', override.producerId);
-    await setDoc(docRef, {
-      ...cleanOverride,
-      producerId: override.producerId,
-    }, { merge: true });
   }
 };
 
@@ -513,6 +534,7 @@ export { SEEDED_PRODUCER_REGISTRATIONS };
 
 /**
  * Saves complete producer registration record to Cloud Firestore database and local cache.
+ * Cloud write is performed first; local cache is updated only after Firestore succeeds.
  * Status is submitted as 'pending_verification' and isVatVerified is false.
  * Does NOT self-promote the user profile.
  */
@@ -532,7 +554,28 @@ export const saveProducerRegistrationToCloud = async (
   delete (updatedRecord as any).approvedAt;
   delete (updatedRecord as any).approvedBy;
 
-  // 1. Persist to localStorage
+  // Perform Cloud Firestore write first if configured
+  if (isFirebaseConfigured && db) {
+    if (!auth?.currentUser) {
+      throw new Error('Authentication required to submit producer registration.');
+    }
+    const docRef = doc(db, 'producer_registrations', record.producerId);
+    await setDoc(docRef, updatedRecord, { merge: true });
+
+    // Update local cache only after successful Firestore write
+    try {
+      const saved = localStorage.getItem(PRODUCER_REGISTRATIONS_KEY);
+      const existing: Record<string, ProducerRegistrationRecord> = saved ? JSON.parse(saved) : {};
+      existing[record.producerId] = updatedRecord;
+      localStorage.setItem(PRODUCER_REGISTRATIONS_KEY, JSON.stringify(existing));
+    } catch (e) {
+      console.error('Error persisting producer registration to localStorage:', e);
+    }
+
+    return updatedRecord;
+  }
+
+  // Fallback for unconfigured / demo mode
   try {
     const saved = localStorage.getItem(PRODUCER_REGISTRATIONS_KEY);
     const existing: Record<string, ProducerRegistrationRecord> = saved ? JSON.parse(saved) : {};
@@ -540,15 +583,6 @@ export const saveProducerRegistrationToCloud = async (
     localStorage.setItem(PRODUCER_REGISTRATIONS_KEY, JSON.stringify(existing));
   } catch (e) {
     console.error('Error persisting producer registration to localStorage:', e);
-  }
-
-  // 2. Persist to Cloud Firestore if connected
-  if (isFirebaseConfigured && db) {
-    if (!auth?.currentUser) {
-      throw new Error('Authentication required to submit producer registration.');
-    }
-    const docRef = doc(db, 'producer_registrations', record.producerId);
-    await setDoc(docRef, updatedRecord, { merge: true });
   }
 
   return updatedRecord;

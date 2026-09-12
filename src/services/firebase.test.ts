@@ -111,6 +111,7 @@ import {
 describe('Firebase Service Security & Data Isolation', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    storage.clear();
     mockAuth.currentUser = { uid: 'uid_alice', email: 'alice@example.com' };
     mockSetDoc.mockResolvedValue(undefined);
     mockUpdateDoc.mockResolvedValue(undefined);
@@ -318,6 +319,18 @@ describe('Firebase Service Security & Data Isolation', () => {
 
       expect(mockSetDoc).not.toHaveBeenCalled();
     });
+
+    it('does not update local cache if Firestore write fails', async () => {
+      mockSetDoc.mockRejectedValueOnce(new Error('PERMISSION_DENIED'));
+
+      const override: any = {
+        producerId: 'winery-fail',
+        announcement: 'Should not persist locally on cloud failure',
+      };
+
+      await expect(saveProducerOverride(override)).rejects.toThrow('PERMISSION_DENIED');
+      expect(storage.has('terroir_trail_producer_overrides')).toBe(false);
+    });
   });
 
   describe('saveProducerRegistrationToCloud', () => {
@@ -349,18 +362,19 @@ describe('Firebase Service Security & Data Isolation', () => {
       expect(cloudPayload.approvedBy).toBeUndefined();
     });
 
-    it('propagates Firestore errors on registration failure', async () => {
+    it('propagates Firestore errors on registration failure and does not update local cache', async () => {
       mockSetDoc.mockRejectedValueOnce(new Error('PERMISSION_DENIED'));
 
       const registration: any = {
-        producerId: 'winery-1',
-        producerName: 'Winery 1',
+        producerId: 'winery-fail',
+        producerName: 'Winery Fail',
         userId: 'uid_alice',
-        legalBusinessName: 'Winery 1 LLC',
+        legalBusinessName: 'Winery Fail LLC',
         vatNumber: 'EL999999999',
       };
 
       await expect(saveProducerRegistrationToCloud(registration)).rejects.toThrow('PERMISSION_DENIED');
+      expect(storage.has('terroir_trail_producer_registrations')).toBe(false);
     });
   });
 

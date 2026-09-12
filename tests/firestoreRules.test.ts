@@ -42,6 +42,27 @@ describe('Firestore Security Rules Suite', () => {
     await testEnv.clearFirestore();
   });
 
+  const makeValidBooking = (id: string, userId: string, producerId: string) => ({
+    id,
+    producerId,
+    producerName: 'Estate Alpha',
+    producerCategory: 'winery',
+    producerLocation: 'Crete, Greece',
+    userId,
+    userName: 'Traveler One',
+    userEmail: 'traveler@example.com',
+    userPhone: '+30 690 000 0000',
+    date: '2026-06-15',
+    timeSlot: '11:00 AM',
+    experienceId: 'tasting-1',
+    experienceTitle: 'Classic Wine Tasting',
+    pricePerPerson: 25,
+    guestsCount: 2,
+    totalEstimated: 50,
+    status: 'pending' as const,
+    createdAt: new Date().toISOString(),
+  });
+
   // 1. Traveler A own booking: allowed
   it('Traveler A own booking: allowed', async () => {
     const travelerA = testEnv.authenticatedContext('traveler-a');
@@ -49,30 +70,57 @@ describe('Firestore Security Rules Suite', () => {
     const bookingRef = doc(db, 'bookings', 'booking-a1');
 
     await assertSucceeds(
-      setDoc(bookingRef, {
-        id: 'booking-a1',
-        userId: 'traveler-a',
-        producerId: 'producer-a',
-        status: 'pending',
-        createdAt: new Date().toISOString(),
-        totalEstimated: 50,
-      })
+      setDoc(bookingRef, makeValidBooking('booking-a1', 'traveler-a', 'producer-a'))
     );
 
     await assertSucceeds(getDoc(bookingRef));
+  });
+
+  // 1b. Injecting arbitrary new fields on booking create: denied
+  it('injecting arbitrary new fields on booking create: denied', async () => {
+    const travelerA = testEnv.authenticatedContext('traveler-a');
+    const db = travelerA.firestore();
+
+    // Injected unknown field 'adminBypass'
+    await assertFails(
+      setDoc(doc(db, 'bookings', 'booking-arb1'), {
+        ...makeValidBooking('booking-arb1', 'traveler-a', 'producer-a'),
+        adminBypass: true,
+      })
+    );
+
+    // Injected unknown field 'isPaid'
+    await assertFails(
+      setDoc(doc(db, 'bookings', 'booking-arb2'), {
+        ...makeValidBooking('booking-arb2', 'traveler-a', 'producer-a'),
+        isPaid: true,
+      })
+    );
+
+    // Injected premature lifecycle field 'confirmedAt'
+    await assertFails(
+      setDoc(doc(db, 'bookings', 'booking-arb3'), {
+        ...makeValidBooking('booking-arb3', 'traveler-a', 'producer-a'),
+        confirmedAt: new Date().toISOString(),
+      })
+    );
+
+    // Mismatched document ID and embedded booking ID
+    await assertFails(
+      setDoc(doc(db, 'bookings', 'doc-id-differs'), {
+        ...makeValidBooking('booking-embedded-id', 'traveler-a', 'producer-a'),
+      })
+    );
   });
 
   // 2. Traveler A → Traveler B booking: denied
   it('Traveler A → Traveler B booking: denied', async () => {
     await testEnv.withSecurityRulesDisabled(async (context) => {
       const adminDb = context.firestore();
-      await setDoc(doc(adminDb, 'bookings', 'booking-b1'), {
-        id: 'booking-b1',
-        userId: 'traveler-b',
-        producerId: 'producer-a',
-        status: 'pending',
-        createdAt: new Date().toISOString(),
-      });
+      await setDoc(
+        doc(adminDb, 'bookings', 'booking-b1'),
+        makeValidBooking('booking-b1', 'traveler-b', 'producer-a')
+      );
     });
 
     const travelerA = testEnv.authenticatedContext('traveler-a');
@@ -90,13 +138,7 @@ describe('Firestore Security Rules Suite', () => {
     const bookingRef = doc(db, 'bookings', 'booking-anon');
 
     await assertFails(
-      setDoc(bookingRef, {
-        id: 'booking-anon',
-        userId: 'anon-uid',
-        producerId: 'producer-a',
-        status: 'pending',
-        createdAt: new Date().toISOString(),
-      })
+      setDoc(bookingRef, makeValidBooking('booking-anon', 'anon-uid', 'producer-a'))
     );
   });
 
@@ -107,13 +149,7 @@ describe('Firestore Security Rules Suite', () => {
     const bookingRef = doc(db, 'bookings', 'booking-forged');
 
     await assertFails(
-      setDoc(bookingRef, {
-        id: 'booking-forged',
-        userId: 'traveler-b', // Forged UID != traveler-a
-        producerId: 'producer-a',
-        status: 'pending',
-        createdAt: new Date().toISOString(),
-      })
+      setDoc(bookingRef, makeValidBooking('booking-forged', 'traveler-b', 'producer-a'))
     );
   });
 
@@ -129,16 +165,10 @@ describe('Firestore Security Rules Suite', () => {
   it('traveler confirmation/completion or protected-field change: denied', async () => {
     await testEnv.withSecurityRulesDisabled(async (context) => {
       const adminDb = context.firestore();
-      await setDoc(doc(adminDb, 'bookings', 'booking-t1'), {
-        id: 'booking-t1',
-        userId: 'traveler-a',
-        producerId: 'producer-a',
-        producerName: 'Estate Alpha',
-        userName: 'Traveler One',
-        status: 'pending',
-        totalEstimated: 50,
-        createdAt: new Date().toISOString(),
-      });
+      await setDoc(
+        doc(adminDb, 'bookings', 'booking-t1'),
+        makeValidBooking('booking-t1', 'traveler-a', 'producer-a')
+      );
     });
 
     const travelerA = testEnv.authenticatedContext('traveler-a');
@@ -152,20 +182,20 @@ describe('Firestore Security Rules Suite', () => {
     // Attempt modifying totalEstimated or price during cancellation
     await assertFails(updateDoc(bDoc, { status: 'cancelled', totalEstimated: 0 }));
     await assertFails(updateDoc(bDoc, { status: 'cancelled', userName: 'Hacker' }));
+
+    // Attempt injecting arbitrary new fields during cancellation
+    await assertFails(updateDoc(bDoc, { status: 'cancelled', refundRequested: true }));
+    await assertFails(updateDoc(bDoc, { status: 'cancelled', customNote: 'please refund' }));
   });
 
   // 7. traveler pending cancellation: allowed
   it('traveler pending cancellation: allowed', async () => {
     await testEnv.withSecurityRulesDisabled(async (context) => {
       const adminDb = context.firestore();
-      await setDoc(doc(adminDb, 'bookings', 'booking-t2'), {
-        id: 'booking-t2',
-        userId: 'traveler-a',
-        producerId: 'producer-a',
-        status: 'pending',
-        totalEstimated: 50,
-        createdAt: new Date().toISOString(),
-      });
+      await setDoc(
+        doc(adminDb, 'bookings', 'booking-t2'),
+        makeValidBooking('booking-t2', 'traveler-a', 'producer-a')
+      );
     });
 
     const travelerA = testEnv.authenticatedContext('traveler-a');
@@ -186,14 +216,10 @@ describe('Firestore Security Rules Suite', () => {
         status: 'active',
         approvedAt: new Date().toISOString(),
       });
-      await setDoc(doc(adminDb, 'bookings', 'booking-host1'), {
-        id: 'booking-host1',
-        userId: 'traveler-x',
-        producerId: 'producer-a',
-        status: 'pending',
-        createdAt: new Date().toISOString(),
-        totalEstimated: 60,
-      });
+      await setDoc(
+        doc(adminDb, 'bookings', 'booking-host1'),
+        makeValidBooking('booking-host1', 'traveler-x', 'producer-a')
+      );
     });
 
     const hostA = testEnv.authenticatedContext('host-a');
@@ -216,6 +242,54 @@ describe('Firestore Security Rules Suite', () => {
     await assertSucceeds(updateDoc(bDoc, { status: 'completed' }));
   });
 
+  // 8b. Host attempting to inject arbitrary fields or alter booking terms: denied
+  it('host injecting arbitrary fields or altering booking terms: denied', async () => {
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      const adminDb = context.firestore();
+      await setDoc(doc(adminDb, 'producer_owners', 'producer-a'), {
+        producerId: 'producer-a',
+        ownerUid: 'host-a',
+        status: 'active',
+        approvedAt: new Date().toISOString(),
+      });
+      await setDoc(
+        doc(adminDb, 'bookings', 'booking-host-tamper'),
+        makeValidBooking('booking-host-tamper', 'traveler-x', 'producer-a')
+      );
+    });
+
+    const hostA = testEnv.authenticatedContext('host-a');
+    const db = hostA.firestore();
+    const bDoc = doc(db, 'bookings', 'booking-host-tamper');
+
+    // Host attempts to inject arbitrary field 'hostNotes'
+    await assertFails(
+      updateDoc(bDoc, {
+        status: 'confirmed',
+        confirmedAt: new Date().toISOString(),
+        hostNotes: 'VIP guest table 4',
+      })
+    );
+
+    // Host attempts to modify price or guestsCount
+    await assertFails(
+      updateDoc(bDoc, {
+        status: 'confirmed',
+        confirmedAt: new Date().toISOString(),
+        pricePerPerson: 999,
+      })
+    );
+
+    // Host attempts to modify traveler contact info
+    await assertFails(
+      updateDoc(bDoc, {
+        status: 'confirmed',
+        confirmedAt: new Date().toISOString(),
+        userEmail: 'hijacked@example.com',
+      })
+    );
+  });
+
   // 9. Host A → Producer B booking/read/update: denied
   it('Host A → Producer B booking/read/update: denied', async () => {
     await testEnv.withSecurityRulesDisabled(async (context) => {
@@ -233,13 +307,10 @@ describe('Firestore Security Rules Suite', () => {
         status: 'active',
         approvedAt: new Date().toISOString(),
       });
-      await setDoc(doc(adminDb, 'bookings', 'booking-host-b'), {
-        id: 'booking-host-b',
-        userId: 'traveler-x',
-        producerId: 'producer-b',
-        status: 'pending',
-        createdAt: new Date().toISOString(),
-      });
+      await setDoc(
+        doc(adminDb, 'bookings', 'booking-host-b'),
+        makeValidBooking('booking-host-b', 'traveler-x', 'producer-b')
+      );
     });
 
     const hostA = testEnv.authenticatedContext('host-a');

@@ -12,6 +12,7 @@
     "test:rules": "tsx scripts/run_rules_tests.ts",
     "preview": "vite preview",
     "deploy": "npm run build && npx -y firebase-tools deploy --only hosting",
+    "deploy:firestore": "npx -y firebase-tools deploy --only firestore:rules,firestore:indexes",
     "sync:android": "npm run build && npx cap sync android",
     "sync:ios": "npm run build && npx cap sync ios",
     "sync:all": "npm run build && npx cap sync",
