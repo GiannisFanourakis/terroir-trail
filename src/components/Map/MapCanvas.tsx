@@ -3,9 +3,10 @@ import L from 'leaflet';
 import { Producer, Category, Destination } from '../../types/terroir';
 import { 
   Plus, Minus, Navigation, Maximize2, Layers, MapPin, 
-  Star, ArrowRight, ExternalLink, X, Compass, ChevronRight, Heart 
+  Star, ArrowRight, ExternalLink, X, Compass, ChevronRight, Heart, AlertCircle 
 } from 'lucide-react';
 import { getCategoryFallbackImage } from '../../utils/imageFallbacks';
+import { getUserCoordinates } from '../../services/geolocation';
 
 interface MapCanvasProps {
   producers: Producer[];
@@ -39,6 +40,8 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
   // Zoom-adaptive Pin Display: 'adaptive' (auto unclutter), 'compact' (pins only), 'expanded' (full bounding boxes)
   type PinDisplayMode = 'adaptive' | 'compact' | 'expanded';
   const [pinDisplayMode, setPinDisplayMode] = useState<PinDisplayMode>('adaptive');
+  const [locationError, setLocationError] = useState<string | null>(null);
+  const [isLocating, setIsLocating] = useState<boolean>(false);
 
   // Centers per destination
   const DESTINATION_CENTERS: Record<Destination | 'all', { coords: [number, number]; zoom: number }> = {
@@ -318,26 +321,31 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     mapInstanceRef.current?.flyTo(target.coords, target.zoom, { duration: 1 });
   };
 
-  const handleLocateMe = () => {
-    if (!mapInstanceRef.current || !navigator.geolocation) return;
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        const { latitude, longitude } = pos.coords;
-        mapInstanceRef.current?.flyTo([latitude, longitude], 13);
-        L.circleMarker([latitude, longitude], {
-          radius: 9,
-          fillColor: '#38bdf8',
-          color: '#ffffff',
-          weight: 3,
-          opacity: 1,
-          fillOpacity: 1,
-        })
-          .addTo(mapInstanceRef.current!)
-          .bindPopup('Your Current Location')
-          .openPopup();
-      },
-      (err) => console.warn('Geo error:', err)
-    );
+  const handleLocateMe = async () => {
+    if (!mapInstanceRef.current || isLocating) return;
+    setIsLocating(true);
+    setLocationError(null);
+    try {
+      const coords = await getUserCoordinates();
+      mapInstanceRef.current.flyTo([coords.latitude, coords.longitude], 13);
+      L.circleMarker([coords.latitude, coords.longitude], {
+        radius: 9,
+        fillColor: '#38bdf8',
+        color: '#ffffff',
+        weight: 3,
+        opacity: 1,
+        fillOpacity: 1,
+      })
+        .addTo(mapInstanceRef.current)
+        .bindPopup('Your Current Location')
+        .openPopup();
+    } catch (err: any) {
+      const msg = err instanceof Error ? err.message : 'Unable to determine location.';
+      setLocationError(msg);
+      setTimeout(() => setLocationError(null), 7000);
+    } finally {
+      setIsLocating(false);
+    }
   };
 
   const formatCategoryName = (category: Category) => {
@@ -358,7 +366,23 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
 
       {/* Floating Modern Controls */}
       <div className="absolute top-16 right-3 sm:top-4 sm:right-4 z-20 flex flex-col items-end gap-2">
-        
+        {/* Visible Geolocation Error Notification */}
+        {locationError && (
+          <div className="glass-panel px-3 py-2 rounded-xl border border-rose-500/50 bg-stone-950/95 text-rose-200 text-xs flex items-center justify-between gap-2 shadow-2xl max-w-xs animate-in fade-in slide-in-from-top-2">
+            <div className="flex items-center gap-1.5">
+              <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
+              <span>{locationError}</span>
+            </div>
+            <button
+              onClick={() => setLocationError(null)}
+              className="p-1 text-rose-400 hover:text-white rounded-lg hover:bg-white/10 shrink-0"
+              title="Dismiss"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        )}
+
         {/* Layer Theme Selector Pill */}
         <div className="glass-panel p-1 rounded-2xl flex items-center shadow-2xl">
           <button
@@ -437,10 +461,13 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
 
           <button
             onClick={handleLocateMe}
-            className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center text-stone-200 hover:text-sky-400 hover:bg-white/10 transition group"
-            title="My Location"
+            disabled={isLocating}
+            className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center text-stone-200 hover:text-sky-400 hover:bg-white/10 transition group ${
+              isLocating ? 'animate-pulse text-sky-400 bg-white/10' : ''
+            }`}
+            title={isLocating ? 'Locating...' : 'My Location'}
           >
-            <Navigation className="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover:scale-110 transition-transform" />
+            <Navigation className={`w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover:scale-110 transition-transform ${isLocating ? 'animate-spin' : ''}`} />
           </button>
 
           <div className="h-[1px] bg-white/10 my-0.5" />

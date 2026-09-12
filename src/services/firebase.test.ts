@@ -75,6 +75,8 @@ vi.mock('firebase/auth', () => {
   }
   return {
     getAuth: vi.fn(() => mockAuth),
+    initializeAuth: vi.fn(() => mockAuth),
+    indexedDBLocalPersistence: {},
     signInWithPopup: vi.fn(),
     GoogleAuthProvider: MockGoogleAuthProvider,
     OAuthProvider: MockOAuthProvider,

@@ -308,6 +308,41 @@ npm run preview
 
 ---
 
+## 📱 Mobile Development (Capacitor Android & iOS)
+
+TerroirTrail includes hybrid native application shells powered by Capacitor for Android and iOS.
+
+* **Capacitor App ID:** `com.terroirtrail.app`
+* **Local Firebase Configuration Files:**
+  * Android: `android/app/google-services.json`
+  * iOS: `ios/App/App/GoogleService-Info.plist`
+  * *Both files contain environment-specific credentials and remain strictly gitignored.*
+* **Android Google Sign-In Requirements:**
+  * The debug and release SHA-1 / SHA-256 certificate fingerprints (e.g. from `gradlew signingReport`) must be registered in the Firebase console project under the Android app `com.terroirtrail.app`.
+* **iOS Authentication Requirements:**
+  * **Google Sign-In:** Requires adding the `REVERSED_CLIENT_ID` from `GoogleService-Info.plist` as a URL Scheme in Xcode project settings (`Info.plist` / Target URL Types).
+  * **Sign in with Apple:** Requires the Sign in with Apple capability and `com.apple.developer.applesignin` entitlement (`ios/App/App/App.entitlements`), configured with an Apple Developer Account.
+* **Native API Origin Gateway:**
+  * When running natively, API requests route deterministically to `VITE_API_BASE_URL` if explicitly configured, defaulting to the production gateway `https://terroir-trail.web.app` (rather than localhost or relative web paths).
+* **Explorer Pass Safety:**
+  * Public purchasing remains disabled (`VITE_ENABLE_EXPLORER_PASS_PURCHASES=false`) across all web and mobile builds during the current pilot phase.
+* **Sync & Build Commands:**
+  ```bash
+  # Preflight check mobile configuration
+  npm run mobile:preflight
+
+  # Sync web assets to native platforms
+  npm run sync:android
+  npm run sync:ios
+  npm run sync:all
+
+  # Build Android debug APK
+  cd android && ./gradlew assembleDebug
+  ```
+*(Note: Mobile builds are developer previews and are not currently distributed on Google Play or the Apple App Store.)*
+
+---
+
 ## 🤝 Contributing
 
 Contributions from winemakers, sommeliers, brewers, travelers, and developers are warmly welcomed!

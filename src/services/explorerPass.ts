@@ -1,4 +1,5 @@
 import { auth } from './firebase';
+import { resolveApiBaseUrl } from './apiOrigin';
 
 export interface ExplorerPass {
   passId: string;
@@ -15,7 +16,7 @@ async function request<T>(path: string, options: RequestInit = {}, authenticated
     headers.set('Authorization', `Bearer ${await auth.currentUser.getIdToken()}`);
   }
   if (options.body) headers.set('Content-Type', 'application/json');
-  const base = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '');
+  const base = resolveApiBaseUrl();
   const response = await fetch(`${base}/api/passes${path}`, {
     ...options, headers, cache: 'no-store', signal: AbortSignal.timeout(15000),
   });

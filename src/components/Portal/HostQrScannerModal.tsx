@@ -96,7 +96,7 @@ export const HostQrScannerModal: React.FC<HostQrScannerModalProps> = ({
         setIsStarting(false);
         console.warn('Camera scanner initialization failed:', err);
         if (err?.name === 'NotAllowedError' || err?.message?.includes('Permission')) {
-          setCameraError('Camera permission was denied. Please allow camera access in your browser settings, or enter the Pass ID manually below.');
+          setCameraError('Camera permission was denied. Please allow camera access in your device/app settings, or enter the Pass ID manually below.');
         } else if (err?.name === 'NotFoundError' || err?.message?.includes('devices not found')) {
           setCameraError('No camera found on this device. You can verify passes by typing the Pass ID manually below.');
         } else {

@@ -29,7 +29,12 @@ export const formatAuthError = (error: any): string => {
       return 'Access has been temporarily disabled due to many failed attempts. Please reset your password or try again later.';
     case 'auth/network-request-failed':
       return 'Network connection error. Please check your internet connection.';
+    case 'FIREBASE_NOT_CONFIGURED':
+      return 'Authentication service is not configured. Please check your connection or environment.';
     default:
+      if (error.message === 'FIREBASE_NOT_CONFIGURED') {
+        return 'Authentication service is not configured. Please check your connection or environment.';
+      }
       if (error.message?.includes('cancel') || error.code === '16' || error.message?.includes('16:')) {
         return 'Sign-in was cancelled.';
       }

@@ -23,11 +23,13 @@ import {
   createUserWithEmailAndPassword,
   updateProfile as firebaseUpdateProfile,
   User as FirebaseUser,
-  GoogleAuthProvider
+  GoogleAuthProvider,
+  OAuthProvider
 } from 'firebase/auth';
 import { DEMO_PROFILES, DEMO_PRODUCER_PROFILES } from '../data/demoProfiles';
 import { formatAuthError } from '../utils/authErrors';
 import { useExplorerPass } from './useExplorerPass';
+import { createGoogleWebCredential, createAppleWebCredential } from '../services/authBridging';
 
 export { DEMO_PROFILES, DEMO_PRODUCER_PROFILES };
 
@@ -189,10 +191,15 @@ export const useAuth = () => {
 
       if (Capacitor.isNativePlatform()) {
         const { FirebaseAuthentication } = await import('@capacitor-firebase/authentication');
-        const nativeResult = await FirebaseAuthentication.signInWithGoogle();
+        const nativeResult = await FirebaseAuthentication.signInWithGoogle({
+          skipNativeAuth: true,
+        });
 
         if (nativeResult.credential?.idToken) {
-          const credential = GoogleAuthProvider.credential(nativeResult.credential.idToken);
+          const credential = createGoogleWebCredential({
+            idToken: nativeResult.credential.idToken,
+            accessToken: nativeResult.credential.accessToken,
+          });
           const authRes = await signInWithCredential(auth, credential);
           firebaseUser = authRes.user;
         } else if (auth.currentUser) {
@@ -233,12 +240,37 @@ export const useAuth = () => {
       if (!isFirebaseConfigured || !auth) {
         throw new Error('FIREBASE_NOT_CONFIGURED');
       }
-      const result = await signInWithPopup(auth, appleProvider);
+
+      let firebaseUser: FirebaseUser;
+
+      if (Capacitor.isNativePlatform()) {
+        const { FirebaseAuthentication } = await import('@capacitor-firebase/authentication');
+        const nativeResult = await FirebaseAuthentication.signInWithApple({
+          skipNativeAuth: true,
+        });
+
+        if (nativeResult.credential?.idToken) {
+          const credential = createAppleWebCredential({
+            idToken: nativeResult.credential.idToken,
+            nonce: nativeResult.credential.nonce,
+          });
+          const authRes = await signInWithCredential(auth, credential);
+          firebaseUser = authRes.user;
+        } else if (auth.currentUser) {
+          firebaseUser = auth.currentUser;
+        } else {
+          throw new Error('No credentials returned from Apple Sign-In.');
+        }
+      } else {
+        const result = await signInWithPopup(auth, appleProvider);
+        firebaseUser = result.user;
+      }
+
       const [cloudProfile, trustedOwnership] = await Promise.all([
-        fetchUserProfileFromCloud(result.user.uid),
-        fetchUserProducerOwnership(result.user.uid),
+        fetchUserProfileFromCloud(firebaseUser.uid),
+        fetchUserProducerOwnership(firebaseUser.uid),
       ]);
-      const mapped = mapFirebaseUser(result.user, 'culinary_nomad', cloudProfile, trustedOwnership);
+      const mapped = mapFirebaseUser(firebaseUser, 'culinary_nomad', cloudProfile, trustedOwnership);
 
       await saveUserProfileToCloud(mapped);
       setUser(mapped);
@@ -259,33 +291,21 @@ export const useAuth = () => {
     setIsLoading(true);
     setAuthError(null);
     try {
-      if (isFirebaseConfigured && auth && password) {
-        const cred = await signInWithEmailAndPassword(auth, email, password);
-        const [cloudProfile, trustedOwnership] = await Promise.all([
-          fetchUserProfileFromCloud(cred.user.uid),
-          fetchUserProducerOwnership(cred.user.uid),
-        ]);
-        const mapped = mapFirebaseUser(cred.user, undefined, cloudProfile, trustedOwnership);
-        setUser(mapped);
-        saveUserData(mapped.id, mapped.visitedProducers, mapped.personalNotes, mapped);
-        return mapped;
-      } else {
-        // Fallback local authentication
-        const inferredName = email.split('@')[0];
-        const newUser: UserProfile = {
-          id: `user_${Date.now()}`,
-          name: inferredName.charAt(0).toUpperCase() + inferredName.slice(1),
-          email,
-          avatar: '🧭',
-          hometown: 'Explorer',
-          travelerType: 'culinary_nomad',
-          visitedProducers: [],
-          personalNotes: {},
-          memberSince: '2026',
-        };
-        setUser(newUser);
-        return newUser;
+      if (!isFirebaseConfigured || !auth) {
+        throw new Error('FIREBASE_NOT_CONFIGURED');
       }
+      if (!password) {
+        throw new Error('Password is required.');
+      }
+      const cred = await signInWithEmailAndPassword(auth, email, password);
+      const [cloudProfile, trustedOwnership] = await Promise.all([
+        fetchUserProfileFromCloud(cred.user.uid),
+        fetchUserProducerOwnership(cred.user.uid),
+      ]);
+      const mapped = mapFirebaseUser(cred.user, undefined, cloudProfile, trustedOwnership);
+      setUser(mapped);
+      saveUserData(mapped.id, mapped.visitedProducers, mapped.personalNotes, mapped);
+      return mapped;
     } catch (error: any) {
       console.error('Email sign-in error:', error);
       const msg = formatAuthError(error);
@@ -306,31 +326,20 @@ export const useAuth = () => {
     setIsLoading(true);
     setAuthError(null);
     try {
-      if (isFirebaseConfigured && auth && password) {
-        const cred = await createUserWithEmailAndPassword(auth, email, password);
-        await firebaseUpdateProfile(cred.user, { displayName: name });
-        const mapped = mapFirebaseUser(cred.user, travelerType);
-        mapped.name = name;
-        await saveUserProfileToCloud(mapped);
-        setUser(mapped);
-        saveUserData(mapped.id, mapped.visitedProducers, mapped.personalNotes, mapped);
-        return mapped;
-      } else {
-        // Fallback local
-        const newUser: UserProfile = {
-          id: `user_${Date.now()}`,
-          name,
-          email,
-          avatar: travelerType === 'crete_local' ? '🇬🇷' : travelerType === 'craft_beer_explorer' ? '🍺' : '🍇',
-          hometown: travelerType === 'crete_local' ? 'Crete, Greece' : 'World Traveler',
-          travelerType,
-          visitedProducers: [],
-          personalNotes: {},
-          memberSince: '2026',
-        };
-        setUser(newUser);
-        return newUser;
+      if (!isFirebaseConfigured || !auth) {
+        throw new Error('FIREBASE_NOT_CONFIGURED');
       }
+      if (!password) {
+        throw new Error('Password is required.');
+      }
+      const cred = await createUserWithEmailAndPassword(auth, email, password);
+      await firebaseUpdateProfile(cred.user, { displayName: name });
+      const mapped = mapFirebaseUser(cred.user, travelerType);
+      mapped.name = name;
+      await saveUserProfileToCloud(mapped);
+      setUser(mapped);
+      saveUserData(mapped.id, mapped.visitedProducers, mapped.personalNotes, mapped);
+      return mapped;
     } catch (error: any) {
       console.error('Email signup error:', error);
       const msg = formatAuthError(error);
@@ -402,39 +411,22 @@ export const useAuth = () => {
     }
 
     try {
-      if (isFirebaseConfigured && auth && targetPassword) {
-        const cred = await signInWithEmailAndPassword(auth, targetEmail, targetPassword);
-        const [cloudProfile, trustedOwnership] = await Promise.all([
-          fetchUserProfileFromCloud(cred.user.uid),
-          fetchUserProducerOwnership(cred.user.uid),
-        ]);
-        const mapped = mapFirebaseUser(cred.user, undefined, cloudProfile, trustedOwnership);
-        
-        saveUserData(mapped.id, mapped.visitedProducers, mapped.personalNotes, mapped);
-        setUser(mapped);
-        return mapped;
-      } else {
-        // Fallback local authentication
-        const inferredName = targetEmail.split('@')[0];
-        const producerUser: UserProfile = {
-          id: `producer_${targetProducerId || 'estate'}_${Date.now()}`,
-          name: inferredName.charAt(0).toUpperCase() + inferredName.slice(1),
-          email: targetEmail,
-          avatar: '🏛️',
-          hometown: targetProducerName || 'Wine Estate',
-          role: 'producer',
-          isProducer: true,
-          claimedProducerId: targetProducerId,
-          producerName: targetProducerName,
-          travelerType: 'wine_enthusiast',
-          visitedProducers: targetProducerId ? [targetProducerId] : [],
-          personalNotes: {},
-          memberSince: '2026',
-        };
-        saveUserData(producerUser.id, producerUser.visitedProducers, producerUser.personalNotes, producerUser);
-        setUser(producerUser);
-        return producerUser;
+      if (!isFirebaseConfigured || !auth) {
+        throw new Error('FIREBASE_NOT_CONFIGURED');
       }
+      if (!targetPassword) {
+        throw new Error('Password is required for producer login.');
+      }
+      const cred = await signInWithEmailAndPassword(auth, targetEmail, targetPassword);
+      const [cloudProfile, trustedOwnership] = await Promise.all([
+        fetchUserProfileFromCloud(cred.user.uid),
+        fetchUserProducerOwnership(cred.user.uid),
+      ]);
+      const mapped = mapFirebaseUser(cred.user, undefined, cloudProfile, trustedOwnership);
+      
+      saveUserData(mapped.id, mapped.visitedProducers, mapped.personalNotes, mapped);
+      setUser(mapped);
+      return mapped;
     } catch (error: any) {
       console.error('Producer login error:', error);
       const msg = formatAuthError(error);
@@ -457,78 +449,61 @@ export const useAuth = () => {
     setIsLoading(true);
     setAuthError(null);
     try {
-      if (isFirebaseConfigured && auth && password) {
-        const cred = await createUserWithEmailAndPassword(auth, email, password);
-        await firebaseUpdateProfile(cred.user, { displayName: hostName });
-        const mapped = mapFirebaseUser(cred.user);
-        mapped.name = hostName;
-        mapped.email = email;
-        mapped.claimStatus = 'pending_verification';
-
-        // Submit registration to cloud
-        await saveProducerRegistrationToCloud({
-          id: producerId,
-          producerId,
-          userId: cred.user.uid,
-          tradeBrandName: producerName,
-          producerCategory: 'winery',
-          legalBusinessName: taxDetails?.legalBusinessName || producerName,
-          legalEntityType: 'private_company_ike',
-          vatNumber: taxDetails?.vatNumber || '',
-          taxOffice: taxDetails?.taxOffice || '',
-          countryCode: taxDetails?.countryCode || 'GR',
-          isVatVerified: false,
-          logistics: {
-            facilityName: producerName,
-            streetAddress: taxDetails?.registeredAddress || '',
-            postalCode: '',
-            cityOrVillage: '',
-            region: '',
-            countryCode: taxDetails?.countryCode || 'GR',
-            accessType: 'standard_courier_van',
-            contactPersonName: hostName,
-            dispatchPhone: taxDetails?.dispatchContactPhone || '',
-            dispatchEmail: email,
-            pickupTimeWindow: '09:00 - 15:00',
-          },
-          packaging: { maxDailyParcels: 10, dispatchLeadTime: 'next_day' },
-          banking: { accountHolderName: hostName, bankName: '', iban: '', swiftBic: '', payoutCurrency: 'EUR' },
-          permits: {},
-          representativeName: hostName,
-          representativeRole: 'Owner',
-          officialEmail: email,
-          status: 'pending_verification',
-          submittedAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-          termsAccepted: true,
-        });
-
-        await saveUserProfileToCloud(mapped);
-        saveUserData(mapped.id, mapped.visitedProducers, mapped.personalNotes, mapped);
-        setUser(mapped);
-        return mapped;
-      } else {
-        const producerUser: UserProfile = {
-          id: `producer_${producerId}_${Date.now()}`,
-          name: hostName,
-          email,
-          avatar: '🏛️',
-          hometown: producerName,
-          role: 'producer',
-          isProducer: true,
-          claimedProducerId: producerId,
-          producerName,
-          claimStatus: 'pending_verification',
-          taxDetails,
-          travelerType: 'wine_enthusiast',
-          visitedProducers: [producerId],
-          personalNotes: {},
-          memberSince: '2026',
-        };
-        saveUserData(producerUser.id, producerUser.visitedProducers, producerUser.personalNotes, producerUser);
-        setUser(producerUser);
-        return producerUser;
+      if (!isFirebaseConfigured || !auth) {
+        throw new Error('FIREBASE_NOT_CONFIGURED');
       }
+      if (!password) {
+        throw new Error('Password is required for producer registration.');
+      }
+      const cred = await createUserWithEmailAndPassword(auth, email, password);
+      await firebaseUpdateProfile(cred.user, { displayName: hostName });
+      const mapped = mapFirebaseUser(cred.user);
+      mapped.name = hostName;
+      mapped.email = email;
+      mapped.claimStatus = 'pending_verification';
+
+      // Submit registration to cloud
+      await saveProducerRegistrationToCloud({
+        id: producerId,
+        producerId,
+        userId: cred.user.uid,
+        tradeBrandName: producerName,
+        producerCategory: 'winery',
+        legalBusinessName: taxDetails?.legalBusinessName || producerName,
+        legalEntityType: 'private_company_ike',
+        vatNumber: taxDetails?.vatNumber || '',
+        taxOffice: taxDetails?.taxOffice || '',
+        countryCode: taxDetails?.countryCode || 'GR',
+        isVatVerified: false,
+        logistics: {
+          facilityName: producerName,
+          streetAddress: taxDetails?.registeredAddress || '',
+          postalCode: '',
+          cityOrVillage: '',
+          region: '',
+          countryCode: taxDetails?.countryCode || 'GR',
+          accessType: 'standard_courier_van',
+          contactPersonName: hostName,
+          dispatchPhone: taxDetails?.dispatchContactPhone || '',
+          dispatchEmail: email,
+          pickupTimeWindow: '09:00 - 15:00',
+        },
+        packaging: { maxDailyParcels: 10, dispatchLeadTime: 'next_day' },
+        banking: { accountHolderName: hostName, bankName: '', iban: '', swiftBic: '', payoutCurrency: 'EUR' },
+        permits: {},
+        representativeName: hostName,
+        representativeRole: 'Owner',
+        officialEmail: email,
+        status: 'pending_verification',
+        submittedAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        termsAccepted: true,
+      });
+
+      await saveUserProfileToCloud(mapped);
+      saveUserData(mapped.id, mapped.visitedProducers, mapped.personalNotes, mapped);
+      setUser(mapped);
+      return mapped;
     } catch (error: any) {
       console.error('Producer registration error:', error);
       const msg = formatAuthError(error);

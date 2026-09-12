@@ -1,5 +1,14 @@
 import { initializeApp, getApps, getApp, FirebaseApp } from 'firebase/app';
-import { getAuth, GoogleAuthProvider, OAuthProvider, Auth, sendPasswordResetEmail } from 'firebase/auth';
+import { 
+  getAuth, 
+  initializeAuth, 
+  indexedDBLocalPersistence, 
+  GoogleAuthProvider, 
+  OAuthProvider, 
+  Auth, 
+  sendPasswordResetEmail 
+} from 'firebase/auth';
+import { Capacitor } from '@capacitor/core';
 import {
   getFirestore,
   initializeFirestore,
@@ -53,7 +62,17 @@ let db: Firestore | null = null;
 if (isFirebaseConfigured) {
   try {
     app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
-    auth = getAuth(app);
+    if (Capacitor.isNativePlatform()) {
+      try {
+        auth = initializeAuth(app, {
+          persistence: indexedDBLocalPersistence,
+        });
+      } catch {
+        auth = getAuth(app);
+      }
+    } else {
+      auth = getAuth(app);
+    }
     try {
       db = initializeFirestore(app, {
         localCache: persistentLocalCache(),
