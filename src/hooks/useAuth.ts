@@ -67,7 +67,14 @@ export const useAuth = () => {
   const [user, setUser] = useState<UserProfile | null>(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
-      return saved ? JSON.parse(saved) : null;
+      if (!saved) return null;
+      const parsed = JSON.parse(saved);
+      if (!parsed || typeof parsed !== 'object' || !parsed.id) return null;
+      return {
+        ...parsed,
+        visitedProducers: Array.isArray(parsed.visitedProducers) ? parsed.visitedProducers : [],
+        personalNotes: parsed.personalNotes && typeof parsed.personalNotes === 'object' ? parsed.personalNotes : {},
+      };
     } catch (e) {
       console.error('Error reading auth from localStorage:', e);
       return null;
@@ -614,6 +621,8 @@ export const useAuth = () => {
   return {
     user: user ? {
       ...user,
+      visitedProducers: Array.isArray(user.visitedProducers) ? user.visitedProducers : [],
+      personalNotes: user.personalNotes && typeof user.personalNotes === 'object' ? user.personalNotes : {},
       hasExplorerPass: !!pass,
       explorerPassUntil: pass?.expiresAt,
       explorerPassId: pass?.passId,

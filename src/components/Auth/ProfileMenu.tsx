@@ -77,7 +77,7 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
     );
   }
 
-  const visitedCount = user.visitedProducers.length;
+  const visitedCount = user.visitedProducers?.length ?? 0;
   const progressPercent = Math.min(100, Math.round((visitedCount / (totalProducersCount || 1)) * 100));
 
   const getBadgeLabel = (type: string) => {

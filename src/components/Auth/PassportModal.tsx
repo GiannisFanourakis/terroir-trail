@@ -36,12 +36,12 @@ export const PassportModal: React.FC<PassportModalProps> = ({
 
   const FREE_STAMP_LIMIT = 3;
   const isVip = !!user.hasExplorerPass;
-  const visitedCount = user.visitedProducers.length;
+  const visitedCount = user.visitedProducers?.length ?? 0;
   const isFreeLimitReached = !isVip && visitedCount >= FREE_STAMP_LIMIT;
   const progressPercent = Math.round((visitedCount / producers.length) * 100);
 
   const filteredProducers = producers.filter((p) => {
-    const isStamped = user.visitedProducers.includes(p.id);
+    const isStamped = user.visitedProducers?.includes(p.id) ?? false;
     if (filterMode === 'stamped') return isStamped;
     if (filterMode === 'unstamped') return !isStamped;
     return true;
