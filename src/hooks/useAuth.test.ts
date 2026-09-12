@@ -1,8 +1,18 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 
+const { mockFirebaseState, authStateCallbacks } = vi.hoisted(() => {
+  const authStateCallbacks: Array<(user: any) => Promise<void> | void> = [];
+  const mockFirebaseState = {
+    isConfigured: false,
+    auth: null as any,
+  };
+  return { mockFirebaseState, authStateCallbacks };
+});
+
 // Lightweight React mock harness
 let stateMap: any[] = [];
 let stateIndex = 0;
+let effectCleanups: Array<(() => void) | void> = [];
 
 vi.mock('react', () => ({
   useState: (initial: any) => {
@@ -15,19 +25,26 @@ vi.mock('react', () => ({
     };
     return [stateMap[idx], setState];
   },
-  useEffect: vi.fn(),
+  useEffect: (effect: () => void | (() => void)) => {
+    const cleanup = effect();
+    if (cleanup) effectCleanups.push(cleanup);
+  },
   useCallback: (fn: any) => fn,
 }));
 
-// Mock services/firebase as unconfigured
+// Mock services/firebase as configurable
 vi.mock('../services/firebase', () => ({
-  auth: null,
-  isFirebaseConfigured: false,
+  get isFirebaseConfigured() {
+    return mockFirebaseState.isConfigured;
+  },
+  get auth() {
+    return mockFirebaseState.auth;
+  },
   googleProvider: {},
   appleProvider: {},
   saveUserProfileToCloud: vi.fn(),
-  fetchUserProfileFromCloud: vi.fn(),
-  fetchUserProducerOwnership: vi.fn(),
+  fetchUserProfileFromCloud: vi.fn().mockResolvedValue(null),
+  fetchUserProducerOwnership: vi.fn().mockResolvedValue(null),
   saveProducerRegistrationToCloud: vi.fn(),
   sendPasswordReset: vi.fn(),
   subscribeToCloudUserProfile: vi.fn(() => () => {}),
@@ -37,7 +54,13 @@ vi.mock('firebase/auth', () => ({
   signInWithPopup: vi.fn(),
   signInWithCredential: vi.fn(),
   signOut: vi.fn(),
-  onAuthStateChanged: vi.fn(() => () => {}),
+  onAuthStateChanged: vi.fn((_auth: any, callback: any) => {
+    authStateCallbacks.push(callback);
+    return () => {
+      const idx = authStateCallbacks.indexOf(callback);
+      if (idx !== -1) authStateCallbacks.splice(idx, 1);
+    };
+  }),
   signInWithEmailAndPassword: vi.fn(),
   createUserWithEmailAndPassword: vi.fn(),
   updateProfile: vi.fn(),
@@ -64,6 +87,10 @@ describe('useAuth - Production Safety & Fallback Removal', () => {
     storage.clear();
     stateMap = [];
     stateIndex = 0;
+    effectCleanups = [];
+    authStateCallbacks.length = 0;
+    mockFirebaseState.isConfigured = false;
+    mockFirebaseState.auth = null;
     vi.clearAllMocks();
   });
 
@@ -152,5 +179,119 @@ describe('useAuth - Production Safety & Fallback Removal', () => {
     expect(profile.role).toBe('producer');
     expect(profile.isProducer).toBe(true);
     expect(stateMap[0]?.role).toBe('producer');
+  });
+});
+
+describe('useAuth - Firebase Session Reconciliation & Stale Account Invalidation', () => {
+  beforeEach(() => {
+    storage.clear();
+    stateMap = [];
+    stateIndex = 0;
+    effectCleanups = [];
+    authStateCallbacks.length = 0;
+    mockFirebaseState.isConfigured = true;
+    mockFirebaseState.auth = { currentUser: null };
+    vi.clearAllMocks();
+  });
+
+  it('clears cached normal user when Firebase auth-state callback fires with null', async () => {
+    const cachedUser = {
+      id: 'cached_traveler_123',
+      name: 'Cached Traveler',
+      email: 'traveler@example.com',
+      avatar: '🧭',
+      hometown: 'Athens',
+      role: 'traveler',
+      isProducer: false,
+      travelerType: 'culinary_nomad',
+      visitedProducers: [],
+      personalNotes: {},
+      memberSince: '2026',
+    };
+    storage.set('terroir_trail_user', JSON.stringify(cachedUser));
+
+    stateIndex = 0;
+    let hook = useAuth();
+
+    // Verify cached normal user initially exists
+    expect(hook.user).not.toBeNull();
+    expect(hook.user?.id).toBe('cached_traveler_123');
+    expect(hook.isAuthenticated).toBe(true);
+    expect(authStateCallbacks.length).toBeGreaterThan(0);
+
+    // Fire Firebase auth-state callback with null
+    const authCallback = authStateCallbacks[authStateCallbacks.length - 1];
+    await authCallback(null);
+
+    // Re-render hook
+    stateIndex = 0;
+    hook = useAuth();
+
+    // Verify cached user state becomes null and isAuthenticated becomes false
+    expect(hook.user).toBeNull();
+    expect(hook.isAuthenticated).toBe(false);
+    expect(storage.get('terroir_trail_user')).toBeUndefined();
+  });
+
+  it('clears cached stale producer and strips verified host status when Firebase fires with null', async () => {
+    const cachedProducer = {
+      id: 'stale_producer_999',
+      name: 'Stale Host',
+      email: 'host@stale-estate.gr',
+      role: 'producer',
+      isProducer: true,
+      claimedProducerId: 'stale-winery',
+      claimStatus: 'verified_host',
+      visitedProducers: [],
+      personalNotes: {},
+      memberSince: '2025',
+    };
+    storage.set('terroir_trail_user', JSON.stringify(cachedProducer));
+
+    stateIndex = 0;
+    let hook = useAuth();
+
+    expect(hook.user?.isProducer).toBe(true);
+    expect(hook.isAuthenticated).toBe(true);
+
+    // Fire Firebase auth-state callback with null
+    const authCallback = authStateCallbacks[authStateCallbacks.length - 1];
+    await authCallback(null);
+
+    // Re-render hook
+    stateIndex = 0;
+    hook = useAuth();
+
+    expect(hook.user).toBeNull();
+    expect(hook.isAuthenticated).toBe(false);
+    expect(storage.get('terroir_trail_user')).toBeUndefined();
+  });
+
+  it('restores valid Firebase user session normally when callback fires with a Firebase user', async () => {
+    stateIndex = 0;
+    let hook = useAuth();
+
+    expect(hook.user).toBeNull();
+    expect(hook.isAuthenticated).toBe(false);
+
+    const mockFbUser = {
+      uid: 'firebase_valid_uid_777',
+      email: 'valid@example.com',
+      displayName: 'Active Explorer',
+      photoURL: 'https://example.com/avatar.jpg',
+    };
+
+    const authCallback = authStateCallbacks[authStateCallbacks.length - 1];
+    await authCallback(mockFbUser);
+
+    // Re-render hook
+    stateIndex = 0;
+    hook = useAuth();
+
+    expect(hook.user).not.toBeNull();
+    expect(hook.user?.id).toBe('firebase_valid_uid_777');
+    expect(hook.user?.name).toBe('Active Explorer');
+    expect(hook.user?.email).toBe('valid@example.com');
+    expect(hook.isAuthenticated).toBe(true);
   });
 });

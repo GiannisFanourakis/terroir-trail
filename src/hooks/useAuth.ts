@@ -103,7 +103,7 @@ export const useAuth = () => {
       isProducer: isTrustedHost,
       claimedProducerId: trustedProducerId,
       producerName: isTrustedHost ? (cloudProfile?.producerName || existing.producerName) : undefined,
-      claimStatus: isTrustedHost ? 'verified_host' : (existing.claimStatus || 'unclaimed'),
+      claimStatus: isTrustedHost ? 'verified_host' : (existing.claimStatus === 'verified_host' ? 'unclaimed' : (existing.claimStatus || 'unclaimed')),
       taxDetails: isTrustedHost ? existing.taxDetails : undefined,
       travelerType: customType || cloudProfile?.travelerType || existing.travelerType || 'culinary_nomad',
       visitedProducers: cloudProfile?.visitedProducers || existing.visitedProducers || [],
@@ -135,6 +135,23 @@ export const useAuth = () => {
           console.warn('Error fetching cloud profile on auth change:', e);
           setUser((prev) => mapFirebaseUser(fbUser, prev?.travelerType));
         }
+      } else {
+        // When Firebase Auth confirms there is no active session, clear any cached normal account
+        setUser((prev) => {
+          if (!prev) return null;
+          const isDemo =
+            Object.values(DEMO_PROFILES).some((d) => d.id === prev.id) ||
+            Object.values(DEMO_PRODUCER_PROFILES).some((d) => d.id === prev.id);
+          if (isDemo) {
+            return prev;
+          }
+          try {
+            localStorage.removeItem(STORAGE_KEY);
+          } catch (e) {
+            console.error('Error removing auth from localStorage:', e);
+          }
+          return null;
+        });
       }
     });
 
