@@ -213,7 +213,7 @@ export const useAuth = () => {
           email: cloudData.email || prev.email,
           travelerType: cloudData.travelerType || prev.travelerType,
           visitedProducers: cloudData.visitedProducers || prev.visitedProducers,
-          personalNotes: { ...prev.personalNotes, ...(cloudData.personalNotes || {}) },
+          personalNotes: cloudData.personalNotes ?? prev.personalNotes,
         };
         saveUserData(merged.id, merged.visitedProducers, merged.personalNotes, merged);
         return merged;

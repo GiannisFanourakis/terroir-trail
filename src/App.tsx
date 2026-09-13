@@ -56,7 +56,6 @@ export const App: React.FC = () => {
 
   const closeModal = () => setActiveModal(null);
 
-  const { favorites, toggleFavorite, isFavorite } = useFavorites();
   const {
     user,
     isAuthenticated,
@@ -78,6 +77,8 @@ export const App: React.FC = () => {
     getTastingNote,
     refreshExplorerPass,
   } = useAuth();
+
+  const { favorites, toggleFavorite, isFavorite } = useFavorites(user?.id);
 
   // Listen for Stripe Checkout redirects (?vip=success or ?producer=upgraded) or QR Pass Verifications (?verify_pass=...)
   const [stripeNotification, setStripeNotification] = useState<string | null>(null);

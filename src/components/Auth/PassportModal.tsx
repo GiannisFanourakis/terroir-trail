@@ -4,6 +4,7 @@ import { UserProfile } from '../../types/auth';
 import { X, Award, CheckCircle2, Circle, MapPin, Edit3, Save } from 'lucide-react';
 import { UserAvatar } from '../Common/UserAvatar';
 import { getCategoryFallbackImage } from '../../utils/imageFallbacks';
+import { producerService } from '../../services/producerService';
 
 interface PassportModalProps {
   isOpen: boolean;
@@ -34,10 +35,14 @@ export const PassportModal: React.FC<PassportModalProps> = ({
 
   if (!isOpen || !user) return null;
 
-  const visitedCount = user.visitedProducers?.length ?? 0;
-  const progressPercent = Math.round((visitedCount / producers.length) * 100);
+  const cachedCatalogue = producerService.getCachedProducers();
+  const passportProducers = cachedCatalogue.length > 0 ? cachedCatalogue : producers;
+  const passportProducerIds = new Set(passportProducers.map((producer) => producer.id));
+  const visitedCount = user.visitedProducers?.filter((id) => passportProducerIds.has(id)).length ?? 0;
+  const totalCount = passportProducers.length;
+  const progressPercent = totalCount > 0 ? Math.round((visitedCount / totalCount) * 100) : 0;
 
-  const filteredProducers = producers.filter((p) => {
+  const filteredProducers = passportProducers.filter((p) => {
     const isStamped = user.visitedProducers?.includes(p.id) ?? false;
     if (filterMode === 'stamped') return isStamped;
     if (filterMode === 'unstamped') return !isStamped;
@@ -76,7 +81,7 @@ export const PassportModal: React.FC<PassportModalProps> = ({
                 </span>
               </div>
               <p className="text-[11px] text-stone-400">
-                {visitedCount} of {producers.length} places stamped
+                {visitedCount} of {totalCount} places stamped
               </p>
             </div>
           </div>
@@ -111,7 +116,7 @@ export const PassportModal: React.FC<PassportModalProps> = ({
                     : 'bg-stone-800 text-stone-400 hover:text-white'
                 }`}
               >
-                All ({producers.length})
+                All ({totalCount})
               </button>
               <button
                 onClick={() => setFilterMode('stamped')}
@@ -131,7 +136,7 @@ export const PassportModal: React.FC<PassportModalProps> = ({
                     : 'bg-stone-800 text-stone-400 hover:text-white'
                 }`}
               >
-                Remaining ({producers.length - visitedCount})
+                Remaining ({totalCount - visitedCount})
               </button>
             </div>
 

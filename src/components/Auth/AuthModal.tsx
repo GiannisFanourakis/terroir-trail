@@ -473,7 +473,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                       <span>Free Traveler Account</span>
                     </div>
                     <div className="text-[10px] text-stone-400 truncate">
-                      Sign in to save stamps, favorites and personal notes across devices.
+                      Sign in to sync passport stamps and personal notes. Saved favorites remain on this device.
                     </div>
                   </div>
                 </div>
