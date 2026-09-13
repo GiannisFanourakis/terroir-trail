@@ -207,137 +207,25 @@ export const subscribeToCloudUserProfile = (
 const BOOKINGS_LOCAL_KEY = STORAGE_KEYS.TASTING_BOOKINGS;
 const OVERRIDES_LOCAL_KEY = STORAGE_KEYS.PRODUCER_OVERRIDES;
 
-// Fake booking fixtures retained for automated test and development scenarios only
-export const SEED_BOOKINGS: TastingBooking[] = [
-  {
-    id: 'book_paterianakis_01',
-    producerId: 'domaine-paterianakis',
-    producerName: 'Domaine Paterianakis',
-    producerCategory: 'winery',
-    producerLocation: 'Melesses (Peza), Heraklion',
-    userId: 'user_elena',
-    userName: 'Jane Doe',
-    userEmail: 'jane.doe@example.com',
-    userPhone: '+30 697 123 4567',
-    date: '2026-05-20',
-    timeSlot: '04:30 PM',
-    experienceId: 'paterianakis_amphora',
-    experienceTitle: 'Amphora & Organic Vidiano Masterclass',
-    pricePerPerson: 35,
-    guestsCount: 2,
-    totalEstimated: 70,
-    specialRequests: 'Interested in seeing your clay amphora cellar and tasting older Vidiano vintages.',
-    status: 'pending',
-    createdAt: new Date(Date.now() - 3600000 * 3).toISOString(),
-  },
-  {
-    id: 'book_manousakis_01',
-    producerId: 'manousakis-winery',
-    producerName: 'Manousakis Winery',
-    producerCategory: 'winery',
-    producerLocation: 'Vatolakkos, Chania',
-    userId: 'user_giannis',
-    userName: 'John Smith',
-    userEmail: 'john.smith@example.com',
-    userPhone: '+30 694 555 7890',
-    date: '2026-05-18',
-    timeSlot: '05:30 PM Sunset',
-    experienceId: 'wine_sunset',
-    experienceTitle: 'Golden Hour Sunset & Terroir Pairing',
-    pricePerPerson: 45,
-    guestsCount: 2,
-    totalEstimated: 90,
-    specialRequests: 'Celebrating anniversary; table on panoramic deck preferred.',
-    status: 'pending',
-    createdAt: new Date(Date.now() - 3600000 * 4).toISOString(),
-  },
-  {
-    id: 'book_charma_01',
-    producerId: 'cretan-brewery-charma',
-    producerName: 'Cretan Brewery (Charma Beer)',
-    producerCategory: 'brewery',
-    producerLocation: 'Zounaki, Chania',
-    userId: 'user_markos',
-    userName: 'Alex Miller',
-    userEmail: 'alex.miller@example.com',
-    userPhone: '+30 698 888 2211',
-    date: '2026-05-22',
-    timeSlot: '02:00 PM',
-    experienceId: 'charma_brewery_tour',
-    experienceTitle: 'Brewery Tour & Fresh Draft Taproom Tasting',
-    pricePerPerson: 20,
-    guestsCount: 4,
-    totalEstimated: 80,
-    specialRequests: 'Group of homebrewers visiting Chania.',
-    status: 'pending',
-    createdAt: new Date(Date.now() - 3600000 * 5).toISOString(),
-  },
-  {
-    id: 'book_monteraponi_01',
-    producerId: 'monteraponi-tuscany',
-    producerName: 'Azienda Agricola Monteraponi',
-    producerCategory: 'winery',
-    producerLocation: 'Radda in Chianti, Tuscany',
-    userId: 'user_elena',
-    userName: 'Jane Doe',
-    userEmail: 'jane.doe@example.com',
-    userPhone: '+30 697 123 4567',
-    date: '2026-06-10',
-    timeSlot: '11:00 AM',
-    experienceId: 'monteraponi_tasting',
-    experienceTitle: 'Historic Cellar Tour & Pure Sangiovese Flight',
-    pricePerPerson: 40,
-    guestsCount: 2,
-    totalEstimated: 80,
-    specialRequests: 'Sommelier visit; excited to taste your Chianti Classico Riserva Baron Ugo.',
-    status: 'confirmed',
-    createdAt: new Date(Date.now() - 3600000 * 24).toISOString(),
-    confirmedAt: new Date(Date.now() - 3600000 * 12).toISOString(),
-  },
-  {
-    id: 'book_douloufakis_01',
-    producerId: 'douloufakis-winery',
-    producerName: 'Douloufakis Winery',
-    producerCategory: 'winery',
-    producerLocation: 'Dafnes, Heraklion',
-    userId: 'user_giannis',
-    userName: 'John Smith',
-    userEmail: 'john.smith@example.com',
-    userPhone: '+30 694 555 7890',
-    date: '2026-05-22',
-    timeSlot: '11:30 AM',
-    experienceId: 'wine_cellar',
-    experienceTitle: 'Cellar Master & Single-Vineyard Tour',
-    pricePerPerson: 28,
-    guestsCount: 4,
-    totalEstimated: 112,
-    specialRequests: 'Interested in tasting older vintages of Aspros Lagos Vidiano.',
-    status: 'confirmed',
-    createdAt: new Date(Date.now() - 3600000 * 24).toISOString(),
-    confirmedAt: new Date(Date.now() - 3600000 * 18).toISOString(),
-  },
-  {
-    id: 'book_solo_01',
-    producerId: 'solo-craft-brewery',
-    producerName: 'Solo Artisanal Microbrewery',
-    producerCategory: 'brewery',
-    producerLocation: 'Alikarnassos, Heraklion',
-    userId: 'user_markos',
-    userName: 'Alex Miller',
-    userEmail: 'alex.brewer@example.com',
-    userPhone: '+30 698 888 2211',
-    date: '2026-05-25',
-    timeSlot: '04:00 PM',
-    experienceId: 'beer_brewmaster',
-    experienceTitle: 'Brewmaster Brewhouse Tour & Guided Flight',
-    pricePerPerson: 22,
-    guestsCount: 3,
-    totalEstimated: 66,
-    specialRequests: 'Excited to discuss hop profiles for Cretan craft brewing.',
-    status: 'pending',
-    createdAt: new Date(Date.now() - 3600000 * 2).toISOString(),
-  },
-];
+// Exact historical fake identifiers retained strictly to clean legacy browser storage
+export const LEGACY_DEMO_BOOKING_IDS = new Set([
+  'book_paterianakis_01',
+  'book_manousakis_01',
+  'book_charma_01',
+  'book_monteraponi_01',
+  'book_douloufakis_01',
+  'book_solo_01',
+]);
+
+export const LEGACY_DEMO_USER_IDS = new Set([
+  'user_elena',
+  'user_giannis',
+  'user_markos',
+  'user_demo_sommelier',
+  'user_john_smith',
+  'user_jane_doe',
+  'user_alex_miller',
+]);
 
 export const getLocalBookings = (): TastingBooking[] => {
   const saved = readStorage<TastingBooking[] | null>(BOOKINGS_LOCAL_KEY, null, {
@@ -347,10 +235,9 @@ export const getLocalBookings = (): TastingBooking[] => {
   if (!saved) {
     return [];
   }
-  // Sanitize out any legacy SEED_BOOKINGS or demo reservations that may have been previously written to local storage
-  const seedIds = new Set(SEED_BOOKINGS.map((b) => b.id));
+  // Remove only bookings matching exact known historical fake identifiers
   const cleaned = saved.filter(
-    (b) => !seedIds.has(b.id) && !b.userId?.startsWith('user_') && !b.id.startsWith('seed_')
+    (b) => !LEGACY_DEMO_BOOKING_IDS.has(b.id) && !(b.userId && LEGACY_DEMO_USER_IDS.has(b.userId))
   );
   if (cleaned.length !== saved.length) {
     writeStorage(BOOKINGS_LOCAL_KEY, cleaned, { scope: 'Firebase' });

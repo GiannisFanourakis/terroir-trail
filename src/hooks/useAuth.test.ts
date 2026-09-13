@@ -311,7 +311,7 @@ describe('useAuth - Firebase Session Reconciliation & Stale Account Invalidation
     expect(hook.isAuthenticated).toBe(true);
   });
 
-  it('rejects and purges cached demo user state on initial load when Firebase is configured', () => {
+  it('purges cached demo user state on initial load when ID exactly matches a known historical demo profile ID', () => {
     const demoCached = {
       id: 'user_giannis',
       name: 'John Smith',
@@ -327,5 +327,53 @@ describe('useAuth - Firebase Session Reconciliation & Stale Account Invalidation
     expect(hook.user).toBeNull();
     expect(hook.isAuthenticated).toBe(false);
     expect(storage.get('terroir_trail_user')).toBeUndefined();
+  });
+
+  it('preserves a legitimate cached user such as user_real_customer_123 intact even though ID begins with user_', () => {
+    const legitUser = {
+      id: 'user_real_customer_123',
+      name: 'Real Customer',
+      email: 'customer@example.com',
+      avatar: '🧭',
+      hometown: 'Heraklion',
+      role: 'traveler',
+      isProducer: false,
+      visitedProducers: ['domaine-paterianakis'],
+      personalNotes: {},
+    };
+    storage.set('terroir_trail_user', JSON.stringify(legitUser));
+
+    stateIndex = 0;
+    const hook = useAuth();
+
+    expect(hook.user).not.toBeNull();
+    expect(hook.user?.id).toBe('user_real_customer_123');
+    expect(hook.user?.name).toBe('Real Customer');
+    expect(hook.isAuthenticated).toBe(true);
+    expect(storage.get('terroir_trail_user')).toBeDefined();
+  });
+
+  it('preserves an arbitrary demo_real_customer_123 user intact unless it matches a known demo fixture', () => {
+    const legitPrefixedUser = {
+      id: 'demo_real_customer_123',
+      name: 'Prefix Customer',
+      email: 'prefix.customer@example.com',
+      avatar: '🍷',
+      hometown: 'Chania',
+      role: 'traveler',
+      isProducer: false,
+      visitedProducers: [],
+      personalNotes: {},
+    };
+    storage.set('terroir_trail_user', JSON.stringify(legitPrefixedUser));
+
+    stateIndex = 0;
+    const hook = useAuth();
+
+    expect(hook.user).not.toBeNull();
+    expect(hook.user?.id).toBe('demo_real_customer_123');
+    expect(hook.user?.name).toBe('Prefix Customer');
+    expect(hook.isAuthenticated).toBe(true);
+    expect(storage.get('terroir_trail_user')).toBeDefined();
   });
 });

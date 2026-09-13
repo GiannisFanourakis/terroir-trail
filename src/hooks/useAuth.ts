@@ -76,17 +76,38 @@ const saveUserData = (
   );
 };
 
+// Exact historical demo profile identifiers from TerroirTrail demo fixtures
+export const KNOWN_HISTORICAL_DEMO_USER_IDS = new Set([
+  'user_john_smith',
+  'user_jane_doe',
+  'user_alex_miller',
+  'user_giannis',
+  'user_elena',
+  'user_markos',
+  'producer_fake_winery',
+  'producer_valley_vineyard',
+  'producer_craft_brewery',
+  'producer_tuscan_estate',
+  'producer_paterianakis',
+  'producer_manousakis',
+  'producer_charma',
+  'producer_monteraponi',
+]);
+
+const isKnownDemoUserId = (id: string): boolean => {
+  return (
+    KNOWN_HISTORICAL_DEMO_USER_IDS.has(id) ||
+    Object.values(DEMO_PROFILES).some((d) => d.id === id) ||
+    Object.values(DEMO_PRODUCER_PROFILES).some((d) => d.id === id)
+  );
+};
+
 export const useAuth = () => {
   const [user, setUser] = useState<UserProfile | null>(() => {
     const parsed = readStorage<any>(STORAGE_KEY, null, { scope: 'Auth' });
     if (!parsed || typeof parsed !== 'object' || !parsed.id) return null;
     if (isFirebaseConfigured) {
-      const isDemo =
-        Object.values(DEMO_PROFILES).some((d) => d.id === parsed.id) ||
-        Object.values(DEMO_PRODUCER_PROFILES).some((d) => d.id === parsed.id) ||
-        parsed.id.startsWith('demo_') ||
-        parsed.id.startsWith('user_');
-      if (isDemo) {
+      if (isKnownDemoUserId(parsed.id)) {
         removeStorage(STORAGE_KEY, { scope: 'Auth' });
         return null;
       }

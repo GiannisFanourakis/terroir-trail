@@ -110,8 +110,10 @@ import {
   fetchUserProducerOwnership,
   getLocalBookings,
   saveLocalBookings,
-  SEED_BOOKINGS,
+  LEGACY_DEMO_BOOKING_IDS,
+  LEGACY_DEMO_USER_IDS,
 } from './firebase';
+import { SEED_BOOKINGS } from '../testFixtures/bookingFixtures';
 
 describe('Firebase Service Security & Data Isolation', () => {
   beforeEach(() => {
@@ -417,8 +419,8 @@ describe('Firebase Service Security & Data Isolation', () => {
       expect(storage.get('terroir_trail_bookings')).toBeUndefined();
     });
 
-    it('sanitizes legacy SEED_BOOKINGS out of local storage and persists the clean array', () => {
-      // Simulate an old session where SEED_BOOKINGS were previously saved to local storage
+    it('removes all known historical demo bookings and exact legacy identifiers', () => {
+      // Simulate an old session where all 6 SEED_BOOKINGS were previously saved to local storage
       const legacyStorage = [
         ...SEED_BOOKINGS,
         {
@@ -446,18 +448,78 @@ describe('Firebase Service Security & Data Isolation', () => {
 
       const result = getLocalBookings();
 
-      // All 3 fake seed bookings must be removed
+      // All 6 fake seed bookings must be removed, keeping only the real user booking
       expect(result.length).toBe(1);
       expect(result[0].id).toBe('book_real_user_01');
-      expect(result.some((b) => b.id === 'book_paterianakis_01')).toBe(false);
-      expect(result.some((b) => b.id === 'book_manousakis_01')).toBe(false);
-      expect(result.some((b) => b.id === 'book_charma_01')).toBe(false);
+      for (const demoId of LEGACY_DEMO_BOOKING_IDS) {
+        expect(result.some((b) => b.id === demoId)).toBe(false);
+      }
     });
 
-    it('retains SEED_BOOKINGS as an exported fixture for test scenarios', () => {
+    it('proves a legitimate booking with userId = "user_real_customer_123" survives', () => {
+      const realUserBooking = {
+        id: 'book_custom_booking_999',
+        producerId: 'manousakis-winery',
+        producerName: 'Manousakis Winery',
+        producerCategory: 'winery',
+        producerLocation: 'Vatolakkos',
+        userId: 'user_real_customer_123',
+        userName: 'Legitimate Customer',
+        userEmail: 'customer@example.com',
+        userPhone: '+30 690 123 4567',
+        date: '2026-07-20',
+        timeSlot: '12:00 PM',
+        experienceId: 'tasting_real',
+        experienceTitle: 'Private Tasting',
+        pricePerPerson: 30,
+        guestsCount: 2,
+        totalEstimated: 60,
+        status: 'pending',
+        createdAt: new Date().toISOString(),
+      };
+      saveLocalBookings([realUserBooking as any]);
+
+      const result = getLocalBookings();
+
+      expect(result.length).toBe(1);
+      expect(result[0].id).toBe('book_custom_booking_999');
+      expect(result[0].userId).toBe('user_real_customer_123');
+    });
+
+    it('proves a legitimate booking whose ID happens to begin seed_ survives unless its exact ID is one of the known fake IDs', () => {
+      const legitSeedPrefixedBooking = {
+        id: 'seed_authentic_tour_2026',
+        producerId: 'domaine-paterianakis',
+        producerName: 'Domaine Paterianakis',
+        producerCategory: 'winery',
+        producerLocation: 'Melesses',
+        userId: 'customer_uid_555',
+        userName: 'Wine Lover',
+        userEmail: 'lover@example.com',
+        userPhone: '+30 690 999 8888',
+        date: '2026-08-10',
+        timeSlot: '03:00 PM',
+        experienceId: 'tasting_vidiano',
+        experienceTitle: 'Vidiano Tour',
+        pricePerPerson: 35,
+        guestsCount: 2,
+        totalEstimated: 70,
+        status: 'pending',
+        createdAt: new Date().toISOString(),
+      };
+      saveLocalBookings([legitSeedPrefixedBooking as any]);
+
+      const result = getLocalBookings();
+
+      expect(result.length).toBe(1);
+      expect(result[0].id).toBe('seed_authentic_tour_2026');
+    });
+
+    it('retains SEED_BOOKINGS in testFixtures for test scenarios', () => {
       expect(Array.isArray(SEED_BOOKINGS)).toBe(true);
-      expect(SEED_BOOKINGS.length).toBeGreaterThan(0);
+      expect(SEED_BOOKINGS.length).toBe(6);
       expect(SEED_BOOKINGS[0].id).toBe('book_paterianakis_01');
+      expect(LEGACY_DEMO_BOOKING_IDS.size).toBe(6);
     });
   });
 });
