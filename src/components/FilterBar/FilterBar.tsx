@@ -32,10 +32,12 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   ];
 
   const roadAccessOptions: { id: RoadAccess | 'all'; label: string }[] = [
-    { id: 'all', label: 'All Road Types' },
-    { id: 'paved', label: '🚗 Paved Road Only' },
-    { id: 'gravel_ok', label: '🚙 Gravel Road OK' },
-    { id: '4x4_required', label: '⛰️ 4x4 Required' },
+    { id: 'all', label: 'All Verified Road Types' },
+    { id: 'paved', label: '🚗 Standard Paved' },
+    { id: 'narrow_paved', label: '🚘 Narrow Paved' },
+    { id: 'gravel_ok', label: '🚙 Passable Gravel / Dirt' },
+    { id: 'high_clearance_recommended', label: '⛰️ High Clearance Recommended' },
+    { id: '4x4_required', label: '🛻 4x4 Required' },
   ];
 
   const ethosOptions: { id: Ethos | 'all'; label: string }[] = [
@@ -112,7 +114,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                 type="button"
                 onClick={onOpenLoops}
                 className="flex items-center gap-1.5 text-[11px] sm:text-xs px-2.5 py-1 rounded-full font-bold border border-amber-500/40 bg-gradient-to-r from-amber-500/20 via-amber-500/10 to-transparent hover:border-amber-400 text-amber-300 hover:text-white transition shrink-0 cursor-pointer shadow-sm active:scale-95"
-                title="Curated driving routes with turn-by-turn navigation"
+                title="Curated routes are published only after location and road-access verification"
               >
                 <Compass className="w-3.5 h-3.5 text-amber-400 shrink-0" />
                 <span>Routes</span>
@@ -226,14 +228,12 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                 <span>Campervan</span>
               </button>
             </div>
-
           </div>
 
           <div className="text-[11px] text-stone-400 hidden md:block">
-            Unfiltered Craft Beers · Ancient Vineyards · Family Olive Groves
+            Unknown access stays unknown until independently verified
           </div>
         </div>
-
       </div>
     </div>
   );
