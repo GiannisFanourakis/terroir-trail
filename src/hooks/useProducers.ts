@@ -12,7 +12,7 @@ export function useProducers(options: UseProducersOptions = {}) {
   const [producers, setProducers] = useState<Producer[]>(() => producerService.getCachedProducers());
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [isLive, setIsLive] = useState<boolean>(() => producerService.isLiveDb());
+  const [isLive, setIsLive] = useState<boolean>(() => producerService.getCacheProvenance() === 'live');
 
   const refresh = useCallback(
     async (bounds?: ViewportBounds) => {
@@ -25,10 +25,16 @@ export function useProducers(options: UseProducersOptions = {}) {
           searchQuery: options.searchQuery,
           bounds,
         });
+        const live = producerService.getCacheProvenance() === 'live';
         setProducers(data);
-        setIsLive(producerService.isLiveDb());
+        setIsLive(live);
+
+        if (producerService.isLiveDb() && !live) {
+          setError('Live catalogue unavailable. Showing the audited offline catalogue.');
+        }
       } catch (err: any) {
         setError(err.message || 'Failed to load producers');
+        setIsLive(false);
       } finally {
         setLoading(false);
       }
