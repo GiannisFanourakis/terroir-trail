@@ -13,10 +13,8 @@ interface GoogleAdSlotProps {
   slot?: string;
   /** Ad layout format */
   format?: 'auto' | 'horizontal' | 'rectangle';
-  /** Whether the user has an active VIP Explorer Pass (if true, NO ads are shown) */
+  /** Private-pilot pass state. Public Explorer Pass sales remain disabled. */
   hasExplorerPass?: boolean;
-  /** Callback to trigger VIP Pass upgrade */
-  onOpenExplorerPass?: () => void;
   className?: string;
 }
 
@@ -25,21 +23,16 @@ export const GoogleAdSlot: React.FC<GoogleAdSlotProps> = ({
   slot = import.meta.env.VITE_ADSENSE_SLOT_ID,
   format = 'auto',
   hasExplorerPass = false,
-  onOpenExplorerPass,
   className = '',
 }) => {
-  // Passholders enjoy a completely ad-free pure experience
-  if (hasExplorerPass) return null;
-
-  const [adLoaded, setAdLoaded] = useState<boolean>(false);
   const [adError, setAdError] = useState<boolean>(false);
   const adRef = useRef<HTMLModElement | null>(null);
 
-  // Fail closed when no verified ad slot is configured or ad rendering fails.
-  if (!client || !slot || adError) return null;
+  const canRenderAd = Boolean(!hasExplorerPass && client && slot && !adError);
 
   useEffect(() => {
-    // 1. Ensure AdSense script is present
+    if (!canRenderAd) return;
+
     const existingScript = document.querySelector('script[src*="pagead2.googlesyndication.com"]');
     if (!existingScript) {
       const script = document.createElement('script');
@@ -51,20 +44,20 @@ export const GoogleAdSlot: React.FC<GoogleAdSlotProps> = ({
       document.head.appendChild(script);
     }
 
-    // 2. Safely request ad fill without duplicate pushes in React StrictMode
     try {
       if (typeof window !== 'undefined' && adRef.current) {
         const isProcessed = adRef.current.getAttribute('data-adsbygoogle-status');
         if (!isProcessed) {
           (window.adsbygoogle = window.adsbygoogle || []).push({});
-          setAdLoaded(true);
         }
       }
-    } catch (e) {
-      console.warn('Google AdSense render fallback:', e);
+    } catch (error) {
+      console.warn('Google AdSense render fallback:', error);
       setAdError(true);
     }
-  }, [client, slot]);
+  }, [canRenderAd, client]);
+
+  if (!canRenderAd) return null;
 
   return (
     <div className={`relative z-20 mx-auto w-full max-w-4xl px-3 py-1 text-center select-none ${className}`}>
@@ -72,7 +65,6 @@ export const GoogleAdSlot: React.FC<GoogleAdSlotProps> = ({
         <span className="text-[9px] text-stone-500 uppercase tracking-widest font-mono">
           Advertisement
         </span>
-
       </div>
 
       <div className="overflow-hidden rounded-2xl border border-white/10 bg-stone-900/80 p-1 min-h-[60px] flex items-center justify-center">
