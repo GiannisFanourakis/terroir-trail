@@ -360,8 +360,19 @@ describe('producerService — Supabase / Fallback Data Ownership', () => {
       expect(CRETAN_PRODUCERS.every((p) => p.priceLevel === undefined)).toBe(true);
       expect(CRETAN_PRODUCERS.every((p) => p.foodOption === undefined)).toBe(true);
 
-      // Verify NO synthetic road access claims exist
-      expect(CRETAN_PRODUCERS.every((p) => p.roadAccess === undefined)).toBe(true);
+      // Only source-backed verified road classifications may exist in fallback data.
+      const roadClassified = CRETAN_PRODUCERS.filter((p) => p.roadAccess !== undefined);
+      expect(roadClassified).toHaveLength(1);
+      expect(roadClassified[0].id).toBe('peskesi-farm-kazani');
+      expect(roadClassified[0].roadAccess).toBe('unpaved_passable');
+      expect(roadClassified[0].roadAccessStatus).toBe('verified');
+
+      // Every Crete road-access record has now been reviewed; unknown remains explicit.
+      expect(
+        CRETAN_PRODUCERS.every(
+          (p) => p.roadAccessStatus !== undefined && p.roadAccessStatus !== 'unreviewed'
+        )
+      ).toBe(true);
 
       // Verify NO synthetic tasting packages exist
       expect(CRETAN_PRODUCERS.every((p) => !p.tastingHighlights || p.tastingHighlights.length === 0)).toBe(true);
@@ -383,6 +394,8 @@ describe('producerService — Supabase / Fallback Data Ownership', () => {
       expect(wildHerbs?.coordinates).toEqual([35.2378367, 24.2565003]);
       expect(wildHerbs?.locationStatus).toBe('verified_location');
       expect(wildHerbs?.visitStatus).toBe('seasonal_public');
+      expect(wildHerbs?.roadAccess).toBeUndefined();
+      expect(wildHerbs?.roadAccessStatus).toBe('current_access_uncertain');
 
       const aerakis = CRETAN_PRODUCERS.find((p) => p.id === 'aerakis-dairy-anogeia');
       expect(aerakis).toBeDefined();
@@ -426,6 +439,11 @@ describe('producerService — Supabase / Fallback Data Ownership', () => {
       expect(peskesi?.name).toBe('Peskesi Organic Farm');
       expect(peskesi?.greekName).toBe('Αγρόκτημα Πεσκέσι');
       expect(peskesi?.category).toBe('kazani');
+      expect(peskesi?.roadAccess).toBe('unpaved_passable');
+      expect(peskesi?.roadAccessStatus).toBe('verified');
+      expect(peskesi?.roadAccessSourceUrl).toBe(
+        'https://peskesicrete.gr/en/experiences/explore-the-farm'
+      );
     });
 
     it('offline / fallback path provides complete verified catalogue without resurrecting synthetic data', async () => {

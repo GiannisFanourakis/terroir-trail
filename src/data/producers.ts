@@ -8,7 +8,7 @@ import { Producer } from '../types/terroir';
  */
 export const CRETAN_PRODUCERS: Producer[] = [
   // ==========================================
-  // --- CHANIA (9 VERIFIED PRODUCERS) ---
+  // --- CHANIA (9 AUDITED RECORDS) ---
   // ==========================================
   {
       "id": "anoskeli-estate",
@@ -39,6 +39,9 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "phone": "+30 28240 83126",
       "website": "https://anoskeli.gr",
       "googleMapsUrl": "https://maps.google.com/?q=35.459833,23.775786",
+      "roadAccessStatus": "not_publicly_confirmed",
+      "roadAccessSourceUrl": "https://anoskeli.gr",
+      "roadAccessNotes": "Phase 6 review (2026-09-13): no explicit source-backed road-surface, width, or vehicle-suitability classification was found in the reviewed public material. Road type remains unpublished.",
       "locationStatus": "verified_location",
       "locationSourceUrl": "https://anoskeli.gr/en/",
       "locationNotes": "Estate location in Anoskeli is verified by the producer; reservation number stored for visitor contact.",
@@ -75,6 +78,9 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "phone": "+30 28240 23281",
       "website": "https://biolea.gr",
       "googleMapsUrl": "https://maps.google.com/?q=35.463807,23.743427",
+      "roadAccessStatus": "not_publicly_confirmed",
+      "roadAccessSourceUrl": "https://biolea.gr/contact/",
+      "roadAccessNotes": "Official Biolea contact information publishes the Astrikas Estate address and exact GPS point. No explicit road-surface, width, or vehicle-suitability classification is published, so road type remains unconfirmed.",
       "locationStatus": "verified_entrance",
       "locationSourceUrl": "https://biolea.gr",
       "locationNotes": "Exact GPS coordinates published by Biolea match the database pin.",
@@ -112,6 +118,9 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "phone": "+30 28240 31002",
       "website": "https://cretanbeer.gr",
       "googleMapsUrl": "https://maps.google.com/?q=35.486870,23.825860",
+      "roadAccessStatus": "not_publicly_confirmed",
+      "roadAccessSourceUrl": "https://www.cretanbeer.gr/en/cretan-brewery/visit-us/",
+      "roadAccessNotes": "Official visit information explicitly lists driving a car as a way to reach the brewery. It does not publish a road-surface, width, or vehicle-suitability classification, so no road type is published.",
       "locationStatus": "verified_location",
       "locationSourceUrl": "https://www.cretanbeer.gr/en/contact/",
       "locationNotes": "Current producer address verified as Zounaki, Platanias. Site coordinate retained as verified brewery location; entrance/access grading remains separate.",
@@ -148,6 +157,9 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "phone": "+30 28240 23381",
       "website": "https://karavitakiswines.com",
       "googleMapsUrl": "https://maps.google.com/?q=35.501992,23.791172",
+      "roadAccessStatus": "not_publicly_confirmed",
+      "roadAccessSourceUrl": "https://karavitakiswines.com",
+      "roadAccessNotes": "Phase 6 review (2026-09-13): no explicit source-backed road-surface, width, or vehicle-suitability classification was found in the reviewed public material. Road type remains unpublished.",
       "vipPerks": {
           "freeMeze": "Chania Kalamata olives & sourdough",
           "welcomePour": "Kompsos Sparkling Romaiko",
@@ -189,6 +201,9 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "phone": "+30 6945430402",
       "website": "https://lafkasbrewery.com",
       "googleMapsUrl": "https://www.google.com/maps/place/Lafkas+Brewery/@35.494636,23.9835131,17z/data=!3m1!4b1!4m6!3m5!1s0x149c8788ddc82b49:0x8ee32eaeecced606!8m2!3d35.494636!4d23.986088!16s%2Fg%2F11fxb2y0bz?entry=tts&g_ep=EgoyMDI0MDUwNi4wKgBIAVAD",
+      "roadAccessStatus": "not_publicly_confirmed",
+      "roadAccessSourceUrl": "https://lafkasbrewery.com",
+      "roadAccessNotes": "Phase 6 review (2026-09-13): no explicit source-backed road-surface, width, or vehicle-suitability classification was found in the reviewed public material. Road type remains unpublished.",
       "locationStatus": "verified_location",
       "locationSourceUrl": "https://www.google.com/maps/place/Lafkas+Brewery/@35.494636,23.9835131,17z/data=!3m1!4b1!4m6!3m5!1s0x149c8788ddc82b49:0x8ee32eaeecced606!8m2!3d35.494636!4d23.986088!16s%2Fg%2F11fxb2y0bz?entry=tts&g_ep=EgoyMDI0MDUwNi4wKgBIAVAD",
       "locationNotes": "Current Lafkas Brewery Google Maps business pin supplied by the TerroirTrail project owner and corroborated by the official Pazinos address. Location verified; entrance-level precision has not been separately established.",
@@ -225,6 +240,9 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "phone": "+30 28210 78787",
       "website": "https://manousakiswinery.com",
       "googleMapsUrl": "https://maps.google.com/?q=35.449042,23.887819",
+      "roadAccessStatus": "not_publicly_confirmed",
+      "roadAccessSourceUrl": "https://www.manousakiswinery.com/contact",
+      "roadAccessNotes": "Official contact information provides Getting Here options by car, taxi, bus and shuttle. It does not publish a road-surface, width, or vehicle-suitability classification, so no road type is published.",
       "locationStatus": "verified_location",
       "locationSourceUrl": "https://www.manousakiswinery.com/contact",
       "locationNotes": "Vatolakkos winery location and coordinates are verified through producer and Wines of Crete sources.",
@@ -260,6 +278,8 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "ethos": [],
       "phone": "+30 28240 22279",
       "googleMapsUrl": "https://maps.google.com/?q=35.48703,23.78679",
+      "roadAccessStatus": "not_publicly_confirmed",
+      "roadAccessNotes": "Phase 6 review (2026-09-13): no explicit source-backed road-surface, width, or vehicle-suitability classification was found in the reviewed public material. Road type remains unpublished.",
       "locationStatus": "verified_location",
       "locationSourceUrl": "https://visitchania.gr/en/places-to-visit/museum-of-olive-vouves/",
       "locationNotes": "This is a heritage attraction/local project rather than a producer. Coordinates identify the museum/tree site, not a commercial olive mill.",
@@ -296,6 +316,9 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "phone": "+30 6977906195",
       "website": "https://stathakisfamily.com",
       "googleMapsUrl": "https://maps.google.com/?q=35.480012,23.689595",
+      "roadAccessStatus": "not_publicly_confirmed",
+      "roadAccessSourceUrl": "https://stathakisfamily.com",
+      "roadAccessNotes": "Phase 6 review (2026-09-13): no explicit source-backed road-surface, width, or vehicle-suitability classification was found in the reviewed public material. Road type remains unpublished.",
       "vipPerks": {
           "freeMeze": "Fresh sheep yogurt with pollen granules",
           "welcomePour": "Wild Malotira herbal tea with pure comb honey",
@@ -337,6 +360,9 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "phone": "+30 6949092073",
       "website": "https://wildherbsofcrete.com",
       "googleMapsUrl": "https://www.google.com/maps/place/Wild+Herbs+of+Crete/@35.2376928,24.2562818,21z/data=!4m22!1m15!4m14!1m6!1m2!1s0x149b64897e85fdbf:0x23fbfa93da44674!2zV2lsZCBIZXJicyBvZiBDcmV0ZSwgzprOsc67zrvOuc66z4HOrM-EzrfPgiA3MzAgMTE!2m2!1d24.2565003!2d35.2378367!1m6!1m2!1s0x149a586bd068e13f:0x400bd2ce2b9b6f0!2zzpfPgc6szrrOu861zrnOvw!2m2!1d25.1421291!2d35.3386746!3m5!1s0x149b64897e85fdbf:0x23fbfa93da44674!8m2!3d35.2378367!4d24.2565003!16s%2Fg%2F1q5glqyf8?entry=ttu&g_ep=EgoyMDI2MDkwOS4wIKXMDSoASAFQAw%3D%3D",
+      "roadAccessStatus": "current_access_uncertain",
+      "roadAccessSourceUrl": "https://cretazine.com/en/crete/travel-explore/crete-360/item/1269-herbal-sanctuaries-of-crete",
+      "roadAccessNotes": "Current first-party road-surface and vehicle-suitability guidance was not found. An older independent report describes dusty mountain roads to Kallikratis and says the Fragkokastelo approach is more difficult. Because that evidence is old and route-dependent, no current road classification is published; confirm conditions before driving.",
       "locationStatus": "verified_location",
       "locationSourceUrl": "https://www.google.com/maps/place/Wild+Herbs+of+Crete/@35.2376928,24.2562818,21z/data=!4m22!1m15!4m14!1m6!1m2!1s0x149b64897e85fdbf:0x23fbfa93da44674!2zV2lsZCBIZXJicyBvZiBDcmV0ZSwgzprOsc67zrvOuc66z4HOrM-EzrfPgiA3MzAgMTE!2m2!1d24.2565003!2d35.2378367!1m6!1m2!1s0x149a586bd068e13f:0x400bd2ce2b9b6f0!2zzpfPgc6szrrOu861zrnOvw!2m2!1d25.1421291!2d35.3386746!3m5!1s0x149b64897e85fdbf:0x23fbfa93da44674!8m2!3d35.2378367!4d24.2565003!16s%2Fg%2F1q5glqyf8?entry=ttu&g_ep=EgoyMDI2MDkwOS4wIKXMDSoASAFQAw%3D%3D",
       "locationNotes": "Current Wild Herbs of Crete Google Maps business pin in Kallikratis supplied by the TerroirTrail project owner. Location verified; entrance-level precision has not been separately established.",
@@ -345,7 +371,7 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "visitNotes": "Current public business listing shows Wild Herbs of Crete open seasonally in Kallikratis, with published hours Wednesday-Sunday. Hours can change seasonally, so travelers should check the current listing or call before making a long mountain drive."
   },
   // ==========================================
-  // --- HERAKLION (14 VERIFIED PRODUCERS) ---
+  // --- HERAKLION (14 AUDITED RECORDS) ---
   // ==========================================
   {
       "id": "aerakis-dairy-anogeia",
@@ -376,6 +402,9 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "phone": "+30 28930 31990",
       "website": "https://cretancheeseaerakis.com",
       "googleMapsUrl": "https://www.google.com/maps?ll=35.065803,25.106932&z=15&t=m&hl=en-US&gl=US&mapclient=embed&cid=8450329635840177008",
+      "roadAccessStatus": "not_publicly_confirmed",
+      "roadAccessSourceUrl": "https://cretancheeseaerakis.com/",
+      "roadAccessNotes": "Official Aerakis information confirms the dairy is based in Sokaras, Gortyna. No explicit public road-surface, width, or vehicle-suitability guidance was found, so road type remains unconfirmed.",
       "vipPerks": {
           "freeMeze": "Slice of 2-year cave-aged Graviera",
           "welcomePour": "Fresh alpine sheep whey warm drink",
@@ -417,6 +446,9 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "phone": "+30 2810 226674",
       "website": "https://paterianakis.gr",
       "googleMapsUrl": "https://maps.google.com/?q=35.180894,25.196347",
+      "roadAccessStatus": "not_publicly_confirmed",
+      "roadAccessSourceUrl": "https://paterianakis.gr",
+      "roadAccessNotes": "Phase 6 review (2026-09-13): no explicit source-backed road-surface, width, or vehicle-suitability classification was found in the reviewed public material. Road type remains unpublished.",
       "locationStatus": "verified_location",
       "locationSourceUrl": "https://paterianakis.gr/en/",
       "locationNotes": "Winery coordinates match Wines of Crete route data and the current producer location in Melesses.",
@@ -454,6 +486,9 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "phone": "+30 2810 792017",
       "website": "https://douloufakis.wine",
       "googleMapsUrl": "https://maps.google.com/?q=35.215109,25.049664",
+      "roadAccessStatus": "not_publicly_confirmed",
+      "roadAccessSourceUrl": "https://douloufakis.wine/en/getting-here/",
+      "roadAccessNotes": "Official directions confirm access by car from Heraklion via the Heraklion–Moires highway, Stavrakia–Siva provincial road and final village streets, with winery parking. The official page does not explicitly classify road surface, width, or rental-car suitability, so no road type is published.",
       "locationStatus": "verified_location",
       "locationSourceUrl": "https://douloufakis.wine/en/contact-us/",
       "locationNotes": "Winery coordinates and Dafnes location are verified through producer and Wines of Crete sources.",
@@ -490,6 +525,9 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "phone": "+30 28940 51060",
       "website": "https://www.fragospitowinery.com/en/",
       "googleMapsUrl": "https://maps.google.com/?q=35.099950,25.117253",
+      "roadAccessStatus": "not_publicly_confirmed",
+      "roadAccessSourceUrl": "https://www.fragospitowinery.com/en/",
+      "roadAccessNotes": "Phase 6 review (2026-09-13): no explicit source-backed road-surface, width, or vehicle-suitability classification was found in the reviewed public material. Road type remains unpublished.",
       "locationStatus": "verified_location",
       "locationSourceUrl": "https://www.fragospitowinery.com/en/",
       "locationNotes": "Crete winery identity and Vorias location verified. The former gavalaswines.gr link belonged to the unrelated Santorini Gavalas winery and has been replaced.",
@@ -526,6 +564,9 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "phone": "+30 2811 813479",
       "website": "https://kastabeer.com",
       "googleMapsUrl": "https://maps.google.com/?q=35.338429,25.131678",
+      "roadAccessStatus": "not_publicly_confirmed",
+      "roadAccessSourceUrl": "https://kastabeer.com",
+      "roadAccessNotes": "Phase 6 review (2026-09-13): no explicit source-backed road-surface, width, or vehicle-suitability classification was found in the reviewed public material. Road type remains unpublished.",
       "locationStatus": "verified_location",
       "locationSourceUrl": "https://kastabeer.com",
       "locationNotes": "Current brewery address verified as Zampeliou 6, Heraklion.",
@@ -562,6 +603,9 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "phone": "+30 6981050681",
       "website": "https://lyrarakis.com",
       "googleMapsUrl": "https://maps.google.com/?q=35.184889,25.208222",
+      "roadAccessStatus": "not_publicly_confirmed",
+      "roadAccessSourceUrl": "https://lyrarakis.com",
+      "roadAccessNotes": "Phase 6 review (2026-09-13): no explicit source-backed road-surface, width, or vehicle-suitability classification was found in the reviewed public material. Road type remains unpublished.",
       "locationStatus": "verified_entrance",
       "locationSourceUrl": "https://lyrarakis.com/en/visit-us",
       "locationNotes": "Producer publishes exact tasting/event GPS coordinates: 35°11'05.6\"N 25°12'29.6\"E, matching the database pin.",
@@ -598,6 +642,9 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "phone": "+30 28910 29066",
       "website": "https://meligyris.com",
       "googleMapsUrl": "https://maps.google.com/?q=35.149930,25.265626",
+      "roadAccessStatus": "not_publicly_confirmed",
+      "roadAccessSourceUrl": "https://meligyris.com",
+      "roadAccessNotes": "Phase 6 review (2026-09-13): no explicit source-backed road-surface, width, or vehicle-suitability classification was found in the reviewed public material. Road type remains unpublished.",
       "locationStatus": "verified_entrance",
       "locationSourceUrl": "https://meligyris.com",
       "locationNotes": "Exact coordinates verified from the producer-controlled map destination.",
@@ -634,6 +681,9 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "phone": "+30 2811 117167",
       "website": "https://notosbrewery.gr",
       "googleMapsUrl": "https://maps.google.com/?q=35.329399,25.114201",
+      "roadAccessStatus": "not_publicly_confirmed",
+      "roadAccessSourceUrl": "https://notosbrewery.gr",
+      "roadAccessNotes": "Phase 6 review (2026-09-13): no explicit source-backed road-surface, width, or vehicle-suitability classification was found in the reviewed public material. Road type remains unpublished.",
       "locationStatus": "verified_location",
       "locationSourceUrl": "https://notosbrewery.gr",
       "locationNotes": "Current address verified as Patriarchou Meletiou Metaxaki 36A, Heraklion.",
@@ -670,6 +720,10 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "phone": "+30 6988889994",
       "website": "https://peskesicrete.gr",
       "googleMapsUrl": "https://maps.google.com/?q=35.275161,25.299635",
+      "roadAccess": "unpaved_passable",
+      "roadAccessStatus": "verified",
+      "roadAccessSourceUrl": "https://peskesicrete.gr/en/experiences/explore-the-farm",
+      "roadAccessNotes": "Producer states that access to the farm is via a passable dirt road; entry is limited to vehicles up to 20 seats. The producer recommends approaching through Skotino, Voritsi and Charaso from the Gouves area and following wooden signs. This verifies passable unpaved access but does not by itself establish rental-car suitability.",
       "vipPerks": {
           "freeMeze": "Freshly baked sourdough with wood-fired anthotiro",
           "welcomePour": "Single-Estate Wild Thyme Tsikoudia",
@@ -712,6 +766,9 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "phone": "+30 2810 792021",
       "website": "https://silvawines.gr",
       "googleMapsUrl": "https://maps.google.com/?q=35.208883,25.035853",
+      "roadAccessStatus": "not_publicly_confirmed",
+      "roadAccessSourceUrl": "https://silvawines.gr",
+      "roadAccessNotes": "Phase 6 review (2026-09-13): no explicit source-backed road-surface, width, or vehicle-suitability classification was found in the reviewed public material. Road type remains unpublished.",
       "vipPerks": {
           "freeMeze": "Aged sheep Graviera & carob rusks",
           "welcomePour": "Biodynamic Vorinos Vidiano",
@@ -753,6 +810,9 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "phone": "+30 2811 750209",
       "website": "https://solobeer.gr",
       "googleMapsUrl": "https://maps.google.com/?q=35.311700,25.176000",
+      "roadAccessStatus": "not_publicly_confirmed",
+      "roadAccessSourceUrl": "https://solobeer.gr/en/",
+      "roadAccessNotes": "Official Solo Brewery information publishes a How to Reach address and Google Map for the Kallithea brewery. No explicit road-surface, width, or vehicle-suitability classification is published, so road type remains unconfirmed.",
       "locationStatus": "verified_location",
       "locationSourceUrl": "https://solobeer.gr",
       "locationNotes": "Current production-site address verified as Kountourioti 35, Heraklion.",
@@ -789,6 +849,9 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "phone": "+30 6940784329",
       "website": "https://stilianouwinery.com",
       "googleMapsUrl": "https://maps.google.com/?q=35.235858,25.191400",
+      "roadAccessStatus": "not_publicly_confirmed",
+      "roadAccessSourceUrl": "https://stilianouwinery.com",
+      "roadAccessNotes": "Phase 6 review (2026-09-13): no explicit source-backed road-surface, width, or vehicle-suitability classification was found in the reviewed public material. Road type remains unpublished.",
       "locationStatus": "verified_location",
       "locationSourceUrl": "https://stilianouwinery.com/",
       "locationNotes": "Current winery identity, visitor operation and phone verified on the producer site. Closing time varies between current producer pages, so users should check the booking page.",
@@ -825,6 +888,9 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "phone": "+30 2810 743630",
       "website": "https://titakis.gr",
       "googleMapsUrl": "https://maps.google.com/?q=35.2330555556,25.1838666667",
+      "roadAccessStatus": "not_publicly_confirmed",
+      "roadAccessSourceUrl": "https://titakis.gr",
+      "roadAccessNotes": "Phase 6 review (2026-09-13): no explicit source-backed road-surface, width, or vehicle-suitability classification was found in the reviewed public material. Road type remains unpublished.",
       "locationStatus": "verified_location",
       "locationSourceUrl": "https://titakis.gr/en/history/",
       "locationNotes": "Coordinates normalized to Wines of Crete Kounavoi location; current phone verified by the winery and Wines of Crete.",
@@ -861,6 +927,9 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "phone": "+30 28920 96226",
       "website": "https://zacharioudakis.com",
       "googleMapsUrl": "https://maps.google.com/?q=35.077339,24.941453",
+      "roadAccessStatus": "not_publicly_confirmed",
+      "roadAccessSourceUrl": "https://zacharioudakis.com",
+      "roadAccessNotes": "Phase 6 review (2026-09-13): no explicit source-backed road-surface, width, or vehicle-suitability classification was found in the reviewed public material. Road type remains unpublished.",
       "vipPerks": {
           "freeMeze": "Messara artisanal dried figs & cheese",
           "welcomePour": "Orthi Petra Organic Vidiano",
@@ -874,7 +943,7 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "visitNotes": "The winery and vineyard are open to visitors April-October, Monday-Saturday 10:00-17:00. During winter, contact the estate before visiting."
   },
   // ==========================================
-  // --- RETHYMNO (2 VERIFIED PRODUCERS) ---
+  // --- RETHYMNO (2 AUDITED RECORDS) ---
   // ==========================================
   {
       "id": "parasiris-olive-mill",
@@ -905,6 +974,9 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "phone": "+30 28340 22039",
       "website": "https://paraschakis.gr",
       "googleMapsUrl": "https://maps.google.com/?q=35.375870,24.728410",
+      "roadAccessStatus": "not_publicly_confirmed",
+      "roadAccessSourceUrl": "https://paraschakis.gr",
+      "roadAccessNotes": "Phase 6 review (2026-09-13): no explicit source-backed road-surface, width, or vehicle-suitability classification was found in the reviewed public material. Road type remains unpublished.",
       "locationStatus": "verified_location",
       "locationSourceUrl": "https://paraschakis.gr/olive-oil-factory/",
       "locationNotes": "Current official site verifies the Paraschakis family olive mill in Melidoni. The public landline +30 28340 22039 is consistently listed by the Municipality/local business sources and current travel listings.",
@@ -941,6 +1013,9 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "phone": "+30 28320 20013",
       "website": "https://tzourmpakis.gr",
       "googleMapsUrl": "https://www.google.com/maps/place/%CE%A4%CF%85%CF%81%CE%BF%CE%BA%CE%BF%CE%BC%CE%B5%CE%AF%CE%BF+%CE%A4%CE%B6%CE%BF%CF%85%CF%81%CE%BC%CF%80%CE%AC%CE%BA%CE%B7/@35.2210821,24.4977471,21z/data=!4m14!1m7!3m6!1s0x149b6d60e5af177f:0x28f04e6827f00777!2zzqTPhc-Bzr_Ous6_zrzOtc6vzr8gzqTOts6_z4XPgc68z4DOrM66zrc!8m2!3d35.2211278!4d24.4979202!16s%2Fg%2F11bxd77_pt!3m5!1s0x149b6d60e5af177f:0x28f04e6827f00777!8m2!3d35.2211278!4d24.4979202!16s%2Fg%2F11bxd77_pt?entry=ttu&g_ep=EgoyMDI2MDkwOS4wIKXMDSoASAFQAw%3D%3D",
+      "roadAccessStatus": "not_publicly_confirmed",
+      "roadAccessSourceUrl": "https://tzourmpakis.gr/",
+      "roadAccessNotes": "Official Tzourmpakis information confirms the Mixorrouma dairy location and provides a map link. No explicit public road-surface, width, or vehicle-suitability classification is published, so road type remains unconfirmed.",
       "locationStatus": "verified_location",
       "locationSourceUrl": "https://www.google.com/maps/place/%CE%A4%CF%85%CF%81%CE%BF%CE%BA%CE%BF%CE%BC%CE%B5%CE%AF%CE%BF+%CE%A4%CE%B6%CE%BF%CF%85%CF%81%CE%BC%CF%80%CE%AC%CE%BA%CE%B7/@35.2210821,24.4977471,21z/data=!4m14!1m7!3m6!1s0x149b6d60e5af177f:0x28f04e6827f00777!2zzqTPhc-Bzr_Ous6_zrzOtc6vzr8gzqTOts6_z4XPgc68z4DOrM66zrc!8m2!3d35.2211278!4d24.4979202!16s%2Fg%2F11bxd77_pt!3m5!1s0x149b6d60e5af177f:0x28f04e6827f00777!8m2!3d35.2211278!4d24.4979202!16s%2Fg%2F11bxd77_pt?entry=ttu&g_ep=EgoyMDI2MDkwOS4wIKXMDSoASAFQAw%3D%3D",
       "locationNotes": "Current Tzourmpakis Dairy location supplied from the Google Maps business listing. Treat as verified location; entrance-level precision has not been separately established.",
@@ -949,7 +1024,7 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "visitNotes": "The current dairy and producer-controlled map destination are verified. Historical sources mention a shop on the Rethymno-Spili road, but current public walk-in instructions are not explicit enough to promise access."
   },
   // ==========================================
-  // --- LASITHI (2 VERIFIED PRODUCERS) ---
+  // --- LASITHI (2 AUDITED RECORDS) ---
   // ==========================================
   {
       "id": "toplou-monastery-winery",
@@ -980,6 +1055,9 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "phone": "+30 28430 29630",
       "website": "https://www.ktimatoplou.gr/",
       "googleMapsUrl": "https://maps.google.com/?q=35.2215,26.2163",
+      "roadAccessStatus": "not_publicly_confirmed",
+      "roadAccessSourceUrl": "https://www.ktimatoplou.gr/",
+      "roadAccessNotes": "Phase 6 review (2026-09-13): no explicit source-backed road-surface, width, or vehicle-suitability classification was found in the reviewed public material. Road type remains unpublished.",
       "locationStatus": "verified_location",
       "locationSourceUrl": "https://www.ktimatoplou.gr/en/contact-us-285",
       "locationNotes": "Monastery/estate location is verified. Do not present the production winery pin as the tasting-room entrance; current tastings are at Toplou Fabrica in the monastery courtyard.",
@@ -1016,6 +1094,9 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "phone": "+30 28410 24139",
       "website": "https://cretanoliveoilfarm.com",
       "googleMapsUrl": "https://maps.google.com/?q=35.211141,25.711611",
+      "roadAccessStatus": "not_publicly_confirmed",
+      "roadAccessSourceUrl": "https://cretanoliveoilfarm.com",
+      "roadAccessNotes": "Phase 6 review (2026-09-13): no explicit source-backed road-surface, width, or vehicle-suitability classification was found in the reviewed public material. Road type remains unpublished.",
       "locationStatus": "verified_location",
       "locationSourceUrl": "https://cretanoliveoilfarm.com",
       "locationNotes": "Current Spiridi Olive Oil Farm identity and Agios Nikolaos-Elounda road location verified. Producer advises checking current timetable.",
