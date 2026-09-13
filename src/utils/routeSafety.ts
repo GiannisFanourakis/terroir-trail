@@ -8,6 +8,7 @@ export type RouteNavigationIssueCode =
   | 'road_access_unreviewed'
   | 'road_access_not_confirmed'
   | 'road_access_uncertain'
+  | 'unpaved_access_requires_review'
   | 'special_vehicle_required';
 
 export interface RouteNavigationIssue {
@@ -26,7 +27,6 @@ const STANDARD_ROUTE_ACCESS = new Set<RoadAccess>([
   'paved',
   'narrow_paved',
   'gravel_ok',
-  'unpaved_passable',
 ]);
 
 function hasValidCoordinates(producer: Producer): boolean {
@@ -68,7 +68,8 @@ function buildGoogleMapsRouteUrl(coordsList: string[]): string {
  * - valid coordinates,
  * - a verified road/access classification suitable for a normal road trip.
  *
- * Missing or unknown data is never silently skipped.
+ * Missing or unknown data is never silently skipped. A road can be physically
+ * passable yet still be unsuitable to auto-route as a normal rental-car leg.
  */
 export function evaluateRouteNavigation(
   loop: DayTripLoop,
@@ -137,6 +138,12 @@ export function evaluateRouteNavigation(
         producerId: producer.id,
         message: `${producer.name} does not yet have verified road-access evidence.`,
       });
+    } else if (producer.roadAccess === 'unpaved_passable') {
+      issues.push({
+        code: 'unpaved_access_requires_review',
+        producerId: producer.id,
+        message: `${producer.name} has verified passable unpaved access, but rental-car suitability is not implied.`,
+      });
     } else if (!STANDARD_ROUTE_ACCESS.has(producer.roadAccess)) {
       issues.push({
         code: 'special_vehicle_required',
@@ -186,7 +193,7 @@ export function getProducerRoadAccessWarning(producer: Producer): string | undef
     return 'Road conditions have not yet been independently verified. Use the producer’s official access instructions and drive conservatively.';
   }
   if (producer.roadAccess === 'unpaved_passable') {
-    return 'Verified passable unpaved access. Follow the producer’s access notes and current conditions.';
+    return 'Verified passable unpaved access. This does not imply rental-car suitability; check your rental terms and current conditions.';
   }
   if (producer.roadAccess === 'high_clearance_recommended') {
     return 'High-clearance vehicle recommended. Check current conditions before driving.';
