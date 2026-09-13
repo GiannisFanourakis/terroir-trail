@@ -5,7 +5,7 @@
 > Completion convention: change `- [ ] Step` to `- [x] ~~Step~~` when finished. Do not mark a step complete until it has been implemented, tested, pushed, deployed where applicable, and verified.
 
 **Last updated:** 2026-09-13  
-**Current focus:** Phase 3 — Verification-status frontend fix
+**Current focus:** Phase 4 — Crete Data Integrity & Authenticity
 
 ---
 
@@ -55,34 +55,34 @@
 
 ## Phase 3 — Verification-Status Frontend Fix
 
-**Status:** In progress.
+**Status:** Completed and deployed in commit `1b05807`.
 
-The frontend must respect Supabase truth instead of manufacturing defaults.
+The frontend now respects Supabase truth instead of manufacturing defaults.
 
-- [ ] Add `visit_status` to the frontend producer model and mapper.
-- [ ] Add `location_status` to the frontend producer model and mapper.
-- [ ] Preserve nullable/unknown hospitality and metadata values instead of coercing them to false/defaults.
-- [ ] Remove fake default road access such as `paved` when unknown.
-- [ ] Remove fake default food options such as `dakos_snacks` when unknown.
-- [ ] Remove fake default `€€` pricing when unknown.
-- [ ] Remove fake default 5-star ratings when unknown.
-- [ ] Stop rendering unknown pet/campervan/kid fields as negative claims.
-- [ ] Stop treating null/false `walk_in_friendly` as automatically `By Appointment`.
-- [ ] Replace universal `Tastings & Cellar Visits` language with verified/category-appropriate Visiting & Contact UI.
-- [ ] Use `visit_status` as the authority for visitor wording.
-- [ ] Replace universal `Call Cellar Door` with category-neutral or category-appropriate labels.
-- [ ] Do not synthesize navigation URLs for `location_status = unresolved`.
-- [ ] Hide/disable Directions when the exact navigation point is unresolved.
-- [ ] Update README claims so current public functionality matches the discovery-first product model.
-- [ ] Run the full test/check suite.
-- [ ] Commit, push and deploy the fix.
-- [ ] Verify production behavior for public, seasonal, appointment-only, unconfirmed, uncertain, unresolved, and null-metadata cases.
+- [x] ~~Add `visit_status` to the frontend producer model and mapper.~~
+- [x] ~~Add `location_status` to the frontend producer model and mapper.~~
+- [x] ~~Preserve nullable/unknown hospitality and metadata values instead of coercing them to false/defaults.~~
+- [x] ~~Remove fake default road access such as `paved` when unknown.~~
+- [x] ~~Remove fake default food options such as `dakos_snacks` when unknown.~~
+- [x] ~~Remove fake default `€€` pricing when unknown.~~
+- [x] ~~Remove fake default 5-star ratings when unknown.~~
+- [x] ~~Stop rendering unknown pet/campervan/kid fields as negative claims.~~
+- [x] ~~Stop treating null/false `walk_in_friendly` as automatically `By Appointment`.~~
+- [x] ~~Replace universal `Tastings & Cellar Visits` language with verified/category-appropriate Visiting & Contact UI.~~
+- [x] ~~Use `visit_status` as the authority for visitor wording.~~
+- [x] ~~Replace universal `Call Cellar Door` with category-neutral or category-appropriate labels.~~
+- [x] ~~Do not synthesize navigation URLs for `location_status = unresolved`.~~
+- [x] ~~Hide/disable Directions when the exact navigation point is unresolved.~~
+- [x] ~~Update README claims so current public functionality matches the discovery-first product model.~~
+- [x] ~~Run the full test/check suite.~~
+- [x] ~~Commit, push and deploy the fix.~~
+- [x] ~~Verify production behavior for public, seasonal, appointment-only, unconfirmed, uncertain, unresolved, and null-metadata cases.~~
 
 ---
 
 ## Phase 4 — Crete Data Integrity & Authenticity
 
-**Status:** Next after Phase 3.
+**Status:** In progress — current focus.
 
 Complete the 27 Crete producer/project records with source-backed, human, authentic content.
 
