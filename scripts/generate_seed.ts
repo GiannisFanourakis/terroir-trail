@@ -151,16 +151,16 @@ lines.push('  vip_perks = EXCLUDED.vip_perks,');
 lines.push('  updated_at = NOW();');
 lines.push('');
 
-// 2. Seed Experiences
+// 2. Seed Experiences. These records remain dormant until explicit producer approval.
 lines.push('-- ---------------------------------------------------------------------');
-lines.push('-- 2. EXPERIENCES SEED');
+lines.push('-- 2. EXPERIENCES SEED (DORMANT / NOT PUBLIC)');
 lines.push('-- ---------------------------------------------------------------------');
 lines.push('ALTER TABLE public.experiences ALTER COLUMN producer_id DROP NOT NULL;');
 lines.push('');
 lines.push(`INSERT INTO public.experiences (
   id, producer_id, title, duration_minutes, price_per_person,
   description, includes, badge, producer_name, producer_greek_name,
-  category, destination, location
+  category, destination, location, is_active
 ) VALUES`);
 
 const experienceValues = ALL_EXPERIENCES.map((e) => {
@@ -177,7 +177,8 @@ const experienceValues = ALL_EXPERIENCES.map((e) => {
   ${sqlStr(e.producerGreekName)},
   ${sqlStr(e.category)},
   ${sqlStr(e.destination)},
-  ${sqlStr(e.location)}
+  ${sqlStr(e.location)},
+  FALSE
 )`;
 });
 
@@ -188,11 +189,12 @@ lines.push('  duration_minutes = EXCLUDED.duration_minutes,');
 lines.push('  price_per_person = EXCLUDED.price_per_person,');
 lines.push('  description = EXCLUDED.description,');
 lines.push('  includes = EXCLUDED.includes,');
-lines.push('  badge = EXCLUDED.badge;');
+lines.push('  badge = EXCLUDED.badge,');
+lines.push('  is_active = FALSE;');
 lines.push('');
 
 const targetFile = path.resolve(process.cwd(), 'supabase/seed.sql');
 fs.writeFileSync(targetFile, lines.join('\n'), 'utf8');
 console.log(
-  `Successfully generated ${targetFile} with ${CRETAN_PRODUCERS.length} producers and ${ALL_EXPERIENCES.length} experiences.`
+  `Successfully generated ${targetFile} with ${CRETAN_PRODUCERS.length} producers and ${ALL_EXPERIENCES.length} inactive experiences.`
 );
