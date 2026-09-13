@@ -136,7 +136,7 @@ Location confidence and road-access confidence are separate concepts.
 ### Location confidence
 
 - [ ] Maintain `verified_entrance`, `verified_location`, and `unresolved` states accurately.
-- [ ] Resolve Lafkas exact entrance/location if reliable evidence becomes available.
+- [x] ~~Resolve Lafkas exact entrance/location if reliable evidence becomes available.~~
 - [ ] Resolve Aerakis exact entrance/location if reliable evidence becomes available.
 - [ ] Resolve Tzourmpakis exact entrance/location if reliable evidence becomes available.
 - [ ] Never substitute village-centre coordinates simply to make a pin appear complete.
