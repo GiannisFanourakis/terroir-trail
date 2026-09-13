@@ -5,7 +5,7 @@
 > Completion convention: change `- [ ] Step` to `- [x] ~~Step~~` when finished. Do not mark a step complete until it has been implemented, tested, pushed, deployed where applicable, and verified.
 
 **Last updated:** 2026-09-13  
-**Current focus:** Phase 6 — Location & Rural Navigation Safety
+**Current focus:** Phase 7 — Product Readiness Audit
 
 ---
 
@@ -131,36 +131,45 @@ The bundled fallback must never resurrect old synthetic data when Supabase is un
 
 ## Phase 6 — Location & Rural Navigation Safety
 
-**Status:** In progress — safety foundation complete; producer-by-producer road/access verification remains.
+**Status:** Completed — source-backed location/access confidence, fail-closed navigation, audited Crete access states, and route quarantine are implemented and deployed.
 
 Location confidence and road-access confidence are separate concepts.
 
 ### Location confidence
 
-- [ ] Maintain `verified_entrance`, `verified_location`, and `unresolved` states accurately.
+- [x] ~~Maintain `verified_entrance`, `verified_location`, and `unresolved` states accurately.~~
 - [x] ~~Resolve Lafkas exact entrance/location if reliable evidence becomes available.~~
 - [x] ~~Resolve Aerakis exact entrance/location if reliable evidence becomes available.~~
 - [x] ~~Resolve Tzourmpakis exact entrance/location if reliable evidence becomes available.~~
-- [ ] Never substitute village-centre coordinates simply to make a pin appear complete.
+- [x] ~~Never substitute village-centre coordinates simply to make a pin appear complete.~~
 
 ### Road/access confidence
 
 - [x] ~~Design a source-backed road/access confidence model.~~
-- [ ] Restore road-access classifications only after actual verification.
-- [ ] Distinguish normal paved, narrow paved, gravel, high-clearance/4x4, and other relevant access states where evidence supports them.
-- [ ] Verify that map directions never route travelers to unresolved or unsafe access points.
+- [x] ~~Restore road-access classifications only after actual verification.~~
+- [x] ~~Distinguish normal paved, narrow paved, gravel, high-clearance/4x4, and other relevant access states where evidence supports them.~~
+- [x] ~~Verify that map directions never route travelers to unresolved or unsafe access points.~~
 
-Safety-foundation checkpoint: the database no longer defaults road access to `paved`; road-access classification now has independent verification status/source/notes; the frontend exposes road classifications only when verified; unaudited curated routes are quarantined; multi-stop navigation fails closed when producer/location/access evidence is incomplete. Full Crete road/access verification remains outstanding.
+Closeout verification:
 
-Verification: full `npm run check` passed with **216 frontend tests, 13 server tests, 22 Firestore rules tests, production build, and SEO verification**.
+- All **27 Crete records** now have an explicit road-access review state: **25 `not_publicly_confirmed`, 1 `current_access_uncertain`, 1 `verified`, 0 `unreviewed`**.
+- Only **Peskesi Organic Farm** currently publishes a verified road classification: `unpaved_passable`, based on first-party access guidance. Passability is kept separate from rental-car suitability.
+- The database no longer defaults road access to `paved`; road-access type, confidence status, source URL, and notes are independent fields.
+- The frontend exposes road classifications only when `road_access_status = verified`; reviewed-but-unconfirmed and uncertain records remain explicitly unclassified.
+- `ProducerDetailDrawer.tsx` uses generic road labels plus source-backed notes/source links rather than invented distances, surfaces, or standard-car claims.
+- Individual location links do not masquerade as road-safety guarantees: unresolved locations suppress navigation, uncertain/high-clearance/4x4 access blocks normal driving actions, and passable unpaved access does not imply rental-car suitability.
+- Curated multi-stop navigation fails closed for draft routes, missing producers, unresolved locations, unreviewed/unconfirmed/uncertain access, passable-unpaved access without separate rental-car evidence, and special-vehicle access.
+- Legacy unaudited curated routes remain quarantined from the interactive app. Crawlable SEO/noscript content no longer advertises those draft loops, and the SEO verifier now fails if the quarantined route claims return.
+- The bundled fallback catalogue was regenerated from the audited Supabase state and tests enforce that only source-backed verified road classifications may appear offline.
+- The full `npm run check` completed successfully after the Phase 6 synchronization, including tests, production build, and SEO verification. Firebase Hosting was deployed after the final route-quarantine change.
 
-Remaining Phase 6 work: audit road/access evidence producer by producer; classify roads only where reliable evidence exists; preserve unknown where evidence is insufficient; replace hard-coded generic road descriptions in `ProducerDetailDrawer.tsx` with source-backed access wording; then reassess individual Directions behavior and curated routes.
+Phase 6 completion does **not** mean curated driving loops are now published. Route design/publication remains a later product-readiness/Crete-finish task and must use verified stops and access evidence only.
 
 ---
 
 ## Phase 7 — Product Readiness Audit
 
-**Status:** Pending.
+**Status:** Pending — next active phase.
 
 Audit TerroirTrail as a real launchable product, not merely a functioning codebase.
 
