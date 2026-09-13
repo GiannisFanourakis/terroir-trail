@@ -82,6 +82,14 @@ describe('evaluateRouteNavigation', () => {
     expect(result.issues.some((issue) => issue.code === 'road_access_unreviewed')).toBe(true);
   });
 
+  it('fails closed after review when suitable road access is not publicly confirmed', () => {
+    const result = evaluateRouteNavigation(route(), [
+      producer({ roadAccess: undefined, roadAccessStatus: 'not_publicly_confirmed' }),
+    ]);
+    expect(result.isSafe).toBe(false);
+    expect(result.issues.some((issue) => issue.code === 'road_access_not_confirmed')).toBe(true);
+  });
+
   it('fails closed when road access is currently uncertain', () => {
     const result = evaluateRouteNavigation(route(), [
       producer({ roadAccess: 'gravel_ok', roadAccessStatus: 'current_access_uncertain' }),
@@ -98,8 +106,8 @@ describe('evaluateRouteNavigation', () => {
     }
   });
 
-  it('allows verified narrow paved and passable gravel classifications', () => {
-    for (const roadAccess of ['narrow_paved', 'gravel_ok'] as const) {
+  it('allows verified narrow paved, gravel, and passable unpaved classifications', () => {
+    for (const roadAccess of ['narrow_paved', 'gravel_ok', 'unpaved_passable'] as const) {
       const result = evaluateRouteNavigation(route(), [producer({ roadAccess })]);
       expect(result.isSafe).toBe(true);
       expect(result.url).toBeTruthy();
@@ -114,6 +122,22 @@ describe('getProducerRoadAccessWarning', () => {
         producer({ roadAccess: undefined, roadAccessStatus: 'unreviewed' })
       )
     ).toContain('not yet been independently verified');
+  });
+
+  it('distinguishes reviewed but unconfirmed road conditions', () => {
+    expect(
+      getProducerRoadAccessWarning(
+        producer({ roadAccess: undefined, roadAccessStatus: 'not_publicly_confirmed' })
+      )
+    ).toContain('reviewed but are not publicly confirmed');
+  });
+
+  it('warns when verified access is passable but unpaved', () => {
+    expect(
+      getProducerRoadAccessWarning(
+        producer({ roadAccess: 'unpaved_passable', roadAccessStatus: 'verified' })
+      )
+    ).toContain('passable unpaved');
   });
 
   it('warns standard-car users when special access is required', () => {
