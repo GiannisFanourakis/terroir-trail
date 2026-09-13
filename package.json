@@ -7,6 +7,8 @@
     "dev": "vite",
     "build": "tsc && tsc -p tsconfig.server.json && vite build",
     "test": "npm run test:frontend && npm run test:server && npm run test:rules",
+    "test:python": "python -m unittest discover -s tools/python/tests -p \"test_*.py\"",
+    "audit:locations": "python tools/python/producer_location_audit.py",
     "test:frontend": "vitest run src/",
     "test:server": "tsx --test server/tests/*.test.ts && vitest run server/tests/passService.spec.ts server/tests/approveProducerRegistration.spec.ts",
     "test:rules": "tsx scripts/run_rules_tests.ts",

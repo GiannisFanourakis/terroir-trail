@@ -1,0 +1,10 @@
+[project]
+name = "terroir-trail-tools"
+version = "0.1.0"
+description = "TerroirTrail isolated operational tooling for data-quality and geospatial audits. Operational tooling only, not part of the TypeScript/React application runtime."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = []
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
