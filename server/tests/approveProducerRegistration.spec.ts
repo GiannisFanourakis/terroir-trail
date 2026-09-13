@@ -116,7 +116,7 @@ describe('approveProducerRegistration operator routine', () => {
     // Verify producer_registrations record is updated
     const updatedReg = regCol.get('winery-alpha');
     expect(updatedReg.status).toBe('verified_active');
-    expect(updatedReg.isVatVerified).toBe(true);
+    expect(updatedReg.isVatVerified).toBe(false);
     expect(updatedReg.approvedAt).toBe(result.approvedAt);
   });
 

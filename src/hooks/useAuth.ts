@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Capacitor } from '@capacitor/core';
-import { UserProfile, TravelerType, ProducerTaxDetails, HostClaimStatus } from '../types/auth';
+import { UserProfile, TravelerType, ProducerTaxDetails, ProducerRegistrationRecord, HostClaimStatus } from '../types/auth';
 import { 
   auth, 
   googleProvider, 
@@ -488,69 +488,35 @@ export const useAuth = () => {
     }
   }, []);
 
-  // 6d. Real Claim & Register Estate Host with Fiscal / VAT Verification
+  // 6d. Submit an estate ownership claim for operator review.
+  // Authentication and client-side format checks are evidence inputs only; they never grant host authority.
   const claimAndRegisterProducer = useCallback(async (
-    producerId: string,
-    producerName: string,
-    hostName: string,
-    email: string,
-    password?: string,
-    taxDetails?: ProducerTaxDetails
+    producerId: string, producerName: string, hostName: string, email: string, password?: string, taxDetails?: ProducerTaxDetails
   ) => {
     setIsLoading(true);
     setAuthError(null);
     try {
-      if (!isFirebaseConfigured || !auth) {
-        throw new Error('FIREBASE_NOT_CONFIGURED');
-      }
-      if (!password) {
-        throw new Error('Password is required for producer registration.');
-      }
+      if (!isFirebaseConfigured || !auth) throw new Error('FIREBASE_NOT_CONFIGURED');
+      if (!password) throw new Error('Password is required for producer registration.');
       const cred = await createUserWithEmailAndPassword(auth, email, password);
       await firebaseUpdateProfile(cred.user, { displayName: hostName });
       const mapped = mapFirebaseUser(cred.user);
       mapped.name = hostName;
       mapped.email = email;
       mapped.claimStatus = 'pending_verification';
-
-      // Submit registration to cloud
-      await saveProducerRegistrationToCloud({
-        id: producerId,
-        producerId,
-        userId: cred.user.uid,
-        tradeBrandName: producerName,
-        producerCategory: 'winery',
-        legalBusinessName: taxDetails?.legalBusinessName || producerName,
-        legalEntityType: 'private_company_ike',
-        vatNumber: taxDetails?.vatNumber || '',
-        taxOffice: taxDetails?.taxOffice || '',
-        countryCode: taxDetails?.countryCode || 'GR',
-        isVatVerified: false,
-        logistics: {
-          facilityName: producerName,
-          streetAddress: taxDetails?.registeredAddress || '',
-          postalCode: '',
-          cityOrVillage: '',
-          region: '',
-          countryCode: taxDetails?.countryCode || 'GR',
-          accessType: 'standard_courier_van',
-          contactPersonName: hostName,
-          dispatchPhone: taxDetails?.dispatchContactPhone || '',
-          dispatchEmail: email,
-          pickupTimeWindow: '09:00 - 15:00',
-        },
-        packaging: { maxDailyParcels: 10, dispatchLeadTime: 'next_day' },
-        banking: { accountHolderName: hostName, bankName: '', iban: '', swiftBic: '', payoutCurrency: 'EUR' },
-        permits: {},
-        representativeName: hostName,
-        representativeRole: 'Owner',
-        officialEmail: email,
-        status: 'pending_verification',
-        submittedAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        termsAccepted: true,
-      });
-
+      const now = new Date().toISOString();
+      const claimRecord: ProducerRegistrationRecord = {
+        id: producerId, producerId, userId: cred.user.uid, tradeBrandName: producerName,
+        isVatVerified: false, representativeName: hostName, officialEmail: email,
+        status: 'pending_verification', submittedAt: now, updatedAt: now, termsAccepted: false,
+        ...(taxDetails?.legalBusinessName ? { legalBusinessName: taxDetails.legalBusinessName } : {}),
+        ...(taxDetails?.vatNumber ? { vatNumber: taxDetails.vatNumber } : {}),
+        ...(taxDetails?.taxOffice ? { taxOffice: taxDetails.taxOffice } : {}),
+        ...(taxDetails?.registeredAddress ? { registeredAddress: taxDetails.registeredAddress } : {}),
+        ...(taxDetails?.dispatchContactPhone ? { contactPhone: taxDetails.dispatchContactPhone } : {}),
+        ...(taxDetails?.countryCode ? { countryCode: taxDetails.countryCode } : {}),
+      };
+      await saveProducerRegistrationToCloud(claimRecord);
       await saveUserProfileToCloud(mapped);
       saveUserData(mapped.id, mapped.visitedProducers, mapped.personalNotes, mapped);
       setUser(mapped);
@@ -560,9 +526,7 @@ export const useAuth = () => {
       const msg = formatAuthError(error);
       setAuthError(msg);
       throw error;
-    } finally {
-      setIsLoading(false);
-    }
+    } finally { setIsLoading(false); }
   }, []);
 
   // 6e. Update Producer Fiscal & Shipping Details (Local demo only)

@@ -553,7 +553,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
             <span className="text-xl">🏛️</span>
             <div className="min-w-0">
               <div className="font-bold text-white text-xs truncate">You are the verified host of this estate</div>
-              <div className="text-[10px] text-amber-300/90 truncate">Manage hours, notices, tasting bookings & bottle shop</div>
+              <div className="text-[10px] text-amber-300/90 truncate">Manage your estate visitor notice and reviewed profile access</div>
             </div>
           </div>
           {onOpenProducerPortal && (

@@ -115,7 +115,7 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
   const [region, setRegion] = useState(
     defaultProducer ? (defaultProducer.destination === 'tuscany' ? 'Tuscany' : 'Crete') : 'Crete'
   );
-  const [accessType, setAccessType] = useState<ProducerRegistrationRecord['logistics']['accessType']>('standard_courier_van');
+  const [accessType, setAccessType] = useState<NonNullable<ProducerRegistrationRecord['logistics']>['accessType']>('standard_courier_van');
   const [contactPersonName, setContactPersonName] = useState('');
   const [dispatchPhone, setDispatchPhone] = useState('');
   const [dispatchEmail, setDispatchEmail] = useState('');
@@ -129,7 +129,7 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
   const [supportsHoneyJars, setSupportsHoneyJars] = useState(false);
   const [supportsOliveOilTins, setSupportsOliveOilTins] = useState(false);
   const [maxDailyParcels, setMaxDailyParcels] = useState<number | ''>('');
-  const [dispatchLeadTime, setDispatchLeadTime] = useState<ProducerRegistrationRecord['packaging']['dispatchLeadTime']>('next_day');
+  const [dispatchLeadTime, setDispatchLeadTime] = useState<NonNullable<ProducerRegistrationRecord['packaging']>['dispatchLeadTime']>('next_day');
 
   // Step 4: Banking & Payouts (SEPA)
   const [accountHolderName, setAccountHolderName] = useState('');
@@ -581,7 +581,7 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
               <span>•</span>
               <span>Status: Submitted — Pending Review</span>
               <span>•</span>
-              <span>SEPA IBAN: {submitSuccess.banking.iban}</span>
+              <span>SEPA IBAN: {submitSuccess.banking?.iban || 'Not supplied'}</span>
             </div>
           </div>
         )}
@@ -674,7 +674,7 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                   type="text"
                   value={legalBusinessName}
                   onChange={(e) => setLegalBusinessName(e.target.value)}
-                  placeholder="e.g. Artisan Heritage Estate O.E. (Demo Entity)"
+                  placeholder="Registered business name"
                   className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
                   required
                 />

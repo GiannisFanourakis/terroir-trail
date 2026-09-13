@@ -14,6 +14,8 @@ import { ProducerRegistrationForm } from './ProducerRegistrationForm';
 import { HostQrScannerModal } from './HostQrScannerModal';
 import { HostVerificationModal, VerifiedPassInfo } from '../Monetization/HostVerificationModal';
 
+const ENABLE_FUTURE_HOST_FEATURES = false;
+
 interface ProducerPortalModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -72,7 +74,7 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
     return producers[0]?.id || 'domaine-paterianakis';
   });
 
-  const [activeTab, setActiveTab] = useState<'bookings' | 'notice' | 'experiences' | 'analytics' | 'pro' | 'shipping'>('bookings');
+  const [activeTab, setActiveTab] = useState<'bookings' | 'notice' | 'experiences' | 'analytics' | 'pro' | 'shipping'>('notice');
   const [bookingFilter, setBookingFilter] = useState<'all' | 'pending' | 'confirmed' | 'completed' | 'cancelled'>('all');
   const [oauthLoading, setOauthLoading] = useState<'google' | 'apple' | null>(null);
   const [oauthError, setOauthError] = useState<string | null>(null);
@@ -241,7 +243,7 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
       await onLoginWithGoogle();
     } catch (err: any) {
       if (err.message === 'FIREBASE_NOT_CONFIGURED') {
-        setOauthError('Google sign-in requires Firebase credentials. Check your .env file or use 1-Click Host Demo.');
+        setOauthError('Google sign-in requires Firebase credentials. Check your .env file.');
       } else {
         setOauthError(err.message || 'Google sign-in failed.');
       }
@@ -258,9 +260,9 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
       await onLoginWithApple();
     } catch (err: any) {
       if (err.message === 'FIREBASE_NOT_CONFIGURED') {
-        setOauthError('Apple sign-in requires Firebase credentials. Check your .env file or use 1-Click Host Demo.');
+        setOauthError('Apple sign-in requires Firebase credentials. Check your .env file.');
       } else if (err.code === 'auth/operation-not-allowed' || err.message?.includes('operation-not-allowed')) {
-        setOauthError('Apple Sign-In is not enabled yet in your Firebase project. To use it, enable Apple in Firebase Console ➔ Authentication ➔ Sign-in method, or sign in with Google or 1-Click Host Demo.');
+        setOauthError('Apple Sign-In is not enabled yet in your Firebase project. To use it, enable Apple in Firebase Console ➔ Authentication ➔ Sign-in method, or sign in with Google.');
       } else {
         setOauthError(err.message || 'Apple sign-in failed.');
       }
@@ -294,7 +296,7 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
                     Verified Host
                   </span>
                 )}
-                {isProTier && (
+                {ENABLE_FUTURE_HOST_FEATURES && isProTier && (
                   <span className="text-[9px] px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/40 font-bold uppercase tracking-wider flex items-center gap-1 shrink-0">
                     <Crown className="w-3 h-3 text-amber-400" />
                     Pro Partner
@@ -369,7 +371,7 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
                 Artisan Producer & Host Estate Center
               </h3>
               <p className="text-xs sm:text-sm text-stone-400 max-w-md mx-auto leading-relaxed">
-                Connect your estate profile to manage incoming guest tasting reservations, post live harvest notices, and configure direct artisan shop links with <strong className="text-emerald-400">0% platform commission</strong>.
+                Claim an existing estate profile and submit evidence for review. Verified ownership is granted only after TerroirTrail approves the claim.
               </p>
             </div>
 
@@ -461,7 +463,7 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
               </div>
 
               {/* Live Reservation Status Switch & Quick VIP QR Scanner */}
-              <div className="flex items-center gap-2.5 shrink-0 self-end md:self-auto">
+              <div className="hidden">
                 <button
                   type="button"
                   onClick={() => setIsScannerOpen(true)}
@@ -495,7 +497,7 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
             {/* ========================================================= */}
             {/* 3. EXECUTIVE KPI PERFORMANCE STRIP                        */}
             {/* ========================================================= */}
-            <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 px-5 sm:px-6 py-3 bg-stone-950 border-b border-white/10 text-xs">
+            <div className="hidden">
               <div className="p-2.5 rounded-xl bg-stone-900/80 border border-white/5">
                 <span className="text-stone-400 text-[10px] uppercase font-semibold block">Total Inquiries</span>
                 <span className="text-lg font-bold text-white font-serif-title">{estateBookings.length}</span>
@@ -531,7 +533,7 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
             <div className="flex border-b border-white/10 bg-stone-950 px-5 sm:px-6 pt-1 text-xs font-semibold shrink-0 overflow-x-auto">
               <button
                 onClick={() => setActiveTab('bookings')}
-                className={`py-2.5 px-3.5 border-b-2 transition cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
+                className={`hidden py-2.5 px-3.5 border-b-2 transition cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
                   activeTab === 'bookings'
                     ? 'border-amber-400 text-amber-400 font-bold'
                     : 'border-transparent text-stone-400 hover:text-white'
@@ -553,12 +555,12 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
                     : 'border-transparent text-stone-400 hover:text-white'
                 }`}
               >
-                <span>📢 Live Bulletin & Hours</span>
+                <span>📢 Visitor Notice</span>
               </button>
 
               <button
                 onClick={() => setActiveTab('experiences')}
-                className={`py-2.5 px-3.5 border-b-2 transition cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
+                className={`hidden py-2.5 px-3.5 border-b-2 transition cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
                   activeTab === 'experiences'
                     ? 'border-amber-400 text-amber-400 font-bold'
                     : 'border-transparent text-stone-400 hover:text-white'
@@ -570,7 +572,7 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
 
               <button
                 onClick={() => setActiveTab('analytics')}
-                className={`py-2.5 px-3.5 border-b-2 transition cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
+                className={`hidden py-2.5 px-3.5 border-b-2 transition cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
                   activeTab === 'analytics'
                     ? 'border-amber-400 text-amber-400 font-bold'
                     : 'border-transparent text-stone-400 hover:text-white'
@@ -582,7 +584,7 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
 
               <button
                 onClick={() => setActiveTab('pro')}
-                className={`py-2.5 px-3.5 border-b-2 transition cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
+                className={`hidden py-2.5 px-3.5 border-b-2 transition cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
                   activeTab === 'pro'
                     ? 'border-amber-400 text-amber-400 font-bold'
                     : 'border-transparent text-stone-400 hover:text-white'
@@ -590,7 +592,7 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
               >
                 <Crown className="w-3.5 h-3.5 text-amber-400" />
                 <span>Host Pro Tier</span>
-                {isProTier && (
+                {ENABLE_FUTURE_HOST_FEATURES && isProTier && (
                   <span className="text-[9px] px-1.5 py-0.2 rounded-full bg-amber-400 text-stone-950 font-bold">
                     ACTIVE
                   </span>
@@ -599,7 +601,7 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
 
               <button
                 onClick={() => setActiveTab('shipping')}
-                className={`py-2.5 px-3.5 border-b-2 transition cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
+                className={`hidden py-2.5 px-3.5 border-b-2 transition cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
                   activeTab === 'shipping'
                     ? 'border-amber-400 text-amber-400 font-bold'
                     : 'border-transparent text-stone-400 hover:text-white'
@@ -834,7 +836,7 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
                   <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs space-y-1">
                     <p className="font-bold flex items-center gap-1.5">
                       <Bell className="w-4 h-4" />
-                      <span>Live Harvest & Cellar Bulletin</span>
+                      <span>Visitor Notice</span>
                     </p>
                     <p className="text-[11px] text-stone-300 leading-relaxed">
                       Publish announcements directly to visitors browsing your pin on the interactive map. Perfect for announcing harvest days, barrel room walk-ins, seasonal food pairings, or emergency closures.
@@ -844,7 +846,7 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
                   {saveSuccess && (
                     <div className="p-3 rounded-xl bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-xs flex items-center gap-2 animate-in fade-in">
                       <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-400" />
-                      <span>Estate bulletin saved and broadcast to live map!</span>
+                      <span>Visitor notice saved.</span>
                     </div>
                   )}
 
@@ -861,8 +863,8 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
                     />
                   </div>
 
-                  {/* Direct Store E-Commerce URL */}
-                  <div>
+                  {/* Direct Store E-Commerce URL — future feature */}
+                  <div className="hidden">
                     <label className="block text-stone-300 text-xs font-semibold mb-1">
                       Direct Estate Store URL (E-Commerce)
                     </label>
@@ -881,8 +883,8 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
                     </p>
                   </div>
 
-                  {/* Estate Visiting Guidelines */}
-                  <div className="p-4 rounded-2xl bg-stone-900 border border-white/10 space-y-2">
+                  {/* Estate Visiting Guidelines — future source-backed profile controls */}
+                  <div className="hidden">
                     <span className="font-bold text-white text-xs block">Visitor Access & Ethos Notice</span>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] text-stone-400">
                       <div className="p-2.5 rounded-xl bg-stone-950 border border-white/5">
@@ -901,7 +903,7 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
                     className="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs shadow-lg transition active:scale-98 flex items-center justify-center gap-2 cursor-pointer"
                   >
                     <Save className="w-4 h-4" />
-                    <span>Save & Broadcast to Live Map</span>
+                    <span>Save Visitor Notice</span>
                   </button>
                 </form>
               )}
@@ -1151,27 +1153,20 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
                     userId={user?.id}
                     producersList={producers}
                     onSaved={(record) => {
-                      setTaxVatNumber(record.vatNumber);
-                      setTaxLegalName(record.legalBusinessName);
-                      setTaxOffice(record.taxOffice);
-                      setTaxAddress(`${record.logistics.streetAddress}, ${record.logistics.cityOrVillage}, ${record.logistics.postalCode}`);
-                      setTaxPhone(record.logistics.dispatchPhone);
+                      const registrationAddress = record.registeredAddress || (record.logistics ? [record.logistics.streetAddress, record.logistics.cityOrVillage, record.logistics.postalCode].filter(Boolean).join(', ') : '');
+                      const registrationPhone = record.contactPhone || record.logistics?.dispatchPhone || '';
+                      setTaxVatNumber(record.vatNumber || '');
+                      setTaxLegalName(record.legalBusinessName || '');
+                      setTaxOffice(record.taxOffice || '');
+                      setTaxAddress(registrationAddress);
+                      setTaxPhone(registrationPhone);
                       setTaxEori(record.eoriNumber || '');
-
-                      if (onUpdateProducerTaxDetails) {
+                      if (onUpdateProducerTaxDetails && record.vatNumber && record.legalBusinessName && record.countryCode) {
                         onUpdateProducerTaxDetails({
-                          vatNumber: record.vatNumber,
-                          legalBusinessName: record.legalBusinessName,
-                          taxOffice: record.taxOffice,
-                          registeredAddress: `${record.logistics.streetAddress}, ${record.logistics.cityOrVillage}, ${record.logistics.postalCode}`,
-                          dispatchContactPhone: record.logistics.dispatchPhone,
-                          countryCode: record.countryCode,
-                          isVatVerified: record.isVatVerified,
-                          vatVerificationDate: record.vatVerificationDate,
-                          eoriNumber: record.eoriNumber,
-                          gemiNumber: record.permits?.gemiNumber,
-                          iban: record.banking?.iban,
-                          registrationRecord: record,
+                          vatNumber: record.vatNumber, legalBusinessName: record.legalBusinessName, taxOffice: record.taxOffice,
+                          registeredAddress: registrationAddress || undefined, dispatchContactPhone: registrationPhone || undefined,
+                          countryCode: record.countryCode, isVatVerified: record.isVatVerified, vatVerificationDate: record.vatVerificationDate,
+                          eoriNumber: record.eoriNumber, gemiNumber: record.permits?.gemiNumber, iban: record.banking?.iban, registrationRecord: record,
                         });
                       }
                     }}
