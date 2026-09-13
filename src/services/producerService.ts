@@ -34,6 +34,10 @@ export function mapRowToProducer(row: any): Producer {
   const isUnresolvedLocation = row.location_status === 'unresolved';
   // Do not regenerate or synthesize a Google Maps URL when google_maps_url is intentionally null or location is unresolved
   const googleMapsUrl = isUnresolvedLocation ? undefined : (row.google_maps_url || undefined);
+  const verifiedRoadAccess =
+    row.road_access_status === 'verified' && row.road_access
+      ? (row.road_access as RoadAccess)
+      : undefined;
 
   return {
     id: row.id,
@@ -59,7 +63,7 @@ export function mapRowToProducer(row: any): Producer {
     phone: row.phone || undefined,
     website: row.website || undefined,
     googleMapsUrl,
-    roadAccess: row.road_access ? (row.road_access as RoadAccess) : undefined,
+    roadAccess: verifiedRoadAccess,
     roadAccessStatus: row.road_access_status || 'unreviewed',
     roadAccessSourceUrl: row.road_access_source_url || undefined,
     roadAccessNotes: row.road_access_notes || undefined,
