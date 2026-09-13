@@ -1,7 +1,6 @@
 import fs from 'fs';
 import path from 'path';
 import { CRETAN_PRODUCERS } from '../src/data/producers';
-import { ALL_EXPERIENCES } from '../src/data/experiences';
 
 function sqlStr(val: string | undefined | null): string {
   if (val === undefined || val === null) return 'NULL';
@@ -32,16 +31,14 @@ function sqlJson(obj: unknown): string {
 const lines: string[] = [];
 lines.push('-- =====================================================================');
 lines.push('-- TERROIR TRAIL: Automated Supabase Seed Data');
-lines.push(
-  `-- Populates ${CRETAN_PRODUCERS.length} audited Crete producers/projects and ${ALL_EXPERIENCES.length} dormant experience records`
-);
-lines.push('-- Generated from the authoritative offline catalogue; unknown values remain NULL.');
+lines.push(`-- Populates ${CRETAN_PRODUCERS.length} audited Crete producers/projects.`);
+lines.push('-- Unknown values remain NULL.');
+lines.push('-- Experiences are intentionally NOT seeded before explicit producer approval.');
 lines.push('-- =====================================================================');
 lines.push('');
 
-// 1. Seed Producers
 lines.push('-- ---------------------------------------------------------------------');
-lines.push('-- 1. PRODUCERS SEED');
+lines.push('-- PRODUCERS SEED');
 lines.push('-- ---------------------------------------------------------------------');
 lines.push(`INSERT INTO public.producers (
   id, name, greek_name, category, destination, country, country_code, region, village, lat, lng,
@@ -151,50 +148,8 @@ lines.push('  vip_perks = EXCLUDED.vip_perks,');
 lines.push('  updated_at = NOW();');
 lines.push('');
 
-// 2. Seed Experiences. These records remain dormant until explicit producer approval.
-lines.push('-- ---------------------------------------------------------------------');
-lines.push('-- 2. EXPERIENCES SEED (DORMANT / NOT PUBLIC)');
-lines.push('-- ---------------------------------------------------------------------');
-lines.push('ALTER TABLE public.experiences ALTER COLUMN producer_id DROP NOT NULL;');
-lines.push('');
-lines.push(`INSERT INTO public.experiences (
-  id, producer_id, title, duration_minutes, price_per_person,
-  description, includes, badge, producer_name, producer_greek_name,
-  category, destination, location, is_active
-) VALUES`);
-
-const experienceValues = ALL_EXPERIENCES.map((e) => {
-  return `(
-  ${sqlStr(e.id)},
-  ${sqlStr(e.producerId)},
-  ${sqlStr(e.title)},
-  ${sqlNum(e.durationMinutes)},
-  ${sqlNum(e.pricePerPerson)},
-  ${sqlStr(e.description)},
-  ${sqlTextArray(e.includes)},
-  ${sqlStr(e.badge)},
-  ${sqlStr(e.producerName)},
-  ${sqlStr(e.producerGreekName)},
-  ${sqlStr(e.category)},
-  ${sqlStr(e.destination)},
-  ${sqlStr(e.location)},
-  FALSE
-)`;
-});
-
-lines.push(experienceValues.join(',\n'));
-lines.push('ON CONFLICT (id) DO UPDATE SET');
-lines.push('  title = EXCLUDED.title,');
-lines.push('  duration_minutes = EXCLUDED.duration_minutes,');
-lines.push('  price_per_person = EXCLUDED.price_per_person,');
-lines.push('  description = EXCLUDED.description,');
-lines.push('  includes = EXCLUDED.includes,');
-lines.push('  badge = EXCLUDED.badge,');
-lines.push('  is_active = FALSE;');
-lines.push('');
-
 const targetFile = path.resolve(process.cwd(), 'supabase/seed.sql');
 fs.writeFileSync(targetFile, lines.join('\n'), 'utf8');
 console.log(
-  `Successfully generated ${targetFile} with ${CRETAN_PRODUCERS.length} producers and ${ALL_EXPERIENCES.length} inactive experiences.`
+  `Successfully generated ${targetFile} with ${CRETAN_PRODUCERS.length} audited Crete producers/projects and no Experiences.`
 );
