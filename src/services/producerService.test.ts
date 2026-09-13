@@ -33,6 +33,7 @@ vi.mock('./supabase', () => ({
           }),
           gte: vi.fn(() => queryObj),
           lte: vi.fn(() => queryObj),
+          neq: vi.fn(() => queryObj),
           or: vi.fn(() => queryObj),
           range: vi.fn(() => queryObj),
           single: vi.fn(() => {
@@ -242,4 +243,106 @@ describe('producerService — Supabase / Fallback Data Ownership', () => {
       expect(exps[0].id).toBe(ALL_EXPERIENCES[0].id);
     });
   });
+
+  describe('Producer Verification and Visitability Integrity', () => {
+    it('maps all verification fields and retains explicit status values from database', async () => {
+      const liveRow = {
+        id: 'verified-producer-1',
+        name: 'Alpha Organic Winery',
+        category: 'winery',
+        destination: 'crete',
+        region: 'Chania',
+        village: 'Vatolakki',
+        lat: 35.45,
+        lng: 23.95,
+        location_status: 'verified_entrance',
+        location_source_url: 'https://www.openstreetmap.org/node/12345',
+        location_notes: 'Main gate on the east vineyard road',
+        visit_status: 'public_visits',
+        visit_source_url: 'https://alpha-winery.gr/visiting',
+        visit_notes: 'Tasting room open Mon-Sat 10:00-18:00',
+        google_maps_url: 'https://maps.google.com/?cid=987654',
+      };
+
+      mockSupabaseState.queryResults.set('producers', { data: [liveRow], error: null });
+
+      const [producer] = await producerService.getProducers();
+
+      expect(producer.locationStatus).toBe('verified_entrance');
+      expect(producer.locationSourceUrl).toBe('https://www.openstreetmap.org/node/12345');
+      expect(producer.locationNotes).toBe('Main gate on the east vineyard road');
+      expect(producer.visitStatus).toBe('public_visits');
+      expect(producer.visitSourceUrl).toBe('https://alpha-winery.gr/visiting');
+      expect(producer.visitNotes).toBe('Tasting room open Mon-Sat 10:00-18:00');
+      expect(producer.googleMapsUrl).toBe('https://maps.google.com/?cid=987654');
+    });
+
+    it('does not convert null/undefined DB values into fabricated defaults', async () => {
+      const sparseRow = {
+        id: 'sparse-producer-2',
+        name: 'Sparse Heritage Distiller',
+        category: 'distillery',
+        destination: 'crete',
+        region: 'Rethymno',
+        village: 'Amari',
+        lat: 35.25,
+        lng: 24.65,
+        road_access: null,
+        food_option: null,
+        price_level: null,
+        rating: null,
+        review_count: null,
+        dog_friendly: null,
+        kid_friendly: null,
+        campervan_friendly: null,
+        walk_in_friendly: null,
+        location_status: 'verified_location',
+        visit_status: 'appointment_only',
+        google_maps_url: null,
+      };
+
+      mockSupabaseState.queryResults.set('producers', { data: [sparseRow], error: null });
+
+      const [producer] = await producerService.getProducers();
+
+      // Explicitly check that fabricated defaults were NOT applied
+      expect(producer.roadAccess).toBeUndefined();
+      expect(producer.foodOption).toBeUndefined();
+      expect(producer.priceLevel).toBeUndefined();
+      expect(producer.rating).toBeUndefined();
+      expect(producer.reviewCount).toBeUndefined();
+      expect(producer.dogFriendly).toBeUndefined();
+      expect(producer.kidFriendly).toBeUndefined();
+      expect(producer.campervanFriendly).toBeUndefined();
+      expect(producer.walkInFriendly).toBeUndefined();
+
+      // Does NOT synthesize a Google Maps URL when google_maps_url is null
+      expect(producer.googleMapsUrl).toBeUndefined();
+    });
+
+    it('suppresses Google Maps URL and bounds inclusion when location_status is unresolved', async () => {
+      const unresolvedRow = {
+        id: 'unresolved-producer-3',
+        name: 'Unresolved Mountain Apiary',
+        category: 'wild_honey',
+        destination: 'crete',
+        region: 'Chania',
+        village: 'Omalos',
+        lat: 35.33,
+        lng: 23.90,
+        location_status: 'unresolved',
+        google_maps_url: 'https://maps.google.com/?q=35.33,23.90',
+        visit_status: 'not_publicly_confirmed',
+      };
+
+      mockSupabaseState.queryResults.set('producers', { data: [unresolvedRow], error: null });
+
+      const [producer] = await producerService.getProducers();
+
+      expect(producer.locationStatus).toBe('unresolved');
+      // Must NOT expose a Google Maps URL for unresolved locations even if URL or coordinates exist
+      expect(producer.googleMapsUrl).toBeUndefined();
+    });
+  });
 });
+

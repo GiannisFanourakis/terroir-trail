@@ -23,8 +23,8 @@ export const ProducerList: React.FC<ProducerListProps> = ({
   const [sortBy, setSortBy] = useState<'rating' | 'reviews' | 'name'>('rating');
 
   const sortedProducers = [...producers].sort((a, b) => {
-    if (sortBy === 'rating') return b.rating - a.rating;
-    if (sortBy === 'reviews') return b.reviewCount - a.reviewCount;
+    if (sortBy === 'rating') return (b.rating ?? 0) - (a.rating ?? 0);
+    if (sortBy === 'reviews') return (b.reviewCount ?? 0) - (a.reviewCount ?? 0);
     return a.name.localeCompare(b.name);
   });
 

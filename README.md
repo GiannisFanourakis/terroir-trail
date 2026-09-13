@@ -93,7 +93,7 @@ Designed for vacationers and culinary tourists exploring wine regions:
 
 ### 2. 🛡️ Producer Portal & Verified Host Pro (Pilot — €199/year)
 Empowers independent artisans to take control of their digital presence:
-* **0% Commission Agritourism:** While major online travel agencies charge heavy commissions, TerroirTrail charges **0% booking commission on direct reservation requests**, keeping tasting revenue directly with the producer.
+* **Direct Producer Discovery:** TerroirTrail operates as a producer discovery platform where travelers discover and contact producers directly. As future commercial experiences and reservation modules are introduced with partnering estates, TerroirTrail champions fair-trade agritourism with zero exploitative middleman fees.
 * **Claim Listing & Live Cellar Bulletin:** Estates can publish real-time notices on the interactive map (e.g., *"Harvest in progress: barrel room walk-ins welcome today"*, *"Grape stomp dinner Friday"*).
 * **Direct Bottle Shop Link:** Direct link button on the producer drawer steering travelers directly to the estate's own online cellar shop.
 * **Verified Host Badge:** Pro Estate styling on the interactive map and producer profile (priority placement — planned pilot feature).
@@ -130,9 +130,9 @@ Empowers independent artisans to take control of their digital presence:
   * **Terroir Passport Stamps:** Check in at artisanal estates and collect digital passport stamps.
   * **Private Tasting Notes:** Record personal vintage ratings, acidity impressions, and food pairing memories directly inside maker profiles.
 
-* 🍷 **Direct Tasting & Tour Reservations:**
-  * Browse curated tasting flights (e.g. *Indigenous White Flight*, *Vertical Reserve Tasting*, *Ancient Amphora Masterclass*).
-  * Select dates, times, and guest counts with direct inquiry delivery and producer dashboard management.
+* 🍷 **Direct Contact & Future Experiences:**
+  * Direct verified contact channels (phone, official estate website) for visiting independent makers.
+  * Curated tasting flight concepts and future bookable experiences planned exclusively for estates with formal producer agreements.
 
 * 🧭 **Curated Terroir Routes with Turn-by-Turn Google Maps Navigation:**
   * Handcrafted self-guided day itineraries connecting 2 to 3 artisan cellars, stone oil mills, and scenic tasting rooms across Chania, Heraklion, Santorini Caldera, Peloponnese (Nemea & Mantinia), and Northern Greece (Naoussa & Thessaloniki).
@@ -150,7 +150,7 @@ Empowers independent artisans to take control of their digital presence:
 
 ## 🛠️ Hybrid Cloud & Architecture
 
-TerroirTrail is built as a **responsive web application** with bundled static data and local storage caching for preferences. Online connectivity is required for map tile loading, account authentication, live booking inquiries, and pass verification:
+TerroirTrail is built as a **responsive web application** with bundled static data and local storage caching for preferences. Online connectivity is required for map tile loading, account authentication, and pass verification:
 
 ```
                                  ┌─────────────────────────────────┐
@@ -168,7 +168,7 @@ TerroirTrail is built as a **responsive web application** with bundled static da
   │ • Viewport bounding boxes    │                              │ • Traveler profiles          │
   │ • Structured tasting flights │                              │ • Digital passport stamps    │
   │ • Auto-fallback to offline   │                              │ • Private tasting notes      │
-  │   bundled static dataset     │                              │ • Real-time bookings sync    │
+  │   bundled static dataset     │                              │ • Traveler activity sync     │
   └──────────────────────────────┘                              └──────────────────────────────┘
 ```
 
@@ -263,13 +263,13 @@ TerroirTrail establishes one clear, authoritative datastore per functional domai
 | Domain / Entity | Authoritative Datastore | Description / Access Rules |
 | :--- | :--- | :--- |
 | **Producers Catalogue** | **Supabase / PostGIS** | Durable editorial directory, geographic coordinates, polygons, and spatial queries. Read-only for browser clients via public SELECT. Writes performed solely via administrative/migration tooling. |
-| **Experiences Catalogue** | **Supabase / PostgreSQL** | Curated tasting packages, cellar tours, and workshop flights. Read-only for browser clients via public SELECT. |
+| **Experiences Catalogue** | **Supabase / PostgreSQL** | Future bookable experiences and tasting packages (activated only with formal producer agreements). Read-only for browser clients via public SELECT. |
 | **Identity & Authentication** | **Firebase Auth** | Universal sign-in (Email/password, native Google Credential Bridge, Apple). Supabase Auth is strictly disabled. |
 | **Traveler Profiles & Passport** | **Firestore `users/{uid}`** | Traveler preferences, collection stamps, and private tasting notes. Secured by Firestore Rules (`request.auth.uid == uid`). |
 | **Host Authorization** | **Firestore `producer_owners/{producerId}`** | Server-verified host ownership linking a Firebase user UID to a claimed estate ID. |
 | **Producer Applications** | **Firestore `producer_registrations`** | Estate onboarding requests and official business verification submissions. |
 | **Operational Overlays** | **Firestore `producer_overrides/{producerId}`** | Live host bulletins, temporary tasting hours, booking availability toggles, and direct bottle shop links. |
-| **Tasting Bookings** | **Firestore `bookings`** | Traveler tasting reservations and booking inquiries. (Supabase `bookings` table is locked and deprecated). |
+| **Tasting Bookings** | **Firestore `bookings`** | Future tasting reservations for partnered estates with active agreements. (Supabase `bookings` table is locked and deprecated). |
 | **Explorer Pass Entitlements** | **Firestore `explorerPasses`** | Server-managed paid pass entitlements fulfilled via secure Cloud Run / Stripe webhooks. Client direct write denied. |
 | **Static TypeScript Data** | **Bundled Seed / Fallback** | `src/data/producers.ts` and `src/data/experiences.ts` provide offline demo seeding and network-failure fallback only. When Supabase responds successfully, live records are authoritative and zero rows means zero rows. |
 

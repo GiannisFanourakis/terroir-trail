@@ -31,6 +31,10 @@ export function mapRowToProducer(row: any): Producer {
   const countryCode = row.country_code || (row.destination === 'tuscany' ? 'IT' : 'GR');
   const locality = row.locality || row.village;
 
+  const isUnresolvedLocation = row.location_status === 'unresolved';
+  // Do not regenerate or synthesize a Google Maps URL when google_maps_url is intentionally null or location is unresolved
+  const googleMapsUrl = isUnresolvedLocation ? undefined : (row.google_maps_url || undefined);
+
   return {
     id: row.id,
     name: row.name,
@@ -51,21 +55,29 @@ export function mapRowToProducer(row: any): Producer {
     indigenousVarieties: Array.isArray(row.indigenous_varieties) ? row.indigenous_varieties : [],
     tastingHighlights: Array.isArray(row.tasting_highlights) ? row.tasting_highlights : [],
     openingHours: row.opening_hours || '',
-    bestSeason: row.best_season,
-    phone: row.phone,
-    website: row.website,
-    googleMapsUrl: row.google_maps_url || `https://maps.google.com/?q=${row.lat},${row.lng}`,
-    roadAccess: (row.road_access || 'paved') as RoadAccess,
+    bestSeason: row.best_season || undefined,
+    phone: row.phone || undefined,
+    website: row.website || undefined,
+    googleMapsUrl,
+    roadAccess: row.road_access ? (row.road_access as RoadAccess) : undefined,
     ethos: Array.isArray(row.ethos) ? (row.ethos as Ethos[]) : [],
-    foodOption: (row.food_option || 'dakos_snacks') as FoodOption,
-    dogFriendly: Boolean(row.dog_friendly),
-    kidFriendly: Boolean(row.kid_friendly),
-    walkInFriendly: Boolean(row.walk_in_friendly),
-    campervanFriendly: Boolean(row.campervan_friendly),
-    priceLevel: (row.price_level || '€€') as '€' | '€€' | '€€€',
-    rating: Number(row.rating || 5.0),
-    reviewCount: Number(row.review_count || 0),
-    vipPerks: row.vip_perks,
+    foodOption: row.food_option ? (row.food_option as FoodOption) : undefined,
+    dogFriendly: row.dog_friendly != null ? Boolean(row.dog_friendly) : undefined,
+    kidFriendly: row.kid_friendly != null ? Boolean(row.kid_friendly) : undefined,
+    walkInFriendly: row.walk_in_friendly != null ? Boolean(row.walk_in_friendly) : undefined,
+    campervanFriendly: row.campervan_friendly != null ? Boolean(row.campervan_friendly) : undefined,
+    priceLevel: row.price_level ? (row.price_level as '€' | '€€' | '€€€') : undefined,
+    rating: row.rating != null ? Number(row.rating) : undefined,
+    reviewCount: row.review_count != null ? Number(row.review_count) : undefined,
+    vipPerks: row.vip_perks || undefined,
+
+    // Verification & Visitability Authority
+    locationStatus: row.location_status || undefined,
+    locationSourceUrl: row.location_source_url || undefined,
+    locationNotes: row.location_notes || undefined,
+    visitStatus: row.visit_status || undefined,
+    visitSourceUrl: row.visit_source_url || undefined,
+    visitNotes: row.visit_notes || undefined,
   };
 }
 
@@ -106,6 +118,7 @@ function filterProducersList(producers: Producer[], options: ProducerQueryOption
   if (bounds) {
     list = list.filter(
       (p) =>
+        p.locationStatus !== 'unresolved' &&
         p.coordinates[0] >= bounds.south &&
         p.coordinates[0] <= bounds.north &&
         p.coordinates[1] >= bounds.west &&
@@ -202,6 +215,7 @@ export const producerService = {
         }
         if (bounds) {
           query = query
+            .neq('location_status', 'unresolved')
             .gte('lat', bounds.south)
             .lte('lat', bounds.north)
             .gte('lng', bounds.west)

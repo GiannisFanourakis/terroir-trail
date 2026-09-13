@@ -52,6 +52,19 @@ export interface PhotoCredit {
   url?: string;
 }
 
+export type LocationStatus = 
+  | 'verified_entrance' 
+  | 'verified_location' 
+  | 'unresolved';
+
+export type VisitStatus = 
+  | 'public_visits' 
+  | 'seasonal_public' 
+  | 'appointment_only' 
+  | 'not_publicly_confirmed' 
+  | 'current_access_uncertain' 
+  | 'unreviewed';
+
 export interface Producer {
   id: string;
   name: string;
@@ -77,18 +90,26 @@ export interface Producer {
   bestSeason?: string;
   phone?: string;
   website?: string;
-  googleMapsUrl: string;
-  roadAccess: RoadAccess;
+  googleMapsUrl?: string;
+  roadAccess?: RoadAccess;
   ethos: Ethos[];
-  foodOption: FoodOption;
-  dogFriendly: boolean;
-  kidFriendly: boolean;
-  walkInFriendly: boolean;
-  campervanFriendly: boolean;
-  priceLevel: '€' | '€€' | '€€€';
-  rating: number;
-  reviewCount: number;
+  foodOption?: FoodOption;
+  dogFriendly?: boolean;
+  kidFriendly?: boolean;
+  walkInFriendly?: boolean;
+  campervanFriendly?: boolean;
+  priceLevel?: '€' | '€€' | '€€€';
+  rating?: number;
+  reviewCount?: number;
   vipPerks?: VipPerks;
+
+  // Verification & Visitability Authority
+  locationStatus?: LocationStatus | string;
+  locationSourceUrl?: string;
+  locationNotes?: string;
+  visitStatus?: VisitStatus | string;
+  visitSourceUrl?: string;
+  visitNotes?: string;
 }
 
 export interface DayTripLoop {

@@ -95,10 +95,12 @@ export const ProducerCard: React.FC<ProducerCardProps> = ({
           >
             <Heart className={`w-3.5 h-3.5 ${isFavorite ? 'fill-white' : ''}`} />
           </button>
-          <div className="flex items-center gap-1 bg-black/70 backdrop-blur-md text-white px-2 py-1 rounded-full text-xs font-bold border border-white/10">
-            <Star className="w-3 h-3 text-amber-400 fill-amber-400" />
-            <span>{producer.rating}</span>
-          </div>
+          {producer.rating != null && (
+            <div className="flex items-center gap-1 bg-black/70 backdrop-blur-md text-white px-2 py-1 rounded-full text-xs font-bold border border-white/10">
+              <Star className="w-3 h-3 text-amber-400 fill-amber-400" />
+              <span>{producer.rating}</span>
+            </div>
+          )}
         </div>
 
         {/* Bottom Location Overlay */}
@@ -110,9 +112,11 @@ export const ProducerCard: React.FC<ProducerCardProps> = ({
               {producer.village}, {producer.region.toUpperCase()}
             </span>
           </div>
-          <span className="text-xs font-mono font-bold text-amber-300 bg-black/60 px-2 py-0.5 rounded border border-white/10">
-            {producer.priceLevel}
-          </span>
+          {producer.priceLevel && (
+            <span className="text-xs font-mono font-bold text-amber-300 bg-black/60 px-2 py-0.5 rounded border border-white/10">
+              {producer.priceLevel}
+            </span>
+          )}
         </div>
       </div>
 
@@ -162,16 +166,20 @@ export const ProducerCard: React.FC<ProducerCardProps> = ({
 
         {/* Card Footer */}
         <div className="flex items-center justify-between pt-2.5 border-t border-white/5 text-[11px]">
-          <span className={`flex items-center gap-1 ${
-            producer.roadAccess === 'paved'
-              ? 'text-stone-400'
-              : producer.roadAccess === 'gravel_ok'
-              ? 'text-amber-400'
-              : 'text-rose-400'
-          }`}>
-            <Car className="w-3 h-3" />
-            {producer.roadAccess === 'paved' ? 'Paved Road' : producer.roadAccess === 'gravel_ok' ? 'Gravel OK' : '4x4 Required'}
-          </span>
+          {producer.roadAccess ? (
+            <span className={`flex items-center gap-1 ${
+              producer.roadAccess === 'paved'
+                ? 'text-stone-400'
+                : producer.roadAccess === 'gravel_ok'
+                ? 'text-amber-400'
+                : 'text-rose-400'
+            }`}>
+              <Car className="w-3 h-3" />
+              {producer.roadAccess === 'paved' ? 'Paved Road' : producer.roadAccess === 'gravel_ok' ? 'Gravel OK' : '4x4 Required'}
+            </span>
+          ) : (
+            <span />
+          )}
 
           <span className="text-amber-400 font-bold group-hover:translate-x-0.5 transition-transform flex items-center gap-0.5">
             <span>View Story</span>

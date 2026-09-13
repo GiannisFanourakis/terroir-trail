@@ -136,7 +136,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
         </div>
         <div class="pin-text-container">
           <span class="pin-text-label" title="${producer.name}">${producer.name}</span>
-          <span class="pin-text-sub">★ ${producer.rating} · ${shortVillage}</span>
+          <span class="pin-text-sub">${producer.rating != null ? `★ ${producer.rating} · ` : ''}${shortVillage}</span>
         </div>
       </div>
     `;
@@ -272,7 +272,9 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
 
     const bounds = L.latLngBounds([]);
 
-    producers.forEach((producer) => {
+    producers
+      .filter((p) => p.locationStatus !== 'unresolved')
+      .forEach((producer) => {
       const isSelected = selectedProducer?.id === producer.id;
 
       const customIcon = L.divIcon({
