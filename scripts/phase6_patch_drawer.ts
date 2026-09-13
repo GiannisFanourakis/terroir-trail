@@ -2,7 +2,9 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const target = path.resolve('src/components/Drawer/ProducerDetailDrawer.tsx');
-let source = fs.readFileSync(target, 'utf8');
+const originalSource = fs.readFileSync(target, 'utf8');
+const originalEol = originalSource.includes('\r\n') ? '\r\n' : '\n';
+let source = originalSource.replace(/\r\n/g, '\n');
 
 function replaceExactly(label: string, before: string, after: string) {
   const occurrences = source.split(before).length - 1;
@@ -212,5 +214,6 @@ for (const text of banned) {
   }
 }
 
-fs.writeFileSync(target, source, 'utf8');
+const output = originalEol === '\r\n' ? source.replace(/\n/g, '\r\n') : source;
+fs.writeFileSync(target, output, 'utf8');
 console.log('✓ ProducerDetailDrawer Phase 6 road-access safety patch applied');
