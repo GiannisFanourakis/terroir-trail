@@ -16,6 +16,7 @@ import type { VerifiedPassInfo } from './components/Monetization/HostVerificatio
 import { verifyExplorerPass } from './services/explorerPass';
 import { logger } from './services/logger';
 import { readStorage, writeStorage, STORAGE_KEYS } from './services/browserStorage';
+import { filterProducers } from './utils/filterProducers';
 import { List, MapPin } from 'lucide-react';
 
 // Performance optimization: lazy-load modals on demand to shrink initial bundle
@@ -168,76 +169,7 @@ export const App: React.FC = () => {
 
   // Filter & Search Logic
   const filteredProducers = useMemo(() => {
-    return producers.filter((producer) => {
-      // Category filter
-      if (filters.category !== 'all' && producer.category !== filters.category) {
-        return false;
-      }
-
-      // Destination filter (Macro-Region: Crete, Santorini, Peloponnese, etc.)
-      if (filters.destination !== 'all' && producer.destination !== filters.destination) {
-        return false;
-      }
-
-      // Road Access filter
-      if (filters.roadAccess !== 'all' && producer.roadAccess !== filters.roadAccess) {
-        return false;
-      }
-
-      // Ethos filter
-      if (filters.ethos !== 'all' && !producer.ethos.includes(filters.ethos)) {
-        return false;
-      }
-
-      // Food Option filter
-      if (filters.foodOption !== 'all' && producer.foodOption !== filters.foodOption) {
-        return false;
-      }
-
-      // Dog friendly
-      if (filters.dogFriendlyOnly && !producer.dogFriendly) {
-        return false;
-      }
-
-      // Walk-in friendly
-      if (filters.walkInOnly && !producer.walkInFriendly) {
-        return false;
-      }
-
-      // Campervan friendly
-      if (filters.campervanOnly && !producer.campervanFriendly) {
-        return false;
-      }
-
-      // Favorites only
-      if (filters.favoritesOnly && !isFavorite(producer.id)) {
-        return false;
-      }
-
-      // Search Query filter (matches name, greek name, region, village, varieties)
-      if (filters.searchQuery.trim() !== '') {
-        const q = filters.searchQuery.toLowerCase().trim();
-        const matchesName = producer.name.toLowerCase().includes(q);
-        const matchesGreekName = producer.greekName.toLowerCase().includes(q);
-        const matchesRegion = producer.region.toLowerCase().includes(q);
-        const matchesVillage = producer.village.toLowerCase().includes(q);
-        const matchesVarieties = producer.indigenousVarieties.some((v) =>
-          v.toLowerCase().includes(q)
-        );
-        const matchesTagline = producer.tagLine.toLowerCase().includes(q);
-
-        return (
-          matchesName ||
-          matchesGreekName ||
-          matchesRegion ||
-          matchesVillage ||
-          matchesVarieties ||
-          matchesTagline
-        );
-      }
-
-      return true;
-    });
+    return filterProducers(producers, filters, isFavorite);
   }, [producers, filters, isFavorite]);
 
   // Deep Link handler: ?producer=<id>

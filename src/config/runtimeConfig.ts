@@ -80,7 +80,10 @@ export function getFirebaseConfig(
       getRawEnv('VITE_FIREBASE_PROJECT_ID', customEnv) ||
       getRawEnv('FIREBASE_PROJECT_ID', customEnv),
     storageBucket: getRawEnv('VITE_FIREBASE_STORAGE_BUCKET', customEnv),
-    messagingSenderId: getRawEnv('VITE_FIREBASE_MESSAGING_SENDER_ID', customEnv),
+    messagingSenderId: getRawEnv(
+      'VITE_FIREBASE_MESSAGING_SENDER_ID',
+      customEnv
+    ),
     appId: getRawEnv('VITE_FIREBASE_APP_ID', customEnv),
   };
 }
@@ -117,9 +120,9 @@ export function checkIsSupabaseConfigured(
   const cfg = getSupabaseConfig(customEnv);
   return Boolean(
     cfg.url &&
-      cfg.anonKey &&
-      cfg.url.startsWith('http') &&
-      !cfg.url.includes('your-project')
+    cfg.anonKey &&
+    cfg.url.startsWith('http') &&
+    !cfg.url.includes('your-project')
   );
 }
 
@@ -171,7 +174,9 @@ export function getRuntimeDiagnostics(
     supabaseConfigured: checkIsSupabaseConfigured(customEnv),
     explorerPassPurchasesEnabled: isExplorerPassPurchasesEnabled(customEnv),
     apiBaseConfigured: Boolean(getRawEnv('VITE_API_BASE_URL', customEnv)),
-    publicAppUrlConfigured: Boolean(getRawEnv('VITE_PUBLIC_APP_URL', customEnv)),
+    publicAppUrlConfigured: Boolean(
+      getRawEnv('VITE_PUBLIC_APP_URL', customEnv)
+    ),
   };
 }
 
@@ -188,7 +193,9 @@ export function logRuntimeDiagnosticsOnce(
   diagnosticsLogged = true;
 
   const fb = getFirebaseConfig(customEnv);
-  const hasAnyFb = Boolean(fb.apiKey || fb.authDomain || fb.projectId || fb.appId);
+  const hasAnyFb = Boolean(
+    fb.apiKey || fb.authDomain || fb.projectId || fb.appId
+  );
   const isFbComplete = checkIsFirebaseConfigured(customEnv);
   if (hasAnyFb && !isFbComplete) {
     logger.warn('Config', 'firebase_partial_configuration', {

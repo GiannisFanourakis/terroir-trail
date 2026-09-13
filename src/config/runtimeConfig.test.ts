@@ -143,39 +143,65 @@ describe('runtimeConfig - Centralized Configuration Discipline', () => {
 
   describe('Explorer Pass purchase feature flag (strict boolean)', () => {
     it('evaluates strictly "true" to true', () => {
-      expect(isExplorerPassPurchasesEnabled({ VITE_ENABLE_EXPLORER_PASS_PURCHASES: 'true' })).toBe(true);
+      expect(
+        isExplorerPassPurchasesEnabled({
+          VITE_ENABLE_EXPLORER_PASS_PURCHASES: 'true',
+        })
+      ).toBe(true);
     });
 
     it('evaluates "TRUE" to false', () => {
-      expect(isExplorerPassPurchasesEnabled({ VITE_ENABLE_EXPLORER_PASS_PURCHASES: 'TRUE' })).toBe(false);
+      expect(
+        isExplorerPassPurchasesEnabled({
+          VITE_ENABLE_EXPLORER_PASS_PURCHASES: 'TRUE',
+        })
+      ).toBe(false);
     });
 
     it('evaluates "1" to false', () => {
-      expect(isExplorerPassPurchasesEnabled({ VITE_ENABLE_EXPLORER_PASS_PURCHASES: '1' })).toBe(false);
+      expect(
+        isExplorerPassPurchasesEnabled({
+          VITE_ENABLE_EXPLORER_PASS_PURCHASES: '1',
+        })
+      ).toBe(false);
     });
 
     it('evaluates "false" to false', () => {
-      expect(isExplorerPassPurchasesEnabled({ VITE_ENABLE_EXPLORER_PASS_PURCHASES: 'false' })).toBe(false);
+      expect(
+        isExplorerPassPurchasesEnabled({
+          VITE_ENABLE_EXPLORER_PASS_PURCHASES: 'false',
+        })
+      ).toBe(false);
     });
 
     it('evaluates "yes" to false', () => {
-      expect(isExplorerPassPurchasesEnabled({ VITE_ENABLE_EXPLORER_PASS_PURCHASES: 'yes' })).toBe(false);
+      expect(
+        isExplorerPassPurchasesEnabled({
+          VITE_ENABLE_EXPLORER_PASS_PURCHASES: 'yes',
+        })
+      ).toBe(false);
     });
 
     it('evaluates undefined or empty string to false', () => {
       expect(isExplorerPassPurchasesEnabled({})).toBe(false);
-      expect(isExplorerPassPurchasesEnabled({ VITE_ENABLE_EXPLORER_PASS_PURCHASES: '' })).toBe(false);
+      expect(
+        isExplorerPassPurchasesEnabled({
+          VITE_ENABLE_EXPLORER_PASS_PURCHASES: '',
+        })
+      ).toBe(false);
     });
   });
 
   describe('URL normalization', () => {
     it('strips accidental trailing slashes from API base URL', () => {
-      expect(getApiConfig({ VITE_API_BASE_URL: 'https://api.terroir-trail.com/' }).baseUrl).toBe(
-        'https://api.terroir-trail.com'
-      );
-      expect(getApiConfig({ VITE_API_BASE_URL: 'https://api.terroir-trail.com///' }).baseUrl).toBe(
-        'https://api.terroir-trail.com'
-      );
+      expect(
+        getApiConfig({ VITE_API_BASE_URL: 'https://api.terroir-trail.com/' })
+          .baseUrl
+      ).toBe('https://api.terroir-trail.com');
+      expect(
+        getApiConfig({ VITE_API_BASE_URL: 'https://api.terroir-trail.com///' })
+          .baseUrl
+      ).toBe('https://api.terroir-trail.com');
     });
 
     it('returns empty string if API base URL is unset', () => {
@@ -183,17 +209,23 @@ describe('runtimeConfig - Centralized Configuration Discipline', () => {
     });
 
     it('strips trailing slashes from public app URL and preserves path', () => {
-      expect(getPublicAppUrl({ VITE_PUBLIC_APP_URL: 'https://app.terroir-trail.com/' })).toBe(
-        'https://app.terroir-trail.com'
-      );
-      expect(getPublicAppUrl({ VITE_PUBLIC_APP_URL: 'https://app.terroir-trail.com/path/' })).toBe(
-        'https://app.terroir-trail.com/path'
-      );
+      expect(
+        getPublicAppUrl({
+          VITE_PUBLIC_APP_URL: 'https://app.terroir-trail.com/',
+        })
+      ).toBe('https://app.terroir-trail.com');
+      expect(
+        getPublicAppUrl({
+          VITE_PUBLIC_APP_URL: 'https://app.terroir-trail.com/path/',
+        })
+      ).toBe('https://app.terroir-trail.com/path');
     });
 
     it('defaults public app URL to https://terroir-trail.web.app without trailing slash', () => {
       expect(getPublicAppUrl({})).toBe('https://terroir-trail.web.app');
-      expect(getPublicAppUrl({ VITE_PUBLIC_APP_URL: '' })).toBe('https://terroir-trail.web.app');
+      expect(getPublicAppUrl({ VITE_PUBLIC_APP_URL: '' })).toBe(
+        'https://terroir-trail.web.app'
+      );
     });
   });
 
@@ -302,7 +334,9 @@ describe('runtimeConfig - Centralized Configuration Discipline', () => {
       expect(runtimeConfig.firebase).toBeDefined();
       expect(runtimeConfig.supabase).toBeDefined();
       expect(runtimeConfig.api).toBeDefined();
-      expect(typeof runtimeConfig.explorerPass.purchasesEnabled).toBe('boolean');
+      expect(typeof runtimeConfig.explorerPass.purchasesEnabled).toBe(
+        'boolean'
+      );
       expect(typeof runtimeConfig.app.publicUrl).toBe('string');
     });
   });
