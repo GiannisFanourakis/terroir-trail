@@ -19,12 +19,14 @@ export type RoadAccess =
   | 'paved'
   | 'narrow_paved'
   | 'gravel_ok'
+  | 'unpaved_passable'
   | 'high_clearance_recommended'
   | '4x4_required';
 
 export type RoadAccessStatus =
   | 'unreviewed'
   | 'verified'
+  | 'not_publicly_confirmed'
   | 'current_access_uncertain';
 
 export type Ethos = 
