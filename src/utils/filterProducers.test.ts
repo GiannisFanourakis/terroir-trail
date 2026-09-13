@@ -26,6 +26,7 @@ const createMockProducer = (overrides: Partial<Producer> = {}): Producer => ({
   ethos: ['organic', 'family_estate'],
   foodOption: 'tasting_board',
   roadAccess: 'paved',
+  roadAccessStatus: 'verified',
   dogFriendly: true,
   kidFriendly: true,
   walkInFriendly: true,
@@ -127,12 +128,25 @@ describe('filterProducers pure utility', () => {
     expect(result).toEqual([p3]);
   });
 
-  it('filters by roadAccess', () => {
+  it('filters by verified roadAccess', () => {
     const result = filterProducers(sampleProducers, {
       ...defaultFilters,
       roadAccess: '4x4_required',
     });
     expect(result).toEqual([p3]);
+  });
+
+  it('does not expose unreviewed road access through a verified road filter', () => {
+    const unreviewed = createMockProducer({
+      id: 'unreviewed-road',
+      roadAccess: 'paved',
+      roadAccessStatus: 'unreviewed',
+    });
+    const result = filterProducers([p1, unreviewed], {
+      ...defaultFilters,
+      roadAccess: 'paved',
+    });
+    expect(result).toEqual([p1]);
   });
 
   it('filters by ethos', () => {
