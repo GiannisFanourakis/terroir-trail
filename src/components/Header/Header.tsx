@@ -128,7 +128,7 @@ export const Header: React.FC<HeaderProps> = ({
                 <button
                   onClick={onOpenLoops}
                   className="hidden md:flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-bold bg-stone-900 hover:bg-stone-850 text-stone-300 hover:text-amber-300 border border-white/10 hover:border-amber-400/40 rounded-xl transition shrink-0 cursor-pointer shadow-sm"
-                  title="Curated driving routes with turn-by-turn navigation"
+                  title="Curated routes are under verification"
                 >
                   <Compass className="w-3.5 h-3.5 text-amber-400 shrink-0" />
                   <span>Curated Routes</span>

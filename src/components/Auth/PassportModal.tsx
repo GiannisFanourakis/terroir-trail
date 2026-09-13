@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Producer } from '../../types/terroir';
 import { UserProfile } from '../../types/auth';
-import { X, Award, CheckCircle2, Circle, MapPin, Edit3, Save, Compass, Crown, Sparkles, QrCode } from 'lucide-react';
+import { X, Award, CheckCircle2, Circle, MapPin, Edit3, Save } from 'lucide-react';
 import { UserAvatar } from '../Common/UserAvatar';
 import { getCategoryFallbackImage } from '../../utils/imageFallbacks';
 
@@ -34,10 +34,7 @@ export const PassportModal: React.FC<PassportModalProps> = ({
 
   if (!isOpen || !user) return null;
 
-  const FREE_STAMP_LIMIT = 3;
-  const isVip = !!user.hasExplorerPass;
   const visitedCount = user.visitedProducers?.length ?? 0;
-  const isFreeLimitReached = !isVip && visitedCount >= FREE_STAMP_LIMIT;
   const progressPercent = Math.round((visitedCount / producers.length) * 100);
 
   const filteredProducers = producers.filter((p) => {
@@ -48,11 +45,6 @@ export const PassportModal: React.FC<PassportModalProps> = ({
   });
 
   const handleToggleStamp = (producerId: string) => {
-    const isStamped = user.visitedProducers.includes(producerId);
-    if (!isStamped && isFreeLimitReached) {
-      if (onOpenExplorerPass) onOpenExplorerPass();
-      return;
-    }
     onToggleVisited(producerId);
   };
 
@@ -79,14 +71,12 @@ export const PassportModal: React.FC<PassportModalProps> = ({
                 <h2 className="font-serif-title text-base sm:text-lg font-bold text-white">
                   {user.name}&apos;s Terroir Passport
                 </h2>
-                <span className={`text-[9px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${
-                  isVip ? 'bg-amber-400/20 text-amber-300 border border-amber-400/30' : 'bg-stone-800 text-stone-400 border border-white/10'
-                }`}>
-                  {isVip ? '👑 VIP MEMBER' : 'FREE TIER (3 STAMPS)'}
+                <span className="text-[9px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider bg-stone-800 text-stone-300 border border-white/10">
+                  Explorer
                 </span>
               </div>
               <p className="text-[11px] text-stone-400">
-                {visitedCount} of {producers.length} Artisans Stamped {isVip ? '(Unlimited)' : `(${Math.min(visitedCount, FREE_STAMP_LIMIT)}/3 Free Allowed)`}
+                {visitedCount} of {producers.length} places stamped
               </p>
             </div>
           </div>
@@ -102,44 +92,6 @@ export const PassportModal: React.FC<PassportModalProps> = ({
 
         {/* Passport Progress & Filter Tabs */}
         <div className="px-5 py-3.5 bg-stone-900/60 border-b border-white/10 shrink-0 space-y-3">
-          {/* VIP Explorer Pass Banner */}
-          {user.hasExplorerPass && (
-            <div className="p-3 rounded-2xl bg-gradient-to-r from-amber-500/20 via-stone-900 to-amber-900/25 border border-amber-400/40 flex items-center justify-between gap-3 shadow-inner">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-amber-400/20 border border-amber-400/30 flex items-center justify-center text-amber-300 shrink-0">
-                  <Crown className="w-4 h-4" />
-                </div>
-                <div>
-                  <div className="text-xs font-bold text-amber-200 flex items-center gap-1.5">
-                    <span>VIP Terroir Explorer Pass Active</span>
-                    <span className="text-[9px] px-1.5 py-0.2 rounded-md bg-amber-400/20 text-amber-300 font-semibold uppercase">VIP</span>
-                  </div>
-                  <div className="text-[11px] text-stone-300">
-                    Complimentary pours, artisan meze &amp; 10% cellar discount enabled
-                  </div>
-                </div>
-              </div>
-              <div className="flex items-center gap-1.5 shrink-0">
-                {onOpenDigitalPass && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      onClose();
-                      onOpenDigitalPass();
-                    }}
-                    className="text-[10px] text-stone-950 font-bold px-2.5 py-1.5 rounded-xl bg-amber-400 hover:bg-amber-300 transition shadow flex items-center gap-1 cursor-pointer"
-                  >
-                    <QrCode className="w-3 h-3" />
-                    <span>Show Pass</span>
-                  </button>
-                )}
-                <span className="text-[10px] text-emerald-400 font-bold px-2 py-1 rounded-lg bg-emerald-500/15 border border-emerald-500/30">
-                  ACTIVE
-                </span>
-              </div>
-            </div>
-          )}
-
           {/* Progress Bar */}
           <div className="w-full h-2 bg-stone-800 rounded-full overflow-hidden">
             <div

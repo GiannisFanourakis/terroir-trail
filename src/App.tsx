@@ -225,11 +225,7 @@ export const App: React.FC = () => {
         onOpenPassport={() => setActiveModal({ type: 'passport' })}
         onLogout={logout}
         totalProducersCount={producers.length}
-        onOpenMyBookings={() => setActiveModal({ type: 'my_bookings' })}
         onOpenProducerPortal={() => setActiveModal({ type: 'portal' })}
-        bookingsCount={userBookings.length}
-        onOpenExplorerPass={() => setActiveModal({ type: 'pass' })}
-        onOpenDigitalPass={() => setActiveModal({ type: 'digital_pass' })}
         onOpenAbout={() => setActiveModal({ type: 'about_faq', initialTab: 'about' })}
         onOpenFaq={() => setActiveModal({ type: 'about_faq', initialTab: 'faq' })}
         onOpenLegal={(tab) => setActiveModal({ type: 'legal', initialTab: tab || 'privacy' })}
@@ -292,10 +288,7 @@ export const App: React.FC = () => {
           {/* Sponsor / Travel Partner Ad Banner (Top Middle) */}
           <div className="absolute top-2.5 left-0 right-0 z-20 pointer-events-none flex justify-center px-3">
             <div className="pointer-events-auto w-full max-w-2xl">
-              <GoogleAdSlot
-                hasExplorerPass={!!user?.hasExplorerPass}
-                onOpenExplorerPass={() => setActiveModal({ type: 'pass' })}
-              />
+              <GoogleAdSlot hasExplorerPass={!!user?.hasExplorerPass} />
             </div>
           </div>
 
@@ -357,11 +350,6 @@ export const App: React.FC = () => {
             isAuthenticated={isAuthenticated}
             onOpenAuth={(role) => setActiveModal({ type: 'auth', initialRole: role || 'traveler' })}
             customNotice={selectedProducer ? getOverride(selectedProducer.id)?.customNotice : undefined}
-            isProTier={selectedProducer ? (getOverride(selectedProducer.id)?.isProTier ?? false) : false}
-            directBottleShopUrl={selectedProducer ? getOverride(selectedProducer.id)?.directBottleShopUrl : undefined}
-            hasExplorerPass={!!user?.hasExplorerPass}
-            onOpenExplorerPass={() => setActiveModal({ type: 'pass' })}
-            onOpenDigitalPass={() => setActiveModal({ type: 'digital_pass' })}
           />
         )}
       </main>
@@ -379,9 +367,7 @@ export const App: React.FC = () => {
               setIsDrawerOpen(true);
               closeModal();
             }}
-            onBookChauffeur={(loop) => setActiveModal({ type: 'chauffeur', circuit: loop })}
             user={user}
-            onOpenExplorerPass={() => setActiveModal({ type: 'pass' })}
             producers={producers}
           />
         )}
@@ -423,8 +409,7 @@ export const App: React.FC = () => {
               setIsDrawerOpen(true);
               closeModal();
             }}
-            onOpenExplorerPass={() => setActiveModal({ type: 'pass' })}
-            onOpenDigitalPass={() => setActiveModal({ type: 'digital_pass' })}
+
           />
         )}
 
@@ -532,7 +517,6 @@ export const App: React.FC = () => {
             initialTab={activeModal.initialTab || 'about'}
             onOpenLoops={() => setActiveModal({ type: 'loops' })}
             onOpenAuth={(role) => setActiveModal({ type: 'auth', initialRole: role || 'traveler' })}
-            onOpenExplorerPass={() => setActiveModal({ type: 'pass' })}
             onOpenProducerPortal={() => setActiveModal({ type: 'portal' })}
             onOpenLegal={(tab) => setActiveModal({ type: 'legal', initialTab: tab })}
           />

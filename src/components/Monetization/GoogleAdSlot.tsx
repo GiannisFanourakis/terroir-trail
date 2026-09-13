@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { SponsorBanner } from './SponsorBanner';
 
 declare global {
   interface Window {
@@ -36,16 +35,8 @@ export const GoogleAdSlot: React.FC<GoogleAdSlotProps> = ({
   const [adError, setAdError] = useState<boolean>(false);
   const adRef = useRef<HTMLModElement | null>(null);
 
-  // If no slot ID is configured yet or on error, show the curated sponsor banner
-  if (!client || !slot || adError) {
-    return (
-      <SponsorBanner
-        hasExplorerPass={hasExplorerPass}
-        onOpenExplorerPass={onOpenExplorerPass}
-        className={className}
-      />
-    );
-  }
+  // Fail closed when no verified ad slot is configured or ad rendering fails.
+  if (!client || !slot || adError) return null;
 
   useEffect(() => {
     // 1. Ensure AdSense script is present
@@ -81,15 +72,7 @@ export const GoogleAdSlot: React.FC<GoogleAdSlotProps> = ({
         <span className="text-[9px] text-stone-500 uppercase tracking-widest font-mono">
           Advertisement
         </span>
-        {onOpenExplorerPass && (
-          <button
-            type="button"
-            onClick={onOpenExplorerPass}
-            className="text-[10px] text-amber-400/80 hover:text-amber-300 transition hover:underline cursor-pointer"
-          >
-            Remove Ads with VIP Pass
-          </button>
-        )}
+
       </div>
 
       <div className="overflow-hidden rounded-2xl border border-white/10 bg-stone-900/80 p-1 min-h-[60px] flex items-center justify-center">

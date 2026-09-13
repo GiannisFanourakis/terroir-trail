@@ -140,37 +140,6 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
             </div>
           </div>
 
-          {/* PRODUCER PASS: HOST PRO TIER */}
-          {user.isProducer && user.claimedProducerId && (
-            <div className="mb-2.5 p-3 rounded-2xl bg-gradient-to-br from-amber-500/20 via-stone-900 to-stone-950 border border-amber-400/40 shadow-lg shadow-amber-500/10 text-left">
-              <div className="flex items-center justify-between mb-1.5">
-                <div className="flex items-center gap-1.5">
-                  <Crown className="w-4 h-4 text-amber-400" />
-                  <span className="font-bold text-white text-xs">Host Pro</span>
-                </div>
-                <span className="text-[9px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider bg-amber-500/20 text-amber-300 border border-amber-500/30">
-                  €199/yr
-                </span>
-              </div>
-              <p className="text-[10px] text-stone-300 mb-2 leading-relaxed">
-                Pro Estate badge styling, direct bottle shop links & 0% booking commission.
-              </p>
-              {onOpenProducerPortal && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsOpen(false);
-                    onOpenProducerPortal();
-                  }}
-                  className="w-full py-1.5 rounded-xl text-[11px] font-bold bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-stone-950 shadow-md flex items-center justify-center gap-1.5 transition cursor-pointer"
-                >
-                  <Building2 className="w-3 h-3" />
-                  <span>View Host Pro Pilot</span>
-                </button>
-              )}
-            </div>
-          )}
-
           {/* Terroir Passport Progress */}
           <button
             onClick={() => {
