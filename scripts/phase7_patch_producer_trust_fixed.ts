@@ -1,3 +1,4 @@
+/* eslint-disable no-regex-spaces */
 import fs from 'node:fs';
 import path from 'node:path';
 
