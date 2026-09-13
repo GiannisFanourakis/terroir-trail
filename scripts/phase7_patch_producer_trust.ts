@@ -43,7 +43,7 @@ async function run() {
   );
 
   try {
-    await import('./phase7_patch_producer_trust_fixed.ts');
+    await import('./phase7_patch_producer_trust_fixed');
   } catch (error) {
     restoreBackups();
     throw error;
