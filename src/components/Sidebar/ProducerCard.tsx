@@ -31,29 +31,64 @@ export const ProducerCard: React.FC<ProducerCardProps> = ({
     }
   };
 
-  const getCategoryBadge = (cat: Producer['category']) => {
-    switch (cat) {
+  const getCategoryBadge = (p: Producer) => {
+    if (p.id === 'peskesi-farm-kazani') {
+      return { label: 'Organic Farm', icon: '🌿', bg: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' };
+    }
+
+    switch (p.category) {
       case 'winery':
         return { label: 'Winery', icon: '🍇', bg: 'bg-rose-500/20 text-rose-300 border-rose-500/30' };
       case 'brewery':
-        return { label: 'Microbrewery', icon: '🍺', bg: 'bg-amber-400/25 text-amber-300 border-amber-400/40' };
+        return { label: 'Brewery', icon: '🍺', bg: 'bg-amber-400/25 text-amber-300 border-amber-400/40' };
       case 'kazani':
         return { label: 'Rakokazano', icon: '🏺', bg: 'bg-amber-500/20 text-amber-300 border-amber-500/30' };
       case 'olive_mill':
         return { label: 'Olive Mill', icon: '🫒', bg: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' };
       case 'cheese_dairy':
-        return { label: 'Shepherd Dairy', icon: '🧀', bg: 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30' };
+        return { label: 'Dairy', icon: '🧀', bg: 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30' };
       case 'apiary':
-        return { label: 'Honey & Herbs', icon: '🍯', bg: 'bg-orange-500/20 text-orange-300 border-orange-500/30' };
+        return { label: 'Apiary / Honey', icon: '🍯', bg: 'bg-orange-500/20 text-orange-300 border-orange-500/30' };
     }
   };
 
-  const badge = getCategoryBadge(producer.category);
+  const getRoadBadge = (p: Producer) => {
+    if (p.roadAccessStatus !== 'verified' || !p.roadAccess) return null;
+
+    switch (p.roadAccess) {
+      case 'paved':
+        return { label: 'Paved road', className: 'text-stone-400' };
+      case 'narrow_paved':
+        return { label: 'Narrow paved road', className: 'text-amber-400' };
+      case 'gravel_ok':
+        return { label: 'Gravel access', className: 'text-amber-400' };
+      case 'unpaved_passable':
+        return { label: 'Unpaved access', className: 'text-amber-400' };
+      case 'high_clearance_recommended':
+        return { label: 'High-clearance recommended', className: 'text-orange-400' };
+      case '4x4_required':
+        return { label: '4x4 required', className: 'text-rose-400' };
+    }
+  };
+
+  const badge = getCategoryBadge(producer);
+  const roadBadge = getRoadBadge(producer);
+
+  const selectProducer = () => onSelect(producer);
 
   return (
     <div
-      onClick={() => onSelect(producer)}
-      className={`group relative flex flex-col bg-stone-900/90 rounded-2xl border transition-all duration-300 cursor-pointer overflow-hidden ${
+      role="button"
+      tabIndex={0}
+      aria-label={`Open ${producer.name}`}
+      onClick={selectProducer}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          selectProducer();
+        }
+      }}
+      className={`group relative flex flex-col bg-stone-900/90 rounded-2xl border transition-all duration-300 cursor-pointer overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 ${
         isSelected
           ? 'border-amber-500 ring-2 ring-amber-500/40 shadow-2xl translate-y-[-2px]'
           : 'border-white/10 hover:border-amber-500/50 hover:shadow-xl hover:translate-y-[-1px]'
@@ -74,14 +109,15 @@ export const ProducerCard: React.FC<ProducerCardProps> = ({
         {/* Top Badges */}
         <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5">
           <span className={`flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-full font-bold border backdrop-blur-md ${badge.bg}`}>
-            <span>{badge.icon}</span>
+            <span aria-hidden="true">{badge.icon}</span>
             <span>{badge.label}</span>
           </span>
         </div>
 
-        {/* Top Right: Favorite Button & Rating */}
+        {/* Top Right: Favorite Button & source-backed rating when present */}
         <div className="absolute top-2.5 right-2.5 flex items-center gap-1.5">
           <button
+            type="button"
             onClick={(e) => {
               e.stopPropagation();
               onToggleFavorite(producer.id);
@@ -91,13 +127,14 @@ export const ProducerCard: React.FC<ProducerCardProps> = ({
                 ? 'bg-rose-600 text-white border-rose-500 shadow-md scale-105'
                 : 'bg-black/60 text-stone-300 hover:text-white border-white/10'
             }`}
-            title={isFavorite ? 'Remove from wishlist' : 'Save to wishlist'}
+            title={isFavorite ? 'Remove from saved places' : 'Save place'}
+            aria-label={isFavorite ? `Remove ${producer.name} from saved places` : `Save ${producer.name}`}
           >
-            <Heart className={`w-3.5 h-3.5 ${isFavorite ? 'fill-white' : ''}`} />
+            <Heart className={`w-3.5 h-3.5 ${isFavorite ? 'fill-white' : ''}`} aria-hidden="true" />
           </button>
           {producer.rating != null && (
             <div className="flex items-center gap-1 bg-black/70 backdrop-blur-md text-white px-2 py-1 rounded-full text-xs font-bold border border-white/10">
-              <Star className="w-3 h-3 text-amber-400 fill-amber-400" />
+              <Star className="w-3 h-3 text-amber-400 fill-amber-400" aria-hidden="true" />
               <span>{producer.rating}</span>
             </div>
           )}
@@ -105,8 +142,8 @@ export const ProducerCard: React.FC<ProducerCardProps> = ({
 
         {/* Bottom Location Overlay */}
         <div className="absolute bottom-2.5 left-3 right-3 flex items-end justify-between">
-          <div className="flex items-center gap-1.5 text-stone-300 text-xs font-medium">
-            <MapPin className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+          <div className="flex items-center gap-1.5 text-stone-300 text-xs font-medium min-w-0">
+            <MapPin className="w-3.5 h-3.5 text-amber-400 shrink-0" aria-hidden="true" />
             <span className="truncate">
               {producer.countryCode === 'IT' ? '🇮🇹 ' : ''}
               {producer.village}, {producer.region.toUpperCase()}
@@ -126,9 +163,11 @@ export const ProducerCard: React.FC<ProducerCardProps> = ({
           <h3 className="font-serif-title font-bold text-base text-white group-hover:text-amber-400 transition-colors line-clamp-1">
             {producer.name}
           </h3>
-          <p className="text-[11px] text-stone-400 font-medium line-clamp-1">
-            {producer.greekName}
-          </p>
+          {producer.greekName && producer.greekName !== producer.name && (
+            <p className="text-[11px] text-stone-400 font-medium line-clamp-1">
+              {producer.greekName}
+            </p>
+          )}
         </div>
 
         <p className="text-xs text-stone-300 line-clamp-2 leading-relaxed">
@@ -147,12 +186,12 @@ export const ProducerCard: React.FC<ProducerCardProps> = ({
           ))}
           {producer.ethos.includes('unpasteurized') && (
             <span className="text-[10px] px-2 py-0.5 rounded-lg bg-amber-400/20 text-amber-300 font-medium border border-amber-400/30">
-              Fresh Draft
+              Unpasteurized
             </span>
           )}
           {producer.ethos.includes('organic') && (
             <span className="text-[10px] px-2 py-0.5 rounded-lg bg-emerald-500/20 text-emerald-300 font-medium border border-emerald-500/30">
-              Bio
+              Organic
             </span>
           )}
           {producer.ethos.includes('amphora') && (
@@ -162,28 +201,20 @@ export const ProducerCard: React.FC<ProducerCardProps> = ({
           )}
         </div>
 
-
-
         {/* Card Footer */}
-        <div className="flex items-center justify-between pt-2.5 border-t border-white/5 text-[11px]">
-          {producer.roadAccess ? (
-            <span className={`flex items-center gap-1 ${
-              producer.roadAccess === 'paved'
-                ? 'text-stone-400'
-                : producer.roadAccess === 'gravel_ok'
-                ? 'text-amber-400'
-                : 'text-rose-400'
-            }`}>
-              <Car className="w-3 h-3" />
-              {producer.roadAccess === 'paved' ? 'Paved Road' : producer.roadAccess === 'gravel_ok' ? 'Gravel OK' : '4x4 Required'}
+        <div className="flex items-center justify-between pt-2.5 border-t border-white/5 text-[11px] gap-2">
+          {roadBadge ? (
+            <span className={`flex items-center gap-1 min-w-0 ${roadBadge.className}`}>
+              <Car className="w-3 h-3 shrink-0" aria-hidden="true" />
+              <span className="truncate">{roadBadge.label}</span>
             </span>
           ) : (
-            <span />
+            <span className="text-stone-500">Access not classified</span>
           )}
 
-          <span className="text-amber-400 font-bold group-hover:translate-x-0.5 transition-transform flex items-center gap-0.5">
+          <span className="text-amber-400 font-bold group-hover:translate-x-0.5 transition-transform flex items-center gap-0.5 shrink-0">
             <span>View Story</span>
-            <ArrowUpRight className="w-3.5 h-3.5" />
+            <ArrowUpRight className="w-3.5 h-3.5" aria-hidden="true" />
           </span>
         </div>
       </div>
