@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Producer } from '../../types/terroir';
 import { ProducerCard } from './ProducerCard';
-import { ArrowUpDown, SearchX, Heart } from 'lucide-react';
+import { SearchX } from 'lucide-react';
 
 interface ProducerListProps {
   producers: Producer[];
@@ -20,13 +20,7 @@ export const ProducerList: React.FC<ProducerListProps> = ({
   isFavorite,
   onToggleFavorite,
 }) => {
-  const [sortBy, setSortBy] = useState<'rating' | 'reviews' | 'name'>('rating');
-
-  const sortedProducers = [...producers].sort((a, b) => {
-    if (sortBy === 'rating') return (b.rating ?? 0) - (a.rating ?? 0);
-    if (sortBy === 'reviews') return (b.reviewCount ?? 0) - (a.reviewCount ?? 0);
-    return a.name.localeCompare(b.name);
-  });
+  const sortedProducers = [...producers].sort((a, b) => a.name.localeCompare(b.name));
 
   return (
     <div className="flex flex-col h-full bg-stone-950 border-r border-white/10 w-full lg:w-[380px] xl:w-[420px] shrink-0 overflow-hidden select-none">
@@ -35,19 +29,9 @@ export const ProducerList: React.FC<ProducerListProps> = ({
         <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-stone-300">
           {producers.length} {producers.length === 1 ? 'Location' : 'Artisanal Locations'}
         </span>
-
-        <div className="flex items-center gap-1.5 text-xs text-stone-400 bg-stone-800/80 px-2.5 py-1 rounded-xl border border-white/5">
-          <ArrowUpDown className="w-3.5 h-3.5 text-amber-400" />
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value as any)}
-            className="bg-transparent border-none text-stone-200 font-semibold text-xs focus:ring-0 cursor-pointer pr-1"
-          >
-            <option value="rating" className="bg-stone-900 text-white">Top Rated</option>
-            <option value="reviews" className="bg-stone-900 text-white">Most Reviewed</option>
-            <option value="name" className="bg-stone-900 text-white">Alphabetical</option>
-          </select>
-        </div>
+        <span className="text-[10px] sm:text-[11px] text-stone-500 font-semibold" aria-label="Producer list sorted alphabetically">
+          A–Z
+        </span>
       </div>
 
       {/* Cards Scrollable Feed */}
@@ -64,15 +48,16 @@ export const ProducerList: React.FC<ProducerListProps> = ({
             />
           ))
         ) : (
-          <div className="flex flex-col items-center justify-center py-20 px-4 text-center">
+          <div className="flex flex-col items-center justify-center py-20 px-4 text-center" role="status">
             <div className="w-14 h-14 rounded-2xl bg-stone-900 border border-white/10 flex items-center justify-center text-amber-400 mb-4 shadow-xl">
-              <SearchX className="w-7 h-7" />
+              <SearchX className="w-7 h-7" aria-hidden="true" />
             </div>
             <h4 className="text-sm font-bold text-white mb-1">No Makers Match Filters</h4>
             <p className="text-xs text-stone-400 max-w-xs mb-5">
               Try adjusting your category, road accessibility, or destination filters.
             </p>
             <button
+              type="button"
               onClick={onResetFilters}
               className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs shadow-lg transition"
             >
