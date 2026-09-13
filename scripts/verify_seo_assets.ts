@@ -63,7 +63,7 @@ function verifySeoAssets(): void {
     process.exit(1);
   }
 
-  // 6. Verify dist/index.html canonical link and absence of stale claims
+  // 6. Verify dist/index.html canonical link and absence of stale/publicly quarantined claims
   const indexPath = path.join(distDir, 'index.html');
   if (fs.existsSync(indexPath)) {
     const indexContent = fs.readFileSync(indexPath, 'utf-8');
@@ -73,8 +73,25 @@ function verifySeoAssets(): void {
       process.exit(1);
     }
 
-    if (indexContent.includes('58 featured independent')) {
-      console.error('[SEO Verification Failed] dist/index.html still contains stale "58 featured independent" claim.');
+    const bannedClaims = [
+      '58 featured independent',
+      'Curated Crete Rural Discovery Loops',
+      'Heraklion Peza & Archanes Wine Loop',
+      'Chania Mountain & Artisan Olive Oil Circuit',
+      'Rethymno Foothills & Heritage Circuit',
+      'Lasithi & Sitia Monastic Terroir Route',
+      'and self-guided rural discovery routes.',
+    ];
+
+    for (const claim of bannedClaims) {
+      if (indexContent.includes(claim)) {
+        console.error(`[SEO Verification Failed] dist/index.html still contains quarantined/stale claim: ${claim}`);
+        process.exit(1);
+      }
+    }
+
+    if (!indexContent.includes('Curated Rural Routes Under Verification')) {
+      console.error('[SEO Verification Failed] dist/index.html is missing the curated-route verification notice.');
       process.exit(1);
     }
   }
@@ -82,7 +99,7 @@ function verifySeoAssets(): void {
   console.log(`✓ SEO verification passed:`);
   console.log(`  - dist/sitemap.xml present and valid (${locMatches.length} URLs mapped to ${CANONICAL_HOST})`);
   console.log(`  - dist/robots.txt present and advertises ${CANONICAL_SITEMAP_URL}`);
-  console.log(`  - Canonical link verified in dist/index.html`);
+  console.log(`  - Canonical link and draft-route quarantine verified in dist/index.html`);
 }
 
 verifySeoAssets();
