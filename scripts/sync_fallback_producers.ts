@@ -41,7 +41,9 @@ function mapRowToProducer(row: any): Producer {
   if (row.phone) prod.phone = row.phone;
   if (row.website) prod.website = row.website;
   if (googleMapsUrl) prod.googleMapsUrl = googleMapsUrl;
-  if (row.road_access) prod.roadAccess = row.road_access as RoadAccess;
+  if (row.road_access_status === 'verified' && row.road_access) {
+    prod.roadAccess = row.road_access as RoadAccess;
+  }
   if (row.road_access_status) prod.roadAccessStatus = row.road_access_status;
   if (row.road_access_source_url) prod.roadAccessSourceUrl = row.road_access_source_url;
   if (row.road_access_notes) prod.roadAccessNotes = row.road_access_notes;
