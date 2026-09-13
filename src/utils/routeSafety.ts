@@ -6,6 +6,7 @@ export type RouteNavigationIssueCode =
   | 'location_not_verified'
   | 'invalid_coordinates'
   | 'road_access_unreviewed'
+  | 'road_access_not_confirmed'
   | 'road_access_uncertain'
   | 'special_vehicle_required';
 
@@ -25,6 +26,7 @@ const STANDARD_ROUTE_ACCESS = new Set<RoadAccess>([
   'paved',
   'narrow_paved',
   'gravel_ok',
+  'unpaved_passable',
 ]);
 
 function hasValidCoordinates(producer: Producer): boolean {
@@ -120,6 +122,12 @@ export function evaluateRouteNavigation(
         producerId: producer.id,
         message: `${producer.name} has currently uncertain road access.`,
       });
+    } else if (producer.roadAccessStatus === 'not_publicly_confirmed') {
+      issues.push({
+        code: 'road_access_not_confirmed',
+        producerId: producer.id,
+        message: `${producer.name} has been reviewed, but suitable road-access evidence is not publicly confirmed.`,
+      });
     } else if (
       producer.roadAccessStatus !== 'verified' ||
       !producer.roadAccess
@@ -171,8 +179,14 @@ export function getProducerRoadAccessWarning(producer: Producer): string | undef
   if (producer.roadAccessStatus === 'current_access_uncertain') {
     return 'Current road access is uncertain. Confirm conditions with the producer before driving.';
   }
+  if (producer.roadAccessStatus === 'not_publicly_confirmed') {
+    return 'Road conditions were reviewed but are not publicly confirmed. Use the producer’s official directions and confirm access if needed.';
+  }
   if (producer.roadAccessStatus !== 'verified' || !producer.roadAccess) {
     return 'Road conditions have not yet been independently verified. Use the producer’s official access instructions and drive conservatively.';
+  }
+  if (producer.roadAccess === 'unpaved_passable') {
+    return 'Verified passable unpaved access. Follow the producer’s access notes and current conditions.';
   }
   if (producer.roadAccess === 'high_clearance_recommended') {
     return 'High-clearance vehicle recommended. Check current conditions before driving.';
