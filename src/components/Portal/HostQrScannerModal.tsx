@@ -3,6 +3,7 @@ import { Html5Qrcode } from 'html5-qrcode';
 import { X, Camera, SwitchCamera, AlertCircle, Sparkles, Check, ArrowRight, ShieldCheck, QrCode } from 'lucide-react';
 import { VerifiedPassInfo } from '../Monetization/HostVerificationModal';
 import { verifyExplorerPass } from '../../services/explorerPass';
+import { logger } from '../../services/logger';
 
 interface HostQrScannerModalProps {
   isOpen: boolean;
@@ -94,7 +95,7 @@ export const HostQrScannerModal: React.FC<HostQrScannerModalProps> = ({
       } catch (err: any) {
         if (!isMounted) return;
         setIsStarting(false);
-        console.warn('Camera scanner initialization failed:', err);
+        logger.warn('ExplorerPass', 'scanner_init_failed', { reason: err?.message || String(err) });
         if (err?.name === 'NotAllowedError' || err?.message?.includes('Permission')) {
           setCameraError('Camera permission was denied. Please allow camera access in your device/app settings, or enter the Pass ID manually below.');
         } else if (err?.name === 'NotFoundError' || err?.message?.includes('devices not found')) {

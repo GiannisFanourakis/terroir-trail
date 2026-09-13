@@ -28,6 +28,7 @@ import {
 import { TastingBooking, ProducerOverride } from '../types/booking';
 import { UserProfile, ProducerRegistrationRecord } from '../types/auth';
 import { SEEDED_PRODUCER_REGISTRATIONS } from '../data/seededRegistrations';
+import { logger } from './logger';
 
 const getEnv = (key: string): string => {
   if (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env[key]) {
@@ -81,7 +82,7 @@ if (isFirebaseConfigured) {
       db = getFirestore(app);
     }
   } catch (error) {
-    console.error('Firebase initialization error:', error);
+    logger.error('Firebase', 'initialization_failed', error);
   }
 }
 

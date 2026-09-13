@@ -3,6 +3,7 @@ import { TastingExperience } from '../types/booking';
 import { CRETAN_PRODUCERS } from '../data/producers';
 import { ALL_EXPERIENCES } from '../data/experiences';
 import { supabase, isSupabaseConfigured } from './supabase';
+import { logger } from './logger';
 
 export interface ViewportBounds {
   north: number;
@@ -240,7 +241,7 @@ export const producerService = {
           return remoteProducers;
         }
       } catch (err) {
-        console.warn('Supabase fetch failed, falling back to static seed data:', err);
+        logger.warn('Catalogue', 'producers_fetch_failed', { reason: err instanceof Error ? err.message : String(err) });
       }
     }
 
@@ -278,10 +279,10 @@ export const producerService = {
           // Supabase is authoritative and answered that this record does not exist
           return null;
         }
-        console.warn('Supabase getProducerById failed, falling back to static seed:', error);
+        logger.warn('Catalogue', 'producer_by_id_failed', { id, reason: error.message });
         return CRETAN_PRODUCERS.find((p) => p.id === id) || null;
       } catch (err) {
-        console.warn('Supabase getProducerById error, falling back to static seed:', err);
+        logger.warn('Catalogue', 'producer_by_id_error', { id, reason: err instanceof Error ? err.message : String(err) });
         return CRETAN_PRODUCERS.find((p) => p.id === id) || null;
       }
     }
@@ -320,7 +321,7 @@ export const producerService = {
           return remote;
         }
       } catch (err) {
-        console.warn('Error fetching experiences from Supabase, falling back to static seed:', err);
+        logger.warn('Catalogue', 'experiences_fetch_failed', { producerId, reason: err instanceof Error ? err.message : String(err) });
       }
     }
 

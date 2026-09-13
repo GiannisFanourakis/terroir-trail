@@ -5,6 +5,7 @@ import {
   Clock, Maximize2, Minimize2, Share2, Smartphone
 } from 'lucide-react';
 import { UserProfile } from '../../types/auth';
+import { logger } from '../../services/logger';
 
 interface DigitalPassModalProps {
   isOpen: boolean;
@@ -71,7 +72,7 @@ export const DigitalPassModal: React.FC<DigitalPassModalProps> = ({
       errorCorrectionLevel: 'H',
     })
       .then((url) => setQrDataUrl(url))
-      .catch((err) => console.error('Error generating pass QR code:', err));
+      .catch((err) => logger.error('ExplorerPass', 'qr_generation_failed', err));
   }, [isOpen, isVip, verificationUrl]);
 
   if (!isOpen) return null;

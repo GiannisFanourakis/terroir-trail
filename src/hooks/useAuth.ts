@@ -30,6 +30,7 @@ import { DEMO_PROFILES, DEMO_PRODUCER_PROFILES } from '../data/demoProfiles';
 import { formatAuthError } from '../utils/authErrors';
 import { useExplorerPass } from './useExplorerPass';
 import { createGoogleWebCredential, createAppleWebCredential } from '../services/authBridging';
+import { logger } from '../services/logger';
 
 export { DEMO_PROFILES, DEMO_PRODUCER_PROFILES };
 
@@ -76,7 +77,7 @@ export const useAuth = () => {
         personalNotes: parsed.personalNotes && typeof parsed.personalNotes === 'object' ? parsed.personalNotes : {},
       };
     } catch (e) {
-      console.error('Error reading auth from localStorage:', e);
+      logger.error('Auth', 'local_storage_read_failed', e);
       return null;
     }
   });
@@ -139,7 +140,7 @@ export const useAuth = () => {
             await saveUserProfileToCloud(mapped);
           }
         } catch (e) {
-          console.warn('Error fetching cloud profile on auth change:', e);
+          logger.warn('Auth', 'cloud_profile_fetch_failed', { reason: e instanceof Error ? e.message : String(e) });
           setUser((prev) => mapFirebaseUser(fbUser, prev?.travelerType));
         }
       } else {
@@ -175,7 +176,7 @@ export const useAuth = () => {
         localStorage.removeItem(STORAGE_KEY);
       }
     } catch (e) {
-      console.error('Error syncing auth to localStorage:', e);
+      logger.error('Auth', 'local_storage_sync_failed', e);
     }
   }, [user]);
 

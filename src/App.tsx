@@ -14,6 +14,7 @@ import { GoogleAdSlot } from './components/Monetization/GoogleAdSlot';
 import { ChauffeurBooking } from './types/monetization';
 import type { VerifiedPassInfo } from './components/Monetization/HostVerificationModal';
 import { verifyExplorerPass } from './services/explorerPass';
+import { logger } from './services/logger';
 import { List, MapPin } from 'lucide-react';
 
 // Performance optimization: lazy-load modals on demand to shrink initial bundle
@@ -114,7 +115,7 @@ export const App: React.FC = () => {
       const existing = JSON.parse(localStorage.getItem('terroir_chauffeur_bookings') || '[]');
       localStorage.setItem('terroir_chauffeur_bookings', JSON.stringify([booking, ...existing]));
     } catch (e) {
-      console.error('Error saving chauffeur booking:', e);
+      logger.error('App', 'chauffeur_booking_persist_failed', e);
     }
   };
 
