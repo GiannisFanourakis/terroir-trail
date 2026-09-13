@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { UserProfile } from '../../types/auth';
 import { ChauffeurBooking } from '../../types/monetization';
 import { DayTripLoop, Producer } from '../../types/terroir';
-import { CRETAN_PRODUCERS } from '../../data/producers';
 import { producerService } from '../../services/producerService';
 import { 
   X, ShieldCheck, Navigation, ExternalLink, 
@@ -31,7 +30,7 @@ export const ChauffeurBookingModal: React.FC<ChauffeurBookingModalProps> = ({
 
   // Compile stops for the active itinerary if provided
   const circuitStops = initialCircuit?.stops.map((stop, idx) => {
-    const p = producerService.getCachedProducer(stop.producerId) || CRETAN_PRODUCERS.find((prod: Producer) => prod.id === stop.producerId);
+    const p = producerService.getCachedProducer(stop.producerId);
     return {
       index: idx + 1,
       name: p?.name || stop.producerId,

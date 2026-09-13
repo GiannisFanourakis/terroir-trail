@@ -27,7 +27,6 @@ import {
 } from 'lucide-react';
 import { Producer } from '../../types/terroir';
 import { ProducerRegistrationRecord } from '../../types/auth';
-import { CRETAN_PRODUCERS } from '../../data/producers';
 import { producerService } from '../../services/producerService';
 import {
   validateVatNumber,
@@ -61,19 +60,16 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
   onCancel,
 }) => {
   const allProducers =
-    producersList && producersList.length > 0
+    producersList !== undefined
       ? producersList
-      : producerService.getCachedProducers().length > 0
-        ? producerService.getCachedProducers()
-        : CRETAN_PRODUCERS;
+      : producerService.getCachedProducers();
+
   // Determine starting producer
   const defaultProducer = allProducers.find((p: Producer) => p.id === initialProducerId) || allProducers[0];
 
   const [selectedProducerId, setSelectedProducerId] = useState<string>(
-    initialProducerId || defaultProducer.id
+    initialProducerId || defaultProducer?.id || ''
   );
-
-  const currentProducer = allProducers.find((p: Producer) => p.id === selectedProducerId) || defaultProducer;
 
   const [activeTab, setActiveTab] = useState<TabKey>('fiscal');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -84,13 +80,13 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
   // --- Form State (Default empty strings so suggestive examples render strictly as ghost text placeholders) ---
   // Step 1: Fiscal & Identity
   const [producerCategory, setProducerCategory] = useState<ProducerRegistrationRecord['producerCategory']>(
-    (defaultProducer.category as any) || 'winery'
+    (defaultProducer?.category as any) || 'winery'
   );
   const [tradeBrandName, setTradeBrandName] = useState('');
   const [legalBusinessName, setLegalBusinessName] = useState('');
   const [legalEntityType, setLegalEntityType] = useState<ProducerRegistrationRecord['legalEntityType']>('general_partnership_oe');
   const [countryCode, setCountryCode] = useState<'GR' | 'IT' | string>(
-    defaultProducer.country === 'Italy' || defaultProducer.destination === 'tuscany' ? 'IT' : 'GR'
+    defaultProducer ? (defaultProducer.country === 'Italy' || defaultProducer.destination === 'tuscany' ? 'IT' : 'GR') : 'GR'
   );
   const [vatNumber, setVatNumber] = useState('');
   const [taxOffice, setTaxOffice] = useState('');
@@ -117,7 +113,9 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
   const [streetAddress, setStreetAddress] = useState('');
   const [postalCode, setPostalCode] = useState('');
   const [cityOrVillage, setCityOrVillage] = useState('');
-  const [region, setRegion] = useState(defaultProducer.destination === 'tuscany' ? 'Tuscany' : 'Crete');
+  const [region, setRegion] = useState(
+    defaultProducer ? (defaultProducer.destination === 'tuscany' ? 'Tuscany' : 'Crete') : 'Crete'
+  );
   const [accessType, setAccessType] = useState<ProducerRegistrationRecord['logistics']['accessType']>('standard_courier_van');
   const [contactPersonName, setContactPersonName] = useState('');
   const [dispatchPhone, setDispatchPhone] = useState('');
@@ -153,10 +151,29 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
   const [notesFromProducer, setNotesFromProducer] = useState('');
   const [termsAccepted, setTermsAccepted] = useState(false);
 
+  // Synchronize selection if initially empty and producers arrive
+  useEffect(() => {
+    if (!selectedProducerId && allProducers.length > 0) {
+      const initial = allProducers.find((p: Producer) => p.id === initialProducerId) || allProducers[0];
+      if (initial) {
+        setSelectedProducerId(initial.id);
+        setProducerCategory((initial.category as any) || 'winery');
+        setCountryCode(initial.country === 'Italy' || initial.destination === 'tuscany' ? 'IT' : 'GR');
+        setRegion(initial.destination === 'tuscany' ? 'Tuscany' : 'Crete');
+      }
+    }
+  }, [allProducers, initialProducerId, selectedProducerId]);
+
   // Load existing database entry on mount or producer change
   useEffect(() => {
     let isMounted = true;
     async function loadData() {
+      if (!selectedProducerId) {
+        if (isMounted) {
+          clearForm();
+        }
+        return;
+      }
       const existing = await fetchProducerRegistrationFromCloud(selectedProducerId);
       if (existing && isMounted) {
         setTradeBrandName(existing.tradeBrandName || '');
@@ -337,6 +354,11 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormError(null);
+
+    if (!selectedProducerId) {
+      setFormError('No target estate selected or available in active catalogue.');
+      return;
+    }
 
     // Validate minimum required fields
     if (!tradeBrandName.trim()) {
@@ -540,17 +562,23 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
             <Layers className="w-3.5 h-3.5 text-amber-400" />
             <span>Target Estate / Directory Listing:</span>
           </label>
-          <select
-            value={selectedProducerId}
-            onChange={handleProducerSelectChange}
-            className="bg-stone-950 border border-white/15 text-white text-xs rounded-xl px-3 py-1.5 focus:outline-none focus:border-amber-400 max-w-sm"
-          >
-            {allProducers.map((p: Producer) => (
-              <option key={p.id} value={p.id}>
-                {p.name} ({p.village}, {p.destination === 'tuscany' ? 'Tuscany' : 'Crete'})
-              </option>
-            ))}
-          </select>
+          {allProducers.length === 0 ? (
+            <div className="text-xs text-stone-400 italic bg-stone-950/60 border border-white/10 rounded-xl px-3 py-1.5">
+              No directory producers available in active catalogue
+            </div>
+          ) : (
+            <select
+              value={selectedProducerId}
+              onChange={handleProducerSelectChange}
+              className="bg-stone-950 border border-white/15 text-white text-xs rounded-xl px-3 py-1.5 focus:outline-none focus:border-amber-400 max-w-sm"
+            >
+              {allProducers.map((p: Producer) => (
+                <option key={p.id} value={p.id}>
+                  {p.name} ({p.village}, {p.destination === 'tuscany' ? 'Tuscany' : 'Crete'})
+                </option>
+              ))}
+            </select>
+          )}
         </div>
       </div>
 
