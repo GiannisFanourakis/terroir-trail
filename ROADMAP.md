@@ -5,7 +5,7 @@
 > Completion convention: change `- [ ] Step` to `- [x] ~~Step~~` when finished. Do not mark a step complete until it has been implemented, tested, pushed, deployed where applicable, and verified.
 
 **Last updated:** 2026-09-13  
-**Current focus:** Phase 4 — Crete Data Integrity & Authenticity
+**Current focus:** Phase 4 — Batch 2: Heraklion
 
 ---
 
@@ -82,9 +82,15 @@ The frontend now respects Supabase truth instead of manufacturing defaults.
 
 ## Phase 4 — Crete Data Integrity & Authenticity
 
-**Status:** In progress — current focus.
+**Status:** In progress — Chania complete; Heraklion next.
 
 Complete the 27 Crete producer/project records with source-backed, human, authentic content.
+
+### Regional audit batches
+
+- [x] ~~Batch 1 — Chania (9 records)~~
+- [ ] Batch 2 — Heraklion
+- [ ] Batch 3 — Rethymno + Lasithi
 
 - [ ] Verify and refine each real producer/family story.
 - [ ] Verify what each producer actually makes.
