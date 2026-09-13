@@ -14,7 +14,11 @@ export interface ApprovalResult {
  * 1. Validates a pending registration in producer_registrations/{producerId}.
  * 2. Rejects ownership conflicts (if the producer is already owned or applicant owns another producer).
  * 3. Creates the ownership record in producer_owners/{producerId}.
- * 4. Marks the registration approved (status: 'verified_active', isVatVerified: true, approvedAt).
+ * 4. Marks the ownership claim approved.
+ *
+ * Important: ownership approval does NOT imply VAT/tax verification. The
+ * registration's isVatVerified state is preserved and must only be changed by a
+ * separate evidence-backed operator process.
  */
 export async function approveProducerRegistration(producerId: string): Promise<ApprovalResult> {
   if (!producerId || typeof producerId !== 'string') {
@@ -72,10 +76,9 @@ export async function approveProducerRegistration(producerId: string): Promise<A
       approvedAt,
     });
 
-    // 4. Mark registration approved
+    // 4. Mark ownership registration approved while preserving independent VAT status.
     transaction.update(registrationRef, {
       status: 'verified_active',
-      isVatVerified: true,
       approvedAt,
       updatedAt: approvedAt,
     });
