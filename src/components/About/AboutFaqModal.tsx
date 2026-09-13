@@ -95,14 +95,14 @@ const FAQ_DATA: FaqItem[] = [
     category: 'passport',
     categoryLabel: 'Passport & Pass',
     question: 'What is the Terroir Digital Passport?',
-    answer: 'The Terroir Passport is your personal agritourism journal. As you explore estates, you collect verified digital cellar stamps, log sommelier tasting notes (vintage, nose, palate, pairings), and unlock milestone badges—from "Crete Explorer" to "Master of Mountain Terroir". Your journal stays permanently saved in your traveler account.',
+    answer: 'The Terroir Passport is your personal agritourism journal. As you explore estates, you collect digital visit stamps, log personal tasting notes (vintage, nose, palate, pairings), and unlock milestone badges—from "Crete Explorer" to "Master of Mountain Terroir". Your journal stays permanently saved in your traveler account.',
   },
   {
     id: 'what-is-vip-explorer-pass',
     category: 'passport',
     categoryLabel: 'Passport & Pass',
     question: 'What is the Explorer Pass?',
-    answer: 'The Explorer Pass (€14.99 for 14 days or €29.99 for an annual pass) provides a digital pass entitlement with a server-verified QR code and cross-device account synchronization. Passholders can present their QR code where available during partner pilots for cellar-door privileges, and keep their verified visit record synced across devices.',
+    answer: 'The Explorer Pass (€14.99 for 14 days or €29.99 for an annual pass) provides a digital pass entitlement with a server-verified QR code and cross-device account synchronization. Passholders can present their QR code where available during partner pilots for cellar-door privileges, and keep their visit record synced across devices.',
     highlight: 'Server-verified digital pass with QR verification and privileges where available during partner pilots.',
     actionText: 'View Explorer Pass',
     actionType: 'explorer_pass',
@@ -124,12 +124,12 @@ const FAQ_DATA: FaqItem[] = [
     category: 'logistics',
     categoryLabel: 'Artisan Delivery & Logistics',
     question: 'Can I hire a private chauffeur or book vehicle routes?',
-    answer: 'Official private chauffeur partnerships and guided vehicle routes are currently in development as we establish agreements with certified passenger transport operators and luxury vehicle dealerships. In the meantime, each estate listing includes verified GPS coordinates and navigation links so travelers can easily plan their journey with a designated driver.',
+    answer: 'TerroirTrail does not provide or operate chauffeur or transfer services directly. We provide links to independent transport marketplaces and transfer providers (such as Welcome Pickups and GetTransfer) so travelers can arrange transport if they prefer not to drive. In addition, each estate listing includes GPS coordinates and navigation links to easily plan routes with a designated driver.',
   },
   {
     id: 'international-wine-shipping',
     category: 'logistics',
-    categoryLabel: 'Chauffeurs & Delivery',
+    categoryLabel: 'Transport & Delivery',
     question: 'Can I ship wine bottles back to my home country?',
     answer: 'International bottle shipping is not currently offered through TerroirTrail. Some producers may offer their own shipping or courier arrangements; check directly with each producer during your visit or contact them through their listed details.',
   },
@@ -158,7 +158,7 @@ const FAQ_DATA: FaqItem[] = [
     category: 'producers',
     categoryLabel: 'For Estate Hosts',
     question: 'What tools and privileges are included in the Host Portal?',
-    answer: 'The Host Portal provides estate hosts with tools to: (1) Manage incoming guest reservation inquiries at 0% commission; (2) Update seasonal opening hours and tasting flight menus; (3) Publish live Harvest & Vintage Bulletins; (4) Link direct online bottle shop sales; (5) Upgrade to Verified Host Pro (€199/yr pilot) with Pro Estate badge styling, direct bottle shop links, and planned pilot features including priority directory placement.',
+    answer: 'The Host Portal provides estate hosts with tools to: (1) Manage incoming guest reservation inquiries at 0% commission; (2) Update seasonal opening hours and tasting flight menus; (3) Publish live Harvest & Vintage Bulletins; (4) Link direct online bottle shop sales; (5) Upgrade to Host Pro (€199/yr pilot) with Pro Estate badge styling, direct bottle shop links, and planned pilot features including priority directory placement.',
     highlight: 'Host Pro pilot membership (€199/yr) includes Pro Estate badge styling, bottle shop links, and planned pilot features.',
     actionText: 'Open Host Portal',
     actionType: 'producer_portal',
@@ -167,7 +167,7 @@ const FAQ_DATA: FaqItem[] = [
     id: 'host-pro-tax-deductible',
     category: 'producers',
     categoryLabel: 'For Estate Hosts',
-    question: 'Is the Verified Host Pro subscription tax-deductible?',
+    question: 'Is the Host Pro subscription tax-deductible?',
     answer: 'Business tax treatment depends on your jurisdiction and business circumstances. Billing and tax documentation will depend on the final Host Pro payment setup. Consult your accountant or tax adviser regarding tax treatment.',
     highlight: 'Tax and billing treatment depends on final payment setup. Consult your accountant or tax adviser.',
   },
@@ -327,7 +327,7 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
                 {/* Key Metrics Pill Badges */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-6 mt-6 border-t border-white/10">
                   <div className="p-3 rounded-2xl bg-stone-950/60 border border-white/10 text-center">
-                    <div className="text-amber-400 text-lg sm:text-xl font-mono font-bold">58+</div>
+                    <div className="text-amber-400 text-lg sm:text-xl font-mono font-bold">58</div>
                     <div className="text-[10px] text-stone-400 uppercase font-semibold tracking-wider">Featured Producers</div>
                   </div>
                   <div className="p-3 rounded-2xl bg-stone-950/60 border border-white/10 text-center">
@@ -387,7 +387,7 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
                     </div>
                     <h4 className="font-bold text-white text-sm">3. The Digital Terroir Passport</h4>
                     <p className="text-xs text-stone-300 leading-relaxed">
-                      Transform wine and agritourism into an inspiring personal voyage. Collect verified digital cellar stamps, save professional sommelier tasting journals, and track your discovery of rare indigenous grape varieties.
+                      Transform wine and agritourism into an inspiring personal voyage. Collect digital visit stamps, save personal tasting notes, and track your discovery of rare indigenous grape varieties.
                     </p>
                   </div>
 
@@ -609,7 +609,7 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
                 <div>
                   <h4 className="text-xs font-bold text-white">Still have questions or need personalized advice?</h4>
                   <p className="text-[11px] text-stone-400">
-                    Our team of sommeliers and local agritourism specialists is always happy to help.
+                    Our team is always happy to help with independent agritourism advice.
                   </p>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">

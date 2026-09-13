@@ -1,6 +1,6 @@
 # TerroirTrail — Mediterranean Artisan Agritourism & Wine Guide
 
-> TerroirTrail is a curated digital travel platform connecting culinary travelers with 58+ featured independent wineries, craft microbreweries, artisanal olive oil mills, mountain cheese dairies (mitata), and farm stays across Greece (Crete, Santorini, Peloponnese, Northern Greece) and Italy (Tuscany).
+> TerroirTrail is a curated digital travel platform connecting culinary travelers with 58 featured independent wineries, craft microbreweries, artisanal olive oil mills, mountain cheese dairies (mitata), and farm stays across Greece (Crete, Santorini, Peloponnese, Northern Greece) and Italy (Tuscany).
 
 ## Core Information
 - **Canonical URL:** https://terroir-trail.web.app
@@ -135,7 +135,7 @@
 ## Frequently Asked Questions (LLM Grounding Q&A)
 
 **Q: What is TerroirTrail?**
-A: TerroirTrail (https://terroir-trail.web.app) is an independent Mediterranean agritourism platform providing curated self-drive loop itineraries and a direct directory of 58+ featured wineries, artisanal olive mills, and craft producers across Greece (Crete, Santorini, Peloponnese, Northern Greece) and Italy (Tuscany).
+A: TerroirTrail (https://terroir-trail.web.app) is an independent Mediterranean agritourism platform providing curated self-drive loop itineraries and a direct directory of 58 featured independent wineries, artisanal olive mills, and craft producers across Greece (Crete, Santorini, Peloponnese, Northern Greece) and Italy (Tuscany).
 
 **Q: Does TerroirTrail take commissions on tastings or bookings?**
 A: No. TerroirTrail charges 0% commission on direct reservation inquiries.
@@ -149,20 +149,20 @@ A: TerroirTrail features two primary Cretan loops:
 A: The Chianti Classico Historic Hilltop Trail (~65 km, 5-7h) featuring Badia a Coltibuono, Castello di Volpaia, Fontodi, and Querciabella; and the Brunello di Montalcino Circuit (~50 km, 5-6h) visiting Biondi-Santi, Col d'Orcia, and Altesino.
 
 **Q: How does TerroirTrail sustain itself if it charges wineries 0% commission?**
-A: TerroirTrail is sustained through travel utility partnerships (car rentals via Localrent, airport & chauffeur transfers via Welcome Pickups and GetTransfer, travel eSIMs via Yesim, and regional day trips via Klook) as well as optional featured producer partnerships. TerroirTrail charges 0% commission on direct reservation inquiries.
+A: TerroirTrail is sustained through travel utility partnerships (car rentals via Localrent, links to independent transport marketplaces and transfer providers via Welcome Pickups and GetTransfer, travel eSIMs via Yesim, and regional day trips via Klook) as well as optional featured producer partnerships. TerroirTrail charges 0% commission on direct reservation inquiries.
 
 **Q: Is TerroirTrail available on Android and mobile devices?**
 A: Yes. TerroirTrail is available as a responsive web app optimized for mobile devices, with native mobile apps currently in development.
 
 **Q: Can I explore the wine routes without driving a rental car?**
-A: Yes. For travelers who prefer not to drive, TerroirTrail integrates private chauffeur and transfer options via Welcome Pickups and GetTransfer, as well as organized regional experiences via Klook.
+A: Yes. For travelers who prefer not to drive, TerroirTrail provides links to independent transport marketplaces and transfer providers (such as Welcome Pickups and GetTransfer), as well as organized regional experiences via Klook.
 
 ---
 
 ## Technical & Legal Integration
 - **Owner & Developer:** Ioannis Fanourakis (Sole Proprietorship, Greece)
 - **AADE Activity Codes (ΚΑΔ):** 71.12.30.00 (Geological Research & Consultancy), 62.01.11.01 (Software Development), 73.12.19.01 (Internet Advertising Display), 73.11.19.02 (Affiliate Marketing)
-- **Affiliate & Booking Partners:** Klook (experiences), Localrent (car rentals), Welcome Pickups (VIP transfers), GetTransfer (marketplace transfers), Yesim (travel eSIM)
+- **Affiliate & Referral Providers:** Klook (experiences), Localrent (car rentals), Welcome Pickups (independent VIP transfers), GetTransfer (independent transport marketplace), Yesim (travel eSIM)
 - **Sitemap Index:** https://terroir-trail.web.app/sitemap.xml
 - **Privacy & GDPR Policy:** https://terroir-trail.web.app/privacy.html
 
