@@ -42,6 +42,9 @@ function mapRowToProducer(row: any): Producer {
   if (row.website) prod.website = row.website;
   if (googleMapsUrl) prod.googleMapsUrl = googleMapsUrl;
   if (row.road_access) prod.roadAccess = row.road_access as RoadAccess;
+  if (row.road_access_status) prod.roadAccessStatus = row.road_access_status;
+  if (row.road_access_source_url) prod.roadAccessSourceUrl = row.road_access_source_url;
+  if (row.road_access_notes) prod.roadAccessNotes = row.road_access_notes;
   if (row.food_option) prod.foodOption = row.food_option as FoodOption;
   if (row.dog_friendly != null) prod.dogFriendly = Boolean(row.dog_friendly);
   if (row.kid_friendly != null) prod.kidFriendly = Boolean(row.kid_friendly);
