@@ -62,15 +62,15 @@ const FAQ_DATA: FaqItem[] = [
     category: 'tastings',
     categoryLabel: 'Tastings & Visits',
     question: 'Do I need to book my tastings in advance?',
-    answer: 'For most boutique estates, yes. Unlike commercial visitor centers with shifts of staff, independent producers and artisans are often actively in the vineyards, barrel cellar, or milking barns. TerroirTrail sends a reservation inquiry directly to the producer. Your visit is confirmed only after the host accepts it.',
-    highlight: 'Direct reservation inquiries sent straight to the estate with zero booking markup.',
+    answer: 'For most boutique estates, calling ahead or checking their website is recommended. Unlike commercial visitor centers with shifts of staff, independent producers and artisans are often actively in the vineyards, barrel cellar, or milking barns. We provide direct phone and official website links for each estate so you can contact the producer directly without middleman markups.',
+    highlight: 'Contact estates directly via phone or their official website.',
   },
   {
     id: 'tasting-costs',
     category: 'tastings',
     categoryLabel: 'Tastings & Visits',
     question: 'How much do tastings cost?',
-    answer: 'Tasting flights typically range from €10 to €35 per person depending on the tier. A standard flight includes 4–5 estate wines with rusks and olive oil; reserve and premium flights include library vintages, barrel samples, and full artisanal sheep graviera pairings. TerroirTrail charges 0% commission on direct reservation inquiries.',
+    answer: 'Tasting flights typically range from €10 to €35 per person depending on the tier. A standard flight includes 4–5 estate wines with rusks and olive oil; reserve and premium flights include library vintages, barrel samples, and full artisanal sheep graviera pairings. TerroirTrail is an open discovery platform with zero middleman markups — you connect and pay directly with the producer.',
   },
   {
     id: 'children-and-accessibility',
@@ -112,7 +112,7 @@ const FAQ_DATA: FaqItem[] = [
     category: 'passport',
     categoryLabel: 'Passport & Pass',
     question: 'Do I need an account to get the Explorer Pass? Does logging in automatically give me the pass?',
-    answer: 'Accounts on TerroirTrail are free. Creating an account does not automatically grant you an Explorer Pass. Free accounts can explore the map directory, view producer details, and submit direct visit inquiries. An authenticated account is required to link an Explorer Pass so your server-verified QR pass and account entitlements can be synchronized across your devices.',
+    answer: 'Accounts on TerroirTrail are free. Creating an account does not automatically grant you an Explorer Pass. Free accounts can explore the map directory, view producer details, save favorite producers, and record tasting notes. An authenticated account is required to link an Explorer Pass so your server-verified QR pass and account entitlements can be synchronized across your devices.',
     highlight: 'Accounts are free. The Explorer Pass is an optional entitlement that links to your account.',
     actionText: 'Sign In / Free Account',
     actionType: 'auth_traveler',
@@ -149,16 +149,16 @@ const FAQ_DATA: FaqItem[] = [
     id: 'producer-commission-fee',
     category: 'producers',
     categoryLabel: 'For Estate Hosts',
-    question: 'Does TerroirTrail charge a commission on tasting bookings?',
-    answer: 'Zero booking commissions are charged on direct reservation requests. Independent producers retain all direct tasting and cellar door sales. Estate hosts set their own visiting terms, hours, and tasting prices.',
-    highlight: '0% commission on direct reservation requests.',
+    question: 'Does TerroirTrail charge a commission or booking fees?',
+    answer: 'Zero commissions or booking fees. TerroirTrail is a discovery platform connecting travelers directly with independent producers. Independent producers retain 100% of their direct tasting and cellar door sales. Estate hosts set their own visiting terms, hours, and tasting prices.',
+    highlight: '0% commission on direct cellar door visits.',
   },
   {
     id: 'host-portal-features',
     category: 'producers',
     categoryLabel: 'For Estate Hosts',
     question: 'What tools and privileges are included in the Host Portal?',
-    answer: 'The Host Portal provides estate hosts with tools to: (1) Manage incoming guest reservation inquiries at 0% commission; (2) Update seasonal opening hours and tasting flight menus; (3) Publish live Harvest & Vintage Bulletins; (4) Link direct online bottle shop sales; (5) Upgrade to Host Pro (€199/yr pilot) with Pro Estate badge styling, direct bottle shop links, and planned pilot features including priority directory placement.',
+    answer: 'The Host Portal provides estate hosts with tools to: (1) Claim and manage their public estate profile; (2) Update seasonal opening hours and tasting flight menus; (3) Publish live Harvest & Vintage Bulletins; (4) Link direct online bottle shop sales; (5) Upgrade to Host Pro (€199/yr pilot) with Pro Estate badge styling, direct bottle shop links, and planned pilot features including priority directory placement.',
     highlight: 'Host Pro pilot membership (€199/yr) includes Pro Estate badge styling, bottle shop links, and planned pilot features.',
     actionText: 'Open Host Portal',
     actionType: 'producer_portal',
@@ -396,9 +396,9 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
                     <div className="w-9 h-9 rounded-xl bg-sky-500/15 border border-sky-500/30 text-sky-400 flex items-center justify-center">
                       <Building2 className="w-5 h-5" />
                     </div>
-                    <h4 className="font-bold text-white text-sm">4. Host Portal & 0% Commission</h4>
+                    <h4 className="font-bold text-white text-sm">4. Host Portal & 0% Middlemen</h4>
                     <p className="text-xs text-stone-300 leading-relaxed">
-                      Middlemen booking platforms extract up to 30% of artisan revenue. TerroirTrail charges 0% booking commission on direct reservation inquiries. Through the Host Portal, producers manage inquiries, update opening hours, and publish harvest bulletins.
+                      Middlemen booking platforms extract up to 30% of artisan revenue. TerroirTrail connects visitors directly to producers with 0% middleman fees. Through the Host Portal, producers can verify their profile, update opening hours, and publish harvest bulletins.
                     </p>
                   </div>
 
@@ -495,7 +495,7 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Search questions (e.g., booking, Explorer Pass, Host Portal, tax deduction, Stripe)..."
+                    placeholder="Search questions (e.g., visiting, Explorer Pass, Host Portal, tax deduction, Stripe)..."
                     className="w-full pl-10 pr-4 py-2.5 rounded-2xl bg-stone-900 border border-white/15 text-white placeholder-stone-400 text-xs focus:outline-none focus:border-amber-400/80 transition"
                   />
                   {searchQuery && (

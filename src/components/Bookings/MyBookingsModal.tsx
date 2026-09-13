@@ -66,7 +66,7 @@ export const MyBookingsModal: React.FC<MyBookingsModalProps> = ({
               <Wine className="w-10 h-10 mx-auto text-stone-600 stroke-[1.5]" />
               <p className="text-sm font-medium">No tasting reservations yet.</p>
               <p className="text-[11px] text-stone-500 max-w-sm mx-auto">
-                Explore wineries, craft breweries, and rakokazana on the map and click "Book Tasting" to arrange your personalized visits.
+                Explore wineries, olive mills, and craft farmsteads on the map to discover independent estates and contact producers directly.
               </p>
             </div>
           ) : (

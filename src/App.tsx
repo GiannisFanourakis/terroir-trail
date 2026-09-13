@@ -356,9 +356,6 @@ export const App: React.FC = () => {
             onSaveTastingNote={saveTastingNote}
             isAuthenticated={isAuthenticated}
             onOpenAuth={(role) => setActiveModal({ type: 'auth', initialRole: role || 'traveler' })}
-            onOpenBooking={(producer, experienceId) => {
-              setActiveModal({ type: 'booking', producer, experienceId });
-            }}
             customNotice={selectedProducer ? getOverride(selectedProducer.id)?.customNotice : undefined}
             isProTier={selectedProducer ? (getOverride(selectedProducer.id)?.isProTier ?? false) : false}
             directBottleShopUrl={selectedProducer ? getOverride(selectedProducer.id)?.directBottleShopUrl : undefined}

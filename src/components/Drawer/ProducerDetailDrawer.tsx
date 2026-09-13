@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Producer } from '../../types/terroir';
 import { UserProfile } from '../../types/auth';
-import { getExperiencesForProducer } from '../../data/experiences';
 import { 
   X, MapPin, Star, Phone, Globe, Navigation, Clock, 
   Dog, Footprints, Caravan, Car, Sparkles, Share2, Check, Heart, Award, 
   CheckCircle2, Wine, ShoppingBag, ArrowRight, Building2,
-  Camera, ChevronLeft, ChevronRight, Beer, Mail, Calendar
+  Camera, ChevronLeft, ChevronRight, Beer
 } from 'lucide-react';
 import { useProducerPhotos } from '../../services/googlePlacesPhotos';
 import { getCategoryFallbackImage } from '../../utils/imageFallbacks';
@@ -24,7 +23,6 @@ interface ProducerDetailDrawerProps {
   onSaveTastingNote?: (id: string, note: string) => void;
   isAuthenticated?: boolean;
   onOpenAuth?: (role?: 'traveler' | 'producer') => void;
-  onOpenBooking?: (producer: Producer, initialExperienceId?: string) => void;
   customNotice?: string;
   isProTier?: boolean;
   directBottleShopUrl?: string;
@@ -46,7 +44,6 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
   onSaveTastingNote,
   isAuthenticated = false,
   onOpenAuth,
-  onOpenBooking,
   customNotice,
   isProTier = false,
   directBottleShopUrl,
@@ -197,7 +194,6 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
           storeSub: `Order fresh craft brews directly from ${name}'s taproom`,
           discountLabel: 'Taproom Discount',
           tastingNotePlaceholder: 'Record your thoughts on their craft beers, hop profiles, or seasonal releases...',
-          bookingLabel: 'Book Brewhouse Tour',
           hasDeliveryBoxes: true,
           deliveryCategory: 'beer' as const,
           deliveryIcon: '🍺',
@@ -214,7 +210,6 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
           storeSub: `Order harvest-fresh EVOO directly from ${name}'s mill`,
           discountLabel: 'Mill Discount',
           tastingNotePlaceholder: 'Record your thoughts on their olive oil harvest, polyphenols, or olive varieties...',
-          bookingLabel: 'Book Mill Visit',
           hasDeliveryBoxes: true,
           deliveryCategory: 'olive_oil' as const,
           deliveryIcon: '🫒',
@@ -231,7 +226,6 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
           storeSub: `Order artisan spirits directly from ${name}'s still`,
           discountLabel: 'Distillery Discount',
           tastingNotePlaceholder: 'Record your thoughts on their tsikoudia distillation, botanicals, or aged spirits...',
-          bookingLabel: 'Book Tasting Visit',
           hasDeliveryBoxes: false,
           deliveryCategory: undefined,
           deliveryIcon: '🏺',
@@ -248,7 +242,6 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
           storeSub: `Order artisanal mountain cheeses directly from ${name}`,
           discountLabel: 'Dairy Discount',
           tastingNotePlaceholder: 'Record your thoughts on their graviera, mizithra, or mountain milk traditions...',
-          bookingLabel: 'Book Mitato Visit',
           hasDeliveryBoxes: true,
           deliveryCategory: 'cheese' as const,
           deliveryIcon: '🧀',
@@ -265,7 +258,6 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
           storeSub: `Order raw wild thyme honey directly from ${name}`,
           discountLabel: 'Farm Discount',
           tastingNotePlaceholder: 'Record your thoughts on their thyme honey, aroma, or wild botanicals...',
-          bookingLabel: 'Book Apiary Tour',
           hasDeliveryBoxes: true,
           deliveryCategory: 'honey' as const,
           deliveryIcon: '🍯',
@@ -283,7 +275,6 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
           storeSub: `Order directly from ${name}'s cellar`,
           discountLabel: 'Cellar Discount',
           tastingNotePlaceholder: 'Record your thoughts on their wines, food pairings, or best vintage...',
-          bookingLabel: 'Book Tasting',
           hasDeliveryBoxes: true,
           deliveryCategory: 'wine' as const,
           deliveryIcon: '✈️',
@@ -763,75 +754,6 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
               </div>
             </div>
 
-            {/* 
-              Specific preset tasting packages commented out for now until direct experience 
-              deals and partnerships are established with the producers themselves.
-            */}
-            {/*
-            <div>
-              <div className="flex items-center justify-between mb-2.5">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-stone-400 flex items-center gap-1.5">
-                  <Wine className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                  Curated Experiences & Tastings
-                </h3>
-                <span className="text-[10px] text-amber-400/80 font-medium">Instant Reserve</span>
-              </div>
-
-              <div className="space-y-2.5">
-                {getExperiencesForProducer(producer).map((exp) => (
-                  <div
-                    key={exp.id}
-                    className="p-3.5 rounded-2xl bg-stone-900/90 border border-white/10 hover:border-amber-500/40 transition flex flex-col gap-2 group"
-                  >
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="min-w-0 flex-1">
-                        {exp.badge && (
-                          <span className="inline-block px-2 py-0.5 mb-1 rounded-full text-[9px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">
-                            {exp.badge}
-                          </span>
-                        )}
-                        <h4 className="font-bold text-xs text-white group-hover:text-amber-300 transition-colors">
-                          {exp.title}
-                        </h4>
-                        <div className="flex items-center gap-2 mt-1 text-[11px] text-stone-400">
-                          <span className="flex items-center gap-1">
-                            <Clock className="w-3 h-3 text-amber-400 shrink-0" />
-                            <span>{exp.durationMinutes} mins</span>
-                          </span>
-                          <span>•</span>
-                          <span className="font-mono font-bold text-amber-300">€{exp.pricePerPerson} / person</span>
-                        </div>
-                      </div>
-
-                      {onOpenBooking && (
-                        <button
-                          type="button"
-                          onClick={() => onOpenBooking(producer, exp.id)}
-                          className="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-[11px] shadow-sm transition active:scale-95 shrink-0 cursor-pointer"
-                        >
-                          Book Now
-                        </button>
-                      )}
-                    </div>
-
-                    <p className="text-[11px] text-stone-300 leading-relaxed">
-                      {exp.description}
-                    </p>
-
-                    <div className="pt-1.5 border-t border-white/5 space-y-1">
-                      {exp.includes.map((inc, i) => (
-                        <div key={i} className="flex items-center gap-1.5 text-[10px] text-stone-400">
-                          <Check className="w-3 h-3 text-emerald-400 shrink-0" />
-                          <span>{inc}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-            */}
-
             {/* Direct Cellar Door Visits & Tastings Card */}
             <div className="p-4 rounded-2xl bg-stone-900/90 border border-white/10 space-y-3">
               <div className="flex items-center justify-between">
@@ -869,6 +791,17 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
 
               {/* Direct Connect Buttons */}
               <div className="flex flex-col sm:flex-row gap-2 pt-1">
+                {producer.website && (
+                  <a
+                    href={producer.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 py-2.5 px-3 rounded-xl bg-stone-800 hover:bg-stone-750 border border-white/10 text-stone-200 hover:text-white font-medium text-xs transition flex items-center justify-center gap-1.5 active:scale-98"
+                  >
+                    <Globe className="w-3.5 h-3.5 text-sky-400" />
+                    <span>Visit Producer Website</span>
+                  </a>
+                )}
                 {producer.phone && (
                   <a
                     href={`tel:${producer.phone}`}
@@ -877,16 +810,6 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                     <Phone className="w-3.5 h-3.5" />
                     <span>Call Cellar Door</span>
                   </a>
-                )}
-                {onOpenBooking && (
-                  <button
-                    type="button"
-                    onClick={() => onOpenBooking(producer)}
-                    className="py-2.5 px-3 rounded-xl bg-stone-800 hover:bg-stone-750 border border-white/10 text-stone-300 hover:text-white font-medium text-xs transition flex items-center justify-center gap-1.5 cursor-pointer active:scale-98"
-                  >
-                    <Mail className="w-3.5 h-3.5 text-amber-400" />
-                    <span>Send Visit Inquiry</span>
-                  </button>
                 )}
               </div>
             </div>
@@ -1055,17 +978,6 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
           </a>
         )}
 
-        {/* Send Visit Inquiry */}
-        {onOpenBooking && (
-          <button
-            type="button"
-            onClick={() => onOpenBooking(producer)}
-            className="p-3 rounded-2xl bg-stone-800 hover:bg-stone-750 border border-white/10 text-stone-200 transition shrink-0 cursor-pointer"
-            title="Send Tasting Visit Inquiry"
-          >
-            <Mail className="w-4 h-4 text-amber-400 shrink-0" />
-          </button>
-        )}
       </div>
 
     </div>
