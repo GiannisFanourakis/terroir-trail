@@ -24,10 +24,11 @@ export function filterProducers(
       return false;
     }
 
-    // Road Access filter
+    // Road Access filter — never treat an unreviewed/uncertain classification as verified.
     if (
       filters.roadAccess !== 'all' &&
-      producer.roadAccess !== filters.roadAccess
+      (producer.roadAccessStatus !== 'verified' ||
+        producer.roadAccess !== filters.roadAccess)
     ) {
       return false;
     }
