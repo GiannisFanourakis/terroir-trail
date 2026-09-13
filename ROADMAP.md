@@ -1,0 +1,298 @@
+# TerroirTrail Roadmap
+
+> **Canonical project roadmap.** Update this file whenever a roadmap step is completed.
+>
+> Completion convention: change `- [ ] Step` to `- [x] ~~Step~~` when finished. Do not mark a step complete until it has been implemented, tested, pushed, deployed where applicable, and verified.
+
+**Last updated:** 2026-09-13  
+**Current focus:** Phase 3 — Verification-status frontend fix
+
+---
+
+## Phase 1 — Security & Architecture Hardening
+
+**Status:** Core Issues #1–#6 completed; re-check only when later work touches these boundaries.
+
+- [x] ~~Complete original security and architecture hardening Issues #1–#6.~~
+- [x] ~~Harden authentication and authorization boundaries.~~
+- [x] ~~Separate trusted backend authority from client-controlled profile fields.~~
+- [x] ~~Complete native parity/security work covered by the original hardening programme.~~
+- [x] ~~Keep dormant booking/experience infrastructure non-public until producer agreements exist.~~
+
+---
+
+## Phase 2 — Admin, Producer & Account Authority
+
+**Status:** Not complete. Priority before commercial launch.
+
+### Account roles
+
+- [ ] Establish three clearly separated roles: Traveler, Producer/Host, TerroirTrail Admin.
+- [ ] Ensure admin authority is server-trusted and cannot be self-assigned from the client.
+- [ ] Ensure producer ownership is server-trusted and cannot be self-assigned from the client.
+- [ ] Re-check that `isProducer`, `role`, `claimedProducerId`, `claimStatus`, or similar client/profile fields are never treated as authoritative by themselves.
+
+### Admin capabilities
+
+- [ ] Review producer claims.
+- [ ] Approve or reject producer claims.
+- [ ] Assign producer ownership.
+- [ ] Remove or reassign producer ownership.
+- [ ] Edit/correct producer listings.
+- [ ] Review producer verification status.
+- [ ] Manage problematic or disputed listings.
+- [ ] Manage producers awaiting verification.
+- [ ] Moderate producer-supplied content.
+- [ ] Create an audit trail for sensitive administrative changes.
+- [ ] Prepare admin control over future Experience approval and publication.
+
+### Producer capabilities
+
+- [ ] Ensure producers can manage only listings explicitly assigned to them.
+- [ ] Ensure producer account functionality does not imply a commercial partnership until one exists.
+
+---
+
+## Phase 3 — Verification-Status Frontend Fix
+
+**Status:** In progress.
+
+The frontend must respect Supabase truth instead of manufacturing defaults.
+
+- [ ] Add `visit_status` to the frontend producer model and mapper.
+- [ ] Add `location_status` to the frontend producer model and mapper.
+- [ ] Preserve nullable/unknown hospitality and metadata values instead of coercing them to false/defaults.
+- [ ] Remove fake default road access such as `paved` when unknown.
+- [ ] Remove fake default food options such as `dakos_snacks` when unknown.
+- [ ] Remove fake default `€€` pricing when unknown.
+- [ ] Remove fake default 5-star ratings when unknown.
+- [ ] Stop rendering unknown pet/campervan/kid fields as negative claims.
+- [ ] Stop treating null/false `walk_in_friendly` as automatically `By Appointment`.
+- [ ] Replace universal `Tastings & Cellar Visits` language with verified/category-appropriate Visiting & Contact UI.
+- [ ] Use `visit_status` as the authority for visitor wording.
+- [ ] Replace universal `Call Cellar Door` with category-neutral or category-appropriate labels.
+- [ ] Do not synthesize navigation URLs for `location_status = unresolved`.
+- [ ] Hide/disable Directions when the exact navigation point is unresolved.
+- [ ] Update README claims so current public functionality matches the discovery-first product model.
+- [ ] Run the full test/check suite.
+- [ ] Commit, push and deploy the fix.
+- [ ] Verify production behavior for public, seasonal, appointment-only, unconfirmed, uncertain, unresolved, and null-metadata cases.
+
+---
+
+## Phase 4 — Crete Data Integrity & Authenticity
+
+**Status:** Next after Phase 3.
+
+Complete the 27 Crete producer/project records with source-backed, human, authentic content.
+
+- [ ] Verify and refine each real producer/family story.
+- [ ] Verify what each producer actually makes.
+- [ ] Verify factual origin/history details.
+- [ ] Verify village/locality information.
+- [ ] Give every pin a concise authentic tagline.
+- [ ] Verify official websites.
+- [ ] Verify public phone/contact details.
+- [ ] Verify visitability separately from TerroirTrail partnership status.
+- [ ] Remove any remaining invented awards, products, traditions, tasting menus, ratings, or hospitality claims.
+- [ ] Ensure no producer card implies a TerroirTrail commercial relationship where none exists.
+- [ ] Review all 27 Crete cards for consistent tone and completeness.
+
+Target feeling: **“I understand who these people are and why this place matters.”**
+
+---
+
+## Phase 5 — Offline / Fallback Data Synchronization
+
+**Status:** Pending.
+
+The bundled fallback must never resurrect old synthetic data when Supabase is unavailable.
+
+- [ ] Synchronize `src/data/producers.ts` with the verified catalogue.
+- [ ] Synchronize names.
+- [ ] Synchronize coordinates and location-confidence behavior.
+- [ ] Synchronize stories and taglines.
+- [ ] Synchronize websites and phones.
+- [ ] Synchronize visitability.
+- [ ] Synchronize categories.
+- [ ] Preserve unknown fields as unknown in fallback data.
+- [ ] Ensure old synthetic ratings/tasting packages/hospitality metadata cannot reappear offline.
+- [ ] Test live-data and fallback-data behavior separately.
+
+---
+
+## Phase 6 — Location & Rural Navigation Safety
+
+**Status:** Pending.
+
+Location confidence and road-access confidence are separate concepts.
+
+### Location confidence
+
+- [ ] Maintain `verified_entrance`, `verified_location`, and `unresolved` states accurately.
+- [ ] Resolve Lafkas exact entrance/location if reliable evidence becomes available.
+- [ ] Resolve Aerakis exact entrance/location if reliable evidence becomes available.
+- [ ] Resolve Tzourmpakis exact entrance/location if reliable evidence becomes available.
+- [ ] Never substitute village-centre coordinates simply to make a pin appear complete.
+
+### Road/access confidence
+
+- [ ] Design a source-backed road/access confidence model.
+- [ ] Restore road-access classifications only after actual verification.
+- [ ] Distinguish normal paved, narrow paved, gravel, high-clearance/4x4, and other relevant access states where evidence supports them.
+- [ ] Verify that map directions never route travelers to unresolved or unsafe access points.
+
+---
+
+## Phase 7 — Product Readiness Audit
+
+**Status:** Pending.
+
+Audit TerroirTrail as a real launchable product, not merely a functioning codebase.
+
+- [ ] Audit traveler signup/login.
+- [ ] Audit traveler account flows.
+- [ ] Audit producer account flows.
+- [ ] Audit admin account flows.
+- [ ] Audit map discovery.
+- [ ] Audit producer detail pages.
+- [ ] Audit favorites/saved producers.
+- [ ] Audit passport functionality.
+- [ ] Audit tasting notes/journal functionality.
+- [ ] Audit routes/day trips.
+- [ ] Audit mobile UX.
+- [ ] Audit loading states.
+- [ ] Audit error states.
+- [ ] Audit offline/fallback behavior.
+- [ ] Audit accessibility.
+- [ ] Audit privacy/legal wording.
+- [ ] Audit unsupported marketing claims.
+- [ ] Identify dead/prototype functionality still exposed to users.
+- [ ] Classify each major feature as `Launch-ready`, `Needs work`, `Hide for now`, or `Future feature`.
+
+---
+
+## Phase 8 — Producer UI & Visual Authenticity
+
+**Status:** Pending.
+
+- [ ] Make producer cards category-appropriate rather than wine-centric.
+- [ ] Make winery UI feel appropriate for wineries.
+- [ ] Make brewery UI feel appropriate for breweries.
+- [ ] Make dairy UI feel appropriate for dairies.
+- [ ] Make olive-mill UI feel appropriate for olive mills.
+- [ ] Make apiary/herb/farm UI feel appropriate for those producers.
+- [ ] Ensure heritage/local projects do not masquerade as producers.
+- [ ] Standardize producer detail hierarchy: Story → What they make → Visiting & Contact → Location & Access.
+- [ ] Remove empty sections caused by correctly-null verified fields.
+- [ ] Audit current imagery provenance.
+- [ ] Replace generic/stock imagery with producer-approved, official press-kit, rights-safe editorial, or properly attributed Creative Commons imagery.
+- [ ] Ensure no generic stock photo is presented as though it depicts the actual producer.
+
+---
+
+## Phase 9 — Crete as the First Finished Region
+
+**Status:** Pending.
+
+Crete becomes the reference implementation before rapid geographic expansion.
+
+- [ ] Finish the trustworthy Crete map.
+- [ ] Finish the authentic Crete producer catalogue.
+- [ ] Finish useful search and filtering.
+- [ ] Finish safe navigation/directions behavior.
+- [ ] Finish real producer stories.
+- [ ] Finish direct producer contact flows.
+- [ ] Finish polished producer pages.
+- [ ] Finish useful self-guided routes/day trips using verified pins only.
+- [ ] Finish mobile UX for the complete Crete journey.
+- [ ] Perform final Crete regional QA.
+
+Expansion order after Crete can proceed through Santorini, Peloponnese, Northern Greece, Italy/wider Mediterranean, and Northern Europe based on product priorities.
+
+---
+
+## Phase 10 — Producer Partnerships
+
+**Status:** Future commercial phase.
+
+- [ ] Define producer partnership onboarding.
+- [ ] Verify producer identity and authorized representative.
+- [ ] Establish listing ownership.
+- [ ] Obtain contact/inquiry permissions where applicable.
+- [ ] Obtain image/content rights where applicable.
+- [ ] Agree commercial terms where applicable.
+- [ ] Allow a producer to opt into TerroirTrail inquiries without requiring a full bookable Experience.
+
+Relationship levels:
+
+1. Independent researched listing
+2. Partner accepting TerroirTrail inquiries
+3. Partner offering approved Experiences
+
+---
+
+## Phase 11 — Experiences
+
+**Status:** Do not populate before producer agreements.
+
+- [ ] Create Experiences only after explicit producer agreement.
+- [ ] Agree the exact activity.
+- [ ] Agree title and description.
+- [ ] Agree duration.
+- [ ] Agree price.
+- [ ] Agree capacity.
+- [ ] Agree inclusions.
+- [ ] Agree schedule and seasonal availability.
+- [ ] Agree cancellation terms.
+- [ ] Agree accessibility information where relevant.
+- [ ] Agree the booking process.
+- [ ] Implement/confirm lifecycle: `draft → awaiting producer approval → approved → published → paused/withdrawn`.
+- [ ] Ensure pausing/removing an Experience never removes the underlying producer listing.
+
+---
+
+## Phase 12 — Booking & Payments
+
+**Status:** Future.
+
+Only after real approved Experiences exist.
+
+- [ ] Decide whether TerroirTrail handles inquiry only, reservation, payment, or deposits.
+- [ ] Design availability/scheduling model.
+- [ ] Design cancellation/refund flows.
+- [ ] Design producer payout model if payments are handled.
+- [ ] Decide commission/subscription economics.
+- [ ] Address VAT/invoicing/accounting implications.
+- [ ] Implement booking security and authorization around actual commercial agreements.
+
+---
+
+## Phase 13 — Monetisation & Scale
+
+**Status:** Future.
+
+- [ ] Validate Host Pro based on real producer needs.
+- [ ] Validate Explorer Pass based on real traveler value.
+- [ ] Introduce sponsored visibility/advertising only with clear disclosure and trust safeguards.
+- [ ] Validate affiliate travel services.
+- [ ] Validate chauffeur partnerships.
+- [ ] Expand direct producer bottle-shop linking where appropriate.
+- [ ] Revisit booking revenue only if the commercial model deliberately supports it.
+
+Monetisation follows the product and trust model; it must not dictate or weaken producer verification.
+
+---
+
+## Operating Rules
+
+1. **Producer discovery and Experiences are separate product layers.**
+2. **No public TerroirTrail Experience exists without a producer agreement.**
+3. **Public visitability does not equal TerroirTrail booking permission.**
+4. **Unknown data stays unknown.** Never invent a positive or negative fact to fill a UI field.
+5. **Never guess unresolved coordinates.**
+6. **Direct producer contact is acceptable without a partnership only through producer-controlled public channels.**
+7. **Admin and producer authority must be server-trusted.**
+8. **Every completed roadmap item is crossed out in this file when verified complete.**
+9. **Before starting a major new feature, place it against this roadmap first.**
+10. **Crete is the reference-quality region before broad expansion.**
