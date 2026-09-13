@@ -12,7 +12,7 @@ function mapRowToProducer(row: any): Producer {
   const locality = row.locality || row.village;
 
   const isUnresolvedLocation = row.location_status === 'unresolved';
-  const googleMapsUrl = isUnresolvedLocation ? undefined : (row.google_maps_url || undefined);
+  const googleMapsUrl = isUnresolvedLocation ? undefined : row.google_maps_url || undefined;
 
   const prod: Producer = {
     id: row.id,
@@ -68,6 +68,47 @@ function mapRowToProducer(row: any): Producer {
   return prod;
 }
 
+function assertPhase6CreteIntegrity(producers: Producer[]) {
+  if (producers.length !== 27) {
+    throw new Error(
+      `Expected exactly 27 audited Crete records before fallback generation; received ${producers.length}.`
+    );
+  }
+
+  const roadUnreviewed = producers.filter(
+    (producer) => !producer.roadAccessStatus || producer.roadAccessStatus === 'unreviewed'
+  );
+  if (roadUnreviewed.length > 0) {
+    throw new Error(
+      `Phase 6 road audit regression: ${roadUnreviewed.length} Crete record(s) are unreviewed: ${roadUnreviewed
+        .map((producer) => producer.id)
+        .join(', ')}`
+    );
+  }
+
+  const verifiedWithoutClassification = producers.filter(
+    (producer) => producer.roadAccessStatus === 'verified' && !producer.roadAccess
+  );
+  if (verifiedWithoutClassification.length > 0) {
+    throw new Error(
+      `Verified road-access record(s) missing a classification: ${verifiedWithoutClassification
+        .map((producer) => producer.id)
+        .join(', ')}`
+    );
+  }
+
+  const classifiedWithoutVerification = producers.filter(
+    (producer) => producer.roadAccess && producer.roadAccessStatus !== 'verified'
+  );
+  if (classifiedWithoutVerification.length > 0) {
+    throw new Error(
+      `Road classification exposed without verified status: ${classifiedWithoutVerification
+        .map((producer) => producer.id)
+        .join(', ')}`
+    );
+  }
+}
+
 async function syncFallbackCatalogue() {
   const url = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
   const key = process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
@@ -98,14 +139,14 @@ async function syncFallbackCatalogue() {
   }
 
   if (rows.length === 0) {
-    console.error('No Crete producer rows found to synchronize.');
+    console.error('No Crete producer/project rows found to synchronize.');
     process.exit(1);
   }
 
-  console.log(`Synchronizing ${rows.length} verified Crete producers from Supabase...`);
+  console.log(`Synchronizing ${rows.length} audited Crete producer/project records from Supabase...`);
 
-  // Transform each row into a Producer
   const producers = rows.map(mapRowToProducer);
+  assertPhase6CreteIntegrity(producers);
 
   // Group by region for structured readability
   const regions = ['Chania', 'Heraklion', 'Rethymno', 'Lasithi'];
@@ -131,7 +172,7 @@ async function syncFallbackCatalogue() {
     const prods = grouped[r];
     if (!prods || prods.length === 0) continue;
     code += `  // ==========================================\n`;
-    code += `  // --- ${r.toUpperCase()} (${prods.length} VERIFIED PRODUCERS) ---\n`;
+    code += `  // --- ${r.toUpperCase()} (${prods.length} AUDITED RECORDS) ---\n`;
     code += `  // ==========================================\n`;
     for (const p of prods) {
       code += `  ${JSON.stringify(p, null, 4).replace(/\n/g, '\n  ')},\n`;
@@ -144,7 +185,7 @@ async function syncFallbackCatalogue() {
 
   const targetPath = path.resolve(process.cwd(), 'src/data/producers.ts');
   fs.writeFileSync(targetPath, code, 'utf-8');
-  console.log(`✓ Synchronized ${producers.length} verified producers to ${targetPath}`);
+  console.log(`✓ Synchronized ${producers.length} audited records to ${targetPath}`);
 }
 
 syncFallbackCatalogue();
