@@ -19,7 +19,6 @@ interface ProducerPortalModalProps {
   onClose: () => void;
   user: UserProfile | null;
   onOpenAuth?: (role?: 'producer') => void;
-  onLoginAsDemoProducer?: (key: 'paterianakis' | 'manousakis' | 'charma' | 'monteraponi') => void;
   onLoginWithGoogle?: (role?: 'traveler' | 'producer', claimedProducerId?: string, producerName?: string) => Promise<any>;
   onLoginWithApple?: (role?: 'traveler' | 'producer', claimedProducerId?: string, producerName?: string) => Promise<any>;
   producers: Producer[];
@@ -37,7 +36,6 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
   onClose,
   user,
   onOpenAuth,
-  onLoginAsDemoProducer,
   onLoginWithGoogle,
   onLoginWithApple,
   producers,
@@ -417,45 +415,6 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
                 <span>Sign In with Estate Email or Claim Profile</span>
               </button>
             </div>
-
-            {/* Demo Host Fast Preview */}
-            {onLoginAsDemoProducer && (
-              <div className="pt-4 border-t border-white/10 max-w-md mx-auto text-left space-y-2">
-                <p className="text-[11px] text-stone-400 font-semibold text-center">
-                  🧪 Instant Host Demo Preview (1-Click Evaluation):
-                </p>
-                <div className="grid grid-cols-2 gap-1.5">
-                  <button
-                    onClick={() => onLoginAsDemoProducer('paterianakis')}
-                    className="p-2.5 rounded-xl bg-stone-900 hover:bg-stone-850 border border-amber-500/30 text-stone-300 text-xs text-left transition hover:border-amber-400 cursor-pointer"
-                  >
-                    <span className="font-bold text-white block truncate">Fake Winery (Demo)</span>
-                    <span className="text-[10px] text-amber-400">Host: John Smith</span>
-                  </button>
-                  <button
-                    onClick={() => onLoginAsDemoProducer('manousakis')}
-                    className="p-2.5 rounded-xl bg-stone-900 hover:bg-stone-850 border border-white/10 text-stone-300 text-xs text-left transition hover:border-amber-400/40 cursor-pointer"
-                  >
-                    <span className="font-bold text-white block truncate">Valley Vineyard (Demo)</span>
-                    <span className="text-[10px] text-stone-400">Host: Jane Miller</span>
-                  </button>
-                  <button
-                    onClick={() => onLoginAsDemoProducer('charma')}
-                    className="p-2.5 rounded-xl bg-stone-900 hover:bg-stone-850 border border-white/10 text-stone-300 text-xs text-left transition hover:border-amber-400/40 cursor-pointer"
-                  >
-                    <span className="font-bold text-white block truncate">Craft Brewing Co. (Demo)</span>
-                    <span className="text-[10px] text-stone-400">Host: David Wilson</span>
-                  </button>
-                  <button
-                    onClick={() => onLoginAsDemoProducer('monteraponi')}
-                    className="p-2.5 rounded-xl bg-stone-900 hover:bg-stone-850 border border-white/10 text-stone-300 text-xs text-left transition hover:border-amber-400/40 cursor-pointer"
-                  >
-                    <span className="font-bold text-white block truncate">Tuscan Hillside (Demo)</span>
-                    <span className="text-[10px] text-stone-400">Host: Marco Rossi</span>
-                  </button>
-                </div>
-              </div>
-            )}
 
             <div className="pt-2 flex items-center justify-center gap-2 text-[11px] text-stone-500">
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />

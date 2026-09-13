@@ -38,7 +38,6 @@ import {
   saveProducerRegistrationToCloud,
   fetchProducerRegistrationFromCloud,
   isFirebaseConfigured,
-  SEEDED_PRODUCER_REGISTRATIONS,
 } from '../../services/firebase';
 import { checkVatAgainstVies, ViesCheckResult } from '../../services/viesService';
 
@@ -245,58 +244,6 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
   const vatValidation = validateVatNumber(vatNumber, countryCode);
   const ibanValidation = validateIban(iban);
   const gemiValidation = validateGemiNumber(gemiNumber, countryCode);
-
-  // Preset switchers for rapid developer/user testing
-  const applyPreset = (presetKey: keyof typeof SEEDED_PRODUCER_REGISTRATIONS) => {
-    const preset = SEEDED_PRODUCER_REGISTRATIONS[presetKey];
-    if (!preset) return;
-
-    setTradeBrandName(preset.tradeBrandName);
-    setProducerCategory(preset.producerCategory);
-    setLegalBusinessName(preset.legalBusinessName);
-    setLegalEntityType(preset.legalEntityType);
-    setCountryCode(preset.countryCode);
-    setVatNumber(preset.vatNumber);
-    setTaxOffice(preset.taxOffice);
-    setEoriNumber(preset.eoriNumber || '');
-    setGemiNumber(preset.permits?.gemiNumber || '');
-
-    setFacilityName(preset.logistics.facilityName);
-    setStreetAddress(preset.logistics.streetAddress);
-    setPostalCode(preset.logistics.postalCode);
-    setCityOrVillage(preset.logistics.cityOrVillage);
-    setRegion(preset.logistics.region);
-    setAccessType(preset.logistics.accessType);
-    setContactPersonName(preset.logistics.contactPersonName);
-    setDispatchPhone(preset.logistics.dispatchPhone);
-    setDispatchEmail(preset.logistics.dispatchEmail);
-    setPickupTimeWindow(preset.logistics.pickupTimeWindow);
-    setLoadingNotes(preset.logistics.loadingNotes || '');
-
-    setSupportsWineBottles(Boolean(preset.packaging.supportsWineBottles));
-    setSupportsBeerBottles(Boolean(preset.packaging.supportsBeerBottles));
-    setSupportsColdChainCheese(Boolean(preset.packaging.supportsColdChainCheese));
-    setSupportsHoneyJars(Boolean(preset.packaging.supportsHoneyJars));
-    setSupportsOliveOilTins(Boolean(preset.packaging.supportsOliveOilTins));
-    setMaxDailyParcels(preset.packaging.maxDailyParcels);
-    setDispatchLeadTime(preset.packaging.dispatchLeadTime);
-
-    setAccountHolderName(preset.banking.accountHolderName);
-    setBankName(preset.banking.bankName);
-    setIban(preset.banking.iban);
-    setSwiftBic(preset.banking.swiftBic);
-
-    setExcisePermitNumber(preset.permits?.excisePermitNumber || '');
-    setSanitaryPermitNumber(preset.permits?.sanitaryPermitNumber || '');
-    setOrganicCertificationBody(preset.permits?.organicCertificationBody || '');
-    setOrganicCertNumber(preset.permits?.organicCertNumber || '');
-    setRepresentativeName(preset.representativeName);
-    setRepresentativeRole(preset.representativeRole);
-    setOfficialEmail(preset.officialEmail);
-    setWebsiteStoreUrl(preset.websiteStoreUrl || '');
-    setTermsAccepted(true);
-    setFormError(null);
-  };
 
   // Clear / Reset all inputs so suggestive ghost text placeholders are fully visible
   const clearForm = () => {
@@ -520,30 +467,8 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
             </div>
           </div>
 
-          {/* Quick Demo Fill Buttons & Reset */}
+          {/* Reset / Clear Form */}
           <div className="flex items-center gap-1.5 flex-wrap">
-            <span className="text-[10px] uppercase font-bold text-stone-500 mr-1">Demo Autofill:</span>
-            <button
-              type="button"
-              onClick={() => applyPreset('demo-producer-el')}
-              className="text-[10px] px-2.5 py-1 rounded-lg bg-stone-800 hover:bg-stone-700 text-amber-300 border border-white/10 font-semibold transition cursor-pointer"
-            >
-              🍇 Demo Producer (GR)
-            </button>
-            <button
-              type="button"
-              onClick={() => applyPreset('demo-brewery-el')}
-              className="text-[10px] px-2.5 py-1 rounded-lg bg-stone-800 hover:bg-stone-700 text-amber-300 border border-white/10 font-semibold transition cursor-pointer"
-            >
-              🍺 Demo Brewery (GR)
-            </button>
-            <button
-              type="button"
-              onClick={() => applyPreset('demo-estate-it')}
-              className="text-[10px] px-2.5 py-1 rounded-lg bg-stone-800 hover:bg-stone-700 text-amber-300 border border-white/10 font-semibold transition cursor-pointer"
-            >
-              🇮🇹 Demo Producer (IT)
-            </button>
             <button
               type="button"
               onClick={clearForm}

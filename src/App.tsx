@@ -68,8 +68,6 @@ export const App: React.FC = () => {
     loginWithEmail,
     signupWithEmail,
     sendPasswordResetLink,
-    loginAsDemo,
-    loginAsDemoProducer,
     loginAsProducer,
     claimAndRegisterProducer,
     updateProducerTaxDetails,
@@ -398,8 +396,6 @@ export const App: React.FC = () => {
             onClose={closeModal}
             initialRole={activeModal.initialRole || 'traveler'}
             producers={producers}
-            onLoginAsDemo={loginAsDemo}
-            onLoginAsDemoProducer={loginAsDemoProducer}
             onLogin={loginWithEmail}
             onSignup={(name, email, password, travelerType) => signupWithEmail(name, email, password, travelerType)}
             onLoginAsProducer={loginAsProducer}
@@ -455,7 +451,6 @@ export const App: React.FC = () => {
             onClose={closeModal}
             user={user}
             onOpenAuth={(role) => setActiveModal({ type: 'auth', initialRole: role || 'producer' })}
-            onLoginAsDemoProducer={loginAsDemoProducer}
             onLoginWithGoogle={loginWithGoogle}
             onLoginWithApple={loginWithApple}
             producers={producers}

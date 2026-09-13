@@ -207,8 +207,8 @@ export const subscribeToCloudUserProfile = (
 const BOOKINGS_LOCAL_KEY = STORAGE_KEYS.TASTING_BOOKINGS;
 const OVERRIDES_LOCAL_KEY = STORAGE_KEYS.PRODUCER_OVERRIDES;
 
-// Seed authentic demo bookings so the portal immediately has realistic reservations
-const SEED_BOOKINGS: TastingBooking[] = [
+// Fake booking fixtures retained for automated test and development scenarios only
+export const SEED_BOOKINGS: TastingBooking[] = [
   {
     id: 'book_paterianakis_01',
     producerId: 'domaine-paterianakis',
@@ -345,10 +345,17 @@ export const getLocalBookings = (): TastingBooking[] => {
     validator: (d) => Array.isArray(d),
   });
   if (!saved) {
-    writeStorage(BOOKINGS_LOCAL_KEY, SEED_BOOKINGS, { scope: 'Firebase' });
-    return SEED_BOOKINGS;
+    return [];
   }
-  return saved;
+  // Sanitize out any legacy SEED_BOOKINGS or demo reservations that may have been previously written to local storage
+  const seedIds = new Set(SEED_BOOKINGS.map((b) => b.id));
+  const cleaned = saved.filter(
+    (b) => !seedIds.has(b.id) && !b.userId?.startsWith('user_') && !b.id.startsWith('seed_')
+  );
+  if (cleaned.length !== saved.length) {
+    writeStorage(BOOKINGS_LOCAL_KEY, cleaned, { scope: 'Firebase' });
+  }
+  return cleaned;
 };
 
 export const saveLocalBookings = (bookings: TastingBooking[]) => {

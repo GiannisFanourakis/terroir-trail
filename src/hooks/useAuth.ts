@@ -80,6 +80,17 @@ export const useAuth = () => {
   const [user, setUser] = useState<UserProfile | null>(() => {
     const parsed = readStorage<any>(STORAGE_KEY, null, { scope: 'Auth' });
     if (!parsed || typeof parsed !== 'object' || !parsed.id) return null;
+    if (isFirebaseConfigured) {
+      const isDemo =
+        Object.values(DEMO_PROFILES).some((d) => d.id === parsed.id) ||
+        Object.values(DEMO_PRODUCER_PROFILES).some((d) => d.id === parsed.id) ||
+        parsed.id.startsWith('demo_') ||
+        parsed.id.startsWith('user_');
+      if (isDemo) {
+        removeStorage(STORAGE_KEY, { scope: 'Auth' });
+        return null;
+      }
+    }
     return {
       ...parsed,
       visitedProducers: Array.isArray(parsed.visitedProducers) ? parsed.visitedProducers : [],
@@ -149,18 +160,9 @@ export const useAuth = () => {
           setUser((prev) => mapFirebaseUser(fbUser, prev?.travelerType));
         }
       } else {
-        // When Firebase Auth confirms there is no active session, clear any cached normal account
-        setUser((prev) => {
-          if (!prev) return null;
-          const isDemo =
-            Object.values(DEMO_PROFILES).some((d) => d.id === prev.id) ||
-            Object.values(DEMO_PRODUCER_PROFILES).some((d) => d.id === prev.id);
-          if (isDemo) {
-            return prev;
-          }
-          removeStorage(STORAGE_KEY, { scope: 'Auth' });
-          return null;
-        });
+        // When Firebase Auth confirms there is no active session, clear cached user account
+        removeStorage(STORAGE_KEY, { scope: 'Auth' });
+        setUser(null);
       }
     });
 
@@ -391,15 +393,21 @@ export const useAuth = () => {
     }
   }, []);
 
-  // 6. 1-Click Demo Profiles (Giannis, Elena, Markos)
+  // 6. 1-Click Demo Profiles (Giannis, Elena, Markos) - Test/Development fixtures only
   const loginAsDemo = useCallback((demoKey: 'giannis' | 'elena' | 'markos') => {
+    if (isFirebaseConfigured) {
+      throw new Error('DEMO_AUTH_DISABLED: Demo traveler logins are disabled when cloud services are configured');
+    }
     const profile = DEMO_PROFILES[demoKey] || DEMO_PROFILES.giannis;
     setUser({ ...profile });
     return profile;
   }, []);
 
-  // 6b. 1-Click Demo Producer Profiles (Paterianakis, Manousakis, Charma, Monteraponi)
+  // 6b. 1-Click Demo Producer Profiles - Test/Development fixtures only
   const loginAsDemoProducer = useCallback((demoKey: 'paterianakis' | 'manousakis' | 'charma' | 'monteraponi') => {
+    if (isFirebaseConfigured) {
+      throw new Error('DEMO_AUTH_DISABLED: Demo producer logins are disabled when cloud services are configured');
+    }
     const profile = DEMO_PRODUCER_PROFILES[demoKey] || DEMO_PRODUCER_PROFILES.paterianakis;
     setUser({ ...profile });
     return profile;

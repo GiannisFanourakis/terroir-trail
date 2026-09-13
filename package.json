@@ -23,7 +23,7 @@
     "stripe:flow": "tsx scripts/run_checkout_flow.ts",
     "typecheck": "tsc --noEmit && tsc -p tsconfig.server.json --noEmit",
     "lint": "eslint .",
-    "format:check": "prettier --check eslint.config.js \"src/config/**/*.{ts,tsx}\" \"src/utils/filterProducers*\"",
+    "format:check": "prettier --check eslint.config.js \"src/config/**/*.{ts,tsx}\" \"src/utils/filterProducers*\" \"src/components/demoCleanup.test.tsx\"",
     "check": "npm run typecheck && npm run lint && npm run format:check && npm test && npm run build"
   },
   "devDependencies": {

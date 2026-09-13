@@ -159,7 +159,8 @@ describe('useAuth - Production Safety & Fallback Removal', () => {
     expect(stateMap[0]).toBeNull();
   });
 
-  it('preserves intentional demo traveler action loginAsDemo', () => {
+  it('allows demo traveler fixture in unconfigured test/dev mode', () => {
+    mockFirebaseState.isConfigured = false;
     const hook = useAuth();
 
     const profile = hook.loginAsDemo('giannis');
@@ -170,7 +171,8 @@ describe('useAuth - Production Safety & Fallback Removal', () => {
     expect(stateMap[0]?.name).toBe('John Smith');
   });
 
-  it('preserves intentional demo producer action loginAsDemoProducer', () => {
+  it('allows demo producer fixture in unconfigured test/dev mode', () => {
+    mockFirebaseState.isConfigured = false;
     const hook = useAuth();
 
     const profile = hook.loginAsDemoProducer('paterianakis');
@@ -179,6 +181,20 @@ describe('useAuth - Production Safety & Fallback Removal', () => {
     expect(profile.role).toBe('producer');
     expect(profile.isProducer).toBe(true);
     expect(stateMap[0]?.role).toBe('producer');
+  });
+
+  it('ordinary users cannot become producers from demo fixture state when Firebase is configured', () => {
+    mockFirebaseState.isConfigured = true;
+    const hook = useAuth();
+
+    expect(() => hook.loginAsDemoProducer('paterianakis')).toThrow('DEMO_AUTH_DISABLED');
+  });
+
+  it('fails closed when attempting demo traveler login while Firebase is configured', () => {
+    mockFirebaseState.isConfigured = true;
+    const hook = useAuth();
+
+    expect(() => hook.loginAsDemo('giannis')).toThrow('DEMO_AUTH_DISABLED');
   });
 });
 
@@ -293,5 +309,23 @@ describe('useAuth - Firebase Session Reconciliation & Stale Account Invalidation
     expect(hook.user?.name).toBe('Active Explorer');
     expect(hook.user?.email).toBe('valid@example.com');
     expect(hook.isAuthenticated).toBe(true);
+  });
+
+  it('rejects and purges cached demo user state on initial load when Firebase is configured', () => {
+    const demoCached = {
+      id: 'user_giannis',
+      name: 'John Smith',
+      email: 'john.smith@example.com',
+      role: 'traveler',
+      isProducer: false,
+    };
+    storage.set('terroir_trail_user', JSON.stringify(demoCached));
+
+    stateIndex = 0;
+    const hook = useAuth();
+
+    expect(hook.user).toBeNull();
+    expect(hook.isAuthenticated).toBe(false);
+    expect(storage.get('terroir_trail_user')).toBeUndefined();
   });
 });

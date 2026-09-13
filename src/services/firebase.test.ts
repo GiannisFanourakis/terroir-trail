@@ -108,6 +108,9 @@ import {
   saveProducerOverride,
   saveProducerRegistrationToCloud,
   fetchUserProducerOwnership,
+  getLocalBookings,
+  saveLocalBookings,
+  SEED_BOOKINGS,
 } from './firebase';
 
 describe('Firebase Service Security & Data Isolation', () => {
@@ -400,6 +403,61 @@ describe('Firebase Service Security & Data Isolation', () => {
       const ownership = await fetchUserProducerOwnership('uid_bob');
 
       expect(ownership).toBeNull();
+    });
+  });
+
+  describe('getLocalBookings & Booking Fallback Safety', () => {
+    it('empty local bookings storage produces [], not seeded fake bookings', () => {
+      storage.clear();
+
+      const result = getLocalBookings();
+
+      expect(result).toEqual([]);
+      // Crucial: Must NOT write fake seed bookings to local storage on empty state
+      expect(storage.get('terroir_trail_bookings')).toBeUndefined();
+    });
+
+    it('sanitizes legacy SEED_BOOKINGS out of local storage and persists the clean array', () => {
+      // Simulate an old session where SEED_BOOKINGS were previously saved to local storage
+      const legacyStorage = [
+        ...SEED_BOOKINGS,
+        {
+          id: 'book_real_user_01',
+          producerId: 'manousakis-winery',
+          producerName: 'Manousakis Winery',
+          producerCategory: 'winery',
+          producerLocation: 'Vatolakkos',
+          userId: 'real_user_uid',
+          userName: 'Real User',
+          userEmail: 'real@example.com',
+          userPhone: '+30 690 000 0000',
+          date: '2026-06-15',
+          timeSlot: '11:00 AM',
+          experienceId: 'tasting_1',
+          experienceTitle: 'Real Tasting',
+          pricePerPerson: 25,
+          guestsCount: 2,
+          totalEstimated: 50,
+          status: 'pending',
+          createdAt: new Date().toISOString(),
+        },
+      ];
+      saveLocalBookings(legacyStorage as any);
+
+      const result = getLocalBookings();
+
+      // All 3 fake seed bookings must be removed
+      expect(result.length).toBe(1);
+      expect(result[0].id).toBe('book_real_user_01');
+      expect(result.some((b) => b.id === 'book_paterianakis_01')).toBe(false);
+      expect(result.some((b) => b.id === 'book_manousakis_01')).toBe(false);
+      expect(result.some((b) => b.id === 'book_charma_01')).toBe(false);
+    });
+
+    it('retains SEED_BOOKINGS as an exported fixture for test scenarios', () => {
+      expect(Array.isArray(SEED_BOOKINGS)).toBe(true);
+      expect(SEED_BOOKINGS.length).toBeGreaterThan(0);
+      expect(SEED_BOOKINGS[0].id).toBe('book_paterianakis_01');
     });
   });
 });

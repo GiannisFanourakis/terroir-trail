@@ -13,8 +13,6 @@ interface AuthModalProps {
   onClose: () => void;
   initialRole?: 'traveler' | 'producer';
   producers?: Producer[];
-  onLoginAsDemo: (key: 'giannis' | 'elena' | 'markos') => void;
-  onLoginAsDemoProducer?: (key: 'paterianakis' | 'manousakis' | 'charma' | 'monteraponi') => void;
   onLogin: (email: string, password?: string) => Promise<any> | void;
   onSignup: (name: string, email: string, password?: string, travelerType?: TravelerType) => Promise<any> | void;
   onLoginAsProducer?: (email: string, password?: string, producerId?: string, producerName?: string) => Promise<any> | void;
@@ -42,8 +40,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   onClose,
   initialRole = 'traveler',
   producers = [],
-  onLoginAsDemo,
-  onLoginAsDemoProducer,
   onLogin,
   onSignup,
   onLoginAsProducer,
@@ -91,7 +87,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   const [localError, setLocalError] = useState<string>('');
   const [resetSuccessEmail, setResetSuccessEmail] = useState<string | null>(null);
   const [localLoading, setLocalLoading] = useState<'google' | 'apple' | 'form' | 'reset' | null>(null);
-  const [showDemoSection, setShowDemoSection] = useState(false);
 
   // Sync initialRole when modal opens
   useEffect(() => {
@@ -101,7 +96,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       setProducerMode('login');
       setLocalError('');
       setResetSuccessEmail(null);
-      setShowDemoSection(false);
       const initialProdId = selectedProducerId || (producers.length > 0 ? producers[0].id : '');
       if (initialProdId) {
         setSelectedProducerId(initialProdId);
@@ -1294,116 +1288,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               )}
             </>
           )}
-
-          {/* ========================================================= */}
-          {/* DISCREET TESTING & DEMO HELPER (COLLAPSIBLE)              */}
-          {/* ========================================================= */}
-          <div className="pt-3 border-t border-white/10">
-            <button
-              type="button"
-              onClick={() => setShowDemoSection(!showDemoSection)}
-              className="w-full py-1 text-[11px] text-stone-500 hover:text-stone-300 flex items-center justify-center gap-1.5 transition cursor-pointer"
-            >
-              <span>🧪 Testing or evaluating without an account?</span>
-              {showDemoSection ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
-            </button>
-
-            {showDemoSection && (
-              <div className="mt-2.5 space-y-2 p-3 rounded-2xl bg-stone-900/60 border border-white/5 animate-in fade-in duration-200">
-                <p className="text-[10px] text-stone-400">
-                  {accountType === 'traveler'
-                    ? 'Click any pre-configured profile to explore stamps, passport notes, and bookings:'
-                    : 'Click any estate to preview the verified host management dashboard:'}
-                </p>
-
-                {accountType === 'traveler' ? (
-                  <div className="grid grid-cols-1 gap-1.5">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        onLoginAsDemo('giannis');
-                        onClose();
-                      }}
-                      className="p-2 rounded-xl bg-stone-900 hover:bg-stone-850 border border-amber-500/20 text-left flex items-center justify-between text-xs cursor-pointer transition"
-                    >
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm">🧭</span>
-                        <div>
-                          <span className="font-bold text-white">John Smith</span>
-                          <span className="text-[10px] text-stone-400 ml-2">Explorer · 4 Stamps</span>
-                        </div>
-                      </div>
-                      <ArrowRight className="w-3.5 h-3.5 text-amber-400" />
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => {
-                        onLoginAsDemo('elena');
-                        onClose();
-                      }}
-                      className="p-2 rounded-xl bg-stone-900 hover:bg-stone-850 border border-rose-500/20 text-left flex items-center justify-between text-xs cursor-pointer transition"
-                    >
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm">🍷</span>
-                        <div>
-                          <span className="font-bold text-white">Jane Doe</span>
-                          <span className="text-[10px] text-stone-400 ml-2">Sommelier · 3 Stamps</span>
-                        </div>
-                      </div>
-                      <ArrowRight className="w-3.5 h-3.5 text-rose-400" />
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => {
-                        onLoginAsDemo('markos');
-                        onClose();
-                      }}
-                      className="p-2 rounded-xl bg-stone-900 hover:bg-stone-850 border border-amber-400/20 text-left flex items-center justify-between text-xs cursor-pointer transition"
-                    >
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm">🍺</span>
-                        <div>
-                          <span className="font-bold text-white">Alex Miller</span>
-                          <span className="text-[10px] text-stone-400 ml-2">Craft Brewer · 3 Stamps</span>
-                        </div>
-                      </div>
-                      <ArrowRight className="w-3.5 h-3.5 text-amber-400" />
-                    </button>
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-1 gap-1.5">
-                    {[
-                      { key: 'paterianakis', name: 'Fake Winery (Demo Estate)', host: 'John Smith', tag: 'Organic Winery · Demo' },
-                      { key: 'manousakis', name: 'Valley Vineyard (Demo)', host: 'Jane Miller', tag: 'Estate Winery · Demo' },
-                      { key: 'charma', name: 'Craft Brewing Co. (Demo)', host: 'David Wilson', tag: 'Microbrewery · Demo' },
-                      { key: 'monteraponi', name: 'Tuscan Hillside (Demo)', host: 'Marco Rossi', tag: 'Chianti Classico · Demo' },
-                    ].map((h) => (
-                      <button
-                        key={h.key}
-                        type="button"
-                        onClick={() => {
-                          onLoginAsDemoProducer?.(h.key as any);
-                          onClose();
-                        }}
-                        className="p-2 rounded-xl bg-stone-900 hover:bg-stone-850 border border-amber-500/20 text-left flex items-center justify-between text-xs cursor-pointer transition"
-                      >
-                        <div>
-                          <div className="font-bold text-white flex items-center gap-1.5">
-                            <span>{h.name}</span>
-                            <span className="text-[9px] px-1.5 py-0.2 rounded bg-amber-400/20 text-amber-300">Host</span>
-                          </div>
-                          <span className="text-[10px] text-stone-400">{h.host} · {h.tag}</span>
-                        </div>
-                        <ArrowRight className="w-3.5 h-3.5 text-amber-400" />
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
 
           <div className="flex flex-col items-center justify-center gap-1.5 pt-1 text-[10px] text-stone-500">
             <div className="flex items-center gap-1.5">
