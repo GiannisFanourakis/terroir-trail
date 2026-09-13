@@ -30,6 +30,7 @@ import { UserProfile, ProducerRegistrationRecord } from '../types/auth';
 import { SEEDED_PRODUCER_REGISTRATIONS } from '../data/seededRegistrations';
 import { logger } from './logger';
 import { runtimeConfig, checkIsFirebaseConfigured } from '../config/runtimeConfig';
+import { readStorage, writeStorage, STORAGE_KEYS } from './browserStorage';
 
 const firebaseConfig = runtimeConfig.firebase;
 
@@ -203,8 +204,8 @@ export const subscribeToCloudUserProfile = (
 // SCENARIO B: Tasting Bookings & Producer Portal Cloud Sync
 // =========================================================
 
-const BOOKINGS_LOCAL_KEY = 'terroir_trail_bookings';
-const OVERRIDES_LOCAL_KEY = 'terroir_trail_producer_overrides';
+const BOOKINGS_LOCAL_KEY = STORAGE_KEYS.TASTING_BOOKINGS;
+const OVERRIDES_LOCAL_KEY = STORAGE_KEYS.PRODUCER_OVERRIDES;
 
 // Seed authentic demo bookings so the portal immediately has realistic reservations
 const SEED_BOOKINGS: TastingBooking[] = [
@@ -339,25 +340,19 @@ const SEED_BOOKINGS: TastingBooking[] = [
 ];
 
 export const getLocalBookings = (): TastingBooking[] => {
-  try {
-    const saved = localStorage.getItem(BOOKINGS_LOCAL_KEY);
-    if (!saved) {
-      localStorage.setItem(BOOKINGS_LOCAL_KEY, JSON.stringify(SEED_BOOKINGS));
-      return SEED_BOOKINGS;
-    }
-    return JSON.parse(saved);
-  } catch (e) {
-    console.error('Error reading bookings from localStorage:', e);
+  const saved = readStorage<TastingBooking[] | null>(BOOKINGS_LOCAL_KEY, null, {
+    scope: 'Firebase',
+    validator: (d) => Array.isArray(d),
+  });
+  if (!saved) {
+    writeStorage(BOOKINGS_LOCAL_KEY, SEED_BOOKINGS, { scope: 'Firebase' });
     return SEED_BOOKINGS;
   }
+  return saved;
 };
 
 export const saveLocalBookings = (bookings: TastingBooking[]) => {
-  try {
-    localStorage.setItem(BOOKINGS_LOCAL_KEY, JSON.stringify(bookings));
-  } catch (e) {
-    console.error('Error saving bookings to localStorage:', e);
-  }
+  writeStorage(BOOKINGS_LOCAL_KEY, bookings, { scope: 'Firebase' });
 };
 
 /**
@@ -467,20 +462,22 @@ export const updateBookingStatus = updateBookingStatusByHost;
  * Save custom winery/brewery announcement or schedule override.
  * Omits isProTier from ordinary client writes.
  */
+const updateLocalProducerOverride = (override: ProducerOverride) => {
+  const existing = readStorage<Record<string, ProducerOverride>>(OVERRIDES_LOCAL_KEY, {}, {
+    scope: 'Firebase',
+    validator: (d) => typeof d === 'object' && d !== null && !Array.isArray(d),
+  });
+  existing[override.producerId] = override;
+  writeStorage(OVERRIDES_LOCAL_KEY, existing, { scope: 'Firebase' });
+};
+
 export const saveProducerOverride = async (override: ProducerOverride): Promise<void> => {
   const { isProTier: _ignoredProTier, ...cleanOverride } = override;
 
   if (isFirebaseConfigured && db) {
     if (!auth?.currentUser) {
       // Demo host identity: persist to local cache only without cloud writes
-      try {
-        const saved = localStorage.getItem(OVERRIDES_LOCAL_KEY);
-        const existing: Record<string, ProducerOverride> = saved ? JSON.parse(saved) : {};
-        existing[override.producerId] = override;
-        localStorage.setItem(OVERRIDES_LOCAL_KEY, JSON.stringify(existing));
-      } catch (e) {
-        console.error('Error caching producer override:', e);
-      }
+      updateLocalProducerOverride(override);
       return;
     }
 
@@ -491,43 +488,26 @@ export const saveProducerOverride = async (override: ProducerOverride): Promise<
       producerId: override.producerId,
     }, { merge: true });
 
-    try {
-      const saved = localStorage.getItem(OVERRIDES_LOCAL_KEY);
-      const existing: Record<string, ProducerOverride> = saved ? JSON.parse(saved) : {};
-      existing[override.producerId] = override;
-      localStorage.setItem(OVERRIDES_LOCAL_KEY, JSON.stringify(existing));
-    } catch (e) {
-      console.error('Error caching producer override:', e);
-    }
+    updateLocalProducerOverride(override);
     return;
   }
 
   // Firebase not configured: fallback local cache
-  try {
-    const saved = localStorage.getItem(OVERRIDES_LOCAL_KEY);
-    const existing: Record<string, ProducerOverride> = saved ? JSON.parse(saved) : {};
-    existing[override.producerId] = override;
-    localStorage.setItem(OVERRIDES_LOCAL_KEY, JSON.stringify(existing));
-  } catch (e) {
-    console.error('Error caching producer override:', e);
-  }
+  updateLocalProducerOverride(override);
 };
 
 export const getLocalProducerOverrides = (): Record<string, ProducerOverride> => {
-  try {
-    const saved = localStorage.getItem(OVERRIDES_LOCAL_KEY);
-    return saved ? JSON.parse(saved) : {};
-  } catch (e) {
-    console.error('Error reading producer overrides:', e);
-    return {};
-  }
+  return readStorage<Record<string, ProducerOverride>>(OVERRIDES_LOCAL_KEY, {}, {
+    scope: 'Firebase',
+    validator: (d) => typeof d === 'object' && d !== null && !Array.isArray(d),
+  });
 };
 
 // =========================================================
 // SCENARIO C: Producer Fiscal & Logistics Database Registry
 // =========================================================
 
-const PRODUCER_REGISTRATIONS_KEY = 'terroir_trail_producer_registrations';
+const PRODUCER_REGISTRATIONS_KEY = STORAGE_KEYS.PRODUCER_REGISTRATIONS;
 
 export { SEEDED_PRODUCER_REGISTRATIONS };
 
@@ -562,27 +542,23 @@ export const saveProducerRegistrationToCloud = async (
     await setDoc(docRef, updatedRecord, { merge: true });
 
     // Update local cache only after successful Firestore write
-    try {
-      const saved = localStorage.getItem(PRODUCER_REGISTRATIONS_KEY);
-      const existing: Record<string, ProducerRegistrationRecord> = saved ? JSON.parse(saved) : {};
-      existing[record.producerId] = updatedRecord;
-      localStorage.setItem(PRODUCER_REGISTRATIONS_KEY, JSON.stringify(existing));
-    } catch (e) {
-      console.error('Error persisting producer registration to localStorage:', e);
-    }
+    const existing = readStorage<Record<string, ProducerRegistrationRecord>>(PRODUCER_REGISTRATIONS_KEY, {}, {
+      scope: 'Firebase',
+      validator: (d) => typeof d === 'object' && d !== null && !Array.isArray(d),
+    });
+    existing[record.producerId] = updatedRecord;
+    writeStorage(PRODUCER_REGISTRATIONS_KEY, existing, { scope: 'Firebase' });
 
     return updatedRecord;
   }
 
   // Fallback for unconfigured / demo mode
-  try {
-    const saved = localStorage.getItem(PRODUCER_REGISTRATIONS_KEY);
-    const existing: Record<string, ProducerRegistrationRecord> = saved ? JSON.parse(saved) : {};
-    existing[record.producerId] = updatedRecord;
-    localStorage.setItem(PRODUCER_REGISTRATIONS_KEY, JSON.stringify(existing));
-  } catch (e) {
-    console.error('Error persisting producer registration to localStorage:', e);
-  }
+  const existing = readStorage<Record<string, ProducerRegistrationRecord>>(PRODUCER_REGISTRATIONS_KEY, {}, {
+    scope: 'Firebase',
+    validator: (d) => typeof d === 'object' && d !== null && !Array.isArray(d),
+  });
+  existing[record.producerId] = updatedRecord;
+  writeStorage(PRODUCER_REGISTRATIONS_KEY, existing, { scope: 'Firebase' });
 
   return updatedRecord;
 };
@@ -607,16 +583,12 @@ export const fetchProducerRegistrationFromCloud = async (
   }
 
   // 2. Fallback to localStorage if a saved registration exists
-  try {
-    const saved = localStorage.getItem(PRODUCER_REGISTRATIONS_KEY);
-    if (saved) {
-      const existing: Record<string, ProducerRegistrationRecord> = JSON.parse(saved);
-      if (existing[producerId]) {
-        return existing[producerId];
-      }
-    }
-  } catch (e) {
-    console.error('Error reading producer registration from localStorage:', e);
+  const existing = readStorage<Record<string, ProducerRegistrationRecord>>(PRODUCER_REGISTRATIONS_KEY, {}, {
+    scope: 'Firebase',
+    validator: (d) => typeof d === 'object' && d !== null && !Array.isArray(d),
+  });
+  if (existing[producerId]) {
+    return existing[producerId];
   }
 
   return null;
@@ -626,16 +598,10 @@ export const fetchProducerRegistrationFromCloud = async (
  * Returns all producer registration records from database/cache
  */
 export const getAllProducerRegistrations = async (): Promise<Record<string, ProducerRegistrationRecord>> => {
-  try {
-    const saved = localStorage.getItem(PRODUCER_REGISTRATIONS_KEY);
-    if (!saved) {
-      return {};
-    }
-    return JSON.parse(saved);
-  } catch (e) {
-    console.error('Error reading all producer registrations:', e);
-    return {};
-  }
+  return readStorage<Record<string, ProducerRegistrationRecord>>(PRODUCER_REGISTRATIONS_KEY, {}, {
+    scope: 'Firebase',
+    validator: (d) => typeof d === 'object' && d !== null && !Array.isArray(d),
+  });
 };
 
 export { app, auth, db };

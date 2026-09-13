@@ -15,6 +15,7 @@ import { ChauffeurBooking } from './types/monetization';
 import type { VerifiedPassInfo } from './components/Monetization/HostVerificationModal';
 import { verifyExplorerPass } from './services/explorerPass';
 import { logger } from './services/logger';
+import { readStorage, writeStorage, STORAGE_KEYS } from './services/browserStorage';
 import { List, MapPin } from 'lucide-react';
 
 // Performance optimization: lazy-load modals on demand to shrink initial bundle
@@ -111,12 +112,11 @@ export const App: React.FC = () => {
   }, [refreshExplorerPass, user?.id]);
 
   const handleConfirmChauffeurBooking = (booking: ChauffeurBooking) => {
-    try {
-      const existing = JSON.parse(localStorage.getItem('terroir_chauffeur_bookings') || '[]');
-      localStorage.setItem('terroir_chauffeur_bookings', JSON.stringify([booking, ...existing]));
-    } catch (e) {
-      logger.error('App', 'chauffeur_booking_persist_failed', e);
-    }
+    const existing = readStorage<ChauffeurBooking[]>(STORAGE_KEYS.CHAUFFEUR_BOOKINGS, [], {
+      scope: 'App',
+      validator: (data) => Array.isArray(data),
+    });
+    writeStorage(STORAGE_KEYS.CHAUFFEUR_BOOKINGS, [booking, ...existing], { scope: 'App' });
   };
 
   const {

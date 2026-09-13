@@ -1,24 +1,23 @@
 import { useState, useEffect, useCallback } from 'react';
+import {
+  readStorage,
+  writeStorage,
+  STORAGE_KEYS,
+} from '../services/browserStorage';
 
-const STORAGE_KEY = 'terroir_trail_favorites';
+const STORAGE_KEY = STORAGE_KEYS.FAVORITES;
 
 export function useFavorites() {
   const [favorites, setFavorites] = useState<string[]>(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      return stored ? JSON.parse(stored) : [];
-    } catch {
-      return [];
-    }
+    return readStorage<string[]>(STORAGE_KEY, [], {
+      scope: 'Favorites',
+      validator: (data) => Array.isArray(data),
+    });
   });
 
   // Keep localStorage synced
   useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(favorites));
-    } catch (e) {
-      console.warn('Could not save favorites to localStorage:', e);
-    }
+    writeStorage(STORAGE_KEY, favorites, { scope: 'Favorites' });
   }, [favorites]);
 
   const toggleFavorite = useCallback((id: string) => {

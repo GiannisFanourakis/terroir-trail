@@ -32,19 +32,34 @@ import { useExplorerPass } from './useExplorerPass';
 import { createGoogleWebCredential, createAppleWebCredential } from '../services/authBridging';
 import { logger } from '../services/logger';
 
+import {
+  readStorage,
+  writeStorage,
+  removeStorage,
+  STORAGE_KEYS,
+} from '../services/browserStorage';
+
 export { DEMO_PROFILES, DEMO_PRODUCER_PROFILES };
 
-const STORAGE_KEY = 'terroir_trail_user';
+const STORAGE_KEY = STORAGE_KEYS.AUTH_USER;
 
 // Helper to load user stamps and notes from local storage by user ID
-const getUserData = (userId: string) => {
-  try {
-    const raw = localStorage.getItem(`terroir_data_${userId}`);
-    if (raw) return JSON.parse(raw);
-  } catch (e) {
-    console.error('Error loading user data:', e);
-  }
-  return { visitedProducers: [], personalNotes: {} };
+const getUserData = (userId: string): Partial<UserProfile> & {
+  visitedProducers: string[];
+  personalNotes: Record<string, string>;
+} => {
+  const defaultData = { visitedProducers: [] as string[], personalNotes: {} as Record<string, string> };
+  const raw = readStorage<Partial<UserProfile> & { visitedProducers?: string[]; personalNotes?: Record<string, string> }>(
+    `${STORAGE_KEYS.USER_DATA_PREFIX}${userId}`,
+    defaultData,
+    { scope: 'Auth' }
+  );
+  return {
+    ...raw,
+    visitedProducers: Array.isArray(raw?.visitedProducers) ? raw.visitedProducers : [],
+    personalNotes:
+      raw?.personalNotes && typeof raw.personalNotes === 'object' ? raw.personalNotes : {},
+  };
 };
 
 const saveUserData = (
@@ -53,33 +68,23 @@ const saveUserData = (
   personalNotes: Record<string, string>,
   extra?: Partial<UserProfile>
 ) => {
-  try {
-    const prev = getUserData(userId);
-    localStorage.setItem(
-      `terroir_data_${userId}`,
-      JSON.stringify({ ...prev, visitedProducers, personalNotes, ...extra })
-    );
-  } catch (e) {
-    console.error('Error saving user data:', e);
-  }
+  const prev = getUserData(userId);
+  writeStorage(
+    `${STORAGE_KEYS.USER_DATA_PREFIX}${userId}`,
+    { ...prev, visitedProducers, personalNotes, ...extra },
+    { scope: 'Auth' }
+  );
 };
 
 export const useAuth = () => {
   const [user, setUser] = useState<UserProfile | null>(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (!saved) return null;
-      const parsed = JSON.parse(saved);
-      if (!parsed || typeof parsed !== 'object' || !parsed.id) return null;
-      return {
-        ...parsed,
-        visitedProducers: Array.isArray(parsed.visitedProducers) ? parsed.visitedProducers : [],
-        personalNotes: parsed.personalNotes && typeof parsed.personalNotes === 'object' ? parsed.personalNotes : {},
-      };
-    } catch (e) {
-      logger.error('Auth', 'local_storage_read_failed', e);
-      return null;
-    }
+    const parsed = readStorage<any>(STORAGE_KEY, null, { scope: 'Auth' });
+    if (!parsed || typeof parsed !== 'object' || !parsed.id) return null;
+    return {
+      ...parsed,
+      visitedProducers: Array.isArray(parsed.visitedProducers) ? parsed.visitedProducers : [],
+      personalNotes: parsed.personalNotes && typeof parsed.personalNotes === 'object' ? parsed.personalNotes : {},
+    };
   });
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -153,11 +158,7 @@ export const useAuth = () => {
           if (isDemo) {
             return prev;
           }
-          try {
-            localStorage.removeItem(STORAGE_KEY);
-          } catch (e) {
-            console.error('Error removing auth from localStorage:', e);
-          }
+          removeStorage(STORAGE_KEY, { scope: 'Auth' });
           return null;
         });
       }
@@ -168,15 +169,11 @@ export const useAuth = () => {
 
   // Sync current user state to localStorage
   useEffect(() => {
-    try {
-      if (user) {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
-        saveUserData(user.id, user.visitedProducers, user.personalNotes, user);
-      } else {
-        localStorage.removeItem(STORAGE_KEY);
-      }
-    } catch (e) {
-      logger.error('Auth', 'local_storage_sync_failed', e);
+    if (user) {
+      writeStorage(STORAGE_KEY, user, { scope: 'Auth' });
+      saveUserData(user.id, user.visitedProducers, user.personalNotes, user);
+    } else {
+      removeStorage(STORAGE_KEY, { scope: 'Auth' });
     }
   }, [user]);
 
