@@ -67,6 +67,8 @@ export interface ProducerRegistrationRecord {
   legalEntityType?: 'sole_proprietorship' | 'general_partnership_oe' | 'limited_partnership_ee' | 'private_company_ike' | 'corporation_ae' | 'agricultural_coop' | 'italian_srl' | 'other';
   vatNumber?: string;
   taxOffice?: string;
+  registeredAddress?: string;
+  contactPhone?: string;
   countryCode?: 'GR' | 'IT' | string;
   isVatVerified: boolean;
   vatVerificationDate?: string;
