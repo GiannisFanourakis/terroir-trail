@@ -131,7 +131,7 @@ The bundled fallback must never resurrect old synthetic data when Supabase is un
 
 ## Phase 6 — Location & Rural Navigation Safety
 
-**Status:** Pending.
+**Status:** In progress — safety foundation complete; producer-by-producer road/access verification remains.
 
 Location confidence and road-access confidence are separate concepts.
 
@@ -145,10 +145,16 @@ Location confidence and road-access confidence are separate concepts.
 
 ### Road/access confidence
 
-- [ ] Design a source-backed road/access confidence model.
+- [x] ~~Design a source-backed road/access confidence model.~~
 - [ ] Restore road-access classifications only after actual verification.
 - [ ] Distinguish normal paved, narrow paved, gravel, high-clearance/4x4, and other relevant access states where evidence supports them.
 - [ ] Verify that map directions never route travelers to unresolved or unsafe access points.
+
+Safety-foundation checkpoint: the database no longer defaults road access to `paved`; road-access classification now has independent verification status/source/notes; the frontend exposes road classifications only when verified; unaudited curated routes are quarantined; multi-stop navigation fails closed when producer/location/access evidence is incomplete. Full Crete road/access verification remains outstanding.
+
+Verification: full `npm run check` passed with **216 frontend tests, 13 server tests, 22 Firestore rules tests, production build, and SEO verification**.
+
+Remaining Phase 6 work: audit road/access evidence producer by producer; classify roads only where reliable evidence exists; preserve unknown where evidence is insufficient; replace hard-coded generic road descriptions in `ProducerDetailDrawer.tsx` with source-backed access wording; then reassess individual Directions behavior and curated routes.
 
 ---
 
