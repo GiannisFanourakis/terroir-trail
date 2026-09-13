@@ -5,7 +5,7 @@
 > Completion convention: change `- [ ] Step` to `- [x] ~~Step~~` when finished. Do not mark a step complete until it has been implemented, tested, pushed, deployed where applicable, and verified.
 
 **Last updated:** 2026-09-13  
-**Current focus:** Phase 4 — Batch 2: Heraklion
+**Current focus:** Phase 5 — Offline / Fallback Data Synchronization
 
 ---
 
@@ -82,27 +82,29 @@ The frontend now respects Supabase truth instead of manufacturing defaults.
 
 ## Phase 4 — Crete Data Integrity & Authenticity
 
-**Status:** In progress — Chania complete; Heraklion next.
+**Status:** Completed — all 27 live Crete producer/project records audited and verified.
 
 Complete the 27 Crete producer/project records with source-backed, human, authentic content.
 
 ### Regional audit batches
 
 - [x] ~~Batch 1 — Chania (9 records)~~
-- [ ] Batch 2 — Heraklion
-- [ ] Batch 3 — Rethymno + Lasithi
+- [x] ~~Batch 2 — Heraklion~~
+- [x] ~~Batch 3 — Rethymno + Lasithi~~
 
-- [ ] Verify and refine each real producer/family story.
-- [ ] Verify what each producer actually makes.
-- [ ] Verify factual origin/history details.
-- [ ] Verify village/locality information.
-- [ ] Give every pin a concise authentic tagline.
-- [ ] Verify official websites.
-- [ ] Verify public phone/contact details.
-- [ ] Verify visitability separately from TerroirTrail partnership status.
-- [ ] Remove any remaining invented awards, products, traditions, tasting menus, ratings, or hospitality claims.
-- [ ] Ensure no producer card implies a TerroirTrail commercial relationship where none exists.
-- [ ] Review all 27 Crete cards for consistent tone and completeness.
+- [x] ~~Verify and refine each real producer/family story.~~
+- [x] ~~Verify what each producer actually makes.~~
+- [x] ~~Verify factual origin/history details.~~
+- [x] ~~Verify village/locality information.~~
+- [x] ~~Give every pin a concise authentic tagline.~~
+- [x] ~~Verify official websites.~~
+- [x] ~~Verify public phone/contact details.~~
+- [x] ~~Verify visitability separately from TerroirTrail partnership status.~~
+- [x] ~~Remove any remaining invented awards, products, traditions, tasting menus, ratings, or hospitality claims.~~
+- [x] ~~Ensure no producer card implies a TerroirTrail commercial relationship where none exists.~~
+- [x] ~~Review all 27 Crete cards for consistent tone and completeness.~~
+
+Closeout verification: **27 live Crete records; 0 unresolved/unreviewed locations; 0 unreviewed visit statuses; 0 legacy rating/tasting/price/access claim rows; 54 linked Experience rows, 0 active.**
 
 Target feeling: **“I understand who these people are and why this place matters.”**
 
@@ -110,7 +112,7 @@ Target feeling: **“I understand who these people are and why this place matter
 
 ## Phase 5 — Offline / Fallback Data Synchronization
 
-**Status:** Pending.
+**Status:** Next — current focus.
 
 The bundled fallback must never resurrect old synthetic data when Supabase is unavailable.
 
@@ -137,8 +139,8 @@ Location confidence and road-access confidence are separate concepts.
 
 - [ ] Maintain `verified_entrance`, `verified_location`, and `unresolved` states accurately.
 - [x] ~~Resolve Lafkas exact entrance/location if reliable evidence becomes available.~~
-- [ ] Resolve Aerakis exact entrance/location if reliable evidence becomes available.
-- [ ] Resolve Tzourmpakis exact entrance/location if reliable evidence becomes available.
+- [x] ~~Resolve Aerakis exact entrance/location if reliable evidence becomes available.~~
+- [x] ~~Resolve Tzourmpakis exact entrance/location if reliable evidence becomes available.~~
 - [ ] Never substitute village-centre coordinates simply to make a pin appear complete.
 
 ### Road/access confidence
@@ -188,6 +190,7 @@ Audit TerroirTrail as a real launchable product, not merely a functioning codeba
 - [ ] Make dairy UI feel appropriate for dairies.
 - [ ] Make olive-mill UI feel appropriate for olive mills.
 - [ ] Make apiary/herb/farm UI feel appropriate for those producers.
+- [ ] Add a first-class farm category/taxonomy and migrate Peskesi from the legacy `kazani` bucket.
 - [ ] Ensure heritage/local projects do not masquerade as producers.
 - [ ] Standardize producer detail hierarchy: Story → What they make → Visiting & Contact → Location & Access.
 - [ ] Remove empty sections caused by correctly-null verified fields.
