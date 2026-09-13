@@ -16,9 +16,16 @@ export type Destination =
   | 'tuscany';
 
 export type RoadAccess = 
-  | 'paved' 
-  | 'gravel_ok' 
+  | 'paved'
+  | 'narrow_paved'
+  | 'gravel_ok'
+  | 'high_clearance_recommended'
   | '4x4_required';
+
+export type RoadAccessStatus =
+  | 'unreviewed'
+  | 'verified'
+  | 'current_access_uncertain';
 
 export type Ethos = 
   | 'organic' 
@@ -53,6 +60,7 @@ export interface PhotoCredit {
 }
 
 export type LocationStatus = 
+  | 'unreviewed'
   | 'verified_entrance' 
   | 'verified_location' 
   | 'unresolved';
@@ -92,6 +100,9 @@ export interface Producer {
   website?: string;
   googleMapsUrl?: string;
   roadAccess?: RoadAccess;
+  roadAccessStatus?: RoadAccessStatus | string;
+  roadAccessSourceUrl?: string;
+  roadAccessNotes?: string;
   ethos: Ethos[];
   foodOption?: FoodOption;
   dogFriendly?: boolean;
@@ -129,6 +140,12 @@ export interface DayTripLoop {
   description: string;
   highlightPointers: string[];
   isVipOnly?: boolean;
+  /**
+   * Curated routes remain draft until their producer set, claims, location points,
+   * and road/access evidence have been re-audited. Only verified routes may expose
+   * turn-by-turn navigation.
+   */
+  verificationStatus?: 'draft' | 'verified';
 }
 
 export interface FilterState {
