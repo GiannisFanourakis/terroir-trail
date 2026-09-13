@@ -47,7 +47,7 @@ export class AppErrorBoundary extends Component<AppErrorBoundaryProps, AppErrorB
             </div>
             <h1 className="text-xl font-bold text-stone-100 mb-2">Something went wrong</h1>
             <p className="text-sm text-stone-400 mb-6 leading-relaxed">
-              An unexpected error occurred while rendering the page. We have recorded the diagnostic event to investigate.
+              An unexpected error occurred while rendering the page. Please reload TerroirTrail and try again.
             </p>
             <button
               type="button"

@@ -69,7 +69,7 @@ describe('AppErrorBoundary', () => {
     // Verify friendly, calm traveler message
     expect(html).toContain('Something went wrong');
     expect(html).toContain('Reload TerroirTrail');
-    expect(html).toContain('An unexpected error occurred while rendering the page');
+    expect(html).toContain('An unexpected error occurred while rendering the page. Please reload TerroirTrail and try again.');
 
     // Verify raw implementation details, stack traces, and secrets are NEVER exposed in UI
     expect(html).not.toContain('Database hydration failed');
