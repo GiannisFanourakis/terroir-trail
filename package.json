@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "tsc && tsc -p tsconfig.server.json && vite build && tsx scripts/verify_seo_assets.ts",
     "verify:seo": "tsx scripts/verify_seo_assets.ts",
+    "sync:fallback": "tsx scripts/sync_fallback_producers.ts",
     "test": "npm run test:frontend && npm run test:server && npm run test:rules",
     "test:python": "python -m unittest discover -s tools/python/tests -p \"test_*.py\"",
     "audit:locations": "python tools/python/producer_location_audit.py",

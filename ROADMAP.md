@@ -5,7 +5,7 @@
 > Completion convention: change `- [ ] Step` to `- [x] ~~Step~~` when finished. Do not mark a step complete until it has been implemented, tested, pushed, deployed where applicable, and verified.
 
 **Last updated:** 2026-09-13  
-**Current focus:** Phase 5 — Offline / Fallback Data Synchronization
+**Current focus:** Phase 6 — Location & Rural Navigation Safety
 
 ---
 
@@ -112,20 +112,20 @@ Target feeling: **“I understand who these people are and why this place matter
 
 ## Phase 5 — Offline / Fallback Data Synchronization
 
-**Status:** Next — current focus.
+**Status:** Completed — bundled offline/fallback catalogue synchronized with the 27 audited Crete records; all synthetic defaults eliminated.
 
 The bundled fallback must never resurrect old synthetic data when Supabase is unavailable.
 
-- [ ] Synchronize `src/data/producers.ts` with the verified catalogue.
-- [ ] Synchronize names.
-- [ ] Synchronize coordinates and location-confidence behavior.
-- [ ] Synchronize stories and taglines.
-- [ ] Synchronize websites and phones.
-- [ ] Synchronize visitability.
-- [ ] Synchronize categories.
-- [ ] Preserve unknown fields as unknown in fallback data.
-- [ ] Ensure old synthetic ratings/tasting packages/hospitality metadata cannot reappear offline.
-- [ ] Test live-data and fallback-data behavior separately.
+- [x] ~~Synchronize `src/data/producers.ts` with the verified catalogue.~~
+- [x] ~~Synchronize names.~~
+- [x] ~~Synchronize coordinates and location-confidence behavior.~~
+- [x] ~~Synchronize stories and taglines.~~
+- [x] ~~Synchronize websites and phones.~~
+- [x] ~~Synchronize visitability.~~
+- [x] ~~Synchronize categories.~~
+- [x] ~~Preserve unknown fields as unknown in fallback data.~~
+- [x] ~~Ensure old synthetic ratings/tasting packages/hospitality metadata cannot reappear offline.~~
+- [x] ~~Test live-data and fallback-data behavior separately.~~
 
 ---
 

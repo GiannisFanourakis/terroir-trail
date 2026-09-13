@@ -344,5 +344,109 @@ describe('producerService — Supabase / Fallback Data Ownership', () => {
       expect(producer.googleMapsUrl).toBeUndefined();
     });
   });
+
+  describe('Phase 5 — Offline / Fallback Data Synchronization Integrity', () => {
+    it('bundled CRETAN_PRODUCERS contains exactly 27 audited Crete records with no synthetic material', () => {
+      expect(CRETAN_PRODUCERS).toHaveLength(27);
+
+      // Verify all are Crete
+      expect(CRETAN_PRODUCERS.every((p) => p.destination === 'crete')).toBe(true);
+
+      // Verify NO synthetic ratings or review counts exist
+      expect(CRETAN_PRODUCERS.every((p) => p.rating === undefined)).toBe(true);
+      expect(CRETAN_PRODUCERS.every((p) => p.reviewCount === undefined)).toBe(true);
+
+      // Verify NO synthetic price levels or food options exist
+      expect(CRETAN_PRODUCERS.every((p) => p.priceLevel === undefined)).toBe(true);
+      expect(CRETAN_PRODUCERS.every((p) => p.foodOption === undefined)).toBe(true);
+
+      // Verify NO synthetic road access claims exist
+      expect(CRETAN_PRODUCERS.every((p) => p.roadAccess === undefined)).toBe(true);
+
+      // Verify NO synthetic tasting packages exist
+      expect(CRETAN_PRODUCERS.every((p) => !p.tastingHighlights || p.tastingHighlights.length === 0)).toBe(true);
+
+      // Verify location and visit status are defined on every producer
+      expect(CRETAN_PRODUCERS.every((p) => p.locationStatus !== undefined)).toBe(true);
+      expect(CRETAN_PRODUCERS.every((p) => p.visitStatus !== undefined)).toBe(true);
+    });
+
+    it('verifies critical live corrections in fallback data', () => {
+      const lafkas = CRETAN_PRODUCERS.find((p) => p.id === 'lafkas-brewery');
+      expect(lafkas).toBeDefined();
+      expect(lafkas?.coordinates).toEqual([35.494636, 23.986088]);
+      expect(lafkas?.locationStatus).toBe('verified_location');
+      expect(lafkas?.visitStatus).toBe('appointment_only');
+
+      const wildHerbs = CRETAN_PRODUCERS.find((p) => p.id === 'wild-herbs-kallikratis');
+      expect(wildHerbs).toBeDefined();
+      expect(wildHerbs?.coordinates).toEqual([35.2378367, 24.2565003]);
+      expect(wildHerbs?.locationStatus).toBe('verified_location');
+      expect(wildHerbs?.visitStatus).toBe('seasonal_public');
+
+      const aerakis = CRETAN_PRODUCERS.find((p) => p.id === 'aerakis-dairy-anogeia');
+      expect(aerakis).toBeDefined();
+      expect(aerakis?.coordinates).toEqual([35.065803, 25.106932]);
+      expect(aerakis?.locationStatus).toBe('verified_location');
+      expect(aerakis?.visitStatus).toBe('not_publicly_confirmed');
+      expect(aerakis?.village).toBe('Sokaras (Gortyna)');
+
+      const tzourmpakis = CRETAN_PRODUCERS.find((p) => p.id === 'tzourmpakis-dairy-amari');
+      expect(tzourmpakis).toBeDefined();
+      expect(tzourmpakis?.coordinates).toEqual([35.2211278, 24.4979202]);
+      expect(tzourmpakis?.locationStatus).toBe('verified_location');
+      expect(tzourmpakis?.visitStatus).toBe('current_access_uncertain');
+      expect(tzourmpakis?.village).toBe('Mixorrouma (Agios Vasileios)');
+
+      const stilianou = CRETAN_PRODUCERS.find((p) => p.id === 'kazani-stilianou');
+      expect(stilianou).toBeDefined();
+      expect(stilianou?.name).toBe('Stilianou Winery');
+      expect(stilianou?.greekName).toBe('Οινοποιείο Στυλιανού');
+      expect(stilianou?.category).toBe('winery');
+
+      const spiridi = CRETAN_PRODUCERS.find((p) => p.id === 'cretan-olive-oil-farm');
+      expect(spiridi).toBeDefined();
+      expect(spiridi?.name).toBe('Spiridi Olive Oil Farm');
+
+      const paraschakis = CRETAN_PRODUCERS.find((p) => p.id === 'parasiris-olive-mill');
+      expect(paraschakis).toBeDefined();
+      expect(paraschakis?.name).toBe('Paraschakis Family Olive Oil Factory');
+      expect(paraschakis?.phone).toBe('+30 28340 22039');
+
+      const zacharioudakis = CRETAN_PRODUCERS.find((p) => p.id === 'zacharioudakis-winery');
+      expect(zacharioudakis).toBeDefined();
+      expect(zacharioudakis?.visitStatus).toBe('seasonal_public');
+
+      const toplou = CRETAN_PRODUCERS.find((p) => p.id === 'toplou-monastery-winery');
+      expect(toplou).toBeDefined();
+      expect(toplou?.visitStatus).toBe('public_visits');
+
+      const peskesi = CRETAN_PRODUCERS.find((p) => p.id === 'peskesi-farm-kazani');
+      expect(peskesi).toBeDefined();
+      expect(peskesi?.name).toBe('Peskesi Organic Farm');
+      expect(peskesi?.greekName).toBe('Αγρόκτημα Πεσκέσι');
+      expect(peskesi?.category).toBe('kazani');
+    });
+
+    it('offline / fallback path provides complete verified catalogue without resurrecting synthetic data', async () => {
+      // Simulate offline / unconfigured Supabase
+      mockSupabaseState.isConfigured = false;
+
+      const producers = await producerService.getProducers();
+      expect(producers).toHaveLength(27);
+      expect(producerService.getCacheProvenance()).toBe('fallback');
+
+      // Verify no synthetic ratings or reviews returned
+      expect(producers.every((p) => p.rating === undefined)).toBe(true);
+      expect(producers.every((p) => p.reviewCount === undefined)).toBe(true);
+
+      // Verify single producer fetch
+      const single = await producerService.getProducerById('lafkas-brewery');
+      expect(single).not.toBeNull();
+      expect(single?.name).toBe('Lafkas Brewery');
+      expect(single?.visitStatus).toBe('appointment_only');
+    });
+  });
 });
+
 
