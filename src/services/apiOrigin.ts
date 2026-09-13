@@ -1,4 +1,5 @@
 import { Capacitor } from '@capacitor/core';
+import { runtimeConfig } from '../config/runtimeConfig';
 
 /**
  * Deterministic API Origin Resolver for TerroirTrail.
@@ -12,7 +13,7 @@ import { Capacitor } from '@capacitor/core';
  *     Otherwise                     -> public HTTPS gateway ('https://terroir-trail.web.app')
  */
 export const resolveApiBaseUrl = (
-  envBaseUrl: string | undefined = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_API_BASE_URL) || undefined,
+  envBaseUrl: string | undefined = runtimeConfig.api.baseUrl || undefined,
   isNative: boolean = Capacitor.isNativePlatform()
 ): string => {
   if (isNative) {

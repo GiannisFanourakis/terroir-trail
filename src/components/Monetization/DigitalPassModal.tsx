@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { UserProfile } from '../../types/auth';
 import { logger } from '../../services/logger';
+import { runtimeConfig } from '../../config/runtimeConfig';
 
 interface DigitalPassModalProps {
   isOpen: boolean;
@@ -56,8 +57,8 @@ export const DigitalPassModal: React.FC<DigitalPassModalProps> = ({
     });
   }
 
-  const passWebUrl = import.meta.env.VITE_PUBLIC_APP_URL || 'https://terroir-trail.web.app/';
-  const verificationUrl = `${passWebUrl.replace(/\/$/, '')}/?verify_pass=${encodeURIComponent(passId)}`;
+  const passWebUrl = runtimeConfig.app.publicUrl;
+  const verificationUrl = `${passWebUrl}/?verify_pass=${encodeURIComponent(passId)}`;
 
   // Generate crisp QR code on mount / user change
   useEffect(() => {

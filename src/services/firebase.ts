@@ -29,32 +29,11 @@ import { TastingBooking, ProducerOverride } from '../types/booking';
 import { UserProfile, ProducerRegistrationRecord } from '../types/auth';
 import { SEEDED_PRODUCER_REGISTRATIONS } from '../data/seededRegistrations';
 import { logger } from './logger';
+import { runtimeConfig, checkIsFirebaseConfigured } from '../config/runtimeConfig';
 
-const getEnv = (key: string): string => {
-  if (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env[key]) {
-    return import.meta.env[key];
-  }
-  const globalProcess = (globalThis as any).process;
-  if (globalProcess?.env?.[key]) {
-    return globalProcess.env[key];
-  }
-  return '';
-};
+const firebaseConfig = runtimeConfig.firebase;
 
-const firebaseConfig = {
-  apiKey: getEnv('VITE_FIREBASE_API_KEY'),
-  authDomain: getEnv('VITE_FIREBASE_AUTH_DOMAIN'),
-  projectId: getEnv('VITE_FIREBASE_PROJECT_ID'),
-  storageBucket: getEnv('VITE_FIREBASE_STORAGE_BUCKET'),
-  messagingSenderId: getEnv('VITE_FIREBASE_MESSAGING_SENDER_ID'),
-  appId: getEnv('VITE_FIREBASE_APP_ID'),
-};
-
-export const isFirebaseConfigured = Boolean(
-  firebaseConfig.apiKey &&
-  firebaseConfig.authDomain &&
-  firebaseConfig.projectId
-);
+export const isFirebaseConfigured = checkIsFirebaseConfigured();
 
 let app: FirebaseApp | null = null;
 let auth: Auth | null = null;

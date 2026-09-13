@@ -28,9 +28,9 @@ async function request<T>(path: string, options: RequestInit = {}, authenticated
   return data as T;
 }
 
-export const isExplorerPassPurchasesEnabled = (): boolean => {
-  return import.meta.env.VITE_ENABLE_EXPLORER_PASS_PURCHASES === 'true';
-};
+import { isExplorerPassPurchasesEnabled } from '../config/runtimeConfig';
+
+export { isExplorerPassPurchasesEnabled };
 
 export const startPassCheckout = async (plan: ExplorerPass['plan']) => {
   if (!isExplorerPassPurchasesEnabled()) {
