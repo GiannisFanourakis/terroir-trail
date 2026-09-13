@@ -25,12 +25,13 @@ export function filterProducers(
     }
 
     // Road Access filter — never treat an unreviewed/uncertain classification as verified.
-    if (
-      filters.roadAccess !== 'all' &&
-      (producer.roadAccessStatus !== 'verified' ||
-        producer.roadAccess !== filters.roadAccess)
-    ) {
-      return false;
+    if (filters.roadAccess !== 'all') {
+      if (
+        producer.roadAccessStatus !== 'verified' ||
+        producer.roadAccess !== filters.roadAccess
+      ) {
+        return false;
+      }
     }
 
     // Ethos filter
