@@ -98,6 +98,16 @@ describe('evaluateRouteNavigation', () => {
     expect(result.issues.some((issue) => issue.code === 'road_access_uncertain')).toBe(true);
   });
 
+  it('fails closed for verified passable dirt access until rental-car suitability is separately established', () => {
+    const result = evaluateRouteNavigation(route(), [
+      producer({ roadAccess: 'unpaved_passable', roadAccessStatus: 'verified' }),
+    ]);
+    expect(result.isSafe).toBe(false);
+    expect(
+      result.issues.some((issue) => issue.code === 'unpaved_access_requires_review')
+    ).toBe(true);
+  });
+
   it('does not generate standard-car navigation for high-clearance or 4x4 access', () => {
     for (const roadAccess of ['high_clearance_recommended', '4x4_required'] as const) {
       const result = evaluateRouteNavigation(route(), [producer({ roadAccess })]);
@@ -106,8 +116,8 @@ describe('evaluateRouteNavigation', () => {
     }
   });
 
-  it('allows verified narrow paved, gravel, and passable unpaved classifications', () => {
-    for (const roadAccess of ['narrow_paved', 'gravel_ok', 'unpaved_passable'] as const) {
+  it('allows verified narrow paved and passable gravel classifications', () => {
+    for (const roadAccess of ['narrow_paved', 'gravel_ok'] as const) {
       const result = evaluateRouteNavigation(route(), [producer({ roadAccess })]);
       expect(result.isSafe).toBe(true);
       expect(result.url).toBeTruthy();
@@ -137,7 +147,7 @@ describe('getProducerRoadAccessWarning', () => {
       getProducerRoadAccessWarning(
         producer({ roadAccess: 'unpaved_passable', roadAccessStatus: 'verified' })
       )
-    ).toContain('passable unpaved');
+    ).toContain('does not imply rental-car suitability');
   });
 
   it('warns standard-car users when special access is required', () => {
