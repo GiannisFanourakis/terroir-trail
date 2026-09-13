@@ -136,18 +136,21 @@ describe('filterProducers pure utility', () => {
     expect(result).toEqual([p3]);
   });
 
-  it('does not expose unreviewed road access through a verified road filter', () => {
-    const unreviewed = createMockProducer({
-      id: 'unreviewed-road',
-      roadAccess: 'paved',
-      roadAccessStatus: 'unreviewed',
-    });
-    const result = filterProducers([p1, unreviewed], {
-      ...defaultFilters,
-      roadAccess: 'paved',
-    });
-    expect(result).toEqual([p1]);
-  });
+  it(
+    'does not expose unreviewed road access through a verified road filter',
+    () => {
+      const unreviewed = createMockProducer({
+        id: 'unreviewed-road',
+        roadAccess: 'paved',
+        roadAccessStatus: 'unreviewed',
+      });
+      const result = filterProducers([p1, unreviewed], {
+        ...defaultFilters,
+        roadAccess: 'paved',
+      });
+      expect(result).toEqual([p1]);
+    }
+  );
 
   it('filters by ethos', () => {
     const result = filterProducers(sampleProducers, {
