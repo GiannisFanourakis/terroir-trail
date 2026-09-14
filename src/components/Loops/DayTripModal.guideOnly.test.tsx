@@ -123,4 +123,35 @@ describe('Phase 9 published Crete route guides', () => {
     expect(route?.drivingDistance.toLowerCase()).not.toContain('paved');
   });
 
+
+  it('resolves published route stops even when the current UI producer list is filtered', () => {
+    const route = CURATED_ROUTES.find(
+      (candidate) => candidate.id === 'chania-craft-beer-olive-trail'
+    );
+
+    expect(route).toBeDefined();
+
+    const unrelatedProducer = CRETAN_PRODUCERS.find(
+      (producer) => producer.id === 'kasta-brewery'
+    );
+
+    expect(unrelatedProducer).toBeDefined();
+
+    const html = renderToString(
+      React.createElement(DayTripModal, {
+        isOpen: true,
+        onClose: () => {},
+        onSelectLoop: () => {},
+        onSelectProducer: () => {},
+        producers: [unrelatedProducer!],
+        loops: [route!],
+      })
+    );
+
+    expect(html).toContain('Biolea Astrikas Estate');
+    expect(html).toContain('Cretan Brewery (Charma Beer)');
+    expect(html).toContain('Manousakis Winery');
+    expect(html).not.toContain('is no longer present in the verified producer catalogue');
+  });
+
 });

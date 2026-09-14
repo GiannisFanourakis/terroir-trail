@@ -40,10 +40,19 @@ export const DayTripModal: React.FC<DayTripModalProps> = ({
   const [activeLoopIndex, setActiveLoopIndex] = useState<number>(0);
   const tabsRef = useRef<HTMLDivElement>(null);
 
-  const producerCatalogue = useMemo(
-    () => (producers.length > 0 ? producers : producerService.getCachedProducers()),
-    [producers]
-  );
+  const producerCatalogue = useMemo(() => {
+    // The App producer list can be narrowed by destination/search filters.
+    // Curated route validation needs the accumulated authoritative catalogue,
+    // so merge cached records with the current UI subset rather than replacing
+    // the catalogue with that subset.
+    const merged = new Map(
+      producerService.getCachedProducers().map((producer) => [producer.id, producer])
+    );
+
+    producers.forEach((producer) => merged.set(producer.id, producer));
+
+    return Array.from(merged.values());
+  }, [producers]);
 
   // Draft routes remain hidden. A route with verified stop identities and
   // locations may be published as a guide before its road-access audit is
