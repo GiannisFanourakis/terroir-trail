@@ -25,19 +25,35 @@ describe('Phase 8 Public Positioning & SEO Synchronization', () => {
       expect(indexHtml).not.toContain('Curated Agritourism & Local Producer Discovery Guide');
     });
 
-    it('uses truthful expansion-aware description without geographic fencing or overclaiming', () => {
+    it('removes Crete/Heraklion geo targeting tags from global homepage', () => {
+      expect(indexHtml).not.toContain('geo.placename="Heraklion, Crete, Greece"');
+      expect(indexHtml).not.toContain('Heraklion, Crete, Greece');
+      expect(indexHtml).not.toContain('geo.position');
+      expect(indexHtml).not.toContain('35.3387;25.1442');
+      expect(indexHtml).not.toContain('35.3387, 25.1442');
+      expect(indexHtml).not.toContain('name="ICBM"');
+      expect(indexHtml).not.toContain('name="geo.region"');
+    });
+
+    it('uses truthful expansion-aware description without geographic fencing, overclaiming, or blanket verification claims', () => {
       const expectedDesc =
-        'Independent producer and agritourism discovery guide. Explore verified wineries, craft breweries, artisanal olive mills, traditional dairies, apiaries, traditional distilleries, and farms with source-backed visiting and access details, starting in Greece.';
+        'Independent producer and agritourism discovery guide. Explore independent wineries, craft breweries, artisanal olive mills, traditional dairies, apiaries, traditional distilleries, and farms, with transparent visiting and access status, including source-backed verification where available, starting in Greece.';
 
       expect(indexHtml).toContain(`meta name="description" content="${expectedDesc}"`);
       expect(indexHtml).toContain(`meta property="og:description" content="${expectedDesc}"`);
       expect(indexHtml).toContain(`meta name="twitter:description" content="${expectedDesc}"`);
+
+      // Does not use blanket verification claims in global metadata or intro
+      expect(indexHtml).not.toContain('Explore verified wineries');
+      expect(indexHtml).not.toContain('connecting culinary travelers and road-trippers directly with verified wineries');
+      expect(indexHtml).not.toContain('connecting travelers directly with verified wineries');
 
       // Does not falsely claim Europe-wide coverage
       expect(indexHtml).not.toContain('Europe-wide');
       // Manifest does not claim 58+ across Europe
       expect(manifestJson).not.toContain('58+');
       expect(manifestJson).not.toContain('Tuscany');
+      expect(manifestJson).not.toContain('Discover verified independent');
     });
 
     it('aligns manifest.json and llms.txt with broad platform positioning', () => {
@@ -45,6 +61,7 @@ describe('Phase 8 Public Positioning & SEO Synchronization', () => {
       expect(parsedManifest.name).toBe('TerroirTrail — Independent Producer & Agritourism Guide');
       expect(parsedManifest.short_name).toBe('TerroirTrail');
       expect(parsedManifest.description).toContain('independent wineries, craft breweries, olive mills, dairies, apiaries, traditional distilleries, and farms');
+      expect(parsedManifest.description).toContain('transparent visiting and access status');
 
       expect(llmsTxt).toContain('# TerroirTrail — Independent Producer & Agritourism Guide');
       expect(llmsTxt).toContain('starting in Greece and designed to expand across the Mediterranean and beyond');
@@ -122,10 +139,14 @@ describe('Phase 8 Public Positioning & SEO Synchronization', () => {
   });
 
   describe('5. Build & Verification Script Alignment', () => {
-    it('bans stale Crete-only global titles in verify_seo_assets.ts', () => {
+    it('bans stale Crete-only global titles, blanket verification claims, and Heraklion geo tags in verify_seo_assets.ts', () => {
       expect(verifySeoScript).toContain('Curated Crete Agritourism & Local Producer Guide');
       expect(verifySeoScript).toContain('Curated Agritourism & Local Producer Discovery Guide');
       expect(verifySeoScript).toContain('TerroirTrail — Independent Producer &amp; Agritourism Guide');
+      expect(verifySeoScript).toContain('Explore verified wineries');
+      expect(verifySeoScript).toContain('Discover verified independent');
+      expect(verifySeoScript).toContain('geo.placename');
+      expect(verifySeoScript).toContain('Heraklion, Crete, Greece');
     });
 
     it('preserves valid sitemap and robots configuration', () => {

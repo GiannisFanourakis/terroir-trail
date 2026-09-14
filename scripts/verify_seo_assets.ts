@@ -83,11 +83,27 @@ function verifySeoAssets(): void {
       'and self-guided rural discovery routes.',
       'Curated Crete Agritourism & Local Producer Guide',
       'Curated Agritourism & Local Producer Discovery Guide',
+      'Explore verified wineries',
+      'Discover verified independent',
     ];
 
     for (const claim of bannedClaims) {
       if (indexContent.includes(claim)) {
         console.error(`[SEO Verification Failed] dist/index.html still contains quarantined/stale claim: ${claim}`);
+        process.exit(1);
+      }
+    }
+
+    const bannedGlobalGeoTags = [
+      'geo.placename',
+      'Heraklion, Crete, Greece',
+      '35.3387;25.1442',
+      '35.3387, 25.1442',
+    ];
+
+    for (const tag of bannedGlobalGeoTags) {
+      if (indexContent.includes(tag)) {
+        console.error(`[SEO Verification Failed] dist/index.html still contains global Heraklion/Crete geo tag: ${tag}`);
         process.exit(1);
       }
     }
