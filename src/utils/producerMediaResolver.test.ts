@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { Producer } from '../types/terroir';
 import { ProducerOverride } from '../types/booking';
 import { resolveProducerCover, resolveProducerGallery } from './producerMediaResolver';
@@ -94,6 +94,76 @@ describe('Producer Media Resolver & Tier Validation', () => {
       expect(resolved.author).toBe('Elena K.');
     });
 
+    it('assigns neutral listing image provenance when producer lacks photoCredit', () => {
+      const uncreditedProducer: Producer = {
+        ...mockProducer,
+        photoCredit: undefined,
+      };
+
+      const resolved = resolveProducerCover(uncreditedProducer);
+      expect(resolved.source).toBe('curated_estate');
+      expect(resolved.provenanceLabel).toBe('TerroirTrail listing image');
+      expect(resolved.author).toBeUndefined();
+      expect(resolved.license).toBeUndefined();
+    });
+
+    it('ignores host blob URLs when host media prototype is disabled', () => {
+      vi.stubEnv('VITE_ENABLE_HOST_MEDIA_PROTOTYPE', 'false');
+
+      const overrideWithBlob: ProducerOverride = {
+        producerId: 'lyrarakis-winery',
+        isAcceptingBookings: true,
+        updatedAt: new Date().toISOString(),
+        uploadedImages: [
+          {
+            id: 'blob-cover',
+            producerId: 'lyrarakis-winery',
+            url: 'blob:http://localhost:5173/mock-blob-uuid',
+            type: 'cover',
+            status: 'approved',
+            rightsConfirmed: true,
+            source: 'host_upload',
+            uploadedAt: new Date().toISOString(),
+          },
+        ],
+      };
+
+      const resolved = resolveProducerCover(mockProducer, overrideWithBlob);
+      // Falls back to curated cover since blob is ignored
+      expect(resolved.url).toBe(mockProducer.coverImage);
+      expect(resolved.source).toBe('curated_estate');
+
+      vi.unstubAllEnvs();
+    });
+
+    it('accepts host blob URLs when host media prototype is enabled', () => {
+      vi.stubEnv('VITE_ENABLE_HOST_MEDIA_PROTOTYPE', 'true');
+
+      const overrideWithBlob: ProducerOverride = {
+        producerId: 'lyrarakis-winery',
+        isAcceptingBookings: true,
+        updatedAt: new Date().toISOString(),
+        uploadedImages: [
+          {
+            id: 'blob-cover',
+            producerId: 'lyrarakis-winery',
+            url: 'blob:http://localhost:5173/mock-blob-uuid',
+            type: 'cover',
+            status: 'approved',
+            rightsConfirmed: true,
+            source: 'host_upload',
+            uploadedAt: new Date().toISOString(),
+          },
+        ],
+      };
+
+      const resolved = resolveProducerCover(mockProducer, overrideWithBlob);
+      expect(resolved.url).toBe('blob:http://localhost:5173/mock-blob-uuid');
+      expect(resolved.source).toBe('host_upload');
+
+      vi.unstubAllEnvs();
+    });
+
     it('falls back to category image if producer cover is empty', () => {
       const producerWithoutCover: Producer = {
         ...mockProducer,
@@ -146,7 +216,43 @@ describe('Producer Media Resolver & Tier Validation', () => {
 
       expect(gallery[1].url).toBe(mockProducer.gallery[0]);
       expect(gallery[1].source).toBe('curated_estate');
+      expect(gallery[1].provenanceLabel).toBe('Verified TerroirTrail media');
       expect(gallery[1].author).toBe('Nikos P.');
+
+      // Second curated gallery image has no credit in galleryCredits
+      expect(gallery[2].url).toBe(mockProducer.gallery[1]);
+      expect(gallery[2].source).toBe('curated_estate');
+      expect(gallery[2].provenanceLabel).toBe('TerroirTrail listing image');
+      expect(gallery[2].author).toBeUndefined();
+    });
+
+    it('ignores host blob gallery images when prototype is disabled', () => {
+      vi.stubEnv('VITE_ENABLE_HOST_MEDIA_PROTOTYPE', 'false');
+
+      const override: ProducerOverride = {
+        producerId: 'lyrarakis-winery',
+        isAcceptingBookings: true,
+        updatedAt: new Date().toISOString(),
+        uploadedImages: [
+          {
+            id: 'blob-gal-1',
+            producerId: 'lyrarakis-winery',
+            url: 'blob:http://localhost:5173/gallery-blob-1',
+            type: 'gallery',
+            status: 'approved',
+            rightsConfirmed: true,
+            source: 'host_upload',
+            uploadedAt: new Date().toISOString(),
+          },
+        ],
+      };
+
+      const gallery = resolveProducerGallery(mockProducer, override);
+      // Blob is ignored, only the 2 curated gallery items remain
+      expect(gallery).toHaveLength(2);
+      expect(gallery.some((g) => g.url.startsWith('blob:'))).toBe(false);
+
+      vi.unstubAllEnvs();
     });
   });
 

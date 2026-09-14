@@ -104,5 +104,8 @@ describe('GooglePlaceMedia Component', () => {
     expect(html).toContain('gmp-place-content-config');
     expect(html).toContain('gmp-place-media');
     expect(html).toContain('lightbox-preferred="true"');
+    expect(html).toContain('gmp-place-attribution');
+    expect(html).toContain('light-scheme-color="gray"');
+    expect(html).toContain('dark-scheme-color="white"');
   });
 });

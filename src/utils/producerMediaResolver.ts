@@ -2,6 +2,7 @@ import { Producer } from '../types/terroir';
 import { ProducerOverride } from '../types/booking';
 import { getEffectiveProducerCategory } from './producerCategory';
 import { getCategoryFallbackImage } from './imageFallbacks';
+import { isHostMediaPrototypeEnabled } from '../config/runtimeConfig';
 
 export interface ResolvedProducerMedia {
   url: string;
@@ -26,9 +27,14 @@ export function resolveProducerCover(
   producer: Producer,
   override?: ProducerOverride
 ): ResolvedProducerMedia {
+  const isPrototype = isHostMediaPrototypeEnabled();
+
   // 1. Check for approved host-uploaded cover image
   const hostCover = override?.uploadedImages?.find(
-    (img) => img.type === 'cover' && img.status === 'approved'
+    (img) =>
+      img.type === 'cover' &&
+      img.status === 'approved' &&
+      (isPrototype || !img.url.startsWith('blob:'))
   );
 
   if (hostCover) {
@@ -45,13 +51,13 @@ export function resolveProducerCover(
 
   // 2. Check for curated producer cover
   if (producer.coverImage && producer.coverImage.trim().length > 0) {
-    const isCuratedCredit = Boolean(producer.photoCredit);
+    const hasExplicitCredit = Boolean(producer.photoCredit?.author);
     return {
       url: producer.coverImage,
       thumbnailUrl: producer.coverImage,
       source: 'curated_estate',
-      provenanceLabel: isCuratedCredit ? 'Verified TerroirTrail media' : 'Curated estate media',
-      author: producer.photoCredit?.author || producer.name,
+      provenanceLabel: hasExplicitCredit ? 'Verified TerroirTrail media' : 'TerroirTrail listing image',
+      author: producer.photoCredit?.author,
       license: producer.photoCredit?.license,
       isHostManaged: false,
     };
@@ -73,10 +79,14 @@ export function resolveProducerGallery(
   override?: ProducerOverride
 ): ResolvedProducerMedia[] {
   const result: ResolvedProducerMedia[] = [];
+  const isPrototype = isHostMediaPrototypeEnabled();
 
   // 1. Approved host-uploaded gallery images first
   const approvedHostGallery = (override?.uploadedImages || []).filter(
-    (img) => img.type === 'gallery' && img.status === 'approved'
+    (img) =>
+      img.type === 'gallery' &&
+      img.status === 'approved' &&
+      (isPrototype || !img.url.startsWith('blob:'))
   );
 
   for (const hostImg of approvedHostGallery) {
@@ -99,12 +109,13 @@ export function resolveProducerGallery(
     if (result.some((r) => r.url === url)) return;
 
     const credit = galleryCredits[idx];
+    const hasExplicitCredit = Boolean(credit?.author);
     result.push({
       url,
       thumbnailUrl: url,
       source: 'curated_estate',
-      provenanceLabel: credit?.author ? 'Verified TerroirTrail media' : 'Curated estate media',
-      author: credit?.author || producer.name,
+      provenanceLabel: hasExplicitCredit ? 'Verified TerroirTrail media' : 'TerroirTrail listing image',
+      author: credit?.author,
       license: credit?.license,
       isHostManaged: false,
     });

@@ -21,7 +21,11 @@ interface GmpPlaceMediaProps extends React.DetailedHTMLProps<React.HTMLAttribute
   'lightbox-preferred'?: boolean | string;
 }
 
-interface GmpPlaceAttributionProps extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> {}
+interface GmpPlaceAttributionProps extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> {
+  'light-scheme-color'?: string;
+  'dark-scheme-color'?: string;
+  children?: React.ReactNode;
+}
 
 declare global {
   namespace JSX {

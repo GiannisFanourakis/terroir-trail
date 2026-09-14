@@ -176,6 +176,16 @@ export function getAdvertisingConfig(
 }
 
 /**
+ * Host media upload prototype is strictly development-only.
+ * Fails closed (false) by default so browser blob URLs are never exposed in production.
+ */
+export function isHostMediaPrototypeEnabled(
+  customEnv?: Record<string, string | undefined>
+): boolean {
+  return getRawEnv('VITE_ENABLE_HOST_MEDIA_PROTOTYPE', customEnv) === 'true';
+}
+
+/**
  * Normalizes public-facing web app URL for pass QR codes and links.
  * Defaults to https://terroir-trail.web.app without trailing slash.
  */
@@ -267,6 +277,9 @@ export const runtimeConfig = {
   },
   get advertising(): AdvertisingRuntimeConfig {
     return getAdvertisingConfig();
+  },
+  get hostMediaPrototype(): { enabled: boolean } {
+    return { enabled: isHostMediaPrototypeEnabled() };
   },
   get app(): AppRuntimeConfig {
     return { publicUrl: getPublicAppUrl() };

@@ -82,6 +82,10 @@ export const GooglePlaceMedia: React.FC<GooglePlaceMediaProps> = ({ producer, cl
               <gmp-place-details-location-request location={locationString} />
               <gmp-place-content-config>
                 <gmp-place-media lightbox-preferred="true" />
+                <gmp-place-attribution
+                  light-scheme-color="gray"
+                  dark-scheme-color="white"
+                />
               </gmp-place-content-config>
             </gmp-place-details>
           </div>

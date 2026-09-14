@@ -12,6 +12,7 @@ import {
 import { validateVatNumber, getFiscalLabels } from '../../utils/vatValidator';
 import { formatAuthError } from '../../utils/authErrors';
 import { ProducerUploadedImage, validateImageUpload, getProducerMediaLimits } from '../../types/producerMedia';
+import { runtimeConfig } from '../../config/runtimeConfig';
 import { ProducerRegistrationForm } from './ProducerRegistrationForm';
 import { HostQrScannerModal } from './HostQrScannerModal';
 import { HostVerificationModal, VerifiedPassInfo } from '../Monetization/HostVerificationModal';
@@ -116,7 +117,7 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
   const currentGallery = currentImages.filter((img) => img.type === 'gallery');
 
   const handleAddPhoto = async (file: File, type: 'cover' | 'gallery') => {
-    if (!selectedProducer) return;
+    if (!selectedProducer || !runtimeConfig.hostMediaPrototype.enabled) return;
     setPhotoError(null);
 
     const validation = validateImageUpload(
@@ -630,22 +631,24 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
                 <span>📢 Visitor Notice</span>
               </button>
 
-              <button
-                onClick={() => setActiveTab('photos')}
-                className={`py-2.5 px-3.5 border-b-2 transition cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
-                  activeTab === 'photos'
-                    ? 'border-amber-400 text-amber-400 font-bold'
-                    : 'border-transparent text-stone-400 hover:text-white'
-                }`}
-              >
-                <Camera className="w-3.5 h-3.5" />
-                <span>📸 Profile Photos</span>
-                {currentImages.length > 0 && (
-                  <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-stone-800 text-stone-300 font-mono">
-                    {currentImages.length}
-                  </span>
-                )}
-              </button>
+              {runtimeConfig.hostMediaPrototype.enabled && (
+                <button
+                  onClick={() => setActiveTab('photos')}
+                  className={`py-2.5 px-3.5 border-b-2 transition cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
+                    activeTab === 'photos'
+                      ? 'border-amber-400 text-amber-400 font-bold'
+                      : 'border-transparent text-stone-400 hover:text-white'
+                  }`}
+                >
+                  <Camera className="w-3.5 h-3.5" />
+                  <span>📸 Profile Photos</span>
+                  {currentImages.length > 0 && (
+                    <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-stone-800 text-stone-300 font-mono">
+                      {currentImages.length}
+                    </span>
+                  )}
+                </button>
+              )}
 
               <button
                 onClick={() => setActiveTab('experiences')}
@@ -998,8 +1001,19 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
               )}
 
               {/* TAB: PROFILE PHOTOS */}
-              {activeTab === 'photos' && (
+              {runtimeConfig.hostMediaPrototype.enabled && activeTab === 'photos' && (
                 <div className="space-y-4">
+                  {/* Local Session Prototype Warning Banner */}
+                  <div className="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs space-y-1">
+                    <p className="font-bold flex items-center gap-1.5">
+                      <AlertCircle className="w-4 h-4 text-amber-400 shrink-0" />
+                      <span>Local Session Prototype</span>
+                    </p>
+                    <p className="text-[11px] text-stone-300 leading-relaxed">
+                      This photo uploader is an in-memory development prototype using temporary browser blob URLs. Uploaded photos will persist only during your current browser session and will not be published to durable cloud storage or public listings until production storage infrastructure is provisioned.
+                    </p>
+                  </div>
+
                   {/* Section Title & Description */}
                   <div className="flex items-center justify-between gap-3 pb-2 border-b border-white/5">
                     <div>

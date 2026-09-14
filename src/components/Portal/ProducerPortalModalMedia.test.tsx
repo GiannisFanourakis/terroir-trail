@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, afterEach } from 'vitest';
 import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { ProducerPortalModal } from './ProducerPortalModal';
@@ -44,8 +44,14 @@ const mockHostUser: UserProfile = {
 };
 
 describe('Host-Managed Producer Imagery Integration', () => {
-  describe('ProducerPortalModal — Profile Photos Tab', () => {
-    it('renders Profile Photos tab button for authenticated estate host', () => {
+  afterEach(() => {
+    vi.unstubAllEnvs();
+  });
+
+  describe('ProducerPortalModal — Profile Photos Tab Gating', () => {
+    it('hides Profile Photos tab button by default when prototype is disabled', () => {
+      vi.stubEnv('VITE_ENABLE_HOST_MEDIA_PROTOTYPE', 'false');
+
       const html = renderToString(
         React.createElement(ProducerPortalModal, {
           isOpen: true,
@@ -59,12 +65,14 @@ describe('Host-Managed Producer Imagery Integration', () => {
         })
       );
 
-      expect(html).toContain('Profile Photos');
+      expect(html).not.toContain('Profile Photos');
       expect(html).toContain('Lyrarakis Winery');
       expect(html).toContain('Verified Host');
     });
 
-    it('renders photos tab content with rights confirmation when photos tab is active', () => {
+    it('renders Profile Photos tab button and prototype banner when prototype is enabled', () => {
+      vi.stubEnv('VITE_ENABLE_HOST_MEDIA_PROTOTYPE', 'true');
+
       const html = renderToString(
         React.createElement(ProducerPortalModal, {
           isOpen: true,
