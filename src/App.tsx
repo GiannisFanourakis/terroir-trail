@@ -13,8 +13,6 @@ import { useProducerPortal } from './hooks/useProducerPortal';
 import { GoogleAdSlot } from './components/Monetization/GoogleAdSlot';
 import { ChauffeurBooking } from './types/monetization';
 import type { VerifiedPassInfo } from './components/Monetization/HostVerificationModal';
-import { verifyExplorerPass } from './services/explorerPass';
-import { logger } from './services/logger';
 import { readStorage, writeStorage, STORAGE_KEYS } from './services/browserStorage';
 import { filterProducers } from './utils/filterProducers';
 import { List, MapPin } from 'lucide-react';
@@ -75,41 +73,9 @@ export const App: React.FC = () => {
     isVisited,
     saveTastingNote,
     getTastingNote,
-    refreshExplorerPass,
   } = useAuth();
 
   const { favorites, toggleFavorite, isFavorite } = useFavorites(user?.id);
-
-  // Listen for Stripe Checkout redirects (?vip=success or ?producer=upgraded) or QR Pass Verifications (?verify_pass=...)
-  const [stripeNotification, setStripeNotification] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const params = new URLSearchParams(window.location.search);
-    const sessionId = params.get('checkout_session_id');
-    const verifyPassId = params.get('verify_pass');
-    let cancelled = false;
-    if (verifyPassId) {
-      setStripeNotification('Checking Explorer pass…');
-      void verifyExplorerPass(verifyPassId).then(info => {
-        if (cancelled) return;
-        setStripeNotification(null);
-        setActiveModal({ type: 'host_verify', guestInfo: info });
-      }).catch(error => { if (!cancelled) setStripeNotification(error.message); });
-    } else if (sessionId && user?.id) {
-      setStripeNotification('Confirming your payment…');
-      void refreshExplorerPass(sessionId).then(pass => {
-        if (cancelled) return;
-        setStripeNotification(pass ? 'Your payment is verified and your Explorer pass is active.' : 'No active pass was found.');
-        if (pass) window.history.replaceState({}, document.title, window.location.pathname);
-      }).catch(error => { if (!cancelled) setStripeNotification(error.message); });
-    } else if (sessionId) {
-      setStripeNotification('Sign in to the account used at checkout to retrieve your pass.');
-    } else if (params.has('vip') || params.get('producer') === 'upgraded') {
-      setStripeNotification('A return link does not confirm payment. Sign in to check your purchase status.');
-    }
-    return () => { cancelled = true; };
-  }, [refreshExplorerPass, user?.id]);
 
   const handleConfirmChauffeurBooking = (booking: ChauffeurBooking) => {
     const existing = readStorage<ChauffeurBooking[]>(STORAGE_KEYS.CHAUFFEUR_BOOKINGS, [], {
@@ -219,7 +185,6 @@ export const App: React.FC = () => {
         onSelectDestination={(dest: Destination | 'all') => handleFilterChange('destination', dest)}
         searchQuery={filters.searchQuery}
         onSearchChange={(query: string) => handleFilterChange('searchQuery', query)}
-        onOpenLoops={() => setActiveModal({ type: 'loops' })}
         totalFilteredCount={filteredProducers.length}
         viewMode={viewMode}
         onToggleViewMode={() => setViewMode((prev) => (prev === 'map' ? 'list' : 'map'))}
@@ -237,23 +202,6 @@ export const App: React.FC = () => {
         onOpenLegal={(tab) => setActiveModal({ type: 'legal', initialTab: tab || 'privacy' })}
       />
 
-      {/* Stripe Checkout VIP/Producer Success Banner */}
-      {stripeNotification && (
-        <div className="bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 text-stone-950 px-4 py-2 text-xs font-bold flex items-center justify-between shadow-lg animate-in slide-in-from-top duration-300 z-50">
-          <div className="flex items-center gap-2 mx-auto">
-            <span>{stripeNotification}</span>
-          </div>
-          <button
-            type="button"
-            onClick={() => setStripeNotification(null)}
-            className="text-stone-950 hover:text-stone-800 text-sm font-bold ml-2 cursor-pointer"
-            aria-label="Dismiss banner"
-          >
-            ✕
-          </button>
-        </div>
-      )}
-
       {/* 2. Interactive Filter Bar */}
       <FilterBar
         filters={filters}
@@ -261,7 +209,6 @@ export const App: React.FC = () => {
         onResetFilters={handleResetFilters}
         totalFiltered={filteredProducers.length}
         totalCount={producers.length}
-        onOpenLoops={() => setActiveModal({ type: 'loops' })}
       />
 
       {(catalogueLoading || catalogueError || !catalogueIsLive) && (
@@ -541,7 +488,6 @@ export const App: React.FC = () => {
             isOpen
             onClose={closeModal}
             initialTab={activeModal.initialTab || 'about'}
-            onOpenLoops={() => setActiveModal({ type: 'loops' })}
             onOpenAuth={(role) => setActiveModal({ type: 'auth', initialRole: role || 'traveler' })}
             onOpenProducerPortal={() => setActiveModal({ type: 'portal' })}
             onOpenLegal={(tab) => setActiveModal({ type: 'legal', initialTab: tab })}

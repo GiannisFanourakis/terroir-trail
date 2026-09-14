@@ -109,8 +109,6 @@ const FAQ_DATA: FaqItem[] = [
     answer:
       'Curated routes are currently under verification. Draft routes are not published as turn-by-turn itineraries. A route can only expose navigation after its stops, exact locations and relevant road-access evidence satisfy the safety checks.',
     highlight: 'No draft route is silently converted into turn-by-turn navigation.',
-    actionText: 'View Route Verification Status',
-    actionType: 'loops',
   },
   {
     id: 'road-access',
@@ -298,7 +296,7 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
 
               <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30">
                 <p className="text-xs text-stone-300 text-center sm:text-left">
-                  Curated driving routes are visible only as an under-verification feature until every stop passes the safety audit.
+                  Curated driving routes are not currently published as a public route feature while their stops and access conditions are being re-verified.
                 </p>
                 <div className="flex items-center gap-2 shrink-0">
                   <button

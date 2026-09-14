@@ -309,7 +309,7 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
-            {isProducerAuthenticated && (
+            {ENABLE_FUTURE_HOST_FEATURES && isProducerAuthenticated && (
               <button
                 type="button"
                 onClick={() => setIsScannerOpen(true)}
