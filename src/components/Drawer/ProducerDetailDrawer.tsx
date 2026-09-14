@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { useProducerPhotos } from '../../services/googlePlacesPhotos';
 import { getCategoryFallbackImage } from '../../utils/imageFallbacks';
+import { getEffectiveProducerCategory } from '../../utils/producerCategory';
 import { getProducerRoadAccessWarning } from '../../utils/routeSafety';
 
 interface ProducerDetailDrawerProps {
@@ -80,7 +81,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
 
   const handleHeroImgError = () => {
     if (producer) {
-      const fallback = getCategoryFallbackImage(producer.category);
+      const fallback = getCategoryFallbackImage(getEffectiveProducerCategory(producer));
       if (heroImgSrc !== fallback) {
         setHeroImgSrc(fallback);
       }
@@ -105,16 +106,14 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
   };
 
   const getCategoryDetails = (p: Producer) => {
-    if (p.id === 'peskesi-farm-kazani') {
-      return { label: 'Organic Farm', icon: '🌿', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' };
-    }
-    switch (p.category) {
+    switch (getEffectiveProducerCategory(p)) {
       case 'winery': return { label: 'Winery', icon: '🍇', color: 'text-rose-400 bg-rose-500/10 border-rose-500/20' };
       case 'brewery': return { label: 'Brewery', icon: '🍺', color: 'text-amber-300 bg-amber-400/15 border-amber-400/30' };
       case 'kazani': return { label: 'Rakokazano', icon: '🏺', color: 'text-amber-400 bg-amber-500/10 border-amber-500/20' };
       case 'olive_mill': return { label: 'Olive Mill', icon: '🫒', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' };
       case 'cheese_dairy': return { label: 'Dairy', icon: '🧀', color: 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20' };
       case 'apiary': return { label: 'Apiary / Honey', icon: '🍯', color: 'text-orange-400 bg-orange-500/10 border-orange-500/20' };
+      case 'farm': return { label: 'Farm', icon: '🌿', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' };
       default: return { label: 'Producer', icon: '🌿', color: 'text-stone-300 bg-stone-500/10 border-white/10' };
     }
   };
@@ -253,6 +252,25 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
           deliveryBadge: 'Harvest Jars',
           deliveryBoxDesc: 'Pure raw nomadic thyme honey & wild foraged mountain herbs shipped direct to your door.',
         };
+      case 'farm':
+        return {
+          makerTitle: 'farmer or owner',
+          venueName: 'farm',
+          productPlural: 'farm product',
+          storeLabel: 'Direct Farm Shop',
+          storeSub: `Order farm products directly from ${name}`,
+          discountLabel: 'Farm Discount',
+          tastingNotePlaceholder: 'Record your thoughts on the farm, its cultivation, products, or your visit...',
+          visitingTitle: 'Farm & Visiting',
+          callAction: 'Call Farm',
+          callShortLabel: 'Call Farm',
+          hasDeliveryBoxes: false,
+          deliveryCategory: undefined,
+          deliveryIcon: '🌿',
+          deliveryBoxTitle: '',
+          deliveryBadge: '',
+          deliveryBoxDesc: '',
+        };
       case 'winery':
       default:
         return {
@@ -347,17 +365,10 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
     (producer.roadAccess === 'paved' ||
       producer.roadAccess === 'narrow_paved' ||
       producer.roadAccess === 'gravel_ok');
-  const term = {
-    ...getCategoryTerminology(producer.category, producer.name),
-    ...(producer.id === 'peskesi-farm-kazani'
-      ? {
-          tastingNotePlaceholder: 'Record your thoughts on the farm, its cultivation, products, or your visit...',
-          visitingTitle: 'Farm & Visiting',
-          callAction: 'Call Farm',
-          callShortLabel: 'Call Farm',
-        }
-      : {}),
-  };
+  const term = getCategoryTerminology(
+    getEffectiveProducerCategory(producer),
+    producer.name
+  );
   const visitDetails = getVisitStatusDetails(producer.visitStatus, producer);
 
   return (
@@ -765,7 +776,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                         loading="lazy"
                         decoding="async"
                         onError={(e) => {
-                          const fallback = getCategoryFallbackImage(producer.category);
+                          const fallback = getCategoryFallbackImage(getEffectiveProducerCategory(producer));
                           if (e.currentTarget.src !== fallback) {
                             e.currentTarget.src = fallback;
                           }

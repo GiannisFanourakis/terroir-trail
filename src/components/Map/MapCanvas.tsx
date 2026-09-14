@@ -6,6 +6,7 @@ import {
   Star, ArrowRight, ExternalLink, X, Compass, ChevronRight, Heart, AlertCircle 
 } from 'lucide-react';
 import { getCategoryFallbackImage } from '../../utils/imageFallbacks';
+import { getEffectiveProducerCategory } from '../../utils/producerCategory';
 import { getUserCoordinates } from '../../services/geolocation';
 
 interface MapCanvasProps {
@@ -98,11 +99,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     let icon = '🍇';
     let iconBg = 'bg-rose-500/25 text-rose-200 border-rose-500/50';
 
-    if (producer.id === 'peskesi-farm-kazani') {
-      icon = '🌿';
-      iconBg = 'bg-emerald-500/25 text-emerald-200 border-emerald-500/50';
-    } else {
-      switch (producer.category) {
+    switch (getEffectiveProducerCategory(producer)) {
       case 'winery':
         icon = '🍇';
         iconBg = 'bg-rose-500/25 text-rose-200 border-rose-500/50';
@@ -127,7 +124,10 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
         icon = '🍯';
         iconBg = 'bg-orange-500/25 text-orange-200 border-orange-500/50';
         break;
-      }
+      case 'farm':
+        icon = '🌿';
+        iconBg = 'bg-emerald-500/25 text-emerald-200 border-emerald-500/50';
+        break;
     }
 
     const shortVillage = producer.village
@@ -357,14 +357,14 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
   };
 
   const formatCategoryName = (producer: Producer) => {
-    if (producer.id === 'peskesi-farm-kazani') return 'Organic Farm';
-    switch (producer.category) {
+    switch (getEffectiveProducerCategory(producer)) {
       case 'winery': return 'Winery';
       case 'brewery': return 'Brewery';
       case 'kazani': return 'Rakokazano';
       case 'olive_mill': return 'Olive Mill';
       case 'cheese_dairy': return 'Dairy';
       case 'apiary': return 'Apiary / Honey';
+      case 'farm': return 'Farm';
     }
   };
 
@@ -542,7 +542,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
                 loading="lazy"
                 decoding="async"
                 onError={(e) => {
-                  const fallback = getCategoryFallbackImage(selectedProducer.category);
+                  const fallback = getCategoryFallbackImage(getEffectiveProducerCategory(selectedProducer));
                   if (e.currentTarget.src !== fallback) {
                     e.currentTarget.src = fallback;
                   }
@@ -645,6 +645,14 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
         <div className="flex items-center gap-1.5">
           <span className="w-2.5 h-2.5 rounded-full bg-yellow-500"></span>
           <span>Dairy</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <span className="w-2.5 h-2.5 rounded-full bg-orange-500"></span>
+          <span>Apiary / Honey</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <span className="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+          <span>Farm</span>
         </div>
       </div>
     </div>

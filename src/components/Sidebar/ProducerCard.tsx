@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Producer } from '../../types/terroir';
 import { MapPin, Star, ArrowUpRight, Car, Heart } from 'lucide-react';
 import { getCategoryFallbackImage } from '../../utils/imageFallbacks';
+import { getEffectiveProducerCategory } from '../../utils/producerCategory';
 
 interface ProducerCardProps {
   producer: Producer;
@@ -25,18 +26,14 @@ export const ProducerCard: React.FC<ProducerCardProps> = ({
   }, [producer.coverImage]);
 
   const handleImageError = () => {
-    const fallback = getCategoryFallbackImage(producer.category);
+    const fallback = getCategoryFallbackImage(getEffectiveProducerCategory(producer));
     if (imgSrc !== fallback) {
       setImgSrc(fallback);
     }
   };
 
   const getCategoryBadge = (p: Producer) => {
-    if (p.id === 'peskesi-farm-kazani') {
-      return { label: 'Organic Farm', icon: '🌿', bg: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' };
-    }
-
-    switch (p.category) {
+    switch (getEffectiveProducerCategory(p)) {
       case 'winery':
         return { label: 'Winery', icon: '🍇', bg: 'bg-rose-500/20 text-rose-300 border-rose-500/30' };
       case 'brewery':
@@ -49,6 +46,8 @@ export const ProducerCard: React.FC<ProducerCardProps> = ({
         return { label: 'Dairy', icon: '🧀', bg: 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30' };
       case 'apiary':
         return { label: 'Apiary / Honey', icon: '🍯', bg: 'bg-orange-500/20 text-orange-300 border-orange-500/30' };
+      case 'farm':
+        return { label: 'Farm', icon: '🌿', bg: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' };
     }
   };
 
