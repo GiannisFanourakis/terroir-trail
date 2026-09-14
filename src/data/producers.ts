@@ -186,8 +186,8 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "village": "Pazinos",
       "locality": "Pazinos",
       "coordinates": [
-          35.494636,
-          23.986088
+          35.518276,
+          24.1244784
       ],
       "coverImage": "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=1000&q=80",
       "gallery": [
@@ -202,13 +202,14 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "ethos": [],
       "phone": "+30 6945430402",
       "website": "https://lafkasbrewery.com",
-      "googleMapsUrl": "https://www.google.com/maps/place/Lafkas+Brewery/@35.494636,23.9835131,17z/data=!3m1!4b1!4m6!3m5!1s0x149c8788ddc82b49:0x8ee32eaeecced606!8m2!3d35.494636!4d23.986088!16s%2Fg%2F11fxb2y0bz?entry=tts&g_ep=EgoyMDI0MDUwNi4wKgBIAVAD",
+      "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Lafkas%20Brewery%2C%20Pazinos%20731%2000&query_place_id=ChIJSSvI3YiHnBQRBtbO7K4u444",
+      "googlePlaceId": "ChIJSSvI3YiHnBQRBtbO7K4u444",
       "roadAccessStatus": "not_publicly_confirmed",
       "roadAccessSourceUrl": "https://lafkasbrewery.com",
       "roadAccessNotes": "Phase 6 review (2026-09-13): no explicit source-backed road-surface, width, or vehicle-suitability classification was found in the reviewed public material. Road type remains unpublished.",
       "locationStatus": "verified_location",
-      "locationSourceUrl": "https://www.google.com/maps/place/Lafkas+Brewery/@35.494636,23.9835131,17z/data=!3m1!4b1!4m6!3m5!1s0x149c8788ddc82b49:0x8ee32eaeecced606!8m2!3d35.494636!4d23.986088!16s%2Fg%2F11fxb2y0bz?entry=tts&g_ep=EgoyMDI0MDUwNi4wKgBIAVAD",
-      "locationNotes": "Current Lafkas Brewery Google Maps business pin supplied by the TerroirTrail project owner and corroborated by the official Pazinos address. Location verified; entrance-level precision has not been separately established.",
+      "locationSourceUrl": "https://www.google.com/maps/search/?api=1&query=Lafkas%20Brewery%2C%20Pazinos%20731%2000&query_place_id=ChIJSSvI3YiHnBQRBtbO7K4u444",
+      "locationNotes": "Phase 9B correction (2026-09-14): previous TerroirTrail pin was stale/wrong by about 12.8 km. Google Places audit resolved the Lafkas Brewery business in Pazinos at 35.5182760, 24.1244784 (Place ID ChIJSSvI3YiHnBQRBtbO7K4u444), and the producer-owned Lafkas Brewery website independently confirms the current address as Pazinos 73100 Chania. Location verified at business-property level; entrance-level precision has not been separately established.",
       "visitStatus": "appointment_only",
       "visitSourceUrl": "https://lafkasbrewery.com/",
       "visitNotes": "Lafkas explicitly states that the Pazinos brewery is open by appointment. This is visitability only; no TerroirTrail bookable experience exists."
