@@ -38,14 +38,9 @@ export function getCuratedFallback(producer: Producer): EstatePhotosResult {
     (img, index, self) => img && self.indexOf(img) === index
   );
 
-  const defaultCredit: PhotoCredit = producer.photoCredit || {
-    author: producer.name + ' Media Archive',
-    source: 'Official Estate Press Kit',
-    license: 'Estate Media License',
-    url: producer.website || producer.googleMapsUrl,
-  };
-
+  const defaultCredit: PhotoCredit | undefined = producer.photoCredit;
   const galleryCredits = producer.galleryCredits || [];
+  const hasGenuineCredit = Boolean(producer.photoCredit || galleryCredits.length > 0);
 
   return {
     producerId: producer.id,
@@ -53,19 +48,23 @@ export function getCuratedFallback(producer: Producer): EstatePhotosResult {
     photos: images.map((url, idx) => {
       const credit = idx === 0 ? defaultCredit : (galleryCredits[idx - 1] || defaultCredit);
 
+      const attributionLabel = credit?.author
+        ? credit.author + (credit.source ? ' · ' + credit.source : '') + (credit.license ? ' (' + credit.license + ')' : '')
+        : producer.name;
+
       return {
         url,
         thumbUrl: url,
         attributions: [
           {
-            displayName: credit.author + ' · ' + credit.source + (credit.license ? ' (' + credit.license + ')' : ''),
-            uri: credit.url || producer.website || producer.googleMapsUrl,
+            displayName: attributionLabel,
+            uri: credit?.url || producer.website || producer.googleMapsUrl,
           },
         ],
         credit,
       };
     }),
-    source: 'verified_estate_media',
+    source: hasGenuineCredit ? 'verified_estate_media' : 'curated_fallback',
   };
 }
 
@@ -107,7 +106,7 @@ export function useProducerPhotos(producer: Producer | null) {
     activePhotoIndex,
     setActivePhotoIndex,
     isGooglePlaces: false, // Disabled to eliminate financial and ToS risk
-    isVerifiedMedia: true,
+    isVerifiedMedia: Boolean(photosResult?.source === 'verified_estate_media'),
     isLoading: false,
     displayName: photosResult?.displayName || producer?.name,
     refetch: () => producer && loadPhotos(producer),

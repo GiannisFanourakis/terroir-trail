@@ -11,6 +11,7 @@ import { useProducerPhotos } from '../../services/googlePlacesPhotos';
 import { getCategoryFallbackImage } from '../../utils/imageFallbacks';
 import { getEffectiveProducerCategory } from '../../utils/producerCategory';
 import { getProducerRoadAccessWarning } from '../../utils/routeSafety';
+import { GooglePlaceMedia } from '../GooglePlaces/GooglePlaceMedia';
 
 interface ProducerDetailDrawerProps {
   producer: Producer | null;
@@ -827,6 +828,9 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                 )}
               </div>
             )}
+
+            {/* Third-Party Discovery Media (Google Places UI Kit Essentials) */}
+            <GooglePlaceMedia producer={producer} />
           </div>
         )}
 
