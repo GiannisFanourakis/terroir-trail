@@ -17,10 +17,15 @@ const backups: Backup[] = files.map((file) => {
 
 const replaceExactlyOnce = (file: string, label: string, before: string, after: string) => {
   const resolved = path.resolve(file);
-  const source = fs.readFileSync(resolved, 'utf8');
-  const count = source.split(before).length - 1;
+  const raw = fs.readFileSync(resolved, 'utf8');
+  const eol = raw.includes('\r\n') ? '\r\n' : '\n';
+  const source = raw.replace(/\r\n/g, '\n');
+  const normalizedBefore = before.replace(/\r\n/g, '\n');
+  const normalizedAfter = after.replace(/\r\n/g, '\n');
+  const count = source.split(normalizedBefore).length - 1;
   if (count !== 1) throw new Error(`${label}: expected exactly one match, found ${count}`);
-  fs.writeFileSync(resolved, source.replace(before, after));
+  const updated = source.replace(normalizedBefore, normalizedAfter);
+  fs.writeFileSync(resolved, updated.replace(/\n/g, eol));
 };
 
 const restore = () => {
