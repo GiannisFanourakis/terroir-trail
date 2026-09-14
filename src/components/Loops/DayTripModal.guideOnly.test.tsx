@@ -99,4 +99,28 @@ describe('Phase 9 published Crete route guides', () => {
     expect(ids).not.toContain('kazani-kokolakis');
     expect(ids).not.toContain('paraschakis-olive-mill');
   });
+
+  it('keeps the Rethymno guide draft until its remaining access evidence is sufficient', () => {
+    const route = CURATED_ROUTES.find(
+      (candidate) => candidate.id === 'rethymno-mountain-cheese-mill-trail'
+    );
+
+    expect(route).toBeDefined();
+    expect(route?.verificationStatus).toBe('draft');
+    expect(route?.stops.map((stop) => stop.producerId)).toEqual([
+      'parasiris-olive-mill',
+      'tzourmpakis-dairy-amari',
+    ]);
+
+    const publishedIds = publishedCreteRoutes.map((candidate) => candidate.id);
+    expect(publishedIds).not.toContain('rethymno-mountain-cheese-mill-trail');
+
+    const allCreteStopIds = CURATED_ROUTES
+      .filter((candidate) => candidate.destination === 'crete')
+      .flatMap((candidate) => candidate.stops.map((stop) => stop.producerId));
+
+    expect(allCreteStopIds).not.toContain('paraschakis-olive-mill');
+    expect(route?.drivingDistance.toLowerCase()).not.toContain('paved');
+  });
+
 });

@@ -106,37 +106,34 @@ export const CURATED_ROUTES: DayTripLoop[] = [
   },
   {
     id: 'rethymno-mountain-cheese-mill-trail',
-    title: 'Rethymno Heritage Mills & Ida Mountain Cave Cheese',
-    greekTitle: 'Ελαιοτριβεία & Τυροκομεία Ρεθύμνου & Ψηλορείτη',
-    subtitle: 'Cold Olive Pressing, Raw Sheep Milk & Cave-Aged Graviera',
+    title: 'Rethymno: Olive Oil & Dairy Stops Under Verification',
+    greekTitle: 'Ρέθυμνο: Ελαιόλαδο & Τυροκομία υπό Επαλήθευση',
+    subtitle: 'Melidoni · Amari',
     destination: 'crete',
     region: 'Rethymno',
-    totalDuration: '5.0 hours',
-    drivingDistance: '48 km (Scenic foothills)',
+    totalDuration: 'Planning guide — not yet published',
+    drivingDistance: 'Driving distance pending access audit',
     stops: [
       {
-        producerId: 'paraschakis-olive-mill',
-        suggestedTime: '10:30 AM - 12:00 PM',
-        activity: 'Explore the historic 19th-century olive press museum and taste cold-extracted extra virgin olive oil.'
+        producerId: 'parasiris-olive-mill',
+        suggestedTime: 'Potential first stop',
+        activity: 'The Paraschakis family olive oil factory in Melidoni currently publishes visitor access. Check the producer page for current hours before travelling.'
       },
       {
         producerId: 'tzourmpakis-dairy-amari',
-        suggestedTime: '12:30 PM - 2:00 PM',
-        activity: 'Sample artisanal raw-milk Graviera, velvety Galeni, and smoked goat cheese in the pristine Amari Valley.'
-      },
-      {
-        producerId: 'aerakis-dairy-anogeia',
-        suggestedTime: '2:30 PM - 4:00 PM',
-        activity: 'Taste legendary 18-month cave-aged Graviera and warm sheep Mizithra from the alpine slopes of Mount Ida.'
+        suggestedTime: 'Potential second stop',
+        activity: 'The Tzourmpakis Dairy location is verified, but current visitor access remains uncertain. Contact the producer directly before planning a visit.'
       }
     ],
-    description: 'Journey through the historic heart of rural Crete. Taste award-winning cold-pressed olive oils in Melidoni, followed by two legendary artisan cheese makers preserving ancient mountain shepherd traditions.',
+    description: 'This draft links two current Rethymno producer locations. It is not published as a self-guided route because visitor access for every stop and road-access classifications are not yet sufficiently confirmed.',
     highlightPointers: [
-      'Historic olive mill museum in Melidoni',
-      'Pure raw-milk Graviera and Galeni in Amari Valley',
-      'Cave-aged alpine cheeses on Mount Psiloritis'
+      'Current catalogue producer IDs only',
+      'Public visitor information available for the Melidoni olive-oil stop',
+      'Dairy visitor access still requires direct confirmation',
+      'No multi-stop navigation or road-surface claim'
     ],
     isVipOnly: false,
+    verificationStatus: 'draft',
   },
   {
     id: 'santorini-volcanic-terroir',
