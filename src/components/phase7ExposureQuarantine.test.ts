@@ -4,11 +4,17 @@ import { existsSync, readFileSync } from 'node:fs';
 const read = (file: string) => readFileSync(file, 'utf8');
 
 describe('Phase 7 public prototype and direct-entry quarantine', () => {
-  it('does not wire public route callbacks from App', () => {
+  it('keeps the Phase 9 public route entry point safety-gated', () => {
     const app = read('src/App.tsx');
+    const routes = read('src/components/Loops/DayTripModal.tsx');
 
-    expect(app).not.toContain("onOpenLoops={() => setActiveModal({ type: 'loops' })}");
-    expect(app).not.toContain('onOpenLoops=');
+    expect(app).toContain("onOpenLoops={() => setActiveModal({ type: 'loops' })}");
+    expect(app).toContain("activeModal?.type === 'loops'");
+
+    expect(routes).toContain("loop.verificationStatus === 'verified_stops'");
+    expect(routes).toContain("loop.verificationStatus === 'verified'");
+    expect(routes).toContain('evaluateRouteNavigation(currentLoop, producerCatalogue)');
+    expect(routes).toContain('Driving navigation withheld');
   });
 
   it('removes commercial query parameters, pass auto-verification, and stripe banners from App', () => {
@@ -31,15 +37,17 @@ describe('Phase 7 public prototype and direct-entry quarantine', () => {
     expect(app).toContain('setIsDrawerOpen(true);');
   });
 
-  it('removes actionable route CTA from AboutFaqModal while retaining verification safety explanation', () => {
+  it('documents the Phase 9 route-guide model without weakening navigation quarantine', () => {
     const aboutFaq = read('src/components/About/AboutFaqModal.tsx');
 
-    expect(aboutFaq).not.toContain('View Route Verification Status');
-    expect(aboutFaq).not.toContain("actionType: 'loops'");
+    expect(aboutFaq).toContain('Browse Curated Routes');
+    expect(aboutFaq).toContain("actionType: 'loops'");
     expect(aboutFaq).toContain(
-      'Curated driving routes are not currently published as a public route feature while their stops and access conditions are being re-verified.'
+      'Curated route guides are available when their stop identities and locations have been re-verified.'
     );
-    expect(aboutFaq).toContain('Curated routes are currently under verification.');
+    expect(aboutFaq).toContain(
+      'Multi-stop turn-by-turn navigation remains disabled until every stop also passes the road-access safety checks.'
+    );
     expect(aboutFaq).toContain(
       'No draft route is silently converted into turn-by-turn navigation.'
     );

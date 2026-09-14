@@ -82,7 +82,10 @@ export function evaluateRouteNavigation(
   if (loop.verificationStatus !== 'verified') {
     issues.push({
       code: 'route_not_verified',
-      message: 'This curated route has not yet completed the location and road-access audit.',
+      message:
+        loop.verificationStatus === 'verified_stops'
+          ? 'This route guide has verified stop locations, but multi-stop driving navigation is still pending road-access verification.'
+          : 'This curated route has not yet completed the location and road-access audit.',
     });
   }
 

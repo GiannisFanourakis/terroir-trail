@@ -146,11 +146,14 @@ export interface DayTripLoop {
   highlightPointers: string[];
   isVipOnly?: boolean;
   /**
-   * Curated routes remain draft until their producer set, claims, location points,
-   * and road/access evidence have been re-audited. Only verified routes may expose
-   * turn-by-turn navigation.
+   * Route publication and driving verification are intentionally separate:
+   * - draft: not published as a usable guide
+   * - verified_stops: stop identities/locations are verified, but route driving is withheld
+   * - verified: stop locations and normal-road access have passed the driving audit
+   *
+   * Only fully verified routes may expose multi-stop turn-by-turn navigation.
    */
-  verificationStatus?: 'draft' | 'verified';
+  verificationStatus?: 'draft' | 'verified_stops' | 'verified';
 }
 
 export interface FilterState {

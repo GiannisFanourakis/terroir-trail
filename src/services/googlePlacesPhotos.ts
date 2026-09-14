@@ -2,11 +2,11 @@ import { useState, useEffect, useCallback } from 'react';
 import { Producer, PhotoCredit } from '../types/terroir';
 
 /**
- * Estate Photography & Verified Media Service
- * Zero-Risk Architecture:
- * - 100% offline & local asset bundling (no third-party API costs or quota caps)
- * - Transparent photographer, Wikimedia Commons, and official estate press kit credits
- * - High-resolution responsive photo carousel with zero network latency
+ * Local listing imagery service.
+ *
+ * Images remain separate from Google Places discovery media. Explicit photo
+ * credits are preserved when present; uncredited listing images remain
+ * explicitly uncredited and must not inherit producer authorship or source URLs.
  */
 
 export interface PhotoAuthorAttribution {
@@ -50,7 +50,7 @@ export function getCuratedFallback(producer: Producer): EstatePhotosResult {
 
       const attributionLabel = credit?.author
         ? credit.author + (credit.source ? ' · ' + credit.source : '') + (credit.license ? ' (' + credit.license + ')' : '')
-        : producer.name;
+        : 'TerroirTrail listing image';
 
       return {
         url,
@@ -58,7 +58,7 @@ export function getCuratedFallback(producer: Producer): EstatePhotosResult {
         attributions: [
           {
             displayName: attributionLabel,
-            uri: credit?.url || producer.website || producer.googleMapsUrl,
+            uri: credit?.url,
           },
         ],
         credit,
@@ -93,7 +93,12 @@ export function useProducerPhotos(producer: Producer | null) {
   const activePhoto = photos[activePhotoIndex] || (producer ? {
     url: producer.coverImage,
     thumbUrl: producer.coverImage,
-    attributions: [{ displayName: producer.name, uri: producer.website }],
+    attributions: [{
+      displayName: producer.photoCredit?.author
+        ? producer.photoCredit.author
+        : 'TerroirTrail listing image',
+      uri: producer.photoCredit?.url,
+    }],
     credit: producer.photoCredit,
   } : null);
 

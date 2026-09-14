@@ -10,7 +10,7 @@ interface HeaderProps {
   onSelectDestination: (dest: Destination | 'all') => void;
   searchQuery: string;
   onSearchChange: (query: string) => void;
-  onOpenLoops?: () => void;
+  onOpenLoops: () => void;
   onOpenExperiences?: () => void;
   totalFilteredCount: number;
   viewMode: 'map' | 'list';

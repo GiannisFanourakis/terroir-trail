@@ -3,151 +3,137 @@ import { DayTripLoop, Producer } from '../types/terroir';
 export const CURATED_ROUTES: DayTripLoop[] = [
   {
     id: 'heraklion-grand-terroir-trail',
-    title: 'The Heraklion Grand Artisan & Terroir Trail',
-    greekTitle: 'Ηρακλειώτικη Διαδρομή Τερουάρ & Χειροποίητης Παράδοσης',
-    subtitle: 'Cold-Pressed Koroneiki EVOO, Mountain Thyme Honey, Ancient Grapes & Copper Rakokazano',
+    title: 'Heraklion Wine Country: Peza, Alagni & Kounavoi',
+    greekTitle: 'Οινοποιεία Ηρακλείου: Πεζά, Αλάγνι & Κουνάβοι',
+    subtitle: 'Melesses · Alagni · Kounavoi',
     destination: 'crete',
-    region: 'Heraklion East',
-    totalDuration: '5.0 hours',
-    drivingDistance: '36 km (All paved scenic village roads)',
+    region: 'Heraklion Wine Country',
+    totalDuration: 'Flexible half-day',
+    drivingDistance: 'Driving distance pending access audit',
     stops: [
       {
-        producerId: 'peza-artisanal-olive-mill',
-        suggestedTime: '10:00 AM - 11:15 AM',
-        activity: 'Cold-pressed early-harvest Koroneiki EVOO tasting with warm village sourdough bread, oregano, and mountain sea salt.'
-      },
-      {
-        producerId: 'meligyris-apiary',
-        suggestedTime: '11:45 AM - 1:00 PM',
-        activity: 'Meet 3rd-generation nomadic beekeepers, view live observation hives, and taste rare raw mountain thyme & pine honey.'
+        producerId: 'domaine-paterianakis',
+        suggestedTime: 'Morning',
+        activity: 'Visit Domaine Paterianakis in Melesses during its published visitor season. Check current hours directly with the estate, especially outside the main season.'
       },
       {
         producerId: 'lyrarakis-winery',
-        suggestedTime: '1:30 PM - 3:00 PM',
-        activity: 'Walk through plots of rescued ancient Cretan grapes (Vidiano, Dafni, Plyto) and enjoy a vineyard terrace wine tasting.'
+        suggestedTime: 'Midday',
+        activity: 'Visit the Lyrarakis tasting site in Alagni during its published seasonal hours. Outside the main season, arrange the visit directly with the winery.'
       },
       {
         producerId: 'kazani-stilianou',
-        suggestedTime: '3:30 PM - 5:00 PM',
-        activity: 'Experience traditional wood-fired copper pot Tsikoudia distillation, wild thyme rakomelo, and authentic grilled village mezedes.'
+        suggestedTime: 'Afternoon',
+        activity: 'Visit Stilianou Winery in Kounavoi during its current published visiting hours. Winter visits require booking; check the producer page before travelling.'
       }
     ],
-    description: 'The definitive Cretan culinary & agritourism day loop just 20 minutes from Heraklion and Knossos. Connect single-estate liquid gold olive oil, raw mountain thyme honey, ancient indigenous wines, and wood-fired copper still raki into one seamless, scenic countryside loop.',
+    description: 'A self-guided Heraklion wine-country sequence using three current TerroirTrail producers with verified locations. Use each producer page for current visiting details and direct contact. Multi-stop driving directions remain withheld because road-access classifications have not yet been independently verified.',
     highlightPointers: [
-      'Four distinct Cretan artisan disciplines in one compact 36km loop',
-      'Taste fresh unfiltered Koroneiki green olive oil with warm sourdough',
-      'Ancient indigenous grapes (Vidiano, Dafni, Plyto) facing Mount Juktas',
-      'Soulful wood-fired copper pot distillation & warm village hospitality'
+      'Three current producer locations verified by TerroirTrail sources',
+      'Family-run wineries across Melesses, Alagni and Kounavoi',
+      'Current visitor information and direct producer contact',
+      'Multi-stop driving navigation withheld pending road-access verification'
     ],
     isVipOnly: false,
+    verificationStatus: 'verified_stops',
   },
   {
     id: 'heraklion-west-slopes-trail',
-    title: 'Heraklion Mountain Slopes: Dafnes Amphora & Malevizi Raki',
-    greekTitle: 'Δυτικό Ηράκλειο: Αμφορείς Δαφνών & Ρακοκάζανο Πρινιά',
-    subtitle: 'Single-Vineyard Vidiano, Amphora Aging & Mountain Rakokazano',
+    title: 'Dafnes & Siva: Two Family Wineries',
+    greekTitle: 'Δαφνές & Σίβα: Δύο Οικογενειακά Οινοποιεία',
+    subtitle: 'Dafnes · Siva',
     destination: 'crete',
     region: 'Heraklion West',
-    totalDuration: '5.0 hours',
-    drivingDistance: '42 km (Paved mountain route)',
+    totalDuration: 'Flexible half-day',
+    drivingDistance: 'Driving distance pending access audit',
     stops: [
       {
         producerId: 'douloufakis-winery',
-        suggestedTime: '11:00 AM - 12:30 PM',
-        activity: 'Tasting of single-vineyard Vidiano and clay amphora fermented whites in historic Dafnes.'
+        suggestedTime: 'First stop',
+        activity: 'Visit Douloufakis Winery in Dafnes for a pre-booked winery visit or tasting. Advance booking is required for visitor programs.'
       },
       {
         producerId: 'silva-daskalaki-winery',
-        suggestedTime: '1:00 PM - 2:30 PM',
-        activity: 'Biodynamic and organic high-altitude vineyard walk in Siva village with aged Liatiko tasting.'
-      },
-      {
-        producerId: 'kazani-kokolakis',
-        suggestedTime: '3:00 PM - 4:30 PM',
-        activity: 'Visit an authentic mountain rakokazano in Prinias with wood smoke, copper stills, and rustic meze.'
+        suggestedTime: 'Second stop',
+        activity: 'Continue to Silva Daskalaki Winery in Siva. Winery visits and tastings require arrangements in advance; confirm your visit directly with the producer.'
       }
     ],
-    description: 'Explore the western mountain foothills of Heraklion. From clay amphora wines in Dafnes to biodynamic plots in Siva and a wild mountain distillery in Prinias.',
+    description: 'A compact self-guided introduction to two family wineries west of Heraklion. Both producer locations are verified, but visits require advance arrangements and TerroirTrail does not yet classify the connecting road access for multi-stop driving navigation.',
     highlightPointers: [
-      'Clay amphora-fermented Vidiano whites',
-      'Biodynamic vineyards in the shadow of Mount Psiloritis',
-      'Authentic mountain village hospitality and wood-fired raki'
+      'Two current family wineries with verified locations',
+      'Producer-managed visits that require advance arrangements',
+      'Direct contact and current visit details on each producer page',
+      'No implied road-surface or rental-car suitability claim'
     ],
     isVipOnly: false,
+    verificationStatus: 'verified_stops',
   },
   {
     id: 'chania-craft-beer-olive-trail',
-    title: 'Chania Heritage Oil, Orange Groves & Fresh Craft Beer',
-    greekTitle: 'Ελαιόλαδο, Πορτοκαλεώνες & Μπίρα Χανίων',
-    subtitle: 'Granite Millstones, 3,000-Yr Olive Tree & Fresh Draft in Groves',
+    title: 'Western Chania: Olive Oil, Craft Beer & Wine',
+    greekTitle: 'Δυτικά Χανιά: Ελαιόλαδο, Μπίρα & Κρασί',
+    subtitle: 'Astrikas · Zounaki · Vatolakkos',
     destination: 'crete',
-    region: 'Chania',
-    totalDuration: '5.5 hours',
-    drivingDistance: '44 km (All paved roads)',
+    region: 'Western Chania',
+    totalDuration: 'Flexible half-day',
+    drivingDistance: 'Driving distance pending access audit',
     stops: [
       {
         producerId: 'biolea-estate',
-        suggestedTime: '10:30 AM - 12:00 PM',
-        activity: 'Watch granite millstones crush organic Koroneiki olives with bread tasting on the scenic stone terrace.'
-      },
-      {
-        producerId: 'monumental-olive-tree-vouves',
-        suggestedTime: '12:30 PM - 1:30 PM',
-        activity: 'Stand beside a 3,000-year-old living tree and visit the historic cooperative mill museum.'
+        suggestedTime: 'Morning',
+        activity: 'Explore the Biolea Astrikas Estate. Guided olive-oil visits are offered by the producer; check current hours and booking availability before travel.'
       },
       {
         producerId: 'cretan-brewery-charma',
-        suggestedTime: '2:00 PM - 3:30 PM',
-        activity: 'Fresh unpasteurized Charma draft flight & smoked Cretan sausages in the olive grove taproom.'
+        suggestedTime: 'Afternoon',
+        activity: 'Visit Cretan Brewery in Zounaki during its published visitor season. Check the brewery directly for current tour, tasting and restaurant hours.'
       },
       {
         producerId: 'manousakis-winery',
-        suggestedTime: '4:00 PM - 5:30 PM',
-        activity: 'Organic Romeiko wine tasting and farm-to-table vineyard snacks in the orange grove garden of Vatolakkos.'
+        suggestedTime: 'Late afternoon',
+        activity: 'Visit Manousakis Winery in Vatolakkos for a booked tasting or tour. Confirm the current seasonal schedule and availability directly with the winery.'
       }
     ],
-    description: 'A perfect western Crete day route combining historic liquid gold olive oil, monumental heritage, and modern craft brewing in the lush foothills of the White Mountains.',
+    description: 'A self-guided western Chania sequence using three current TerroirTrail stops with verified locations. Use each producer page for current visiting details and direct contact. Multi-stop driving directions remain withheld because road-access classifications for these stops are not yet independently verified.',
     highlightPointers: [
-      'Panoramic views across the foothills of the White Mountains',
-      'The world’s oldest documented living olive tree',
-      'Fresh unfiltered draft beer straight from the conditioning tank',
-      'Organic orange-grove vineyard dining in Vatolakkos'
+      'Three current catalogue stops with verified location or entrance points',
+      'Olive oil, independent craft beer and wine in one western Chania guide',
+      'Direct producer information for current hours and booking',
+      'Multi-stop driving navigation intentionally withheld pending road-access verification'
     ],
     isVipOnly: false,
+    verificationStatus: 'verified_stops',
   },
   {
     id: 'rethymno-mountain-cheese-mill-trail',
-    title: 'Rethymno Heritage Mills & Ida Mountain Cave Cheese',
-    greekTitle: 'Ελαιοτριβεία & Τυροκομεία Ρεθύμνου & Ψηλορείτη',
-    subtitle: 'Cold Olive Pressing, Raw Sheep Milk & Cave-Aged Graviera',
+    title: 'Rethymno: Olive Oil & Dairy Stops Under Verification',
+    greekTitle: 'Ρέθυμνο: Ελαιόλαδο & Τυροκομία υπό Επαλήθευση',
+    subtitle: 'Melidoni · Amari',
     destination: 'crete',
     region: 'Rethymno',
-    totalDuration: '5.0 hours',
-    drivingDistance: '48 km (Scenic foothills)',
+    totalDuration: 'Planning guide — not yet published',
+    drivingDistance: 'Driving distance pending access audit',
     stops: [
       {
-        producerId: 'paraschakis-olive-mill',
-        suggestedTime: '10:30 AM - 12:00 PM',
-        activity: 'Explore the historic 19th-century olive press museum and taste cold-extracted extra virgin olive oil.'
+        producerId: 'parasiris-olive-mill',
+        suggestedTime: 'Potential first stop',
+        activity: 'The Paraschakis family olive oil factory in Melidoni currently publishes visitor access. Check the producer page for current hours before travelling.'
       },
       {
         producerId: 'tzourmpakis-dairy-amari',
-        suggestedTime: '12:30 PM - 2:00 PM',
-        activity: 'Sample artisanal raw-milk Graviera, velvety Galeni, and smoked goat cheese in the pristine Amari Valley.'
-      },
-      {
-        producerId: 'aerakis-dairy-anogeia',
-        suggestedTime: '2:30 PM - 4:00 PM',
-        activity: 'Taste legendary 18-month cave-aged Graviera and warm sheep Mizithra from the alpine slopes of Mount Ida.'
+        suggestedTime: 'Potential second stop',
+        activity: 'The Tzourmpakis Dairy location is verified, but current visitor access remains uncertain. Contact the producer directly before planning a visit.'
       }
     ],
-    description: 'Journey through the historic heart of rural Crete. Taste award-winning cold-pressed olive oils in Melidoni, followed by two legendary artisan cheese makers preserving ancient mountain shepherd traditions.',
+    description: 'This draft links two current Rethymno producer locations. It is not published as a self-guided route because visitor access for every stop and road-access classifications are not yet sufficiently confirmed.',
     highlightPointers: [
-      'Historic olive mill museum in Melidoni',
-      'Pure raw-milk Graviera and Galeni in Amari Valley',
-      'Cave-aged alpine cheeses on Mount Psiloritis'
+      'Current catalogue producer IDs only',
+      'Public visitor information available for the Melidoni olive-oil stop',
+      'Dairy visitor access still requires direct confirmation',
+      'No multi-stop navigation or road-surface claim'
     ],
     isVipOnly: false,
+    verificationStatus: 'draft',
   },
   {
     id: 'santorini-volcanic-terroir',

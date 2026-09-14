@@ -15,6 +15,7 @@ import { ChauffeurBooking } from './types/monetization';
 import type { VerifiedPassInfo } from './components/Monetization/HostVerificationModal';
 import { readStorage, writeStorage, STORAGE_KEYS } from './services/browserStorage';
 import { filterProducers } from './utils/filterProducers';
+import { producerService } from './services/producerService';
 import { List, MapPin } from 'lucide-react';
 
 // Performance optimization: lazy-load modals on demand to shrink initial bundle
@@ -160,8 +161,11 @@ export const App: React.FC = () => {
     }
   }, [producers]);
 
-  // Load a curated loop
-  const handleSelectLoop = (loop: DayTripLoop) => {
+  // Load a curated loop.
+  // Route selection must work even when the current catalogue view is filtered
+  // to another destination. Resolve the first stop from the authoritative
+  // producer service instead of assuming it exists in the current UI subset.
+  const handleSelectLoop = async (loop: DayTripLoop) => {
     setFilters((prev) => ({
       ...prev,
       destination: loop.destination,
@@ -170,11 +174,17 @@ export const App: React.FC = () => {
       searchQuery: '',
     }));
 
-    const firstProducer = producers.find((p) => p.id === loop.stops[0]?.producerId);
-    if (firstProducer) {
-      setSelectedProducer(firstProducer);
-      setIsDrawerOpen(false);
+    setViewMode('map');
+    setIsDrawerOpen(false);
+
+    const firstProducerId = loop.stops[0]?.producerId;
+    if (!firstProducerId) {
+      setSelectedProducer(null);
+      return;
     }
+
+    const firstProducer = await producerService.getProducerById(firstProducerId);
+    setSelectedProducer(firstProducer);
   };
 
   return (
@@ -191,6 +201,7 @@ export const App: React.FC = () => {
         savedCount={favorites.length}
         favoritesOnly={filters.favoritesOnly}
         onToggleFavoritesOnly={() => handleFilterChange('favoritesOnly', !filters.favoritesOnly)}
+        onOpenLoops={() => setActiveModal({ type: 'loops' })}
         user={user}
         onOpenAuth={(role) => setActiveModal({ type: 'auth', initialRole: role || 'traveler' })}
         onOpenPassport={() => setActiveModal({ type: 'passport' })}
@@ -491,6 +502,7 @@ export const App: React.FC = () => {
             initialTab={activeModal.initialTab || 'about'}
             onOpenAuth={(role) => setActiveModal({ type: 'auth', initialRole: role || 'traveler' })}
             onOpenProducerPortal={() => setActiveModal({ type: 'portal' })}
+            onOpenLoops={() => setActiveModal({ type: 'loops' })}
             onOpenLegal={(tab) => setActiveModal({ type: 'legal', initialTab: tab })}
           />
         )}

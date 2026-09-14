@@ -498,7 +498,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
               {isProTier && (
                 <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-amber-400 to-amber-500 text-stone-950 shadow-lg shadow-amber-500/20 border border-amber-300">
                   <span>👑</span>
-                  <span>Pro Estate</span>
+                  <span>Host Pro</span>
                 </span>
               )}
             </div>
@@ -530,7 +530,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                   <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-black/75 backdrop-blur-md text-[10px] text-stone-300 border border-white/15 shadow-sm truncate max-w-[240px] sm:max-w-[300px]">
                     <Camera className="w-3 h-3 text-amber-400 shrink-0" />
                     <span className="truncate">Photo: {activeCredit?.author || activePhoto?.attributions?.[0]?.displayName}</span>
-                    <span className="text-[9px] text-amber-400/90 font-medium shrink-0">· {activeCredit?.license || activeCredit?.source || 'Verified Media'}</span>
+                    <span className="text-[9px] text-amber-400/90 font-medium shrink-0">· {activeCredit?.license || activeCredit?.source || 'Listing image'}</span>
                   </span>
                 )}
               </div>
@@ -565,8 +565,8 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
           <div className="flex items-center gap-2.5 min-w-0">
             <span className="text-xl">🏛️</span>
             <div className="min-w-0">
-              <div className="font-bold text-white text-xs truncate">You are the verified host of this estate</div>
-              <div className="text-[10px] text-amber-300/90 truncate">Manage your estate visitor notice and reviewed profile access</div>
+              <div className="font-bold text-white text-xs truncate">You are the verified host of this producer profile</div>
+              <div className="text-[10px] text-amber-300/90 truncate">Manage visitor notices and reviewed profile access</div>
             </div>
           </div>
           {onOpenProducerPortal && (
@@ -642,7 +642,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                   <span>{producer.rating}</span>
                 </div>
                 {producer.reviewCount != null && producer.reviewCount > 0 && (
-                  <span className="text-stone-400">({producer.reviewCount} verified visits)</span>
+                  <span className="text-stone-400">({producer.reviewCount} reviews)</span>
                 )}
               </div>
             ) : <div />}
@@ -668,7 +668,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
               <div>
                 <div className="text-xs font-bold text-white">Terroir Passport Check-In</div>
                 <div className="text-[10px] text-stone-400">
-                  {isVisited ? 'Stamped in your collection' : 'Mark this artisan as visited'}
+                  {isVisited ? 'Stamped in your collection' : 'Mark this place as visited'}
                 </div>
               </div>
             </div>
@@ -707,7 +707,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
           {isAuthenticated ? (
             <div className="pt-2 border-t border-white/5">
               <div className="flex items-center justify-between text-[11px] mb-1 font-semibold text-stone-300">
-                <span>My Private Tasting Notes</span>
+                <span>My Private Visit Notes</span>
                 {isEditingNote ? (
                   <button
                     onClick={() => {
@@ -743,7 +743,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
             </div>
           ) : (
             <div className="pt-1 text-[10px] text-stone-500 flex items-center justify-between">
-              <span>Sign in to record personal tasting notes</span>
+              <span>Sign in to record personal visit notes</span>
               <button
                 type="button"
                 onClick={() => onOpenAuth?.('traveler')}
@@ -780,7 +780,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                 <div className="flex items-center justify-between">
                   <h4 className="text-xs font-bold uppercase tracking-wider text-stone-400 flex items-center gap-1.5">
                     <Camera className="w-3.5 h-3.5 text-amber-400" />
-                    <span>Estate Visual Portfolio</span>
+                    <span>Producer Photos</span>
                     <span className="text-[10px] text-stone-400 normal-case font-normal">({photos.length} photos)</span>
                   </h4>
                   <span className="text-[10px] font-semibold text-emerald-400/90 flex items-center gap-1">
@@ -891,77 +891,6 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                 ))}
               </div>
             </div>
-
-            {/* Visiting & Contact Card */}
-            <div className="p-4 rounded-2xl bg-stone-900/90 border border-white/10 space-y-3">
-              <div className="flex items-center justify-between">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-white flex items-center gap-1.5">
-                  <span className="text-sm shrink-0" aria-hidden="true">{cat.icon}</span>
-                  <span>{term.visitingTitle || 'Visiting & Contact'}</span>
-                </h3>
-                <span className={`text-[10px] px-2.5 py-0.5 rounded-full font-bold border ${visitDetails.badgeClass}`}>
-                  {visitDetails.badgeLabel}
-                </span>
-              </div>
-
-              <p className="text-xs text-stone-300 leading-relaxed">
-                {visitDetails.description}
-              </p>
-
-              {producer.visitNotes && (
-                <div className="p-2.5 rounded-xl bg-stone-800/60 border border-white/5 text-[11px] text-stone-300 leading-relaxed">
-                  <span className="font-semibold text-amber-300/90 block text-[10px] uppercase tracking-wider mb-0.5">Visit Notes</span>
-                  {producer.visitNotes}
-                </div>
-              )}
-
-              {(visitDetails.visitingStyle || producer.openingHours) && (
-                <div className="grid grid-cols-2 gap-2 text-[11px] pt-1 border-t border-white/5">
-                  {visitDetails.visitingStyle && (
-                    <div className="space-y-0.5">
-                      <span className="text-[10px] text-stone-400 block font-medium">Visiting Style</span>
-                      <span className="font-semibold text-stone-200">
-                        {visitDetails.visitingStyle}
-                      </span>
-                    </div>
-                  )}
-                  {producer.openingHours && (
-                    <div className="space-y-0.5">
-                      <span className="text-[10px] text-stone-400 block font-medium">Opening Hours</span>
-                      <span className="font-semibold text-stone-200 truncate block">
-                        {producer.openingHours}
-                      </span>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Direct Connect Buttons */}
-              <div className="flex flex-col sm:flex-row gap-2 pt-1">
-                {producer.website && (
-                  <a
-                    href={producer.website}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex-1 py-2.5 px-3 rounded-xl bg-stone-800 hover:bg-stone-750 border border-white/10 text-stone-200 hover:text-white font-medium text-xs transition flex items-center justify-center gap-1.5 active:scale-98"
-                  >
-                    <Globe className="w-3.5 h-3.5 text-sky-400" />
-                    <span>Visit Producer Website</span>
-                  </a>
-                )}
-                {producer.phone && (
-                  <a
-                    href={`tel:${producer.phone}`}
-                    className="flex-1 py-2.5 px-3 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 font-bold text-xs transition flex items-center justify-center gap-1.5 active:scale-98"
-                  >
-                    <Phone className="w-3.5 h-3.5" />
-                    <span>{term.callAction}</span>
-                  </a>
-                )}
-              </div>
-            </div>
-
-
 
             {/* Direct Bottle Shop Link (Pro Tier) */}
             {directBottleShopUrl && (

@@ -214,18 +214,26 @@ describe('Phase 8 Producer Card + Detail Hierarchy', () => {
 
       for (const item of expectations) {
         const p = createTestProducer(item.cat);
-        const html = renderToString(
+        const makeHtml = renderToString(
           React.createElement(ProducerDetailDrawer, {
             producer: p,
             onClose: () => {},
             initialTab: 'tastings',
           })
         );
+        const visitHtml = renderToString(
+          React.createElement(ProducerDetailDrawer, {
+            producer: p,
+            onClose: () => {},
+            initialTab: 'visit',
+          })
+        );
 
-        expect(html).toContain(item.whatTheyMake);
-        expect(html).toContain(item.specialties);
-        expect(html).toContain(item.visiting);
-        expect(html).toContain(item.callAction);
+        expect(makeHtml).toContain(item.whatTheyMake);
+        expect(makeHtml).toContain(item.specialties);
+        expect(makeHtml).not.toContain(item.visiting);
+        expect(visitHtml).toContain(item.visiting);
+        expect(visitHtml).toContain(item.callAction);
       }
     });
 
@@ -385,5 +393,16 @@ describe('Phase 8 Producer Card + Detail Hierarchy', () => {
       expect(farmHtml).not.toContain('regenerative');
     });
   });
+
+  it('does not describe generic review counts as verified visits', () => {
+    const drawer = readFileSync(
+      'src/components/Drawer/ProducerDetailDrawer.tsx',
+      'utf8'
+    );
+
+    expect(drawer).not.toContain('verified visits');
+    expect(drawer).toContain('({producer.reviewCount} reviews)');
+  });
+
 });
 

@@ -116,8 +116,10 @@ const FAQ_DATA: FaqItem[] = [
     categoryLabel: 'Routes & Rural Access',
     question: 'Are curated driving routes available?',
     answer:
-      'Curated routes are currently under verification. Draft routes are not published as turn-by-turn itineraries. A route can only expose navigation after its stops, exact locations and relevant road-access evidence satisfy the safety checks.',
+      'Curated route guides are available when their stop identities and locations have been re-verified. These guides can expose individual verified stop locations while road-access evidence is still pending. Multi-stop turn-by-turn navigation remains disabled until every stop also passes the road-access safety checks. Draft routes remain hidden.',
     highlight: 'No draft route is silently converted into turn-by-turn navigation.',
+    actionText: 'Browse Curated Routes',
+    actionType: 'loops',
   },
   {
     id: 'road-access',
