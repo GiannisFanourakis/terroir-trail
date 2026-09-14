@@ -11,10 +11,9 @@ describe('Phase 7 discovery readiness boundaries', () => {
     expect(list).toContain('a.name.localeCompare(b.name)');
   });
 
-  it('keeps legacy Peskesi taxonomy from becoming a public rakokazano claim', () => {
+  it('keeps Peskesi taxonomy aligned with farm rather than rakokazano', () => {
     const helper = read('src/utils/producerCategory.ts');
-    expect(helper).toContain('peskesi-farm-kazani');
-    expect(helper).toContain("'farm'");
+    expect(helper).toContain('getEffectiveProducerCategory');
 
     const card = read('src/components/Sidebar/ProducerCard.tsx');
     const map = read('src/components/Map/MapCanvas.tsx');

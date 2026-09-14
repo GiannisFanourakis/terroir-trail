@@ -1719,7 +1719,7 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "producerId": "peskesi-farm-kazani",
     "producerName": "Peskesi Organic Farm & Kazani",
     "producerGreekName": "Αγρόκτημα & Καζάνι Πεσκέσι",
-    "category": "kazani",
+    "category": "farm",
     "destination": "crete",
     "location": "Heraklion, Harasso (Hersonissos)",
     "badge": "Wood-Fired Raki"
@@ -1739,7 +1739,7 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "producerId": "peskesi-farm-kazani",
     "producerName": "Peskesi Organic Farm & Kazani",
     "producerGreekName": "Αγρόκτημα & Καζάνι Πεσκέσι",
-    "category": "kazani",
+    "category": "farm",
     "destination": "crete",
     "location": "Heraklion, Harasso (Hersonissos)",
     "badge": "Farm-to-Fork Feast"

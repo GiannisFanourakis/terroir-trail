@@ -1,7 +1,7 @@
 import { ProducerCategory, Producer } from '../types/terroir';
 import { TastingExperience } from '../types/booking';
 import { PRODUCER_EXPERIENCES } from './producerExperiences';
-import { getEffectiveProducerCategory, LEGACY_PESKESI_FARM_ID } from '../utils/producerCategory';
+import { getEffectiveProducerCategory } from '../utils/producerCategory';
 
 export const DEFAULT_EXPERIENCES_BY_CATEGORY: Record<ProducerCategory, TastingExperience[]> = {
   winery: [
@@ -353,10 +353,6 @@ export const getExperiencesForProducer = (
   const bespoke = PRODUCER_EXPERIENCES.filter((e) => e.producerId === producerOrCategory);
   if (bespoke.length > 0) return bespoke;
 
-  if (producerOrCategory === LEGACY_PESKESI_FARM_ID) {
-    return DEFAULT_EXPERIENCES_BY_CATEGORY.farm;
-  }
-
   // Otherwise assume it is a ProducerCategory
   const cat = producerOrCategory as ProducerCategory;
   return DEFAULT_EXPERIENCES_BY_CATEGORY[cat] || DEFAULT_EXPERIENCES_BY_CATEGORY.winery;
@@ -367,12 +363,7 @@ export const getExperiencesForProducer = (
  * 114 bespoke estate experiences across 57 Greek producers + 23 category masterclasses.
  */
 export const ALL_EXPERIENCES: TastingExperience[] = [
-  ...PRODUCER_EXPERIENCES.map((e) => {
-    if (e.producerId === LEGACY_PESKESI_FARM_ID) {
-      return { ...e, category: 'farm' as ProducerCategory };
-    }
-    return e;
-  }),
+  ...PRODUCER_EXPERIENCES,
   ...Object.entries(DEFAULT_EXPERIENCES_BY_CATEGORY).flatMap(([cat, exps]) =>
     exps.map((e) => ({
       ...e,

@@ -120,12 +120,12 @@ describe('filterProducers pure utility', () => {
     expect(result).toEqual([p2]);
   });
 
-  it('treats the legacy Peskesi row as a farm, never as a Rakokazano', () => {
+  it('filters Peskesi Organic Farm as a farm, never matching Rakokazana', () => {
     const peskesi = createMockProducer({
       id: 'peskesi-farm-kazani',
       name: 'Peskesi Organic Farm',
       greekName: 'Αγρόκτημα Πεσκέσι',
-      category: 'kazani',
+      category: 'farm',
     });
 
     expect(filterProducers([peskesi], defaultFilters)).toEqual([peskesi]);
