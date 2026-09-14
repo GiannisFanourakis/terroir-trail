@@ -120,6 +120,23 @@ describe('filterProducers pure utility', () => {
     expect(result).toEqual([p2]);
   });
 
+  it('keeps the legacy Peskesi farm record out of the Rakokazano filter until farm taxonomy exists', () => {
+    const peskesi = createMockProducer({
+      id: 'peskesi-farm-kazani',
+      name: 'Peskesi Organic Farm',
+      greekName: 'Αγρόκτημα Πεσκέσι',
+      category: 'kazani',
+    });
+
+    expect(filterProducers([peskesi], defaultFilters)).toEqual([peskesi]);
+    expect(
+      filterProducers([peskesi], {
+        ...defaultFilters,
+        category: 'kazani',
+      })
+    ).toEqual([]);
+  });
+
   it('filters by destination (macro-region)', () => {
     const result = filterProducers(sampleProducers, {
       ...defaultFilters,

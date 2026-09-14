@@ -11,9 +11,12 @@ export function filterProducers(
   isFavorite: (id: string) => boolean = () => false
 ): Producer[] {
   return producers.filter((producer) => {
-    // Category filter
-    if (filters.category !== 'all' && producer.category !== filters.category) {
-      return false;
+    // Category filter. Peskesi is a farm carried under the legacy `kazani`
+    // database category until Phase 8 adds first-class farm taxonomy; keep it
+    // visible under All, but never surface it as a Rakokazano/category match.
+    if (filters.category !== 'all') {
+      if (producer.id === 'peskesi-farm-kazani') return false;
+      if (producer.category !== filters.category) return false;
     }
 
     // Destination filter (Macro-Region: Crete, Santorini, Peloponnese, etc.)
