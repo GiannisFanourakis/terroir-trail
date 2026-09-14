@@ -6,12 +6,20 @@ import { producers } from '../../data/producers';
 import { GOOGLE_PLACES_PROTOTYPE_ITEMS } from '../../config/googlePlacesAllowlist';
 import * as uiKitModule from '../../services/googlePlacesUiKit';
 
-describe('Manual Google Prototype Allowlist Test for 5 Producers', () => {
+const VERIFIED_PLACE_IDS: Record<string, string> = {
+  'lyrarakis-winery': 'ChIJa95IFTf0mhQRY5TF5uhxJoU',
+  'peskesi-farm-kazani': 'ChIJg4hwRwthmhQRBF4b9YPGsZU',
+  'cretan-brewery-charma': 'ChIJQ7fRzLOLnBQRWaCt5UX2izE',
+  'biolea-estate': 'ChIJ_U9uyrr0nBQRPiI3ZYRHH2M',
+  'stathakis-honey-park': 'ChIJ-bttLbr1nBQRqwEUhZIfplM',
+};
+
+describe('Google Place ID allowlist integration for 5 producers', () => {
   afterEach(() => {
     vi.unstubAllEnvs();
   });
 
-  it('verifies all 5 allowlisted producers render gmp-place-details with exact attribution', () => {
+  it('renders all 5 audited producers by verified Place ID with exact attribution', () => {
     vi.stubEnv('VITE_ENABLE_GOOGLE_PLACES_MEDIA', 'true');
     vi.spyOn(uiKitModule, 'useGooglePlacesUiKit').mockReturnValue({
       status: 'ready',
@@ -22,18 +30,24 @@ describe('Manual Google Prototype Allowlist Test for 5 Producers', () => {
       const producer = producers.find((p) => p.id === item.producerId);
       expect(producer, `Producer ${item.producerId} should exist in producers`).toBeDefined();
 
-      if (!producer) continue;
+      const googlePlaceId = VERIFIED_PLACE_IDS[item.producerId];
+      expect(googlePlaceId, `Producer ${item.producerId} should have an audited test Place ID`).toBeTruthy();
+      if (!producer || !googlePlaceId) continue;
 
-      const html = renderToString(React.createElement(GooglePlaceMedia, { producer }));
+      const html = renderToString(
+        React.createElement(GooglePlaceMedia, {
+          producer: { ...producer, googlePlaceId },
+        })
+      );
 
       // 1. Component rendered: gmp-place-details (Essentials / Query tier)
       expect(html).toContain('gmp-place-details');
-      expect(html).not.toContain('gmp-advanced-place-details'); // Invariant: Not Pro/Advanced tier
-      expect(html).toContain('gmp-place-details-location-request');
+      expect(html).not.toContain('gmp-advanced-place-details');
+      expect(html).toContain('gmp-place-details-place-request');
 
-      // 2. Exact coordinates
-      const [lat, lng] = producer.coordinates;
-      expect(html).toContain(`location="${lat},${lng}"`);
+      // 2. Verified Place ID is the only Google business lookup key
+      expect(html).toContain(`place="places/${googlePlaceId}"`);
+      expect(html).not.toContain('gmp-place-details-location-request');
 
       // 3. Media & Lightbox
       expect(html).toContain('gmp-place-content-config');
@@ -49,8 +63,6 @@ describe('Manual Google Prototype Allowlist Test for 5 Producers', () => {
       expect(html).toContain('Photos from Google Maps');
       expect(html).toContain('Live Google Places');
       expect(html).toContain('A Google photo does not establish road safety');
-
-      console.log(`[PASS] ${item.producerId} | ${producer.name} | category: ${producer.category} | coords: [${lat}, ${lng}]`);
     }
   });
 });

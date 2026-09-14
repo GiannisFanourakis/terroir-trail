@@ -18,15 +18,19 @@ interface GooglePlaceMediaProps {
  * - ZERO downloading, caching, or database storage of Google image assets.
  * - Google's mandatory attribution and disclosures are preserved natively.
  * - Editorial TerroirTrail data (visit status, road safety, reviews) remains completely separate.
+ * - A manually audited Google Place ID is required; coordinates are never used as a fallback lookup.
  */
 export const GooglePlaceMedia: React.FC<GooglePlaceMediaProps> = ({ producer, className = '' }) => {
-  const isEligible = Boolean(producer && isGooglePlacesEligible(producer.id));
+  const googlePlaceId = producer?.googlePlaceId?.trim();
+  const isEligible = Boolean(
+    producer && googlePlaceId && isGooglePlacesEligible(producer.id)
+  );
   const isFeatureEnabled = runtimeConfig.googlePlacesMedia.enabled;
   const { isReady, status } = useGooglePlacesUiKit(isEligible && isFeatureEnabled);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // If producer is null, feature flag is disabled, or producer is not on allowlist, render nothing
-  if (!producer || !isFeatureEnabled || !isEligible) {
+  // Fail closed unless the producer is allowlisted and has a verified persistent Place ID.
+  if (!producer || !googlePlaceId || !isFeatureEnabled || !isEligible) {
     return null;
   }
 
@@ -34,9 +38,6 @@ export const GooglePlaceMedia: React.FC<GooglePlaceMediaProps> = ({ producer, cl
   if (status === 'unavailable' || status === 'error') {
     return null;
   }
-
-  const [lat, lng] = producer.coordinates;
-  const locationString = `${lat},${lng}`;
 
   return (
     <section
@@ -79,7 +80,7 @@ export const GooglePlaceMedia: React.FC<GooglePlaceMediaProps> = ({ producer, cl
                 '--gmp-mat-color-outline-decorative': 'rgba(255, 255, 255, 0.08)',
               } as React.CSSProperties}
             >
-              <gmp-place-details-location-request location={locationString} />
+              <gmp-place-details-place-request place={`places/${googlePlaceId}`} />
               <gmp-place-content-config>
                 <gmp-place-media lightbox-preferred="true" />
                 <gmp-place-attribution
