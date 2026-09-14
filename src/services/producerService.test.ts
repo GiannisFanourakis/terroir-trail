@@ -385,7 +385,8 @@ describe('producerService — Supabase / Fallback Data Ownership', () => {
     it('verifies critical live corrections in fallback data', () => {
       const lafkas = CRETAN_PRODUCERS.find((p) => p.id === 'lafkas-brewery');
       expect(lafkas).toBeDefined();
-      expect(lafkas?.coordinates).toEqual([35.494636, 23.986088]);
+      expect(lafkas?.coordinates).toEqual([35.518276, 24.1244784]);
+      expect(lafkas?.googlePlaceId).toBe('ChIJSSvI3YiHnBQRBtbO7K4u444');
       expect(lafkas?.locationStatus).toBe('verified_location');
       expect(lafkas?.visitStatus).toBe('appointment_only');
 

@@ -1,0 +1,445 @@
+import http from 'node:http';
+import dotenv from 'dotenv';
+import { createClient } from '@supabase/supabase-js';
+
+dotenv.config({ path: '.env.local' });
+dotenv.config();
+
+type ProducerRow = {
+  id: string;
+  name: string;
+  region?: string | null;
+  village?: string | null;
+  country?: string | null;
+  country_code?: string | null;
+  destination?: string | null;
+  lat?: number | null;
+  lng?: number | null;
+  location_status?: string | null;
+  google_place_id?: string | null;
+  google_maps_url?: string | null;
+};
+
+const args = process.argv.slice(2);
+const all = args.includes('--all');
+
+function readArg(name: string): string | undefined {
+  const prefix = `--${name}=`;
+  return args.find((arg) => arg.startsWith(prefix))?.slice(prefix.length);
+}
+
+function parseIntegerArg(name: string, fallback: number, min: number, max: number): number {
+  const raw = readArg(name);
+  if (!raw) return fallback;
+  const parsed = Number(raw);
+  if (!Number.isInteger(parsed) || parsed < min || parsed > max) {
+    throw new Error(`--${name} must be an integer between ${min} and ${max}.`);
+  }
+  return parsed;
+}
+
+function parseIds(): string[] {
+  const raw = readArg('ids');
+  if (!raw) return [];
+  return raw.split(',').map((value) => value.trim()).filter(Boolean);
+}
+
+function serializeForInlineScript(value: unknown): string {
+  return JSON.stringify(value)
+    .replace(/</g, '\\u003c')
+    .replace(/>/g, '\\u003e')
+    .replace(/&/g, '\\u0026');
+}
+
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+function buildAuditHtml(producers: ProducerRow[], googleApiKey: string): string {
+  const producerJson = serializeForInlineScript(producers);
+  const mapsScriptUrl =
+    `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(googleApiKey)}` +
+    '&v=weekly&libraries=places&callback=initAudit';
+
+  return `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TerroirTrail — Phase 9B Google Place ID Audit</title>
+  <style>
+    :root { font-family: Inter, ui-sans-serif, system-ui, sans-serif; color-scheme: dark; }
+    body { margin: 0; background: #11100e; color: #f5f5f4; }
+    main { max-width: 1120px; margin: 0 auto; padding: 28px 18px 64px; }
+    h1 { margin: 0 0 8px; font-size: 28px; }
+    .intro { color: #c8c4bd; line-height: 1.55; max-width: 920px; }
+    .guardrail { margin: 18px 0; padding: 14px 16px; border: 1px solid #7c5d20; border-radius: 12px; background: #2a2112; color: #f4d795; }
+    .toolbar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin: 20px 0; }
+    button { border: 0; border-radius: 9px; padding: 9px 12px; font-weight: 700; cursor: pointer; background: #e8b45a; color: #20170a; }
+    button.secondary { background: #292724; color: #f5f5f4; border: 1px solid #4b4843; }
+    button.confirmed { background: #245f38; color: #e7f8eb; border: 1px solid #4f9f69; }
+    button:disabled { opacity: .45; cursor: not-allowed; }
+    #status { color: #aaa59e; font-size: 13px; }
+    .producer { border: 1px solid #37332f; border-radius: 14px; padding: 16px; margin: 14px 0; background: #191816; }
+    .producer.is-confirmed { border-color: #4f9f69; }
+    .producer-head { display: flex; justify-content: space-between; gap: 12px; align-items: start; flex-wrap: wrap; }
+    .producer h2 { margin: 0; font-size: 18px; }
+    .meta { color: #a8a29e; font-size: 13px; margin-top: 5px; }
+    .refs { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+    a { color: #f0c97c; }
+    .results { margin-top: 14px; display: grid; gap: 10px; }
+    .candidate { border: 1px solid #46413a; border-radius: 11px; padding: 12px; background: #211f1c; }
+    .candidate.selected { border-color: #4f9f69; background: #18231b; }
+    .candidate strong { display: block; margin-bottom: 4px; }
+    .line { color: #c8c4bd; font-size: 13px; margin: 3px 0; word-break: break-word; }
+    .place-id { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; color: #fff0c9; }
+    .match { color: #9fd6ad; font-weight: 700; }
+    .mismatch { color: #f5c56b; font-weight: 700; }
+    .candidate-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 9px; }
+    .small { font-size: 12px; padding: 7px 9px; }
+    code { background: #26231f; padding: 2px 5px; border-radius: 5px; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Phase 9B — Google Place ID & Location Audit</h1>
+  <p class="intro">
+    This localhost-only tool searches Google Places in your browser using the restricted development key.
+    It is read-only: it never writes Place IDs, coordinates, or verification status to Supabase.
+  </p>
+  <div class="guardrail">
+    A large distance is NOT an automatic Google failure. It may expose a stale or wrong TerroirTrail pin.
+    Verify business identity, address/locality, current Google Maps listing, and producer-owned sources before correcting location data.
+  </div>
+  <div class="toolbar">
+    <button id="run-batch" disabled>Run this batch</button>
+    <button id="copy-confirmed" class="secondary" disabled>Copy confirmed batch</button>
+    <span id="confirmed-count">0/${producers.length} confirmed</span>
+    <span id="status">Loading Google Places library…</span>
+  </div>
+  <div id="producer-list"></div>
+</main>
+<script>
+  const PRODUCERS = ${producerJson};
+  const CONFIRMED = new Map();
+  let PlaceClass = null;
+
+  function esc(value) {
+    return String(value ?? '')
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#039;');
+  }
+
+  function queryText(producer) {
+    const location = [producer.village, producer.region, producer.country].filter(Boolean).join(', ');
+    return location ? producer.name + ', ' + location : producer.name;
+  }
+
+  function haversineKm(lat1, lng1, lat2, lng2) {
+    const toRad = (value) => (value * Math.PI) / 180;
+    const r = 6371;
+    const dLat = toRad(lat2 - lat1);
+    const dLng = toRad(lng2 - lng1);
+    const a = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2;
+    return 2 * r * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  }
+
+  function placeLatLng(place) {
+    const location = place.location;
+    if (!location) return null;
+    const lat = typeof location.lat === 'function' ? location.lat() : (location.lat ?? location.latitude);
+    const lng = typeof location.lng === 'function' ? location.lng() : (location.lng ?? location.longitude);
+    return Number.isFinite(Number(lat)) && Number.isFinite(Number(lng))
+      ? { lat: Number(lat), lng: Number(lng) }
+      : null;
+  }
+
+  function renderProducerList() {
+    const root = document.getElementById('producer-list');
+    root.innerHTML = PRODUCERS.map((producer) => {
+      const mapsRef = producer.google_maps_url
+        ? '<a href="' + esc(producer.google_maps_url) + '" target="_blank" rel="noreferrer">Open existing Maps reference</a>'
+        : '<span>No existing Maps reference</span>';
+      return '<section class="producer" id="producer-' + esc(producer.id) + '">' +
+        '<div class="producer-head"><div>' +
+        '<h2>' + esc(producer.name) + '</h2>' +
+        '<div class="meta">' + esc(producer.id) + ' · ' + esc(producer.village || producer.region || '') + '</div>' +
+        '<div class="meta">Current TerroirTrail pin: ' + esc(producer.lat) + ', ' + esc(producer.lng) + '</div>' +
+        '</div><button class="secondary search-one" data-id="' + esc(producer.id) + '" disabled>Search Google</button></div>' +
+        '<div class="refs">' + mapsRef + '<span>Query: <code>' + esc(queryText(producer)) + '</code></span></div>' +
+        '<div class="results" id="results-' + esc(producer.id) + '"></div>' +
+        '</section>';
+    }).join('');
+  }
+
+  async function copyText(button, value) {
+    await navigator.clipboard.writeText(value);
+    const old = button.textContent;
+    button.textContent = 'Copied';
+    setTimeout(() => { button.textContent = old; }, 1000);
+  }
+
+  function updateConfirmedUi() {
+    document.getElementById('confirmed-count').textContent =
+      CONFIRMED.size + '/' + PRODUCERS.length + ' confirmed';
+    document.getElementById('copy-confirmed').disabled = CONFIRMED.size === 0;
+
+    PRODUCERS.forEach((producer) => {
+      document.getElementById('producer-' + producer.id)
+        ?.classList.toggle('is-confirmed', CONFIRMED.has(producer.id));
+    });
+  }
+
+  function confirmedBatchText() {
+    return PRODUCERS
+      .filter((producer) => CONFIRMED.has(producer.id))
+      .map((producer) => CONFIRMED.get(producer.id))
+      .join('\\n');
+  }
+
+  async function searchProducer(producer) {
+    if (!PlaceClass) throw new Error('Google Places library is not ready.');
+    const resultsEl = document.getElementById('results-' + producer.id);
+    CONFIRMED.delete(producer.id);
+    updateConfirmedUi();
+    resultsEl.innerHTML = '<div class="meta">Searching…</div>';
+
+    const request = {
+      textQuery: queryText(producer),
+      fields: ['id', 'displayName', 'formattedAddress', 'location', 'googleMapsURI'],
+      language: 'en',
+      maxResultCount: 3,
+    };
+
+    if (producer.country_code) request.region = String(producer.country_code).toLowerCase();
+    if (producer.lat != null && producer.lng != null) {
+      request.locationBias = {
+        center: { lat: Number(producer.lat), lng: Number(producer.lng) },
+        radius: 25000,
+      };
+    }
+
+    try {
+      const response = await PlaceClass.searchByText(request);
+      const places = response.places || [];
+      if (!places.length) {
+        resultsEl.innerHTML = '<div class="meta">No Google Places candidates returned.</div>';
+        return;
+      }
+
+      resultsEl.innerHTML = places.map((place, index) => {
+        const point = placeLatLng(place);
+        let distanceKm = null;
+        if (point && producer.lat != null && producer.lng != null) {
+          distanceKm = haversineKm(Number(producer.lat), Number(producer.lng), point.lat, point.lng);
+        }
+        const mismatch = distanceKm != null && distanceKm > 3;
+        const distanceText = distanceKm == null
+          ? 'Distance unavailable'
+          : distanceKm.toFixed(2) + ' km from current TerroirTrail pin';
+        const interpretation = mismatch
+          ? 'LOCATION MISMATCH — verify whether the TerroirTrail pin is stale or wrong before rejecting this Google candidate.'
+          : 'Near current TerroirTrail pin — still verify business identity before persistence.';
+        const mapsLink = place.googleMapsURI
+          ? '<a href="' + esc(place.googleMapsURI) + '" target="_blank" rel="noreferrer">Open candidate on Google Maps</a>'
+          : '';
+        const coordText = point ? point.lat.toFixed(7) + ', ' + point.lng.toFixed(7) : '';
+        const auditRecord =
+          producer.id + ' | ' +
+          (place.displayName || '') + ' | ' +
+          (place.id || '') + ' | ' +
+          coordText + ' | ' +
+          (place.formattedAddress || '') + ' | distance_km=' +
+          (distanceKm == null ? 'unknown' : distanceKm.toFixed(2)) +
+          ' | location_mismatch=' + String(mismatch);
+        const encodedRecord = encodeURIComponent(auditRecord);
+
+        return '<div class="candidate">' +
+          '<strong>[' + (index + 1) + '] ' + esc(place.displayName || '(no display name)') + '</strong>' +
+          '<div class="line place-id">Place ID: ' + esc(place.id || '(missing)') + '</div>' +
+          '<div class="line">Address: ' + esc(place.formattedAddress || '(no address returned)') + '</div>' +
+          '<div class="line">Candidate coordinates: ' + esc(coordText || '(unavailable)') + '</div>' +
+          '<div class="line ' + (mismatch ? 'mismatch' : 'match') + '">' + esc(distanceText) + '</div>' +
+          '<div class="line ' + (mismatch ? 'mismatch' : 'match') + '">' + esc(interpretation) + '</div>' +
+          '<div class="candidate-actions">' + mapsLink +
+          (place.id ? '<button class="small copy-value" data-copy="' + esc(place.id) + '">Copy Place ID</button>' : '') +
+          (coordText ? '<button class="small copy-value" data-copy="' + esc(coordText) + '">Copy coordinates</button>' : '') +
+          (place.id && coordText ? '<button class="small copy-value" data-copy="' + esc(producer.id + ' | ' + (place.displayName || '') + ' | ' + place.id + ' | ' + coordText + ' | ' + (place.formattedAddress || '')) + '">Copy audit record</button>' : '') +
+          (place.id && coordText ? '<button class="small confirm-match" data-producer-id="' + esc(producer.id) + '" data-record="' + esc(encodedRecord) + '" data-mismatch="' + String(mismatch) + '">Confirm match</button>' : '') +
+          '</div></div>';
+      }).join('');
+    } catch (error) {
+      resultsEl.innerHTML = '<div class="mismatch">Search failed: ' + esc(error?.message || String(error)) + '</div>';
+    }
+  }
+
+  document.addEventListener('click', async (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLElement)) return;
+    if (target.classList.contains('search-one')) {
+      const producer = PRODUCERS.find((item) => item.id === target.dataset.id);
+      if (producer) await searchProducer(producer);
+    }
+    if (target.classList.contains('copy-value')) {
+      const value = target.dataset.copy;
+      if (value) await copyText(target, value);
+    }
+
+    if (target.classList.contains('confirm-match')) {
+      const producerId = target.dataset.producerId;
+      const encodedRecord = target.dataset.record;
+      if (!producerId || !encodedRecord) return;
+
+      if (target.dataset.mismatch === 'true') {
+        const proceed = confirm(
+          'This candidate is more than 3 km from the current TerroirTrail pin. Confirm only if you verified it is the same producer. The location mismatch will remain flagged.'
+        );
+        if (!proceed) return;
+      }
+
+      CONFIRMED.set(producerId, decodeURIComponent(encodedRecord));
+
+      const results = document.getElementById('results-' + producerId);
+      results?.querySelectorAll('.candidate')
+        .forEach((candidate) => candidate.classList.remove('selected'));
+      target.closest('.candidate')?.classList.add('selected');
+
+      results?.querySelectorAll('.confirm-match').forEach((button) => {
+        button.classList.remove('confirmed');
+        button.textContent = 'Confirm match';
+      });
+
+      target.classList.add('confirmed');
+      target.textContent = 'Confirmed';
+      updateConfirmedUi();
+    }
+  });
+
+  document.getElementById('copy-confirmed').addEventListener('click', async (event) => {
+    const button = event.currentTarget;
+    if (!(button instanceof HTMLElement)) return;
+    const text = confirmedBatchText();
+    if (text) await copyText(button, text);
+  });
+
+  document.getElementById('run-batch').addEventListener('click', async () => {
+    if (!confirm('Run ' + PRODUCERS.length + ' Google Places searches for this audit batch?')) return;
+    const button = document.getElementById('run-batch');
+    button.disabled = true;
+    CONFIRMED.clear();
+    updateConfirmedUi();
+    for (const producer of PRODUCERS) {
+      await searchProducer(producer);
+      await new Promise((resolve) => setTimeout(resolve, 200));
+    }
+    button.disabled = false;
+  });
+
+  window.initAudit = async function initAudit() {
+    try {
+      const lib = await google.maps.importLibrary('places');
+      PlaceClass = lib.Place;
+      document.getElementById('status').textContent = 'Google Places ready. No searches have been made yet.';
+      document.getElementById('run-batch').disabled = false;
+      document.querySelectorAll('.search-one').forEach((button) => { button.disabled = false; });
+    } catch (error) {
+      document.getElementById('status').textContent = 'Google Places failed to initialize: ' + (error?.message || String(error));
+    }
+  };
+
+  renderProducerList();
+  updateConfirmedUi();
+</script>
+<script async src="${escapeHtml(mapsScriptUrl)}"></script>
+</body>
+</html>`;
+}
+
+async function main() {
+  const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
+  const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
+  const googleApiKey = process.env.VITE_GOOGLE_MAPS_API_KEY || process.env.GOOGLE_MAPS_API_KEY;
+
+  if (!supabaseUrl || !supabaseKey) {
+    throw new Error('Supabase URL/key are required in .env.local or .env.');
+  }
+  if (!googleApiKey) {
+    throw new Error('Google Maps API key is required in .env.local. Keep it local; do not paste or commit it.');
+  }
+
+  const destination = readArg('destination') || 'crete';
+  const requestedIds = parseIds();
+  const limit = parseIntegerArg('limit', 5, 1, 25);
+  const port = parseIntegerArg('port', 5173, 1024, 65535);
+
+  const supabase = createClient(supabaseUrl, supabaseKey);
+  let query = supabase
+    .from('producers')
+    .select('id,name,region,village,country,country_code,destination,lat,lng,location_status,google_place_id,google_maps_url')
+    .eq('destination', destination)
+    .is('google_place_id', null)
+    .order('region', { ascending: true })
+    .order('name', { ascending: true });
+
+  if (requestedIds.length > 0) query = query.in('id', requestedIds);
+
+  const { data, error } = await query;
+  if (error) throw new Error(`Supabase producer lookup failed: ${error.message}`);
+
+  const eligible = ((data || []) as ProducerRow[]).filter((producer) => producer.location_status !== 'unresolved');
+  const selected = all ? eligible : eligible.slice(0, limit);
+
+  if (selected.length === 0) {
+    console.log('No matching producers require Google Place ID review.');
+    return;
+  }
+
+  const html = buildAuditHtml(selected, googleApiKey);
+  const server = http.createServer((request, response) => {
+    if (request.url === '/' || request.url?.startsWith('/?')) {
+      response.writeHead(200, {
+        'Content-Type': 'text/html; charset=utf-8',
+        'Cache-Control': 'no-store',
+        'X-Robots-Tag': 'noindex, nofollow',
+      });
+      response.end(html);
+      return;
+    }
+    response.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
+    response.end('Not found');
+  });
+
+  server.on('error', (error: NodeJS.ErrnoException) => {
+    if (error.code === 'EADDRINUSE') {
+      console.error(`Port ${port} is already in use. Stop the existing local server first.`);
+      process.exit(1);
+    }
+    throw error;
+  });
+
+  server.listen(port, '127.0.0.1', () => {
+    console.log('Phase 9B Google Place ID audit server is ready.');
+    console.log(`Destination: ${destination}`);
+    console.log(`Missing Place IDs available for review: ${eligible.length}`);
+    console.log(`Selected this batch: ${selected.length}`);
+    selected.forEach((producer) => console.log(`- ${producer.id} | ${producer.name}`));
+    console.log('');
+    console.log(`Open: http://localhost:${port}`);
+    console.log('Large distance now means "possible TerroirTrail location mismatch", not "bad Google result".');
+    console.log('Candidate coordinates are shown explicitly. No database writes are performed.');
+    console.log('Press Ctrl+C when finished.');
+  });
+}
+
+main().catch((err) => {
+  console.error(err instanceof Error ? err.message : String(err));
+  process.exit(1);
+});
