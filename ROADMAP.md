@@ -5,7 +5,7 @@
 > Completion convention: change `- [ ] Step` to `- [x] ~~Step~~` when finished. Do not mark a step complete until it has been implemented, tested, pushed, deployed where applicable, and verified.
 
 **Last updated:** 2026-09-14
-**Current focus:** Phase 8 — Producer UI & Visual Authenticity
+**Current focus:** Phase 9 — Crete as the First Finished Region
 
 ---
 
@@ -209,40 +209,73 @@ Closeout verification:
 
 ## Phase 8 — Producer UI & Visual Authenticity
 
-**Status:** Pending.
+**Status:** Substantially completed — category-aware presentation, farm taxonomy, trust-aware visiting language, and imagery provenance architecture are implemented. Producer-specific rights-cleared imagery and final page polish remain open.
 
-- [ ] Make producer cards category-appropriate rather than wine-centric.
-- [ ] Make winery UI feel appropriate for wineries.
-- [ ] Make brewery UI feel appropriate for breweries.
-- [ ] Make dairy UI feel appropriate for dairies.
-- [ ] Make olive-mill UI feel appropriate for olive mills.
-- [ ] Make apiary/herb/farm UI feel appropriate for those producers.
-- [ ] Add a first-class farm category/taxonomy and migrate Peskesi from the legacy `kazani` bucket.
+- [x] ~~Make producer cards category-appropriate rather than wine-centric.~~
+- [x] ~~Make winery UI feel appropriate for wineries.~~
+- [x] ~~Make brewery UI feel appropriate for breweries.~~
+- [x] ~~Make dairy UI feel appropriate for dairies.~~
+- [x] ~~Make olive-mill UI feel appropriate for olive mills.~~
+- [x] ~~Make apiary/herb/farm UI feel appropriate for those producers.~~
+- [x] ~~Add a first-class farm category/taxonomy and migrate Peskesi from the legacy `kazani` bucket.~~
 - [ ] Ensure heritage/local projects do not masquerade as producers.
 - [ ] Standardize producer detail hierarchy: Story → What they make → Visiting & Contact → Location & Access.
 - [ ] Remove empty sections caused by correctly-null verified fields.
-- [ ] Audit current imagery provenance.
+- [x] ~~Audit current imagery provenance.~~
 - [ ] Replace generic/stock imagery with producer-approved, official press-kit, rights-safe editorial, or properly attributed Creative Commons imagery.
-- [ ] Ensure no generic stock photo is presented as though it depicts the actual producer.
+- [x] ~~Ensure no generic stock photo is presented as though it depicts the actual producer.~~
+
+Phase 8 reconciliation notes:
+
+- Farm is now a first-class taxonomy and Peskesi is no longer carried through the legacy `kazani` compatibility path.
+- Producer presentation is category-aware and unverified visitability no longer produces positive hospitality claims such as `Walk-ins welcome`.
+- Imagery provenance was hardened so local/category fallback imagery cannot masquerade as verified estate media.
+- Google Places imagery uses verified Place IDs only and remains supplementary and production-disabled.
+- Producer-uploaded media remains a gated prototype; its proposed Supabase storage migration has not been applied.
 
 ---
 
 ## Phase 9 — Crete as the First Finished Region
 
-**Status:** Pending.
+**Status:** In progress — the core Crete discovery and trust foundation is complete. Remaining work is producer-page visual polish, safe self-guided routes/day trips, the complete mobile journey, and final regional QA.
 
 Crete becomes the reference implementation before rapid geographic expansion.
 
-- [ ] Finish the trustworthy Crete map.
-- [ ] Finish the authentic Crete producer catalogue.
-- [ ] Finish useful search and filtering.
-- [ ] Finish safe navigation/directions behavior.
-- [ ] Finish real producer stories.
-- [ ] Finish direct producer contact flows.
+- [x] ~~Finish the trustworthy Crete map.~~
+- [x] ~~Finish the authentic Crete producer catalogue.~~
+- [x] ~~Finish useful search and filtering.~~
+- [x] ~~Finish safe navigation/directions behavior.~~
+- [x] ~~Finish real producer stories.~~
+- [x] ~~Finish direct producer contact flows.~~
 - [ ] Finish polished producer pages.
 - [ ] Finish useful self-guided routes/day trips using verified pins only.
 - [ ] Finish mobile UX for the complete Crete journey.
 - [ ] Perform final Crete regional QA.
+
+### Phase 9A — Verified Google Place ID foundation
+
+- [x] ~~Add persistent nullable Google Place IDs to the producer data model.~~
+- [x] ~~Require verified Place IDs for Google Places media instead of coordinate-based lookup.~~
+- [x] ~~Manually browser-verify the initial five producer Place IDs.~~
+- [x] ~~Synchronize verified IDs into Supabase and the offline/fallback catalogue.~~
+- [x] ~~Keep Google Places media production-disabled while the data foundation is validated.~~
+
+Phase 9A milestone: `9d15449855ecd9c8968e8781416130140682d447` — `Complete Phase 9A verified Google Place ID mapping`.
+
+### Phase 9B — Complete Crete Google Place ID audit
+
+- [x] ~~Build a localhost browser audit tool using Google Places search with the restricted development key.~~
+- [x] ~~Require manual business-identity confirmation before persisting a Place ID.~~
+- [x] ~~Treat large coordinate differences as possible stale TerroirTrail data rather than automatically rejecting Google.~~
+- [x] ~~Correct the stale Lafkas Brewery location after Google and producer-owned evidence confirmed the current Pazinos location.~~
+- [x] ~~Manually audit and persist Google Place IDs for all 27 live Crete producer/project records.~~
+- [x] ~~Synchronize the verified Place IDs into production Supabase and the bundled fallback catalogue.~~
+- [x] ~~Keep location, visitability, entrance precision, and road-access verification as independent trust dimensions.~~
+- [x] ~~Complete Phase 9B as a single milestone on `main`.~~
+
+Phase 9B milestone: `0930e237a95a1cb5e1965755767c18f7ba1b83e2` — `Complete Phase 9B verified Google Place ID audit`.
+
+Google Places imagery remains production-disabled. No Phase 9A/9B work by itself constitutes a production media deployment.
 
 Expansion order after Crete can proceed through Santorini, Peloponnese, Northern Greece, Italy/wider Mediterranean, and Northern Europe based on product priorities.
 
