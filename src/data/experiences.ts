@@ -1,6 +1,7 @@
 import { ProducerCategory, Producer } from '../types/terroir';
 import { TastingExperience } from '../types/booking';
 import { PRODUCER_EXPERIENCES } from './producerExperiences';
+import { getEffectiveProducerCategory, LEGACY_PESKESI_FARM_ID } from '../utils/producerCategory';
 
 export const DEFAULT_EXPERIENCES_BY_CATEGORY: Record<ProducerCategory, TastingExperience[]> = {
   winery: [
@@ -296,6 +297,46 @@ export const DEFAULT_EXPERIENCES_BY_CATEGORY: Record<ProducerCategory, TastingEx
       ],
     },
   ],
+  farm: [
+    {
+      id: 'farm_agroecology_walk',
+      title: 'Regenerative Agroecology Walk & Seasonal Harvest',
+      durationMinutes: 60,
+      pricePerPerson: 18,
+      description: 'Explore working organic groves, companion-planted vegetable beds, and heritage cultivars with hands-on seasonal tasting directly from the soil.',
+      includes: [
+        'Guided farm walk focused on biodiversity, soil regeneration & native crops',
+        'Seasonal heirloom produce tasting fresh from the field',
+        'Fresh herbal infusion with wild mountain herbs & raw estate honey',
+        'Traditional sourdough bites with cold-pressed extra virgin olive oil',
+      ],
+    },
+    {
+      id: 'farm_hearth_cooking',
+      title: 'Farm Hearth & Ancient Foraging Workshop',
+      durationMinutes: 90,
+      pricePerPerson: 38,
+      description: 'Harvest edible wild greens and seasonal botanicals across the estate, followed by clay-pot hearth preparation and outdoor wood-fired cooking.',
+      includes: [
+        'Guided foraging walk for seasonal greens (horta) and wild herbs',
+        'Traditional wood-fired stone oven / hearth cooking demonstration',
+        'Sharing meal: baked savory herb pies (kalitsounia), artisan cheese & organic salad',
+        'Carafe of organic table wine and fresh farm fruit',
+      ],
+    },
+    {
+      id: 'farm_heirloom_tasting',
+      title: 'Heritage Seed Preservation & Orchard Tasting Flight',
+      durationMinutes: 45,
+      pricePerPerson: 15,
+      description: 'Discover the preservation of rare heirloom Aegean seed lines and ancient orchards with an intimate guided tasting of preserved farm specialties.',
+      includes: [
+        'Tour of the heirloom seed bank and organic orchard terraces',
+        'Tasting flight of 4 artisanal farm preserves, pickled botanicals & sundried bites',
+        'Wood-roasted nuts, dried figs, and carob rusks with thyme honey',
+      ],
+    },
+  ],
 };
 
 export const getExperiencesForProducer = (
@@ -304,12 +345,17 @@ export const getExperiencesForProducer = (
   if (typeof producerOrCategory === 'object' && producerOrCategory !== null) {
     const bespoke = PRODUCER_EXPERIENCES.filter((e) => e.producerId === producerOrCategory.id);
     if (bespoke.length > 0) return bespoke;
-    return DEFAULT_EXPERIENCES_BY_CATEGORY[producerOrCategory.category] || DEFAULT_EXPERIENCES_BY_CATEGORY.winery;
+    const cat = getEffectiveProducerCategory(producerOrCategory);
+    return DEFAULT_EXPERIENCES_BY_CATEGORY[cat] || DEFAULT_EXPERIENCES_BY_CATEGORY.winery;
   }
 
   // If string matching a producerId
   const bespoke = PRODUCER_EXPERIENCES.filter((e) => e.producerId === producerOrCategory);
   if (bespoke.length > 0) return bespoke;
+
+  if (producerOrCategory === LEGACY_PESKESI_FARM_ID) {
+    return DEFAULT_EXPERIENCES_BY_CATEGORY.farm;
+  }
 
   // Otherwise assume it is a ProducerCategory
   const cat = producerOrCategory as ProducerCategory;
@@ -321,7 +367,12 @@ export const getExperiencesForProducer = (
  * 114 bespoke estate experiences across 57 Greek producers + 23 category masterclasses.
  */
 export const ALL_EXPERIENCES: TastingExperience[] = [
-  ...PRODUCER_EXPERIENCES,
+  ...PRODUCER_EXPERIENCES.map((e) => {
+    if (e.producerId === LEGACY_PESKESI_FARM_ID) {
+      return { ...e, category: 'farm' as ProducerCategory };
+    }
+    return e;
+  }),
   ...Object.entries(DEFAULT_EXPERIENCES_BY_CATEGORY).flatMap(([cat, exps]) =>
     exps.map((e) => ({
       ...e,

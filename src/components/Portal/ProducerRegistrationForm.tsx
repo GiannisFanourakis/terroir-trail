@@ -40,6 +40,7 @@ import {
   isFirebaseConfigured,
 } from '../../services/firebase';
 import { checkVatAgainstVies, ViesCheckResult } from '../../services/viesService';
+import { getEffectiveProducerCategory } from '../../utils/producerCategory';
 
 interface ProducerRegistrationFormProps {
   initialProducerId?: string;
@@ -50,6 +51,16 @@ interface ProducerRegistrationFormProps {
 }
 
 type TabKey = 'fiscal' | 'logistics' | 'packaging' | 'banking' | 'permits';
+
+const mapProducerCategoryToRegistration = (
+  producer?: Pick<Producer, 'id' | 'category'> | null
+): ProducerRegistrationRecord['producerCategory'] => {
+  if (!producer) return 'winery';
+  const effectiveCat = getEffectiveProducerCategory(producer);
+  if (effectiveCat === 'kazani') return 'distillery';
+  if (effectiveCat === 'olive_mill') return 'olive_oil';
+  return effectiveCat;
+};
 
 export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> = ({
   initialProducerId,
@@ -79,7 +90,7 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
   // --- Form State (Default empty strings so suggestive examples render strictly as ghost text placeholders) ---
   // Step 1: Fiscal & Identity
   const [producerCategory, setProducerCategory] = useState<ProducerRegistrationRecord['producerCategory']>(
-    (defaultProducer?.category as any) || 'winery'
+    mapProducerCategoryToRegistration(defaultProducer)
   );
   const [tradeBrandName, setTradeBrandName] = useState('');
   const [legalBusinessName, setLegalBusinessName] = useState('');
@@ -156,7 +167,7 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
       const initial = allProducers.find((p: Producer) => p.id === initialProducerId) || allProducers[0];
       if (initial) {
         setSelectedProducerId(initial.id);
-        setProducerCategory((initial.category as any) || 'winery');
+        setProducerCategory(mapProducerCategoryToRegistration(initial));
         setCountryCode(initial.country === 'Italy' || initial.destination === 'tuscany' ? 'IT' : 'GR');
         setRegion(initial.destination === 'tuscany' ? 'Tuscany' : 'Crete');
       }
@@ -292,7 +303,7 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
     setSelectedProducerId(id);
     const p = allProducers.find((item: Producer) => item.id === id);
     if (p) {
-      setProducerCategory((p.category as any) || 'winery');
+      setProducerCategory(mapProducerCategoryToRegistration(p));
       setCountryCode(p.country === 'Italy' || p.destination === 'tuscany' ? 'IT' : 'GR');
       setRegion(p.destination === 'tuscany' ? 'Tuscany' : 'Crete');
     }
@@ -649,6 +660,7 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                   <option value="cheese_dairy">🧀 Artisan Cheese Dairy</option>
                   <option value="apiary">🍯 Natural Honey Apiary</option>
                   <option value="olive_oil">🫒 Cold-Pressed Olive Mill</option>
+                  <option value="farm">🌿 Regenerative Farm & Estate</option>
                 </select>
               </div>
 

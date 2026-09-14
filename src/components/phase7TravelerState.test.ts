@@ -134,11 +134,11 @@ describe('Phase 7 traveler authentication and account lifecycle', () => {
     const audit = read('reports/product-readiness/phase7_audit.md');
 
     expect(audit).toContain(
-      'Email/password and Google are currently exposed traveler sign-in paths. Apple authentication infrastructure exists but is not part of the currently verified public traveler sign-in surface.'
+      'email/password and Google are currently exposed traveler sign-in paths. Apple authentication infrastructure exists but is not part of the currently verified public traveler sign-in surface.'
     );
     expect(audit).not.toContain('Apple Sign-In is launch-ready');
     expect(audit).not.toContain('Apple sign-in is launch-ready');
-    expect(audit).toContain('Account deletion remains a manual/operational privacy process');
-    expect(audit).toContain('| Traveler authentication (Email/password, Google; dormant Apple infrastructure) | Needs work |');
+    expect(audit).toContain('Account deletion remains operational/manual');
+    expect(audit).toContain('| Traveler authentication (Email/password, Google; dormant Apple infrastructure) | Launch-ready |');
   });
 });

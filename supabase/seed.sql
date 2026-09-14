@@ -788,7 +788,7 @@ INSERT INTO public.producers (
   'peskesi-farm-kazani',
   'Peskesi Organic Farm',
   'Αγρόκτημα Πεσκέσι',
-  'kazani',
+  'farm',
   'crete',
   'Greece',
   'GR',

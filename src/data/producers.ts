@@ -695,7 +695,7 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "id": "peskesi-farm-kazani",
       "name": "Peskesi Organic Farm",
       "greekName": "Αγρόκτημα Πεσκέσι",
-      "category": "kazani",
+      "category": "farm",
       "destination": "crete",
       "country": "Greece",
       "countryCode": "GR",

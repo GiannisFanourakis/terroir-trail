@@ -6,7 +6,7 @@ import { Producer, ProducerCategory, Destination } from '../../types/terroir';
 import { 
   X, Search, Sparkles, Clock, MapPin, Check, Wine, 
   Beer, Flame, Disc, Flower2, SlidersHorizontal, ArrowRight,
-  Filter, Tag, ExternalLink
+  Filter, Tag, ExternalLink, Sprout
 } from 'lucide-react';
 
 interface ExperienceExplorerModalProps {
@@ -32,6 +32,7 @@ const CATEGORY_CONFIG: Record<
   cheese_dairy: { label: 'Cheese Dairies', icon: Disc, color: 'text-yellow-400 bg-yellow-500/10 border-yellow-500/30' },
   kazani: { label: 'Distilleries', icon: Flame, color: 'text-orange-400 bg-orange-500/10 border-orange-500/30' },
   apiary: { label: 'Apiaries', icon: Flower2, color: 'text-amber-300 bg-amber-400/10 border-amber-400/30' },
+  farm: { label: 'Farms', icon: Sprout, color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30' },
 };
 
 const DESTINATIONS: { id: Destination | 'all'; label: string }[] = [

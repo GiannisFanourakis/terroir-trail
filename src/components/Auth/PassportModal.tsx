@@ -4,6 +4,7 @@ import { UserProfile } from '../../types/auth';
 import { X, CheckCircle2, Circle, MapPin, Edit3, Save } from 'lucide-react';
 import { UserAvatar } from '../Common/UserAvatar';
 import { getCategoryFallbackImage } from '../../utils/imageFallbacks';
+import { getEffectiveProducerCategory } from '../../utils/producerCategory';
 import { producerService } from '../../services/producerService';
 
 interface PassportModalProps {
@@ -174,7 +175,7 @@ export const PassportModal: React.FC<PassportModalProps> = ({
                         loading="lazy"
                         decoding="async"
                         onError={(e) => {
-                          const fallback = getCategoryFallbackImage(producer.category);
+                          const fallback = getCategoryFallbackImage(getEffectiveProducerCategory(producer));
                           if (e.currentTarget.src !== fallback) {
                             e.currentTarget.src = fallback;
                           }

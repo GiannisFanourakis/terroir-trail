@@ -438,7 +438,7 @@ describe('producerService — Supabase / Fallback Data Ownership', () => {
       expect(peskesi).toBeDefined();
       expect(peskesi?.name).toBe('Peskesi Organic Farm');
       expect(peskesi?.greekName).toBe('Αγρόκτημα Πεσκέσι');
-      expect(peskesi?.category).toBe('kazani');
+      expect(peskesi?.category).toBe('farm');
       expect(peskesi?.roadAccess).toBe('unpaved_passable');
       expect(peskesi?.roadAccessStatus).toBe('verified');
       expect(peskesi?.roadAccessSourceUrl).toBe(
