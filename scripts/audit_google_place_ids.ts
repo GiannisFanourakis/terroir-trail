@@ -82,9 +82,11 @@ function buildAuditHtml(producers: ProducerRow[], googleApiKey: string): string 
     .toolbar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin: 20px 0; }
     button { border: 0; border-radius: 9px; padding: 9px 12px; font-weight: 700; cursor: pointer; background: #e8b45a; color: #20170a; }
     button.secondary { background: #292724; color: #f5f5f4; border: 1px solid #4b4843; }
+    button.confirmed { background: #245f38; color: #e7f8eb; border: 1px solid #4f9f69; }
     button:disabled { opacity: .45; cursor: not-allowed; }
     #status { color: #aaa59e; font-size: 13px; }
     .producer { border: 1px solid #37332f; border-radius: 14px; padding: 16px; margin: 14px 0; background: #191816; }
+    .producer.is-confirmed { border-color: #4f9f69; }
     .producer-head { display: flex; justify-content: space-between; gap: 12px; align-items: start; flex-wrap: wrap; }
     .producer h2 { margin: 0; font-size: 18px; }
     .meta { color: #a8a29e; font-size: 13px; margin-top: 5px; }
@@ -92,6 +94,7 @@ function buildAuditHtml(producers: ProducerRow[], googleApiKey: string): string 
     a { color: #f0c97c; }
     .results { margin-top: 14px; display: grid; gap: 10px; }
     .candidate { border: 1px solid #46413a; border-radius: 11px; padding: 12px; background: #211f1c; }
+    .candidate.selected { border-color: #4f9f69; background: #18231b; }
     .candidate strong { display: block; margin-bottom: 4px; }
     .line { color: #c8c4bd; font-size: 13px; margin: 3px 0; word-break: break-word; }
     .place-id { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; color: #fff0c9; }
@@ -115,12 +118,15 @@ function buildAuditHtml(producers: ProducerRow[], googleApiKey: string): string 
   </div>
   <div class="toolbar">
     <button id="run-batch" disabled>Run this batch</button>
+    <button id="copy-confirmed" class="secondary" disabled>Copy confirmed batch</button>
+    <span id="confirmed-count">0/${producers.length} confirmed</span>
     <span id="status">Loading Google Places library…</span>
   </div>
   <div id="producer-list"></div>
 </main>
 <script>
   const PRODUCERS = ${producerJson};
+  const CONFIRMED = new Map();
   let PlaceClass = null;
 
   function esc(value) {
@@ -181,9 +187,29 @@ function buildAuditHtml(producers: ProducerRow[], googleApiKey: string): string 
     setTimeout(() => { button.textContent = old; }, 1000);
   }
 
+  function updateConfirmedUi() {
+    document.getElementById('confirmed-count').textContent =
+      CONFIRMED.size + '/' + PRODUCERS.length + ' confirmed';
+    document.getElementById('copy-confirmed').disabled = CONFIRMED.size === 0;
+
+    PRODUCERS.forEach((producer) => {
+      document.getElementById('producer-' + producer.id)
+        ?.classList.toggle('is-confirmed', CONFIRMED.has(producer.id));
+    });
+  }
+
+  function confirmedBatchText() {
+    return PRODUCERS
+      .filter((producer) => CONFIRMED.has(producer.id))
+      .map((producer) => CONFIRMED.get(producer.id))
+      .join('\\n');
+  }
+
   async function searchProducer(producer) {
     if (!PlaceClass) throw new Error('Google Places library is not ready.');
     const resultsEl = document.getElementById('results-' + producer.id);
+    CONFIRMED.delete(producer.id);
+    updateConfirmedUi();
     resultsEl.innerHTML = '<div class="meta">Searching…</div>';
 
     const request = {
@@ -226,6 +252,16 @@ function buildAuditHtml(producers: ProducerRow[], googleApiKey: string): string 
           ? '<a href="' + esc(place.googleMapsURI) + '" target="_blank" rel="noreferrer">Open candidate on Google Maps</a>'
           : '';
         const coordText = point ? point.lat.toFixed(7) + ', ' + point.lng.toFixed(7) : '';
+        const auditRecord =
+          producer.id + ' | ' +
+          (place.displayName || '') + ' | ' +
+          (place.id || '') + ' | ' +
+          coordText + ' | ' +
+          (place.formattedAddress || '') + ' | distance_km=' +
+          (distanceKm == null ? 'unknown' : distanceKm.toFixed(2)) +
+          ' | location_mismatch=' + String(mismatch);
+        const encodedRecord = encodeURIComponent(auditRecord);
+
         return '<div class="candidate">' +
           '<strong>[' + (index + 1) + '] ' + esc(place.displayName || '(no display name)') + '</strong>' +
           '<div class="line place-id">Place ID: ' + esc(place.id || '(missing)') + '</div>' +
@@ -237,6 +273,7 @@ function buildAuditHtml(producers: ProducerRow[], googleApiKey: string): string 
           (place.id ? '<button class="small copy-value" data-copy="' + esc(place.id) + '">Copy Place ID</button>' : '') +
           (coordText ? '<button class="small copy-value" data-copy="' + esc(coordText) + '">Copy coordinates</button>' : '') +
           (place.id && coordText ? '<button class="small copy-value" data-copy="' + esc(producer.id + ' | ' + (place.displayName || '') + ' | ' + place.id + ' | ' + coordText + ' | ' + (place.formattedAddress || '')) + '">Copy audit record</button>' : '') +
+          (place.id && coordText ? '<button class="small confirm-match" data-producer-id="' + esc(producer.id) + '" data-record="' + esc(encodedRecord) + '" data-mismatch="' + String(mismatch) + '">Confirm match</button>' : '') +
           '</div></div>';
       }).join('');
     } catch (error) {
@@ -255,12 +292,50 @@ function buildAuditHtml(producers: ProducerRow[], googleApiKey: string): string 
       const value = target.dataset.copy;
       if (value) await copyText(target, value);
     }
+
+    if (target.classList.contains('confirm-match')) {
+      const producerId = target.dataset.producerId;
+      const encodedRecord = target.dataset.record;
+      if (!producerId || !encodedRecord) return;
+
+      if (target.dataset.mismatch === 'true') {
+        const proceed = confirm(
+          'This candidate is more than 3 km from the current TerroirTrail pin. Confirm only if you verified it is the same producer. The location mismatch will remain flagged.'
+        );
+        if (!proceed) return;
+      }
+
+      CONFIRMED.set(producerId, decodeURIComponent(encodedRecord));
+
+      const results = document.getElementById('results-' + producerId);
+      results?.querySelectorAll('.candidate')
+        .forEach((candidate) => candidate.classList.remove('selected'));
+      target.closest('.candidate')?.classList.add('selected');
+
+      results?.querySelectorAll('.confirm-match').forEach((button) => {
+        button.classList.remove('confirmed');
+        button.textContent = 'Confirm match';
+      });
+
+      target.classList.add('confirmed');
+      target.textContent = 'Confirmed';
+      updateConfirmedUi();
+    }
+  });
+
+  document.getElementById('copy-confirmed').addEventListener('click', async (event) => {
+    const button = event.currentTarget;
+    if (!(button instanceof HTMLElement)) return;
+    const text = confirmedBatchText();
+    if (text) await copyText(button, text);
   });
 
   document.getElementById('run-batch').addEventListener('click', async () => {
     if (!confirm('Run ' + PRODUCERS.length + ' Google Places searches for this audit batch?')) return;
     const button = document.getElementById('run-batch');
     button.disabled = true;
+    CONFIRMED.clear();
+    updateConfirmedUi();
     for (const producer of PRODUCERS) {
       await searchProducer(producer);
       await new Promise((resolve) => setTimeout(resolve, 200));
@@ -281,6 +356,7 @@ function buildAuditHtml(producers: ProducerRow[], googleApiKey: string): string 
   };
 
   renderProducerList();
+  updateConfirmedUi();
 </script>
 <script async src="${escapeHtml(mapsScriptUrl)}"></script>
 </body>
