@@ -1,7 +1,7 @@
 {
   "name": "TerroirTrail — Independent Producer & Agritourism Guide",
   "short_name": "TerroirTrail",
-  "description": "Discover independent wineries, craft breweries, olive mills, dairies, apiaries, traditional distilleries, and farms with transparent visiting and access status, starting in Greece.",
+  "description": "Discover verified independent wineries, craft breweries, olive mills, dairies, apiaries, traditional distilleries, and farms with clearly labeled visiting, location, and road-access status, starting in Greece.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

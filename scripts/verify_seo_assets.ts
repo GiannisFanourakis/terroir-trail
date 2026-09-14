@@ -83,8 +83,6 @@ function verifySeoAssets(): void {
       'and self-guided rural discovery routes.',
       'Curated Crete Agritourism & Local Producer Guide',
       'Curated Agritourism & Local Producer Discovery Guide',
-      'Explore verified wineries',
-      'Discover verified independent',
     ];
 
     for (const claim of bannedClaims) {

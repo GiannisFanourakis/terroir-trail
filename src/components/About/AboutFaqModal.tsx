@@ -46,7 +46,7 @@ const FAQ_DATA: FaqItem[] = [
     categoryLabel: 'About & Curation',
     question: 'What is TerroirTrail?',
     answer:
-      'TerroirTrail is an independent producer and agritourism discovery guide for culinary travelers, road-trippers and slow travelers. It connects travelers directly with independent wineries, craft breweries, olive mills, dairies, apiaries, traditional distilleries, and farms, focusing on source-backed producer information where available, direct maker contact, and conservative rural-navigation guidance rather than mass-tourism listings or unverified travel claims.',
+      'TerroirTrail is an independent producer and agritourism discovery guide for culinary travelers, road-trippers and slow travelers. It connects travelers directly with verified wineries, craft breweries, olive mills, dairies, apiaries, traditional distilleries, and farms, focusing on clearly labeled visiting, location, and road-access status, direct maker contact, and conservative rural-navigation guidance rather than mass-tourism listings or unverified travel claims.',
     highlight: 'Discovery first: useful producer information without turning unknowns into promises.',
   },
   {
