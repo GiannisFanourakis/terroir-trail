@@ -102,6 +102,8 @@ export interface Producer {
   phone?: string;
   website?: string;
   googleMapsUrl?: string;
+  /** Manually audited Google Maps business identity. Never inferred from coordinates. */
+  googlePlaceId?: string;
   roadAccess?: RoadAccess;
   roadAccessStatus?: RoadAccessStatus | string;
   roadAccessSourceUrl?: string;
