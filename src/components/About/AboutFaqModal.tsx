@@ -46,8 +46,17 @@ const FAQ_DATA: FaqItem[] = [
     categoryLabel: 'About & Curation',
     question: 'What is TerroirTrail?',
     answer:
-      'TerroirTrail is an independent agritourism discovery guide for culinary travelers, road-trippers and slow travelers. It focuses on source-backed producer information, direct contact with makers, and conservative rural-navigation guidance rather than mass-tourism listings or unverified travel claims.',
+      'TerroirTrail is an independent producer and agritourism discovery guide for culinary travelers, road-trippers and slow travelers. It connects travelers directly with verified wineries, craft breweries, olive mills, dairies, apiaries, traditional distilleries, and farms, focusing on source-backed producer information, direct maker contact, and conservative rural-navigation guidance rather than mass-tourism listings or unverified travel claims.',
     highlight: 'Discovery first: useful producer information without turning unknowns into promises.',
+  },
+  {
+    id: 'categories-included',
+    category: 'about',
+    categoryLabel: 'About & Curation',
+    question: 'What categories of producers are included?',
+    answer:
+      'TerroirTrail curates seven first-class producer categories: Wineries, Breweries, Olive Mills, Dairies / Cheesemakers, Apiaries / Honey, Rakokazana / Traditional Distilleries, and Farms.',
+    highlight: 'Seven independent agricultural categories curated under equal verification standards.',
   },
   {
     id: 'how-producers-selected',
@@ -250,12 +259,12 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
                   Find real makers without turning missing evidence into travel promises.
                 </h1>
                 <p className="text-xs sm:text-sm text-stone-300 leading-relaxed max-w-3xl">
-                  TerroirTrail connects independent culinary travelers with wineries, breweries, olive mills, dairies, apiaries and agricultural projects. The product separates what is known from what is merely assumed: producer identity, visitability, exact location and rural-road access are reviewed as distinct facts.
+                  TerroirTrail connects independent culinary travelers with wineries, breweries, olive mills, dairies, apiaries, traditional distilleries, and farms. The product separates what is known from what is merely assumed: producer identity, visitability, exact location and rural-road access are reviewed as distinct facts.
                 </p>
 
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-5 border-t border-white/10">
                   <Metric value="27" label="Audited Crete records" />
-                  <Metric value="6" label="Producer categories" />
+                  <Metric value="7" label="Producer categories" />
                   <Metric value="Source-backed" label="Access confidence" />
                   <Metric value="Direct" label="Producer contact" />
                 </div>
@@ -287,10 +296,10 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
               <div className="p-5 rounded-2xl bg-stone-900 border border-white/10 space-y-2">
                 <div className="flex items-center gap-2 text-amber-300 font-bold text-sm">
                   <Compass className="w-4 h-4" />
-                  <span>Crete first, then outward</span>
+                  <span>Greece first, then outward</span>
                 </div>
                 <p className="text-xs text-stone-300 leading-relaxed">
-                  Crete is the current reference-quality catalogue. TerroirTrail is designed for Mediterranean and European expansion, but new regions must earn the same level of data, location and access confidence before they are treated as reference-quality coverage.
+                  Crete is the current reference-quality catalogue, with 27 audited records. TerroirTrail is designed for Mediterranean and European expansion, but new regions must earn the same level of data, location and access confidence before they are treated as reference-quality coverage.
                 </p>
               </div>
 

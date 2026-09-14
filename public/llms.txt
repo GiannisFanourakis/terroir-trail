@@ -1,12 +1,12 @@
-# TerroirTrail — Curated Agritourism & Local Producer Discovery Guide
+# TerroirTrail — Independent Producer & Agritourism Guide
 
 Canonical URL: https://terroir-trail.web.app/
 
 ## Current product state
 
-TerroirTrail is a discovery-first agritourism and local-producer guide. Crete is the current reference-quality region.
+TerroirTrail is an independent, discovery-first agritourism guide. Crete is the current reference-quality region, starting in Greece and designed to expand across the Mediterranean and beyond.
 
-The authoritative Crete catalogue contains 27 audited producer/project records across Chania, Heraklion, Rethymno and Lasithi. Current categories include wineries, craft breweries, distilleries/rakokazana, olive mills, dairies, apiaries/herb projects and other agricultural/heritage projects represented by the existing taxonomy.
+The authoritative Crete catalogue contains 27 audited producer/project records across Chania, Heraklion, Rethymno and Lasithi. Current categories include the seven first-class producer types: wineries, craft breweries, olive mills, dairies/cheesemakers, apiaries/honey, traditional distilleries/rakokazana, and farms.
 
 TerroirTrail is not currently a public booking marketplace. Public visitability is researched separately from any TerroirTrail commercial relationship. A producer being publicly visitable does not mean that TerroirTrail is authorized to sell or reserve an Experience there.
 

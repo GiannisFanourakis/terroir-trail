@@ -1,7 +1,7 @@
 {
-  "name": "TerroirTrail — Mediterranean Artisan Agritourism & Wine Routes",
+  "name": "TerroirTrail — Independent Producer & Agritourism Guide",
   "short_name": "TerroirTrail",
-  "description": "Discover 58+ independent organic wineries, craft microbreweries, artisanal olive oil mills, and vineyard stays across Crete, Tuscany, Santorini, and Nemea.",
+  "description": "Discover verified independent wineries, craft breweries, olive mills, dairies, apiaries, traditional distilleries, and farms with source-backed visiting guidance.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

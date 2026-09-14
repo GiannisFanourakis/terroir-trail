@@ -99,7 +99,7 @@ export const Header: React.FC<HeaderProps> = ({
                   Terroir<span className="text-amber-400 font-sans font-light">Trail</span>
                 </h1>
                 <p className="text-[10px] text-stone-400 font-medium hidden md:block truncate group-hover:text-stone-300 transition-colors">
-                  Curated Wineries, Craft Breweries, Rakokazana & Mountain Dairies
+                  Independent Producer &amp; Agritourism Guide
                 </p>
               </div>
             </button>

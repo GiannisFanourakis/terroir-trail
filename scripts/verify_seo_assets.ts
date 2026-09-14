@@ -81,6 +81,8 @@ function verifySeoAssets(): void {
       'Rethymno Foothills & Heritage Circuit',
       'Lasithi & Sitia Monastic Terroir Route',
       'and self-guided rural discovery routes.',
+      'Curated Crete Agritourism & Local Producer Guide',
+      'Curated Agritourism & Local Producer Discovery Guide',
     ];
 
     for (const claim of bannedClaims) {
@@ -88,6 +90,11 @@ function verifySeoAssets(): void {
         console.error(`[SEO Verification Failed] dist/index.html still contains quarantined/stale claim: ${claim}`);
         process.exit(1);
       }
+    }
+
+    if (!indexContent.includes('TerroirTrail — Independent Producer &amp; Agritourism Guide') && !indexContent.includes('TerroirTrail — Independent Producer & Agritourism Guide')) {
+      console.error('[SEO Verification Failed] dist/index.html is missing expected homepage title/positioning.');
+      process.exit(1);
     }
 
     if (!indexContent.includes('Curated Rural Routes Under Verification')) {
