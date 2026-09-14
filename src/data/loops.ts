@@ -77,43 +77,39 @@ export const CURATED_ROUTES: DayTripLoop[] = [
   },
   {
     id: 'chania-craft-beer-olive-trail',
-    title: 'Chania Heritage Oil, Orange Groves & Fresh Craft Beer',
-    greekTitle: 'Ελαιόλαδο, Πορτοκαλεώνες & Μπίρα Χανίων',
-    subtitle: 'Granite Millstones, 3,000-Yr Olive Tree & Fresh Draft in Groves',
+    title: 'Western Chania: Olive Oil, Craft Beer & Wine',
+    greekTitle: 'Δυτικά Χανιά: Ελαιόλαδο, Μπίρα & Κρασί',
+    subtitle: 'Astrikas · Zounaki · Vatolakkos',
     destination: 'crete',
-    region: 'Chania',
-    totalDuration: '5.5 hours',
-    drivingDistance: '44 km (All paved roads)',
+    region: 'Western Chania',
+    totalDuration: 'Flexible half-day',
+    drivingDistance: 'Driving distance pending access audit',
     stops: [
       {
         producerId: 'biolea-estate',
-        suggestedTime: '10:30 AM - 12:00 PM',
-        activity: 'Watch granite millstones crush organic Koroneiki olives with bread tasting on the scenic stone terrace.'
-      },
-      {
-        producerId: 'monumental-olive-tree-vouves',
-        suggestedTime: '12:30 PM - 1:30 PM',
-        activity: 'Stand beside a 3,000-year-old living tree and visit the historic cooperative mill museum.'
+        suggestedTime: 'Morning',
+        activity: 'Explore the Biolea Astrikas Estate. Guided olive-oil visits are offered by the producer; check current hours and booking availability before travel.'
       },
       {
         producerId: 'cretan-brewery-charma',
-        suggestedTime: '2:00 PM - 3:30 PM',
-        activity: 'Fresh unpasteurized Charma draft flight & smoked Cretan sausages in the olive grove taproom.'
+        suggestedTime: 'Afternoon',
+        activity: 'Visit Cretan Brewery in Zounaki during its published visitor season. Check the brewery directly for current tour, tasting and restaurant hours.'
       },
       {
         producerId: 'manousakis-winery',
-        suggestedTime: '4:00 PM - 5:30 PM',
-        activity: 'Organic Romeiko wine tasting and farm-to-table vineyard snacks in the orange grove garden of Vatolakkos.'
+        suggestedTime: 'Late afternoon',
+        activity: 'Visit Manousakis Winery in Vatolakkos for a booked tasting or tour. Confirm the current seasonal schedule and availability directly with the winery.'
       }
     ],
-    description: 'A perfect western Crete day route combining historic liquid gold olive oil, monumental heritage, and modern craft brewing in the lush foothills of the White Mountains.',
+    description: 'A self-guided western Chania sequence using three current TerroirTrail stops with verified locations. Use each producer page for current visiting details and direct contact. Multi-stop driving directions remain withheld because road-access classifications for these stops are not yet independently verified.',
     highlightPointers: [
-      'Panoramic views across the foothills of the White Mountains',
-      'The world’s oldest documented living olive tree',
-      'Fresh unfiltered draft beer straight from the conditioning tank',
-      'Organic orange-grove vineyard dining in Vatolakkos'
+      'Three current catalogue stops with verified location or entrance points',
+      'Olive oil, independent craft beer and wine in one western Chania guide',
+      'Direct producer information for current hours and booking',
+      'Multi-stop driving navigation intentionally withheld pending road-access verification'
     ],
     isVipOnly: false,
+    verificationStatus: 'verified_stops',
   },
   {
     id: 'rethymno-mountain-cheese-mill-trail',

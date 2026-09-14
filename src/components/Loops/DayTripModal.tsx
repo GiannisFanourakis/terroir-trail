@@ -2,7 +2,7 @@ import React, { useMemo, useRef, useState } from 'react';
 import { CURATED_ROUTES } from '../../data/loops';
 import { producerService } from '../../services/producerService';
 import { DayTripLoop, Producer } from '../../types/terroir';
-import { evaluateRouteNavigation } from '../../utils/routeSafety';
+import { evaluateRouteNavigation, getProducerRoadAccessWarning } from '../../utils/routeSafety';
 import {
   X,
   Clock,
@@ -45,11 +45,16 @@ export const DayTripModal: React.FC<DayTripModalProps> = ({
     [producers]
   );
 
-  // Legacy route definitions remain in the repository as draft/prototype data.
-  // They are deliberately not exposed until each route has completed a fresh
-  // producer, claim, location and road-access audit.
-  const verifiedLoops = useMemo(
-    () => loops.filter((loop) => loop.verificationStatus === 'verified'),
+  // Draft routes remain hidden. A route with verified stop identities and
+  // locations may be published as a guide before its road-access audit is
+  // complete, but multi-stop driving navigation remains fail-closed.
+  const publishedLoops = useMemo(
+    () =>
+      loops.filter(
+        (loop) =>
+          loop.verificationStatus === 'verified_stops' ||
+          loop.verificationStatus === 'verified'
+      ),
     [loops]
   );
 
@@ -62,7 +67,7 @@ export const DayTripModal: React.FC<DayTripModalProps> = ({
 
   if (!isOpen) return null;
 
-  if (verifiedLoops.length === 0) {
+  if (publishedLoops.length === 0) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200 select-none">
         <div className="relative w-full max-w-xl bg-stone-950 text-stone-100 rounded-3xl shadow-2xl border border-white/15 overflow-hidden">
@@ -110,7 +115,7 @@ export const DayTripModal: React.FC<DayTripModalProps> = ({
     );
   }
 
-  const currentLoop = verifiedLoops[activeLoopIndex] || verifiedLoops[0];
+  const currentLoop = publishedLoops[activeLoopIndex] || publishedLoops[0];
   const routeEvaluation = evaluateRouteNavigation(currentLoop, producerCatalogue);
 
   const getProducer = (id: string): Producer | undefined => {
@@ -145,8 +150,8 @@ export const DayTripModal: React.FC<DayTripModalProps> = ({
               <Compass className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="font-serif-title text-lg sm:text-xl font-bold text-white">Verified Terroir Routes</h2>
-              <p className="text-xs text-stone-400">Only fully audited stops and access conditions can launch driving navigation</p>
+              <h2 className="font-serif-title text-lg sm:text-xl font-bold text-white">Curated Terroir Routes</h2>
+              <p className="text-xs text-stone-400">Verified stop locations can be explored before driving access is fully audited</p>
             </div>
           </div>
           <button
@@ -168,7 +173,7 @@ export const DayTripModal: React.FC<DayTripModalProps> = ({
             <ChevronLeft className="w-4 h-4" />
           </button>
           <div ref={tabsRef} className="flex-1 flex overflow-x-auto scroll-smooth py-2 px-1 gap-1.5">
-            {verifiedLoops.map((loop, idx) => {
+            {publishedLoops.map((loop, idx) => {
               const isActive = idx === activeLoopIndex;
               return (
                 <button
@@ -207,6 +212,12 @@ export const DayTripModal: React.FC<DayTripModalProps> = ({
             </div>
             <h3 className="font-serif-title text-xl sm:text-2xl font-bold text-white leading-snug">{currentLoop.title}</h3>
             <p className="text-sm text-stone-300 leading-relaxed">{currentLoop.description}</p>
+            {currentLoop.verificationStatus === 'verified_stops' && (
+              <div className="inline-flex items-center gap-1.5 rounded-full border border-sky-500/25 bg-sky-500/10 px-2.5 py-1 text-[10px] font-semibold text-sky-300">
+                <CheckCircle2 className="w-3 h-3" />
+                Stop locations verified · driving access audit pending
+              </div>
+            )}
           </div>
 
           {routeEvaluation.isSafe ? (
@@ -234,7 +245,7 @@ export const DayTripModal: React.FC<DayTripModalProps> = ({
                 <ShieldAlert className="w-4 h-4" />
                 Driving navigation withheld
               </div>
-              <p className="text-xs text-stone-300">This route cannot launch turn-by-turn navigation until every stop passes the access audit.</p>
+              <p className="text-xs text-stone-300">This route can be explored stop by stop, but multi-stop turn-by-turn navigation stays disabled until every stop passes the access audit.</p>
               <ul className="text-[11px] text-stone-400 space-y-1 list-disc pl-4">
                 {routeEvaluation.issues.slice(0, 5).map((issue, index) => (
                   <li key={`${issue.code}-${issue.producerId || 'route'}-${index}`}>{issue.message}</li>
@@ -268,6 +279,11 @@ export const DayTripModal: React.FC<DayTripModalProps> = ({
                   );
                 }
 
+                const roadWarning = getProducerRoadAccessWarning(producer);
+                const hasVerifiedLocation =
+                  producer.locationStatus === 'verified_location' ||
+                  producer.locationStatus === 'verified_entrance';
+
                 return (
                   <div key={stop.producerId} className="flex flex-col sm:flex-row sm:items-center gap-3.5 p-3.5 rounded-2xl border border-white/10 bg-stone-900/80">
                     <div className="flex items-center gap-3 sm:w-44 shrink-0">
@@ -280,20 +296,32 @@ export const DayTripModal: React.FC<DayTripModalProps> = ({
                         </div>
                       </div>
                     </div>
-                    <div className="flex-1 min-w-0">
+                    <div className="flex-1 min-w-0 space-y-1">
                       <div className="font-serif-title font-bold text-white text-sm">{producer.name}</div>
                       <div className="text-[11px] text-stone-400">{producer.village}</div>
+                      <p className="text-[11px] text-stone-300 leading-relaxed">{stop.activity}</p>
+                      {roadWarning && (
+                        <p className="text-[10px] text-orange-300/90 leading-relaxed flex items-start gap-1">
+                          <ShieldAlert className="w-3 h-3 shrink-0 mt-0.5" />
+                          <span>{roadWarning}</span>
+                        </p>
+                      )}
                     </div>
                     <div className="flex items-center gap-1.5 shrink-0">
-                      {routeEvaluation.isSafe && producer.googleMapsUrl && (
+                      {hasVerifiedLocation && producer.googleMapsUrl && (
                         <a
                           href={producer.googleMapsUrl}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-[11px] text-stone-300 hover:text-white font-medium px-2.5 py-1.5 rounded-xl bg-stone-800 border border-white/10 transition flex items-center gap-1"
+                          title={
+                            routeEvaluation.isSafe
+                              ? 'Open verified driving location'
+                              : 'Open verified stop location — road access is not yet fully verified'
+                          }
                         >
                           <Navigation className="w-3 h-3 text-amber-400" />
-                          Directions
+                          {routeEvaluation.isSafe ? 'Directions' : 'Open location'}
                         </a>
                       )}
                       <button
@@ -314,7 +342,7 @@ export const DayTripModal: React.FC<DayTripModalProps> = ({
         </div>
 
         <div className="p-4 bg-stone-900 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0">
-          <span className="text-xs text-stone-400">Route navigation is only enabled after location and road-access verification.</span>
+          <span className="text-xs text-stone-400">Stop locations may be opened individually; multi-stop driving navigation requires verified road access.</span>
           <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
             <button onClick={onClose} className="px-4 py-2 text-xs font-semibold text-stone-400 hover:text-white transition cursor-pointer">Close</button>
             <button
@@ -325,7 +353,7 @@ export const DayTripModal: React.FC<DayTripModalProps> = ({
               className="px-4 py-2.5 text-xs font-semibold text-stone-200 hover:text-white bg-stone-800 rounded-2xl border border-white/10 transition cursor-pointer flex items-center gap-1.5"
             >
               <Compass className="w-3.5 h-3.5 text-amber-400" />
-              Show on Terroir Map
+              Start with first stop
             </button>
             {routeEvaluation.isSafe && routeEvaluation.url && (
               <button
