@@ -151,7 +151,12 @@ export const App: React.FC = () => {
 
   const [filters, setFilters] = useState<FilterState>(initialFilters);
 
-  const { producers } = useProducers({
+  const {
+    producers,
+    loading: catalogueLoading,
+    error: catalogueError,
+    isLive: catalogueIsLive,
+  } = useProducers({
     destination: filters.destination,
     category: filters.category,
     searchQuery: filters.searchQuery,
@@ -259,6 +264,22 @@ export const App: React.FC = () => {
         onOpenLoops={() => setActiveModal({ type: 'loops' })}
       />
 
+      {(catalogueLoading || catalogueError || !catalogueIsLive) && (
+        <div
+          role="status"
+          aria-live="polite"
+          className={`px-3 sm:px-6 py-1.5 text-[11px] border-b shrink-0 ${
+            catalogueError
+              ? 'bg-amber-500/10 border-amber-500/20 text-amber-200'
+              : 'bg-stone-900 border-white/10 text-stone-400'
+          }`}
+        >
+          {catalogueLoading
+            ? 'Refreshing producer catalogue…'
+            : catalogueError || 'Offline catalogue active — showing the audited bundled Crete data.'}
+        </div>
+      )}
+
       {/* 3. Main Workspace: Sidebar List + Leaflet Map Canvas */}
       <main className="relative flex-1 flex overflow-hidden min-h-0">
         {/* Desktop Sidebar / Mobile List View */}
@@ -356,7 +377,11 @@ export const App: React.FC = () => {
       </main>
 
       {/* Lazy-Loaded Modals Suspense Boundary */}
-      <Suspense fallback={null}>
+      <Suspense fallback={(
+        <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/60 backdrop-blur-sm" role="status" aria-live="polite">
+          <div className="rounded-2xl border border-white/10 bg-stone-900 px-4 py-3 text-xs font-semibold text-stone-200 shadow-2xl">Loading…</div>
+        </div>
+      )}>
         {/* Curated Terroir Routes Modal */}
         {activeModal?.type === 'loops' && (
           <DayTripModal

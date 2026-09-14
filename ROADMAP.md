@@ -169,7 +169,7 @@ Phase 6 completion does **not** mean curated driving loops are now published. Ro
 
 ## Phase 7 — Product Readiness Audit
 
-**Status:** Pending — next active phase.
+**Status:** In progress — launch-readiness audit and corrective batches underway.
 
 Audit TerroirTrail as a real launchable product, not merely a functioning codebase.
 

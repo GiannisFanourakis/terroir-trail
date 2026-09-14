@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
-import { Producer, Category, Destination } from '../../types/terroir';
+import { Producer, Destination } from '../../types/terroir';
 import { 
   Plus, Minus, Navigation, Maximize2, Layers, MapPin, 
   Star, ArrowRight, ExternalLink, X, Compass, ChevronRight, Heart, AlertCircle 
@@ -98,7 +98,11 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     let icon = '🍇';
     let iconBg = 'bg-rose-500/25 text-rose-200 border-rose-500/50';
 
-    switch (producer.category) {
+    if (producer.id === 'peskesi-farm-kazani') {
+      icon = '🌿';
+      iconBg = 'bg-emerald-500/25 text-emerald-200 border-emerald-500/50';
+    } else {
+      switch (producer.category) {
       case 'winery':
         icon = '🍇';
         iconBg = 'bg-rose-500/25 text-rose-200 border-rose-500/50';
@@ -123,6 +127,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
         icon = '🍯';
         iconBg = 'bg-orange-500/25 text-orange-200 border-orange-500/50';
         break;
+      }
     }
 
     const shortVillage = producer.village
@@ -303,9 +308,10 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
   // Smooth Camera Fly-To on Producer Select
   useEffect(() => {
     const map = mapInstanceRef.current;
-    if (!map || !selectedProducer) return;
+    if (!map || !selectedProducer || selectedProducer.locationStatus === 'unresolved') return;
 
     const [lat, lng] = selectedProducer.coordinates;
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
     const targetLat = window.innerWidth < 768 ? lat - 0.015 : lat;
 
     map.flyTo([targetLat, lng], 13, {
@@ -350,21 +356,22 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     }
   };
 
-  const formatCategoryName = (category: Category) => {
-    switch (category) {
+  const formatCategoryName = (producer: Producer) => {
+    if (producer.id === 'peskesi-farm-kazani') return 'Organic Farm';
+    switch (producer.category) {
       case 'winery': return 'Winery';
-      case 'brewery': return 'Microbrewery';
+      case 'brewery': return 'Brewery';
       case 'kazani': return 'Rakokazano';
       case 'olive_mill': return 'Olive Mill';
-      case 'cheese_dairy': return 'Mountain Dairy';
-      case 'apiary': return 'Honey & Herbs';
+      case 'cheese_dairy': return 'Dairy';
+      case 'apiary': return 'Apiary / Honey';
     }
   };
 
   return (
     <div className="relative w-full h-full select-none overflow-hidden">
       {/* Map Canvas */}
-      <div ref={mapContainerRef} className="w-full h-full z-0" />
+      <div ref={mapContainerRef} className="w-full h-full z-0" role="region" aria-label="Interactive producer map" />
 
       {/* Floating Modern Controls */}
       <div className="absolute top-16 right-3 sm:top-4 sm:right-4 z-20 flex flex-col items-end gap-2">
@@ -379,6 +386,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
               onClick={() => setLocationError(null)}
               className="p-1 text-rose-400 hover:text-white rounded-lg hover:bg-white/10 shrink-0"
               title="Dismiss"
+              aria-label="Dismiss location error"
             >
               <X className="w-3.5 h-3.5" />
             </button>
@@ -389,6 +397,8 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
         <div className="glass-panel p-1 rounded-2xl flex items-center shadow-2xl">
           <button
             onClick={() => setMapTheme('topo')}
+            aria-pressed={mapTheme === 'topo'}
+            aria-label="Use topographic map"
             className={`px-2.5 py-1 sm:px-3 sm:py-1.5 text-[11px] sm:text-xs font-semibold rounded-xl transition-all whitespace-nowrap ${
               mapTheme === 'topo'
                 ? 'bg-amber-500 text-stone-950 shadow-md font-bold'
@@ -400,6 +410,8 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
           </button>
           <button
             onClick={() => setMapTheme('voyager')}
+            aria-pressed={mapTheme === 'voyager'}
+            aria-label="Use street map"
             className={`px-2.5 py-1 sm:px-3 sm:py-1.5 text-[11px] sm:text-xs font-semibold rounded-xl transition-all whitespace-nowrap ${
               mapTheme === 'voyager'
                 ? 'bg-amber-500 text-stone-950 shadow-md font-bold'
@@ -411,6 +423,8 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
           </button>
           <button
             onClick={() => setMapTheme('dark')}
+            aria-pressed={mapTheme === 'dark'}
+            aria-label="Use dark map"
             className={`px-2.5 py-1 sm:px-3 sm:py-1.5 text-[11px] sm:text-xs font-semibold rounded-xl transition-all whitespace-nowrap ${
               mapTheme === 'dark'
                 ? 'bg-amber-500 text-stone-950 shadow-md font-bold'
@@ -422,6 +436,8 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
           </button>
           <button
             onClick={() => setMapTheme('satellite')}
+            aria-pressed={mapTheme === 'satellite'}
+            aria-label="Use satellite map"
             className={`px-2.5 py-1 sm:px-3 sm:py-1.5 text-[11px] sm:text-xs font-semibold rounded-xl transition-all whitespace-nowrap ${
               mapTheme === 'satellite'
                 ? 'bg-amber-500 text-stone-950 shadow-md font-bold'
@@ -439,6 +455,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
             onClick={handleZoomIn}
             className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center text-stone-200 hover:text-white hover:bg-white/10 transition"
             title="Zoom In"
+            aria-label="Zoom in"
           >
             <Plus className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           </button>
@@ -447,6 +464,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
             onClick={handleZoomOut}
             className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center text-stone-200 hover:text-white hover:bg-white/10 transition"
             title="Zoom Out"
+            aria-label="Zoom out"
           >
             <Minus className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           </button>
@@ -457,6 +475,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
             onClick={handleResetView}
             className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center text-stone-200 hover:text-amber-400 hover:bg-white/10 transition group"
             title="Reset Destination View"
+            aria-label="Reset destination view"
           >
             <Maximize2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover:scale-110 transition-transform" />
           </button>
@@ -468,6 +487,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
               isLocating ? 'animate-pulse text-sky-400 bg-white/10' : ''
             }`}
             title={isLocating ? 'Locating...' : 'My Location'}
+            aria-label={isLocating ? 'Locating your position' : 'Locate me'}
           >
             <Navigation className={`w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover:scale-110 transition-transform ${isLocating ? 'animate-spin' : ''}`} />
           </button>
@@ -486,6 +506,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
                 ? 'bg-amber-500/20 text-amber-400 border border-amber-500/40'
                 : 'text-stone-200 hover:text-amber-400 hover:bg-white/10'
             }`}
+            aria-label="Change map pin density"
             title={`Map Pin Density: ${
               pinDisplayMode === 'adaptive'
                 ? 'Smart Auto (Zoom-Adaptive: Pins ↔ Bounding Boxes)'
@@ -527,17 +548,19 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
                   }
                 }}
               />
-              <span className="absolute bottom-1 left-1 bg-black/70 backdrop-blur-md text-amber-400 text-[9px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded flex items-center gap-0.5">
-                <Star className="w-2.5 h-2.5 sm:w-3 sm:h-3 fill-amber-400" />
-                <span>{selectedProducer.rating}</span>
-              </span>
+              {selectedProducer.rating != null && (
+                <span className="absolute bottom-1 left-1 bg-black/70 backdrop-blur-md text-amber-400 text-[9px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded flex items-center gap-0.5">
+                  <Star className="w-2.5 h-2.5 sm:w-3 sm:h-3 fill-amber-400" aria-hidden="true" />
+                  <span>{selectedProducer.rating}</span>
+                </span>
+              )}
             </div>
 
             <div className="flex-1 min-w-0 flex flex-col justify-between py-0.5">
               <div>
                 <div className="flex items-center justify-between gap-1">
                   <span className="text-[9px] sm:text-[10px] uppercase font-bold tracking-wider text-amber-400 truncate">
-                    {formatCategoryName(selectedProducer.category)} · {selectedProducer.region}
+                    {formatCategoryName(selectedProducer)} · {selectedProducer.region}
                   </span>
                   <div className="flex items-center gap-1">
                     <button
@@ -548,7 +571,8 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
                       className={`p-1 rounded-full transition ${
                         isFavorite(selectedProducer.id) ? 'text-rose-500 scale-110' : 'text-stone-400 hover:text-white'
                       }`}
-                      title={isFavorite(selectedProducer.id) ? 'Remove from wishlist' : 'Save to wishlist'}
+                      title={isFavorite(selectedProducer.id) ? 'Remove from saved places' : 'Save place'}
+                      aria-label={isFavorite(selectedProducer.id) ? `Remove ${selectedProducer.name} from saved places` : `Save ${selectedProducer.name}`}
                     >
                       <Heart className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${isFavorite(selectedProducer.id) ? 'fill-rose-500' : ''}`} />
                     </button>
@@ -558,6 +582,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
                         onSelectProducer(null);
                       }}
                       className="text-stone-400 hover:text-white p-1"
+                      aria-label="Close producer preview"
                     >
                       <X className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                     </button>

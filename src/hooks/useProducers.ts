@@ -10,7 +10,7 @@ export interface UseProducersOptions {
 
 export function useProducers(options: UseProducersOptions = {}) {
   const [producers, setProducers] = useState<Producer[]>(() => producerService.getCachedProducers());
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [isLive, setIsLive] = useState<boolean>(() => producerService.getCacheProvenance() === 'live');
 

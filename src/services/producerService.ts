@@ -262,6 +262,7 @@ export const producerService = {
           return remoteProducers;
         }
       } catch (err) {
+        cacheProvenance = 'fallback';
         logger.warn('Catalogue', 'producers_fetch_failed', { reason: err instanceof Error ? err.message : String(err) });
       }
     }

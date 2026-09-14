@@ -104,22 +104,18 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
     setTimeout(() => setCopiedLink(false), 2000);
   };
 
-  const getCategoryDetails = (cat: Producer['category']) => {
-    switch (cat) {
-      case 'winery':
-        return { label: 'Boutique Winery', icon: '🍇', color: 'text-rose-400 bg-rose-500/10 border-rose-500/20' };
-      case 'brewery':
-        return { label: 'Craft Microbrewery', icon: '🍺', color: 'text-amber-300 bg-amber-400/15 border-amber-400/30' };
-      case 'kazani':
-        return { label: 'Traditional Rakokazano', icon: '🏺', color: 'text-amber-400 bg-amber-500/10 border-amber-500/20' };
-      case 'olive_mill':
-        return { label: 'Artisanal Olive Mill', icon: '🫒', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' };
-      case 'cheese_dairy':
-        return { label: 'Mountain Shepherd Mitato', icon: '🧀', color: 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20' };
-      case 'apiary':
-        return { label: 'Wild Apiary & Herbalist', icon: '🍯', color: 'text-orange-400 bg-orange-500/10 border-orange-500/20' };
-      default:
-        return { label: 'Artisan Producer', icon: '🌿', color: 'text-stone-300 bg-stone-500/10 border-white/10' };
+  const getCategoryDetails = (p: Producer) => {
+    if (p.id === 'peskesi-farm-kazani') {
+      return { label: 'Organic Farm', icon: '🌿', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' };
+    }
+    switch (p.category) {
+      case 'winery': return { label: 'Winery', icon: '🍇', color: 'text-rose-400 bg-rose-500/10 border-rose-500/20' };
+      case 'brewery': return { label: 'Brewery', icon: '🍺', color: 'text-amber-300 bg-amber-400/15 border-amber-400/30' };
+      case 'kazani': return { label: 'Rakokazano', icon: '🏺', color: 'text-amber-400 bg-amber-500/10 border-amber-500/20' };
+      case 'olive_mill': return { label: 'Olive Mill', icon: '🫒', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' };
+      case 'cheese_dairy': return { label: 'Dairy', icon: '🧀', color: 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20' };
+      case 'apiary': return { label: 'Apiary / Honey', icon: '🍯', color: 'text-orange-400 bg-orange-500/10 border-orange-500/20' };
+      default: return { label: 'Producer', icon: '🌿', color: 'text-stone-300 bg-stone-500/10 border-white/10' };
     }
   };
 
@@ -158,48 +154,6 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
       desc: p.roadAccessNotes,
       sourceUrl: p.roadAccessSourceUrl,
     };
-  };
-
-  const getVipPerks = (p: Producer) => {
-    if (p.vipPerks) return p.vipPerks;
-    switch (p.category) {
-      case 'winery':
-        return {
-          welcomePour: 'Complimentary cellar pour of aged library vintage',
-          freeMeze: 'Artisanal Cretan Graviera & wild olive pairing',
-          discountPercent: 10,
-        };
-      case 'brewery':
-        return {
-          welcomePour: 'Free seasonal draft flight taster',
-          freeMeze: 'Warm pretzel snack & house apaki bite',
-          discountPercent: 10,
-        };
-      case 'olive_mill':
-        return {
-          welcomePour: 'Private reserve cold-pressed olive oil flight',
-          freeMeze: 'Wood-fired warm sourdough with sea salt',
-          discountPercent: 10,
-        };
-      case 'kazani':
-        return {
-          welcomePour: 'Warm first-run Tsikoudia straight from copper still',
-          freeMeze: 'Roasted village chestnuts & grilled sourdough',
-          discountPercent: 10,
-        };
-      case 'cheese_dairy':
-        return {
-          welcomePour: 'Fresh warm anthotyro tasting directly from vat',
-          freeMeze: 'Thyme honey drizzled mountain mizithra',
-          discountPercent: 10,
-        };
-      default:
-        return {
-          welcomePour: 'Complimentary reserve tasting pour',
-          freeMeze: 'Artisanal local meze platter',
-          discountPercent: 10,
-        };
-    }
   };
 
   const getCategoryTerminology = (category: Producer['category'], name: string) => {
@@ -381,7 +335,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
     }
   };
 
-  const cat = getCategoryDetails(producer.category);
+  const cat = getCategoryDetails(producer);
   const road = getRoadAccessDetails(producer);
   const roadWarning = getProducerRoadAccessWarning(producer);
   const roadAccessBlocksDirections =
@@ -393,7 +347,17 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
     (producer.roadAccess === 'paved' ||
       producer.roadAccess === 'narrow_paved' ||
       producer.roadAccess === 'gravel_ok');
-  const term = getCategoryTerminology(producer.category, producer.name);
+  const term = {
+    ...getCategoryTerminology(producer.category, producer.name),
+    ...(producer.id === 'peskesi-farm-kazani'
+      ? {
+          tastingNotePlaceholder: 'Record your thoughts on the farm, its cultivation, products, or your visit...',
+          visitingTitle: 'Farm & Visiting',
+          callAction: 'Call Farm',
+          callShortLabel: 'Call Farm',
+        }
+      : {}),
+  };
   const visitDetails = getVisitStatusDetails(producer.visitStatus, producer);
 
   return (
@@ -404,7 +368,12 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
         onClick={onClose}
       />
 
-      <div className="fixed inset-y-0 right-0 z-50 w-full sm:w-[480px] lg:w-[540px] max-w-full bg-stone-950 text-stone-100 shadow-2xl flex flex-col border-l border-white/10 animate-in slide-in-from-right duration-300 select-none">
+      <div
+        className="fixed inset-y-0 right-0 z-50 w-full sm:w-[480px] lg:w-[540px] max-w-full bg-stone-950 text-stone-100 shadow-2xl flex flex-col border-l border-white/10 animate-in slide-in-from-right duration-300 select-none"
+        role="dialog"
+        aria-modal="true"
+        aria-label={`Producer details: ${producer.name}`}
+      >
         
         {/* 1. Hero Gallery & Header */}
         <div className="relative h-48 sm:h-60 lg:h-64 w-full shrink-0 bg-stone-900 overflow-hidden group">
@@ -471,6 +440,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
               onClick={handleShare}
               className="w-9 h-9 rounded-full bg-black/60 hover:bg-black/80 text-white flex items-center justify-center backdrop-blur-md border border-white/10 transition"
               title="Copy Link"
+              aria-label={copiedLink ? 'Producer link copied' : 'Copy producer link'}
             >
               {copiedLink ? <Check className="w-4 h-4 text-emerald-400" /> : <Share2 className="w-4 h-4" />}
             </button>
@@ -587,7 +557,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
               : 'border-transparent text-stone-400 hover:text-white'
           }`}
         >
-          Tastings & Crafts
+          What They Make
         </button>
         <button
           onClick={() => setActiveTab('visit')}
@@ -610,7 +580,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
             <Sparkles className="w-4 h-4 shrink-0 text-amber-400 mt-0.5" />
             <div className="flex-1 min-w-0">
               <span className="font-bold text-amber-300 block text-[10px] uppercase tracking-wider mb-0.5">
-                Live Estate Bulletin
+                Visitor Notice
               </span>
               <p className="text-xs leading-relaxed text-stone-200">
                 {customNotice}
@@ -772,7 +742,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                   </h4>
                   <span className="text-[10px] font-semibold text-emerald-400/90 flex items-center gap-1">
                     <span>✓</span>
-                    <span>Verified Archival Media</span>
+                    <span>Source-listed media</span>
                   </span>
                 </div>
 
@@ -827,7 +797,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                       {' '}· {activeCredit.source} {activeCredit.license ? `(${activeCredit.license})` : ''}
                     </span>
                     <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-400/90 shrink-0">
-                      Clear Rights
+                      Source listed
                     </span>
                   </div>
                 )}
@@ -857,7 +827,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
 
             <div>
               <h3 className="text-xs font-bold uppercase tracking-wider text-stone-400 mb-2">
-                Signature Tastings & Pours
+                Producer Highlights
               </h3>
               <div className="space-y-2">
                 {producer.tastingHighlights.map((highlight, idx) => (
@@ -974,7 +944,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                   className="text-[11px] text-stone-400 hover:text-amber-300 transition cursor-pointer inline-flex items-center gap-1.5 hover:underline"
                 >
                   <Building2 className="w-3.5 h-3.5 text-amber-400/80" />
-                  <span>Are you the {term.makerTitle} of {producer.name}? Log in to manage this {term.venueName}</span>
+                  <span>Represent {producer.name}? Sign in to claim or manage this producer profile</span>
                 </button>
               </div>
             )}
