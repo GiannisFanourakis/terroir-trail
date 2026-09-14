@@ -94,12 +94,25 @@ function verifySeoAssets(): void {
       console.error('[SEO Verification Failed] dist/index.html is missing the curated-route verification notice.');
       process.exit(1);
     }
+
+    const bannedMonetizationTags = [
+      'pagead2.googlesyndication.com',
+      'emrld.ltd',
+      'ca-pub-1608902378435149',
+    ];
+
+    for (const tag of bannedMonetizationTags) {
+      if (indexContent.includes(tag)) {
+        console.error(`[SEO Verification Failed] dist/index.html still contains unconsented third-party monetization script: ${tag}`);
+        process.exit(1);
+      }
+    }
   }
 
   console.log(`✓ SEO verification passed:`);
   console.log(`  - dist/sitemap.xml present and valid (${locMatches.length} URLs mapped to ${CANONICAL_HOST})`);
   console.log(`  - dist/robots.txt present and advertises ${CANONICAL_SITEMAP_URL}`);
-  console.log(`  - Canonical link and draft-route quarantine verified in dist/index.html`);
+  console.log(`  - Canonical link, draft-route quarantine, and unconsented ad-script quarantine verified in dist/index.html`);
 }
 
 verifySeoAssets();

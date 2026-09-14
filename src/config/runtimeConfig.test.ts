@@ -7,6 +7,8 @@ import {
   checkIsSupabaseConfigured,
   getApiConfig,
   isExplorerPassPurchasesEnabled,
+  getAdvertisingConfig,
+  isAdvertisingEnabled,
   getPublicAppUrl,
   getRuntimeDiagnostics,
   logRuntimeDiagnosticsOnce,
@@ -192,6 +194,34 @@ describe('runtimeConfig - Centralized Configuration Discipline', () => {
     });
   });
 
+  describe('Advertising launch gate', () => {
+    it('stays disabled when publisher and slot IDs are configured without the gate', () => {
+      const config = getAdvertisingConfig({
+        VITE_ADSENSE_CLIENT_ID: 'ca-pub-configured',
+        VITE_ADSENSE_SLOT_ID: 'configured-slot',
+      });
+
+      expect(config).toEqual({
+        enabled: false,
+        client: 'ca-pub-configured',
+        slot: 'configured-slot',
+      });
+    });
+
+    it('accepts only the strict string "true" as an advertising activation', () => {
+      expect(isAdvertisingEnabled({ VITE_ENABLE_ADVERTISING: 'true' })).toBe(
+        true
+      );
+      expect(isAdvertisingEnabled({ VITE_ENABLE_ADVERTISING: 'TRUE' })).toBe(
+        false
+      );
+      expect(isAdvertisingEnabled({ VITE_ENABLE_ADVERTISING: '1' })).toBe(
+        false
+      );
+      expect(isAdvertisingEnabled({})).toBe(false);
+    });
+  });
+
   describe('URL normalization', () => {
     it('strips accidental trailing slashes from API base URL', () => {
       expect(
@@ -239,6 +269,7 @@ describe('runtimeConfig - Centralized Configuration Discipline', () => {
         VITE_SUPABASE_ANON_KEY: 'secret-anon-jwt',
         VITE_API_BASE_URL: 'https://gateway.terroir.com',
         VITE_ENABLE_EXPLORER_PASS_PURCHASES: 'true',
+        VITE_ENABLE_ADVERTISING: 'true',
         VITE_PUBLIC_APP_URL: 'https://custom.app.com',
       };
 
@@ -248,6 +279,7 @@ describe('runtimeConfig - Centralized Configuration Discipline', () => {
         firebaseConfigured: true,
         supabaseConfigured: true,
         explorerPassPurchasesEnabled: true,
+        advertisingEnabled: true,
         apiBaseConfigured: true,
         publicAppUrlConfigured: true,
       });
@@ -265,6 +297,7 @@ describe('runtimeConfig - Centralized Configuration Discipline', () => {
         firebaseConfigured: false,
         supabaseConfigured: false,
         explorerPassPurchasesEnabled: false,
+        advertisingEnabled: false,
         apiBaseConfigured: false,
         publicAppUrlConfigured: false,
       });
@@ -337,6 +370,9 @@ describe('runtimeConfig - Centralized Configuration Discipline', () => {
       expect(typeof runtimeConfig.explorerPass.purchasesEnabled).toBe(
         'boolean'
       );
+      expect(typeof runtimeConfig.advertising.enabled).toBe('boolean');
+      expect(typeof runtimeConfig.advertising.client).toBe('string');
+      expect(typeof runtimeConfig.advertising.slot).toBe('string');
       expect(typeof runtimeConfig.app.publicUrl).toBe('string');
     });
   });

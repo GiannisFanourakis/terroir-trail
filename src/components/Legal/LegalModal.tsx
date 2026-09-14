@@ -106,7 +106,7 @@ export const LegalModal: React.FC<LegalModalProps> = ({
                   User-initiated device location can be used to support map features; TerroirTrail does not intentionally run background location tracking. Browser local storage is used for device-local preferences such as favorites.
                 </p>
                 <p>
-                  The app contains a Google AdSense slot. It renders only when a verified slot is configured and available; otherwise it fails closed. When Google advertising loads, Google may process technical information under its own policies and applicable consent requirements.
+                  The app contains infrastructure for a Google AdSense display slot, which is disabled for the current public launch. If advertising is explicitly enabled and configured in the future, it renders only when a verified slot is configured and available; otherwise it fails closed and no fallback sponsor claim is shown. When Google advertising loads, Google may process technical information under its own policies and applicable consent requirements.
                 </p>
               </section>
 

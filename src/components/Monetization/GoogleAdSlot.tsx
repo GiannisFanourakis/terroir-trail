@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { runtimeConfig } from '../../config/runtimeConfig';
 
 declare global {
   interface Window {
@@ -19,8 +20,8 @@ interface GoogleAdSlotProps {
 }
 
 export const GoogleAdSlot: React.FC<GoogleAdSlotProps> = ({
-  client = import.meta.env.VITE_ADSENSE_CLIENT_ID || 'ca-pub-1608902378435149',
-  slot = import.meta.env.VITE_ADSENSE_SLOT_ID,
+  client = runtimeConfig.advertising.client,
+  slot = runtimeConfig.advertising.slot,
   format = 'auto',
   hasExplorerPass = false,
   className = '',
@@ -28,7 +29,15 @@ export const GoogleAdSlot: React.FC<GoogleAdSlotProps> = ({
   const [adError, setAdError] = useState<boolean>(false);
   const adRef = useRef<HTMLModElement | null>(null);
 
-  const canRenderAd = Boolean(!hasExplorerPass && client && slot && !adError);
+  // Advertising enablement strictly comes from the central runtime config gate.
+  // Callers cannot override the gate, and IDs alone never activate ads.
+  const canRenderAd = Boolean(
+    runtimeConfig.advertising.enabled &&
+      !hasExplorerPass &&
+      client &&
+      slot &&
+      !adError
+  );
 
   useEffect(() => {
     if (!canRenderAd) return;

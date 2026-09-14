@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Producer } from '../../types/terroir';
 import { UserProfile } from '../../types/auth';
-import { X, Award, CheckCircle2, Circle, MapPin, Edit3, Save } from 'lucide-react';
+import { X, CheckCircle2, Circle, MapPin, Edit3, Save } from 'lucide-react';
 import { UserAvatar } from '../Common/UserAvatar';
 import { getCategoryFallbackImage } from '../../utils/imageFallbacks';
 import { producerService } from '../../services/producerService';
@@ -14,8 +14,6 @@ interface PassportModalProps {
   onToggleVisited: (producerId: string) => void;
   onSaveTastingNote: (producerId: string, note: string) => void;
   onSelectProducer: (producer: Producer) => void;
-  onOpenExplorerPass?: () => void;
-  onOpenDigitalPass?: () => void;
 }
 
 export const PassportModal: React.FC<PassportModalProps> = ({
@@ -26,8 +24,6 @@ export const PassportModal: React.FC<PassportModalProps> = ({
   onToggleVisited,
   onSaveTastingNote,
   onSelectProducer,
-  onOpenExplorerPass,
-  onOpenDigitalPass,
 }) => {
   const [filterMode, setFilterMode] = useState<'all' | 'stamped' | 'unstamped'>('all');
   const [editingNoteId, setEditingNoteId] = useState<string | null>(null);

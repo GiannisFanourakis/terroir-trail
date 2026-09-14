@@ -33,7 +33,7 @@ Each feature is classified as one of:
 | Host Pro | Future feature | Roadmap places Host Pro validation in Phase 13. Public upgrade/pricing claims and launch Host Portal navigation to Pro features are quarantined. | Keep dormant until commercial validation. |
 | Chauffeur booking | Future feature | Roadmap places chauffeur partnerships in Phase 13. Public entry points are quarantined; prototype code may remain. | Keep non-public until a real provider/terms workflow exists. |
 | Affiliate/sponsor fallback banners | Hide for now | Unverified fallback sponsor/`Official Partner` claims were removed from current public fallback behavior. | Only restore sponsor inventory when partner status, disclosure and claims are source-backed. |
-| Google AdSense slot | Needs work | The current map surface still includes an ad slot, while the Explorer Pass fallback upsell was removed. Consent/privacy wording and final ad-layout behavior still need audit. | Audit consent, privacy policy consistency and mobile layout before launch sign-off. |
+| Google AdSense slot | Hide for now | Advertising is fail-closed behind `VITE_ENABLE_ADVERTISING=false` and `runtimeConfig.advertising`. Hardcoded AdSense and Travelpayouts scripts and preconnects were removed from `index.html`. `GoogleAdSlot` renders null and injects no external scripts when disabled or unconfigured, and `LegalModal` / `privacy.html` clarify that advertising is disabled for the current public launch. `verify_seo_assets` enforces the absence of monetization tags in production `index.html`. | Keep disabled; requires explicit product, consent and privacy review before any future activation. |
 
 ## Producer trust audit closeout
 
@@ -92,14 +92,24 @@ The public prototype and direct-entry quarantine batch removes actionable commer
 6. **Producer-facing pass scanning quarantined.** The authenticated producer-facing `Scan Guest Pass` action is now gated behind the disabled `ENABLE_FUTURE_HOST_FEATURES` flag. `HostQrScannerModal`, `HostVerificationModal`, scanner state/handlers, and pass verification services remain in the codebase but are dormant for the current launch.
 7. **Backend pass verification authorization hardened locally.** `GET /api/passes/verify/:passId` no longer permits anonymous verification: the server requires a valid Firebase identity and an active trusted ownership record from `producer_owners`, derived by authenticated UID rather than frontend role claims, before checking pass validity. Missing or invalid authentication returns `401`, authenticated users without active ownership receive `403`, and ownership lookup failures fail closed with `503`; pass verification does not run first, so unauthorized callers cannot use pass validity as an existence oracle. The dormant scanner client now sends its Firebase bearer token for future private-pilot compatibility, while its UI remains quarantined behind `ENABLE_FUTURE_HOST_FEATURES = false`. Explorer Pass remains a **Future feature**. This hardening was validated locally only; no production deployment or production verification occurred.
 
+## Advertising & third-party monetization quarantine closeout
+
+The Phase 7 advertising quarantine ensures that the public launch remains free of unconsented third-party trackers, display ads, and affiliate scripts.
+
+1. **Strict launch-gate feature flag.** Introduced `VITE_ENABLE_ADVERTISING=false` in `.env.example` and wired centralized evaluation via `runtimeConfig.advertising.enabled`. Configured publisher or slot IDs alone never load advertising.
+2. **Hardcoded third-party scripts removed from HTML.** Removed Google AdSense verification meta tag, `pagead2.googlesyndication.com` script tag, Travelpayouts script injection, and affiliate preconnects (`tpx.lv`, `emrld.ltd`) from `index.html`.
+3. **GoogleAdSlot fails closed.** `GoogleAdSlot` reads `runtimeConfig.advertising`. When disabled (or if client/slot is missing, or for passholders), it returns `null`, renders zero elements, injects zero `<script>` tags, and performs zero ad calls. Unit tests verify all gate and fallback states.
+4. **Automated SEO & build protection.** `scripts/verify_seo_assets.ts` asserts that `dist/index.html` does not contain `pagead2.googlesyndication.com`, `emrld.ltd`, or publisher IDs.
+5. **Privacy Policy and Legal notices reconciled.** `LegalModal.tsx` and `public/privacy.html` explicitly clarify that advertising infrastructure is disabled for the current public launch and fails closed without sponsor fallbacks.
+6. **Passport modal cleaned.** Removed unused `Award` import and unused `onOpenExplorerPass` / `onOpenDigitalPass` callback props from `PassportModal.tsx`.
+
 ## Next launch-readiness blockers
 
 1. Complete production-config traveler auth/account-lifecycle QA: real Firebase email/password signup and Google OAuth login on production domain, password reset delivery, logout/session recovery on mobile/desktop, operational verification of privacy/deletion handling, and provider error boundary checks.
 2. Finish manual mobile/keyboard/focus QA for map, drawer, Passport and primary modals, including slow-network/loading states.
 3. Before any future private pilot or commercial activation, complete operational review and production verification of the hardened Explorer Pass authorization path; this batch was not deployed.
-4. Reconcile remaining Privacy Policy / Terms / AdSense consent wording with the discovery-first product and actual persistence behavior.
-5. Inventory launch-visible React hook warnings separately from fully dormant commercial/prototype components; fix launch-visible violations first.
-6. Complete unsupported-marketing/dead-prototype review, then run the full check, deploy manually to Firebase Hosting and verify production before crossing Phase 7 checklist items.
+4. Inventory launch-visible React hook warnings separately from fully dormant commercial/prototype components; fix launch-visible violations first.
+5. Complete unsupported-marketing/dead-prototype review, then run the full check, deploy manually to Firebase Hosting and verify production before crossing Phase 7 checklist items.
 
 ## Notes
 

@@ -2,7 +2,7 @@
  * TerroirTrail Centralized Runtime Configuration
  *
  * Provides typed, predictable, normalized runtime configuration for
- * Supabase, Firebase, API gateways, Explorer Pass purchase controls, and public URLs.
+ * Supabase, Firebase, API gateways, launch feature controls, and public URLs.
  * Never logs raw secrets or credentials.
  */
 
@@ -30,6 +30,12 @@ export interface ExplorerPassRuntimeConfig {
   purchasesEnabled: boolean;
 }
 
+export interface AdvertisingRuntimeConfig {
+  enabled: boolean;
+  client: string;
+  slot: string;
+}
+
 export interface AppRuntimeConfig {
   publicUrl: string;
 }
@@ -38,6 +44,7 @@ export interface RuntimeConfigDiagnostics {
   firebaseConfigured: boolean;
   supabaseConfigured: boolean;
   explorerPassPurchasesEnabled: boolean;
+  advertisingEnabled: boolean;
   apiBaseConfigured: boolean;
   publicAppUrlConfigured: boolean;
 }
@@ -149,6 +156,26 @@ export function isExplorerPassPurchasesEnabled(
 }
 
 /**
+ * Advertising is a deliberate launch decision and therefore fails closed.
+ * Configured publisher and slot IDs do not enable it without this strict gate.
+ */
+export function isAdvertisingEnabled(
+  customEnv?: Record<string, string | undefined>
+): boolean {
+  return getRawEnv('VITE_ENABLE_ADVERTISING', customEnv) === 'true';
+}
+
+export function getAdvertisingConfig(
+  customEnv?: Record<string, string | undefined>
+): AdvertisingRuntimeConfig {
+  return {
+    enabled: isAdvertisingEnabled(customEnv),
+    client: getRawEnv('VITE_ADSENSE_CLIENT_ID', customEnv),
+    slot: getRawEnv('VITE_ADSENSE_SLOT_ID', customEnv),
+  };
+}
+
+/**
  * Normalizes public-facing web app URL for pass QR codes and links.
  * Defaults to https://terroir-trail.web.app without trailing slash.
  */
@@ -173,6 +200,7 @@ export function getRuntimeDiagnostics(
     firebaseConfigured: checkIsFirebaseConfigured(customEnv),
     supabaseConfigured: checkIsSupabaseConfigured(customEnv),
     explorerPassPurchasesEnabled: isExplorerPassPurchasesEnabled(customEnv),
+    advertisingEnabled: isAdvertisingEnabled(customEnv),
     apiBaseConfigured: Boolean(getRawEnv('VITE_API_BASE_URL', customEnv)),
     publicAppUrlConfigured: Boolean(
       getRawEnv('VITE_PUBLIC_APP_URL', customEnv)
@@ -236,6 +264,9 @@ export const runtimeConfig = {
   },
   get explorerPass(): ExplorerPassRuntimeConfig {
     return { purchasesEnabled: isExplorerPassPurchasesEnabled() };
+  },
+  get advertising(): AdvertisingRuntimeConfig {
+    return getAdvertisingConfig();
   },
   get app(): AppRuntimeConfig {
     return { publicUrl: getPublicAppUrl() };
