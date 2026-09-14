@@ -191,7 +191,7 @@ describe('Phase 8 Producer Card + Detail Hierarchy', () => {
         },
         {
           cat: 'apiary',
-          whatTheyMake: 'Raw Mountain Honeys &amp; Bee Products',
+          whatTheyMake: 'Honeys &amp; Bee Products',
           specialties: 'Honey Botanicals &amp; Nectars',
           visiting: 'Apiary &amp; Visiting',
           callAction: 'Call Apiary',
@@ -286,4 +286,104 @@ describe('Phase 8 Producer Card + Detail Hierarchy', () => {
       expect(helperSource).not.toContain('LEGACY_PESKESI_FARM_ID');
     });
   });
+
+  describe('Visitability Trust & Neutral Category Descriptors', () => {
+    it('does not infer public visitability or walk-in claims when visitStatus is unreviewed', () => {
+      const p = createTestProducer('farm', {
+        visitStatus: 'unreviewed',
+        walkInFriendly: true,
+      });
+
+      const cardHtml = renderToString(
+        React.createElement(ProducerCard, {
+          producer: p,
+          isSelected: false,
+          isFavorite: false,
+          onSelect: () => {},
+          onToggleFavorite: () => {},
+        })
+      );
+
+      // Card must remain neutral and not claim walk-ins welcome
+      expect(cardHtml).toContain('Visit status unreviewed');
+      expect(cardHtml).not.toContain('Walk-ins welcome');
+
+      const drawerHtml = renderToString(
+        React.createElement(ProducerDetailDrawer, {
+          producer: p,
+          onClose: () => {},
+          initialTab: 'visit',
+        })
+      );
+
+      // Drawer must remain neutral and not claim walk-in welcome
+      expect(drawerHtml).toContain('Visit Status Unreviewed');
+      expect(drawerHtml).not.toContain('Walk-in Welcome');
+      expect(drawerHtml).not.toContain('Walk-ins welcome');
+    });
+
+    it('allows walkInFriendly to refine wording only when visitStatus is public_visits', () => {
+      const p = createTestProducer('farm', {
+        visitStatus: 'public_visits',
+        walkInFriendly: true,
+      });
+
+      const cardHtml = renderToString(
+        React.createElement(ProducerCard, {
+          producer: p,
+          isSelected: false,
+          isFavorite: false,
+          onSelect: () => {},
+          onToggleFavorite: () => {},
+        })
+      );
+
+      expect(cardHtml).toContain('Walk-ins welcome');
+
+      const drawerHtml = renderToString(
+        React.createElement(ProducerDetailDrawer, {
+          producer: p,
+          onClose: () => {},
+          initialTab: 'visit',
+        })
+      );
+
+      expect(drawerHtml).toContain('Visitors Welcome');
+      expect(drawerHtml).toContain('Walk-ins welcome');
+      expect(drawerHtml).toContain('Walk-in Welcome');
+    });
+
+    it('removes speculative category-wide qualifiers such as "nomadic" and "regenerative"', () => {
+      const drawerSource = readFileSync('src/components/Drawer/ProducerDetailDrawer.tsx', 'utf8');
+
+      // Category terminology must not assume philosophical or movement styles for all members
+      expect(drawerSource).not.toContain('nomadic beekeeper');
+      expect(drawerSource).not.toContain('regenerative farmer');
+      expect(drawerSource).not.toContain('nomadic thyme honey');
+      expect(drawerSource).toContain('beekeeper or apiary owner');
+      expect(drawerSource).toContain('farmer or grower');
+
+      const apiary = createTestProducer('apiary');
+      const apiaryHtml = renderToString(
+        React.createElement(ProducerDetailDrawer, {
+          producer: apiary,
+          onClose: () => {},
+          initialTab: 'tastings',
+        })
+      );
+      expect(apiaryHtml).not.toContain('nomadic');
+      expect(apiaryHtml).toContain('Honeys &amp; Bee Products');
+
+      const farm = createTestProducer('farm');
+      const farmHtml = renderToString(
+        React.createElement(ProducerDetailDrawer, {
+          producer: farm,
+          onClose: () => {},
+          initialTab: 'tastings',
+        })
+      );
+      expect(farmHtml).not.toContain('regenerative');
+    });
+  });
 });
+

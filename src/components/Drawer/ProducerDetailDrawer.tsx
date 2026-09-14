@@ -247,10 +247,10 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
         };
       case 'apiary':
         return {
-          makerTitle: 'nomadic beekeeper or herbalist',
+          makerTitle: 'beekeeper or apiary owner',
           venueName: 'apiary',
           productPlural: 'jar & product',
-          whatTheyMakeTitle: 'Raw Mountain Honeys & Bee Products',
+          whatTheyMakeTitle: 'Honeys & Bee Products',
           specialtiesLabel: 'Honey Botanicals & Nectars',
           highlightsLabel: 'Apiary & Harvest Highlights',
           storeLabel: 'Direct Apiary Store',
@@ -265,11 +265,11 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
           deliveryIcon: '🍯',
           deliveryBoxTitle: 'Raw Mountain Honey & Herb Delivery',
           deliveryBadge: 'Harvest Jars',
-          deliveryBoxDesc: 'Pure raw nomadic thyme honey & wild foraged mountain herbs shipped direct to your door.',
+          deliveryBoxDesc: 'Pure raw thyme honey & wild foraged herbs shipped direct to your door.',
         };
       case 'farm':
         return {
-          makerTitle: 'regenerative farmer or grower',
+          makerTitle: 'farmer or grower',
           venueName: 'farm',
           productPlural: 'farm produce',
           whatTheyMakeTitle: 'Farm Produce & Agricultural Harvests',
@@ -357,14 +357,6 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
         };
       case 'unreviewed':
       default:
-        if (p.walkInFriendly === true) {
-          return {
-            badgeLabel: '🟢 Walk-in Welcome',
-            badgeClass: 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30',
-            description: `${p.name} indicates walk-in visitors are welcome during regular hours.`,
-            visitingStyle: 'No reservation required',
-          };
-        }
         return {
           badgeLabel: '⚪ Visit Status Unreviewed',
           badgeClass: 'bg-stone-500/15 text-stone-300 border-stone-500/30',
@@ -1149,7 +1141,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
             </div>
 
             {/* Badges - only rendered when genuinely present */}
-            {(producer.dogFriendly != null || producer.campervanFriendly != null || producer.kidFriendly != null || producer.walkInFriendly === true) && (
+            {(producer.dogFriendly != null || producer.campervanFriendly != null || producer.kidFriendly != null || (producer.visitStatus === 'public_visits' && producer.walkInFriendly === true)) && (
               <div className="flex flex-wrap gap-2 pt-1 border-t border-white/5">
                 {producer.dogFriendly != null && (
                   <span className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-medium border ${
@@ -1169,7 +1161,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                   </span>
                 )}
 
-                {producer.walkInFriendly === true && (
+                {producer.visitStatus === 'public_visits' && producer.walkInFriendly === true && (
                   <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-medium border bg-emerald-500/10 text-emerald-400 border-emerald-500/20">
                     <CheckCircle2 className="w-3.5 h-3.5" />
                     Walk-in Welcome

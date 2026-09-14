@@ -78,13 +78,8 @@ export const ProducerCard: React.FC<ProducerCardProps> = ({
           label: 'Access uncertain',
           className: 'text-orange-400 bg-orange-500/10 border-orange-500/25',
         };
+      case 'unreviewed':
       default:
-        if (p.walkInFriendly === true) {
-          return {
-            label: 'Walk-ins welcome',
-            className: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/25',
-          };
-        }
         return {
           label: 'Visit status unreviewed',
           className: 'text-stone-400 bg-stone-500/10 border-white/10',
