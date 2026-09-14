@@ -28,6 +28,7 @@ const mockAllowlistedProducer: Producer = {
   roadAccessStatus: 'verified',
   roadAccess: 'paved',
   visitStatus: 'public_visits',
+  googlePlaceId: 'ChIJa95IFTf0mhQRY5TF5uhxJoU',
 };
 
 const mockUnlistedProducer: Producer = {
@@ -51,6 +52,7 @@ const mockUnlistedProducer: Producer = {
   locationStatus: 'unreviewed',
   roadAccessStatus: 'unreviewed',
   visitStatus: 'unreviewed',
+  googlePlaceId: 'ChIJ-unlisted-test',
 };
 
 describe('GooglePlaceMedia Component & Feature Flag Gating', () => {
@@ -90,6 +92,13 @@ describe('GooglePlaceMedia Component & Feature Flag Gating', () => {
       expect(html).toBe('');
     });
 
+    it('renders empty string when an allowlisted producer has no verified Place ID', () => {
+      vi.stubEnv('VITE_ENABLE_GOOGLE_PLACES_MEDIA', 'true');
+      const producerWithoutPlaceId = { ...mockAllowlistedProducer, googlePlaceId: undefined };
+      const html = renderToString(<GooglePlaceMedia producer={producerWithoutPlaceId} />);
+      expect(html).toBe('');
+    });
+
     it('renders empty string when producer is null', () => {
       vi.stubEnv('VITE_ENABLE_GOOGLE_PLACES_MEDIA', 'true');
       const html = renderToString(<GooglePlaceMedia producer={null} />);
@@ -125,7 +134,7 @@ describe('GooglePlaceMedia Component & Feature Flag Gating', () => {
       expect(html).toContain('Live imagery provided via Google Places UI Kit');
     });
 
-    it('renders Google Places custom elements and explicit attribution when isReady is true', () => {
+    it('renders Google Places by verified Place ID and never emits coordinate lookup', () => {
       vi.spyOn(uiKitModule, 'useGooglePlacesUiKit').mockReturnValue({
         status: 'ready',
         isReady: true,
@@ -134,8 +143,10 @@ describe('GooglePlaceMedia Component & Feature Flag Gating', () => {
       const html = renderToString(<GooglePlaceMedia producer={mockAllowlistedProducer} />);
       expect(html).toContain('Photos from Google Maps');
       expect(html).toContain('gmp-place-details');
-      expect(html).toContain('gmp-place-details-location-request');
-      expect(html).toContain('location="35.183416,25.176466"');
+      expect(html).toContain('gmp-place-details-place-request');
+      expect(html).toContain('place="places/ChIJa95IFTf0mhQRY5TF5uhxJoU"');
+      expect(html).not.toContain('gmp-place-details-location-request');
+      expect(html).not.toContain('location="35.183416,25.176466"');
       expect(html).toContain('gmp-place-content-config');
       expect(html).toContain('gmp-place-media');
       expect(html).toContain('lightbox-preferred="true"');
