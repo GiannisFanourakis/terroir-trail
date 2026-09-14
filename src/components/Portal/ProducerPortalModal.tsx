@@ -7,10 +7,11 @@ import {
   Sparkles, CheckCircle2, XCircle, Building2, ChevronDown, Save, Send, 
   Crown, Globe, ExternalLink, ShieldCheck, ArrowRight, LogIn, Wine,
   TrendingUp, DollarSign, Percent, Eye, Compass, Bell, CheckCheck, MapPin,
-  Truck, FileText, Package, HelpCircle, QrCode, Camera
+  Truck, FileText, Package, HelpCircle, QrCode, Camera, Trash2, Plus, UploadCloud
 } from 'lucide-react';
 import { validateVatNumber, getFiscalLabels } from '../../utils/vatValidator';
 import { formatAuthError } from '../../utils/authErrors';
+import { ProducerUploadedImage, validateImageUpload, getProducerMediaLimits } from '../../types/producerMedia';
 import { ProducerRegistrationForm } from './ProducerRegistrationForm';
 import { HostQrScannerModal } from './HostQrScannerModal';
 import { HostVerificationModal, VerifiedPassInfo } from '../Monetization/HostVerificationModal';
@@ -73,7 +74,7 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
     return producers[0]?.id || 'domaine-paterianakis';
   });
 
-  const [activeTab, setActiveTab] = useState<'bookings' | 'notice' | 'experiences' | 'analytics' | 'pro' | 'shipping'>('notice');
+  const [activeTab, setActiveTab] = useState<'bookings' | 'notice' | 'photos' | 'experiences' | 'analytics' | 'pro' | 'shipping'>('notice');
   const [bookingFilter, setBookingFilter] = useState<'all' | 'pending' | 'confirmed' | 'completed' | 'cancelled'>('all');
   const [oauthLoading, setOauthLoading] = useState<'google' | 'apple' | null>(null);
   const [oauthError, setOauthError] = useState<string | null>(null);
@@ -104,6 +105,86 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
     currentOverride?.directBottleShopUrl || ''
   );
   const [saveSuccess, setSaveSuccess] = useState<boolean>(false);
+
+  // Host Photo Management state
+  const [rightsConfirmed, setRightsConfirmed] = useState<boolean>(false);
+  const [photoError, setPhotoError] = useState<string | null>(null);
+  const [photoSaveSuccess, setPhotoSaveSuccess] = useState<boolean>(false);
+
+  const currentImages: ProducerUploadedImage[] = currentOverride?.uploadedImages || [];
+  const currentCover = currentImages.find((img) => img.type === 'cover');
+  const currentGallery = currentImages.filter((img) => img.type === 'gallery');
+
+  const handleAddPhoto = async (file: File, type: 'cover' | 'gallery') => {
+    if (!selectedProducer) return;
+    setPhotoError(null);
+
+    const validation = validateImageUpload(
+      { type: file.type, size: file.size },
+      currentGallery.length,
+      type === 'cover',
+      rightsConfirmed,
+      isProTier
+    );
+
+    if (!validation.isValid) {
+      setPhotoError(validation.error?.message || 'Invalid image file.');
+      return;
+    }
+
+    const localUrl = URL.createObjectURL(file);
+    const newImage: ProducerUploadedImage = {
+      id: `img_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+      producerId: selectedProducer.id,
+      url: localUrl,
+      thumbnailUrl: localUrl,
+      type,
+      status: 'approved',
+      uploadedAt: new Date().toISOString(),
+      rightsConfirmed: true,
+      source: 'host_upload',
+    };
+
+    let updatedImages: ProducerUploadedImage[];
+    if (type === 'cover') {
+      updatedImages = [newImage, ...currentImages.filter((img) => img.type !== 'cover')];
+    } else {
+      updatedImages = [...currentImages, newImage];
+    }
+
+    await onSaveProducerOverride({
+      ...currentOverride,
+      producerId: selectedProducer.id,
+      customNotice: customNotice.trim(),
+      isAcceptingBookings,
+      directBottleShopUrl: directBottleShopUrl.trim(),
+      uploadedImages: updatedImages,
+      updatedAt: new Date().toISOString(),
+    });
+
+    setPhotoSaveSuccess(true);
+    setTimeout(() => setPhotoSaveSuccess(false), 3000);
+  };
+
+  const handleDeletePhoto = async (imageId: string) => {
+    if (!selectedProducer) return;
+    setPhotoError(null);
+
+    const updatedImages = currentImages.filter((img) => img.id !== imageId);
+
+    await onSaveProducerOverride({
+      ...currentOverride,
+      producerId: selectedProducer.id,
+      customNotice: customNotice.trim(),
+      isAcceptingBookings,
+      directBottleShopUrl: directBottleShopUrl.trim(),
+      uploadedImages: updatedImages,
+      updatedAt: new Date().toISOString(),
+    });
+
+    setPhotoSaveSuccess(true);
+    setTimeout(() => setPhotoSaveSuccess(false), 3000);
+  };
 
   // Fiscal & Shipping state
   const [taxVatNumber, setTaxVatNumber] = useState<string>(user?.taxDetails?.vatNumber || '');
@@ -550,6 +631,23 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
               </button>
 
               <button
+                onClick={() => setActiveTab('photos')}
+                className={`py-2.5 px-3.5 border-b-2 transition cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
+                  activeTab === 'photos'
+                    ? 'border-amber-400 text-amber-400 font-bold'
+                    : 'border-transparent text-stone-400 hover:text-white'
+                }`}
+              >
+                <Camera className="w-3.5 h-3.5" />
+                <span>📸 Profile Photos</span>
+                {currentImages.length > 0 && (
+                  <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-stone-800 text-stone-300 font-mono">
+                    {currentImages.length}
+                  </span>
+                )}
+              </button>
+
+              <button
                 onClick={() => setActiveTab('experiences')}
                 className={`hidden py-2.5 px-3.5 border-b-2 transition cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
                   activeTab === 'experiences'
@@ -897,6 +995,218 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
                     <span>Save Visitor Notice</span>
                   </button>
                 </form>
+              )}
+
+              {/* TAB: PROFILE PHOTOS */}
+              {activeTab === 'photos' && (
+                <div className="space-y-4">
+                  {/* Section Title & Description */}
+                  <div className="flex items-center justify-between gap-3 pb-2 border-b border-white/5">
+                    <div>
+                      <h4 className="font-bold text-white text-sm">Estate Profile Photography</h4>
+                      <p className="text-[11px] text-stone-400">
+                        Showcase authentic imagery of {selectedProducer.name}. Verified host photography replaces default category imagery on your public page.
+                      </p>
+                    </div>
+                    <span className="text-[10px] font-medium text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-full flex items-center gap-1 shrink-0">
+                      <ShieldCheck className="w-3.5 h-3.5" />
+                      <span>Host Provenance</span>
+                    </span>
+                  </div>
+
+                  {/* Mandatory Rights Confirmation Checkbox */}
+                  <div className="p-3.5 rounded-2xl bg-stone-900 border border-amber-500/30 space-y-2">
+                    <div className="flex items-start gap-2.5">
+                      <input
+                        type="checkbox"
+                        id="producer-rights-confirm"
+                        checked={rightsConfirmed}
+                        onChange={(e) => {
+                          setRightsConfirmed(e.target.checked);
+                          if (photoError) setPhotoError(null);
+                        }}
+                        className="mt-0.5 w-4 h-4 rounded text-amber-500 focus:ring-amber-400 cursor-pointer accent-amber-500 shrink-0"
+                      />
+                      <label htmlFor="producer-rights-confirm" className="text-xs text-stone-300 leading-relaxed cursor-pointer select-none">
+                        <span className="font-bold text-white block">Ownership & Commercial Rights Confirmation</span>
+                        I confirm that I own these photos or have express permission to publish them on TerroirTrail. I agree not to upload watermarked third-party photos, copyrighted stock, or images taken from other platforms.
+                      </label>
+                    </div>
+                  </div>
+
+                  {/* Errors / Success Alerts */}
+                  {photoError && (
+                    <div className="p-3 rounded-2xl bg-rose-500/15 border border-rose-500/30 text-rose-300 text-xs flex items-center gap-2 animate-in fade-in">
+                      <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
+                      <span>{photoError}</span>
+                    </div>
+                  )}
+                  {photoSaveSuccess && (
+                    <div className="p-3 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs flex items-center gap-2 animate-in fade-in">
+                      <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-400" />
+                      <span>Profile photography updated successfully.</span>
+                    </div>
+                  )}
+
+                  {/* 1. Cover Photo Card */}
+                  <div className="p-4 rounded-2xl bg-stone-900 border border-white/10 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <span className="font-bold text-white text-xs block">Main Cover Photo</span>
+                        <span className="text-[10px] text-stone-400">
+                          Displays at the top of your drawer card and in search highlights.
+                        </span>
+                      </div>
+                      <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase ${
+                        currentCover
+                          ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
+                          : 'bg-stone-800 text-stone-400 border border-white/10'
+                      }`}>
+                        {currentCover ? 'Host Cover Active' : 'Default Cover'}
+                      </span>
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row items-center gap-4">
+                      <div className="w-full sm:w-48 h-32 rounded-xl overflow-hidden bg-stone-950 border border-white/10 shrink-0 relative group">
+                        <img
+                          src={currentCover?.url || selectedProducer.coverImage}
+                          alt={`${selectedProducer.name} cover`}
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute bottom-1 right-1 px-1.5 py-0.5 rounded bg-black/70 text-[9px] text-stone-300 font-mono">
+                          {currentCover ? 'Host upload' : 'Default'}
+                        </div>
+                      </div>
+
+                      <div className="space-y-2.5 w-full">
+                        <label className={`inline-flex items-center justify-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition ${
+                          rightsConfirmed
+                            ? 'bg-amber-500 hover:bg-amber-400 text-stone-950 shadow-md cursor-pointer'
+                            : 'bg-stone-800 text-stone-500 cursor-not-allowed border border-white/5'
+                        }`}>
+                          <UploadCloud className="w-4 h-4" />
+                          <span>{currentCover ? 'Replace Cover Photo' : 'Upload Host Cover Photo'}</span>
+                          <input
+                            type="file"
+                            accept="image/jpeg,image/png,image/webp"
+                            disabled={!rightsConfirmed}
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (file) {
+                                void handleAddPhoto(file, 'cover');
+                                e.target.value = '';
+                              }
+                            }}
+                            className="hidden"
+                          />
+                        </label>
+
+                        {currentCover && (
+                          <button
+                            type="button"
+                            onClick={() => handleDeletePhoto(currentCover.id)}
+                            className="flex items-center gap-1.5 text-[11px] text-rose-400 hover:text-rose-300 font-medium transition cursor-pointer"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                            <span>Revert to catalogue default</span>
+                          </button>
+                        )}
+
+                        <p className="text-[10px] text-stone-500">
+                          Allowed formats: JPEG, PNG, WebP · Max size: 8MB
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 2. Gallery Photos Section & Tier Limits */}
+                  <div className="p-4 rounded-2xl bg-stone-900 border border-white/10 space-y-3">
+                    <div className="flex items-center justify-between flex-wrap gap-2">
+                      <div>
+                        <span className="font-bold text-white text-xs block">Estate Gallery Photos</span>
+                        <span className="text-[10px] text-stone-400">
+                          Showcase cellars, harvest, vineyards, and tasting spaces.
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[11px] font-mono text-stone-400 bg-stone-950 px-2.5 py-0.5 rounded-full border border-white/5">
+                          {currentGallery.length} / {getProducerMediaLimits(isProTier).maxGalleryImages} used
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Non-pro upgrade hint when basic limit reached */}
+                    {!isProTier && currentGallery.length >= getProducerMediaLimits(false).maxGalleryImages && (
+                      <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-200 flex items-start gap-2.5">
+                        <Crown className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                        <div>
+                          <span className="font-bold text-amber-300 block text-[11px] uppercase tracking-wider">
+                            Basic Limit Reached (3 photos)
+                          </span>
+                          <span className="text-[11px] text-stone-300">
+                            Upgrade to Host Pro to showcase up to 10 photos, seasonal releases, and priority discovery placement.
+                          </span>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Gallery Grid */}
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 pt-1">
+                      {currentGallery.map((img) => (
+                        <div
+                          key={img.id}
+                          className="relative group rounded-xl overflow-hidden bg-stone-950 border border-white/10 aspect-4/3 flex flex-col justify-end"
+                        >
+                          <img
+                            src={img.url}
+                            alt="Estate gallery item"
+                            className="absolute inset-0 w-full h-full object-cover"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-80 group-hover:opacity-100 transition" />
+                          <div className="relative p-2 flex items-center justify-between gap-1 z-10">
+                            <span className="text-[9px] px-1.5 py-0.5 rounded bg-emerald-500/80 text-stone-950 font-bold uppercase">
+                              Published
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => handleDeletePhoto(img.id)}
+                              className="w-6 h-6 rounded-lg bg-black/70 hover:bg-rose-600 text-stone-300 hover:text-white flex items-center justify-center transition cursor-pointer"
+                              title="Delete photo"
+                            >
+                              <Trash2 className="w-3 h-3" />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+
+                      {/* Add Gallery Photo Button */}
+                      {currentGallery.length < getProducerMediaLimits(isProTier).maxGalleryImages && (
+                        <label className={`rounded-xl border border-dashed aspect-4/3 flex flex-col items-center justify-center gap-1.5 p-3 text-center transition ${
+                          rightsConfirmed
+                            ? 'border-amber-500/40 hover:border-amber-400 bg-stone-950/40 hover:bg-amber-500/5 cursor-pointer text-stone-300 hover:text-white'
+                            : 'border-white/10 bg-stone-950/20 text-stone-600 cursor-not-allowed'
+                        }`}>
+                          <Plus className="w-5 h-5 text-amber-400" />
+                          <span className="text-[11px] font-bold">Add Photo</span>
+                          <span className="text-[9px] text-stone-500">Up to 8MB</span>
+                          <input
+                            type="file"
+                            accept="image/jpeg,image/png,image/webp"
+                            disabled={!rightsConfirmed}
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (file) {
+                                void handleAddPhoto(file, 'gallery');
+                                e.target.value = '';
+                              }
+                            }}
+                            className="hidden"
+                          />
+                        </label>
+                      )}
+                    </div>
+                  </div>
+                </div>
               )}
 
               {/* TAB 3: TASTING FLIGHTS & EXPERIENCES */}

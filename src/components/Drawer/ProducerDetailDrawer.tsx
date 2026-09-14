@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Producer, VisitStatus } from '../../types/terroir';
 import { UserProfile } from '../../types/auth';
+import { ProducerOverride } from '../../types/booking';
 import { 
   X, MapPin, Star, Phone, Globe, Navigation, Clock, 
   Dog, Footprints, Caravan, Car, Sparkles, Share2, Check, Heart, Award, 
@@ -11,6 +12,7 @@ import { useProducerPhotos } from '../../services/googlePlacesPhotos';
 import { getCategoryFallbackImage } from '../../utils/imageFallbacks';
 import { getEffectiveProducerCategory } from '../../utils/producerCategory';
 import { getProducerRoadAccessWarning } from '../../utils/routeSafety';
+import { resolveProducerCover, resolveProducerGallery } from '../../utils/producerMediaResolver';
 import { GooglePlaceMedia } from '../GooglePlaces/GooglePlaceMedia';
 
 interface ProducerDetailDrawerProps {
@@ -33,6 +35,7 @@ interface ProducerDetailDrawerProps {
   onOpenExplorerPass?: () => void;
   onOpenDigitalPass?: () => void;
   initialTab?: 'story' | 'tastings' | 'visit';
+  producerOverride?: ProducerOverride;
 }
 
 export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
@@ -55,6 +58,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
   onOpenExplorerPass,
   onOpenDigitalPass,
   initialTab = 'story',
+  producerOverride,
 }) => {
   const [copiedLink, setCopiedLink] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<'story' | 'tastings' | 'visit'>(initialTab);
@@ -69,6 +73,12 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
     setActivePhotoIndex,
   } = useProducerPhotos(producer);
 
+  const resolvedCover = producer ? resolveProducerCover(producer, producerOverride) : null;
+  const resolvedGallery = producer ? resolveProducerGallery(producer, producerOverride) : [];
+  const hasHostMedia = Boolean(
+    resolvedCover?.isHostManaged || resolvedGallery.some((g) => g.isHostManaged)
+  );
+
   const [heroImgSrc, setHeroImgSrc] = useState<string>('');
 
   useEffect(() => {
@@ -76,9 +86,9 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
       setActiveTab('story');
       setIsEditingNote(false);
       setNoteDraft(tastingNote);
-      setHeroImgSrc(activePhoto?.url || producer.coverImage);
+      setHeroImgSrc(resolvedCover?.url || activePhoto?.url || producer.coverImage);
     }
-  }, [producer, tastingNote, activePhoto]);
+  }, [producer, tastingNote, activePhoto, resolvedCover?.url]);
 
   const handleHeroImgError = () => {
     if (producer) {
@@ -493,8 +503,16 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
               )}
             </div>
 
-            {/* Verified Photographer & Estate Media Attribution */}
-            {(activeCredit || activePhoto?.attributions?.[0]) && (
+            {/* Attribution Badge: Host-Managed Provenance OR Verified Photographer & Estate Media */}
+            {resolvedCover?.isHostManaged ? (
+              <div className="flex items-center">
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-950/85 backdrop-blur-md text-[10px] text-emerald-300 border border-emerald-500/30 shadow-sm truncate max-w-[240px] sm:max-w-[300px]">
+                  <CheckCircle2 className="w-3 h-3 text-emerald-400 shrink-0" />
+                  <span className="truncate">Provided by the producer</span>
+                  <span className="text-[9px] text-emerald-400/90 font-medium shrink-0">· Host verified</span>
+                </span>
+              </div>
+            ) : (activeCredit || activePhoto?.attributions?.[0]) ? (
               <div className="flex items-center">
                 {activeCredit?.url ? (
                   <a
@@ -516,7 +534,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                   </span>
                 )}
               </div>
-            )}
+            ) : null}
           </div>
 
         {/* Title Overlay */}
@@ -767,7 +785,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                   </h4>
                   <span className="text-[10px] font-semibold text-emerald-400/90 flex items-center gap-1">
                     <span>✓</span>
-                    <span>Source-listed media</span>
+                    <span>{hasHostMedia ? 'Host-verified media' : 'Source-listed media'}</span>
                   </span>
                 </div>
 

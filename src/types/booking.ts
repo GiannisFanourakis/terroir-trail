@@ -1,4 +1,5 @@
 import { ProducerCategory, Destination } from './terroir';
+import { ProducerUploadedImage } from './producerMedia';
 
 export type BookingStatus = 'pending' | 'confirmed' | 'cancelled' | 'completed';
 
@@ -51,5 +52,6 @@ export interface ProducerOverride {
   isProTier?: boolean;
   directBottleShopUrl?: string;
   hasChauffeurPartnership?: boolean;
+  uploadedImages?: ProducerUploadedImage[];
   updatedAt: string;
 }

@@ -319,6 +319,7 @@ export const App: React.FC = () => {
             isAuthenticated={isAuthenticated}
             onOpenAuth={(role) => setActiveModal({ type: 'auth', initialRole: role || 'traveler' })}
             customNotice={selectedProducer ? getOverride(selectedProducer.id)?.customNotice : undefined}
+            producerOverride={selectedProducer ? getOverride(selectedProducer.id) : undefined}
           />
         )}
       </main>
