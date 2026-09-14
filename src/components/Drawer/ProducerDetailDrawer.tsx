@@ -162,13 +162,16 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
           makerTitle: 'head brewer or owner',
           venueName: 'brewery',
           productPlural: 'can & bottle',
+          whatTheyMakeTitle: 'Craft Beers & Seasonal Brews',
+          specialtiesLabel: 'Beer Styles & Hop Profiles',
+          highlightsLabel: 'Brewery & Taproom Highlights',
           storeLabel: 'Direct Brewery Bottle Shop',
           storeSub: `Order fresh craft brews directly from ${name}'s taproom`,
           discountLabel: 'Taproom Discount',
           tastingNotePlaceholder: 'Record your thoughts on their craft beers, hop profiles, or seasonal releases...',
-          visitingTitle: 'Taproom & Visiting',
-          callAction: 'Call Taproom',
-          callShortLabel: 'Call Taproom',
+          visitingTitle: 'Brewery & Visiting',
+          callAction: 'Call Brewery',
+          callShortLabel: 'Call Brewery',
           hasDeliveryBoxes: true,
           deliveryCategory: 'beer' as const,
           deliveryIcon: '🍺',
@@ -178,9 +181,12 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
         };
       case 'olive_mill':
         return {
-          makerTitle: 'master miller or owner',
+          makerTitle: 'master miller or grower',
           venueName: 'estate & mill',
           productPlural: 'bottle & tin',
+          whatTheyMakeTitle: 'Extra Virgin Olive Oils & Harvests',
+          specialtiesLabel: 'Olive Cultivars & Pressings',
+          highlightsLabel: 'Mill & Grove Highlights',
           storeLabel: 'Direct Mill Farm Shop',
           storeSub: `Order harvest-fresh EVOO directly from ${name}'s mill`,
           discountLabel: 'Mill Discount',
@@ -197,9 +203,12 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
         };
       case 'kazani':
         return {
-          makerTitle: 'master distiller or owner',
+          makerTitle: 'master distiller or kazaniarhs',
           venueName: 'distillery',
           productPlural: 'bottle',
+          whatTheyMakeTitle: 'Distillates & Traditional Spirits',
+          specialtiesLabel: 'Spirits & Alembic Distillations',
+          highlightsLabel: 'Distillery & Still House Highlights',
           storeLabel: 'Direct Distillery Store',
           storeSub: `Order artisan spirits directly from ${name}'s still`,
           discountLabel: 'Distillery Discount',
@@ -219,6 +228,9 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
           makerTitle: 'master cheesemaker or shepherd',
           venueName: 'mitato & dairy',
           productPlural: 'cheese wheel & purchase',
+          whatTheyMakeTitle: 'Artisanal Mountain Cheeses & Dairy',
+          specialtiesLabel: 'Cheeses & Milk Traditions',
+          highlightsLabel: 'Dairy & Mitato Highlights',
           storeLabel: 'Direct Dairy Store',
           storeSub: `Order artisanal mountain cheeses directly from ${name}`,
           discountLabel: 'Dairy Discount',
@@ -235,9 +247,12 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
         };
       case 'apiary':
         return {
-          makerTitle: 'beekeeper or herbalist',
+          makerTitle: 'nomadic beekeeper or herbalist',
           venueName: 'apiary',
           productPlural: 'jar & product',
+          whatTheyMakeTitle: 'Raw Mountain Honeys & Bee Products',
+          specialtiesLabel: 'Honey Botanicals & Nectars',
+          highlightsLabel: 'Apiary & Harvest Highlights',
           storeLabel: 'Direct Apiary Store',
           storeSub: `Order raw wild thyme honey directly from ${name}`,
           discountLabel: 'Farm Discount',
@@ -254,9 +269,12 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
         };
       case 'farm':
         return {
-          makerTitle: 'farmer or owner',
+          makerTitle: 'regenerative farmer or grower',
           venueName: 'farm',
-          productPlural: 'farm product',
+          productPlural: 'farm produce',
+          whatTheyMakeTitle: 'Farm Produce & Agricultural Harvests',
+          specialtiesLabel: 'Cultivations & Crops',
+          highlightsLabel: 'Farm & Estate Highlights',
           storeLabel: 'Direct Farm Shop',
           storeSub: `Order farm products directly from ${name}`,
           discountLabel: 'Farm Discount',
@@ -274,9 +292,12 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
       case 'winery':
       default:
         return {
-          makerTitle: 'producer or owner',
+          makerTitle: 'winemaker or estate host',
           venueName: 'estate',
           productPlural: 'bottle',
+          whatTheyMakeTitle: 'Wines & Indigenous Grape Varieties',
+          specialtiesLabel: 'Indigenous Grape Varieties',
+          highlightsLabel: 'Cellar & Tasting Highlights',
           storeLabel: 'Direct Estate Bottle Store',
           storeSub: `Order directly from ${name}'s cellar`,
           discountLabel: 'Cellar Discount',
@@ -820,10 +841,17 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
         {/* Tab 2: Tastings & Grapes/Crafts */}
         {activeTab === 'tastings' && (
           <div className="space-y-5 animate-in fade-in duration-200">
-            <div>
-              <h3 className="text-xs font-bold uppercase tracking-wider text-stone-400 mb-2.5">
-                Specialties & Varieties
+            <div className="flex items-center gap-2 pb-1 border-b border-white/5">
+              <span className="text-base" aria-hidden="true">{cat.icon}</span>
+              <h3 className="font-serif-title font-bold text-sm text-white">
+                {term.whatTheyMakeTitle}
               </h3>
+            </div>
+
+            <div>
+              <h4 className="text-xs font-bold uppercase tracking-wider text-stone-400 mb-2.5">
+                {term.specialtiesLabel}
+              </h4>
               <div className="flex flex-wrap gap-2">
                 {producer.indigenousVarieties.map((v, i) => (
                   <span
@@ -837,9 +865,9 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
             </div>
 
             <div>
-              <h3 className="text-xs font-bold uppercase tracking-wider text-stone-400 mb-2">
-                Producer Highlights
-              </h3>
+              <h4 className="text-xs font-bold uppercase tracking-wider text-stone-400 mb-2">
+                {term.highlightsLabel}
+              </h4>
               <div className="space-y-2">
                 {producer.tastingHighlights.map((highlight, idx) => (
                   <div key={idx} className="flex items-start gap-2.5 p-2.5 rounded-xl bg-stone-900 border border-white/5 text-xs text-stone-200">
@@ -854,8 +882,8 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
             <div className="p-4 rounded-2xl bg-stone-900/90 border border-white/10 space-y-3">
               <div className="flex items-center justify-between">
                 <h3 className="text-xs font-bold uppercase tracking-wider text-white flex items-center gap-1.5">
-                  <Wine className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                  {term.visitingTitle || 'Visiting & Contact'}
+                  <span className="text-sm shrink-0" aria-hidden="true">{cat.icon}</span>
+                  <span>{term.visitingTitle || 'Visiting & Contact'}</span>
                 </h3>
                 <span className={`text-[10px] px-2.5 py-0.5 rounded-full font-bold border ${visitDetails.badgeClass}`}>
                   {visitDetails.badgeLabel}
@@ -962,82 +990,167 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
           </div>
         )}
 
-        {/* Tab 3: Visiting & Road */}
+        {/* Tab 3: Visiting & Access */}
         {activeTab === 'visit' && (
-          <div className="space-y-5 animate-in fade-in duration-200">
-            {/* Source-backed Road Access Card */}
-            {road && (
-              <div className={`p-4 rounded-2xl border ${road.color}`}>
-                <div className="flex items-center gap-2 font-bold text-xs mb-1">
-                  <Car className="w-4 h-4 shrink-0" />
-                  <span>{road.title}</span>
-                </div>
-                {road.desc && (
-                  <p className="text-xs leading-relaxed opacity-90">{road.desc}</p>
-                )}
-                {road.sourceUrl && (
-                  <a
-                    href={road.sourceUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-block mt-2 text-[11px] font-semibold underline underline-offset-2 opacity-90 hover:opacity-100"
-                  >
-                    Access source
-                  </a>
-                )}
+          <div className="space-y-6 animate-in fade-in duration-200">
+            {/* C. Visiting: Grouped Visitor Information */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-white flex items-center gap-1.5">
+                  <span className="text-sm shrink-0" aria-hidden="true">{cat.icon}</span>
+                  <span>{term.visitingTitle || 'Visiting & Contact'}</span>
+                </h3>
+                <span className={`text-[10px] px-2.5 py-0.5 rounded-full font-bold border ${visitDetails.badgeClass}`}>
+                  {visitDetails.badgeLabel}
+                </span>
               </div>
-            )}
 
-            {roadWarning && (
-              <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs">
-                <div className="flex items-start gap-2">
-                  <Car className="w-4 h-4 shrink-0 mt-0.5" />
-                  <p className="leading-relaxed">{roadWarning}</p>
-                </div>
-              </div>
-            )}
-
-            {/* Location Status Verification Notice */}
-            {producer.locationStatus === 'unresolved' && (
-              <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs space-y-1">
-                <div className="flex items-center gap-2 font-bold">
-                  <MapPin className="w-4 h-4 shrink-0 text-amber-400" />
-                  <span>Exact Navigation Point Under Verification</span>
-                </div>
-                <p className="text-stone-300 leading-relaxed text-[11px]">
-                  The precise visitor entrance for this producer is still being verified. Please contact the producer directly or check their official website for entrance directions.
+              <div className="p-4 rounded-2xl bg-stone-900/90 border border-white/10 space-y-3">
+                <p className="text-xs text-stone-300 leading-relaxed">
+                  {visitDetails.description}
                 </p>
-              </div>
-            )}
 
-            {producer.locationStatus === 'verified_entrance' && (
-              <div className="p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-xs flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-400" />
-                <span>Verified visitor entrance coordinates</span>
-              </div>
-            )}
-
-            {(producer.openingHours || producer.bestSeason) && (
-              <div className="p-4 rounded-2xl bg-stone-900 border border-white/10 space-y-3 text-xs">
-                {producer.openingHours && (
-                  <div className="flex items-center gap-2.5">
-                    <Clock className="w-4 h-4 text-amber-400 shrink-0" />
-                    <span><strong>Hours:</strong> {producer.openingHours}</span>
+                {producer.visitNotes && (
+                  <div className="p-2.5 rounded-xl bg-stone-800/60 border border-white/5 text-[11px] text-stone-300 leading-relaxed">
+                    <span className="font-semibold text-amber-300/90 block text-[10px] uppercase tracking-wider mb-0.5">Visit Notes</span>
+                    {producer.visitNotes}
                   </div>
                 )}
 
-                {producer.bestSeason && (
-                  <div className="flex items-center gap-2.5">
-                    <Sparkles className="w-4 h-4 text-amber-400 shrink-0" />
-                    <span><strong>Best Season:</strong> {producer.bestSeason}</span>
+                {(visitDetails.visitingStyle || producer.openingHours || producer.bestSeason) && (
+                  <div className="grid grid-cols-2 gap-2 text-[11px] pt-1 border-t border-white/5">
+                    {visitDetails.visitingStyle && (
+                      <div className="space-y-0.5">
+                        <span className="text-[10px] text-stone-400 block font-medium">Visiting Style</span>
+                        <span className="font-semibold text-stone-200">
+                          {visitDetails.visitingStyle}
+                        </span>
+                      </div>
+                    )}
+                    {producer.openingHours && (
+                      <div className="space-y-0.5">
+                        <span className="text-[10px] text-stone-400 block font-medium">Opening Hours</span>
+                        <span className="font-semibold text-stone-200 truncate block">
+                          {producer.openingHours}
+                        </span>
+                      </div>
+                    )}
+                    {producer.bestSeason && (
+                      <div className="space-y-0.5 col-span-2 sm:col-span-1">
+                        <span className="text-[10px] text-stone-400 block font-medium">Best Season</span>
+                        <span className="font-semibold text-stone-200 truncate block">
+                          {producer.bestSeason}
+                        </span>
+                      </div>
+                    )}
                   </div>
                 )}
+
+                {/* Direct Connect Buttons */}
+                <div className="flex flex-col sm:flex-row gap-2 pt-1">
+                  {producer.website && (
+                    <a
+                      href={producer.website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 py-2.5 px-3 rounded-xl bg-stone-800 hover:bg-stone-750 border border-white/10 text-stone-200 hover:text-white font-medium text-xs transition flex items-center justify-center gap-1.5 active:scale-98"
+                    >
+                      <Globe className="w-3.5 h-3.5 text-sky-400" />
+                      <span>Visit Producer Website</span>
+                    </a>
+                  )}
+                  {producer.phone && (
+                    <a
+                      href={`tel:${producer.phone}`}
+                      className="flex-1 py-2.5 px-3 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 font-bold text-xs transition flex items-center justify-center gap-1.5 active:scale-98"
+                    >
+                      <Phone className="w-3.5 h-3.5" />
+                      <span>{term.callAction}</span>
+                    </a>
+                  )}
+                </div>
               </div>
-            )}
+            </div>
+
+            {/* D. Access: Clearly Distinct from Visiting */}
+            <div className="space-y-3 pt-2 border-t border-white/10">
+              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-stone-400">
+                <Car className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                <span>Road & Navigation Access</span>
+              </div>
+
+              {/* Source-backed Road Access Card */}
+              {road ? (
+                <div className={`p-4 rounded-2xl border ${road.color}`}>
+                  <div className="flex items-center gap-2 font-bold text-xs mb-1">
+                    <Car className="w-4 h-4 shrink-0" />
+                    <span>{road.title}</span>
+                  </div>
+                  {road.desc && (
+                    <p className="text-xs leading-relaxed opacity-90">{road.desc}</p>
+                  )}
+                  {road.sourceUrl && (
+                    <a
+                      href={road.sourceUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-block mt-2 text-[11px] font-semibold underline underline-offset-2 opacity-90 hover:opacity-100"
+                    >
+                      Access source
+                    </a>
+                  )}
+                </div>
+              ) : (
+                <div className="p-3.5 rounded-2xl bg-stone-900 border border-white/5 text-xs text-stone-400">
+                  <div className="flex items-center gap-2 font-semibold text-stone-300 mb-1">
+                    <Car className="w-3.5 h-3.5 text-stone-500 shrink-0" />
+                    <span>Road Access Not Independently Classified</span>
+                  </div>
+                  <p className="text-[11px] text-stone-400 leading-relaxed">
+                    Road access conditions to this property have not been independently confirmed. Mountain and rural access routes in Greece may involve narrow roads or unpaved segments.
+                  </p>
+                </div>
+              )}
+
+              {roadWarning && (
+                <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs">
+                  <div className="flex items-start gap-2">
+                    <Car className="w-4 h-4 shrink-0 mt-0.5" />
+                    <p className="leading-relaxed">{roadWarning}</p>
+                  </div>
+                </div>
+              )}
+
+              {/* Location Status Verification Notice */}
+              {producer.locationStatus === 'unresolved' && (
+                <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs space-y-1">
+                  <div className="flex items-center gap-2 font-bold">
+                    <MapPin className="w-4 h-4 shrink-0 text-amber-400" />
+                    <span>Exact Navigation Point Under Verification</span>
+                  </div>
+                  <p className="text-stone-300 leading-relaxed text-[11px]">
+                    The precise visitor entrance for this producer is still being verified. Please contact the producer directly or check their official website for entrance directions.
+                  </p>
+                </div>
+              )}
+
+              {producer.locationStatus === 'verified_entrance' && (
+                <div className="p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-xs flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-400" />
+                  <span>Verified visitor entrance coordinates</span>
+                </div>
+              )}
+
+              {/* Route Safety Invariant Reminder */}
+              <div className="p-3 rounded-xl bg-stone-900/60 border border-white/5 text-[10px] text-stone-400 leading-relaxed">
+                <span className="font-semibold text-stone-300 block text-[10px] uppercase tracking-wider mb-0.5">Route Safety Notice</span>
+                A verified map pin indicates the producer property location, but does not guarantee a paved entrance or standard rental-car road. Always review road access conditions above before travelling.
+              </div>
+            </div>
 
             {/* Badges - only rendered when genuinely present */}
             {(producer.dogFriendly != null || producer.campervanFriendly != null || producer.kidFriendly != null || producer.walkInFriendly === true) && (
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-2 pt-1 border-t border-white/5">
                 {producer.dogFriendly != null && (
                   <span className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-medium border ${
                     producer.dogFriendly ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-stone-900 text-stone-400 border-white/5'

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Producer } from '../../types/terroir';
-import { MapPin, Star, ArrowUpRight, Car, Heart } from 'lucide-react';
+import { MapPin, ArrowUpRight, Car, Heart } from 'lucide-react';
 import { getCategoryFallbackImage } from '../../utils/imageFallbacks';
 import { getEffectiveProducerCategory } from '../../utils/producerCategory';
 
@@ -51,6 +51,47 @@ export const ProducerCard: React.FC<ProducerCardProps> = ({
     }
   };
 
+  const getVisitBadge = (p: Producer) => {
+    switch (p.visitStatus) {
+      case 'public_visits':
+        return {
+          label: p.walkInFriendly === true ? 'Walk-ins welcome' : 'Visitors welcome',
+          className: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/25',
+        };
+      case 'seasonal_public':
+        return {
+          label: p.bestSeason ? `Seasonal (${p.bestSeason})` : 'Seasonal visits',
+          className: 'text-amber-300 bg-amber-500/10 border-amber-500/25',
+        };
+      case 'appointment_only':
+        return {
+          label: 'By appointment',
+          className: 'text-amber-300 bg-amber-500/10 border-amber-500/25',
+        };
+      case 'not_publicly_confirmed':
+        return {
+          label: 'Visits unconfirmed',
+          className: 'text-stone-400 bg-stone-500/10 border-white/10',
+        };
+      case 'current_access_uncertain':
+        return {
+          label: 'Access uncertain',
+          className: 'text-orange-400 bg-orange-500/10 border-orange-500/25',
+        };
+      default:
+        if (p.walkInFriendly === true) {
+          return {
+            label: 'Walk-ins welcome',
+            className: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/25',
+          };
+        }
+        return {
+          label: 'Visit status unreviewed',
+          className: 'text-stone-400 bg-stone-500/10 border-white/10',
+        };
+    }
+  };
+
   const getRoadBadge = (p: Producer) => {
     if (p.roadAccessStatus !== 'verified' || !p.roadAccess) return null;
 
@@ -71,6 +112,7 @@ export const ProducerCard: React.FC<ProducerCardProps> = ({
   };
 
   const badge = getCategoryBadge(producer);
+  const visitBadge = getVisitBadge(producer);
   const roadBadge = getRoadBadge(producer);
 
   const selectProducer = () => onSelect(producer);
@@ -105,7 +147,7 @@ export const ProducerCard: React.FC<ProducerCardProps> = ({
         />
         <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/30 to-transparent" />
 
-        {/* Top Badges */}
+        {/* Top Badges: Category Badge */}
         <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5">
           <span className={`flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-full font-bold border backdrop-blur-md ${badge.bg}`}>
             <span aria-hidden="true">{badge.icon}</span>
@@ -113,7 +155,7 @@ export const ProducerCard: React.FC<ProducerCardProps> = ({
           </span>
         </div>
 
-        {/* Top Right: Favorite Button & source-backed rating when present */}
+        {/* Top Right: Favorite Button */}
         <div className="absolute top-2.5 right-2.5 flex items-center gap-1.5">
           <button
             type="button"
@@ -131,12 +173,6 @@ export const ProducerCard: React.FC<ProducerCardProps> = ({
           >
             <Heart className={`w-3.5 h-3.5 ${isFavorite ? 'fill-white' : ''}`} aria-hidden="true" />
           </button>
-          {producer.rating != null && (
-            <div className="flex items-center gap-1 bg-black/70 backdrop-blur-md text-white px-2 py-1 rounded-full text-xs font-bold border border-white/10">
-              <Star className="w-3 h-3 text-amber-400 fill-amber-400" aria-hidden="true" />
-              <span>{producer.rating}</span>
-            </div>
-          )}
         </div>
 
         {/* Bottom Location Overlay */}
@@ -148,11 +184,6 @@ export const ProducerCard: React.FC<ProducerCardProps> = ({
               {producer.village}, {producer.region.toUpperCase()}
             </span>
           </div>
-          {producer.priceLevel && (
-            <span className="text-xs font-mono font-bold text-amber-300 bg-black/60 px-2 py-0.5 rounded border border-white/10">
-              {producer.priceLevel}
-            </span>
-          )}
         </div>
       </div>
 
@@ -169,38 +200,20 @@ export const ProducerCard: React.FC<ProducerCardProps> = ({
           )}
         </div>
 
-        <p className="text-xs text-stone-300 line-clamp-2 leading-relaxed">
-          {producer.tagLine}
-        </p>
+        {producer.tagLine && (
+          <p className="text-xs text-stone-300 line-clamp-2 leading-relaxed">
+            {producer.tagLine}
+          </p>
+        )}
 
-        {/* Varieties & Ethos Tags */}
-        <div className="flex flex-wrap items-center gap-1 pt-0.5">
-          {producer.indigenousVarieties.slice(0, 3).map((v, i) => (
-            <span
-              key={i}
-              className="text-[10px] px-2 py-0.5 rounded-lg bg-stone-800 text-stone-300 font-medium border border-white/5"
-            >
-              {v}
-            </span>
-          ))}
-          {producer.ethos.includes('unpasteurized') && (
-            <span className="text-[10px] px-2 py-0.5 rounded-lg bg-amber-400/20 text-amber-300 font-medium border border-amber-400/30">
-              Unpasteurized
-            </span>
-          )}
-          {producer.ethos.includes('organic') && (
-            <span className="text-[10px] px-2 py-0.5 rounded-lg bg-emerald-500/20 text-emerald-300 font-medium border border-emerald-500/30">
-              Organic
-            </span>
-          )}
-          {producer.ethos.includes('amphora') && (
-            <span className="text-[10px] px-2 py-0.5 rounded-lg bg-amber-500/20 text-amber-300 font-medium border border-amber-500/30">
-              Amphora
-            </span>
-          )}
+        {/* Primary Discovery Signal: Visitability */}
+        <div className="flex items-center gap-1.5 pt-0.5">
+          <span className={`text-[10px] px-2.5 py-0.5 rounded-md font-medium border ${visitBadge.className}`}>
+            {visitBadge.label}
+          </span>
         </div>
 
-        {/* Card Footer */}
+        {/* Card Footer: Road / Access Signal & View Story */}
         <div className="flex items-center justify-between pt-2.5 border-t border-white/5 text-[11px] gap-2">
           {roadBadge ? (
             <span className={`flex items-center gap-1 min-w-0 ${roadBadge.className}`}>
