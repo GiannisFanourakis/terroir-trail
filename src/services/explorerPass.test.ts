@@ -68,15 +68,20 @@ describe('QR verification', () => {
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
-  it('uses server identity and tier, ignoring forged URL claims', async () => {
-    auth.currentUser = null;
+  it('uses authenticated server identity and tier, ignoring forged URL claims', async () => {
     fetchMock.mockResolvedValueOnce(Response.json({ pass }));
     const result = await verifyExplorerPass(`https://example.test/?verify_pass=${passId}&name=Fake&tier=annual`);
     expect(result.name).toBe('Verified Explorer');
     expect(result.tier).toBe('14-Day Holiday Pass');
     const [url, options] = fetchMock.mock.calls[0];
     expect(url).toBe(`https://api.example.test/api/passes/verify/${passId}`);
-    expect(options.headers.has('Authorization')).toBe(false);
+    expect(options.headers.get('Authorization')).toBe('Bearer firebase-token');
+  });
+
+  it('does not attempt host verification while signed out', async () => {
+    auth.currentUser = null;
+    await expect(verifyExplorerPass(passId)).rejects.toThrow('real account');
+    expect(fetchMock).not.toHaveBeenCalled();
   });
 
   it('rejects expired, invalid and unavailable verification responses', async () => {

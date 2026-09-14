@@ -54,7 +54,7 @@ export async function verifyExplorerPass(input: string) {
   if (!/^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i.test(passId)) {
     throw new Error('This pass code is invalid. Ask the explorer to open their current digital pass.');
   }
-  const { pass } = await request<{ pass: ExplorerPass }>(`/verify/${encodeURIComponent(passId)}`, {}, false);
+  const { pass } = await request<{ pass: ExplorerPass }>(`/verify/${encodeURIComponent(passId)}`);
   if (!pass || Date.parse(pass.expiresAt) <= Date.now() || !Number.isFinite(Date.parse(pass.expiresAt))) {
     throw new Error('This pass is invalid or expired.');
   }

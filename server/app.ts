@@ -2,10 +2,12 @@ import express, { type Request, type Response, type NextFunction } from 'express
 import cors from 'cors';
 import { adminAuth } from './firebaseAdmin';
 import { createPassCheckout, fulfillPass, getExplorerPass, verifyExplorerPass } from './services/passService';
+import { isActiveProducerOwner } from './services/producerAuthorization';
 import { handleWebhookEvent } from './services/webhookService';
 
 const defaults = {
   verifyToken: (token: string) => adminAuth().verifyIdToken(token, true),
+  isActiveProducerOwner,
   createPassCheckout, fulfillPass, getExplorerPass, verifyExplorerPass, handleWebhookEvent,
 };
 
@@ -39,6 +41,19 @@ export function createApp(deps = defaults) {
       next();
     } catch {
       res.status(401).json({ error: 'Your session has expired. Please sign in again.' });
+    }
+  };
+
+  const requireActiveProducerOwner = async (_req: Request, res: Response, next: NextFunction) => {
+    try {
+      if (!(await deps.isActiveProducerOwner(res.locals.identity.uid))) {
+        res.status(403).json({ error: 'Verified producer access is required to verify Explorer passes.' });
+        return;
+      }
+      next();
+    } catch (error) {
+      console.error('Producer authorization unavailable:', error);
+      res.status(503).json({ error: 'Pass verification is temporarily unavailable.' });
     }
   };
 
@@ -77,7 +92,7 @@ export function createApp(deps = defaults) {
     }
   });
 
-  app.get('/api/passes/verify/:passId', async (req, res) => {
+  app.get('/api/passes/verify/:passId', requireAuth, requireActiveProducerOwner, async (req, res) => {
     try {
       const pass = await deps.verifyExplorerPass(String(req.params.passId));
       if (!pass) { res.status(404).json({ error: 'This pass is invalid or expired.' }); return; }
