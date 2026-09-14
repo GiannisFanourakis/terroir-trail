@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, afterEach } from 'vitest';
 import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { GooglePlaceMedia } from './GooglePlaceMedia';
@@ -7,7 +7,12 @@ import { GOOGLE_PLACES_PROTOTYPE_ITEMS } from '../../config/googlePlacesAllowlis
 import * as uiKitModule from '../../services/googlePlacesUiKit';
 
 describe('Manual Google Prototype Allowlist Test for 5 Producers', () => {
+  afterEach(() => {
+    vi.unstubAllEnvs();
+  });
+
   it('verifies all 5 allowlisted producers render gmp-place-details with exact attribution', () => {
+    vi.stubEnv('VITE_ENABLE_GOOGLE_PLACES_MEDIA', 'true');
     vi.spyOn(uiKitModule, 'useGooglePlacesUiKit').mockReturnValue({
       status: 'ready',
       isReady: true,

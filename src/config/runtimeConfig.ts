@@ -176,6 +176,17 @@ export function getAdvertisingConfig(
 }
 
 /**
+ * Google Places UI Kit media prototype is an experimental / pre-GA feature.
+ * Fails closed (false) by default so external Google media is never requested
+ * unless explicitly enabled alongside a valid API key.
+ */
+export function isGooglePlacesMediaEnabled(
+  customEnv?: Record<string, string | undefined>
+): boolean {
+  return getRawEnv('VITE_ENABLE_GOOGLE_PLACES_MEDIA', customEnv) === 'true';
+}
+
+/**
  * Host media upload prototype is strictly development-only.
  * Fails closed (false) by default so browser blob URLs are never exposed in production.
  */
@@ -277,6 +288,9 @@ export const runtimeConfig = {
   },
   get advertising(): AdvertisingRuntimeConfig {
     return getAdvertisingConfig();
+  },
+  get googlePlacesMedia(): { enabled: boolean } {
+    return { enabled: isGooglePlacesMediaEnabled() };
   },
   get hostMediaPrototype(): { enabled: boolean } {
     return { enabled: isHostMediaPrototypeEnabled() };

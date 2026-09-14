@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import { Producer } from '../../types/terroir';
 import { isGooglePlacesEligible } from '../../config/googlePlacesAllowlist';
 import { useGooglePlacesUiKit } from '../../services/googlePlacesUiKit';
+import { runtimeConfig } from '../../config/runtimeConfig';
 import { Camera, Info } from 'lucide-react';
 
 interface GooglePlaceMediaProps {
@@ -19,14 +20,13 @@ interface GooglePlaceMediaProps {
  * - Editorial TerroirTrail data (visit status, road safety, reviews) remains completely separate.
  */
 export const GooglePlaceMedia: React.FC<GooglePlaceMediaProps> = ({ producer, className = '' }) => {
-  if (!producer) return null;
-
-  const isEligible = isGooglePlacesEligible(producer.id);
-  const { isReady, status } = useGooglePlacesUiKit(isEligible);
+  const isEligible = Boolean(producer && isGooglePlacesEligible(producer.id));
+  const isFeatureEnabled = runtimeConfig.googlePlacesMedia.enabled;
+  const { isReady, status } = useGooglePlacesUiKit(isEligible && isFeatureEnabled);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // If producer is not on the prototype allow-list, render nothing
-  if (!isEligible) {
+  // If producer is null, feature flag is disabled, or producer is not on allowlist, render nothing
+  if (!producer || !isFeatureEnabled || !isEligible) {
     return null;
   }
 

@@ -78,6 +78,20 @@ describe('Google Places UI Kit & Allowlist', () => {
         import.meta.env.VITE_GOOGLE_MAPS_API_KEY = originalKey;
       }
     });
+
+    it('returns unavailable when API key is configured but feature flag is false', async () => {
+      vi.stubEnv('VITE_ENABLE_GOOGLE_PLACES_MEDIA', 'false');
+      const originalKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+      import.meta.env.VITE_GOOGLE_MAPS_API_KEY = 'test-api-key-12345';
+
+      try {
+        const status = await loadGooglePlacesUiKit();
+        expect(status).toBe('unavailable');
+      } finally {
+        import.meta.env.VITE_GOOGLE_MAPS_API_KEY = originalKey;
+        vi.unstubAllEnvs();
+      }
+    });
   });
 
   describe('UI Kit Loader with Configured Key in Browser Environment', () => {
@@ -85,11 +99,13 @@ describe('Google Places UI Kit & Allowlist', () => {
     let prevDocument: unknown;
 
     beforeEach(() => {
+      vi.stubEnv('VITE_ENABLE_GOOGLE_PLACES_MEDIA', 'true');
       prevWindow = (globalThis as unknown as { window: unknown }).window;
       prevDocument = (globalThis as unknown as { document: unknown }).document;
     });
 
     afterEach(() => {
+      vi.unstubAllEnvs();
       (globalThis as unknown as { window: unknown }).window = prevWindow;
       (globalThis as unknown as { document: unknown }).document = prevDocument;
     });

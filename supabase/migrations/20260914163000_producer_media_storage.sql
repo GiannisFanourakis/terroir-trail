@@ -6,25 +6,31 @@
 -- Production Supabase must remain untouched during this prototype phase.
 --
 -- TerroirTrail Identity & Authorization Architecture:
--- 1. Identity Authority:
---    - TerroirTrail user accounts and producer host claims are authenticated
---      exclusively via Firebase Authentication (UIDs).
---    - Verified estate ownership is recorded authoritatively in Cloud Firestore
---      (under collections: `producer_owners/{producerId}` and `producer_registrations`).
--- 2. Client Access Boundary:
---    - Frontend browser clients connect to Supabase anonymously using the public
---      anon key for read-only PostGIS queries.
---    - Browser clients do NOT possess direct Supabase Auth JWT sessions.
---    - Direct client uploads to Supabase Storage are therefore prohibited to
---      prevent unauthenticated file injection.
--- 3. Ingestion Pipeline:
---    - Production uploads route through a verified backend API endpoint
---      (e.g., Express / Cloud Functions).
---    - The backend verifies the caller's Firebase ID token against Firestore
---      producer ownership records, validates MIME types, strips EXIF data,
---      and executes the upload using the Supabase `service_role` key.
+-- 1. Real Write-Security Boundary:
+--    - Supabase `service_role` completely bypasses storage RLS.
+--    - Therefore, backend authorization — validating the caller's Firebase ID token
+--      and verifying authoritative estate ownership in Cloud Firestore (`producer_owners/{producerId}`) —
+--      is the TRUE write-security boundary. RLS policies here provide defense-in-depth,
+--      not the primary authentication gate.
+-- 2. Moderation & Public Exposure Boundary:
+--    - Pending and unmoderated producer photography MUST NEVER be stored in or exposed
+--      through a public bucket.
+--    - Recommended Future Ingestion Architecture:
+--        Host upload
+--        → authenticated backend (Express / Cloud Functions)
+--        → Firebase ID token & Firestore ownership verification
+--        → MIME/magic-byte validation, virus scan, and EXIF/metadata stripping
+--        → private staging storage (non-public)
+--        → editorial / automated moderation & approval
+--        → approved public producer-media CDN asset
+--      Alternatively, the backend service holds the file temporarily in quarantine
+--      and uploads directly to the public 'producer-media' bucket only upon explicit approval.
+-- 3. Client Access Boundary:
+--    - Frontend browser clients connect to Supabase anonymously using the public anon key.
+--    - Browser clients DO NOT possess direct Supabase Auth JWT sessions.
+--    - Direct client uploads to Supabase Storage are strictly forbidden.
 -- 4. Bucket Configuration:
---    - Bucket: 'producer-media' (public read for CDN distribution)
+--    - Bucket: 'producer-media' (public read for CDN distribution of approved media)
 --    - Max file size: 8 MB (8,388,608 bytes)
 --    - Allowed MIME types: image/jpeg, image/png, image/webp (SVG / binaries rejected)
 -- 5. Strict Provenance Invariant:

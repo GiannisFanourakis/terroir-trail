@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { runtimeConfig } from '../config/runtimeConfig';
 
 export type GooglePlacesUiKitStatus = 'unavailable' | 'loading' | 'ready' | 'error';
 
@@ -13,12 +14,21 @@ export function getGoogleMapsApiKey(): string | undefined {
 }
 
 /**
+ * Returns true only when BOTH the feature flag is explicitly enabled AND an API key is configured.
+ */
+export function isGooglePlacesMediaActive(): boolean {
+  return runtimeConfig.googlePlacesMedia.enabled && Boolean(getGoogleMapsApiKey());
+}
+
+/**
  * Lazy loads the Google Maps JavaScript API (weekly) with Places library.
- * Safe for zero-config environments: returns 'unavailable' immediately if no key is configured.
+ * Safe for zero-config environments: returns 'unavailable' immediately if no key is configured
+ * or if the feature flag VITE_ENABLE_GOOGLE_PLACES_MEDIA is not explicitly true.
  */
 export function loadGooglePlacesUiKit(): Promise<GooglePlacesUiKitStatus> {
+  const isEnabled = runtimeConfig.googlePlacesMedia.enabled;
   const apiKey = getGoogleMapsApiKey();
-  if (!apiKey) {
+  if (!isEnabled || !apiKey) {
     currentStatus = 'unavailable';
     return Promise.resolve('unavailable');
   }
@@ -48,7 +58,31 @@ export function loadGooglePlacesUiKit(): Promise<GooglePlacesUiKitStatus> {
     const onScriptLoaded = async () => {
       try {
         if (typeof window.google?.maps?.importLibrary === 'function') {
-          await window.google.maps.importLibrary('places');
+          const placesLib = (await window.google.maps.importLibrary('places')) as Record<string, any>;
+          // React 19 compatibility: React 19 assigns properties rather than attributes on custom elements
+          // when the property exists on the prototype. Google's web component setter expects a LatLng or { lat, lng }
+          // object and throws InvalidValueError on strings. Coerce string "lat,lng" to { lat, lng }.
+          const LocationReqProto = placesLib?.PlaceDetailsLocationRequestElement?.prototype;
+          if (LocationReqProto) {
+            const desc = Object.getOwnPropertyDescriptor(LocationReqProto, 'location');
+            if (desc && desc.set) {
+              const originalSet = desc.set;
+              Object.defineProperty(LocationReqProto, 'location', {
+                get: desc.get,
+                set(val: unknown) {
+                  if (typeof val === 'string') {
+                    const [lat, lng] = val.split(',').map(Number);
+                    if (!isNaN(lat) && !isNaN(lng)) {
+                      return originalSet.call(this, { lat, lng });
+                    }
+                  }
+                  return originalSet.call(this, val);
+                },
+                configurable: true,
+                enumerable: desc.enumerable,
+              });
+            }
+          }
           currentStatus = 'ready';
           resolve('ready');
         } else {
@@ -103,16 +137,18 @@ export function useGooglePlacesUiKit(enabled: boolean = false): {
   isReady: boolean;
 } {
   const [status, setStatus] = useState<GooglePlacesUiKitStatus>(() => {
+    const isFeatureEnabled = runtimeConfig.googlePlacesMedia.enabled;
     const key = getGoogleMapsApiKey();
-    if (!key) return 'unavailable';
+    if (!isFeatureEnabled || !key) return 'unavailable';
     return currentStatus;
   });
 
   useEffect(() => {
     if (!enabled) return;
 
+    const isFeatureEnabled = runtimeConfig.googlePlacesMedia.enabled;
     const key = getGoogleMapsApiKey();
-    if (!key) {
+    if (!isFeatureEnabled || !key) {
       setStatus('unavailable');
       return;
     }
