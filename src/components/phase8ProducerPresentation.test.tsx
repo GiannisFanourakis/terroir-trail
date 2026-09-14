@@ -393,5 +393,16 @@ describe('Phase 8 Producer Card + Detail Hierarchy', () => {
       expect(farmHtml).not.toContain('regenerative');
     });
   });
+
+  it('does not describe generic review counts as verified visits', () => {
+    const drawer = readFileSync(
+      'src/components/Drawer/ProducerDetailDrawer.tsx',
+      'utf8'
+    );
+
+    expect(drawer).not.toContain('verified visits');
+    expect(drawer).toContain('({producer.reviewCount} reviews)');
+  });
+
 });
 

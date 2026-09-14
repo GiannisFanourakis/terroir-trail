@@ -642,7 +642,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                   <span>{producer.rating}</span>
                 </div>
                 {producer.reviewCount != null && producer.reviewCount > 0 && (
-                  <span className="text-stone-400">({producer.reviewCount} verified visits)</span>
+                  <span className="text-stone-400">({producer.reviewCount} reviews)</span>
                 )}
               </div>
             ) : <div />}
