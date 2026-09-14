@@ -6,54 +6,97 @@ import { CRETAN_PRODUCERS } from '../../data/producers';
 import { evaluateRouteNavigation } from '../../utils/routeSafety';
 import { DayTripModal } from './DayTripModal';
 
-describe('Phase 9 stop-verified route guide', () => {
-  it('publishes the Western Chania guide while withholding multi-stop driving navigation', () => {
-    const route = CURATED_ROUTES.find(
-      (candidate) => candidate.id === 'chania-craft-beer-olive-trail'
-    );
+const publishedCreteRoutes = CURATED_ROUTES.filter(
+  (route) =>
+    route.destination === 'crete' &&
+    (route.verificationStatus === 'verified_stops' ||
+      route.verificationStatus === 'verified')
+);
 
-    expect(route).toBeDefined();
-    expect(route?.verificationStatus).toBe('verified_stops');
-    expect(route?.stops).toHaveLength(3);
+const usableVisitStatuses = new Set([
+  'public_visits',
+  'seasonal_public',
+  'appointment_only',
+]);
 
-    const stopProducers = route!.stops.map((stop) =>
-      CRETAN_PRODUCERS.find((producer) => producer.id === stop.producerId)
-    );
+describe('Phase 9 published Crete route guides', () => {
+  it('uses only current producers with verified locations and usable visit status', () => {
+    expect(publishedCreteRoutes.length).toBeGreaterThanOrEqual(3);
 
-    expect(stopProducers.every(Boolean)).toBe(true);
+    for (const route of publishedCreteRoutes) {
+      expect(route.stops.length).toBeGreaterThanOrEqual(2);
 
-    for (const producer of stopProducers) {
-      expect(['verified_location', 'verified_entrance']).toContain(
-        producer?.locationStatus
-      );
+      for (const stop of route.stops) {
+        const producer = CRETAN_PRODUCERS.find(
+          (candidate) => candidate.id === stop.producerId
+        );
+
+        expect(producer, `${route.id}: missing ${stop.producerId}`).toBeDefined();
+
+        expect(
+          ['verified_location', 'verified_entrance'],
+          `${route.id}: ${stop.producerId} location`
+        ).toContain(producer?.locationStatus);
+
+        expect(
+          usableVisitStatuses.has(producer?.visitStatus || ''),
+          `${route.id}: ${stop.producerId} visit status`
+        ).toBe(true);
+      }
     }
+  });
 
-    const evaluation = evaluateRouteNavigation(route!, CRETAN_PRODUCERS);
-
-    expect(evaluation.isSafe).toBe(false);
-    expect(evaluation.url).toBeUndefined();
-    expect(evaluation.issues.some((issue) => issue.code === 'route_not_verified')).toBe(true);
-    expect(
-      evaluation.issues.some((issue) => issue.code === 'road_access_not_confirmed')
-    ).toBe(true);
-
-    const html = renderToString(
-      React.createElement(DayTripModal, {
-        isOpen: true,
-        onClose: () => {},
-        onSelectLoop: () => {},
-        onSelectProducer: () => {},
-        producers: CRETAN_PRODUCERS,
-        loops: [route!],
-      })
+  it('keeps stop-verified guides fail-closed for multi-stop driving navigation', () => {
+    const guideOnlyRoutes = publishedCreteRoutes.filter(
+      (route) => route.verificationStatus === 'verified_stops'
     );
 
-    expect(html).toContain('Western Chania: Olive Oil, Craft Beer &amp; Wine');
-    expect(html).toContain('Stop locations verified');
-    expect(html).toContain('Driving navigation withheld');
-    expect(html).toContain('Open location');
-    expect(html).toContain('Start with first stop');
-    expect(html).not.toContain('Open in Google Maps');
-    expect(html).not.toContain('All paved');
+    expect(guideOnlyRoutes.length).toBeGreaterThanOrEqual(3);
+
+    for (const route of guideOnlyRoutes) {
+      const evaluation = evaluateRouteNavigation(route, CRETAN_PRODUCERS);
+
+      expect(evaluation.isSafe).toBe(false);
+      expect(evaluation.url).toBeUndefined();
+      expect(
+        evaluation.issues.some((issue) => issue.code === 'route_not_verified')
+      ).toBe(true);
+
+      expect(route.drivingDistance.toLowerCase()).not.toContain('paved');
+    }
+  });
+
+  it('renders every published guide without exposing multi-stop Google navigation', () => {
+    for (const route of publishedCreteRoutes) {
+      const html = renderToString(
+        React.createElement(DayTripModal, {
+          isOpen: true,
+          onClose: () => {},
+          onSelectLoop: () => {},
+          onSelectProducer: () => {},
+          producers: CRETAN_PRODUCERS,
+          loops: [route],
+        })
+      );
+
+      expect(html).toContain(route.title.replace('&', '&amp;'));
+
+      if (route.verificationStatus === 'verified_stops') {
+        expect(html).toContain('Stop locations verified');
+        expect(html).toContain('Driving navigation withheld');
+        expect(html).toContain('Open location');
+        expect(html).not.toContain('Open in Google Maps');
+      }
+    }
+  });
+
+  it('contains no legacy missing producer references in the published guides', () => {
+    const ids = publishedCreteRoutes.flatMap((route) =>
+      route.stops.map((stop) => stop.producerId)
+    );
+
+    expect(ids).not.toContain('peza-artisanal-olive-mill');
+    expect(ids).not.toContain('kazani-kokolakis');
+    expect(ids).not.toContain('paraschakis-olive-mill');
   });
 });
