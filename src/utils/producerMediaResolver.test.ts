@@ -216,7 +216,7 @@ describe('Producer Media Resolver & Tier Validation', () => {
 
       expect(gallery[1].url).toBe(mockProducer.gallery[0]);
       expect(gallery[1].source).toBe('curated_estate');
-      expect(gallery[1].provenanceLabel).toBe('Verified TerroirTrail media');
+      expect(gallery[1].provenanceLabel).toBe('Credited listing image');
       expect(gallery[1].author).toBe('Nikos P.');
 
       // Second curated gallery image has no credit in galleryCredits

@@ -39,7 +39,8 @@ describe('googlePlacesPhotos provenance verification', () => {
         expect(attr.displayName).not.toContain('Media Archive');
         expect(attr.displayName).not.toContain('Official Estate Press Kit');
         expect(attr.displayName).not.toContain('Estate Media License');
-        expect(attr.displayName).toBe('Test Estate');
+        expect(attr.displayName).toBe('TerroirTrail listing image');
+        expect(attr.uri).toBeUndefined();
       }
     }
   });

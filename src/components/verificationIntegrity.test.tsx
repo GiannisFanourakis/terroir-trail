@@ -51,7 +51,7 @@ describe('Producer Verification and Visitability UI Integrity', () => {
         React.createElement(ProducerDetailDrawer, {
           producer,
           onClose: () => {},
-          initialTab: 'tastings',
+          initialTab: 'visit',
         })
       );
 
@@ -82,7 +82,7 @@ describe('Producer Verification and Visitability UI Integrity', () => {
         React.createElement(ProducerDetailDrawer, {
           producer,
           onClose: () => {},
-          initialTab: 'tastings',
+          initialTab: 'visit',
         })
       );
 
@@ -117,7 +117,7 @@ describe('Producer Verification and Visitability UI Integrity', () => {
         React.createElement(ProducerDetailDrawer, {
           producer,
           onClose: () => {},
-          initialTab: 'tastings',
+          initialTab: 'visit',
         })
       );
 
@@ -142,7 +142,7 @@ describe('Producer Verification and Visitability UI Integrity', () => {
         React.createElement(ProducerDetailDrawer, {
           producer,
           onClose: () => {},
-          initialTab: 'tastings',
+          initialTab: 'visit',
         })
       );
 
