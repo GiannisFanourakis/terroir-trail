@@ -18,7 +18,7 @@ Each feature is classified as one of:
 
 | Surface | Current classification | Evidence / reason | Action |
 | --- | --- | --- | --- |
-| Traveler authentication (Google, Apple, email/password, reset) | Needs work | Real Firebase authentication exists, cloud profiles are loaded after sign-in, password reset is wired, and producer authority is not derived from self-editable traveler profile fields. Full production E2E QA, account deletion/privacy handling and account-management UX still need explicit verification. | Keep public; test signup, login, reset, logout, session recovery and account lifecycle on production configuration. |
+| Traveler authentication (Email/password, Google; dormant Apple infrastructure) | Needs work | Real Firebase email/password authentication and Google sign-in are exposed. Password reset is wired, logout and session reconciliation are present, and stale cached sessions/producer authority are cleared upon session loss. Public error copy is hardened without leaking internal configuration (Firebase Console, .env, authorized domains, developer setup). Fake Remember Me control was removed. Email/password and Google are currently exposed traveler sign-in paths. Apple authentication infrastructure exists but is not part of the currently verified public traveler sign-in surface. Account deletion remains a manual/operational privacy process (no in-app automated deletion). Full production provider/device E2E QA and operational verification still required. | Keep current public paths (email/password, Google); keep Apple dormant until device/provider verification; complete production E2E QA for signup, login, reset, logout, session recovery and operational privacy handling. |
 | Traveler account state | Launch-ready candidate | Passport stamps and personal notes are account-backed. Favorites are intentionally browser-local, now scoped per guest/account identity instead of one shared browser key, and public auth copy no longer claims cross-device favorite sync. | Keep public; perform final multi-account/device QA and retain the local-only favorites wording. |
 | Producer/Host authority | Needs work | Host privileges are derived from trusted producer ownership rather than client-editable profile fields. Phase 7 removed instant-verification wording and synthetic claim defaults, and ownership approval no longer implies VAT verification. The wider admin/claim lifecycle remains incomplete. | Keep trusted-host portal gated; retain manual/operator approval until the complete admin workflow exists. |
 | Admin workflow | Needs work | Sensitive producer ownership assignment is operator/server trusted rather than a normal self-assignable frontend role, but the canonical roadmap still lists the full TerroirTrail Admin product/capabilities as incomplete. | Do not treat producer onboarding as a finished self-service operational workflow. |
@@ -56,6 +56,17 @@ The traveler-state corrective batch was pushed as commit `ba7677c` and subsequen
 4. **Persistence wording is accurate.** Sign-in copy describes stamps/notes as synced while favorites are described as device-local.
 5. **Public commercial traveler navigation remains quarantined.** Dormant pass/booking infrastructure is not treated as part of the current launch product.
 
+## Traveler authentication & account-lifecycle closeout
+
+The traveler authentication cleanup batch aligns public auth UX and error handling with launch boundaries while keeping traveler authentication classified as **Needs work**.
+
+1. **Fake "Remember Me" removed.** The non-functional checkbox and React state were removed from `AuthModal.tsx`; existing Firebase session behavior is unchanged without misleading client controls.
+2. **Public authentication errors sanitized.** Developer and configuration details (Firebase Console, `.env`, authorized domains, Apple Developer credentials) were removed from public error copy. Users receive neutral, actionable messages while internal logging and rejection codes are preserved.
+3. **Apple Sign-In accurately scoped.** Dormant Apple authentication infrastructure exists in `useAuth.ts` and `AuthModal.tsx`, but email/password and Google are currently exposed traveler sign-in paths. Apple authentication infrastructure exists but is not part of the currently verified public traveler sign-in surface.
+4. **AuthModal accessibility pass completed.** Added dialog semantics (`role="dialog"`, `aria-modal="true"`, `aria-labelledby="auth-modal-title"`), stable title id, `role="alert"` on errors, `role="status"` and `aria-live="polite"` on password reset success, accessible `aria-label`s on password visibility toggles, and `aria-pressed` on the account-type switcher.
+5. **Session reconciliation and producer trust boundaries intact.** Session nullification clears cached users and revokes host privileges; demo fixtures remain disabled when cloud Firebase is configured.
+6. **Account deletion remains operational/manual.** In-app automated account deletion is not implemented; privacy/deletion requests continue to be directed to the TerroirTrail contact email as specified in `LegalModal.tsx`. Full operational verification is still required before launch.
+
 ## Discovery readiness closeout
 
 The main discovery-readiness implementation was pushed as commit `89615ca`; temporary patch scripts were removed in `ad9e7ef`.
@@ -71,7 +82,7 @@ The main discovery-readiness implementation was pushed as commit `89615ca`; temp
 
 ## Next launch-readiness blockers
 
-1. Complete production-config traveler auth/account-lifecycle QA: signup, provider login, reset, logout, session recovery, account deletion/privacy reality and error handling.
+1. Complete production-config traveler auth/account-lifecycle QA: real Firebase email/password signup and Google OAuth login on production domain, password reset delivery, logout/session recovery on mobile/desktop, operational verification of privacy/deletion handling, and provider error boundary checks.
 2. Finish manual mobile/keyboard/focus QA for map, drawer, Passport and primary modals, including slow-network/loading states.
 3. Audit route/day-trip deep links and any dormant direct-entry paths so quarantined route/booking/pass/chauffeur features cannot be exposed accidentally.
 4. Reconcile remaining Privacy Policy / Terms / AdSense consent wording with the discovery-first product and actual persistence behavior.

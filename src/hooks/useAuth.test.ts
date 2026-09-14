@@ -102,7 +102,11 @@ describe('useAuth - Production Safety & Fallback Removal', () => {
     ).rejects.toThrow('FIREBASE_NOT_CONFIGURED');
 
     // stateMap: [0] user, [1] isLoading, [2] authError
-    expect(stateMap[2]).toContain('Authentication service is not configured');
+    expect(stateMap[2]).toBe('Sign-in is temporarily unavailable. Please try again later.');
+    expect(stateMap[2]).not.toContain('Firebase Console');
+    expect(stateMap[2]).not.toContain('.env');
+    expect(stateMap[2]).not.toContain('authorized domains');
+    expect(stateMap[2]).not.toContain('Apple Developer');
     expect(stateMap[0]).toBeNull();
   });
 
@@ -113,7 +117,9 @@ describe('useAuth - Production Safety & Fallback Removal', () => {
       hook.signupWithEmail('New Traveler', 'new@example.com', 'secret123')
     ).rejects.toThrow('FIREBASE_NOT_CONFIGURED');
 
-    expect(stateMap[2]).toContain('Authentication service is not configured');
+    expect(stateMap[2]).toBe('Sign-in is temporarily unavailable. Please try again later.');
+    expect(stateMap[2]).not.toContain('Firebase Console');
+    expect(stateMap[2]).not.toContain('.env');
     expect(stateMap[0]).toBeNull();
   });
 
@@ -124,7 +130,9 @@ describe('useAuth - Production Safety & Fallback Removal', () => {
       hook.loginAsProducer('winery@estate.gr', 'secret123', 'winery-1', 'Boutique Winery')
     ).rejects.toThrow('FIREBASE_NOT_CONFIGURED');
 
-    expect(stateMap[2]).toContain('Authentication service is not configured');
+    expect(stateMap[2]).toBe('Sign-in is temporarily unavailable. Please try again later.');
+    expect(stateMap[2]).not.toContain('Firebase Console');
+    expect(stateMap[2]).not.toContain('.env');
     expect(stateMap[0]).toBeNull();
   });
 
@@ -141,8 +149,22 @@ describe('useAuth - Production Safety & Fallback Removal', () => {
       )
     ).rejects.toThrow('FIREBASE_NOT_CONFIGURED');
 
-    expect(stateMap[2]).toContain('Authentication service is not configured');
+    expect(stateMap[2]).toBe('Sign-in is temporarily unavailable. Please try again later.');
+    expect(stateMap[2]).not.toContain('Firebase Console');
+    expect(stateMap[2]).not.toContain('.env');
     expect(stateMap[0]).toBeNull();
+  });
+
+  it('fails closed with sanitized error on password reset when Firebase is not configured', async () => {
+    const hook = useAuth();
+
+    await expect(
+      hook.sendPasswordResetLink('traveler@example.com')
+    ).rejects.toThrow('FIREBASE_NOT_CONFIGURED');
+
+    expect(stateMap[2]).toBe('Sign-in is temporarily unavailable. Please try again later.');
+    expect(stateMap[2]).not.toContain('Firebase Console');
+    expect(stateMap[2]).not.toContain('.env');
   });
 
   it('fails closed when attempting Google sign in without Firebase configuration', async () => {
@@ -375,5 +397,16 @@ describe('useAuth - Firebase Session Reconciliation & Stale Account Invalidation
     expect(hook.user?.name).toBe('Prefix Customer');
     expect(hook.isAuthenticated).toBe(true);
     expect(storage.get('terroir_trail_user')).toBeDefined();
+  });
+
+  it('clears user state on logout', async () => {
+    mockFirebaseState.isConfigured = false;
+    stateIndex = 0;
+    const hook = useAuth();
+    hook.loginAsDemo('giannis');
+    expect(stateMap[0]).not.toBeNull();
+
+    await hook.logout();
+    expect(stateMap[0]).toBeNull();
   });
 });

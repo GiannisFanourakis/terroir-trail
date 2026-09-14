@@ -401,7 +401,7 @@ export const useAuth = () => {
     setAuthError(null);
     try {
       if (!isFirebaseConfigured || !auth) {
-        throw new Error('Firebase authentication is not configured.');
+        throw new Error('FIREBASE_NOT_CONFIGURED');
       }
       await sendPasswordReset(email);
     } catch (error: any) {

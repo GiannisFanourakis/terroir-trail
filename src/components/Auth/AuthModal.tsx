@@ -7,6 +7,7 @@ import {
 import { TravelerType, ProducerTaxDetails } from '../../types/auth';
 import { Producer } from '../../types/terroir';
 import { validateVatNumber, getFiscalLabels } from '../../utils/vatValidator';
+import { formatAuthError } from '../../utils/authErrors';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -64,7 +65,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(true);
   const [name, setName] = useState('');
   const [travelerType, setTravelerType] = useState<TravelerType>('crete_local');
 
@@ -142,11 +142,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       await onLoginWithGoogle();
       onClose();
     } catch (err: any) {
-      if (err.message === 'FIREBASE_NOT_CONFIGURED') {
-        setLocalError('Google sign-in requires Firebase credentials. Check your .env file.');
-      } else {
-        setLocalError(err.message || 'Google sign-in failed.');
-      }
+      setLocalError(formatAuthError(err));
     } finally {
       setLocalLoading(null);
     }
@@ -162,13 +158,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       await onLoginWithApple();
       onClose();
     } catch (err: any) {
-      if (err.message === 'FIREBASE_NOT_CONFIGURED') {
-        setLocalError('Apple sign-in requires Firebase credentials. Check your .env file.');
-      } else if (err.code === 'auth/operation-not-allowed' || err.message?.includes('operation-not-allowed')) {
-        setLocalError('Apple Sign-In is not enabled yet in your Firebase project. To use it, enable Apple in Firebase Console ➔ Authentication ➔ Sign-in method (requires Apple Developer credentials), or sign in with Google or Email.');
-      } else {
-        setLocalError(err.message || 'Apple sign-in failed.');
-      }
+      setLocalError(formatAuthError(err));
     } finally {
       setLocalLoading(null);
     }
@@ -193,7 +183,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       await onLogin(email.trim(), password);
       onClose();
     } catch (err: any) {
-      setLocalError(err.message || 'Sign in failed. Please verify your email and password.');
+      setLocalError(formatAuthError(err));
     } finally {
       setLocalLoading(null);
     }
@@ -222,7 +212,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       await onSignup(name.trim(), email.trim(), password, travelerType);
       onClose();
     } catch (err: any) {
-      setLocalError(err.message || 'Account registration failed.');
+      setLocalError(formatAuthError(err));
     } finally {
       setLocalLoading(null);
     }
@@ -254,7 +244,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       }
       onClose();
     } catch (err: any) {
-      setLocalError(err.message || 'Host login failed. Please verify your email and password.');
+      setLocalError(formatAuthError(err));
     } finally {
       setLocalLoading(null);
     }
@@ -319,7 +309,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       }
       onClose();
     } catch (err: any) {
-      setLocalError(err.message || 'Estate registration failed.');
+      setLocalError(formatAuthError(err));
     } finally {
       setLocalLoading(null);
     }
@@ -344,7 +334,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       }
       setResetSuccessEmail(targetEmail);
     } catch (err: any) {
-      setLocalError(err.message || 'Failed to send password reset email.');
+      setLocalError(formatAuthError(err));
     } finally {
       setLocalLoading(null);
     }
@@ -352,7 +342,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
-      <div className="relative w-full max-w-md bg-stone-950 border border-white/15 rounded-3xl shadow-2xl overflow-hidden text-stone-100 max-h-[92vh] flex flex-col">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="auth-modal-title"
+        aria-busy={isBusy}
+        className="relative w-full max-w-md bg-stone-950 border border-white/15 rounded-3xl shadow-2xl overflow-hidden text-stone-100 max-h-[92vh] flex flex-col"
+      >
         
         {/* Close Button */}
         <button
@@ -373,7 +369,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             )}
           </div>
           
-          <h2 className="text-xl font-bold font-serif-title tracking-tight text-white">
+          <h2 id="auth-modal-title" className="text-xl font-bold font-serif-title tracking-tight text-white">
             {accountType === 'traveler' ? (
               travelerMode === 'login' ? 'Sign In to TerroirTrail' :
               travelerMode === 'signup' ? 'Create Explorer Account' : 'Reset Your Password'
@@ -399,6 +395,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           <div className="mt-4 flex rounded-xl bg-stone-900 p-1 border border-white/10 text-xs font-semibold">
             <button
               type="button"
+              aria-pressed={accountType === 'traveler'}
               onClick={() => {
                 setAccountType('traveler');
                 setLocalError('');
@@ -416,6 +413,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
             <button
               type="button"
+              aria-pressed={accountType === 'producer'}
               onClick={() => {
                 setAccountType('producer');
                 setLocalError('');
@@ -438,7 +436,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           
           {/* Error Banner */}
           {currentError && (
-            <div className="p-3 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-300 text-xs flex items-start gap-2 animate-in fade-in duration-200">
+            <div
+              role="alert"
+              className="p-3 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-300 text-xs flex items-start gap-2 animate-in fade-in duration-200"
+            >
               <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-rose-400" />
               <div className="flex-1 leading-relaxed">{currentError}</div>
             </div>
@@ -446,7 +447,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
           {/* Reset Success Banner */}
           {resetSuccessEmail && (
-            <div className="p-3.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs flex items-start gap-2.5 animate-in fade-in duration-200">
+            <div
+              role="status"
+              aria-live="polite"
+              className="p-3.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs flex items-start gap-2.5 animate-in fade-in duration-200"
+            >
               <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5 text-emerald-400" />
               <div>
                 <p className="font-bold text-white">Password Reset Email Sent!</p>
@@ -515,12 +520,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   {/* Real Email & Password Form */}
                   <form onSubmit={handleTravelerLogin} className="space-y-3">
                     <div>
-                      <label className="block text-stone-300 text-xs font-semibold mb-1">
+                      <label htmlFor="traveler-login-email" className="block text-stone-300 text-xs font-semibold mb-1">
                         Email Address
                       </label>
                       <div className="relative">
                         <Mail className="w-4 h-4 text-stone-500 absolute left-3 top-1/2 -translate-y-1/2" />
                         <input
+                          id="traveler-login-email"
                           type="email"
                           autoComplete="email"
                           value={email}
@@ -534,7 +540,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
                     <div>
                       <div className="flex items-center justify-between mb-1">
-                        <label className="block text-stone-300 text-xs font-semibold">
+                        <label htmlFor="traveler-login-password" className="block text-stone-300 text-xs font-semibold">
                           Password
                         </label>
                         <button
@@ -551,6 +557,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                       <div className="relative">
                         <Lock className="w-4 h-4 text-stone-500 absolute left-3 top-1/2 -translate-y-1/2" />
                         <input
+                          id="traveler-login-password"
                           type={showPassword ? 'text' : 'password'}
                           autoComplete="current-password"
                           value={password}
@@ -562,23 +569,12 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                         <button
                           type="button"
                           onClick={() => setShowPassword(!showPassword)}
+                          aria-label={showPassword ? 'Hide password' : 'Show password'}
                           className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-500 hover:text-stone-300 transition cursor-pointer"
                         >
                           {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                         </button>
                       </div>
-                    </div>
-
-                    <div className="flex items-center justify-between pt-1">
-                      <label className="flex items-center gap-2 cursor-pointer text-xs text-stone-400 hover:text-stone-300">
-                        <input
-                          type="checkbox"
-                          checked={rememberMe}
-                          onChange={(e) => setRememberMe(e.target.checked)}
-                          className="rounded border-white/20 bg-stone-900 text-amber-500 focus:ring-amber-400/20"
-                        />
-                        <span>Remember me</span>
-                      </label>
                     </div>
 
                     <button
@@ -619,12 +615,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 <div className="space-y-4">
                   <form onSubmit={handleTravelerSignup} className="space-y-3">
                     <div>
-                      <label className="block text-stone-300 text-xs font-semibold mb-1">
+                      <label htmlFor="traveler-signup-name" className="block text-stone-300 text-xs font-semibold mb-1">
                         Full Name
                       </label>
                       <div className="relative">
                         <User className="w-4 h-4 text-stone-500 absolute left-3 top-1/2 -translate-y-1/2" />
                         <input
+                          id="traveler-signup-name"
                           type="text"
                           autoComplete="name"
                           value={name}
@@ -637,12 +634,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                     </div>
 
                     <div>
-                      <label className="block text-stone-300 text-xs font-semibold mb-1">
+                      <label htmlFor="traveler-signup-email" className="block text-stone-300 text-xs font-semibold mb-1">
                         Email Address
                       </label>
                       <div className="relative">
                         <Mail className="w-4 h-4 text-stone-500 absolute left-3 top-1/2 -translate-y-1/2" />
                         <input
+                          id="traveler-signup-email"
                           type="email"
                           autoComplete="email"
                           value={email}
@@ -655,12 +653,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                     </div>
 
                     <div>
-                      <label className="block text-stone-300 text-xs font-semibold mb-1">
+                      <label htmlFor="traveler-signup-password" className="block text-stone-300 text-xs font-semibold mb-1">
                         Create Password
                       </label>
                       <div className="relative">
                         <Lock className="w-4 h-4 text-stone-500 absolute left-3 top-1/2 -translate-y-1/2" />
                         <input
+                          id="traveler-signup-password"
                           type={showPassword ? 'text' : 'password'}
                           autoComplete="new-password"
                           value={password}
@@ -672,6 +671,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                         <button
                           type="button"
                           onClick={() => setShowPassword(!showPassword)}
+                          aria-label={showPassword ? 'Hide password' : 'Show password'}
                           className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-500 hover:text-stone-300 transition cursor-pointer"
                         >
                           {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -745,12 +745,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 <div className="space-y-4">
                   <form onSubmit={handlePasswordReset} className="space-y-3">
                     <div>
-                      <label className="block text-stone-300 text-xs font-semibold mb-1">
+                      <label htmlFor="traveler-reset-email" className="block text-stone-300 text-xs font-semibold mb-1">
                         Registered Email Address
                       </label>
                       <div className="relative">
                         <Mail className="w-4 h-4 text-stone-500 absolute left-3 top-1/2 -translate-y-1/2" />
                         <input
+                          id="traveler-reset-email"
                           type="email"
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
@@ -840,12 +841,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
                   <form onSubmit={handleProducerLogin} className="space-y-3">
                     <div>
-                      <label className="block text-stone-300 text-xs font-semibold mb-1">
+                      <label htmlFor="producer-login-email" className="block text-stone-300 text-xs font-semibold mb-1">
                         Official Estate or Producer Email
                       </label>
                       <div className="relative">
                         <Mail className="w-4 h-4 text-stone-500 absolute left-3 top-1/2 -translate-y-1/2" />
                         <input
+                          id="producer-login-email"
                           type="email"
                           autoComplete="email"
                           value={producerEmail}
@@ -859,7 +861,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
                     <div>
                       <div className="flex items-center justify-between mb-1">
-                        <label className="block text-stone-300 text-xs font-semibold">
+                        <label htmlFor="producer-login-password" className="block text-stone-300 text-xs font-semibold">
                           Host Password
                         </label>
                         <button
@@ -876,6 +878,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                       <div className="relative">
                         <Lock className="w-4 h-4 text-stone-500 absolute left-3 top-1/2 -translate-y-1/2" />
                         <input
+                          id="producer-login-password"
                           type={showProducerPassword ? 'text' : 'password'}
                           autoComplete="current-password"
                           value={producerPassword}
@@ -887,6 +890,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                         <button
                           type="button"
                           onClick={() => setShowProducerPassword(!showProducerPassword)}
+                          aria-label={showProducerPassword ? 'Hide password' : 'Show password'}
                           className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-500 hover:text-stone-300 transition cursor-pointer"
                         >
                           {showProducerPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -959,12 +963,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   <form onSubmit={handleProducerClaim} className="space-y-3">
 
                     <div>
-                      <label className="block text-stone-300 text-xs font-semibold mb-1">
+                      <label htmlFor="producer-claim-name" className="block text-stone-300 text-xs font-semibold mb-1">
                         Producer / Host Full Name
                       </label>
                       <div className="relative">
                         <User className="w-4 h-4 text-stone-500 absolute left-3 top-1/2 -translate-y-1/2" />
                         <input
+                          id="producer-claim-name"
                           type="text"
                           value={producerHostName}
                           onChange={(e) => setProducerHostName(e.target.value)}
@@ -976,12 +981,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                     </div>
 
                     <div>
-                      <label className="block text-stone-300 text-xs font-semibold mb-1">
+                      <label htmlFor="producer-claim-email" className="block text-stone-300 text-xs font-semibold mb-1">
                         Official Estate Email
                       </label>
                       <div className="relative">
                         <Mail className="w-4 h-4 text-stone-500 absolute left-3 top-1/2 -translate-y-1/2" />
                         <input
+                          id="producer-claim-email"
                           type="email"
                           value={producerEmail}
                           onChange={(e) => setProducerEmail(e.target.value)}
@@ -993,12 +999,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                     </div>
 
                     <div>
-                      <label className="block text-stone-300 text-xs font-semibold mb-1">
+                      <label htmlFor="producer-claim-password" className="block text-stone-300 text-xs font-semibold mb-1">
                         Create Master Password
                       </label>
                       <div className="relative">
                         <Lock className="w-4 h-4 text-stone-500 absolute left-3 top-1/2 -translate-y-1/2" />
                         <input
+                          id="producer-claim-password"
                           type={showProducerPassword ? 'text' : 'password'}
                           value={producerPassword}
                           onChange={(e) => setProducerPassword(e.target.value)}
@@ -1009,6 +1016,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                         <button
                           type="button"
                           onClick={() => setShowProducerPassword(!showProducerPassword)}
+                          aria-label={showProducerPassword ? 'Hide password' : 'Show password'}
                           className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-500 hover:text-stone-300 transition cursor-pointer"
                         >
                           {showProducerPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -1202,12 +1210,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 <div className="space-y-4">
                   <form onSubmit={handlePasswordReset} className="space-y-3">
                     <div>
-                      <label className="block text-stone-300 text-xs font-semibold mb-1">
+                      <label htmlFor="producer-reset-email" className="block text-stone-300 text-xs font-semibold mb-1">
                         Registered Estate Email
                       </label>
                       <div className="relative">
                         <Mail className="w-4 h-4 text-stone-500 absolute left-3 top-1/2 -translate-y-1/2" />
                         <input
+                          id="producer-reset-email"
                           type="email"
                           value={producerEmail}
                           onChange={(e) => setProducerEmail(e.target.value)}

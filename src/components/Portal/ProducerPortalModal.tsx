@@ -10,6 +10,7 @@ import {
   Truck, FileText, Package, HelpCircle, QrCode, Camera
 } from 'lucide-react';
 import { validateVatNumber, getFiscalLabels } from '../../utils/vatValidator';
+import { formatAuthError } from '../../utils/authErrors';
 import { ProducerRegistrationForm } from './ProducerRegistrationForm';
 import { HostQrScannerModal } from './HostQrScannerModal';
 import { HostVerificationModal, VerifiedPassInfo } from '../Monetization/HostVerificationModal';
@@ -242,11 +243,7 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
       setOauthLoading('google');
       await onLoginWithGoogle();
     } catch (err: any) {
-      if (err.message === 'FIREBASE_NOT_CONFIGURED') {
-        setOauthError('Google sign-in requires Firebase credentials. Check your .env file.');
-      } else {
-        setOauthError(err.message || 'Google sign-in failed.');
-      }
+      setOauthError(formatAuthError(err));
     } finally {
       setOauthLoading(null);
     }
@@ -259,13 +256,7 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
       setOauthLoading('apple');
       await onLoginWithApple();
     } catch (err: any) {
-      if (err.message === 'FIREBASE_NOT_CONFIGURED') {
-        setOauthError('Apple sign-in requires Firebase credentials. Check your .env file.');
-      } else if (err.code === 'auth/operation-not-allowed' || err.message?.includes('operation-not-allowed')) {
-        setOauthError('Apple Sign-In is not enabled yet in your Firebase project. To use it, enable Apple in Firebase Console ➔ Authentication ➔ Sign-in method, or sign in with Google.');
-      } else {
-        setOauthError(err.message || 'Apple sign-in failed.');
-      }
+      setOauthError(formatAuthError(err));
     } finally {
       setOauthLoading(null);
     }
