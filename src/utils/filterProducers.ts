@@ -1,4 +1,5 @@
 import { Producer, FilterState } from '../types/terroir';
+import { getEffectiveProducerCategory } from './producerCategory';
 
 /**
  * Pure function to filter a list of producers based on user filter criteria,
@@ -11,12 +12,13 @@ export function filterProducers(
   isFavorite: (id: string) => boolean = () => false
 ): Producer[] {
   return producers.filter((producer) => {
-    // Category filter. Peskesi is a farm carried under the legacy `kazani`
-    // database category until Phase 8 adds first-class farm taxonomy; keep it
-    // visible under All, but never surface it as a Rakokazano/category match.
-    if (filters.category !== 'all') {
-      if (producer.id === 'peskesi-farm-kazani') return false;
-      if (producer.category !== filters.category) return false;
+    // Use the discovery-facing category so legacy rows do not leak incorrect
+    // taxonomy while their persisted source is being migrated.
+    if (
+      filters.category !== 'all' &&
+      getEffectiveProducerCategory(producer) !== filters.category
+    ) {
+      return false;
     }
 
     // Destination filter (Macro-Region: Crete, Santorini, Peloponnese, etc.)

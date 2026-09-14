@@ -4,7 +4,8 @@ export type Category =
   | 'olive_mill' 
   | 'cheese_dairy' 
   | 'apiary'
-  | 'brewery';
+  | 'brewery'
+  | 'farm';
 
 export type ProducerCategory = Category;
 

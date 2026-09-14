@@ -7,6 +7,8 @@ export const CATEGORY_FALLBACK_IMAGES: Record<Producer['category'], string> = {
   olive_mill: '/images/estates/vouves-ancient-olive-tree.jpg',
   cheese_dairy: '/images/estates/crete-mitato-shepherd.jpg',
   apiary: '/images/estates/rethymno-graviera.jpg',
+  // Generic category fallback only; never claim this depicts a specific farm.
+  farm: '/images/estates/vouves-ancient-olive-tree.jpg',
 };
 
 /**

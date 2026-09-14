@@ -120,7 +120,7 @@ describe('filterProducers pure utility', () => {
     expect(result).toEqual([p2]);
   });
 
-  it('keeps the legacy Peskesi farm record out of the Rakokazano filter until farm taxonomy exists', () => {
+  it('treats the legacy Peskesi row as a farm, never as a Rakokazano', () => {
     const peskesi = createMockProducer({
       id: 'peskesi-farm-kazani',
       name: 'Peskesi Organic Farm',
@@ -135,6 +135,27 @@ describe('filterProducers pure utility', () => {
         category: 'kazani',
       })
     ).toEqual([]);
+    expect(
+      filterProducers([peskesi], {
+        ...defaultFilters,
+        category: 'farm',
+      })
+    ).toEqual([peskesi]);
+  });
+
+  it('filters first-class farm rows by farm category', () => {
+    const farm = createMockProducer({
+      id: 'future-farm',
+      name: 'Future Farm',
+      category: 'farm',
+    });
+
+    expect(
+      filterProducers([farm], {
+        ...defaultFilters,
+        category: 'farm',
+      })
+    ).toEqual([farm]);
   });
 
   it('filters by destination (macro-region)', () => {

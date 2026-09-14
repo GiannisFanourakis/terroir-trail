@@ -29,6 +29,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
     { id: 'olive_mill', label: 'Olive Mills', icon: '🫒', activeColor: 'bg-emerald-600 text-white shadow-emerald-600/30' },
     { id: 'cheese_dairy', label: 'Shepherd Dairies', icon: '🧀', activeColor: 'bg-yellow-500 text-stone-950 shadow-yellow-500/30' },
     { id: 'apiary', label: 'Honey & Herbs', icon: '🍯', activeColor: 'bg-orange-500 text-white shadow-orange-500/30' },
+    { id: 'farm', label: 'Farms', icon: '🌿', activeColor: 'bg-emerald-500 text-stone-950 shadow-emerald-500/30' },
   ];
 
   const roadAccessOptions: { id: RoadAccess | 'all'; label: string }[] = [
