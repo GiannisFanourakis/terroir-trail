@@ -103,13 +103,31 @@ The Phase 7 advertising quarantine ensures that the public launch remains free o
 5. **Privacy Policy and Legal notices reconciled.** `LegalModal.tsx` and `public/privacy.html` explicitly clarify that advertising infrastructure is disabled for the current public launch and fails closed without sponsor fallbacks.
 6. **Passport modal cleaned.** Removed unused `Award` import and unused `onOpenExplorerPass` / `onOpenDigitalPass` callback props from `PassportModal.tsx`.
 
+## React warning inventory & runtime lifecycle closeout
+
+1. **Warning classification completed.** The repository passes ESLint with 132 total warnings across dormant, test and launch-visible files. All warnings were classified into Launch-Visible (Category A), Dormant / Future / Prototype (Category B: 70 warnings across inactive booking, pass, wine box, and chauffeur components), and Test / Internal Tooling (Category C: 6 warnings).
+2. **Launch-visible Rules-of-Hooks violation resolved.** In `ProducerPortalModal.tsx`, the early return `if (!isOpen) return null;` previously preceded 24 `useState` and `useEffect` calls, directly violating React's Rules of Hooks whenever the modal was mounted or toggled. The guard was repositioned to immediately precede JSX return, and the `selectedProducer` dependency was added to its sync effect. All 24 conditional hook warnings and the missing dependency warning were eliminated with zero regression.
+3. **Intentional launch-visible warnings documented.**
+   - `AuthModal.tsx` (`react-hooks/exhaustive-deps`, line 112): `selectedProducerId` is intentionally omitted from the modal open reset effect to prevent wiping user input fields when selecting an estate in the claim dropdown.
+   - `MapCanvas.tsx` (`react-hooks/exhaustive-deps`, lines 206, 227, 236, 306): Leaflet map container mount effect `[]` intentionally runs once on mount to prevent tearing down the map instance; `TILE_CONFIGS` and `DESTINATION_CENTERS` are immutable module constants; and `onSelectProducer` is omitted from the marker synchronization effect to prevent destroying and recreating Leaflet DOM markers on every parent re-render.
+4. **Zero credible runtime warnings remain on launch surfaces.** No stale closures, uncleaned event listeners, or unsafe effect lifecycles remain unaddressed on active launch surfaces.
+
+## Unsupported marketing & dead prototype public exposure sweep closeout
+
+A full keyword and surface sweep was conducted across public launch surfaces (`index.html`, `App.tsx`, `Header.tsx`, `FilterBar.tsx`, `ProducerDetailDrawer.tsx`, `AboutFaqModal.tsx`, `PassportModal.tsx`, `ProducerPortalModal.tsx`, `AuthModal.tsx`, `ProfileMenu.tsx`, `ProducerList.tsx`, `ProducerCard.tsx`, `MapCanvas.tsx`, `LegalModal.tsx`, `PrivacyModal.tsx`, `GoogleAdSlot.tsx`).
+
+1. **No public exposure of commercial prototypes.** Public entry points for Explorer Pass purchases, digital pass displays, chauffeur van bookings, tasting reservation checkouts, curated route navigation, and Host Pro upgrades remain strictly quarantined.
+2. **Public wiring confirmed quarantined.** `App.tsx` passes no route or booking callbacks (`onOpenLoops`, `onOpenExperiences`, `onOpenMyBookings`, `onOpenExplorerPass`, `onOpenDigitalPass`) to public header, drawer, filter, or menu components.
+3. **Direct-entry parameters validated.** Commercial query parameters (`checkout_session_id`, `verify_pass`, `vip`, `producer=upgraded`) remain deactivated, while legitimate producer discovery deep links (`?producer=<id>`) remain supported.
+4. **Legitimate public copy verified.** All public references to bookings, passes, routes, and advertising in FAQ, legal notices, and SEO metadata accurately explain launch boundaries (discovery-first product, 0% commissions, draft routes under verification, advertising failing closed, and commercial features reserved for future phases).
+5. **Dormant architecture preserved.** Prototype components and server verification routes remain preserved in the codebase for future activation (Phases 8–13).
+
 ## Next launch-readiness blockers
 
 1. Complete production-config traveler auth/account-lifecycle QA: real Firebase email/password signup and Google OAuth login on production domain, password reset delivery, logout/session recovery on mobile/desktop, operational verification of privacy/deletion handling, and provider error boundary checks.
 2. Finish manual mobile/keyboard/focus QA for map, drawer, Passport and primary modals, including slow-network/loading states.
 3. Before any future private pilot or commercial activation, complete operational review and production verification of the hardened Explorer Pass authorization path; this batch was not deployed.
-4. Inventory launch-visible React hook warnings separately from fully dormant commercial/prototype components; fix launch-visible violations first.
-5. Complete unsupported-marketing/dead-prototype review, then run the full check, deploy manually to Firebase Hosting and verify production before crossing Phase 7 checklist items.
+4. Deployment and production smoke verification on Firebase Hosting before crossing Phase 7 checklist items.
 
 ## Notes
 

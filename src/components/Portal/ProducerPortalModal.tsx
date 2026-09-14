@@ -50,8 +50,6 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
   onSelectProducerForDrawer,
   onPassVerified,
 }) => {
-  if (!isOpen) return null;
-
   const isProducerAuthenticated = Boolean(user && user.isProducer && user.claimedProducerId);
 
   const [isScannerOpen, setIsScannerOpen] = useState<boolean>(false);
@@ -179,7 +177,7 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
       setDirectBottleShopUrl(ov?.directBottleShopUrl || '');
       setSaveSuccess(false);
     }
-  }, [selectedProducerId, getProducerOverride]);
+  }, [selectedProducer, getProducerOverride]);
 
   const handleSelectProducer = (id: string) => {
     // Prevent real users from switching to another producer in the host portal
@@ -261,6 +259,8 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
       setOauthLoading(null);
     }
   };
+
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200 select-none">

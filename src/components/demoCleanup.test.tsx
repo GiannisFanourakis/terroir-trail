@@ -81,6 +81,36 @@ describe('Production Demo & Fake UI Removal Suite', () => {
       expect(html).not.toContain('Craft Brewing Co. (Demo)');
       expect(html).not.toContain('Tuscan Hillside (Demo)');
     });
+
+    it('renders null when closed and mounts cleanly when opened without hook lifecycle errors', () => {
+      const closedHtml = renderToString(
+        React.createElement(ProducerPortalModal, {
+          isOpen: false,
+          onClose: () => {},
+          user: null,
+          producers: [],
+          bookings: [],
+          onUpdateBookingStatus: async () => {},
+          onSaveProducerOverride: async () => {},
+          getProducerOverride: () => undefined,
+        })
+      );
+      expect(closedHtml).toBe('');
+
+      const openHtml = renderToString(
+        React.createElement(ProducerPortalModal, {
+          isOpen: true,
+          onClose: () => {},
+          user: null,
+          producers: [],
+          bookings: [],
+          onUpdateBookingStatus: async () => {},
+          onSaveProducerOverride: async () => {},
+          getProducerOverride: () => undefined,
+        })
+      );
+      expect(openHtml).toContain('Winery, Brewery &amp; Farm Portal');
+    });
   });
 
   describe('ProducerRegistrationForm — No Demo Autofill Presets', () => {
