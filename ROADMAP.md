@@ -4,8 +4,8 @@
 >
 > Completion convention: change `- [ ] Step` to `- [x] ~~Step~~` when finished. Do not mark a step complete until it has been implemented, tested, pushed, deployed where applicable, and verified.
 
-**Last updated:** 2026-09-13  
-**Current focus:** Phase 7 — Product Readiness Audit
+**Last updated:** 2026-09-14
+**Current focus:** Phase 8 — Producer UI & Visual Authenticity
 
 ---
 
@@ -169,29 +169,41 @@ Phase 6 completion does **not** mean curated driving loops are now published. Ro
 
 ## Phase 7 — Product Readiness Audit
 
-**Status:** In progress — launch-readiness audit and corrective batches underway.
+**Status:** Completed — launch-readiness audit, source corrections, deployment, and manual production verification completed.
 
 Audit TerroirTrail as a real launchable product, not merely a functioning codebase.
 
-- [ ] Audit traveler signup/login.
-- [ ] Audit traveler account flows.
-- [ ] Audit producer account flows.
-- [ ] Audit admin account flows.
-- [ ] Audit map discovery.
-- [ ] Audit producer detail pages.
-- [ ] Audit favorites/saved producers.
-- [ ] Audit passport functionality.
-- [ ] Audit tasting notes/journal functionality.
-- [ ] Audit routes/day trips.
-- [ ] Audit mobile UX.
-- [ ] Audit loading states.
-- [ ] Audit error states.
-- [ ] Audit offline/fallback behavior.
-- [ ] Audit accessibility.
-- [ ] Audit privacy/legal wording.
-- [ ] Audit unsupported marketing claims.
-- [ ] Identify dead/prototype functionality still exposed to users.
-- [ ] Classify each major feature as `Launch-ready`, `Needs work`, `Hide for now`, or `Future feature`.
+- [x] ~~Audit traveler signup/login.~~
+- [x] ~~Audit traveler account flows.~~
+- [x] ~~Audit producer account flows.~~
+- [x] ~~Audit admin account flows.~~
+- [x] ~~Audit map discovery.~~
+- [x] ~~Audit producer detail pages.~~
+- [x] ~~Audit favorites/saved producers.~~
+- [x] ~~Audit passport functionality.~~
+- [x] ~~Audit tasting notes/journal functionality.~~
+- [x] ~~Audit routes/day trips.~~
+- [x] ~~Audit mobile UX.~~
+- [x] ~~Audit loading states.~~
+- [x] ~~Audit error states.~~
+- [x] ~~Audit offline/fallback behavior.~~
+- [x] ~~Audit accessibility.~~
+- [x] ~~Audit privacy/legal wording.~~
+- [x] ~~Audit unsupported marketing claims.~~
+- [x] ~~Identify dead/prototype functionality still exposed to users.~~
+- [x] ~~Classify each major feature as `Launch-ready`, `Needs work`, `Hide for now`, or `Future feature`.~~
+
+Closeout verification:
+
+- Production deployment to Firebase Hosting completed and verified by the project owner.
+- Traveler authentication (email/password, Google OAuth, password reset, session recovery, and logout) verified in live production testing.
+- Traveler account state (favorites, Passport visited stamps, and personal journal/tasting notes) verified with persistent account-scoped storage.
+- Map discovery, search, destination/category filtering, and legitimate `?producer=<id>` deep links verified in live production testing.
+- Producer detail drawer verified with factual data, direct phone/website contacts, and accessible drawer mechanics.
+- Mobile/responsive layouts, keyboard/focus accessibility, and slow-network loading behavior verified.
+- Unverified commercial and prototype features (Explorer Pass purchase/upsell, tasting reservation checkouts, curated driving route navigation, chauffeur booking, Host Pro upgrade, host pass scanner, and affiliate/sponsor fallbacks) remain strictly quarantined.
+- Third-party advertising remains disabled (`VITE_ENABLE_ADVERTISING=false`), with zero AdSense/affiliate tags loaded and SEO verifications passing.
+- Explorer Pass authorization was hardened locally; operational/production verification will be completed prior to any future commercial pilot, and does not block current discovery-first launch.
 
 ---
 

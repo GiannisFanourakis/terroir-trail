@@ -1,7 +1,8 @@
 # Phase 7 — Product Readiness Audit
 
-**Status:** In progress  
-**Started:** 2026-09-13  
+**Status:** Completed
+**Started:** 2026-09-13
+**Completed:** 2026-09-14
 **Scope:** Public launch readiness, user-facing feature exposure, account authority, discovery flows, prototype/commercial surfaces, error/loading/offline/mobile/accessibility/legal consistency.
 
 ## Classification
@@ -18,15 +19,15 @@ Each feature is classified as one of:
 
 | Surface | Current classification | Evidence / reason | Action |
 | --- | --- | --- | --- |
-| Traveler authentication (Email/password, Google; dormant Apple infrastructure) | Needs work | Real Firebase email/password authentication and Google sign-in are exposed. Password reset is wired, logout and session reconciliation are present, and stale cached sessions/producer authority are cleared upon session loss. Public error copy is hardened without leaking internal configuration (Firebase Console, .env, authorized domains, developer setup). Fake Remember Me control was removed. Email/password and Google are currently exposed traveler sign-in paths. Apple authentication infrastructure exists but is not part of the currently verified public traveler sign-in surface. Account deletion remains a manual/operational privacy process (no in-app automated deletion). Full production provider/device E2E QA and operational verification still required. | Keep current public paths (email/password, Google); keep Apple dormant until device/provider verification; complete production E2E QA for signup, login, reset, logout, session recovery and operational privacy handling. |
-| Traveler account state | Launch-ready candidate | Passport stamps and personal notes are account-backed. Favorites are intentionally browser-local, now scoped per guest/account identity instead of one shared browser key, and public auth copy no longer claims cross-device favorite sync. | Keep public; perform final multi-account/device QA and retain the local-only favorites wording. |
+| Traveler authentication (Email/password, Google; dormant Apple infrastructure) | Launch-ready | Real Firebase email/password authentication and Google sign-in are exposed and manually verified in production. Password reset, session recovery, and logout verified. Public error copy is sanitized. Apple authentication remains dormant. Manual operational privacy request path verified. | Maintained in production. |
+| Traveler account state | Launch-ready | Passport stamps and personal notes verified account-backed and persistent. Favorites verified browser-local and scoped per guest/account identity. | Maintained in production. |
 | Producer/Host authority | Needs work | Host privileges are derived from trusted producer ownership rather than client-editable profile fields. Phase 7 removed instant-verification wording and synthetic claim defaults, and ownership approval no longer implies VAT verification. The wider admin/claim lifecycle remains incomplete. | Keep trusted-host portal gated; retain manual/operator approval until the complete admin workflow exists. |
 | Admin workflow | Needs work | Sensitive producer ownership assignment is operator/server trusted rather than a normal self-assignable frontend role, but the canonical roadmap still lists the full TerroirTrail Admin product/capabilities as incomplete. | Do not treat producer onboarding as a finished self-service operational workflow. |
-| Map + producer discovery | Launch-ready candidate | Phase 4–6 data integrity and route safety are preserved. Phase 7 now exposes real catalogue loading/fallback state, avoids unsupported rating/review ranking, blocks map fly-to for unresolved locations, hides unverified road classifications, and adds accessibility labels to core map controls. | Final visual/mobile/keyboard/slow-network QA, then production verification. |
-| Producer detail drawer | Launch-ready candidate | Visit/access wording remains fail-closed. Phase 7 removed synthetic VIP defaults and over-specific generic category claims, added dialog semantics, neutralized unsupported media-rights wording, and special-cases Peskesi as a farm rather than a distillery. | Final mobile/focus/direct-contact QA. |
-| Favorites / Saved | Launch-ready candidate | Favorites remain device-local by design, but authenticated storage is now account-scoped and guest storage stays separate. The owner-switch guard prevents one account's favorites from being written into another account key during identity changes. | Keep local-only wording; manually test guest → account A → account B transitions. |
-| Passport / visited stamps | Launch-ready candidate | Passport now derives its list from the stable cached catalogue rather than the current filtered discovery view, counts only known producer IDs, and guards zero-total progress. | Final manual QA with active discovery filters and empty/partial catalogue states. |
-| Tasting notes / journal | Launch-ready candidate | Personal notes persist to the account profile, and the cloud `personalNotes` map is authoritative when present, so note deletion propagates instead of being merged back from stale local keys. | Final two-device deletion/update QA. |
+| Map + producer discovery | Launch-ready | Map and catalogue verified in production. Real loading/fallback state, destination and category filtering, search, and accessible controls verified. Unresolved locations do not trigger fly-to and unverified road access is hidden. | Maintained in production. |
+| Producer detail drawer | Launch-ready | Verified in production. Factual details, direct phone/website contacts, drawer accessibility, and Peskesi farm presentation confirmed. Synthetic VIP and commercial defaults removed. | Maintained in production. |
+| Favorites / Saved | Launch-ready | Verified in production. Scoped per identity; local-only storage functioning as designed. | Maintained in production. |
+| Passport / visited stamps | Launch-ready | Verified in production. Stable catalogue stamp counting and personal journal notes working. | Maintained in production. |
+| Tasting notes / journal | Launch-ready | Verified in production. Private personal tasting notes persist to user profile and propagate updates/deletions. | Maintained in production. |
 | Curated routes/day trips | Hide for now | Legacy route definitions remain quarantined and are not verified for publication. Phase 6 intentionally blocks normal turn-by-turn routing. Public launch UI omits route-launch wiring from App (Header, FilterBar, ProfileMenu, mobile menu, About/FAQ), while draft DayTripModal infrastructure remains dormant. The FAQ explains verification status without actionable route launch. | Keep dormant; do not expose public route-launch buttons or turn-by-turn itineraries until road-access and stop verification are complete. |
 | Experiences + tasting booking | Hide for now | No public TerroirTrail Experience is allowed without explicit producer agreement; live database Experiences are inactive. Public booking entry points are removed from current launch navigation while dormant infrastructure remains. | Keep dormant until producer-approved Experiences exist. |
 | Explorer Pass | Future feature | Roadmap places Explorer Pass validation in Phase 13. Public upgrade/pricing entry points are removed from current launch navigation. | Keep non-public until its roadmap phase. |
@@ -122,12 +123,56 @@ A full keyword and surface sweep was conducted across public launch surfaces (`i
 4. **Legitimate public copy verified.** All public references to bookings, passes, routes, and advertising in FAQ, legal notices, and SEO metadata accurately explain launch boundaries (discovery-first product, 0% commissions, draft routes under verification, advertising failing closed, and commercial features reserved for future phases).
 5. **Dormant architecture preserved.** Prototype components and server verification routes remain preserved in the codebase for future activation (Phases 8–13).
 
-## Next launch-readiness blockers
+## Production deployment & verification closeout
 
-1. Complete production-config traveler auth/account-lifecycle QA: real Firebase email/password signup and Google OAuth login on production domain, password reset delivery, logout/session recovery on mobile/desktop, operational verification of privacy/deletion handling, and provider error boundary checks.
-2. Finish manual mobile/keyboard/focus QA for map, drawer, Passport and primary modals, including slow-network/loading states.
-3. Before any future private pilot or commercial activation, complete operational review and production verification of the hardened Explorer Pass authorization path; this batch was not deployed.
-4. Deployment and production smoke verification on Firebase Hosting before crossing Phase 7 checklist items.
+The production deployment to Firebase Hosting has been completed and manually verified in live production testing by the project owner.
+
+1. **Production deployment & smoke testing passed:**
+   - Production site loads cleanly with verified assets, robots.txt, and sitemap.
+   - Producer catalogue, search, category/destination filters, and interactive Leaflet map operate reliably.
+   - Producer detail drawer opens properly from both map pins and list cards.
+   - Legitimate deep links (`?producer=<id>`) resolve and open the designated producer drawer.
+   - No launch-blocking runtime errors or unhandled console exceptions observed.
+
+2. **Traveler authentication & account lifecycle QA passed:**
+   - Real Firebase email/password registration and login verified on the production domain.
+   - Google OAuth authentication verified end-to-end on the production domain.
+   - Password reset email delivery and execution verified.
+   - Session recovery on refresh, tab reloads, and clean user logout verified.
+   - Account state isolation verified: Passport visited stamps and personal tasting notes sync reliably to the authenticated account; favorites operate device-locally with guest/account key scoping.
+
+3. **Mobile & responsive UX passed:**
+   - Responsive layouts, drawer swipe/touch behavior, filter bar scrolling, mobile hamburger navigation, and header controls verified across mobile screen sizes.
+
+4. **Keyboard & focus accessibility QA passed:**
+   - Modal focus trapping, dialog ARIA attributes (`role="dialog"`, `aria-modal="true"`, `aria-labelledby`), and visible keyboard focus states verified across all primary modals (Auth, Passport, Drawer, Legal, About/FAQ).
+
+5. **Slow-network & loading behavior passed:**
+   - Catalogue loading indicators, fallback data provenance messaging, and lazy chunk suspense boundaries verified under simulated network throttling.
+
+6. **Quarantine of unverified commercial and prototype features maintained:**
+   - No Explorer Pass public purchase, pricing, or upsell flows accessible.
+   - No tasting-booking or commercial experience checkout workflows accessible.
+   - No turn-by-turn navigation or published curated driving routes exposed.
+   - No chauffeur booking accessible.
+   - No Host Pro upgrade or subscription claims accessible.
+   - No producer-facing guest pass scanner accessible.
+   - No unverified affiliate or sponsor fallback claims exposed.
+
+7. **Advertising remains disabled:**
+   - Centralized launch gate `VITE_ENABLE_ADVERTISING=false` active in production.
+   - Zero AdSense script tags, Travelpayouts tags, or external ad requests loaded.
+
+8. **Phase 7 launch-readiness complete:**
+   - All source-side, build, SEO, deployment, and live production verification requirements for Phase 7 product readiness are satisfied.
+
+## Launch-readiness status & future notes
+
+All Phase 7 launch-readiness requirements are complete. The product is ready for discovery-first public launch.
+
+### Future operational note (Explorer Pass)
+
+Explorer Pass backend authorization (`GET /api/passes/verify/:passId`) was hardened and verified with automated test suites, requiring authenticated UID-backed trusted ownership from `producer_owners`. Operational and production verification of this backend authorization path remains required before any future private or commercial pilot. However, this does **not** block the current discovery-first public launch because Explorer Pass purchase, upsell, and scanning workflows remain strictly quarantined behind non-public entry points and disabled feature flags.
 
 ## Notes
 
