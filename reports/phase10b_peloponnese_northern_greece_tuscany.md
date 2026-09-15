@@ -2,9 +2,9 @@
 
 Date: 2026-09-15
 
-Status: **FINAL IMPLEMENTATION COMPLETE — production guide deployment/smoke pending.** The regional trust, identity, location, Google media, road-review, fallback, Discovery Guide implementation, and automated QA work is complete for the 19-record Phase 10B catalogue. The phase remains open only until the newly published Discovery Guides are deployed and verified in production.
+Status: **COMPLETE / CLOSED.** The regional trust, identity, location, Google media, road-review, fallback, Discovery Guide implementation, automated QA, deployment, and production-smoke work is complete for the 19-record Phase 10B catalogue.
 
-Phase 10B groups Peloponnese, Northern Greece, and Tuscany / Italy into one coordinated regional expansion batch while keeping evidence decisions region-specific.
+Phase 10B grouped Peloponnese, Northern Greece, and Tuscany / Italy into one coordinated regional expansion batch while keeping evidence decisions region-specific.
 
 ## Final audited inventory
 
@@ -16,7 +16,7 @@ The Phase 10B catalogue contains **19 records**:
 
 The wider bundled audited catalogue is **55 records**: 27 Crete + 9 Santorini + 19 Phase 10B.
 
-## Current completion state
+## Final closeout state
 
 - trust quarantine and synthetic-data cleanup: **complete**
 - narrative/source cleanup: **19 / 19**
@@ -33,8 +33,8 @@ The wider bundled audited catalogue is **55 records**: 27 Crete + 9 Santorini + 
 - legacy Phase 10B marketing routes removed: **3 / 3**
 - Phase 10B Google media/fallback/guide tests: **green**
 - full GitHub Actions `npm run check`: **green** on the guide implementation
-- prior Google-media deployment and production smoke: **confirmed by the project owner**
-- final Discovery Guide deployment/smoke: **pending**
+- Firebase Hosting deployment of the final Discovery Guide build: **completed**
+- production Discovery Guide smoke pass: **confirmed by the project owner**
 
 ## Trust cleanup and narrative state
 
@@ -56,7 +56,7 @@ All 19 Phase 10B records are reconciled to the same evidence-first trust model u
 
 Location verification, Google identity and road safety remain independent trust dimensions.
 
-At closeout readiness:
+At closeout:
 
 - all 19 records have verified public points;
 - all 19 have persistent manually audited Google Place IDs;
@@ -112,7 +112,7 @@ Multi-stop driving navigation remains fail-closed wherever route/access evidence
 
 ## Discovery Guides
 
-Phase 10B now publishes three rebuilt `verified_stops` discovery collections. They are not upgrades of the old marketing routes.
+Phase 10B publishes three rebuilt `verified_stops` discovery collections. They are not upgrades of the old marketing routes.
 
 ### Peloponnese — Nemea
 
@@ -180,19 +180,25 @@ The following remain binding:
 - multi-stop driving navigation fails closed where route evidence is incomplete;
 - no stock imagery may be presented as if it depicts a specific producer.
 
-## Final Phase 10B gate
+## Production closeout
 
-Only one gate remains before the phase is formally closed:
+The project owner confirmed the final Phase 10B build was deployed and the requested production smoke pass passed. The closeout verification covered:
 
-1. deploy the current `main` build to production;
-2. open the Discovery Guides in production and confirm the new Nemea, Northern Greece and Tuscany entries render correctly;
-3. confirm the three old Phase 10B marketing routes do not appear;
-4. confirm multi-stop driving navigation is withheld for all three new guides;
-5. confirm producer cards open correctly from each guide on desktop/mobile or responsive view;
-6. record the production verification and mark Phase 10B **COMPLETE / CLOSED**.
+1. the Nemea Discovery Guide rendering with GAIA Wines Nemea and Semeli Estate Nemea;
+2. the Northern Greece planner rendering with Gerovassiliou, Kir-Yianni, Alpha Estate, Domaine Biblia Chora and Ktima Pavlidis;
+3. the Tuscany entry rendering Monteraponi as the single audited stop;
+4. absence of the three legacy Phase 10B marketing routes;
+5. multi-stop driving navigation remaining withheld for all three Phase 10B guides;
+6. producer detail opening correctly from the guides in production.
 
-No additional producer, Google-ID, location, narrative or road audit is required for this phase unless the final smoke reveals a regression.
+No additional producer, Google-ID, location, narrative, road or guide audit is required for Phase 10B unless a future regression or new evidence warrants reopening a specific record.
+
+## Closeout decision
+
+**Phase 10B is COMPLETE / CLOSED.** Peloponnese, Northern Greece and the current audited Tuscany scope have completed this regional catalogue/trust/media/guide expansion batch and its production verification.
+
+This does **not** close the broader Phase 10 regional-expansion programme.
 
 ## Next after Phase 10B
 
-After the production gate passes, continue the broader Phase 10 regional programme with the wider Mediterranean programme, followed by Northern Europe, preserving the geography-open architecture and the same evidence-first quality bar.
+Continue the broader Phase 10 regional programme with the wider Mediterranean expansion, followed by Northern Europe, preserving the geography-open architecture and the same evidence-first quality bar.

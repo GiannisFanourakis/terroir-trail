@@ -5,7 +5,7 @@
 > Completion convention: change `- [ ] Step` to `- [x] ~~Step~~` when finished. Do not mark a step complete until it has been implemented, tested, pushed, deployed where applicable, and verified.
 
 **Last updated:** 2026-09-15
-**Current focus:** Phase 9D — Crete Discovery Guides & Regional Closeout
+**Current focus:** Phase 10C — Wider Mediterranean Expansion
 
 ---
 
@@ -297,7 +297,7 @@ Production behavior was visually verified by the project owner across the left p
 
 ### Phase 9D — Crete discovery guides & regional closeout
 
-**Status:** Current focus.
+**Status:** Outstanding Crete closeout backlog; Phase 9 is not yet marked complete.
 
 - [x] ~~Convert the Western Chania guide to verified-stop discovery data.~~
 - [x] ~~Convert the Heraklion discovery guides to verified-stop discovery data.~~
@@ -311,9 +311,9 @@ Production behavior was visually verified by the project owner across the left p
 
 ## Phase 10 — Complete All Remaining Regions
 
-**Status:** Next after Crete. No account-management programme or partnership/deal work begins until the regional expansion programme is complete.
+**Status:** In progress — Phase 10A Santorini and Phase 10B Peloponnese + Northern Greece + Tuscany / Italy are complete and production-verified. Phase 10C Wider Mediterranean is next; Northern Europe follows.
 
-After Crete is closed, bring every other intended TerroirTrail region to the same deliberate trust and product-quality standard before moving on to account/admin/host management.
+Bring every other intended TerroirTrail region to the same deliberate trust and product-quality standard before moving on to account/admin/host management.
 
 ### Regional sequence
 
@@ -323,6 +323,15 @@ After Crete is closed, bring every other intended TerroirTrail region to the sam
 4. Tuscany / Italy
 5. Wider Mediterranean regions added to the product
 6. Northern Europe regions added to the product
+
+### Phase 10 progress
+
+- [x] ~~Phase 10A — Complete the Santorini regional trust/location/media/Discovery Guide programme.~~
+- [x] ~~Phase 10B — Complete Peloponnese + Northern Greece + Tuscany / Italy, including 19/19 audited Google identities, road review, bundled fallback parity, rebuilt Discovery Guides, deployment, and production smoke verification.~~
+- [ ] Phase 10C — Define and complete the next wider Mediterranean regional batch using the same evidence-first quality bar.
+- [ ] Phase 10D — Define and complete the Northern Europe regional batch after the wider Mediterranean work.
+
+Phase 10B closeout is recorded in `reports/phase10b_peloponnese_northern_greece_tuscany.md`. The project owner confirmed the final guide build was deployed and passed the requested production smoke checks on 2026-09-15.
 
 The order inside Phase 10 can be adjusted deliberately, but the rule remains: **finish the regional content/product layer before moving into account-management and partnership work.** The architecture must remain geography-open rather than reintroducing a Greece-only fence.
 
