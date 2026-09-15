@@ -2,6 +2,7 @@ export type Category =
   | 'winery' 
   | 'kazani' 
   | 'olive_mill' 
+  | 'olive_oil_producer'
   | 'cheese_dairy' 
   | 'apiary'
   | 'brewery'
@@ -48,6 +49,13 @@ export type FoodOption =
   | 'dakos_snacks' 
   | 'brewery_taproom'
   | 'byo_picnic';
+
+export type PublicPointType =
+  | 'production_site'
+  | 'producer_shop'
+  | 'estate'
+  | 'visitor_center'
+  | 'other_verified_point';
 
 export interface VipPerks {
   welcomePour?: string;
@@ -123,6 +131,8 @@ export interface Producer {
   locationStatus?: LocationStatus | string;
   locationSourceUrl?: string;
   locationNotes?: string;
+  /** Role of the verified mapped point. This is separate from producer category and producer visitability. */
+  publicPointType?: PublicPointType | string;
   visitStatus?: VisitStatus | string;
   visitSourceUrl?: string;
   visitNotes?: string;
