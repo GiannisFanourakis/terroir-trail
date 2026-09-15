@@ -116,7 +116,6 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
     }
   };
 
-  // ESC key to close
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -139,6 +138,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
       case 'brewery': return { label: 'Brewery', icon: '🍺', color: 'text-amber-300 bg-amber-400/15 border-amber-400/30' };
       case 'kazani': return { label: 'Rakokazano', icon: '🏺', color: 'text-amber-400 bg-amber-500/10 border-amber-500/20' };
       case 'olive_mill': return { label: 'Olive Mill', icon: '🫒', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' };
+      case 'olive_oil_producer': return { label: 'Olive Oil Producer', icon: '🫒', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' };
       case 'cheese_dairy': return { label: 'Dairy', icon: '🧀', color: 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20' };
       case 'apiary': return { label: 'Apiary / Honey', icon: '🍯', color: 'text-orange-400 bg-orange-500/10 border-orange-500/20' };
       case 'farm': return { label: 'Farm', icon: '🌿', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' };
@@ -228,6 +228,28 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
           deliveryBoxTitle: 'Single-Estate EVOO Delivery',
           deliveryBadge: 'Harvest Fresh',
           deliveryBoxDesc: 'Certified cold-pressed extra virgin olive oils shipped direct from the grove.',
+        };
+      case 'olive_oil_producer':
+        return {
+          makerTitle: 'olive grower or producer',
+          venueName: 'producer',
+          productPlural: 'bottle & tin',
+          whatTheyMakeTitle: 'Olive Oils & Harvests',
+          specialtiesLabel: 'Olive Cultivars & Oils',
+          highlightsLabel: 'Producer & Harvest Highlights',
+          storeLabel: 'Direct Producer Shop',
+          storeSub: `Order olive oil directly from ${name}`,
+          discountLabel: 'Producer Discount',
+          tastingNotePlaceholder: 'Record your thoughts on their olive oils, harvests, olive varieties, or your visit...',
+          visitingTitle: 'Producer & Visiting',
+          callAction: 'Call Producer',
+          callShortLabel: 'Call Producer',
+          hasDeliveryBoxes: true,
+          deliveryCategory: 'olive_oil' as const,
+          deliveryIcon: '🫒',
+          deliveryBoxTitle: 'Olive Oil Delivery',
+          deliveryBadge: 'Producer Direct',
+          deliveryBoxDesc: 'Olive-oil products offered directly by the producer, subject to its current delivery terms.',
         };
       case 'kazani':
         return {
@@ -414,7 +436,6 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
 
   return (
     <>
-      {/* Backdrop overlay for small screens / tablets */}
       <div
         className="fixed inset-0 bg-black/60 backdrop-blur-xs z-40 lg:hidden animate-in fade-in duration-200"
         onClick={onClose}
@@ -427,7 +448,6 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
         aria-label={`Producer details: ${producer.name}`}
       >
 
-        {/* 1. Hero Gallery & Header */}
         <div className="relative h-48 sm:h-60 lg:h-64 w-full shrink-0 bg-stone-900 overflow-hidden group">
           {canUseGoogleHero ? (
             <GooglePlacePhotoCarousel
@@ -463,7 +483,6 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/40 to-black/30 pointer-events-none" />
 
-          {/* Local credited-media carousel arrows. Google hero controls are rendered by the Google carousel itself. */}
           {!canUseGoogleHero && photos.length > 1 && (
             <>
               <button
@@ -496,7 +515,6 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
             </>
           )}
 
-          {/* Top Control Icons */}
           <div className="absolute top-4 right-4 z-20 flex items-center gap-2">
             {onToggleFavorite && (
               <button
@@ -529,13 +547,18 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
             </button>
           </div>
 
-          {/* Category & provenance */}
           <div className="absolute top-4 left-4 z-20 flex flex-col items-start gap-1.5 max-w-[calc(100%-130px)]">
             <div className="flex items-center gap-2 flex-wrap">
               <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border backdrop-blur-md ${cat.color}`}>
                 <span>{cat.icon}</span>
                 <span>{cat.label}</span>
               </span>
+              {producer.publicPointType === 'producer_shop' && (
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-semibold bg-sky-500/15 text-sky-200 border border-sky-400/30 backdrop-blur-md">
+                  <ShoppingBag className="w-3 h-3" />
+                  <span>Mapped point: Producer Shop</span>
+                </span>
+              )}
               {isProTier && (
                 <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-amber-400 to-amber-500 text-stone-950 shadow-lg shadow-amber-500/20 border border-amber-300">
                   <span>👑</span>
@@ -591,7 +614,6 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
             ) : null}
           </div>
 
-        {/* Title Overlay */}
         <div className={`absolute ${canUseGoogleHero ? 'bottom-9' : 'bottom-4'} left-4 right-4 z-10`}>
           <div className="flex items-center gap-1.5 text-amber-400 text-xs font-bold uppercase tracking-wider mb-1">
             <MapPin className="w-3.5 h-3.5" />
@@ -613,7 +635,6 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
         </div>
       </div>
 
-      {/* 1b. Verified Estate Host Banner (Visible if user owns this estate) */}
       {user?.isProducer && user.claimedProducerId === producer.id && (
         <div className="mx-4 mt-3 p-3 rounded-2xl bg-amber-500/15 border border-amber-500/40 flex items-center justify-between gap-3 shadow-inner">
           <div className="flex items-center gap-2.5 min-w-0">
@@ -634,7 +655,6 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
         </div>
       )}
 
-      {/* 2. Interactive Navigation Tabs */}
       <div className="flex border-b border-white/10 bg-stone-900/60 px-3 sm:px-4 shrink-0 text-xs font-semibold overflow-x-auto scrollbar-none">
         <button
           onClick={() => setActiveTab('story')}
@@ -668,10 +688,8 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
         </button>
       </div>
 
-      {/* 3. Tab Content (Scrollable) */}
       <div className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-6 text-stone-200">
 
-        {/* Live Producer Announcement Bulletin */}
         {customNotice && (
           <div className="p-3.5 rounded-2xl bg-amber-500/15 border border-amber-500/30 text-amber-200 text-xs flex items-start gap-2.5 shadow-md animate-in fade-in">
             <Sparkles className="w-4 h-4 shrink-0 text-amber-400 mt-0.5" />
@@ -686,7 +704,6 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
           </div>
         )}
 
-        {/* Rating & Quick Metrics Bar */}
         {(producer.rating != null || producer.priceLevel != null) && (
           <div className="flex items-center justify-between p-3.5 rounded-2xl bg-stone-900 border border-white/10 text-xs">
             {producer.rating != null ? (
@@ -712,7 +729,6 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
           </div>
         )}
 
-        {/* Passport Stamp & Tasting Notes Action */}
         <div className="p-3.5 rounded-2xl bg-gradient-to-r from-amber-950/30 to-stone-900 border border-amber-500/20 flex flex-col gap-2.5">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -755,7 +771,6 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
             )}
           </div>
 
-          {/* Tasting Note Box */}
           {isAuthenticated ? (
             <div className="pt-2 border-t border-white/5">
               <div className="flex items-center justify-between text-[11px] mb-1 font-semibold text-stone-300">
@@ -807,10 +822,8 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
           )}
         </div>
 
-        {/* Tab 1: The Story */}
         {activeTab === 'story' && (
           <div className="space-y-5 animate-in fade-in duration-200">
-            {/* Live real-world imagery rendered by Google with native attribution. */}
             <GooglePlaceMedia producer={producer} />
 
             <div className="border-l-2 border-amber-500 pl-3.5 py-1">
@@ -829,7 +842,6 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
               </p>
             </div>
 
-            {/* Gallery Thumbnails */}
             {photos.length > 1 && (
               <div className="space-y-2.5">
                 <div className="flex items-center justify-between">
@@ -873,7 +885,6 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                   ))}
                 </div>
 
-                {/* Verified Estate Media & Photographer Credit */}
                 {activeCredit && (
                   <div className="p-2.5 rounded-xl bg-stone-900/90 border border-white/5 text-[10px] text-stone-400 flex items-center justify-between">
                     <span className="truncate pr-2">
@@ -904,7 +915,6 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
           </div>
         )}
 
-        {/* Tab 2: Tastings & Grapes/Crafts */}
         {activeTab === 'tastings' && (
           <div className="space-y-5 animate-in fade-in duration-200">
             <div className="flex items-center gap-2 pb-1 border-b border-white/5">
@@ -944,7 +954,6 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
               </div>
             </div>
 
-            {/* Direct Bottle Shop Link (Pro Tier) */}
             {directBottleShopUrl && (
               <a
                 href={directBottleShopUrl}
@@ -968,7 +977,6 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
               </a>
             )}
 
-            {/* Producer / Estate Host Login Prompt */}
             {(!user?.isProducer || user.claimedProducerId !== producer.id) && (
               <div className="pt-3 border-t border-white/10 text-center">
                 <button
@@ -984,10 +992,8 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
           </div>
         )}
 
-        {/* Tab 3: Visiting & Access */}
         {activeTab === 'visit' && (
           <div className="space-y-6 animate-in fade-in duration-200">
-            {/* C. Visiting: Grouped Visitor Information */}
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <h3 className="text-xs font-bold uppercase tracking-wider text-white flex items-center gap-1.5">
@@ -1003,6 +1009,13 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                 <p className="text-xs text-stone-300 leading-relaxed">
                   {visitDetails.description}
                 </p>
+
+                {producer.publicPointType === 'producer_shop' && (
+                  <div className="p-3 rounded-xl bg-sky-500/10 border border-sky-400/20 text-[11px] text-sky-100 leading-relaxed">
+                    <span className="font-semibold text-sky-300 block text-[10px] uppercase tracking-wider mb-0.5">Verified mapped point</span>
+                    Producer Shop — this map point is a producer-owned public-facing shop. It does not by itself confirm ordinary public access to the farm, orchards, mill, or other production site.
+                  </div>
+                )}
 
                 {producer.visitNotes && (
                   <div className="p-2.5 rounded-xl bg-stone-800/60 border border-white/5 text-[11px] text-stone-300 leading-relaxed">
@@ -1040,7 +1053,6 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                   </div>
                 )}
 
-                {/* Direct Connect Buttons */}
                 <div className="flex flex-col sm:flex-row gap-2 pt-1">
                   {producer.website && (
                     <a
@@ -1066,14 +1078,12 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
               </div>
             </div>
 
-            {/* D. Access: Clearly Distinct from Visiting */}
             <div className="space-y-3 pt-2 border-t border-white/10">
               <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-stone-400">
                 <Car className="w-3.5 h-3.5 text-amber-400 shrink-0" />
                 <span>Road & Navigation Access</span>
               </div>
 
-              {/* Source-backed Road Access Card */}
               {road ? (
                 <div className={`p-4 rounded-2xl border ${road.color}`}>
                   <div className="flex items-center gap-2 font-bold text-xs mb-1">
@@ -1101,7 +1111,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                     <span>Road Access Not Independently Classified</span>
                   </div>
                   <p className="text-[11px] text-stone-400 leading-relaxed">
-                    Road access conditions to this property have not been independently confirmed. Mountain and rural access routes in Greece may involve narrow roads or unpaved segments.
+                    Road access conditions to this mapped point have not been independently confirmed. Rural access routes may involve narrow roads or unpaved segments.
                   </p>
                 </div>
               )}
@@ -1115,7 +1125,6 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                 </div>
               )}
 
-              {/* Location Status Verification Notice */}
               {producer.locationStatus === 'unresolved' && (
                 <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs space-y-1">
                   <div className="flex items-center gap-2 font-bold">
@@ -1123,7 +1132,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                     <span>Exact Navigation Point Under Verification</span>
                   </div>
                   <p className="text-stone-300 leading-relaxed text-[11px]">
-                    The precise visitor entrance for this producer is still being verified. Please contact the producer directly or check their official website for entrance directions.
+                    The precise public point for this producer is still being verified. Please contact the producer directly or check their official website for directions.
                   </p>
                 </div>
               )}
@@ -1135,14 +1144,12 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                 </div>
               )}
 
-              {/* Route Safety Invariant Reminder */}
               <div className="p-3 rounded-xl bg-stone-900/60 border border-white/5 text-[10px] text-stone-400 leading-relaxed">
                 <span className="font-semibold text-stone-300 block text-[10px] uppercase tracking-wider mb-0.5">Route Safety Notice</span>
-                A verified map pin indicates the producer property location, but does not guarantee a paved entrance or standard rental-car road. Always review road access conditions above before travelling.
+                A verified map pin identifies the audited public point for this producer. It may be an estate, production site, visitor center, or producer-owned shop; it does not by itself establish road conditions or the location of every production asset. Always review road access information before travelling.
               </div>
             </div>
 
-            {/* Badges - only rendered when genuinely present */}
             {(producer.dogFriendly != null || producer.campervanFriendly != null || producer.kidFriendly != null || (producer.visitStatus === 'public_visits' && producer.walkInFriendly === true)) && (
               <div className="flex flex-wrap gap-2 pt-1 border-t border-white/5">
                 {producer.dogFriendly != null && (
@@ -1185,12 +1192,10 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
 
       </div>
 
-      {/* 4. Action Bar (Sticky Footer) */}
       <div
         className="p-3 sm:p-4 bg-stone-900/95 backdrop-blur-xl border-t border-white/10 shrink-0 flex items-center gap-1.5 sm:gap-2.5"
         style={{ paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom, 0.75rem))' }}
       >
-        {/* Primary location/navigation action. A map pin is not a road-safety promise. */}
         {producer.locationStatus === 'unresolved' ? (
           <div className="flex-1 min-w-0 flex items-center justify-center gap-1.5 py-3 px-2.5 sm:px-3.5 bg-stone-800 text-stone-400 font-medium text-xs rounded-2xl border border-white/5 whitespace-nowrap" title="Exact navigation point still being verified">
             <MapPin className="w-4 h-4 text-amber-400/70 shrink-0" />
@@ -1223,7 +1228,6 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
           </a>
         ) : null}
 
-        {/* Secondary Action: Call Cellar Door or Website */}
         {producer.phone ? (
           <a
             href={`tel:${producer.phone}`}
@@ -1246,20 +1250,18 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
           </a>
         ) : null}
 
-        {/* Direct bottle shop link if available */}
         {directBottleShopUrl && (
           <a
             href={directBottleShopUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="p-3 rounded-2xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/40 text-amber-300 transition shrink-0"
-            title="Buy Bottles Directly from Estate"
+            title="Buy Directly from Producer"
           >
             <ShoppingBag className="w-4 h-4 shrink-0" />
           </a>
         )}
 
-        {/* Website button if phone was already shown */}
         {producer.phone && producer.website && (
           <a
             href={producer.website}
