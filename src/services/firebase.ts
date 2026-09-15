@@ -31,6 +31,10 @@ import { SEEDED_PRODUCER_REGISTRATIONS } from '../data/seededRegistrations';
 import { logger } from './logger';
 import { runtimeConfig, checkIsFirebaseConfigured } from '../config/runtimeConfig';
 import { readStorage, writeStorage, STORAGE_KEYS } from './browserStorage';
+import {
+  cleanupRemovedProducerMedia,
+  persistProducerOverrideMedia,
+} from './producerMediaStorage';
 
 const firebaseConfig = runtimeConfig.firebase;
 
@@ -365,36 +369,57 @@ const updateLocalProducerOverride = (override: ProducerOverride) => {
   writeStorage(OVERRIDES_LOCAL_KEY, existing, { scope: 'Firebase' });
 };
 
-export const saveProducerOverride = async (override: ProducerOverride): Promise<void> => {
-  const { isProTier: _ignoredProTier, ...cleanOverride } = override;
+export const getLocalProducerOverrides = (): Record<string, ProducerOverride> => {
+  return readStorage<Record<string, ProducerOverride>>(OVERRIDES_LOCAL_KEY, {}, {
+    scope: 'Firebase',
+    validator: (d) => typeof d === 'object' && d !== null && !Array.isArray(d),
+  });
+};
 
+export const saveProducerOverride = async (override: ProducerOverride): Promise<void> => {
   if (isFirebaseConfigured && db) {
     if (!auth?.currentUser) {
       // Demo host identity: persist to local cache only without cloud writes
       updateLocalProducerOverride(override);
       return;
     }
+    if (!app) {
+      throw new Error('Firebase application is not initialized.');
+    }
 
-    // Authenticated cloud write first: only update local cache after Firestore succeeds
-    const docRef = doc(db, 'producer_overrides', override.producerId);
-    await setDoc(docRef, {
-      ...cleanOverride,
-      producerId: override.producerId,
-    }, { merge: true });
+    const previousOverride = getLocalProducerOverrides()[override.producerId];
+    const persistedOverride = await persistProducerOverrideMedia(app, auth, override);
+    const { isProTier: _ignoredProTier, ...cleanOverride } = persistedOverride;
 
-    updateLocalProducerOverride(override);
+    const docRef = doc(db, 'producer_overrides', persistedOverride.producerId);
+    try {
+      // Authenticated cloud write first: only update local cache after Firestore succeeds
+      await setDoc(docRef, {
+        ...cleanOverride,
+        producerId: persistedOverride.producerId,
+      }, { merge: true });
+    } catch (error) {
+      // If the metadata write fails after a new upload, remove the newly-created
+      // objects so the failed operation does not leave orphaned producer media.
+      await cleanupRemovedProducerMedia(
+        app,
+        persistedOverride.uploadedImages || [],
+        previousOverride?.uploadedImages || []
+      );
+      throw error;
+    }
+
+    updateLocalProducerOverride(persistedOverride);
+    await cleanupRemovedProducerMedia(
+      app,
+      previousOverride?.uploadedImages || [],
+      persistedOverride.uploadedImages || []
+    );
     return;
   }
 
   // Firebase not configured: fallback local cache
   updateLocalProducerOverride(override);
-};
-
-export const getLocalProducerOverrides = (): Record<string, ProducerOverride> => {
-  return readStorage<Record<string, ProducerOverride>>(OVERRIDES_LOCAL_KEY, {}, {
-    scope: 'Firebase',
-    validator: (d) => typeof d === 'object' && d !== null && !Array.isArray(d),
-  });
 };
 
 // =========================================================
