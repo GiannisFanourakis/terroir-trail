@@ -1,10 +1,20 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import {
+  Activity,
+  AlertTriangle,
+  BarChart3,
   CheckCircle2,
+  Clock3,
+  Database,
+  ImageOff,
+  MapPin,
   RefreshCw,
+  Route,
   ShieldCheck,
+  Store,
   UserCog,
   UserPlus,
+  Users,
   UserX,
   X,
   XCircle,
@@ -12,17 +22,49 @@ import {
 import {
   approveProducerClaim,
   changeAdminAuthority,
+  fetchAdminDashboardMetrics,
   fetchPendingProducerClaims,
   rejectProducerClaim,
   type AccountCapabilities,
+  type AdminDashboardMetrics,
   type PendingProducerClaim,
 } from '../../services/adminApi';
+import { producerService, type DataProvenance } from '../../services/producerService';
+import {
+  buildAdminCatalogueMetrics,
+  type AdminCatalogueMetrics,
+} from '../../utils/adminCatalogueMetrics';
 
 interface AdminPanelModalProps {
   isOpen: boolean;
   onClose: () => void;
   capabilities: AccountCapabilities;
 }
+
+interface MetricCardProps {
+  label: string;
+  value: React.ReactNode;
+  detail: string;
+  icon: React.ReactNode;
+}
+
+const MetricCard: React.FC<MetricCardProps> = ({ label, value, detail, icon }) => (
+  <div className="rounded-xl border border-white/10 bg-stone-900/70 p-3 min-w-0">
+    <div className="flex items-center justify-between gap-2">
+      <span className="text-[10px] uppercase tracking-wide font-bold text-stone-500">{label}</span>
+      <span className="text-stone-500">{icon}</span>
+    </div>
+    <div className="mt-2 text-xl font-bold text-white">{value}</div>
+    <div className="mt-1 text-[10px] leading-relaxed text-stone-500">{detail}</div>
+  </div>
+);
+
+const formatCategory = (value: string) =>
+  value
+    .replaceAll('_', ' ')
+    .replace(/\b\w/g, (letter) => letter.toUpperCase());
+
+const formatAuditEvent = (value: string) => formatCategory(value);
 
 export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
   isOpen,
@@ -38,6 +80,11 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
   const [rejectionReason, setRejectionReason] = useState('');
   const [adminEmail, setAdminEmail] = useState('');
   const [adminAction, setAdminAction] = useState<'grant' | 'revoke' | null>(null);
+  const [dashboardMetrics, setDashboardMetrics] = useState<AdminDashboardMetrics | null>(null);
+  const [catalogueMetrics, setCatalogueMetrics] = useState<AdminCatalogueMetrics | null>(null);
+  const [catalogueProvenance, setCatalogueProvenance] = useState<DataProvenance | null>(null);
+  const [metricsLoading, setMetricsLoading] = useState(false);
+  const [metricsError, setMetricsError] = useState<string | null>(null);
 
   const loadClaims = useCallback(async () => {
     if (!capabilities.canReviewProducerClaims) return;
@@ -54,11 +101,47 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
     }
   }, [capabilities.canReviewProducerClaims]);
 
+  const loadMetrics = useCallback(async () => {
+    if (!capabilities.isAdmin) return;
+    setMetricsLoading(true);
+    setMetricsError(null);
+
+    const [serverResult, catalogueResult] = await Promise.allSettled([
+      fetchAdminDashboardMetrics(),
+      producerService.getProducers({ limit: 1000 }),
+    ]);
+
+    const failures: string[] = [];
+    if (serverResult.status === 'fulfilled') {
+      setDashboardMetrics(serverResult.value.metrics);
+    } else {
+      setDashboardMetrics(null);
+      failures.push(
+        serverResult.reason instanceof Error
+          ? serverResult.reason.message
+          : 'Account metrics are unavailable.'
+      );
+    }
+
+    if (catalogueResult.status === 'fulfilled') {
+      setCatalogueMetrics(buildAdminCatalogueMetrics(catalogueResult.value));
+      setCatalogueProvenance(producerService.getCacheProvenance());
+    } else {
+      setCatalogueMetrics(null);
+      setCatalogueProvenance(null);
+      failures.push('Catalogue health metrics are unavailable.');
+    }
+
+    if (failures.length > 0) setMetricsError(failures.join(' '));
+    setMetricsLoading(false);
+  }, [capabilities.isAdmin]);
+
   useEffect(() => {
     if (!isOpen) return;
     setNotice(null);
     void loadClaims();
-  }, [isOpen, loadClaims]);
+    void loadMetrics();
+  }, [isOpen, loadClaims, loadMetrics]);
 
   if (!isOpen) return null;
 
@@ -71,6 +154,7 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
       await approveProducerClaim(claim.producerId);
       setClaims((current) => current.filter((item) => item.producerId !== claim.producerId));
       setNotice(`${claim.tradeBrandName} was approved.`);
+      void loadMetrics();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Approval failed.');
     } finally {
@@ -95,6 +179,7 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
       setRejectingId(null);
       setRejectionReason('');
       setNotice(`${claim.tradeBrandName} was rejected.`);
+      void loadMetrics();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Rejection failed.');
     } finally {
@@ -118,6 +203,7 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
       await changeAdminAuthority(action, email);
       setNotice(action === 'grant' ? `Admin access granted to ${email}.` : `Admin access revoked from ${email}.`);
       setAdminEmail('');
+      void loadMetrics();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Admin authority change failed.');
     } finally {
@@ -125,19 +211,23 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
     }
   };
 
+  const decisions30d =
+    (dashboardMetrics?.requests.approved30d || 0) +
+    (dashboardMetrics?.requests.rejected30d || 0);
+
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6 bg-black/75 backdrop-blur-sm">
-      <div className="w-full max-w-5xl max-h-[92dvh] overflow-hidden rounded-2xl border border-white/15 bg-stone-950 shadow-2xl flex flex-col">
+      <div className="w-full max-w-6xl max-h-[92dvh] overflow-hidden rounded-2xl border border-white/15 bg-stone-950 shadow-2xl flex flex-col">
         <div className="flex items-center justify-between gap-3 px-4 sm:px-6 py-4 border-b border-white/10">
           <div className="min-w-0">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <ShieldCheck className="w-5 h-5 text-amber-400" />
               <h2 className="text-base sm:text-lg font-bold text-white">TerroirTrail Administration</h2>
               <span className="px-2 py-0.5 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 text-[10px] font-bold uppercase">
                 {capabilities.isPlatformOwner ? 'Platform Owner' : 'Admin'}
               </span>
             </div>
-            <p className="text-[11px] text-stone-400 mt-1">Trusted account actions are verified on the server and recorded in the admin audit trail.</p>
+            <p className="text-[11px] text-stone-400 mt-1">Action-oriented operations, catalogue quality and trusted account controls.</p>
           </div>
           <button
             type="button"
@@ -158,6 +248,162 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
               {error || notice}
             </div>
           )}
+
+          <section>
+            <div className="flex items-center justify-between gap-3 mb-3">
+              <div>
+                <h3 className="text-sm font-bold text-white">Operations overview</h3>
+                <p className="text-[11px] text-stone-400 mt-0.5">Metrics are derived from trusted Firebase account/admin data and the current producer catalogue.</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => void loadMetrics()}
+                disabled={metricsLoading}
+                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-white/10 bg-stone-900 text-stone-300 hover:text-white disabled:opacity-50 text-xs font-semibold cursor-pointer"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 ${metricsLoading ? 'animate-spin' : ''}`} />
+                Refresh metrics
+              </button>
+            </div>
+
+            {metricsError && (
+              <div className="mb-3 rounded-xl border border-amber-500/25 bg-amber-500/10 px-3 py-2 text-[11px] text-amber-200">
+                {metricsError}
+              </div>
+            )}
+
+            <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-2.5">
+              <MetricCard
+                label="Pending requests"
+                value={dashboardMetrics?.requests.pending ?? '—'}
+                detail="Producer/host claims requiring review"
+                icon={<Clock3 className="w-4 h-4" />}
+              />
+              <MetricCard
+                label="Needs verification"
+                value={catalogueMetrics?.needsVerification ?? '—'}
+                detail="Unverified location or missing audited Place ID"
+                icon={<AlertTriangle className="w-4 h-4" />}
+              />
+              <MetricCard
+                label="Catalogue producers"
+                value={catalogueMetrics?.totalProducers ?? '—'}
+                detail="Current live or audited fallback catalogue"
+                icon={<Store className="w-4 h-4" />}
+              />
+              <MetricCard
+                label="New users · 30d"
+                value={dashboardMetrics?.accounts.new30d ?? '—'}
+                detail={`${dashboardMetrics?.accounts.total ?? '—'} total Firebase accounts`}
+                icon={<Users className="w-4 h-4" />}
+              />
+              <MetricCard
+                label="Producer hosts"
+                value={dashboardMetrics?.accounts.activeProducerHosts ?? '—'}
+                detail="Unique accounts with active trusted ownership"
+                icon={<UserCog className="w-4 h-4" />}
+              />
+              <MetricCard
+                label="Decisions · 30d"
+                value={dashboardMetrics ? decisions30d : '—'}
+                detail="Producer claim approvals + rejections"
+                icon={<CheckCircle2 className="w-4 h-4" />}
+              />
+            </div>
+          </section>
+
+          <section className="grid lg:grid-cols-3 gap-3">
+            <div className="rounded-xl border border-white/10 bg-stone-900/60 p-4">
+              <div className="flex items-center gap-2 mb-3">
+                <Clock3 className="w-4 h-4 text-amber-400" />
+                <h3 className="text-sm font-bold text-white">Request handling</h3>
+              </div>
+              <div className="grid grid-cols-2 gap-2 text-xs">
+                <div className="rounded-lg bg-stone-950/70 p-2.5"><div className="text-stone-500 text-[10px]">Oldest pending</div><div className="text-white font-bold mt-1">{dashboardMetrics?.requests.oldestPendingAgeDays == null ? '—' : `${dashboardMetrics.requests.oldestPendingAgeDays}d`}</div></div>
+                <div className="rounded-lg bg-stone-950/70 p-2.5"><div className="text-stone-500 text-[10px]">Avg review · 30d</div><div className="text-white font-bold mt-1">{dashboardMetrics?.requests.averageReviewHours30d == null ? '—' : `${dashboardMetrics.requests.averageReviewHours30d}h`}</div></div>
+                <div className="rounded-lg bg-stone-950/70 p-2.5"><div className="text-stone-500 text-[10px]">Approved · 30d</div><div className="text-emerald-300 font-bold mt-1">{dashboardMetrics?.requests.approved30d ?? '—'}</div></div>
+                <div className="rounded-lg bg-stone-950/70 p-2.5"><div className="text-stone-500 text-[10px]">Rejected · 30d</div><div className="text-rose-300 font-bold mt-1">{dashboardMetrics?.requests.rejected30d ?? '—'}</div></div>
+              </div>
+            </div>
+
+            <div className="rounded-xl border border-white/10 bg-stone-900/60 p-4">
+              <div className="flex items-center gap-2 mb-3">
+                <Users className="w-4 h-4 text-sky-400" />
+                <h3 className="text-sm font-bold text-white">Accounts</h3>
+              </div>
+              <div className="grid grid-cols-2 gap-2 text-xs">
+                <div className="rounded-lg bg-stone-950/70 p-2.5"><div className="text-stone-500 text-[10px]">Total accounts</div><div className="text-white font-bold mt-1">{dashboardMetrics?.accounts.total ?? '—'}</div></div>
+                <div className="rounded-lg bg-stone-950/70 p-2.5"><div className="text-stone-500 text-[10px]">Active admins</div><div className="text-white font-bold mt-1">{dashboardMetrics?.accounts.activeAdmins ?? '—'}</div></div>
+                <div className="rounded-lg bg-stone-950/70 p-2.5"><div className="text-stone-500 text-[10px]">Producer hosts</div><div className="text-white font-bold mt-1">{dashboardMetrics?.accounts.activeProducerHosts ?? '—'}</div></div>
+                <div className="rounded-lg bg-stone-950/70 p-2.5"><div className="text-stone-500 text-[10px]">Disabled accounts</div><div className="text-white font-bold mt-1">{dashboardMetrics?.accounts.disabled ?? '—'}</div></div>
+              </div>
+            </div>
+
+            <div className="rounded-xl border border-white/10 bg-stone-900/60 p-4">
+              <div className="flex items-center gap-2 mb-3">
+                <Activity className="w-4 h-4 text-emerald-400" />
+                <h3 className="text-sm font-bold text-white">System & data health</h3>
+              </div>
+              <div className="space-y-2 text-[11px]">
+                <div className="flex items-center justify-between gap-3 rounded-lg bg-stone-950/70 px-3 py-2"><span className="text-stone-400">Admin API</span><span className={dashboardMetrics ? 'text-emerald-300 font-bold' : 'text-amber-300 font-bold'}>{dashboardMetrics ? 'Operational' : 'Unavailable'}</span></div>
+                <div className="flex items-center justify-between gap-3 rounded-lg bg-stone-950/70 px-3 py-2"><span className="text-stone-400">Catalogue source</span><span className="text-white font-bold">{catalogueProvenance === 'live' ? 'Live Supabase' : catalogueProvenance === 'fallback' ? 'Audited fallback' : '—'}</span></div>
+                <div className="rounded-lg bg-stone-950/70 px-3 py-2"><div className="flex items-center justify-between gap-3"><span className="text-stone-400">Engagement telemetry</span><span className="text-stone-300 font-bold">Not instrumented</span></div><p className="text-stone-600 mt-1">Producer-interest scores are intentionally not shown until real first-party events are collected.</p></div>
+              </div>
+            </div>
+          </section>
+
+          <section>
+            <div className="flex items-center gap-2 mb-3">
+              <Database className="w-4 h-4 text-violet-400" />
+              <div>
+                <h3 className="text-sm font-bold text-white">Catalogue quality</h3>
+                <p className="text-[11px] text-stone-400 mt-0.5">Unknown states remain visible instead of being converted into positive or negative claims.</p>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-2.5">
+              <MetricCard label="Location review" value={catalogueMetrics?.locationNeedsReview ?? '—'} detail="Unresolved or unreviewed map identity" icon={<MapPin className="w-4 h-4" />} />
+              <MetricCard label="Visitability unconfirmed" value={catalogueMetrics?.visitabilityNotConfirmed ?? '—'} detail="Not public, uncertain or unreviewed" icon={<Store className="w-4 h-4" />} />
+              <MetricCard label="Road access unconfirmed" value={catalogueMetrics?.roadAccessNotConfirmed ?? '—'} detail="No source-backed verified road classification" icon={<Route className="w-4 h-4" />} />
+              <MetricCard label="Missing Place IDs" value={catalogueMetrics?.missingGooglePlaceIds ?? '—'} detail="No persistent manually audited Google identity" icon={<AlertTriangle className="w-4 h-4" />} />
+              <MetricCard label="No bundled cover" value={catalogueMetrics?.missingBundledCoverImages ?? '—'} detail="May still have eligible live Google imagery" icon={<ImageOff className="w-4 h-4" />} />
+            </div>
+          </section>
+
+          <section className="rounded-xl border border-white/10 bg-stone-900/60 overflow-hidden">
+            <div className="px-4 py-3 border-b border-white/10 flex items-center gap-2">
+              <BarChart3 className="w-4 h-4 text-cyan-400" />
+              <div>
+                <h3 className="text-sm font-bold text-white">Greece coverage matrix</h3>
+                <p className="text-[11px] text-stone-400 mt-0.5">Region × current producer category. Use this to choose the next evidence-based Greek expansion batch.</p>
+              </div>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[760px] text-[11px]">
+                <thead className="bg-stone-950/70 text-stone-500 uppercase">
+                  <tr>
+                    <th className="text-left px-4 py-2.5">Region</th>
+                    <th className="text-right px-3 py-2.5">Total</th>
+                    {catalogueMetrics?.categories.map((category) => (
+                      <th key={category} className="text-right px-3 py-2.5 whitespace-nowrap">{formatCategory(category)}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {catalogueMetrics?.coverageByRegion.length ? catalogueMetrics.coverageByRegion.map((row) => (
+                    <tr key={row.region} className="border-t border-white/5">
+                      <td className="px-4 py-2.5 font-semibold text-stone-200">{row.region}</td>
+                      <td className="px-3 py-2.5 text-right font-bold text-white">{row.total}</td>
+                      {catalogueMetrics.categories.map((category) => (
+                        <td key={category} className="px-3 py-2.5 text-right text-stone-400">{row.byCategory[category] || 0}</td>
+                      ))}
+                    </tr>
+                  )) : (
+                    <tr><td className="px-4 py-6 text-stone-500" colSpan={(catalogueMetrics?.categories.length || 0) + 2}>Coverage data unavailable.</td></tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </section>
 
           <section>
             <div className="flex items-center justify-between gap-3 mb-3">
@@ -258,6 +504,28 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
                   );
                 })}
               </div>
+            )}
+          </section>
+
+          <section className="rounded-xl border border-white/10 bg-stone-900/60 overflow-hidden">
+            <div className="px-4 py-3 border-b border-white/10">
+              <h3 className="text-sm font-bold text-white">Recent admin activity</h3>
+              <p className="text-[11px] text-stone-400 mt-0.5">Latest trusted authority and producer-claim events.</p>
+            </div>
+            {dashboardMetrics?.audit.recent.length ? (
+              <div className="divide-y divide-white/5">
+                {dashboardMetrics.audit.recent.map((event, index) => (
+                  <div key={`${event.eventType}-${event.occurredAt}-${index}`} className="px-4 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
+                    <div className="min-w-0">
+                      <div className="text-xs font-semibold text-stone-200">{formatAuditEvent(event.eventType)}</div>
+                      <div className="text-[10px] text-stone-500 mt-0.5 truncate">{event.producerId ? `Producer: ${event.producerId}` : event.targetUid ? `Account: ${event.targetUid}` : 'Platform administration'}</div>
+                    </div>
+                    <time className="text-[10px] text-stone-500 shrink-0">{new Date(event.occurredAt).toLocaleString()}</time>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="px-4 py-6 text-[11px] text-stone-500">No admin audit activity is available yet.</div>
             )}
           </section>
 

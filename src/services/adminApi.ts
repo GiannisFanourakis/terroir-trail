@@ -32,6 +32,34 @@ export interface PendingProducerClaim {
   notesFromProducer?: string;
 }
 
+export interface AdminDashboardMetrics {
+  generatedAt: string;
+  requests: {
+    pending: number;
+    oldestPendingAt: string | null;
+    oldestPendingAgeDays: number | null;
+    approved30d: number;
+    rejected30d: number;
+    averageReviewHours30d: number | null;
+  };
+  accounts: {
+    total: number;
+    new30d: number;
+    disabled: number;
+    activeProducerHosts: number;
+    activeAdmins: number;
+  };
+  audit: {
+    recent: Array<{
+      eventType: string;
+      occurredAt: string;
+      actorUid?: string;
+      targetUid?: string;
+      producerId?: string;
+    }>;
+  };
+}
+
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   await auth?.authStateReady();
   if (!auth?.currentUser) throw new Error('Sign in to access account administration.');
@@ -58,6 +86,9 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
 
 export const fetchAccountCapabilities = () =>
   request<{ capabilities: AccountCapabilities }>('/account/capabilities');
+
+export const fetchAdminDashboardMetrics = () =>
+  request<{ metrics: AdminDashboardMetrics }>('/admin/metrics');
 
 export const fetchPendingProducerClaims = () =>
   request<{ claims: PendingProducerClaim[] }>('/admin/claims');

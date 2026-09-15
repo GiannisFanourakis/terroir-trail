@@ -11,6 +11,7 @@ import {
   approveProducerClaim,
   rejectProducerClaim,
 } from './services/adminClaimsService';
+import { AdminMetricsError, getAdminDashboardMetrics } from './services/adminMetricsService';
 import { handleWebhookEvent } from './services/webhookService';
 
 const defaults = {
@@ -21,6 +22,7 @@ const defaults = {
   listPendingProducerClaims,
   approveProducerClaim,
   rejectProducerClaim,
+  getAdminDashboardMetrics,
   createPassCheckout,
   fulfillPass,
   getExplorerPass,
@@ -84,6 +86,20 @@ export function createApp(overrides: Partial<AppDependencies> = {}) {
     } catch (error) {
       console.error('Account capability lookup unavailable:', error);
       res.status(503).json({ error: 'Account permissions are temporarily unavailable.' });
+    }
+  });
+
+  app.get('/api/admin/metrics', requireAuth, async (_req, res) => {
+    try {
+      const metrics = await deps.getAdminDashboardMetrics(res.locals.identity.uid);
+      res.json({ metrics });
+    } catch (error) {
+      if (error instanceof AdminMetricsError && error.code === 'forbidden') {
+        res.status(403).json({ error: error.message });
+        return;
+      }
+      console.error('Admin metrics unavailable:', error);
+      res.status(503).json({ error: 'Administrative metrics are temporarily unavailable.' });
     }
   });
 
