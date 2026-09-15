@@ -199,7 +199,7 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
                 className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-stone-300 hover:text-amber-300 hover:bg-amber-500/10 transition cursor-pointer"
               >
                 <Compass className="w-3.5 h-3.5 text-amber-400" />
-                <span>Curated Terroir Routes</span>
+                <span>Discovery Guides</span>
               </button>
             )}
 
