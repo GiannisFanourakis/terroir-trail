@@ -2,7 +2,7 @@
 
 Date: 2026-09-15
 
-Status: **Current regional workstream. Trust/narrative cleanup and producer-location audit substantially complete; media, road/access, fallback and production gates remain open.**
+Status: **Current regional workstream. Trust/narrative cleanup, exact-location coverage, producer/public-point taxonomy, and bundled fallback parity are complete; remaining Google identity, road/access, Discovery Guide, and production-reference gates remain open.**
 
 Phase 10B combines Peloponnese, Northern Greece, and Tuscany / Italy into one coordinated regional expansion batch. The purpose is to reuse one audit and QA framework across all three regions while preserving region-specific evidence and verification decisions.
 
@@ -24,7 +24,7 @@ The regions are grouped operationally, not factually. Evidence for one region mu
 
 ## Current audited inventory
 
-The live Phase 10B catalogue currently contains **19 records**:
+The live Phase 10B catalogue contains **19 records**:
 
 - Peloponnese: 9
 - Northern Greece: 9
@@ -62,36 +62,61 @@ Applied narrative migrations:
 
 ### Visitability state
 
-Visitability remains independent from location and road safety.
+Visitability remains independent from producer identity, mapped public-point role, exact location, and road safety.
 
-Current Phase 10B distribution:
-
-- `public_visits`: 3
-- `appointment_only`: 8
-- `not_publicly_confirmed`: 7
-- `current_access_uncertain`: 1
-
-Public or appointment status is based on current first-party evidence. A producer can have confirmed visitor access without any road-suitability claim.
+A producer-owned shop is not treated as evidence that the farm, winery, mill, orchard, or other production site accepts ordinary public visits.
 
 ### Location and Google identity state
 
-Current exact-location state after the final location/entity pass:
+Current exact-location state after the Liokareas public-point audit:
 
-- verified locations: **18 / 19**
-- intentionally unresolved locations: **1 / 19**
-- accepted persistent Google Place IDs: **9 / 19**
+- verified public location points: **19 / 19**
+- unresolved public location points: **0 / 19**
+- accepted persistent Google Place IDs: **10 / 19**
+- Google-media eligible Phase 10B records: **10 / 19**
 
-Applied location migrations:
+Applied location/entity migrations include:
 
 - `20260915101844_phase10b_verify_first_party_linked_locations_batch1`
 - `20260915103850_phase10b_verify_exact_locations_batch2`
 - `20260915104144_phase10b_finalize_location_entity_audit`
+- `20260915104413_phase10b_verify_liokareas_public_shop`
+- `20260915104604_phase10b_refine_liokareas_public_identity`
+- `20260915104832_phase10b_add_olive_oil_producer_category`
+- `20260915105042_phase10b_separate_producer_identity_from_public_point`
 
-Domaine Mercouri and GAIA Wines Nemea now have independently corroborated exact winery points. Liokareas remains intentionally unresolved because current first-party evidence supports a family olive farm/orchard and olive-oil producer, but does not establish a sufficiently exact reusable public farm point.
+### Producer identity versus mapped public point
 
-The Liokareas category was therefore corrected from `olive_mill` to `farm` instead of preserving an unsupported entity classification.
+Phase 10B now explicitly separates three concepts:
+
+1. **Producer category** — what kind of maker the catalogue entity actually is.
+2. **Mapped public point** — what the verified navigation point represents.
+3. **Producer visitability** — whether ordinary public access to the producer/production site is confirmed.
+
+Liokareas is the first record using this separation:
+
+- producer identity: **Liokareas**;
+- producer category: `olive_oil_producer`;
+- verified mapped point: `producer_shop` in Lagkada, Mani;
+- producer/production-site visitability: `not_publicly_confirmed`;
+- Google Place ID: `ChIJhUj2fKPpYRMRLPwSoXMbgBM`;
+- road access: unreviewed.
+
+The mapped point must not be described as the farm or olive mill. The category `olive_oil_producer` is producer-only: generic olive-oil shops, resellers, delicatessens, souvenir shops, and other retailers do not qualify for the producer catalogue merely because they sell local products. A producer-owned shop may be represented only as a public point of an already-qualified producer.
 
 A Google Place ID by itself does not upgrade `location_status`, and verified coordinates do not imply road suitability.
+
+### Bundled fallback parity
+
+The audited Phase 10B catalogue is now included in the bundled fallback path:
+
+- 19 Phase 10B records are stored in `src/data/phase10bProducers.ts`;
+- live Supabase mapping preserves `public_point_type` as frontend `publicPointType`;
+- fallback data preserves the Liokareas producer/shop distinction;
+- Google Places eligibility now includes Phase 10B only where both a verified location and persistent audited Place ID exist;
+- automated tests guard the 19-record regional inventory, Liokareas taxonomy, producer-shop separation, Google Place ID, and fail-closed road state.
+
+The total bundled audited producer catalogue is therefore 55 records: 27 Crete + 9 Santorini + 19 Phase 10B. This does **not** mean Phase 10B has reached regional reference-quality closeout; road/access, guide design, and production-reference verification remain separate gates.
 
 ### Road-access state
 
@@ -124,17 +149,16 @@ For each region:
 
 ## Next Phase 10B gate
 
-The next gate is the **Google identity/media and fallback-parity audit**, followed by road/access review:
+The next gate is the **remaining Google identity and road/access audit**:
 
 1. complete remaining persistent Google Place ID matches without inferring IDs from coordinates or CIDs;
-2. enable Google imagery only where both a manually audited persistent Place ID and verified location exist;
-3. keep Liokareas unresolved until a producer-controlled or equivalently strong exact farm point is available;
-4. synchronize audited Phase 10B records into the bundled fallback path without resurrecting legacy claims;
-5. run the automated quality gate again after source/fallback changes;
-6. perform a separate road-evidence review; location verification alone must not classify a road;
-7. design candidate Discovery Guides only from verified stops, with multi-stop navigation withheld wherever access evidence remains incomplete.
+2. keep Google imagery enabled only where both a manually audited persistent Place ID and verified location exist;
+3. run the full automated quality gate after the taxonomy/fallback release;
+4. perform a separate road-evidence review; location verification alone must not classify a road;
+5. design candidate Discovery Guides only from verified stops, with multi-stop navigation withheld wherever access evidence remains incomplete;
+6. complete a production smoke before any Phase 10B regional reference-quality claim.
 
-No Phase 10B regional closeout or production-reference claim should be made before the media, road/access, fallback and production-smoke gates are complete.
+No Phase 10B regional closeout or production-reference claim should be made before the remaining road/access, Discovery Guide, and production-smoke gates are complete.
 
 ## Completion model
 
