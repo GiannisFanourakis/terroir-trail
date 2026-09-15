@@ -37,7 +37,8 @@ test('admin claim API authenticates the actor and supports list/approve/reject f
 
   await new Promise<void>(resolve => server.once('listening', resolve));
   const base = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
-  const headers = (token?: string) => token ? { Authorization: `Bearer ${token}` } : {};
+  const headers = (token?: string): Record<string, string> =>
+    token ? { Authorization: `Bearer ${token}` } : {};
   const post = (path: string, token: string, body?: object) => fetch(base + path, {
     method: 'POST',
     headers: { ...headers(token), 'Content-Type': 'application/json' },
