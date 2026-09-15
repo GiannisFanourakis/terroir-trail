@@ -1,7 +1,10 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { producerService } from './producerService';
 import { CRETAN_PRODUCERS } from '../data/producers';
+import { SANTORINI_PRODUCERS } from '../data/santoriniProducers';
 import { ALL_EXPERIENCES } from '../data/experiences';
+
+const EXPECTED_FALLBACK_COUNT = CRETAN_PRODUCERS.length + SANTORINI_PRODUCERS.length;
 
 // Mock Supabase module
 const { mockSupabaseState } = vi.hoisted(() => {
@@ -115,7 +118,7 @@ describe('producerService — Supabase / Fallback Data Ownership', () => {
     expect(producerService.getCacheProvenance()).toBe('live');
 
     // Must NOT fall back to static seed data when Supabase successfully returned empty array
-    expect(producers).not.toHaveLength(CRETAN_PRODUCERS.length);
+    expect(producers).not.toHaveLength(EXPECTED_FALLBACK_COUNT);
   });
 
   it('Supabase request failure falls back to static seed', async () => {
@@ -126,7 +129,7 @@ describe('producerService — Supabase / Fallback Data Ownership', () => {
 
     const producers = await producerService.getProducers();
 
-    expect(producers.length).toBe(CRETAN_PRODUCERS.length);
+    expect(producers.length).toBe(EXPECTED_FALLBACK_COUNT);
     expect(producers[0].id).toBe(CRETAN_PRODUCERS[0].id);
     expect(producerService.getCacheProvenance()).toBe('fallback');
   });
@@ -452,20 +455,23 @@ describe('producerService — Supabase / Fallback Data Ownership', () => {
       mockSupabaseState.isConfigured = false;
 
       const producers = await producerService.getProducers();
-      expect(producers).toHaveLength(27);
+      expect(producers).toHaveLength(EXPECTED_FALLBACK_COUNT);
       expect(producerService.getCacheProvenance()).toBe('fallback');
 
       // Verify no synthetic ratings or reviews returned
       expect(producers.every((p) => p.rating === undefined)).toBe(true);
       expect(producers.every((p) => p.reviewCount === undefined)).toBe(true);
 
-      // Verify single producer fetch
-      const single = await producerService.getProducerById('lafkas-brewery');
-      expect(single).not.toBeNull();
-      expect(single?.name).toBe('Lafkas Brewery');
-      expect(single?.visitStatus).toBe('appointment_only');
+      // Verify single producer fetches from both audited fallback regions
+      const creteSingle = await producerService.getProducerById('lafkas-brewery');
+      expect(creteSingle).not.toBeNull();
+      expect(creteSingle?.name).toBe('Lafkas Brewery');
+      expect(creteSingle?.visitStatus).toBe('appointment_only');
+
+      const santoriniSingle = await producerService.getProducerById('domaine-sigalas-santorini');
+      expect(santoriniSingle).not.toBeNull();
+      expect(santoriniSingle?.name).toBe('Domaine Sigalas');
+      expect(santoriniSingle?.visitStatus).toBe('appointment_only');
     });
   });
 });
-
-
