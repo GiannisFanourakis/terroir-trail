@@ -32,6 +32,11 @@ describe('Phase 10B producer taxonomy', () => {
       ['propator-sknipa-brewery', 'ChIJHSyH3VFAqBQRdF-4PVdW8f8'],
       ['alpha-estate', 'ChIJq_TNZHdzVxMRrY3Giv0bikM'],
       ['ktima-pavlidis', 'ChIJiVyvYCBYqRQRgo04TZknytU'],
+      ['siris-craft-brewery', 'ChIJb5JrTlRRqRQRk35ZlaAr9Yo'],
+      ['thymiopoulos-naoussa', 'ChIJS3in-tOTVxMRPLSA3w4amOQ'],
+      ['domaine-biblia-chora', 'ChIJh9l_wOcwqRQRtzn_AKprzo8'],
+      ['domaine-karanika', 'ChIJX9l0oa5xVxMRglPJ5KpuwkU'],
+      ['gaia-wines-nemea', 'ChIJ2a11wv8GoBQR1Nhkz3BBHp8'],
     ]);
 
     for (const [producerId, placeId] of expected) {
@@ -41,21 +46,6 @@ describe('Phase 10B producer taxonomy', () => {
         producer?.locationStatus
       );
       expect(isGooglePlacesEligible(producerId)).toBe(true);
-    }
-  });
-
-  it('keeps unresolved Northern Greece Google identities fail-closed', () => {
-    const unresolved = [
-      'domaine-biblia-chora',
-      'domaine-karanika',
-      'siris-craft-brewery',
-      'thymiopoulos-naoussa',
-    ];
-
-    for (const producerId of unresolved) {
-      const producer = PHASE10B_PRODUCERS.find((item) => item.id === producerId);
-      expect(producer?.googlePlaceId).toBeUndefined();
-      expect(isGooglePlacesEligible(producerId)).toBe(false);
     }
   });
 
