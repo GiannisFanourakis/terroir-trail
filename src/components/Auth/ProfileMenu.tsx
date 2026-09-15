@@ -268,6 +268,24 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
               </button>
             )}
 
+            {isAdmin && !user.isProducer && onOpenProducerPortal && (
+              <button
+                onClick={() => {
+                  setIsOpen(false);
+                  onOpenProducerPortal();
+                }}
+                className="w-full flex items-center justify-between px-2.5 py-2 rounded-xl bg-sky-500/10 hover:bg-sky-500/15 border border-sky-500/25 text-sky-200 transition cursor-pointer font-bold"
+              >
+                <span className="flex items-center gap-2">
+                  <Building2 className="w-4 h-4 text-sky-300" />
+                  <span>Preview Producer Portal</span>
+                </span>
+                <span className="text-[9px] px-1.5 py-0.5 rounded bg-sky-400 text-stone-950 font-extrabold uppercase">
+                  Read only
+                </span>
+              </button>
+            )}
+
             {user.isProducer ? (
               onOpenProducerPortal && (
                 <button
