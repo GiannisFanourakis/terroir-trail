@@ -1,9 +1,12 @@
 import { Producer, Destination, Category, Ethos, RoadAccess, FoodOption } from '../types/terroir';
 import { TastingExperience } from '../types/booking';
 import { CRETAN_PRODUCERS } from '../data/producers';
+import { SANTORINI_PRODUCERS } from '../data/santoriniProducers';
 import { ALL_EXPERIENCES } from '../data/experiences';
 import { supabase, isSupabaseConfigured } from './supabase';
 import { logger } from './logger';
+
+const FALLBACK_PRODUCERS: Producer[] = [...CRETAN_PRODUCERS, ...SANTORINI_PRODUCERS];
 
 export interface ViewportBounds {
   north: number;
@@ -158,7 +161,7 @@ function filterProducersList(producers: Producer[], options: ProducerQueryOption
  *
  * Architecture:
  * - 'fallback': Supabase is unconfigured, initial startup before live fetch, or request failed.
- *               Static seed data (CRETAN_PRODUCERS / ALL_EXPERIENCES) serves as offline fallback.
+ *               Audited Crete + Santorini producer data / ALL_EXPERIENCES serve as offline fallback.
  * - 'live':     Supabase successfully returned data. Supabase is the SOLE authority:
  *               zero rows means zero rows, live values replace seed values, and bundled-only
  *               producers that Supabase did not return are NEVER merged in.
@@ -273,7 +276,7 @@ export const producerService = {
     }
 
     // Fallback: Supabase unconfigured or request failed
-    return filterProducersList(CRETAN_PRODUCERS, options);
+    return filterProducersList(FALLBACK_PRODUCERS, options);
   },
 
   /**
@@ -307,14 +310,14 @@ export const producerService = {
           return null;
         }
         logger.warn('Catalogue', 'producer_by_id_failed', { id, reason: error.message });
-        return CRETAN_PRODUCERS.find((p) => p.id === id) || null;
+        return FALLBACK_PRODUCERS.find((p) => p.id === id) || null;
       } catch (err) {
         logger.warn('Catalogue', 'producer_by_id_error', { id, reason: err instanceof Error ? err.message : String(err) });
-        return CRETAN_PRODUCERS.find((p) => p.id === id) || null;
+        return FALLBACK_PRODUCERS.find((p) => p.id === id) || null;
       }
     }
 
-    return CRETAN_PRODUCERS.find((p) => p.id === id) || null;
+    return FALLBACK_PRODUCERS.find((p) => p.id === id) || null;
   },
 
   /**
@@ -368,7 +371,7 @@ export const producerService = {
     if (cacheProvenance === 'live') {
       return Array.from(liveProducersCache.values());
     }
-    return CRETAN_PRODUCERS;
+    return FALLBACK_PRODUCERS;
   },
 
   /**
@@ -379,7 +382,7 @@ export const producerService = {
     if (cacheProvenance === 'live') {
       return liveProducersCache.get(id);
     }
-    return CRETAN_PRODUCERS.find((p) => p.id === id);
+    return FALLBACK_PRODUCERS.find((p) => p.id === id);
   },
 
   /**
