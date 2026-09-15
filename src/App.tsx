@@ -459,7 +459,7 @@ export const App: React.FC = () => {
                 setIsDrawerOpen(true);
                 closeModal();
               }}
-              onPassVerified={adminPortalPreviewProducer ? undefined : (info) => setActiveModal({ type: 'host_verify', guestInfo: info })}
+              onPassVerified={(info) => setActiveModal({ type: 'host_verify', guestInfo: info })}
             />
           </>
         )}
