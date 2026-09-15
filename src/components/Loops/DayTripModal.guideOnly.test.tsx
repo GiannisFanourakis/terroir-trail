@@ -21,10 +21,10 @@ const usableVisitStatuses = new Set([
 
 describe('Phase 9 published Crete discovery guides', () => {
   it('uses only current producers with verified locations and usable visit status', () => {
-    expect(publishedCreteRoutes.length).toBeGreaterThanOrEqual(3);
+    expect(publishedCreteRoutes.length).toBeGreaterThanOrEqual(4);
 
     for (const route of publishedCreteRoutes) {
-      expect(route.stops.length).toBeGreaterThanOrEqual(2);
+      expect(route.stops.length).toBeGreaterThanOrEqual(1);
 
       for (const stop of route.stops) {
         const producer = CRETAN_PRODUCERS.find(
@@ -51,7 +51,7 @@ describe('Phase 9 published Crete discovery guides', () => {
       (route) => route.verificationStatus === 'verified_stops'
     );
 
-    expect(guideOnlyRoutes.length).toBeGreaterThanOrEqual(3);
+    expect(guideOnlyRoutes.length).toBeGreaterThanOrEqual(4);
 
     for (const route of guideOnlyRoutes) {
       const evaluation = evaluateRouteNavigation(route, CRETAN_PRODUCERS);
@@ -124,31 +124,36 @@ describe('Phase 9 published Crete discovery guides', () => {
     expect(ids).not.toContain('paraschakis-olive-mill');
   });
 
-  it('keeps the Rethymno guide deliberately unpublished until its second stop is visit-ready', () => {
+  it('publishes Rethymno as a single confirmed visitor stop', () => {
     const route = CURATED_ROUTES.find(
-      (candidate) => candidate.id === 'rethymno-mountain-cheese-mill-trail'
+      (candidate) => candidate.id === 'rethymno-melidoni-olive-oil-discovery'
     );
 
     expect(route).toBeDefined();
-    expect(route?.verificationStatus).toBe('draft');
-    expect(route?.title).toBe('Rethymno Producer Discovery: Olive Oil & Dairy');
-    expect(route?.subtitle).toBe('Melidoni · Mixorrouma');
-    expect(route?.description).toContain('deliberately unpublished');
-    expect(route?.description).toContain('Tzourmpakis does not currently publish');
+    expect(route?.verificationStatus).toBe('verified_stops');
+    expect(route?.title).toBe('Rethymno: Melidoni Olive Oil Discovery');
+    expect(route?.subtitle).toBe('Melidoni');
+    expect(route?.description).toContain('single-stop Rethymno discovery guide');
+    expect(route?.description).toContain('Tzourmpakis Dairy remains in the catalogue');
     expect(route?.stops.map((stop) => stop.producerId)).toEqual([
       'parasiris-olive-mill',
-      'tzourmpakis-dairy-amari',
     ]);
 
     const publishedIds = publishedCreteRoutes.map((candidate) => candidate.id);
-    expect(publishedIds).not.toContain('rethymno-mountain-cheese-mill-trail');
+    expect(publishedIds).toContain('rethymno-melidoni-olive-oil-discovery');
 
-    const allCreteStopIds = CURATED_ROUTES
-      .filter((candidate) => candidate.destination === 'crete')
-      .flatMap((candidate) => candidate.stops.map((stop) => stop.producerId));
+    const allPublishedCreteStopIds = publishedCreteRoutes.flatMap((candidate) =>
+      candidate.stops.map((stop) => stop.producerId)
+    );
 
-    expect(allCreteStopIds).not.toContain('paraschakis-olive-mill');
+    expect(allPublishedCreteStopIds).not.toContain('tzourmpakis-dairy-amari');
+    expect(route?.drivingDistance).toContain('no multi-stop route');
     expect(route?.drivingDistance.toLowerCase()).not.toContain('paved');
+
+    const paraschakis = CRETAN_PRODUCERS.find(
+      (producer) => producer.id === 'parasiris-olive-mill'
+    );
+    expect(paraschakis?.visitStatus).toBe('public_visits');
 
     const tzourmpakis = CRETAN_PRODUCERS.find(
       (producer) => producer.id === 'tzourmpakis-dairy-amari'
