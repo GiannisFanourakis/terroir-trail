@@ -23,7 +23,7 @@
 
 ## Phase 2 — Admin, Producer & Account Authority
 
-**Status:** Not complete. Priority before commercial launch.
+**Status:** Not complete. Must be completed as part of the pre-partnership website-completion programme.
 
 ### Account roles
 
@@ -311,9 +311,46 @@ Expansion order after Crete can proceed through Santorini, Peloponnese, Northern
 
 ---
 
-## Phase 10 — Producer Partnerships
+## Phase 10 — Website Completion & Platform Readiness
 
-**Status:** Future commercial phase.
+**Status:** Required before any producer-partnership outreach. This is the next major non-commercial programme after Phase 9.
+
+The website should be functionally and operationally complete before TerroirTrail asks producers to enter a partnership. This means completing every meaningful product, trust, administration, content, UX, and production-readiness item that can be completed **without** a producer agreement. Features that inherently require producer consent (for example approved Experiences or commercial booking terms) remain dormant and do not block this phase.
+
+### Product and structure
+
+- [ ] Close all remaining non-partnership-dependent Phase 8 structural/UI items.
+- [ ] Complete the outstanding Phase 2 admin, producer-ownership, role, moderation, and audit-authority work.
+- [ ] Ensure heritage/local projects are represented as the correct entity type and never masquerade as producers.
+- [ ] Standardize producer detail hierarchy and eliminate empty/null-only presentation sections.
+- [ ] Finish all intended public navigation, destination, discovery, account, saved-content, Passport, journal, and contact surfaces.
+- [ ] Decide the intended pre-partnership geographic scope and bring every included region to a deliberate quality bar rather than leaving half-built public coverage.
+
+### Reliability, UX and trust
+
+- [ ] Complete full-site mobile/responsive, keyboard/focus, accessibility, loading, error, and offline/fallback QA.
+- [ ] Complete performance and production-behavior review across the public site.
+- [ ] Complete SEO, metadata, deep-link, crawlability, and social-preview review.
+- [ ] Re-check privacy/legal/consent wording against the actual production behavior and third-party services in use.
+- [ ] Re-check that public claims, imagery, visitability, location, access, and route wording remain source-backed and fail closed where evidence is missing.
+- [ ] Keep advertising, commercial checkout, Explorer Pass, Host Pro, chauffeur, affiliate, Experience booking, and other unfinished commercial surfaces quarantined unless a later deliberate phase activates them.
+
+### Operations and closeout
+
+- [ ] Complete production deployment/runbook documentation and recovery basics for the website as it actually operates.
+- [ ] Run the full automated quality gate and final end-to-end production smoke pass.
+- [ ] Resolve or explicitly defer every remaining website issue that does not require a producer agreement.
+- [ ] Record a formal website-complete / partnership-ready milestone before any producer outreach begins.
+
+**Definition of done:** there is no known material website work remaining that can reasonably be completed without producer participation. Partnership-dependent capabilities may remain dormant, but the underlying website, authority model, trust model, operations, and public experience must already be ready.
+
+---
+
+## Phase 11 — Producer Partnerships
+
+**Status:** Deferred until Phase 10 Website Completion & Platform Readiness is complete.
+
+No producer-partnership outreach or activation begins before the website-complete milestone. Independent researched listings and direct links to producer-controlled public channels may continue without implying a partnership.
 
 - [ ] Define producer partnership onboarding.
 - [ ] Verify producer identity and authorized representative.
@@ -331,7 +368,7 @@ Relationship levels:
 
 ---
 
-## Phase 11 — Experiences
+## Phase 12 — Experiences
 
 **Status:** Do not populate before producer agreements.
 
@@ -351,7 +388,7 @@ Relationship levels:
 
 ---
 
-## Phase 12 — Booking & Payments
+## Phase 13 — Booking & Payments
 
 **Status:** Future.
 
@@ -367,7 +404,7 @@ Only after real approved Experiences exist.
 
 ---
 
-## Phase 13 — Monetisation & Scale
+## Phase 14 — Monetisation & Scale
 
 **Status:** Future.
 
@@ -395,3 +432,4 @@ Monetisation follows the product and trust model; it must not dictate or weaken 
 8. **Every completed roadmap item is crossed out in this file when verified complete.**
 9. **Before starting a major new feature, place it against this roadmap first.**
 10. **Crete is the reference-quality region before broad expansion.**
+11. **Producer partnership outreach is blocked until Phase 10 Website Completion & Platform Readiness is complete.** Partnership-dependent features stay dormant rather than forcing premature producer outreach.
