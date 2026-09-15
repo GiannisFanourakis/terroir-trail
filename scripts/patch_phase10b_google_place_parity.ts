@@ -26,10 +26,10 @@ function patchProducer(source: string, producerId: string, placeId: string): str
   if (end < 0) throw new Error(`Producer block terminator not found: ${producerId}`);
 
   let block = source.slice(start, end);
-  block = block.replace(/\n    googleMapsUrl: '[^']*',/g, '');
-  block = block.replace(/\n    googlePlaceId: '[^']*',/g, '');
+  block = block.replace(/\n {4}googleMapsUrl: '[^']*',/g, '');
+  block = block.replace(/\n {4}googlePlaceId: '[^']*',/g, '');
 
-  const websiteMatch = block.match(/\n    website: '[^']*',/);
+  const websiteMatch = block.match(/\n {4}website: '[^']*',/);
   if (!websiteMatch) throw new Error(`Website line not found: ${producerId}`);
 
   const canonicalMapsUrl = `https://www.google.com/maps/place/?q=place_id:${placeId}`;
