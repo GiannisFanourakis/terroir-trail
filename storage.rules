@@ -1,0 +1,28 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    function isProducerOwner(producerId) {
+      return request.auth != null
+        && firestore.exists(/databases/(default)/documents/producer_owners/$(producerId))
+        && firestore.get(/databases/(default)/documents/producer_owners/$(producerId)).data.ownerUid == request.auth.uid
+        && firestore.get(/databases/(default)/documents/producer_owners/$(producerId)).data.status == 'active';
+    }
+
+    match /producer-media/{producerId}/{fileName} {
+      // Public pages need to render approved producer imagery. Upload authority
+      // is still restricted to the verified active producer owner.
+      allow read: if true;
+
+      allow create, update: if isProducerOwner(producerId)
+        && request.resource.size <= 8 * 1024 * 1024
+        && request.resource.contentType.matches('image/(jpeg|png|webp)');
+
+      allow delete: if isProducerOwner(producerId);
+    }
+
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}
