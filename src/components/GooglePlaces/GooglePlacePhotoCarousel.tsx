@@ -97,16 +97,16 @@ export const GooglePlacePhotoCarousel: React.FC<
 
         if (cancelled) return;
 
-        const freshPhotos = (place.photos ?? [])
+        const freshPhotos: GoogleCarouselPhoto[] = (place.photos ?? [])
           .slice(0, Math.max(1, maxPhotos))
           .map((photo) => ({
             uri: photo.getURI({ maxWidth: 1600, maxHeight: 1000 }),
-            googleMapsURI: photo.googleMapsURI,
+            googleMapsURI: photo.googleMapsURI ?? undefined,
             authorAttributions: (photo.authorAttributions ?? []).map(
               (author) => ({
                 displayName: author.displayName,
-                uri: author.uri,
-                photoURI: author.photoURI,
+                uri: author.uri ?? undefined,
+                photoURI: author.photoURI ?? undefined,
               })
             ),
           }))
