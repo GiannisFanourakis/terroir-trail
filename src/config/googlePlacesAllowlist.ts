@@ -1,5 +1,6 @@
 import { Category } from '../types/terroir';
 import { CRETAN_PRODUCERS } from '../data/producers';
+import { SANTORINI_PRODUCERS } from '../data/santoriniProducers';
 
 export interface GooglePlacesAllowlistEntry {
   producerId: string;
@@ -8,13 +9,18 @@ export interface GooglePlacesAllowlistEntry {
   coordinates: [number, number];
 }
 
+const AUDITED_GOOGLE_PLACE_PRODUCERS = [
+  ...CRETAN_PRODUCERS,
+  ...SANTORINI_PRODUCERS,
+];
+
 /**
- * Eligibility comes from the manually audited Crete catalogue.
+ * Eligibility comes only from manually audited regional catalogues.
  * A verified persistent Google Place ID and verified TT location are required.
  */
 export const GOOGLE_PLACES_PROTOTYPE_ITEMS: readonly GooglePlacesAllowlistEntry[] =
   Object.freeze(
-    CRETAN_PRODUCERS.filter(
+    AUDITED_GOOGLE_PLACE_PRODUCERS.filter(
       (producer) =>
         Boolean(producer.googlePlaceId?.trim()) &&
         (producer.locationStatus === 'verified_location' ||

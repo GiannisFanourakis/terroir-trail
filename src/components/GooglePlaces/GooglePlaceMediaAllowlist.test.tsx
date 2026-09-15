@@ -3,8 +3,14 @@ import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { GooglePlaceMedia } from './GooglePlaceMedia';
 import { CRETAN_PRODUCERS } from '../../data/producers';
+import { SANTORINI_PRODUCERS } from '../../data/santoriniProducers';
 import { GOOGLE_PLACES_PROTOTYPE_ITEMS } from '../../config/googlePlacesAllowlist';
 import * as uiKitModule from '../../services/googlePlacesUiKit';
+
+const AUDITED_REGIONAL_PRODUCERS = [
+  ...CRETAN_PRODUCERS,
+  ...SANTORINI_PRODUCERS,
+];
 
 vi.mock('./GooglePlacePhotoCarousel', () => ({
   GooglePlacePhotoCarousel: ({ producer }: { producer: { googlePlaceId?: string } }) => (
@@ -15,21 +21,22 @@ vi.mock('./GooglePlacePhotoCarousel', () => ({
   ),
 }));
 
-describe('Google Places integration for audited Crete producers', () => {
+describe('Google Places integration for audited regional producers', () => {
   afterEach(() => {
     vi.unstubAllEnvs();
     vi.restoreAllMocks();
   });
 
-  it('contains all 27 audited Crete records with verified Place IDs', () => {
+  it('contains all audited Crete and Santorini records with verified Place IDs', () => {
     expect(CRETAN_PRODUCERS).toHaveLength(27);
-    expect(GOOGLE_PLACES_PROTOTYPE_ITEMS).toHaveLength(27);
+    expect(SANTORINI_PRODUCERS).toHaveLength(9);
+    expect(GOOGLE_PLACES_PROTOTYPE_ITEMS).toHaveLength(36);
 
     const eligibleIds = new Set(
       GOOGLE_PLACES_PROTOTYPE_ITEMS.map((item) => item.producerId)
     );
 
-    for (const producer of CRETAN_PRODUCERS) {
+    for (const producer of AUDITED_REGIONAL_PRODUCERS) {
       expect(
         producer.googlePlaceId,
         `${producer.id} should have a verified Google Place ID`
@@ -47,7 +54,7 @@ describe('Google Places integration for audited Crete producers', () => {
     }
   });
 
-  it('routes all eligible producers into the live carousel by Place ID only', () => {
+  it('routes all eligible regional producers into the live carousel by Place ID only', () => {
     vi.stubEnv('VITE_ENABLE_GOOGLE_PLACES_MEDIA', 'true');
 
     vi.spyOn(uiKitModule, 'useGooglePlacesUiKit').mockReturnValue({
@@ -55,7 +62,7 @@ describe('Google Places integration for audited Crete producers', () => {
       isReady: true,
     });
 
-    for (const producer of CRETAN_PRODUCERS) {
+    for (const producer of AUDITED_REGIONAL_PRODUCERS) {
       expect(producer.googlePlaceId).toBeTruthy();
       if (!producer.googlePlaceId) continue;
 
