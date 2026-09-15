@@ -129,7 +129,6 @@ export const App: React.FC = () => {
     searchQuery: filters.searchQuery,
   });
 
-  // Filter Handler
   const handleFilterChange = <K extends keyof FilterState>(key: K, value: FilterState[K]) => {
     setFilters((prev) => ({ ...prev, [key]: value }));
   };
@@ -138,12 +137,10 @@ export const App: React.FC = () => {
     setFilters(initialFilters);
   };
 
-  // Filter & Search Logic
   const filteredProducers = useMemo(() => {
     return filterProducers(producers, filters, isFavorite);
   }, [producers, filters, isFavorite]);
 
-  // Deep Link handler: ?producer=<id>
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const params = new URLSearchParams(window.location.search);
@@ -161,10 +158,6 @@ export const App: React.FC = () => {
     }
   }, [producers]);
 
-  // Load a curated loop.
-  // Route selection must work even when the current catalogue view is filtered
-  // to another destination. Resolve the first stop from the authoritative
-  // producer service instead of assuming it exists in the current UI subset.
   const handleSelectLoop = async (loop: DayTripLoop) => {
     setFilters((prev) => ({
       ...prev,
@@ -189,7 +182,6 @@ export const App: React.FC = () => {
 
   return (
     <div className="flex flex-col h-[100dvh] w-full overflow-hidden bg-stone-950 font-sans text-stone-100">
-      {/* 1. Header Bar */}
       <Header
         selectedDestination={filters.destination}
         onSelectDestination={(dest: Destination | 'all') => handleFilterChange('destination', dest)}
@@ -213,7 +205,6 @@ export const App: React.FC = () => {
         onOpenLegal={(tab) => setActiveModal({ type: 'legal', initialTab: tab || 'privacy' })}
       />
 
-      {/* 2. Interactive Filter Bar */}
       <FilterBar
         filters={filters}
         onFilterChange={handleFilterChange}
@@ -234,13 +225,11 @@ export const App: React.FC = () => {
         >
           {catalogueLoading
             ? 'Refreshing producer catalogue…'
-            : catalogueError || 'Offline catalogue active — showing the audited bundled Crete data.'}
+            : catalogueError || 'Offline catalogue active — showing the audited bundled regional catalogue.'}
         </div>
       )}
 
-      {/* 3. Main Workspace: Sidebar List + Leaflet Map Canvas */}
       <main className="relative flex-1 flex overflow-hidden min-h-0">
-        {/* Desktop Sidebar / Mobile List View */}
         <div
           className={`${
             viewMode === 'list' ? 'flex' : 'hidden'
@@ -259,13 +248,11 @@ export const App: React.FC = () => {
           />
         </div>
 
-        {/* The Interactive Map */}
         <div
           className={`flex-1 h-full w-full relative ${
             viewMode === 'map' ? 'block' : 'hidden lg:block'
           }`}
         >
-          {/* Sponsor / Travel Partner Ad Banner (Top Middle) */}
           <div className="absolute top-2.5 left-0 right-0 z-20 pointer-events-none flex justify-center px-3">
             <div className="pointer-events-auto w-full max-w-2xl">
               <GoogleAdSlot hasExplorerPass={!!user?.hasExplorerPass} />
@@ -289,7 +276,6 @@ export const App: React.FC = () => {
           />
         </div>
 
-        {/* Floating Map/List View Switcher on < lg screens */}
         {(!selectedProducer || viewMode === 'list') && (
           <div 
             className="lg:hidden absolute left-1/2 -translate-x-1/2 z-30 pointer-events-auto transition-all animate-in fade-in duration-200"
@@ -314,7 +300,6 @@ export const App: React.FC = () => {
           </div>
         )}
 
-        {/* 4. Slide-Out Detailed Producer Drawer */}
         {isDrawerOpen && (
           <ProducerDetailDrawer
             producer={selectedProducer}
@@ -335,13 +320,11 @@ export const App: React.FC = () => {
         )}
       </main>
 
-      {/* Lazy-Loaded Modals Suspense Boundary */}
       <Suspense fallback={(
         <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/60 backdrop-blur-sm" role="status" aria-live="polite">
           <div className="rounded-2xl border border-white/10 bg-stone-900 px-4 py-3 text-xs font-semibold text-stone-200 shadow-2xl">Loading…</div>
         </div>
       )}>
-        {/* Curated Terroir Routes Modal */}
         {activeModal?.type === 'loops' && (
           <DayTripModal
             isOpen
@@ -357,7 +340,6 @@ export const App: React.FC = () => {
           />
         )}
 
-        {/* Explorer Auth & Profile Modal */}
         {activeModal?.type === 'auth' && (
           <AuthModal
             isOpen
@@ -380,7 +362,6 @@ export const App: React.FC = () => {
           />
         )}
 
-        {/* Terroir Passport Stamps Modal */}
         {activeModal?.type === 'passport' && (
           <PassportModal
             isOpen
@@ -394,11 +375,9 @@ export const App: React.FC = () => {
               setIsDrawerOpen(true);
               closeModal();
             }}
-
           />
         )}
 
-        {/* Tasting Reservation Modal */}
         {activeModal?.type === 'booking' && (
           <BookingModal
             isOpen
@@ -411,7 +390,6 @@ export const App: React.FC = () => {
           />
         )}
 
-        {/* Host & Winery/Brewery Management Portal */}
         {activeModal?.type === 'portal' && (
           <ProducerPortalModal
             isOpen
@@ -435,7 +413,6 @@ export const App: React.FC = () => {
           />
         )}
 
-        {/* Explorer My Bookings & Visits Modal */}
         {activeModal?.type === 'my_bookings' && (
           <MyBookingsModal
             isOpen
@@ -451,7 +428,6 @@ export const App: React.FC = () => {
           />
         )}
 
-        {/* VIP Terroir Holiday Pass Modal */}
         {activeModal?.type === 'pass' && (
           <ExplorerPassModal
             isOpen
@@ -462,7 +438,6 @@ export const App: React.FC = () => {
           />
         )}
 
-        {/* Digital VIP Explorer Pass & Offline QR Modal */}
         {activeModal?.type === 'digital_pass' && (
           <DigitalPassModal
             isOpen
@@ -472,7 +447,6 @@ export const App: React.FC = () => {
           />
         )}
 
-        {/* Host Cellar Door Pass Verification Modal */}
         {activeModal?.type === 'host_verify' && (
           <HostVerificationModal
             isOpen
@@ -481,7 +455,6 @@ export const App: React.FC = () => {
           />
         )}
 
-        {/* Optional Private Chauffeur & Mercedes Van Booking Modal */}
         {activeModal?.type === 'chauffeur' && (
           <ChauffeurBookingModal
             isOpen
@@ -494,7 +467,6 @@ export const App: React.FC = () => {
           />
         )}
 
-        {/* About Us & Frequently Asked Questions Modal */}
         {activeModal?.type === 'about_faq' && (
           <AboutFaqModal
             isOpen
@@ -507,7 +479,6 @@ export const App: React.FC = () => {
           />
         )}
 
-        {/* Legal Notice, GDPR Privacy Policy & Open Source Licenses Modal */}
         {activeModal?.type === 'legal' && (
           <LegalModal
             isOpen
