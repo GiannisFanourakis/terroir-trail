@@ -137,51 +137,6 @@ export const CURATED_ROUTES: DayTripLoop[] = [
     verificationStatus: 'draft',
   },
   {
-    id: 'santorini-volcanic-terroir',
-    title: 'Santorini Complete Volcanic Caldera & Donkey Beer Trail',
-    greekTitle: 'Ηφαιστειακό Terroir, Αποστάγματα & Μπίρα Donkey Σαντορίνης',
-    subtitle: '150-Yr Kouloura Vines, Volcanic Ales & Sunset Caldera Cellars',
-    destination: 'santorini',
-    region: 'Santorini',
-    totalDuration: '5.0 hours',
-    drivingDistance: '24 km (Paved island roads)',
-    stops: [
-      {
-        producerId: 'domaine-sigalas-santorini',
-        suggestedTime: '10:30 AM - 12:00 PM',
-        activity: 'Walk through ungrafted basket vines (kouloura) on the Oia plains and taste bone-dry volcanic Assyrtiko.'
-      },
-      {
-        producerId: 'vassaltis-vineyards',
-        suggestedTime: '12:30 PM - 1:45 PM',
-        activity: 'Contemporary architecture winery tasting mineral-rich Nassitis and barrel-aged Assyrtiko in Vourvoulos.'
-      },
-      {
-        producerId: 'santorini-brewing-company',
-        suggestedTime: '2:15 PM - 3:30 PM',
-        activity: 'Taste Yellow, Red, and Crazy Donkey unpasteurized craft ales with local volcanic tomato fritters.'
-      },
-      {
-        producerId: 'canava-santorini-distillery',
-        suggestedTime: '3:45 PM - 4:45 PM',
-        activity: 'Historic copper stills tour with saffron-infused Tsikoudia and traditional volcanic ouzo.'
-      },
-      {
-        producerId: 'venetsanos-winery-santorini',
-        suggestedTime: '5:00 PM - 6:30 PM (Sunset)',
-        activity: 'Cliffside gravity cellars walk and sunset Nykteri tasting on the sheer edge of the Caldera.'
-      }
-    ],
-    description: 'The definitive volcanic circuit across Santorini: from ungrafted basket vines in Oia to the famous Donkey craft ales, saffron distillates, and a front-row sunset tasting over the submerged volcano.',
-    highlightPointers: [
-      'Ancient basket vines (kouloura) unique to Santorini',
-      'Fresh unpasteurized Donkey craft microbrews',
-      'Handcrafted saffron-infused Tsikoudia in copper stills',
-      'Unmatched panoramic sunset seat over the Caldera cliffs'
-    ],
-    isVipOnly: false,
-  },
-  {
     id: 'peloponnese-mythic-trail',
     title: 'Peloponnese Mythic Terroir: Blood of Hercules & High Arcadia',
     greekTitle: 'Μυθικό Terroir Πελοποννήσου: Αγιωργίτικο & Μοσχοφίλερο',
@@ -285,9 +240,9 @@ export const CURATED_ROUTES: DayTripLoop[] = [
   }
 ];
 
-// Phase 10A: append only the audited Santorini discovery guides. The legacy
-// Santorini marketing route above remains unpublished because it has no
-// verificationStatus and contains pre-audit claims that must not surface.
+// Phase 10A: append only audited Santorini discovery guides. The pre-audit
+// Santorini marketing route was removed so stale visit, timing and road claims
+// cannot resurface through another UI path.
 CURATED_ROUTES.push(...SANTORINI_DISCOVERY_GUIDES);
 
 // Backwards compatibility alias
