@@ -37,20 +37,22 @@ describe('Phase 7 public prototype and direct-entry quarantine', () => {
     expect(app).toContain('setIsDrawerOpen(true);');
   });
 
-  it('documents the Phase 9 route-guide model without weakening navigation quarantine', () => {
+  it('documents the Discovery Guide model without weakening navigation quarantine', () => {
     const aboutFaq = read('src/components/About/AboutFaqModal.tsx');
 
-    expect(aboutFaq).toContain('Browse Curated Routes');
+    expect(aboutFaq).toContain('Browse Discovery Guides');
     expect(aboutFaq).toContain("actionType: 'loops'");
     expect(aboutFaq).toContain(
-      'Curated route guides are available when their stop identities and locations have been re-verified.'
+      'TerroirTrail publishes Discovery Guides when their stop identities, locations and visitor states have been reviewed.'
+    );
+    expect(aboutFaq).toContain('Three are currently published in Crete and three in Santorini.');
+    expect(aboutFaq).toContain(
+      'multi-stop turn-by-turn driving navigation remains withheld until the required road-access safety evidence is available.'
     );
     expect(aboutFaq).toContain(
-      'Multi-stop turn-by-turn navigation remains disabled until every stop also passes the road-access safety checks.'
+      'A Discovery Guide is a verified stop collection, not a road-safety guarantee.'
     );
-    expect(aboutFaq).toContain(
-      'No draft route is silently converted into turn-by-turn navigation.'
-    );
+    expect(aboutFaq).toContain('Draft guides remain hidden.');
   });
 
   it('quarantines producer pass scanning behind the disabled future-host flag while preserving infrastructure', () => {
