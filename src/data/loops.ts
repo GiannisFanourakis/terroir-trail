@@ -1,4 +1,5 @@
 import { DayTripLoop, Producer } from '../types/terroir';
+import { SANTORINI_DISCOVERY_GUIDES } from './santoriniGuides';
 
 export const CURATED_ROUTES: DayTripLoop[] = [
   {
@@ -283,6 +284,11 @@ export const CURATED_ROUTES: DayTripLoop[] = [
     isVipOnly: false,
   }
 ];
+
+// Phase 10A: append only the audited Santorini discovery guides. The legacy
+// Santorini marketing route above remains unpublished because it has no
+// verificationStatus and contains pre-audit claims that must not surface.
+CURATED_ROUTES.push(...SANTORINI_DISCOVERY_GUIDES);
 
 // Backwards compatibility alias
 export const CRETAN_DAY_TRIP_LOOPS = CURATED_ROUTES;
