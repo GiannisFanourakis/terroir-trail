@@ -42,15 +42,13 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
   type MapTheme = 'topo' | 'voyager' | 'dark' | 'satellite';
   const [mapTheme, setMapTheme] = useState<MapTheme>('topo');
 
-  // Zoom-adaptive Pin Display: 'adaptive' (auto unclutter), 'compact' (pins only), 'expanded' (full bounding boxes)
   type PinDisplayMode = 'adaptive' | 'compact' | 'expanded';
   const [pinDisplayMode, setPinDisplayMode] = useState<PinDisplayMode>('adaptive');
   const [locationError, setLocationError] = useState<string | null>(null);
   const [isLocating, setIsLocating] = useState<boolean>(false);
 
-  // Centers per destination
   const DESTINATION_CENTERS: Record<Destination | 'all', { coords: [number, number]; zoom: number }> = {
-    all: { coords: [37.9838, 24.2272], zoom: 7 }, // Greece overview
+    all: { coords: [37.9838, 24.2272], zoom: 7 },
     crete: { coords: [35.2401, 24.8093], zoom: 9 },
     santorini: { coords: [36.3932, 25.4615], zoom: 12 },
     peloponnese: { coords: [37.8280, 22.6580], zoom: 10 },
@@ -98,7 +96,6 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     },
   };
 
-  // Helper to generate modern badge pin HTML
   const getMarkerHtml = (producer: Producer, isSelected: boolean) => {
     let icon = '🍇';
     let iconBg = 'bg-rose-500/25 text-rose-200 border-rose-500/50';
@@ -117,6 +114,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
         iconBg = 'bg-amber-600/25 text-amber-200 border-amber-600/50';
         break;
       case 'olive_mill':
+      case 'olive_oil_producer':
         icon = '🫒';
         iconBg = 'bg-emerald-500/25 text-emerald-200 border-emerald-500/50';
         break;
@@ -151,7 +149,6 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     `;
   };
 
-  // Initialize Map
   useEffect(() => {
     if (!mapContainerRef.current || mapInstanceRef.current) return;
 
@@ -181,7 +178,6 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
 
     mapInstanceRef.current = map;
 
-    // Invalidate size on container resize (prevents grey tiles on window resize or split screen)
     let ro: ResizeObserver | null = null;
     if (typeof ResizeObserver !== 'undefined' && mapContainerRef.current) {
       ro = new ResizeObserver(() => {
@@ -195,7 +191,6 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     };
     window.addEventListener('resize', handleWindowResize);
 
-    // Multiple staggered invalidations to ensure smooth rendering after CSS layouts settle
     const t1 = setTimeout(() => map.invalidateSize(), 150);
     const t2 = setTimeout(() => map.invalidateSize(), 400);
 
@@ -209,7 +204,6 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     };
   }, []);
 
-  // Re-invalidate size whenever viewMode switches to 'map'
   useEffect(() => {
     if (viewMode === 'map' && mapInstanceRef.current) {
       const map = mapInstanceRef.current;
@@ -218,7 +212,6 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     }
   }, [viewMode]);
 
-  // Update Tile Layer Theme
   useEffect(() => {
     if (!mapInstanceRef.current || !tileLayerRef.current) return;
     mapInstanceRef.current.removeLayer(tileLayerRef.current);
@@ -230,7 +223,6 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     }).addTo(mapInstanceRef.current);
   }, [mapTheme]);
 
-  // Sync Destination Viewport
   useEffect(() => {
     const map = mapInstanceRef.current;
     if (!map || selectedProducer) return;
@@ -239,7 +231,6 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     map.flyTo(target.coords, target.zoom, { duration: 1.2 });
   }, [selectedDestination]);
 
-  // Synchronize Pin Density & Zoom-Adaptive Uncluttering
   useEffect(() => {
     const map = mapInstanceRef.current;
     if (!map || !mapContainerRef.current) return;
@@ -268,12 +259,10 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     };
   }, [pinDisplayMode]);
 
-  // Sync Markers
   useEffect(() => {
     const map = mapInstanceRef.current;
     if (!map) return;
 
-    // Remove old markers
     Object.values(markersRef.current).forEach((m) => m.remove());
     markersRef.current = {};
 
@@ -309,7 +298,6 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     });
   }, [producers, selectedProducer]);
 
-  // Smooth Camera Fly-To on Producer Select
   useEffect(() => {
     const map = mapInstanceRef.current;
     if (!map || !selectedProducer || selectedProducer.locationStatus === 'unresolved') return;
@@ -366,9 +354,11 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       case 'brewery': return 'Brewery';
       case 'kazani': return 'Rakokazano';
       case 'olive_mill': return 'Olive Mill';
+      case 'olive_oil_producer': return 'Olive Oil Producer';
       case 'cheese_dairy': return 'Dairy';
       case 'apiary': return 'Apiary / Honey';
       case 'farm': return 'Farm';
+      default: return 'Producer';
     }
   };
 
@@ -388,12 +378,9 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
 
   return (
     <div className="relative w-full h-full select-none overflow-hidden">
-      {/* Map Canvas */}
       <div ref={mapContainerRef} className="w-full h-full z-0" role="region" aria-label="Interactive producer map" />
 
-      {/* Floating Modern Controls */}
       <div className="absolute top-16 right-3 sm:top-4 sm:right-4 z-20 flex flex-col items-end gap-2">
-        {/* Visible Geolocation Error Notification */}
         {locationError && (
           <div className="glass-panel px-3 py-2 rounded-xl border border-rose-500/50 bg-stone-950/95 text-rose-200 text-xs flex items-center justify-between gap-2 shadow-2xl max-w-xs animate-in fade-in slide-in-from-top-2">
             <div className="flex items-center gap-1.5">
@@ -411,7 +398,6 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
           </div>
         )}
 
-        {/* Layer Theme Selector Pill */}
         <div className="glass-panel p-1 rounded-2xl flex items-center shadow-2xl">
           <button
             onClick={() => setMapTheme('topo')}
@@ -467,7 +453,6 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
           </button>
         </div>
 
-        {/* Floating Quick Action Group */}
         <div className="flex flex-col gap-1 glass-panel p-1 rounded-2xl shadow-2xl">
           <button
             onClick={handleZoomIn}
@@ -512,7 +497,6 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
 
           <div className="h-[1px] bg-white/10 my-0.5" />
 
-          {/* Toggle Map Pin Density: Auto / Compact / Detailed */}
           <button
             onClick={() => {
               setPinDisplayMode((prev) =>
@@ -539,17 +523,14 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
             )}
           </button>
         </div>
-
       </div>
 
-      {/* Floating Bottom Quick-Card (Airbnb / Apple Maps 2026 Style) */}
       {selectedProducer && (
         <div
           className="absolute left-1/2 -translate-x-1/2 z-30 w-[95%] sm:w-[480px] max-w-lg animate-in slide-in-from-bottom-6 duration-300"
           style={{ bottom: 'max(1rem, env(safe-area-inset-bottom, 1rem))' }}
         >
           <div className="glass-panel p-2.5 sm:p-3.5 rounded-2xl sm:rounded-3xl shadow-2xl border border-white/15 text-stone-100 flex gap-2.5 sm:gap-3.5 items-center relative overflow-hidden">
-            
             <div className="absolute -right-10 -bottom-10 w-36 h-36 bg-amber-500/20 rounded-full blur-3xl pointer-events-none" />
 
             <div className="relative h-20 w-22 sm:h-24 sm:w-32 rounded-xl sm:rounded-2xl overflow-hidden shrink-0 bg-stone-900 border border-white/10">
@@ -602,9 +583,16 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
             <div className="flex-1 min-w-0 flex flex-col justify-between py-0.5">
               <div>
                 <div className="flex items-center justify-between gap-1">
-                  <span className="text-[9px] sm:text-[10px] uppercase font-bold tracking-wider text-amber-400 truncate">
-                    {formatCategoryName(selectedProducer)} · {selectedProducer.region}
-                  </span>
+                  <div className="min-w-0">
+                    <span className="block text-[9px] sm:text-[10px] uppercase font-bold tracking-wider text-amber-400 truncate">
+                      {formatCategoryName(selectedProducer)} · {selectedProducer.region}
+                    </span>
+                    {selectedProducer.publicPointType === 'producer_shop' && (
+                      <span className="block text-[9px] text-sky-300 font-semibold mt-0.5">
+                        Public point: Producer Shop
+                      </span>
+                    )}
+                  </div>
                   <div className="flex items-center gap-1">
                     <button
                       onClick={(e) => {
@@ -660,14 +648,11 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
                   <ChevronRight className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                 </button>
               </div>
-
             </div>
-
           </div>
         </div>
       )}
 
-      {/* Floating Category Legend in Bottom-Left */}
       <div className="absolute bottom-5 left-4 z-10 hidden xl:flex items-center gap-3 bg-stone-900/90 backdrop-blur-md text-white text-[11px] px-3.5 py-2 rounded-2xl shadow-xl border border-stone-700">
         <div className="flex items-center gap-1.5">
           <span className="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
@@ -683,7 +668,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
         </div>
         <div className="flex items-center gap-1.5">
           <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-          <span>Olive Mill</span>
+          <span>Olive Mill / Oil Producer</span>
         </div>
         <div className="flex items-center gap-1.5">
           <span className="w-2.5 h-2.5 rounded-full bg-yellow-500"></span>
