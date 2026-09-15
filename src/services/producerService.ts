@@ -2,11 +2,16 @@ import { Producer, Destination, Category, Ethos, RoadAccess, FoodOption } from '
 import { TastingExperience } from '../types/booking';
 import { CRETAN_PRODUCERS } from '../data/producers';
 import { SANTORINI_PRODUCERS } from '../data/santoriniProducers';
+import { PHASE10B_PRODUCERS } from '../data/phase10bProducers';
 import { ALL_EXPERIENCES } from '../data/experiences';
 import { supabase, isSupabaseConfigured } from './supabase';
 import { logger } from './logger';
 
-const FALLBACK_PRODUCERS: Producer[] = [...CRETAN_PRODUCERS, ...SANTORINI_PRODUCERS];
+const FALLBACK_PRODUCERS: Producer[] = [
+  ...CRETAN_PRODUCERS,
+  ...SANTORINI_PRODUCERS,
+  ...PHASE10B_PRODUCERS,
+];
 
 export interface ViewportBounds {
   north: number;
@@ -27,7 +32,9 @@ export interface ProducerQueryOptions {
 export type DataProvenance = 'fallback' | 'live';
 
 /**
- * Transforms a Supabase PostgreSQL row into the frontend Producer type
+ * Transforms a Supabase PostgreSQL row into the frontend Producer type.
+ * Producer category, mapped public-point role, visitability, and road access
+ * are intentionally independent trust dimensions.
  */
 export function mapRowToProducer(row: any): Producer {
   const country = row.country || (row.destination === 'tuscany' ? 'Italy' : 'Greece');
@@ -35,7 +42,6 @@ export function mapRowToProducer(row: any): Producer {
   const locality = row.locality || row.village;
 
   const isUnresolvedLocation = row.location_status === 'unresolved';
-  // Do not regenerate or synthesize a Google Maps URL when google_maps_url is intentionally null or location is unresolved
   const googleMapsUrl = isUnresolvedLocation ? undefined : (row.google_maps_url || undefined);
   const googlePlaceId =
     typeof row.google_place_id === 'string' && row.google_place_id.trim().length > 0
@@ -86,10 +92,10 @@ export function mapRowToProducer(row: any): Producer {
     reviewCount: row.review_count != null ? Number(row.review_count) : undefined,
     vipPerks: row.vip_perks || undefined,
 
-    // Verification & Visitability Authority
     locationStatus: row.location_status || undefined,
     locationSourceUrl: row.location_source_url || undefined,
     locationNotes: row.location_notes || undefined,
+    publicPointType: row.public_point_type || undefined,
     visitStatus: row.visit_status || undefined,
     visitSourceUrl: row.visit_source_url || undefined,
     visitNotes: row.visit_notes || undefined,
@@ -117,9 +123,6 @@ export function mapRowToExperience(row: any): TastingExperience {
   };
 }
 
-/**
- * Helper to filter a list of producers based on standard query options
- */
 function filterProducersList(producers: Producer[], options: ProducerQueryOptions): Producer[] {
   const { destination, category, searchQuery, bounds, limit = 1000, offset = 0 } = options;
   let list = [...producers];
@@ -159,12 +162,8 @@ function filterProducersList(producers: Producer[], options: ProducerQueryOption
 /**
  * Authoritative in-memory state and provenance tracking.
  *
- * Architecture:
- * - 'fallback': Supabase is unconfigured, initial startup before live fetch, or request failed.
- *               Audited Crete + Santorini producer data / ALL_EXPERIENCES serve as offline fallback.
- * - 'live':     Supabase successfully returned data. Supabase is the SOLE authority:
- *               zero rows means zero rows, live values replace seed values, and bundled-only
- *               producers that Supabase did not return are NEVER merged in.
+ * - fallback: audited bundled Crete, Santorini, and Phase 10B producer snapshots.
+ * - live: Supabase successfully returned data and remains the sole authority.
  */
 let cacheProvenance: DataProvenance = 'fallback';
 const liveProducersCache = new Map<string, Producer>();
@@ -173,30 +172,18 @@ let experienceProvenance: DataProvenance = 'fallback';
 let liveExperiencesCache: TastingExperience[] = [];
 
 export const producerService = {
-  /**
-   * Check if live database is configured and client exists
-   */
   isLiveDb(): boolean {
     return isSupabaseConfigured && Boolean(supabase);
   },
 
-  /**
-   * Get the current producer cache provenance ('fallback' | 'live')
-   */
   getCacheProvenance(): DataProvenance {
     return cacheProvenance;
   },
 
-  /**
-   * Get the current experience cache provenance ('fallback' | 'live')
-   */
   getExperienceProvenance(): DataProvenance {
     return experienceProvenance;
   },
 
-  /**
-   * Reset cache state (primarily for automated unit and integration tests)
-   */
   resetCacheForTesting(): void {
     cacheProvenance = 'fallback';
     liveProducersCache.clear();
@@ -204,17 +191,6 @@ export const producerService = {
     liveExperiencesCache = [];
   },
 
-  /**
-   * Fetch producers with optional spatial bounding box or filters.
-   *
-   * When Supabase is configured and succeeds:
-   * - Supabase response is authoritative.
-   * - Zero rows means zero rows (empty array).
-   * - Live values replace seed values; bundled-only records not returned by Supabase are excluded.
-   *
-   * When Supabase is unconfigured or request genuinely fails:
-   * - Falls back to bundled static seed producers.
-   */
   async getProducers(options: ProducerQueryOptions = {}): Promise<Producer[]> {
     const { destination, category, searchQuery, bounds, limit = 1000, offset = 0 } = options;
 
@@ -260,37 +236,23 @@ export const producerService = {
 
           if (isFullCatalogue) {
             liveProducersCache.clear();
-            remoteProducers.forEach((p) => liveProducersCache.set(p.id, p));
-            cacheProvenance = 'live';
-          } else {
-            remoteProducers.forEach((p) => liveProducersCache.set(p.id, p));
-            cacheProvenance = 'live';
           }
+          remoteProducers.forEach((p) => liveProducersCache.set(p.id, p));
+          cacheProvenance = 'live';
 
           return remoteProducers;
         }
       } catch (err) {
         cacheProvenance = 'fallback';
-        logger.warn('Catalogue', 'producers_fetch_failed', { reason: err instanceof Error ? err.message : String(err) });
+        logger.warn('Catalogue', 'producers_fetch_failed', {
+          reason: err instanceof Error ? err.message : String(err),
+        });
       }
     }
 
-    // Fallback: Supabase unconfigured or request failed
     return filterProducersList(FALLBACK_PRODUCERS, options);
   },
 
-  /**
-   * Get single producer by ID.
-   *
-   * When Supabase is configured:
-   * - Checks live cache first if live catalogue is already loaded.
-   * - Otherwise queries Supabase directly.
-   * - If Supabase returns null / no rows without error, returns null (authoritative zero rows).
-   * - If query genuinely fails, falls back to static seed data.
-   *
-   * When Supabase is unconfigured:
-   * - Falls back to static seed data.
-   */
   async getProducerById(id: string): Promise<Producer | null> {
     if (this.isLiveDb() && supabase) {
       if (cacheProvenance === 'live' && liveProducersCache.has(id)) {
@@ -298,7 +260,11 @@ export const producerService = {
       }
 
       try {
-        const { data, error } = await supabase.from('producers').select('*').eq('id', id).maybeSingle();
+        const { data, error } = await supabase
+          .from('producers')
+          .select('*')
+          .eq('id', id)
+          .maybeSingle();
         if (!error) {
           if (data) {
             const prod = mapRowToProducer(data);
@@ -306,13 +272,15 @@ export const producerService = {
             cacheProvenance = 'live';
             return prod;
           }
-          // Supabase is authoritative and answered that this record does not exist
           return null;
         }
         logger.warn('Catalogue', 'producer_by_id_failed', { id, reason: error.message });
         return FALLBACK_PRODUCERS.find((p) => p.id === id) || null;
       } catch (err) {
-        logger.warn('Catalogue', 'producer_by_id_error', { id, reason: err instanceof Error ? err.message : String(err) });
+        logger.warn('Catalogue', 'producer_by_id_error', {
+          id,
+          reason: err instanceof Error ? err.message : String(err),
+        });
         return FALLBACK_PRODUCERS.find((p) => p.id === id) || null;
       }
     }
@@ -320,17 +288,6 @@ export const producerService = {
     return FALLBACK_PRODUCERS.find((p) => p.id === id) || null;
   },
 
-  /**
-   * Get experiences (optionally filtered by producer).
-   *
-   * When Supabase is configured and succeeds:
-   * - Supabase response is authoritative.
-   * - Zero rows means zero rows.
-   * - Does NOT fall back to ALL_EXPERIENCES on empty response.
-   *
-   * When Supabase is unconfigured or request genuinely fails:
-   * - Falls back to ALL_EXPERIENCES static seed data.
-   */
   async getExperiences(producerId?: string): Promise<TastingExperience[]> {
     if (this.isLiveDb() && supabase) {
       try {
@@ -351,22 +308,19 @@ export const producerService = {
           return remote;
         }
       } catch (err) {
-        logger.warn('Catalogue', 'experiences_fetch_failed', { producerId, reason: err instanceof Error ? err.message : String(err) });
+        logger.warn('Catalogue', 'experiences_fetch_failed', {
+          producerId,
+          reason: err instanceof Error ? err.message : String(err),
+        });
       }
     }
 
-    // Fallback path
     if (producerId) {
       return ALL_EXPERIENCES.filter((e) => e.producerId === producerId);
     }
     return ALL_EXPERIENCES;
   },
 
-  /**
-   * Synchronous getter for instant React renders.
-   * Returns live cached producers if live catalogue has resolved,
-   * or static bundled seed producers if still in fallback state.
-   */
   getCachedProducers(): Producer[] {
     if (cacheProvenance === 'live') {
       return Array.from(liveProducersCache.values());
@@ -374,10 +328,6 @@ export const producerService = {
     return FALLBACK_PRODUCERS;
   },
 
-  /**
-   * Synchronous getter for a single cached producer.
-   * In 'live' mode, only returns records known to the live database.
-   */
   getCachedProducer(id: string): Producer | undefined {
     if (cacheProvenance === 'live') {
       return liveProducersCache.get(id);
@@ -385,9 +335,6 @@ export const producerService = {
     return FALLBACK_PRODUCERS.find((p) => p.id === id);
   },
 
-  /**
-   * Synchronous getter for cached experiences.
-   */
   getCachedExperiences(producerId?: string): TastingExperience[] {
     if (experienceProvenance === 'live') {
       if (producerId) {
