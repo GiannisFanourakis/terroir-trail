@@ -32,6 +32,16 @@ export interface PendingProducerClaim {
   notesFromProducer?: string;
 }
 
+export interface ActiveProducerOwnership {
+  producerId: string;
+  producerName: string;
+  ownerUid: string;
+  ownerEmail?: string;
+  ownerDisplayName?: string;
+  approvedAt?: string;
+  assignedAt?: string;
+}
+
 export interface AdminDashboardMetrics {
   generatedAt: string;
   requests: {
@@ -104,6 +114,40 @@ export const rejectProducerClaim = (producerId: string, reason: string) =>
     `/admin/claims/${encodeURIComponent(producerId)}/reject`,
     { method: 'POST', body: JSON.stringify({ reason }) }
   );
+
+export const fetchActiveProducerOwnerships = () =>
+  request<{ ownerships: ActiveProducerOwnership[] }>('/admin/ownerships');
+
+export const revokeProducerOwnership = (producerId: string, reason: string) =>
+  request<{
+    ownership: {
+      producerId: string;
+      previousOwnerUid: string;
+      status: 'revoked';
+      occurredAt: string;
+    };
+  }>(`/admin/ownerships/${encodeURIComponent(producerId)}/revoke`, {
+    method: 'POST',
+    body: JSON.stringify({ reason }),
+  });
+
+export const reassignProducerOwnership = (
+  producerId: string,
+  email: string,
+  reason: string
+) => request<{
+  ownership: {
+    producerId: string;
+    previousOwnerUid: string;
+    ownerUid: string;
+    ownerEmail: string;
+    status: 'active';
+    occurredAt: string;
+  };
+}>(`/admin/ownerships/${encodeURIComponent(producerId)}/reassign`, {
+  method: 'POST',
+  body: JSON.stringify({ email, reason }),
+});
 
 export const changeAdminAuthority = (
   action: 'grant' | 'revoke',
