@@ -4,9 +4,9 @@ Canonical URL: https://terroir-trail.web.app/
 
 ## Current product state
 
-TerroirTrail is an independent, discovery-first agritourism guide. Crete is the current reference-quality region, starting in Greece and designed to expand across the Mediterranean and beyond.
+TerroirTrail is an independent, discovery-first agritourism guide. Crete and Santorini are the current reference-quality regions in Greece, with the same trust rules applied across both catalogues.
 
-The authoritative Crete catalogue contains 27 audited producer/project records across Chania, Heraklion, Rethymno and Lasithi. Current categories include the seven first-class producer types: wineries, craft breweries, olive mills, dairies/cheesemakers, apiaries/honey, traditional distilleries/rakokazana, and farms.
+The current audited public catalogue contains 36 producer/project records: 27 in Crete across Chania, Heraklion, Rethymno and Lasithi, plus 9 in Santorini. Current categories include wineries, craft breweries, olive mills, dairies/cheesemakers, apiaries/honey producers, traditional distilleries/rakokazana, and farms.
 
 TerroirTrail is not currently a public booking marketplace. Public visitability is researched separately from any TerroirTrail commercial relationship. A producer being publicly visitable does not mean that TerroirTrail is authorized to sell or reserve an Experience there.
 
@@ -14,24 +14,29 @@ TerroirTrail is not currently a public booking marketplace. Public visitability 
 
 Travelers can:
 
-- explore the audited Crete catalogue on a map or list;
+- explore the audited Crete and Santorini catalogues on a map or list;
 - search and filter producers/projects;
 - open producer detail views with researched story, contact and visiting information;
+- view live Google Places imagery only for manually audited listings with verified Google Place IDs, while keeping attribution visible;
 - save favorites;
 - use Terroir Passport stamps and personal notes;
 - contact producers through public producer-controlled channels where available.
 
 Unknown facts remain unknown. TerroirTrail does not invent ratings, prices, hospitality amenities, road conditions or booking availability to fill empty fields.
 
-## Location and rural navigation safety
+## Discovery Guides and navigation safety
 
-Location confidence and road-access confidence are separate.
+TerroirTrail publishes Discovery Guides as verified stop collections, not as road-safety guarantees.
 
-The current Crete road-access audit records an explicit review state for all 27 records. Only source-backed road classifications may be published. Reviewed-but-unconfirmed road conditions remain unclassified.
+Crete currently has three published verified-stop Discovery Guides: two in the Heraklion area and one in Western Chania. The audited Rethymno guide remains draft and unpublished while visitor-access evidence for its stop set is insufficient.
 
-Curated driving routes are currently under verification. Draft route definitions are not published as turn-by-turn itineraries. Multi-stop navigation fails closed when route, producer, location or access evidence is incomplete or unsuitable for ordinary routing.
+Santorini currently has three published verified-stop Discovery Guides: Northern Santorini, central/eastern Santorini, and Megalochori/Pyrgos/Caldera. Canava Santorini Distillery is intentionally excluded from the published guides because current visitor access is not sufficiently confirmed.
 
-An individual map/location link identifies a place; it is not a guarantee that the approach road is suitable for a standard rental car.
+Location confidence and road-access confidence are separate. Multi-stop driving navigation remains fail-closed wherever independent road-access evidence is incomplete. An individual map/location link identifies a place; it is not a guarantee that the approach road is suitable for a standard rental car.
+
+## Santorini geological context
+
+Santorini has major volcanic and geological significance, but TerroirTrail does not represent Santorini as a UNESCO Global Geopark. Geological heritage and formal UNESCO designation are kept separate.
 
 ## Experiences and bookings
 
@@ -52,14 +57,18 @@ Third-party travel links, advertisements or affiliate links are separate from pr
 - Unknown data stays unknown.
 - Unresolved coordinates are not guessed.
 - Road access is only classified when supported by evidence.
+- Google imagery is supplementary discovery media, not evidence of visitability, entrance precision or road safety.
 - Producer/admin authority must be server-trusted rather than inferred from editable client profile fields.
-- Crete is the reference-quality region before broad geographic expansion.
+- Geography remains open; no Greece-only architectural fence should be reintroduced.
 
 ## Geographic scope
 
-Current reference region: Crete, Greece.
+Current reference-quality regions:
 
-Future expansion may include Santorini, Peloponnese, Northern Greece, Italy/wider Mediterranean and Northern Europe, but those regions should not be represented as equally complete unless the live catalogue and verification state support that claim.
+- Crete, Greece — 27 audited records.
+- Santorini, Greece — 9 audited records.
+
+Next regional programme: Peloponnese, followed by Northern Greece, Tuscany / Italy, wider Mediterranean regions, and Northern Europe. A future region should not be represented as reference-quality until its catalogue, trust data, imagery, fallback data, guides and QA reach the same standard.
 
 ## Contact
 
