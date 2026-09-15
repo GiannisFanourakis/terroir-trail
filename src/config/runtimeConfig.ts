@@ -187,8 +187,8 @@ export function isGooglePlacesMediaEnabled(
 }
 
 /**
- * Host media upload prototype is strictly development-only.
- * Fails closed (false) by default so browser blob URLs are never exposed in production.
+ * Legacy helper retained for old blob-media quarantine logic. It remains
+ * opt-in so legacy temporary blob URLs never become trusted public media.
  */
 export function isHostMediaPrototypeEnabled(
   customEnv?: Record<string, string | undefined>
@@ -292,8 +292,10 @@ export const runtimeConfig = {
   get googlePlacesMedia(): { enabled: boolean } {
     return { enabled: isGooglePlacesMediaEnabled() };
   },
+  // Producer image upload is now a launch feature. The legacy property name is
+  // retained so existing portal code can transition without another flag.
   get hostMediaPrototype(): { enabled: boolean } {
-    return { enabled: isHostMediaPrototypeEnabled() };
+    return { enabled: true };
   },
   get app(): AppRuntimeConfig {
     return { publicUrl: getPublicAppUrl() };
