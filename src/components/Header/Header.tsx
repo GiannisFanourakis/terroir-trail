@@ -31,6 +31,9 @@ interface HeaderProps {
   onOpenAbout?: () => void;
   onOpenFaq?: () => void;
   onOpenLegal?: (tab?: 'privacy' | 'terms' | 'licenses') => void;
+  isAdmin?: boolean;
+  isPlatformOwner?: boolean;
+  onOpenAdmin?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -59,6 +62,9 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenAbout,
   onOpenFaq,
   onOpenLegal,
+  isAdmin = false,
+  isPlatformOwner = false,
+  onOpenAdmin,
 }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const closeMenu = () => setMenuOpen(false);
@@ -76,11 +82,7 @@ export const Header: React.FC<HeaderProps> = ({
     <>
       <header className="relative z-30 shrink-0 bg-stone-950 border-b border-white/10 px-3 sm:px-6 lg:px-8 py-2 sm:py-2.5 shadow-2xl w-full header-safe-top">
         <div className="w-full flex flex-col gap-2">
-
-          {/* Row 1: Brand + Actions */}
           <div className="flex items-center justify-between gap-2">
-
-            {/* Brand */}
             <button
               type="button"
               onClick={() => window.location.reload()}
@@ -104,9 +106,7 @@ export const Header: React.FC<HeaderProps> = ({
               </div>
             </button>
 
-            {/* ── Desktop: full action bar ── */}
             <div className="hidden sm:flex items-center gap-1.5 sm:gap-2 shrink-0">
-              {/* Saved */}
               <button
                 onClick={onToggleFavoritesOnly}
                 className={`flex items-center gap-1 px-2 sm:px-2.5 py-1.5 text-xs font-bold rounded-xl border transition shrink-0 cursor-pointer ${
@@ -123,7 +123,6 @@ export const Header: React.FC<HeaderProps> = ({
                 )}
               </button>
 
-              {/* Discovery Guides */}
               {onOpenLoops && (
                 <button
                   onClick={onOpenLoops}
@@ -135,7 +134,6 @@ export const Header: React.FC<HeaderProps> = ({
                 </button>
               )}
 
-              {/* About */}
               {onOpenAbout && (
                 <button
                   onClick={onOpenAbout}
@@ -146,7 +144,6 @@ export const Header: React.FC<HeaderProps> = ({
                 </button>
               )}
 
-              {/* Producer Login / Portal */}
               {user?.isProducer && user.claimedProducerId ? (
                 onOpenProducerPortal && (
                   <button
@@ -184,12 +181,13 @@ export const Header: React.FC<HeaderProps> = ({
                 onOpenFaq={onOpenFaq}
                 onOpenLegal={onOpenLegal}
                 onOpenLoops={onOpenLoops}
+                isAdmin={isAdmin}
+                isPlatformOwner={isPlatformOwner}
+                onOpenAdmin={onOpenAdmin}
               />
             </div>
 
-            {/* ── Mobile: profile + saved pill + hamburger ── */}
             <div className="flex sm:hidden items-center gap-1.5 shrink-0">
-              {/* Profile Avatar Menu */}
               <ProfileMenu
                 user={user}
                 onOpenAuth={onOpenAuth}
@@ -206,11 +204,11 @@ export const Header: React.FC<HeaderProps> = ({
                 onOpenFaq={onOpenFaq}
                 onOpenLegal={onOpenLegal}
                 onOpenLoops={onOpenLoops}
+                isAdmin={isAdmin}
+                isPlatformOwner={isPlatformOwner}
+                onOpenAdmin={onOpenAdmin}
               />
 
-
-
-              {/* Saved badge (always visible) */}
               <button
                 onClick={onToggleFavoritesOnly}
                 className={`flex items-center gap-1 px-2 py-1.5 text-xs font-bold rounded-xl border transition shrink-0 cursor-pointer ${
@@ -225,7 +223,6 @@ export const Header: React.FC<HeaderProps> = ({
                 )}
               </button>
 
-              {/* Hamburger button */}
               <button
                 onClick={() => setMenuOpen(true)}
                 className="flex items-center justify-center w-9 h-9 rounded-xl bg-stone-900 border border-white/10 text-stone-300 hover:text-white hover:border-amber-400/40 transition cursor-pointer"
@@ -234,10 +231,8 @@ export const Header: React.FC<HeaderProps> = ({
                 <Menu className="w-4.5 h-4.5" />
               </button>
             </div>
-
           </div>
 
-          {/* Row 2: Destination Switcher & Search */}
           <div className="flex items-center justify-between gap-2 pt-1 border-t border-white/5">
             <div className="flex items-center bg-stone-900/90 p-0.5 sm:p-1 rounded-xl border border-white/10 overflow-x-auto scrollbar-none shrink-0 max-w-[62%] sm:max-w-none">
               {destinations.map((d) => {
@@ -278,23 +273,17 @@ export const Header: React.FC<HeaderProps> = ({
               )}
             </div>
           </div>
-
         </div>
       </header>
 
-      {/* ── Mobile Hamburger Drawer ── */}
       {menuOpen && (
         <>
-          {/* Backdrop */}
           <div
             className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm sm:hidden"
             onClick={closeMenu}
           />
-          {/* Slide-in panel */}
           <div className="fixed top-0 right-0 bottom-0 z-50 w-72 bg-stone-950 border-l border-white/10 shadow-2xl flex flex-col sm:hidden"
             style={{ paddingTop: 'env(safe-area-inset-top)' }}>
-
-            {/* Drawer header */}
             <div className="flex items-center justify-between px-4 py-3 border-b border-white/10">
               <span className="text-sm font-bold text-white">Menu</span>
               <button
@@ -305,12 +294,7 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
             </div>
 
-            {/* Drawer items */}
             <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-2">
-
-
-
-              {/* About & FAQ */}
               {onOpenAbout && (
                 <button
                   onClick={() => { onOpenAbout(); closeMenu(); }}
@@ -321,7 +305,6 @@ export const Header: React.FC<HeaderProps> = ({
                 </button>
               )}
 
-              {/* Producer Login / Claim Listing */}
               {user?.isProducer && user.claimedProducerId ? (
                 onOpenProducerPortal && (
                   <button
@@ -342,7 +325,6 @@ export const Header: React.FC<HeaderProps> = ({
                 </button>
               )}
 
-              {/* Terroir Passport */}
               <button
                 onClick={() => { onOpenPassport(); closeMenu(); }}
                 className="flex items-center gap-3 w-full px-3 py-3 text-sm font-semibold text-stone-200 hover:text-white bg-stone-900 hover:bg-stone-850 rounded-xl border border-white/10 hover:border-amber-400/40 transition cursor-pointer"
@@ -351,7 +333,6 @@ export const Header: React.FC<HeaderProps> = ({
                 <span>Terroir Passport</span>
               </button>
 
-              {/* Discovery Guides */}
               {onOpenLoops && (
                 <button
                   onClick={() => { onOpenLoops(); closeMenu(); }}
@@ -362,7 +343,6 @@ export const Header: React.FC<HeaderProps> = ({
                 </button>
               )}
 
-              {/* Curated Experiences */}
               {onOpenExperiences && (
                 <button
                   onClick={() => { onOpenExperiences(); closeMenu(); }}
@@ -373,7 +353,6 @@ export const Header: React.FC<HeaderProps> = ({
                 </button>
               )}
 
-              {/* User Profile Card / Sign In */}
               {user ? (
                 <div className="mt-2 p-3.5 rounded-2xl bg-stone-900/90 border border-white/10 flex flex-col gap-3">
                   <div className="flex items-center gap-3">

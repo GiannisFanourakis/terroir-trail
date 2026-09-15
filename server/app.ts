@@ -5,6 +5,12 @@ import { createPassCheckout, fulfillPass, getExplorerPass, verifyExplorerPass } 
 import { isActiveProducerOwner } from './services/producerAuthorization';
 import { getTrustedAccountCapabilities } from './services/accountAuthorization';
 import { AdminAuthorityError, changeAdminAuthority } from './services/adminAuthorityService';
+import {
+  AdminClaimError,
+  listPendingProducerClaims,
+  approveProducerClaim,
+  rejectProducerClaim,
+} from './services/adminClaimsService';
 import { handleWebhookEvent } from './services/webhookService';
 
 const defaults = {
@@ -12,6 +18,9 @@ const defaults = {
   isActiveProducerOwner,
   getTrustedAccountCapabilities,
   changeAdminAuthority,
+  listPendingProducerClaims,
+  approveProducerClaim,
+  rejectProducerClaim,
   createPassCheckout,
   fulfillPass,
   getExplorerPass,
@@ -103,6 +112,63 @@ export function createApp(overrides: Partial<AppDependencies> = {}) {
       }
       console.error('Admin authority change unavailable:', error);
       res.status(503).json({ error: 'Admin authority management is temporarily unavailable.' });
+    }
+  });
+
+  app.get('/api/admin/claims', requireAuth, async (_req, res) => {
+    try {
+      const claims = await deps.listPendingProducerClaims(res.locals.identity.uid);
+      res.json({ claims });
+    } catch (error) {
+      if (error instanceof AdminClaimError && error.code === 'forbidden') {
+        res.status(403).json({ error: error.message });
+        return;
+      }
+      console.error('Producer claim queue unavailable:', error);
+      res.status(503).json({ error: 'Producer request queue is temporarily unavailable.' });
+    }
+  });
+
+  app.post('/api/admin/claims/:producerId/approve', requireAuth, async (req, res) => {
+    try {
+      const result = await deps.approveProducerClaim(
+        res.locals.identity.uid,
+        String(req.params.producerId)
+      );
+      res.json({ claim: result });
+    } catch (error) {
+      if (error instanceof AdminClaimError) {
+        const status =
+          error.code === 'bad_request' ? 400 :
+          error.code === 'forbidden' ? 403 :
+          error.code === 'not_found' ? 404 : 409;
+        res.status(status).json({ error: error.message });
+        return;
+      }
+      console.error('Producer claim approval unavailable:', error);
+      res.status(503).json({ error: 'Producer request approval is temporarily unavailable.' });
+    }
+  });
+
+  app.post('/api/admin/claims/:producerId/reject', requireAuth, async (req, res) => {
+    try {
+      const result = await deps.rejectProducerClaim(
+        res.locals.identity.uid,
+        String(req.params.producerId),
+        typeof req.body?.reason === 'string' ? req.body.reason : ''
+      );
+      res.json({ claim: result });
+    } catch (error) {
+      if (error instanceof AdminClaimError) {
+        const status =
+          error.code === 'bad_request' ? 400 :
+          error.code === 'forbidden' ? 403 :
+          error.code === 'not_found' ? 404 : 409;
+        res.status(status).json({ error: error.message });
+        return;
+      }
+      console.error('Producer claim rejection unavailable:', error);
+      res.status(503).json({ error: 'Producer request rejection is temporarily unavailable.' });
     }
   });
 

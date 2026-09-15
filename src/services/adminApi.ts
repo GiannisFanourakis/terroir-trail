@@ -1,0 +1,92 @@
+import { auth } from './firebase';
+import { resolveApiBaseUrl } from './apiOrigin';
+
+export type TrustedAccountRole = 'traveler' | 'producer_host' | 'admin';
+export type AdminLevel = 'owner' | 'admin';
+
+export interface AccountCapabilities {
+  uid: string;
+  roles: TrustedAccountRole[];
+  primaryRole: TrustedAccountRole;
+  isAdmin: boolean;
+  adminLevel: AdminLevel | null;
+  isPlatformOwner: boolean;
+  producerIds: string[];
+  canManageOwnedListings: boolean;
+  canReviewProducerClaims: boolean;
+  canAssignProducerOwnership: boolean;
+  canModerateProducerContent: boolean;
+  canManageUserAccounts: boolean;
+  canManageAdmins: boolean;
+}
+
+export interface PendingProducerClaim {
+  producerId: string;
+  tradeBrandName: string;
+  producerCategory?: string;
+  officialEmail: string;
+  representativeName?: string;
+  representativeRole?: string;
+  countryCode?: string;
+  submittedAt?: string;
+  notesFromProducer?: string;
+}
+
+async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
+  await auth?.authStateReady();
+  if (!auth?.currentUser) throw new Error('Sign in to access account administration.');
+
+  const headers = new Headers(options.headers);
+  headers.set('Authorization', `Bearer ${await auth.currentUser.getIdToken()}`);
+  if (options.body) headers.set('Content-Type', 'application/json');
+
+  const response = await fetch(`${resolveApiBaseUrl()}/api${path}`, {
+    ...options,
+    headers,
+    cache: 'no-store',
+    signal: AbortSignal.timeout(15000),
+  });
+
+  if (!response.headers.get('content-type')?.includes('application/json')) {
+    throw new Error('Account administration is temporarily unavailable.');
+  }
+
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.error || 'Account administration request failed.');
+  return data as T;
+}
+
+export const fetchAccountCapabilities = () =>
+  request<{ capabilities: AccountCapabilities }>('/account/capabilities');
+
+export const fetchPendingProducerClaims = () =>
+  request<{ claims: PendingProducerClaim[] }>('/admin/claims');
+
+export const approveProducerClaim = (producerId: string) =>
+  request<{ claim: { producerId: string; status: 'verified_active'; occurredAt: string } }>(
+    `/admin/claims/${encodeURIComponent(producerId)}/approve`,
+    { method: 'POST', body: JSON.stringify({}) }
+  );
+
+export const rejectProducerClaim = (producerId: string, reason: string) =>
+  request<{ claim: { producerId: string; status: 'rejected'; occurredAt: string } }>(
+    `/admin/claims/${encodeURIComponent(producerId)}/reject`,
+    { method: 'POST', body: JSON.stringify({ reason }) }
+  );
+
+export const changeAdminAuthority = (
+  action: 'grant' | 'revoke',
+  email: string
+) => request<{
+  authority: {
+    action: 'grant' | 'revoke';
+    actorUid: string;
+    targetUid: string;
+    level: 'admin';
+    status: 'active' | 'revoked';
+    occurredAt: string;
+  };
+}>('/admin/authority', {
+  method: 'POST',
+  body: JSON.stringify({ action, email }),
+});

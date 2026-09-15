@@ -19,6 +19,9 @@ interface ProfileMenuProps {
   onOpenFaq?: () => void;
   onOpenLegal?: (tab?: 'privacy' | 'terms' | 'licenses') => void;
   onOpenLoops?: () => void;
+  isAdmin?: boolean;
+  isPlatformOwner?: boolean;
+  onOpenAdmin?: () => void;
 }
 
 export const ProfileMenu: React.FC<ProfileMenuProps> = ({
@@ -37,11 +40,13 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
   onOpenFaq,
   onOpenLegal,
   onOpenLoops,
+  isAdmin = false,
+  isPlatformOwner = false,
+  onOpenAdmin,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     if (!isOpen) return;
 
@@ -51,7 +56,6 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
       }
     };
 
-    // Small delay ensures the opening tap doesn't immediately dismiss the popover
     const timer = setTimeout(() => {
       document.addEventListener('pointerdown', handleOutside);
       document.addEventListener('click', handleOutside);
@@ -92,7 +96,6 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
 
   return (
     <div ref={menuRef} className="relative z-40 shrink-0">
-      {/* Avatar Button */}
       <button
         type="button"
         onClick={(e) => {
@@ -108,14 +111,11 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
         <ChevronDown className={`w-3 h-3 text-stone-400 shrink-0 group-hover:text-amber-300 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
-      {/* Popover Menu */}
       {isOpen && (
         <div
           onClick={(e) => e.stopPropagation()}
           className="absolute right-0 mt-2 w-72 sm:w-80 bg-stone-950/95 backdrop-blur-2xl border border-white/15 rounded-2xl shadow-2xl p-3 animate-in fade-in slide-in-from-top-2 duration-150 text-xs z-50"
         >
-          
-          {/* User Info */}
           <div className="pb-3 border-b border-white/10 mb-2.5">
             <div className="flex items-center gap-2.5 mb-1">
               <UserAvatar user={user} size="md" className="ring-2 ring-amber-500/50 shadow-md" />
@@ -126,7 +126,12 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
             </div>
 
             <div className="flex items-center justify-between mt-2 pt-1 text-[10px]">
-              {user.isProducer ? (
+              {isAdmin ? (
+                <span className="px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 font-bold border border-emerald-500/30 flex items-center gap-1">
+                  <ShieldCheck className="w-3 h-3" />
+                  <span>{isPlatformOwner ? 'Platform Owner' : 'TerroirTrail Admin'}</span>
+                </span>
+              ) : user.isProducer ? (
                 <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-bold border border-amber-500/30 flex items-center gap-1">
                   <span>🏛️</span>
                   <span>{user.producerName || 'Verified Host'}</span>
@@ -140,7 +145,6 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
             </div>
           </div>
 
-          {/* Terroir Passport Progress */}
           <button
             onClick={() => {
               setIsOpen(false);
@@ -155,8 +159,6 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
               </span>
               <span className="text-amber-400">{visitedCount} / {totalProducersCount}</span>
             </div>
-            
-            {/* Progress Bar */}
             <div className="w-full h-1.5 bg-stone-800 rounded-full overflow-hidden">
               <div
                 className="h-full bg-gradient-to-r from-amber-500 to-rose-500 rounded-full transition-all duration-300"
@@ -166,7 +168,6 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
             <p className="text-[9px] text-stone-400 mt-1">Tap to view your collection stamps</p>
           </button>
 
-          {/* Menu Actions */}
           <div className="space-y-1">
             <button
               onClick={() => {
@@ -220,16 +221,14 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
                   <span>{user.hasExplorerPass ? 'Digital Explorer Pass' : 'Explorer Pass (Optional)'}</span>
                 </span>
                 <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
-                  user.hasExplorerPass 
-                    ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' 
+                  user.hasExplorerPass
+                    ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
                     : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
                 }`}>
                   {user.hasExplorerPass ? 'Active' : '€14.99'}
                 </span>
               </button>
             )}
-
-
 
             {onOpenMyBookings && (
               <button
@@ -248,6 +247,24 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
                     {bookingsCount}
                   </span>
                 )}
+              </button>
+            )}
+
+            {isAdmin && onOpenAdmin && (
+              <button
+                onClick={() => {
+                  setIsOpen(false);
+                  onOpenAdmin();
+                }}
+                className="w-full flex items-center justify-between px-2.5 py-2 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/15 border border-emerald-500/25 text-emerald-300 transition cursor-pointer font-bold"
+              >
+                <span className="flex items-center gap-2">
+                  <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                  <span>Admin Requests & Controls</span>
+                </span>
+                <span className="text-[9px] px-1.5 py-0.5 rounded bg-emerald-400 text-stone-950 font-extrabold uppercase">
+                  {isPlatformOwner ? 'Owner' : 'Admin'}
+                </span>
               </button>
             )}
 
@@ -344,7 +361,6 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
               <span>Sign Out</span>
             </button>
           </div>
-
         </div>
       )}
     </div>

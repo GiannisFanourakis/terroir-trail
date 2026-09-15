@@ -8,6 +8,7 @@ import { ProducerList } from './components/Sidebar/ProducerList';
 import { ProducerDetailDrawer } from './components/Drawer/ProducerDetailDrawer';
 import { useFavorites } from './hooks/useFavorites';
 import { useAuth } from './hooks/useAuth';
+import { useAccountCapabilities } from './hooks/useAccountCapabilities';
 import { useBookings } from './hooks/useBookings';
 import { useProducerPortal } from './hooks/useProducerPortal';
 import { GoogleAdSlot } from './components/Monetization/GoogleAdSlot';
@@ -24,6 +25,7 @@ const AuthModal = lazy(() => import('./components/Auth/AuthModal').then(m => ({ 
 const PassportModal = lazy(() => import('./components/Auth/PassportModal').then(m => ({ default: m.PassportModal })));
 const BookingModal = lazy(() => import('./components/Bookings/BookingModal').then(m => ({ default: m.BookingModal })));
 const ProducerPortalModal = lazy(() => import('./components/Portal/ProducerPortalModal').then(m => ({ default: m.ProducerPortalModal })));
+const AdminPanelModal = lazy(() => import('./components/Admin/AdminPanelModal').then(m => ({ default: m.AdminPanelModal })));
 const MyBookingsModal = lazy(() => import('./components/Bookings/MyBookingsModal').then(m => ({ default: m.MyBookingsModal })));
 const ExplorerPassModal = lazy(() => import('./components/Monetization/ExplorerPassModal').then(m => ({ default: m.ExplorerPassModal })));
 const DigitalPassModal = lazy(() => import('./components/Monetization/DigitalPassModal').then(m => ({ default: m.DigitalPassModal })));
@@ -38,6 +40,7 @@ export type ActiveModal =
   | { type: 'passport' }
   | { type: 'booking'; producer?: Producer | null; experienceId?: string }
   | { type: 'portal' }
+  | { type: 'admin' }
   | { type: 'my_bookings' }
   | { type: 'pass' }
   | { type: 'digital_pass' }
@@ -76,6 +79,7 @@ export const App: React.FC = () => {
     getTastingNote,
   } = useAuth();
 
+  const { capabilities: accountCapabilities } = useAccountCapabilities(user?.id);
   const { favorites, toggleFavorite, isFavorite } = useFavorites(user?.id);
 
   const handleConfirmChauffeurBooking = (booking: ChauffeurBooking) => {
@@ -200,6 +204,9 @@ export const App: React.FC = () => {
         onLogout={logout}
         totalProducersCount={producers.length}
         onOpenProducerPortal={() => setActiveModal({ type: 'portal' })}
+        isAdmin={Boolean(accountCapabilities?.isAdmin)}
+        isPlatformOwner={Boolean(accountCapabilities?.isPlatformOwner)}
+        onOpenAdmin={accountCapabilities?.isAdmin ? () => setActiveModal({ type: 'admin' }) : undefined}
         onOpenAbout={() => setActiveModal({ type: 'about_faq', initialTab: 'about' })}
         onOpenFaq={() => setActiveModal({ type: 'about_faq', initialTab: 'faq' })}
         onOpenLegal={(tab) => setActiveModal({ type: 'legal', initialTab: tab || 'privacy' })}
@@ -410,6 +417,14 @@ export const App: React.FC = () => {
               closeModal();
             }}
             onPassVerified={(info) => setActiveModal({ type: 'host_verify', guestInfo: info })}
+          />
+        )}
+
+        {activeModal?.type === 'admin' && accountCapabilities?.isAdmin && (
+          <AdminPanelModal
+            isOpen
+            onClose={closeModal}
+            capabilities={accountCapabilities}
           />
         )}
 
