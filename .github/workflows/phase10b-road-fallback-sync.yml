@@ -1,0 +1,112 @@
+name: Phase 10B Road Fallback Sync
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/phase10b-road-fallback-sync.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Patch audited Phase 10B road fields
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          path = Path('src/data/phase10bProducers.ts')
+          text = path.read_text(encoding='utf-8')
+          text = text.replace(
+              " * Road access intentionally remains unclassified for every record until the\n * separate road-evidence audit. Producer visitability remains independent from\n * the role of a mapped public point.\n",
+              " * Road access reflects the Phase 10B evidence audit. Verified classifications are\n * exposed only where explicit supporting evidence exists; remaining records stay\n * unreviewed. Producer visitability remains independent from mapped-point role.\n",
+          )
+
+          audits = {
+              'tetramythos-winery': (
+                  'narrow_paved',
+                  'https://visit-achaia.gr/en/see-and-do/routes/202-route5',
+                  'Verified for the mapped winery approach, not vineyard tracks. Tetramythos publishes its winery at the 8th km of the Pounta-Kalavryta road; the Achaia regional route guide describes this ascending road through Ano Diakopto as good but a little narrow and winding.',
+              ),
+              'ktima-tselepos': (
+                  'paved',
+                  'https://www.climbagiospetros.gr/en/getting-to-agios-petros/',
+                  'Verified for the mapped winery approach. Ktima Tselepos publishes its address at the 14th km Tripoli-Kastri road; the Tripoli-Kastri-Agios Petros corridor is documented as a paved mountain road. No claim is made about vineyard tracks beyond the visitor site.',
+              ),
+              'siris-craft-brewery': (
+                  'paved',
+                  'https://www.ia.ihu.gr/en/howtogetthere/',
+                  'Verified for the mapped brewery point. Siris publishes its brewery at the 6th km of the Serres-Thessaloniki National Road; International Hellenic University documents the Thessaloniki-Serres National Highway as the road approach into Serres. Classification applies to the public brewery point, not any unrelated service tracks.',
+              ),
+              'monemvasia-winery': (
+                  'paved',
+                  'https://www.monemvasiawinery.gr/privacy-policy/',
+                  'Verified for the mapped winery point from the producer legal premises address, which explicitly places the business on the Tarapsa-Monemvasia National Road. This does not classify vineyard or agricultural tracks.',
+              ),
+          }
+
+          for producer_id, (road, source, notes) in audits.items():
+              pattern = rf"(\{{\n    id: '{re.escape(producer_id)}',.*?)(    roadAccessStatus: 'unreviewed',)(.*?\n  \}},)"
+              replacement = (
+                  rf"\1    roadAccess: '{road}',\n"
+                  rf"    roadAccessStatus: 'verified',\n"
+                  rf"    roadAccessSourceUrl: '{source}',\n"
+                  rf"    roadAccessNotes: '{notes}',\3"
+              )
+              text, count = re.subn(pattern, replacement, text, count=1, flags=re.S)
+              if count != 1:
+                  raise SystemExit(f'Could not patch fallback road record: {producer_id}')
+
+          path.write_text(text, encoding='utf-8')
+
+          report = Path('reports/phase10b_peloponnese_northern_greece_tuscany.md')
+          r = report.read_text(encoding='utf-8')
+          old = """### Road-access state
+
+Road access remains fully fail-closed for Phase 10B:
+
+- verified/classified roads: **0 / 19**
+- no producer currently receives a paved/unpaved/rental-car-suitability claim;
+- no Phase 10B multi-stop driving navigation may be enabled from the current evidence state.
+"""
+          new = """### Road-access state
+
+The separate road-evidence audit is now in progress. Batch 1 verified only records with sufficiently specific approach-road evidence:
+
+- verified/classified roads: **4 / 19**;
+- `tetramythos-winery`: `narrow_paved`;
+- `ktima-tselepos`: `paved`;
+- `siris-craft-brewery`: `paved`;
+- `monemvasia-winery`: `paved`;
+- remaining unreviewed roads: **15 / 19**;
+- vineyard, orchard, agricultural and unrelated service tracks are not inferred from the public-point classification;
+- no Phase 10B multi-stop driving navigation is enabled merely because individual stops have passed road review.
+
+Applied road migration:
+
+- `20260915121803_phase10b_road_access_audit_batch1`
+"""
+          if old not in r:
+              raise SystemExit('Could not find Phase 10B road-state report block')
+          report.write_text(r.replace(old, new), encoding='utf-8')
+          PY
+
+      - name: Commit fallback parity
+        shell: bash
+        run: |
+          if git diff --quiet; then
+            echo 'No changes to commit.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add src/data/phase10bProducers.ts reports/phase10b_peloponnese_northern_greece_tuscany.md
+          git commit -m 'Sync Phase 10B road audit batch 1 fallback'
+          git push origin HEAD:main
