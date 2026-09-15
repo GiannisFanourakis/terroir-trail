@@ -19,6 +19,11 @@ import {
 } from './services/adminOwnershipService';
 import { AdminMetricsError, getAdminDashboardMetrics } from './services/adminMetricsService';
 import {
+  ProducerVerificationError,
+  completeProducerContactVerification,
+  runProducerVerification,
+} from './services/producerVerificationService';
+import {
   sendProducerApprovalEmail,
   sendTravelerWelcomeEmail,
 } from './services/transactionalEmailTransport';
@@ -36,6 +41,8 @@ const defaults = {
   reassignProducerOwnership,
   revokeProducerOwnership,
   getAdminDashboardMetrics,
+  runProducerVerification,
+  completeProducerContactVerification,
   sendProducerApprovalEmail,
   sendTravelerWelcomeEmail,
   createPassCheckout,
@@ -94,6 +101,11 @@ export function createApp(overrides: Partial<AppDependencies> = {}) {
     }
   };
 
+  const producerVerificationErrorStatus = (error: ProducerVerificationError) =>
+    error.code === 'bad_request' ? 400 :
+    error.code === 'forbidden' ? 403 :
+    error.code === 'not_found' ? 404 : 409;
+
   app.get('/api/account/capabilities', requireAuth, async (_req, res) => {
     try {
       const capabilities = await deps.getTrustedAccountCapabilities(res.locals.identity.uid);
@@ -114,6 +126,40 @@ export function createApp(overrides: Partial<AppDependencies> = {}) {
     } catch (error) {
       console.error('Traveler welcome email unavailable:', error);
       res.status(503).json({ error: 'Welcome email delivery is temporarily unavailable.' });
+    }
+  });
+
+  app.post('/api/account/producer-claims/:producerId/verify', requireAuth, async (req, res) => {
+    try {
+      const verification = await deps.runProducerVerification(
+        res.locals.identity.uid,
+        String(req.params.producerId)
+      );
+      res.json({ verification });
+    } catch (error) {
+      if (error instanceof ProducerVerificationError) {
+        res.status(producerVerificationErrorStatus(error)).json({ error: error.message });
+        return;
+      }
+      console.error('Producer verification unavailable:', error);
+      res.status(503).json({ error: 'Producer verification is temporarily unavailable.' });
+    }
+  });
+
+  app.get('/api/account/producer-contact-verification', async (req, res) => {
+    const publicAppUrl = (process.env.APP_URL || 'https://terroir-trail.web.app').replace(/\/$/, '');
+    const token = typeof req.query.token === 'string' ? req.query.token : '';
+    try {
+      const result = await deps.completeProducerContactVerification(token);
+      res.redirect(
+        303,
+        `${publicAppUrl}/?producerVerification=success&producer=${encodeURIComponent(result.producerId)}`
+      );
+    } catch (error) {
+      if (!(error instanceof ProducerVerificationError)) {
+        console.error('Producer contact verification unavailable:', error);
+      }
+      res.redirect(303, `${publicAppUrl}/?producerVerification=failed`);
     }
   });
 
@@ -233,6 +279,23 @@ export function createApp(overrides: Partial<AppDependencies> = {}) {
       }
       console.error('Producer claim queue unavailable:', error);
       res.status(503).json({ error: 'Producer request queue is temporarily unavailable.' });
+    }
+  });
+
+  app.post('/api/admin/claims/:producerId/verify', requireAuth, async (req, res) => {
+    try {
+      const verification = await deps.runProducerVerification(
+        res.locals.identity.uid,
+        String(req.params.producerId)
+      );
+      res.json({ verification });
+    } catch (error) {
+      if (error instanceof ProducerVerificationError) {
+        res.status(producerVerificationErrorStatus(error)).json({ error: error.message });
+        return;
+      }
+      console.error('Admin producer verification unavailable:', error);
+      res.status(503).json({ error: 'Producer verification is temporarily unavailable.' });
     }
   });
 
