@@ -31,6 +31,7 @@ import { formatAuthError } from '../utils/authErrors';
 import { useExplorerPass } from './useExplorerPass';
 import { createGoogleWebCredential, createAppleWebCredential } from '../services/authBridging';
 import { logger } from '../services/logger';
+import { requestTravelerWelcomeEmail } from '../services/accountEmailApi';
 
 import {
   readStorage,
@@ -42,6 +43,16 @@ import {
 export { DEMO_PROFILES, DEMO_PRODUCER_PROFILES };
 
 const STORAGE_KEY = STORAGE_KEYS.AUTH_USER;
+
+const sendTravelerWelcomeSafely = async (name: string) => {
+  try {
+    await requestTravelerWelcomeEmail(name);
+  } catch (error) {
+    logger.warn('Auth', 'welcome_email_failed', {
+      reason: error instanceof Error ? error.message : String(error),
+    });
+  }
+};
 
 // Helper to load user stamps and notes from local storage by user ID
 const getUserData = (userId: string): Partial<UserProfile> & {
@@ -264,6 +275,7 @@ export const useAuth = () => {
       const mapped = mapFirebaseUser(firebaseUser, 'culinary_nomad', cloudProfile, trustedOwnership);
 
       await saveUserProfileToCloud(mapped);
+      await sendTravelerWelcomeSafely(mapped.name);
       setUser(mapped);
       saveUserData(mapped.id, mapped.visitedProducers, mapped.personalNotes, mapped);
       return mapped;
@@ -318,6 +330,7 @@ export const useAuth = () => {
       const mapped = mapFirebaseUser(firebaseUser, 'culinary_nomad', cloudProfile, trustedOwnership);
 
       await saveUserProfileToCloud(mapped);
+      await sendTravelerWelcomeSafely(mapped.name);
       setUser(mapped);
       saveUserData(mapped.id, mapped.visitedProducers, mapped.personalNotes, mapped);
       return mapped;
@@ -382,6 +395,7 @@ export const useAuth = () => {
       const mapped = mapFirebaseUser(cred.user, travelerType);
       mapped.name = name;
       await saveUserProfileToCloud(mapped);
+      await sendTravelerWelcomeSafely(mapped.name);
       setUser(mapped);
       saveUserData(mapped.id, mapped.visitedProducers, mapped.personalNotes, mapped);
       return mapped;
@@ -518,6 +532,7 @@ export const useAuth = () => {
       };
       await saveProducerRegistrationToCloud(claimRecord);
       await saveUserProfileToCloud(mapped);
+      await sendTravelerWelcomeSafely(mapped.name);
       saveUserData(mapped.id, mapped.visitedProducers, mapped.personalNotes, mapped);
       setUser(mapped);
       return mapped;
