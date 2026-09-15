@@ -9,6 +9,7 @@
     "verify:seo": "tsx scripts/verify_seo_assets.ts",
     "sync:fallback": "tsx scripts/sync_fallback_producers.ts",
     "audit:google-place-ids": "tsx scripts/audit_google_place_ids.ts",
+    "admin:bootstrap": "tsx scripts/setAdminAuthority.ts bootstrap-owner",
     "test": "npm run test:frontend && npm run test:server && npm run test:rules",
     "test:python": "python -m unittest discover -s tools/python/tests -p \"test_*.py\"",
     "audit:locations": "python tools/python/producer_location_audit.py",
@@ -33,7 +34,6 @@
   },
   "devDependencies": {
     "@capacitor/cli": "^8.5.1",
-    "@eslint/js": "^9.39.5",
     "@firebase/rules-unit-testing": "^5.0.2",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
