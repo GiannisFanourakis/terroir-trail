@@ -60,10 +60,10 @@ function mapRowToProducer(row: any): Producer {
   if (row.review_count != null) prod.reviewCount = Number(row.review_count);
   if (row.vip_perks) prod.vipPerks = row.vip_perks;
 
-  // Verification & Visitability Authority
   if (row.location_status) prod.locationStatus = row.location_status;
   if (row.location_source_url) prod.locationSourceUrl = row.location_source_url;
   if (row.location_notes) prod.locationNotes = row.location_notes;
+  if (row.public_point_type) prod.publicPointType = row.public_point_type;
   if (row.visit_status) prod.visitStatus = row.visit_status;
   if (row.visit_source_url) prod.visitSourceUrl = row.visit_source_url;
   if (row.visit_notes) prod.visitNotes = row.visit_notes;
@@ -151,7 +151,6 @@ async function syncFallbackCatalogue() {
   const producers = rows.map(mapRowToProducer);
   assertPhase6CreteIntegrity(producers);
 
-  // Group by region for structured readability
   const regions = ['Chania', 'Heraklion', 'Rethymno', 'Lasithi'];
   const grouped: Record<string, Producer[]> = {};
   for (const r of regions) {
