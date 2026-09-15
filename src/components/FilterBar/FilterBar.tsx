@@ -27,6 +27,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
     { id: 'brewery', label: 'Microbreweries', icon: '🍺', activeColor: 'bg-amber-400 text-stone-950 shadow-amber-400/30' },
     { id: 'kazani', label: 'Rakokazana', icon: '🏺', activeColor: 'bg-amber-600 text-white shadow-amber-600/30' },
     { id: 'olive_mill', label: 'Olive Mills', icon: '🫒', activeColor: 'bg-emerald-600 text-white shadow-emerald-600/30' },
+    { id: 'olive_oil_producer', label: 'Olive Oil Producers', icon: '🫒', activeColor: 'bg-emerald-500 text-stone-950 shadow-emerald-500/30' },
     { id: 'cheese_dairy', label: 'Shepherd Dairies', icon: '🧀', activeColor: 'bg-yellow-500 text-stone-950 shadow-yellow-500/30' },
     { id: 'apiary', label: 'Honey & Herbs', icon: '🍯', activeColor: 'bg-orange-500 text-white shadow-orange-500/30' },
     { id: 'farm', label: 'Farms', icon: '🌿', activeColor: 'bg-emerald-500 text-stone-950 shadow-emerald-500/30' },
@@ -81,9 +82,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
     <div className="relative z-20 shrink-0 bg-stone-900/95 backdrop-blur-xl border-b border-white/10 px-3 sm:px-6 lg:px-8 py-2 shadow-md w-full">
       <div className="w-full flex flex-col gap-1.5">
         
-        {/* Top Category Buttons & Pinned Action Controls */}
         <div className="flex items-center justify-between gap-2">
-          {/* Scrollable Categories List */}
           <div className="flex items-center gap-1 sm:gap-2 overflow-x-auto scrollbar-none min-w-0 flex-1 py-0.5">
             {categories.map((cat) => {
               const isSelected = filters.category === cat.id;
@@ -104,26 +103,23 @@ export const FilterBar: React.FC<FilterBarProps> = ({
             })}
           </div>
 
-          {/* Quick Actions: Always Pinned & Visible, Never Scrolled Away! */}
           <div className="flex items-center gap-1.5 shrink-0 pl-1.5 border-l border-white/10">
             <span className="text-[11px] font-semibold text-stone-400 hidden xl:inline">
               <span className="text-amber-400 font-bold">{totalFiltered}</span> of {totalCount} makers
             </span>
 
-            {/* Curated Routes */}
             {onOpenLoops && (
               <button
                 type="button"
                 onClick={onOpenLoops}
                 className="flex items-center gap-1.5 text-[11px] sm:text-xs px-2.5 py-1 rounded-full font-bold border border-amber-500/40 bg-gradient-to-r from-amber-500/20 via-amber-500/10 to-transparent hover:border-amber-400 text-amber-300 hover:text-white transition shrink-0 cursor-pointer shadow-sm active:scale-95"
-                title="Curated routes are published only after location and road-access verification"
+                title="Discovery Guides are published only after stop verification; multi-stop navigation stays withheld until road access is verified"
               >
                 <Compass className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                <span>Routes</span>
+                <span>Guides</span>
               </button>
             )}
 
-            {/* Filter Toggle Button */}
             <button
               onClick={() => setIsMoreFiltersOpen((prev) => !prev)}
               className={`flex items-center gap-1 text-[11px] sm:text-xs px-2.5 py-1 rounded-full font-medium border transition shrink-0 cursor-pointer ${
@@ -155,11 +151,8 @@ export const FilterBar: React.FC<FilterBarProps> = ({
           </div>
         </div>
 
-        {/* Secondary Sub-filters (Collapsible on smaller screens) */}
         <div className={`${isMoreFiltersOpen ? 'flex' : 'hidden lg:flex'} flex-wrap items-center justify-between gap-2 pt-1.5 border-t border-white/5 text-xs animate-in fade-in duration-200`}>
           <div className="flex flex-wrap items-center gap-2">
-            
-            {/* Road Access Dropdown */}
             <select
               value={filters.roadAccess}
               onChange={(e) => onFilterChange('roadAccess', e.target.value as RoadAccess | 'all')}
@@ -170,7 +163,6 @@ export const FilterBar: React.FC<FilterBarProps> = ({
               ))}
             </select>
 
-            {/* Ethos Dropdown */}
             <select
               value={filters.ethos}
               onChange={(e) => onFilterChange('ethos', e.target.value as Ethos | 'all')}
@@ -181,7 +173,6 @@ export const FilterBar: React.FC<FilterBarProps> = ({
               ))}
             </select>
 
-            {/* Food Option Dropdown */}
             <select
               value={filters.foodOption}
               onChange={(e) => onFilterChange('foodOption', e.target.value as FoodOption | 'all')}
@@ -192,7 +183,6 @@ export const FilterBar: React.FC<FilterBarProps> = ({
               ))}
             </select>
 
-            {/* Quick Feature Toggles */}
             <div className="hidden sm:flex items-center gap-1.5 border-l border-white/10 pl-2">
               <button
                 onClick={() => onFilterChange('dogFriendlyOnly', !filters.dogFriendlyOnly)}
