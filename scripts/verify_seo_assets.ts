@@ -63,7 +63,46 @@ function verifySeoAssets(): void {
     process.exit(1);
   }
 
-  // 6. Verify dist/index.html canonical link and absence of stale/publicly quarantined claims
+  // 6. Verify the public machine-readable product-state file is current.
+  const llmsPath = path.join(distDir, 'llms.txt');
+  if (!fs.existsSync(llmsPath)) {
+    console.error('[SEO Verification Failed] dist/llms.txt is missing.');
+    process.exit(1);
+  }
+
+  const llmsContent = fs.readFileSync(llmsPath, 'utf-8');
+  const requiredLlmsClaims = [
+    '36 producer/project records',
+    'Crete, Greece — 27 audited records.',
+    'Santorini, Greece — 9 audited records.',
+    'three published verified-stop Discovery Guides',
+    'does not represent Santorini as a UNESCO Global Geopark',
+    'Next regional programme: Peloponnese',
+  ];
+
+  for (const claim of requiredLlmsClaims) {
+    if (!llmsContent.includes(claim)) {
+      console.error(`[SEO Verification Failed] dist/llms.txt is missing current product-state claim: ${claim}`);
+      process.exit(1);
+    }
+  }
+
+  const staleLlmsClaims = [
+    'Current reference region: Crete, Greece.',
+    'Future expansion may include Santorini',
+    '58+ verified producers',
+    '6 turn-by-turn',
+    'Santorini Complete Volcanic Caldera & Donkey Beer Trail',
+  ];
+
+  for (const claim of staleLlmsClaims) {
+    if (llmsContent.includes(claim)) {
+      console.error(`[SEO Verification Failed] dist/llms.txt still contains stale product-state claim: ${claim}`);
+      process.exit(1);
+    }
+  }
+
+  // 7. Verify dist/index.html canonical link and absence of stale/publicly quarantined claims
   const indexPath = path.join(distDir, 'index.html');
   if (fs.existsSync(indexPath)) {
     const indexContent = fs.readFileSync(indexPath, 'utf-8');
@@ -133,6 +172,7 @@ function verifySeoAssets(): void {
   console.log(`✓ SEO verification passed:`);
   console.log(`  - dist/sitemap.xml present and valid (${locMatches.length} URLs mapped to ${CANONICAL_HOST})`);
   console.log(`  - dist/robots.txt present and advertises ${CANONICAL_SITEMAP_URL}`);
+  console.log('  - dist/llms.txt reflects the current Crete + Santorini product state');
   console.log(`  - Canonical link, draft-route quarantine, and unconsented ad-script quarantine verified in dist/index.html`);
 }
 
