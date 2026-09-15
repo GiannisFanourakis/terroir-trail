@@ -26,6 +26,39 @@ describe('Phase 10B producer taxonomy', () => {
     expect(isGooglePlacesEligible('liokareas-olive-estate')).toBe(true);
   });
 
+  it('persists the audited Phase 10B Google Place identities', () => {
+    const expected = new Map([
+      ['monemvasia-winery', 'ChIJwU0GkC4-nhQRlcJGAJ6fbWk'],
+      ['propator-sknipa-brewery', 'ChIJHSyH3VFAqBQRdF-4PVdW8f8'],
+      ['alpha-estate', 'ChIJq_TNZHdzVxMRrY3Giv0bikM'],
+      ['ktima-pavlidis', 'ChIJiVyvYCBYqRQRgo04TZknytU'],
+    ]);
+
+    for (const [producerId, placeId] of expected) {
+      const producer = PHASE10B_PRODUCERS.find((item) => item.id === producerId);
+      expect(producer?.googlePlaceId).toBe(placeId);
+      expect(['verified_location', 'verified_entrance']).toContain(
+        producer?.locationStatus
+      );
+      expect(isGooglePlacesEligible(producerId)).toBe(true);
+    }
+  });
+
+  it('keeps unresolved Northern Greece Google identities fail-closed', () => {
+    const unresolved = [
+      'domaine-biblia-chora',
+      'domaine-karanika',
+      'siris-craft-brewery',
+      'thymiopoulos-naoussa',
+    ];
+
+    for (const producerId of unresolved) {
+      const producer = PHASE10B_PRODUCERS.find((item) => item.id === producerId);
+      expect(producer?.googlePlaceId).toBeUndefined();
+      expect(isGooglePlacesEligible(producerId)).toBe(false);
+    }
+  });
+
   it('does not turn producer-owned shop points into shop catalogue categories', () => {
     const shopPoints = PHASE10B_PRODUCERS.filter(
       (producer) => producer.publicPointType === 'producer_shop'

@@ -72,8 +72,8 @@ Current exact-location state after the Liokareas public-point audit:
 
 - verified public location points: **19 / 19**
 - unresolved public location points: **0 / 19**
-- accepted persistent Google Place IDs: **10 / 19**
-- Google-media eligible Phase 10B records: **10 / 19**
+- accepted persistent Google Place IDs: **14 / 19**
+- Google-media eligible Phase 10B records: **14 / 19**
 
 Applied location/entity migrations include:
 
@@ -84,6 +84,9 @@ Applied location/entity migrations include:
 - `20260915104604_phase10b_refine_liokareas_public_identity`
 - `20260915104832_phase10b_add_olive_oil_producer_category`
 - `20260915105042_phase10b_separate_producer_identity_from_public_point`
+- `20260915123444_phase10b_persist_monemvasia_google_place_id`
+- `20260915125512_phase10b_persist_sknipa_google_place_id`
+- `20260915125656_phase10b_persist_northern_greece_google_place_ids_batch2`
 
 ### Producer identity versus mapped public point
 
@@ -162,13 +165,13 @@ For each region:
 
 ## Next Phase 10B gate
 
-The next gate is the **remaining Google identity and road/access audit**:
+The next gate is the **remaining Google identity and Discovery Guide audit**:
 
 1. complete remaining persistent Google Place ID matches without inferring IDs from coordinates or CIDs;
 2. keep Google imagery enabled only where both a manually audited persistent Place ID and verified location exist;
-3. run the full automated quality gate after the taxonomy/fallback release;
-4. perform a separate road-evidence review; location verification alone must not classify a road;
-5. design candidate Discovery Guides only from verified stops, with multi-stop navigation withheld wherever access evidence remains incomplete;
+3. preserve the completed road-evidence audit as a separate safety gate; do not upgrade reviewed-but-unconfirmed approaches without new evidence;
+4. design candidate Discovery Guides only from verified stops, with multi-stop navigation withheld wherever access evidence remains incomplete;
+5. run the full automated quality gate after fallback parity is synchronized;
 6. complete a production smoke before any Phase 10B regional reference-quality claim.
 
 No Phase 10B regional closeout or production-reference claim should be made before the remaining road/access, Discovery Guide, and production-smoke gates are complete.
