@@ -11,6 +11,12 @@ import {
   approveProducerClaim,
   rejectProducerClaim,
 } from './services/adminClaimsService';
+import {
+  AdminOwnershipError,
+  listActiveProducerOwnerships,
+  reassignProducerOwnership,
+  revokeProducerOwnership,
+} from './services/adminOwnershipService';
 import { AdminMetricsError, getAdminDashboardMetrics } from './services/adminMetricsService';
 import {
   sendProducerApprovalEmail,
@@ -26,6 +32,9 @@ const defaults = {
   listPendingProducerClaims,
   approveProducerClaim,
   rejectProducerClaim,
+  listActiveProducerOwnerships,
+  reassignProducerOwnership,
+  revokeProducerOwnership,
   getAdminDashboardMetrics,
   sendProducerApprovalEmail,
   sendTravelerWelcomeEmail,
@@ -147,6 +156,69 @@ export function createApp(overrides: Partial<AppDependencies> = {}) {
       }
       console.error('Admin authority change unavailable:', error);
       res.status(503).json({ error: 'Admin authority management is temporarily unavailable.' });
+    }
+  });
+
+  app.get('/api/admin/ownerships', requireAuth, async (_req, res) => {
+    try {
+      const ownerships = await deps.listActiveProducerOwnerships(res.locals.identity.uid);
+      res.json({ ownerships });
+    } catch (error) {
+      if (error instanceof AdminOwnershipError) {
+        const status =
+          error.code === 'bad_request' ? 400 :
+          error.code === 'forbidden' ? 403 :
+          error.code === 'not_found' ? 404 : 409;
+        res.status(status).json({ error: error.message });
+        return;
+      }
+      console.error('Producer ownership list unavailable:', error);
+      res.status(503).json({ error: 'Producer ownership management is temporarily unavailable.' });
+    }
+  });
+
+  app.post('/api/admin/ownerships/:producerId/revoke', requireAuth, async (req, res) => {
+    try {
+      const ownership = await deps.revokeProducerOwnership(
+        res.locals.identity.uid,
+        String(req.params.producerId),
+        typeof req.body?.reason === 'string' ? req.body.reason : ''
+      );
+      res.json({ ownership });
+    } catch (error) {
+      if (error instanceof AdminOwnershipError) {
+        const status =
+          error.code === 'bad_request' ? 400 :
+          error.code === 'forbidden' ? 403 :
+          error.code === 'not_found' ? 404 : 409;
+        res.status(status).json({ error: error.message });
+        return;
+      }
+      console.error('Producer ownership revoke unavailable:', error);
+      res.status(503).json({ error: 'Producer ownership management is temporarily unavailable.' });
+    }
+  });
+
+  app.post('/api/admin/ownerships/:producerId/reassign', requireAuth, async (req, res) => {
+    try {
+      const ownership = await deps.reassignProducerOwnership(
+        res.locals.identity.uid,
+        String(req.params.producerId),
+        typeof req.body?.email === 'string' ? req.body.email : '',
+        typeof req.body?.reason === 'string' ? req.body.reason : ''
+      );
+      res.json({ ownership });
+    } catch (error) {
+      if (error instanceof AdminOwnershipError) {
+        const status =
+          error.code === 'bad_request' ? 400 :
+          error.code === 'forbidden' ? 403 :
+          error.code === 'not_found' ? 404 : 409;
+        res.status(status).json({ error: error.message });
+        return;
+      }
+      console.error('Producer ownership reassignment unavailable:', error);
+      res.status(503).json({ error: 'Producer ownership management is temporarily unavailable.' });
     }
   });
 
