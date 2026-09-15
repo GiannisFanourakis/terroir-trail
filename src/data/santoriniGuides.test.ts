@@ -69,7 +69,7 @@ describe('Phase 10A — Santorini discovery guides', () => {
       expect(guide.drivingDistance).toBe('Driving distance pending access audit');
       const evaluation = evaluateRouteNavigation(guide, SANTORINI_PRODUCERS);
       expect(evaluation.isSafe).toBe(false);
-      expect(evaluation.url).toBe('');
+      expect(evaluation.url).toBeUndefined();
       expect(evaluation.issues.length).toBeGreaterThan(0);
     }
   });
