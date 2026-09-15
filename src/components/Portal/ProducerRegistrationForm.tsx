@@ -52,13 +52,25 @@ interface ProducerRegistrationFormProps {
 
 type TabKey = 'fiscal' | 'logistics' | 'packaging' | 'banking' | 'permits';
 
+
+const getDestinationLabel = (destination?: Producer['destination']): string => {
+  switch (destination) {
+    case 'crete': return 'Crete';
+    case 'santorini': return 'Santorini';
+    case 'peloponnese': return 'Peloponnese';
+    case 'northern_greece': return 'Northern Greece';
+    case 'tuscany': return 'Tuscany';
+    default: return '';
+  }
+};
+
 const mapProducerCategoryToRegistration = (
   producer?: Pick<Producer, 'id' | 'category'> | null
 ): ProducerRegistrationRecord['producerCategory'] => {
   if (!producer) return 'winery';
   const effectiveCat = getEffectiveProducerCategory(producer);
   if (effectiveCat === 'kazani') return 'distillery';
-  if (effectiveCat === 'olive_mill') return 'olive_oil';
+  if (effectiveCat === 'olive_mill' || effectiveCat === 'olive_oil_producer') return 'olive_oil';
   return effectiveCat;
 };
 
@@ -124,7 +136,7 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
   const [postalCode, setPostalCode] = useState('');
   const [cityOrVillage, setCityOrVillage] = useState('');
   const [region, setRegion] = useState(
-    defaultProducer ? (defaultProducer.destination === 'tuscany' ? 'Tuscany' : 'Crete') : 'Crete'
+    defaultProducer ? getDestinationLabel(defaultProducer.destination) : ''
   );
   const [accessType, setAccessType] = useState<NonNullable<ProducerRegistrationRecord['logistics']>['accessType']>('standard_courier_van');
   const [contactPersonName, setContactPersonName] = useState('');
@@ -169,7 +181,7 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
         setSelectedProducerId(initial.id);
         setProducerCategory(mapProducerCategoryToRegistration(initial));
         setCountryCode(initial.country === 'Italy' || initial.destination === 'tuscany' ? 'IT' : 'GR');
-        setRegion(initial.destination === 'tuscany' ? 'Tuscany' : 'Crete');
+        setRegion(getDestinationLabel(initial.destination));
       }
     }
   }, [allProducers, initialProducerId, selectedProducerId]);
@@ -305,7 +317,7 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
     if (p) {
       setProducerCategory(mapProducerCategoryToRegistration(p));
       setCountryCode(p.country === 'Italy' || p.destination === 'tuscany' ? 'IT' : 'GR');
-      setRegion(p.destination === 'tuscany' ? 'Tuscany' : 'Crete');
+      setRegion(getDestinationLabel(p.destination));
     }
   };
 
@@ -510,7 +522,7 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
             >
               {allProducers.map((p: Producer) => (
                 <option key={p.id} value={p.id}>
-                  {p.name} ({p.village}, {p.destination === 'tuscany' ? 'Tuscany' : 'Crete'})
+                  {p.name} ({p.village}, {getDestinationLabel(p.destination)})
                 </option>
               ))}
             </select>
@@ -659,7 +671,7 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
                   <option value="distillery">🏺 Traditional Spirit Distillery</option>
                   <option value="cheese_dairy">🧀 Artisan Cheese Dairy</option>
                   <option value="apiary">🍯 Natural Honey Apiary</option>
-                  <option value="olive_oil">🫒 Cold-Pressed Olive Mill</option>
+                  <option value="olive_oil">🫒 Olive Oil Producer / Mill</option>
                   <option value="farm">🌿 Regenerative Farm & Estate</option>
                 </select>
               </div>

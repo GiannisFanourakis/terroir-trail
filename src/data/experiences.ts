@@ -259,6 +259,10 @@ export const DEFAULT_EXPERIENCES_BY_CATEGORY: Record<ProducerCategory, TastingEx
     },
   ],
 
+  // No synthetic default experiences for olive-oil producers.
+  // Experiences stay empty until explicit producer-approved offerings exist.
+  olive_oil_producer: [],
+
   apiary: [
     {
       id: 'honey_flight',
