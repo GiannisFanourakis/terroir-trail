@@ -31,13 +31,18 @@ describe('Phase 7 producer claim trust boundaries', () => {
     expect(authHook).toContain('isVatVerified: false');
   });
 
-  it('keeps future host commercial workflows quarantined from the launch portal', () => {
+  it('keeps future host commercial workflows quarantined from the Phase 11 portal', () => {
     const portal = read('src/components/Portal/ProducerPortalModal.tsx');
     const drawer = read('src/components/Drawer/ProducerDetailDrawer.tsx');
 
-    expect(portal).toContain('const ENABLE_FUTURE_HOST_FEATURES = false;');
-    expect(portal).toContain(">('notice');");
-    expect(portal).toContain('📢 Visitor Notice');
+    expect(portal).toContain("type PortalTab = 'overview' | 'notice' | 'photos' | 'account';");
+    expect(portal).toContain('Visitor Notice');
+    expect(portal).toContain('Protected TerroirTrail evidence');
+    expect(portal).toContain('cannot be self-declared by a host');
+    expect(portal).not.toContain('Reservations Queue');
+    expect(portal).not.toContain('Host Pro Tier');
+    expect(portal).not.toContain('Tasting Flights');
+    expect(portal).not.toContain('Scan Guest Pass');
     expect(portal).not.toContain('1-Click Host Demo');
     expect(drawer).not.toContain('Manage hours, notices, tasting bookings & bottle shop');
   });
