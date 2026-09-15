@@ -9,10 +9,7 @@ export interface GooglePlacesAllowlistEntry {
   coordinates: [number, number];
 }
 
-const AUDITED_GOOGLE_PLACE_PRODUCERS = [
-  ...CRETAN_PRODUCERS,
-  ...SANTORINI_PRODUCERS,
-];
+const AUDITED_GOOGLE_PLACE_PRODUCERS = [...CRETAN_PRODUCERS, ...SANTORINI_PRODUCERS];
 
 /**
  * Eligibility comes only from manually audited regional catalogues.
