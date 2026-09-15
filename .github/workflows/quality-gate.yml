@@ -1,5 +1,6 @@
 name: Quality Gate
 
+# Runs the repository's canonical quality gate on every main push.
 on:
   push:
     branches: [main]
