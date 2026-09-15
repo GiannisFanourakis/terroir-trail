@@ -2,7 +2,7 @@
 
 Date: 2026-09-15
 
-Status: **Current regional workstream. Trust and narrative cleanup complete; final location/access audit remains open.**
+Status: **Current regional workstream. Trust/narrative cleanup and producer-location audit substantially complete; media, road/access, fallback and production gates remain open.**
 
 Phase 10B combines Peloponnese, Northern Greece, and Tuscany / Italy into one coordinated regional expansion batch. The purpose is to reuse one audit and QA framework across all three regions while preserving region-specific evidence and verification decisions.
 
@@ -52,7 +52,7 @@ Narrative cleanup is complete for all 19 Phase 10B records.
 - Peloponnese: 9/9 rewritten from current producer-controlled sources.
 - Tuscany / Italy: 1/1 rewritten from current producer-controlled sources.
 - Promotional legacy language such as unsupported "world", "legendary", "benchmark", "best", "royalty", "icon", "cult", "award", "premier" and similar claims is no longer present in the live Phase 10B `tag_line`, `description` or `story` fields.
-- Ethos labels are now conservative: they are retained only where the producer's current material directly supports them.
+- Ethos labels are conservative and retained only where current evidence directly supports them.
 
 Applied narrative migrations:
 
@@ -71,27 +71,27 @@ Current Phase 10B distribution:
 - `not_publicly_confirmed`: 7
 - `current_access_uncertain`: 1
 
-Public or appointment status is based on current first-party evidence. A producer can have confirmed visitor access while its exact TerroirTrail map point remains unresolved.
+Public or appointment status is based on current first-party evidence. A producer can have confirmed visitor access without any road-suitability claim.
 
 ### Location and Google identity state
 
-Current exact-location state after batch 2:
+Current exact-location state after the final location/entity pass:
 
-- verified locations: **16 / 19**
-- unresolved locations: **3 / 19**
-- accepted Google Place IDs: **9 / 19**
+- verified locations: **18 / 19**
+- intentionally unresolved locations: **1 / 19**
+- accepted persistent Google Place IDs: **9 / 19**
 
-Exact-location batch 2 independently verified 11 additional producer points without changing road-access status. The migration is:
+Applied location migrations:
 
+- `20260915101844_phase10b_verify_first_party_linked_locations_batch1`
 - `20260915103850_phase10b_verify_exact_locations_batch2`
+- `20260915104144_phase10b_finalize_location_entity_audit`
 
-The three records that remain intentionally unresolved are:
+Domaine Mercouri and GAIA Wines Nemea now have independently corroborated exact winery points. Liokareas remains intentionally unresolved because current first-party evidence supports a family olive farm/orchard and olive-oil producer, but does not establish a sufficiently exact reusable public farm point.
 
-- Domaine Mercouri
-- GAIA Wines Nemea
-- Liokareas
+The Liokareas category was therefore corrected from `olive_mill` to `farm` instead of preserving an unsupported entity classification.
 
-A Google Place ID by itself does not upgrade `location_status`. Exact map-point verification remains a separate evidence step.
+A Google Place ID by itself does not upgrade `location_status`, and verified coordinates do not imply road suitability.
 
 ### Road-access state
 
@@ -124,17 +124,17 @@ For each region:
 
 ## Next Phase 10B gate
 
-The next gate is the **final three-record location/entity audit plus remaining Google identity work**:
+The next gate is the **Google identity/media and fallback-parity audit**, followed by road/access review:
 
-1. resolve Domaine Mercouri only if its exact current estate point can be independently corroborated strongly enough;
-2. resolve GAIA Wines Nemea only when an exact current winery point is independently established, not merely the village/locality;
-3. review Liokareas as both a location and entity-type question, because current first-party material supports a family olive-oil business and packaged harvest-trip activity but not yet an ordinary public Greek mill/estate point;
-4. complete remaining Google Place ID matches without inferring IDs from coordinates or CIDs;
-5. enable Google imagery only where both the persistent Place ID and location audit pass;
-6. keep road access untouched until a separate road-evidence review;
-7. only after exact-location parity, design candidate Discovery Guides from verified stops.
+1. complete remaining persistent Google Place ID matches without inferring IDs from coordinates or CIDs;
+2. enable Google imagery only where both a manually audited persistent Place ID and verified location exist;
+3. keep Liokareas unresolved until a producer-controlled or equivalently strong exact farm point is available;
+4. synchronize audited Phase 10B records into the bundled fallback path without resurrecting legacy claims;
+5. run the automated quality gate again after source/fallback changes;
+6. perform a separate road-evidence review; location verification alone must not classify a road;
+7. design candidate Discovery Guides only from verified stops, with multi-stop navigation withheld wherever access evidence remains incomplete.
 
-No Phase 10B regional closeout or production-reference claim should be made before the location, media, road/access, fallback and production-smoke gates are complete.
+No Phase 10B regional closeout or production-reference claim should be made before the media, road/access, fallback and production-smoke gates are complete.
 
 ## Completion model
 
