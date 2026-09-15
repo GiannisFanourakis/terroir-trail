@@ -13,6 +13,8 @@ export interface ProducerUploadedImage {
   uploadedAt: string;
   rightsConfirmed: boolean;
   source: 'host_upload';
+  reviewedAt?: string;
+  reviewedBy?: string;
   moderationNotes?: string;
 }
 
