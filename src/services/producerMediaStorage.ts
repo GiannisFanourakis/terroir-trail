@@ -118,12 +118,13 @@ export async function cleanupRemovedProducerMedia(
   const retainedPaths = new Set(
     nextImages
       .map((image) => image.storagePath)
-      .filter((path): path is string => Boolean(path))
+      .filter((path): path is string => typeof path === 'string' && path.length > 0)
   );
 
   const stalePaths = previousImages
     .map((image) => image.storagePath)
-    .filter((path): path is string => Boolean(path) && !retainedPaths.has(path));
+    .filter((path): path is string => typeof path === 'string' && path.length > 0)
+    .filter((path) => !retainedPaths.has(path));
 
   if (stalePaths.length === 0) return;
 
