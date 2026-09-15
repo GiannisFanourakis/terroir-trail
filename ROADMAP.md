@@ -4,8 +4,8 @@
 >
 > Completion convention: change `- [ ] Step` to `- [x] ~~Step~~` when finished. Do not mark a step complete until it has been implemented, tested, pushed, deployed where applicable, and verified.
 
-**Last updated:** 2026-09-14
-**Current focus:** Phase 9 — Crete as the First Finished Region
+**Last updated:** 2026-09-15
+**Current focus:** Phase 9D — Crete Discovery Guides & Regional Closeout
 
 ---
 
@@ -209,7 +209,7 @@ Closeout verification:
 
 ## Phase 8 — Producer UI & Visual Authenticity
 
-**Status:** Substantially completed — category-aware presentation, farm taxonomy, trust-aware visiting language, and imagery provenance architecture are implemented. Producer-specific rights-cleared imagery and final page polish remain open.
+**Status:** Substantially completed — category-aware presentation, farm taxonomy, trust-aware visiting language, imagery provenance architecture, and live Google Places imagery are implemented. Remaining Phase 8 items are structural/project-classification cleanup and future first-party/rights-cleared local media.
 
 - [x] ~~Make producer cards category-appropriate rather than wine-centric.~~
 - [x] ~~Make winery UI feel appropriate for wineries.~~
@@ -230,14 +230,15 @@ Phase 8 reconciliation notes:
 - Farm is now a first-class taxonomy and Peskesi is no longer carried through the legacy `kazani` compatibility path.
 - Producer presentation is category-aware and unverified visitability no longer produces positive hospitality claims such as `Walk-ins welcome`.
 - Imagery provenance was hardened so local/category fallback imagery cannot masquerade as verified estate media.
-- Google Places imagery uses verified Place IDs only and remains supplementary and production-disabled.
+- Google Places imagery is now production-enabled only for manually audited Crete records with verified Place IDs. Photos are loaded live at runtime, attribution remains visible, and Google photo URIs are not persisted, cached, proxied, or rehosted.
+- The production image hierarchy is: approved host/producer media → explicitly credited local media → live Google Places imagery → neutral category fallback.
 - Producer-uploaded media remains a gated prototype; its proposed Supabase storage migration has not been applied.
 
 ---
 
 ## Phase 9 — Crete as the First Finished Region
 
-**Status:** In progress — the core Crete discovery and trust foundation is complete. Remaining work is producer-page visual polish, safe self-guided routes/day trips, the complete mobile journey, and final regional QA.
+**Status:** In progress — the core Crete discovery/trust foundation, polished producer pages, authentic live imagery, and the complete mobile journey are verified. Remaining work is discovery guides/day trips and final regional QA.
 
 Crete becomes the reference implementation before rapid geographic expansion.
 
@@ -247,9 +248,9 @@ Crete becomes the reference implementation before rapid geographic expansion.
 - [x] ~~Finish safe navigation/directions behavior.~~
 - [x] ~~Finish real producer stories.~~
 - [x] ~~Finish direct producer contact flows.~~
-- [ ] Finish polished producer pages.
+- [x] ~~Finish polished producer pages.~~
 - [ ] Finish useful self-guided routes/day trips using verified pins only.
-- [ ] Finish mobile UX for the complete Crete journey.
+- [x] ~~Finish mobile UX for the complete Crete journey.~~
 - [ ] Perform final Crete regional QA.
 
 ### Phase 9A — Verified Google Place ID foundation
@@ -275,7 +276,36 @@ Phase 9A milestone: `9d15449855ecd9c8968e8781416130140682d447` — `Complete Pha
 
 Phase 9B milestone: `0930e237a95a1cb5e1965755767c18f7ba1b83e2` — `Complete Phase 9B verified Google Place ID audit`.
 
-Google Places imagery remains production-disabled. No Phase 9A/9B work by itself constitutes a production media deployment.
+At the Phase 9B milestone, Google Places imagery was still production-disabled. Phase 9C later enabled it after the audited Place-ID foundation, restricted-key setup, runtime gating, attribution work, automated checks, and browser QA were completed.
+
+### Phase 9C — Authentic producer imagery
+
+- [x] ~~Replace public generic/stock cover-image bypasses with trust-aware media resolution and neutral category fallbacks.~~
+- [x] ~~Use manually audited Google Place IDs and an allowlist as the only eligibility path for live Google producer imagery.~~
+- [x] ~~Configure a dedicated website-restricted Google Maps browser key and keep the key out of source control.~~
+- [x] ~~Preserve media priority: approved host/producer media → explicitly credited local media → live Google imagery → neutral fallback.~~
+- [x] ~~Render live Google imagery on producer cards without storing or rehosting Google photos.~~
+- [x] ~~Add a live Google photo carousel with contributor/Google Maps attribution to the producer Story gallery.~~
+- [x] ~~Use live Google imagery in the drawer hero when no trusted local producer image exists.~~
+- [x] ~~Use live Google imagery in the selected-producer map quick-card when no trusted local producer image exists.~~
+- [x] ~~Verify the carousel, left cards, drawer hero, map quick-card, attribution, and fallback behavior in the browser.~~
+- [x] ~~Run the full project quality gate after the imagery work and reconcile the final code to `main`.~~
+
+Phase 9C milestones include `3df9cdaea6175c46a41be8199c1ed83044f5025d` — `Complete Phase 9C authentic producer imagery`, `6c21856f30f99abd16f03d76380af88ab76da96e` — `Complete Google producer photo carousel`, and `a60b1a7e03f673924780ab7dd8a8472b61390be1` — `Complete Google imagery across producer surfaces`.
+
+Production behavior was visually verified by the project owner across the left producer cards, drawer hero, Story carousel, and map quick-card. Google imagery remains supplementary discovery media and is not evidence of visitability, entrance precision, or road safety.
+
+### Phase 9D — Crete discovery guides & regional closeout
+
+**Status:** Current focus.
+
+- [x] ~~Convert the Western Chania guide to verified-stop discovery data.~~
+- [x] ~~Convert the Heraklion discovery guides to verified-stop discovery data.~~
+- [ ] Complete the Rethymno discovery guide; keep it draft/unpublished until its stop set and presentation are ready.
+- [ ] Present Crete guides as discovery itineraries/stop collections, not as road-safety guarantees.
+- [ ] Keep multi-stop driving/navigation fail-closed wherever road-access evidence is insufficient.
+- [ ] Complete a final Crete production smoke pass across discovery, producer imagery, mobile, deep links, and guide presentation.
+- [ ] Reconcile the final Phase 9 checklist and mark Phase 9 complete only after the guide/QA closeout is verified.
 
 Expansion order after Crete can proceed through Santorini, Peloponnese, Northern Greece, Italy/wider Mediterranean, and Northern Europe based on product priorities.
 
