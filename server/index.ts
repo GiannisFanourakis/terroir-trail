@@ -1,5 +1,8 @@
 import 'dotenv/config';
 import { app } from './app';
+import { registerAdminMediaRoutes } from './adminMediaRoutes';
+
+registerAdminMediaRoutes(app);
 
 const port = Number(process.env.PORT || 4242);
 app.listen(port, '0.0.0.0', () => {
