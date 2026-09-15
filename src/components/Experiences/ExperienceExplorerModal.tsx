@@ -29,6 +29,7 @@ const CATEGORY_CONFIG: Record<
   winery: { label: 'Wineries', icon: Wine, color: 'text-rose-400 bg-rose-500/10 border-rose-500/30' },
   brewery: { label: 'Breweries', icon: Beer, color: 'text-amber-400 bg-amber-500/10 border-amber-500/30' },
   olive_mill: { label: 'Olive Mills', icon: Disc, color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30' },
+  olive_oil_producer: { label: 'Olive Oil Producers', icon: Disc, color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30' },
   cheese_dairy: { label: 'Cheese Dairies', icon: Disc, color: 'text-yellow-400 bg-yellow-500/10 border-yellow-500/30' },
   kazani: { label: 'Distilleries', icon: Flame, color: 'text-orange-400 bg-orange-500/10 border-orange-500/30' },
   apiary: { label: 'Apiaries', icon: Flower2, color: 'text-amber-300 bg-amber-400/10 border-amber-400/30' },
@@ -61,38 +62,30 @@ export const ExperienceExplorerModal: React.FC<ExperienceExplorerModalProps> = (
   const [sortBy, setSortBy] = useState<SortOption>('featured');
   const [showFilters, setShowFilters] = useState(false);
 
-  // Map producerId to actual producer object for quick access
   const producerMap = useMemo(() => {
     const map = new Map<string, Producer>();
     producerService.getCachedProducers().forEach((p) => map.set(p.id, p));
     return map;
   }, []);
 
-  // Filter and sort experiences
   const filteredExperiences = useMemo(() => {
     return experiences.filter((exp) => {
-      // Category filter
       if (selectedCategory !== 'all' && exp.category !== selectedCategory) {
         return false;
       }
 
-      // Destination filter
       if (selectedDestination !== 'all' && exp.destination !== selectedDestination) {
-        // If exp has no destination specified (e.g. general masterclass), allow only if 'all'
         if (exp.destination !== selectedDestination) return false;
       }
 
-      // Price filter
       if (selectedPrice === 'under20' && exp.pricePerPerson >= 20) return false;
       if (selectedPrice === '20to40' && (exp.pricePerPerson < 20 || exp.pricePerPerson > 40)) return false;
       if (selectedPrice === 'over40' && exp.pricePerPerson <= 40) return false;
 
-      // Duration filter
       if (selectedDuration === 'under60' && exp.durationMinutes >= 60) return false;
       if (selectedDuration === '60to90' && (exp.durationMinutes < 60 || exp.durationMinutes > 90)) return false;
       if (selectedDuration === 'over90' && exp.durationMinutes <= 90) return false;
 
-      // Search query filter
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase();
         const matchesTitle = exp.title.toLowerCase().includes(q);
@@ -113,11 +106,10 @@ export const ExperienceExplorerModal: React.FC<ExperienceExplorerModalProps> = (
       if (sortBy === 'price_desc') return b.pricePerPerson - a.pricePerPerson;
       if (sortBy === 'duration_asc') return a.durationMinutes - b.durationMinutes;
       if (sortBy === 'duration_desc') return b.durationMinutes - a.durationMinutes;
-      return 0; // featured default
+      return 0;
     });
   }, [experiences, searchQuery, selectedCategory, selectedDestination, selectedPrice, selectedDuration, sortBy]);
 
-  // Counts by category
   const countsByCategory = useMemo(() => {
     const counts: Record<string, number> = { all: experiences.length };
     experiences.forEach((e) => {
@@ -132,8 +124,6 @@ export const ExperienceExplorerModal: React.FC<ExperienceExplorerModalProps> = (
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
       <div className="relative w-full max-w-5xl bg-stone-950 text-stone-100 rounded-3xl shadow-2xl border border-white/15 overflow-hidden flex flex-col max-h-[92vh]">
-        
-        {/* Modal Header */}
         <div className="flex items-center justify-between px-5 sm:px-8 py-4 bg-stone-900 border-b border-white/10 shrink-0">
           <div className="flex items-center gap-3">
             <div className="p-2.5 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-500/30">
@@ -163,10 +153,8 @@ export const ExperienceExplorerModal: React.FC<ExperienceExplorerModalProps> = (
           </button>
         </div>
 
-        {/* Search & Main Filter Controls */}
         <div className="p-4 sm:p-5 bg-stone-900/60 border-b border-white/10 space-y-3 shrink-0">
           <div className="flex flex-col sm:flex-row gap-2.5">
-            {/* Search Input */}
             <div className="relative flex-1">
               <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400" />
               <input
@@ -186,7 +174,6 @@ export const ExperienceExplorerModal: React.FC<ExperienceExplorerModalProps> = (
               )}
             </div>
 
-            {/* Destination Selector */}
             <div className="flex items-center gap-1 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
               {DESTINATIONS.map((dest) => (
                 <button
@@ -203,7 +190,6 @@ export const ExperienceExplorerModal: React.FC<ExperienceExplorerModalProps> = (
               ))}
             </div>
 
-            {/* Toggle advanced filters & sort */}
             <button
               onClick={() => setShowFilters(!showFilters)}
               className={`px-3.5 py-2 rounded-xl text-xs font-medium flex items-center gap-1.5 transition border cursor-pointer shrink-0 ${
@@ -217,10 +203,8 @@ export const ExperienceExplorerModal: React.FC<ExperienceExplorerModalProps> = (
             </button>
           </div>
 
-          {/* Advanced Filters Panel (Collapsible) */}
           {showFilters && (
             <div className="p-3.5 rounded-2xl bg-stone-950 border border-white/10 grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs animate-in slide-in-from-top-2 duration-150">
-              {/* Price Filter */}
               <div>
                 <label className="block text-[11px] font-bold uppercase tracking-wider text-stone-400 mb-1">
                   Price Per Person
@@ -237,7 +221,6 @@ export const ExperienceExplorerModal: React.FC<ExperienceExplorerModalProps> = (
                 </select>
               </div>
 
-              {/* Duration Filter */}
               <div>
                 <label className="block text-[11px] font-bold uppercase tracking-wider text-stone-400 mb-1">
                   Duration
@@ -254,7 +237,6 @@ export const ExperienceExplorerModal: React.FC<ExperienceExplorerModalProps> = (
                 </select>
               </div>
 
-              {/* Sort By */}
               <div>
                 <label className="block text-[11px] font-bold uppercase tracking-wider text-stone-400 mb-1">
                   Sort Order
@@ -274,7 +256,6 @@ export const ExperienceExplorerModal: React.FC<ExperienceExplorerModalProps> = (
             </div>
           )}
 
-          {/* Category Tabs */}
           <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
             {(Object.keys(CATEGORY_CONFIG) as (ProducerCategory | 'all')[]).map((catKey) => {
               const cfg = CATEGORY_CONFIG[catKey];
@@ -305,7 +286,6 @@ export const ExperienceExplorerModal: React.FC<ExperienceExplorerModalProps> = (
           </div>
         </div>
 
-        {/* Experience Cards Grid */}
         <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
           <div className="flex items-center justify-between text-xs text-stone-400 px-1">
             <span>
@@ -363,7 +343,6 @@ export const ExperienceExplorerModal: React.FC<ExperienceExplorerModalProps> = (
                     className="p-5 rounded-3xl bg-stone-900/70 border border-white/10 hover:border-amber-500/40 transition flex flex-col justify-between group shadow-sm hover:shadow-md"
                   >
                     <div className="space-y-3">
-                      {/* Top Badges & Meta */}
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex flex-wrap items-center gap-1.5">
                           {exp.badge && (
@@ -378,7 +357,6 @@ export const ExperienceExplorerModal: React.FC<ExperienceExplorerModalProps> = (
                           </span>
                         </div>
 
-                        {/* Price badge */}
                         <div className="text-right shrink-0">
                           <span className="font-mono text-base font-bold text-amber-300">
                             €{exp.pricePerPerson}
@@ -387,7 +365,6 @@ export const ExperienceExplorerModal: React.FC<ExperienceExplorerModalProps> = (
                         </div>
                       </div>
 
-                      {/* Title & Producer info */}
                       <div>
                         <h3 className="font-serif-title font-bold text-base text-white group-hover:text-amber-200 transition-colors leading-snug">
                           {exp.title}
@@ -418,12 +395,10 @@ export const ExperienceExplorerModal: React.FC<ExperienceExplorerModalProps> = (
                         )}
                       </div>
 
-                      {/* Description */}
                       <p className="text-xs text-stone-300 leading-relaxed line-clamp-3">
                         {exp.description}
                       </p>
 
-                      {/* Inclusions checklist */}
                       <div className="pt-2 border-t border-white/5 space-y-1">
                         {exp.includes.map((inc, idx) => (
                           <div key={idx} className="flex items-start gap-1.5 text-[11px] text-stone-400">
@@ -434,7 +409,6 @@ export const ExperienceExplorerModal: React.FC<ExperienceExplorerModalProps> = (
                       </div>
                     </div>
 
-                    {/* Bottom Actions */}
                     <div className="pt-4 mt-4 border-t border-white/10 flex items-center justify-between gap-2">
                       <div className="flex items-center gap-1 text-xs text-stone-400 font-medium">
                         <Clock className="w-3.5 h-3.5 text-amber-400 shrink-0" />
@@ -467,7 +441,6 @@ export const ExperienceExplorerModal: React.FC<ExperienceExplorerModalProps> = (
             </div>
           )}
 
-          {/* Partner Experiences via Klook (Affiliate) */}
           <div className="mt-8 p-4 rounded-2xl bg-gradient-to-r from-rose-950/40 via-stone-900 to-stone-950 border border-rose-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-rose-500/15 text-rose-400 border border-rose-500/25 flex items-center justify-center shrink-0">
@@ -495,7 +468,6 @@ export const ExperienceExplorerModal: React.FC<ExperienceExplorerModalProps> = (
           </div>
         </div>
 
-        {/* Modal Footer */}
         <div className="px-6 py-3 bg-stone-900 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between text-xs text-stone-400 gap-2 shrink-0">
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
