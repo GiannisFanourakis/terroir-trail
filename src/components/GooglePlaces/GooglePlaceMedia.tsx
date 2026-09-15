@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Producer } from '../../types/terroir';
 import { isGooglePlacesEligible } from '../../config/googlePlacesAllowlist';
 import { useGooglePlacesUiKit } from '../../services/googlePlacesUiKit';
@@ -8,6 +8,7 @@ import { Camera, Info } from 'lucide-react';
 interface GooglePlaceMediaProps {
   producer: Producer | null;
   className?: string;
+  variant?: 'detail' | 'card';
 }
 
 /**
@@ -20,14 +21,73 @@ interface GooglePlaceMediaProps {
  * - Editorial TerroirTrail data (visit status, road safety, reviews) remains completely separate.
  * - A manually audited Google Place ID is required; coordinates are never used as a fallback lookup.
  */
-export const GooglePlaceMedia: React.FC<GooglePlaceMediaProps> = ({ producer, className = '' }) => {
+export const GooglePlaceMedia: React.FC<GooglePlaceMediaProps> = ({
+  producer,
+  className = '',
+  variant = 'detail',
+}) => {
   const googlePlaceId = producer?.googlePlaceId?.trim();
   const isEligible = Boolean(
     producer && googlePlaceId && isGooglePlacesEligible(producer.id)
   );
   const isFeatureEnabled = runtimeConfig.googlePlacesMedia.enabled;
-  const { isReady, status } = useGooglePlacesUiKit(isEligible && isFeatureEnabled);
+  const { isReady, status } = useGooglePlacesUiKit(
+    isEligible && isFeatureEnabled
+  );
   const containerRef = useRef<HTMLDivElement>(null);
+  const cardContainerRef = useRef<HTMLDivElement>(null);
+  const [cardRenderFailed, setCardRenderFailed] = useState(false);
+
+  useEffect(() => {
+    if (
+      variant !== 'card' ||
+      !isReady ||
+      !googlePlaceId ||
+      !cardContainerRef.current
+    ) {
+      return;
+    }
+
+    const host = cardContainerRef.current;
+    host.replaceChildren();
+    setCardRenderFailed(false);
+
+    try {
+      const compact = document.createElement('gmp-place-details-compact');
+
+      compact.setAttribute('orientation', 'vertical');
+      compact.setAttribute('truncation-preferred', '');
+      compact.style.width = '100%';
+      compact.style.margin = '0';
+      compact.style.padding = '0';
+      compact.style.border = '0';
+      compact.style.backgroundColor = 'transparent';
+      compact.style.colorScheme = 'dark';
+
+      const request = document.createElement('gmp-place-details-place-request');
+      request.setAttribute('place', `places/${googlePlaceId}`);
+
+      const content = document.createElement('gmp-place-content-config');
+
+      const media = document.createElement('gmp-place-media');
+
+      const attribution = document.createElement('gmp-place-attribution');
+      attribution.setAttribute('light-scheme-color', 'gray');
+      attribution.setAttribute('dark-scheme-color', 'white');
+
+      content.append(media, attribution);
+      compact.append(request, content);
+      host.append(compact);
+    } catch (error) {
+      console.warn('[GooglePlaceMedia] Compact card media failed:', error);
+      host.replaceChildren();
+      setCardRenderFailed(true);
+    }
+
+    return () => {
+      host.replaceChildren();
+    };
+  }, [variant, isReady, googlePlaceId]);
 
   // Fail closed unless the producer is allowlisted and has a verified persistent Place ID.
   if (!producer || !googlePlaceId || !isFeatureEnabled || !isEligible) {
@@ -37,6 +97,26 @@ export const GooglePlaceMedia: React.FC<GooglePlaceMediaProps> = ({ producer, cl
   // If no API key is configured or loader failed, fail silently without breaking the drawer
   if (status === 'unavailable' || status === 'error') {
     return null;
+  }
+
+  if (variant === 'card') {
+    if (cardRenderFailed) {
+      return null;
+    }
+
+    return (
+      <div
+        ref={cardContainerRef}
+        className={`w-full bg-stone-950 overflow-hidden ${className}`}
+        data-testid="google-place-media-card"
+      >
+        {!isReady && (
+          <div className="h-40 w-full flex items-center justify-center bg-stone-900">
+            <div className="w-5 h-5 border-2 border-amber-400/40 border-t-amber-400 rounded-full animate-spin" />
+          </div>
+        )}
+      </div>
+    );
   }
 
   return (
@@ -49,7 +129,10 @@ export const GooglePlaceMedia: React.FC<GooglePlaceMediaProps> = ({ producer, cl
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-2">
           <Camera className="w-4 h-4 text-amber-400 shrink-0" />
-          <h4 id="google-place-media-heading" className="text-sm font-bold text-white tracking-wide">
+          <h4
+            id="google-place-media-heading"
+            className="text-sm font-bold text-white tracking-wide"
+          >
             Photos from Google Maps
           </h4>
         </div>
@@ -59,7 +142,10 @@ export const GooglePlaceMedia: React.FC<GooglePlaceMediaProps> = ({ producer, cl
       </div>
 
       <p className="text-xs text-stone-400 leading-relaxed">
-        Live imagery provided via Google Places UI Kit for discovery reference. Images belong to their respective Google Maps contributors and do not represent official TerroirTrail photography or verified access guarantees.
+        Live imagery provided via Google Places UI Kit for discovery reference.
+        Images belong to their respective Google Maps contributors and do not
+        represent official TerroirTrail photography or verified access
+        guarantees.
       </p>
 
       {/* Google Places Web Component Container */}
@@ -71,16 +157,21 @@ export const GooglePlaceMedia: React.FC<GooglePlaceMediaProps> = ({ producer, cl
         {isReady ? (
           <div className="w-full max-w-full overflow-x-auto p-1">
             <gmp-place-details
-              style={{
-                width: '100%',
-                display: 'block',
-                '--gmp-mat-color-surface': '#0c0a09',
-                '--gmp-mat-color-on-surface': '#f5f5f4',
-                '--gmp-mat-color-on-surface-variant': '#a8a29e',
-                '--gmp-mat-color-outline-decorative': 'rgba(255, 255, 255, 0.08)',
-              } as React.CSSProperties}
+              style={
+                {
+                  width: '100%',
+                  display: 'block',
+                  '--gmp-mat-color-surface': '#0c0a09',
+                  '--gmp-mat-color-on-surface': '#f5f5f4',
+                  '--gmp-mat-color-on-surface-variant': '#a8a29e',
+                  '--gmp-mat-color-outline-decorative':
+                    'rgba(255, 255, 255, 0.08)',
+                } as React.CSSProperties
+              }
             >
-              <gmp-place-details-place-request place={`places/${googlePlaceId}`} />
+              <gmp-place-details-place-request
+                place={`places/${googlePlaceId}`}
+              />
               <gmp-place-content-config>
                 <gmp-place-media lightbox-preferred="true" />
                 <gmp-place-attribution
@@ -102,7 +193,9 @@ export const GooglePlaceMedia: React.FC<GooglePlaceMediaProps> = ({ producer, cl
       <div className="pt-2 border-t border-white/5 flex items-start gap-1.5 text-[11px] text-stone-400">
         <Info className="w-3.5 h-3.5 text-stone-500 shrink-0 mt-0.5" />
         <span>
-          A Google photo does not establish road safety, rental-vehicle passability, or current public opening hours. Consult the verified TerroirTrail status fields above.
+          A Google photo does not establish road safety, rental-vehicle
+          passability, or current public opening hours. Consult the verified
+          TerroirTrail status fields above.
         </span>
       </div>
     </section>

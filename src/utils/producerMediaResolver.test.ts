@@ -94,17 +94,20 @@ describe('Producer Media Resolver & Tier Validation', () => {
       expect(resolved.author).toBe('Elena K.');
     });
 
-    it('assigns neutral listing image provenance when producer lacks photoCredit', () => {
+    it('quarantines uncredited stock/listing cover imagery', () => {
       const uncreditedProducer: Producer = {
         ...mockProducer,
         photoCredit: undefined,
       };
 
       const resolved = resolveProducerCover(uncreditedProducer);
-      expect(resolved.source).toBe('curated_estate');
-      expect(resolved.provenanceLabel).toBe('TerroirTrail listing image');
-      expect(resolved.author).toBeUndefined();
-      expect(resolved.license).toBeUndefined();
+
+      expect(resolved.source).toBe('category_fallback');
+      expect(resolved.provenanceLabel).toBe(
+        'Neutral category placeholder'
+      );
+      expect(resolved.url).toContain('data:image/svg+xml');
+      expect(resolved.url).not.toBe(uncreditedProducer.coverImage);
     });
 
     it('ignores host blob URLs when host media prototype is disabled', () => {
@@ -173,7 +176,7 @@ describe('Producer Media Resolver & Tier Validation', () => {
       const resolved = resolveProducerCover(producerWithoutCover);
       expect(resolved.source).toBe('category_fallback');
       expect(resolved.isHostManaged).toBe(false);
-      expect(resolved.url).toContain('/images/estates/');
+      expect(resolved.url).toContain('data:image/svg+xml');
     });
   });
 
@@ -219,11 +222,13 @@ describe('Producer Media Resolver & Tier Validation', () => {
       expect(gallery[1].provenanceLabel).toBe('Credited listing image');
       expect(gallery[1].author).toBe('Nikos P.');
 
-      // Second curated gallery image has no credit in galleryCredits
+      // Second gallery item inherits the explicit producer-level credit.
       expect(gallery[2].url).toBe(mockProducer.gallery[1]);
       expect(gallery[2].source).toBe('curated_estate');
-      expect(gallery[2].provenanceLabel).toBe('TerroirTrail listing image');
-      expect(gallery[2].author).toBeUndefined();
+      expect(gallery[2].provenanceLabel).toBe(
+        'Credited listing image'
+      );
+      expect(gallery[2].author).toBe('Elena K.');
     });
 
     it('ignores host blob gallery images when prototype is disabled', () => {

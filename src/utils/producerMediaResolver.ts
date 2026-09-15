@@ -17,11 +17,11 @@ export interface ResolvedProducerMedia {
 
 /**
  * Strict imagery hierarchy:
- * 1. Approved host-uploaded image ("Provided by the producer")
- * 2. Curated TerroirTrail photo (with genuine photographer / estate credit)
- * 3. Neutral category fallback (never Google)
+ * 1. Approved producer-uploaded image.
+ * 2. Listing image with explicit genuine photo provenance.
+ * 3. Neutral non-photographic category placeholder.
  *
- * Invariant: Google Places discovery imagery is NEVER returned by this resolver.
+ * Google Places imagery remains live-rendered separately.
  */
 export function resolveProducerCover(
   producer: Producer,
@@ -29,7 +29,6 @@ export function resolveProducerCover(
 ): ResolvedProducerMedia {
   const isPrototype = isHostMediaPrototypeEnabled();
 
-  // 1. Check for approved host-uploaded cover image
   const hostCover = override?.uploadedImages?.find(
     (img) =>
       img.type === 'cover' &&
@@ -49,27 +48,31 @@ export function resolveProducerCover(
     };
   }
 
-  // 2. Check for curated producer cover
-  if (producer.coverImage && producer.coverImage.trim().length > 0) {
-    const hasExplicitCredit = Boolean(producer.photoCredit?.author);
+  if (
+    producer.coverImage &&
+    producer.coverImage.trim().length > 0 &&
+    producer.photoCredit?.author
+  ) {
     return {
       url: producer.coverImage,
       thumbnailUrl: producer.coverImage,
       source: 'curated_estate',
-      provenanceLabel: hasExplicitCredit ? 'Credited listing image' : 'TerroirTrail listing image',
-      author: producer.photoCredit?.author,
-      license: producer.photoCredit?.license,
+      provenanceLabel: 'Credited listing image',
+      author: producer.photoCredit.author,
+      license: producer.photoCredit.license,
       isHostManaged: false,
     };
   }
 
-  // 3. Fallback to neutral category image
-  const fallbackUrl = getCategoryFallbackImage(getEffectiveProducerCategory(producer));
+  const fallbackUrl = getCategoryFallbackImage(
+    getEffectiveProducerCategory(producer)
+  );
+
   return {
     url: fallbackUrl,
     thumbnailUrl: fallbackUrl,
     source: 'category_fallback',
-    provenanceLabel: 'Category reference image',
+    provenanceLabel: 'Neutral category placeholder',
     isHostManaged: false,
   };
 }
@@ -81,7 +84,6 @@ export function resolveProducerGallery(
   const result: ResolvedProducerMedia[] = [];
   const isPrototype = isHostMediaPrototypeEnabled();
 
-  // 1. Approved host-uploaded gallery images first
   const approvedHostGallery = (override?.uploadedImages || []).filter(
     (img) =>
       img.type === 'gallery' &&
@@ -101,22 +103,24 @@ export function resolveProducerGallery(
     });
   }
 
-  // 2. Curated gallery images from producer definition
   const gallery = producer.gallery || [];
   const galleryCredits = producer.galleryCredits || [];
 
   gallery.forEach((url, idx) => {
-    if (result.some((r) => r.url === url)) return;
+    if (!url || result.some((r) => r.url === url)) return;
 
-    const credit = galleryCredits[idx];
-    const hasExplicitCredit = Boolean(credit?.author);
+    const credit = galleryCredits[idx] || producer.photoCredit;
+
+    // Legacy/uncredited stock imagery is deliberately quarantined.
+    if (!credit?.author) return;
+
     result.push({
       url,
       thumbnailUrl: url,
       source: 'curated_estate',
-      provenanceLabel: hasExplicitCredit ? 'Credited listing image' : 'TerroirTrail listing image',
-      author: credit?.author,
-      license: credit?.license,
+      provenanceLabel: 'Credited listing image',
+      author: credit.author,
+      license: credit.license,
       isHostManaged: false,
     });
   });

@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Producer, VisitStatus } from '../../types/terroir';
 import { UserProfile } from '../../types/auth';
 import { ProducerOverride } from '../../types/booking';
-import { 
-  X, MapPin, Star, Phone, Globe, Navigation, Clock, 
-  Dog, Footprints, Caravan, Car, Sparkles, Share2, Check, Heart, Award, 
+import {
+  X, MapPin, Star, Phone, Globe, Navigation, Clock,
+  Dog, Footprints, Caravan, Car, Sparkles, Share2, Check, Heart, Award,
   CheckCircle2, Wine, ShoppingBag, ArrowRight, Building2,
   Camera, ChevronLeft, ChevronRight, Beer
 } from 'lucide-react';
@@ -86,7 +86,11 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
       setActiveTab('story');
       setIsEditingNote(false);
       setNoteDraft(tastingNote);
-      setHeroImgSrc(resolvedCover?.url || activePhoto?.url || producer.coverImage);
+      setHeroImgSrc(
+        resolvedCover?.url ||
+          activePhoto?.url ||
+          getCategoryFallbackImage(getEffectiveProducerCategory(producer))
+      );
     }
   }, [producer, tastingNote, activePhoto, resolvedCover?.url]);
 
@@ -409,11 +413,15 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
         aria-modal="true"
         aria-label={`Producer details: ${producer.name}`}
       >
-        
+
         {/* 1. Hero Gallery & Header */}
         <div className="relative h-48 sm:h-60 lg:h-64 w-full shrink-0 bg-stone-900 overflow-hidden group">
           <img
-            src={heroImgSrc || activePhoto?.url || producer.coverImage}
+            src={
+              heroImgSrc ||
+              activePhoto?.url ||
+              getCategoryFallbackImage(getEffectiveProducerCategory(producer))
+            }
             alt={producer.name}
             className="w-full h-full object-cover transition-all duration-300"
             decoding="async"
@@ -616,7 +624,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
 
       {/* 3. Tab Content (Scrollable) */}
       <div className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-6 text-stone-200">
-        
+
         {/* Live Producer Announcement Bulletin */}
         {customNotice && (
           <div className="p-3.5 rounded-2xl bg-amber-500/15 border border-amber-500/30 text-amber-200 text-xs flex items-start gap-2.5 shadow-md animate-in fade-in">
@@ -758,6 +766,9 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
         {/* Tab 1: The Story */}
         {activeTab === 'story' && (
           <div className="space-y-5 animate-in fade-in duration-200">
+            {/* Live real-world imagery rendered by Google with native attribution. */}
+            <GooglePlaceMedia producer={producer} />
+
             <div className="border-l-2 border-amber-500 pl-3.5 py-1">
               <p className="text-sm font-serif-title italic text-stone-200 leading-relaxed">
                 "{producer.tagLine}"
@@ -846,9 +857,6 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                 )}
               </div>
             )}
-
-            {/* Third-Party Discovery Media (Google Places UI Kit Essentials) */}
-            <GooglePlaceMedia producer={producer} />
           </div>
         )}
 
@@ -1135,7 +1143,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
       </div>
 
       {/* 4. Action Bar (Sticky Footer) */}
-      <div 
+      <div
         className="p-3 sm:p-4 bg-stone-900/95 backdrop-blur-xl border-t border-white/10 shrink-0 flex items-center gap-1.5 sm:gap-2.5"
         style={{ paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom, 0.75rem))' }}
       >

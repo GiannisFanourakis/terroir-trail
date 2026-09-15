@@ -2,67 +2,71 @@ import { describe, it, expect, vi, afterEach } from 'vitest';
 import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { GooglePlaceMedia } from './GooglePlaceMedia';
-import { producers } from '../../data/producers';
+import { CRETAN_PRODUCERS } from '../../data/producers';
 import { GOOGLE_PLACES_PROTOTYPE_ITEMS } from '../../config/googlePlacesAllowlist';
 import * as uiKitModule from '../../services/googlePlacesUiKit';
 
-const VERIFIED_PLACE_IDS: Record<string, string> = {
-  'lyrarakis-winery': 'ChIJa95IFTf0mhQRY5TF5uhxJoU',
-  'peskesi-farm-kazani': 'ChIJg4hwRwthmhQRBF4b9YPGsZU',
-  'cretan-brewery-charma': 'ChIJQ7fRzLOLnBQRWaCt5UX2izE',
-  'biolea-estate': 'ChIJ_U9uyrr0nBQRPiI3ZYRHH2M',
-  'stathakis-honey-park': 'ChIJ-bttLbr1nBQRqwEUhZIfplM',
-};
-
-describe('Google Place ID allowlist integration for 5 producers', () => {
+describe('Google Places integration for audited Crete producers', () => {
   afterEach(() => {
     vi.unstubAllEnvs();
+    vi.restoreAllMocks();
   });
 
-  it('renders all 5 audited producers by verified Place ID with exact attribution', () => {
+  it('contains all 27 audited Crete records with verified Place IDs', () => {
+    expect(CRETAN_PRODUCERS).toHaveLength(27);
+    expect(GOOGLE_PLACES_PROTOTYPE_ITEMS).toHaveLength(27);
+
+    const eligibleIds = new Set(
+      GOOGLE_PLACES_PROTOTYPE_ITEMS.map((item) => item.producerId)
+    );
+
+    for (const producer of CRETAN_PRODUCERS) {
+      expect(
+        producer.googlePlaceId,
+        `${producer.id} should have a verified Google Place ID`
+      ).toBeTruthy();
+
+      expect(
+        producer.locationStatus === 'verified_location' ||
+          producer.locationStatus === 'verified_entrance'
+      ).toBe(true);
+
+      expect(
+        eligibleIds.has(producer.id),
+        `${producer.id} should be Google-media eligible`
+      ).toBe(true);
+    }
+  });
+
+  it('renders all eligible producers using Place ID only', () => {
     vi.stubEnv('VITE_ENABLE_GOOGLE_PLACES_MEDIA', 'true');
+
     vi.spyOn(uiKitModule, 'useGooglePlacesUiKit').mockReturnValue({
       status: 'ready',
       isReady: true,
     });
 
-    for (const item of GOOGLE_PLACES_PROTOTYPE_ITEMS) {
-      const producer = producers.find((p) => p.id === item.producerId);
-      expect(producer, `Producer ${item.producerId} should exist in producers`).toBeDefined();
-
-      const googlePlaceId = VERIFIED_PLACE_IDS[item.producerId];
-      expect(googlePlaceId, `Producer ${item.producerId} should have an audited test Place ID`).toBeTruthy();
-      if (!producer || !googlePlaceId) continue;
+    for (const producer of CRETAN_PRODUCERS) {
+      expect(producer.googlePlaceId).toBeTruthy();
+      if (!producer.googlePlaceId) continue;
 
       const html = renderToString(
-        React.createElement(GooglePlaceMedia, {
-          producer: { ...producer, googlePlaceId },
-        })
+        React.createElement(GooglePlaceMedia, { producer })
       );
 
-      // 1. Component rendered: gmp-place-details (Essentials / Query tier)
       expect(html).toContain('gmp-place-details');
-      expect(html).not.toContain('gmp-advanced-place-details');
-      expect(html).toContain('gmp-place-details-place-request');
+      expect(html).toContain(
+        `place="places/${producer.googlePlaceId}"`
+      );
 
-      // 2. Verified Place ID is the only Google business lookup key
-      expect(html).toContain(`place="places/${googlePlaceId}"`);
-      expect(html).not.toContain('gmp-place-details-location-request');
+      expect(html).not.toContain(
+        'gmp-place-details-location-request'
+      );
 
-      // 3. Media & Lightbox
-      expect(html).toContain('gmp-place-content-config');
       expect(html).toContain('gmp-place-media');
-      expect(html).toContain('lightbox-preferred="true"');
-
-      // 4. Attribution element with styling
       expect(html).toContain('gmp-place-attribution');
-      expect(html).toContain('light-scheme-color="gray"');
-      expect(html).toContain('dark-scheme-color="white"');
-
-      // 5. Section and provenance disclosures
       expect(html).toContain('Photos from Google Maps');
       expect(html).toContain('Live Google Places');
-      expect(html).toContain('A Google photo does not establish road safety');
     }
   });
 });

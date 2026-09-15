@@ -2,7 +2,9 @@ import { describe, expect, it } from 'vitest';
 import { getCuratedFallback } from './googlePlacesPhotos';
 import { Producer } from '../types/terroir';
 
-const createMockProducer = (overrides?: Partial<Producer>): Producer => ({
+const createMockProducer = (
+  overrides?: Partial<Producer>
+): Producer => ({
   id: 'test-producer',
   name: 'Test Estate',
   greekName: 'Δοκιμαστικό Κτήμα',
@@ -11,8 +13,8 @@ const createMockProducer = (overrides?: Partial<Producer>): Producer => ({
   region: 'Heraklion',
   village: 'Peza',
   coordinates: [35.2, 25.1],
-  coverImage: 'https://example.com/cover.jpg',
-  gallery: ['https://example.com/gallery1.jpg'],
+  coverImage: 'https://images.unsplash.com/example-stock-cover',
+  gallery: ['https://images.unsplash.com/example-stock-gallery'],
   tagLine: 'A test estate',
   description: 'Test description',
   story: 'Test story',
@@ -23,8 +25,8 @@ const createMockProducer = (overrides?: Partial<Producer>): Producer => ({
   ...overrides,
 });
 
-describe('googlePlacesPhotos provenance verification', () => {
-  it('does NOT fabricate Press Kit or Estate Media License when producer lacks photoCredit', () => {
+describe('producer imagery provenance', () => {
+  it('quarantines uncredited stock/listing imagery', () => {
     const producer = createMockProducer({
       photoCredit: undefined,
       galleryCredits: undefined,
@@ -33,19 +35,10 @@ describe('googlePlacesPhotos provenance verification', () => {
     const result = getCuratedFallback(producer);
 
     expect(result.source).toBe('curated_fallback');
-    for (const photo of result.photos) {
-      expect(photo.credit).toBeUndefined();
-      for (const attr of photo.attributions) {
-        expect(attr.displayName).not.toContain('Media Archive');
-        expect(attr.displayName).not.toContain('Official Estate Press Kit');
-        expect(attr.displayName).not.toContain('Estate Media License');
-        expect(attr.displayName).toBe('TerroirTrail listing image');
-        expect(attr.uri).toBeUndefined();
-      }
-    }
+    expect(result.photos).toHaveLength(0);
   });
 
-  it('preserves genuine producer photo credits when provided', () => {
+  it('preserves explicitly credited imagery', () => {
     const genuineCredit = {
       author: 'Eleni Papadakis',
       source: 'Wikimedia Commons',
@@ -60,9 +53,16 @@ describe('googlePlacesPhotos provenance verification', () => {
     const result = getCuratedFallback(producer);
 
     expect(result.source).toBe('verified_estate_media');
+    expect(result.photos.length).toBeGreaterThan(0);
     expect(result.photos[0].credit).toEqual(genuineCredit);
-    expect(result.photos[0].attributions[0].displayName).toContain('Eleni Papadakis');
-    expect(result.photos[0].attributions[0].displayName).toContain('Wikimedia Commons');
-    expect(result.photos[0].attributions[0].displayName).toContain('(CC BY-SA 4.0)');
+    expect(
+      result.photos[0].attributions[0].displayName
+    ).toContain('Eleni Papadakis');
+    expect(
+      result.photos[0].attributions[0].displayName
+    ).toContain('Wikimedia Commons');
+    expect(
+      result.photos[0].attributions[0].displayName
+    ).toContain('CC BY-SA 4.0');
   });
 });

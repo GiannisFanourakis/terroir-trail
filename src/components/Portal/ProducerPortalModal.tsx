@@ -13,6 +13,7 @@ import { validateVatNumber, getFiscalLabels } from '../../utils/vatValidator';
 import { formatAuthError } from '../../utils/authErrors';
 import { ProducerUploadedImage, validateImageUpload, getProducerMediaLimits } from '../../types/producerMedia';
 import { runtimeConfig } from '../../config/runtimeConfig';
+import { resolveProducerCover } from '../../utils/producerMediaResolver';
 import { ProducerRegistrationForm } from './ProducerRegistrationForm';
 import { HostQrScannerModal } from './HostQrScannerModal';
 import { HostVerificationModal, VerifiedPassInfo } from '../Monetization/HostVerificationModal';
@@ -1083,7 +1084,7 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
                     <div className="flex flex-col sm:flex-row items-center gap-4">
                       <div className="w-full sm:w-48 h-32 rounded-xl overflow-hidden bg-stone-950 border border-white/10 shrink-0 relative group">
                         <img
-                          src={currentCover?.url || selectedProducer.coverImage}
+                          src={currentCover?.url || resolveProducerCover(selectedProducer).url}
                           alt={`${selectedProducer.name} cover`}
                           className="w-full h-full object-cover"
                         />

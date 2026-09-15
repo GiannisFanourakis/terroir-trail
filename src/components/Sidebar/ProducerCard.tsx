@@ -3,6 +3,10 @@ import { Producer } from '../../types/terroir';
 import { MapPin, ArrowUpRight, Car, Heart } from 'lucide-react';
 import { getCategoryFallbackImage } from '../../utils/imageFallbacks';
 import { getEffectiveProducerCategory } from '../../utils/producerCategory';
+import { resolveProducerCover } from '../../utils/producerMediaResolver';
+import { GooglePlaceMedia } from '../GooglePlaces/GooglePlaceMedia';
+import { isGooglePlacesEligible } from '../../config/googlePlacesAllowlist';
+import { runtimeConfig } from '../../config/runtimeConfig';
 
 interface ProducerCardProps {
   producer: Producer;
@@ -19,14 +23,28 @@ export const ProducerCard: React.FC<ProducerCardProps> = ({
   isFavorite,
   onToggleFavorite,
 }) => {
-  const [imgSrc, setImgSrc] = useState<string>(producer.coverImage);
+  const resolvedCover = resolveProducerCover(producer);
+
+  const hasTrustedLocalPhoto =
+    resolvedCover.source === 'host_upload' ||
+    resolvedCover.source === 'curated_estate';
+
+  const canUseGoogleMedia =
+    !hasTrustedLocalPhoto &&
+    runtimeConfig.googlePlacesMedia.enabled &&
+    Boolean(producer.googlePlaceId?.trim()) &&
+    isGooglePlacesEligible(producer.id);
+
+  const [imgSrc, setImgSrc] = useState<string>(resolvedCover.url);
 
   useEffect(() => {
-    setImgSrc(producer.coverImage);
-  }, [producer.coverImage]);
+    setImgSrc(resolvedCover.url);
+  }, [resolvedCover.url]);
 
   const handleImageError = () => {
-    const fallback = getCategoryFallbackImage(getEffectiveProducerCategory(producer));
+    const fallback = getCategoryFallbackImage(
+      getEffectiveProducerCategory(producer)
+    );
     if (imgSrc !== fallback) {
       setImgSrc(fallback);
     }
@@ -35,19 +53,47 @@ export const ProducerCard: React.FC<ProducerCardProps> = ({
   const getCategoryBadge = (p: Producer) => {
     switch (getEffectiveProducerCategory(p)) {
       case 'winery':
-        return { label: 'Winery', icon: '🍇', bg: 'bg-rose-500/20 text-rose-300 border-rose-500/30' };
+        return {
+          label: 'Winery',
+          icon: '🍇',
+          bg: 'bg-rose-500/20 text-rose-300 border-rose-500/30',
+        };
       case 'brewery':
-        return { label: 'Brewery', icon: '🍺', bg: 'bg-amber-400/25 text-amber-300 border-amber-400/40' };
+        return {
+          label: 'Brewery',
+          icon: '🍺',
+          bg: 'bg-amber-400/25 text-amber-300 border-amber-400/40',
+        };
       case 'kazani':
-        return { label: 'Rakokazano', icon: '🏺', bg: 'bg-amber-500/20 text-amber-300 border-amber-500/30' };
+        return {
+          label: 'Rakokazano',
+          icon: '🏺',
+          bg: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
+        };
       case 'olive_mill':
-        return { label: 'Olive Mill', icon: '🫒', bg: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' };
+        return {
+          label: 'Olive Mill',
+          icon: '🫒',
+          bg: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
+        };
       case 'cheese_dairy':
-        return { label: 'Dairy', icon: '🧀', bg: 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30' };
+        return {
+          label: 'Dairy',
+          icon: '🧀',
+          bg: 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30',
+        };
       case 'apiary':
-        return { label: 'Apiary / Honey', icon: '🍯', bg: 'bg-orange-500/20 text-orange-300 border-orange-500/30' };
+        return {
+          label: 'Apiary / Honey',
+          icon: '🍯',
+          bg: 'bg-orange-500/20 text-orange-300 border-orange-500/30',
+        };
       case 'farm':
-        return { label: 'Farm', icon: '🌿', bg: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' };
+        return {
+          label: 'Farm',
+          icon: '🌿',
+          bg: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
+        };
     }
   };
 
@@ -55,12 +101,15 @@ export const ProducerCard: React.FC<ProducerCardProps> = ({
     switch (p.visitStatus) {
       case 'public_visits':
         return {
-          label: p.walkInFriendly === true ? 'Walk-ins welcome' : 'Visitors welcome',
+          label:
+            p.walkInFriendly === true ? 'Walk-ins welcome' : 'Visitors welcome',
           className: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/25',
         };
       case 'seasonal_public':
         return {
-          label: p.bestSeason ? `Seasonal (${p.bestSeason})` : 'Seasonal visits',
+          label: p.bestSeason
+            ? `Seasonal (${p.bestSeason})`
+            : 'Seasonal visits',
           className: 'text-amber-300 bg-amber-500/10 border-amber-500/25',
         };
       case 'appointment_only':
@@ -100,7 +149,10 @@ export const ProducerCard: React.FC<ProducerCardProps> = ({
       case 'unpaved_passable':
         return { label: 'Unpaved access', className: 'text-amber-400' };
       case 'high_clearance_recommended':
-        return { label: 'High-clearance recommended', className: 'text-orange-400' };
+        return {
+          label: 'High-clearance recommended',
+          className: 'text-orange-400',
+        };
       case '4x4_required':
         return { label: '4x4 required', className: 'text-rose-400' };
     }
@@ -132,19 +184,29 @@ export const ProducerCard: React.FC<ProducerCardProps> = ({
     >
       {/* Cover Image */}
       <div className="relative h-40 w-full overflow-hidden bg-stone-950">
-        <img
-          src={imgSrc}
-          alt={producer.name}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-          loading="lazy"
-          decoding="async"
-          onError={handleImageError}
-        />
+        {canUseGoogleMedia ? (
+          <GooglePlaceMedia
+            producer={producer}
+            variant="card"
+            className="w-full h-full"
+          />
+        ) : (
+          <img
+            src={imgSrc}
+            alt={producer.name}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            loading="lazy"
+            decoding="async"
+            onError={handleImageError}
+          />
+        )}
         <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/30 to-transparent" />
 
         {/* Top Badges: Category Badge */}
         <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5">
-          <span className={`flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-full font-bold border backdrop-blur-md ${badge.bg}`}>
+          <span
+            className={`flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-full font-bold border backdrop-blur-md ${badge.bg}`}
+          >
             <span aria-hidden="true">{badge.icon}</span>
             <span>{badge.label}</span>
           </span>
@@ -164,16 +226,26 @@ export const ProducerCard: React.FC<ProducerCardProps> = ({
                 : 'bg-black/60 text-stone-300 hover:text-white border-white/10'
             }`}
             title={isFavorite ? 'Remove from saved places' : 'Save place'}
-            aria-label={isFavorite ? `Remove ${producer.name} from saved places` : `Save ${producer.name}`}
+            aria-label={
+              isFavorite
+                ? `Remove ${producer.name} from saved places`
+                : `Save ${producer.name}`
+            }
           >
-            <Heart className={`w-3.5 h-3.5 ${isFavorite ? 'fill-white' : ''}`} aria-hidden="true" />
+            <Heart
+              className={`w-3.5 h-3.5 ${isFavorite ? 'fill-white' : ''}`}
+              aria-hidden="true"
+            />
           </button>
         </div>
 
         {/* Bottom Location Overlay */}
         <div className="absolute bottom-2.5 left-3 right-3 flex items-end justify-between">
           <div className="flex items-center gap-1.5 text-stone-300 text-xs font-medium min-w-0">
-            <MapPin className="w-3.5 h-3.5 text-amber-400 shrink-0" aria-hidden="true" />
+            <MapPin
+              className="w-3.5 h-3.5 text-amber-400 shrink-0"
+              aria-hidden="true"
+            />
             <span className="truncate">
               {producer.countryCode === 'IT' ? '🇮🇹 ' : ''}
               {producer.village}, {producer.region.toUpperCase()}
@@ -203,7 +275,9 @@ export const ProducerCard: React.FC<ProducerCardProps> = ({
 
         {/* Primary Discovery Signal: Visitability */}
         <div className="flex items-center gap-1.5 pt-0.5">
-          <span className={`text-[10px] px-2.5 py-0.5 rounded-md font-medium border ${visitBadge.className}`}>
+          <span
+            className={`text-[10px] px-2.5 py-0.5 rounded-md font-medium border ${visitBadge.className}`}
+          >
             {visitBadge.label}
           </span>
         </div>
@@ -211,7 +285,9 @@ export const ProducerCard: React.FC<ProducerCardProps> = ({
         {/* Card Footer: Road / Access Signal & View Story */}
         <div className="flex items-center justify-between pt-2.5 border-t border-white/5 text-[11px] gap-2">
           {roadBadge ? (
-            <span className={`flex items-center gap-1 min-w-0 ${roadBadge.className}`}>
+            <span
+              className={`flex items-center gap-1 min-w-0 ${roadBadge.className}`}
+            >
               <Car className="w-3 h-3 shrink-0" aria-hidden="true" />
               <span className="truncate">{roadBadge.label}</span>
             </span>

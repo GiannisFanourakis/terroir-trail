@@ -10,6 +10,7 @@ import {
   GOOGLE_PLACES_PROTOTYPE_ALLOWLIST,
   GOOGLE_PLACES_PROTOTYPE_ITEMS,
 } from '../config/googlePlacesAllowlist';
+import { CRETAN_PRODUCERS } from '../data/producers';
 
 describe('Google Places UI Kit & Allowlist', () => {
   beforeEach(() => {
@@ -22,16 +23,22 @@ describe('Google Places UI Kit & Allowlist', () => {
   });
 
   describe('Allowlist Verification', () => {
-    it('has exactly 5 audited producers across diverse categories', () => {
-      expect(GOOGLE_PLACES_PROTOTYPE_ITEMS).toHaveLength(5);
-      expect(GOOGLE_PLACES_PROTOTYPE_ALLOWLIST).toHaveLength(5);
+    it('covers all 27 audited Crete producers across supported categories', () => {
+      expect(CRETAN_PRODUCERS).toHaveLength(27);
+      expect(GOOGLE_PLACES_PROTOTYPE_ITEMS).toHaveLength(27);
+      expect(GOOGLE_PLACES_PROTOTYPE_ALLOWLIST).toHaveLength(27);
 
-      const categories = GOOGLE_PLACES_PROTOTYPE_ITEMS.map((item) => item.category);
-      expect(categories).toContain('winery');
-      expect(categories).toContain('farm');
-      expect(categories).toContain('brewery');
-      expect(categories).toContain('olive_mill');
-      expect(categories).toContain('apiary');
+      const eligibleCategories = new Set(
+        GOOGLE_PLACES_PROTOTYPE_ITEMS.map((item) => item.category)
+      );
+
+      const catalogueCategories = new Set(
+        CRETAN_PRODUCERS.map((producer) => producer.category)
+      );
+
+      expect([...eligibleCategories].sort()).toEqual(
+        [...catalogueCategories].sort()
+      );
     });
 
     it('identifies allowlisted producers correctly', () => {
@@ -48,11 +55,16 @@ describe('Google Places UI Kit & Allowlist', () => {
       expect(isGooglePlacesEligible('')).toBe(false);
     });
 
-    it('retrieves config with coordinates', () => {
+    it('retrieves config with current audited catalogue coordinates', () => {
       const config = getGooglePlacesPrototypeEntry('lyrarakis-winery');
+      const producer = CRETAN_PRODUCERS.find(
+        (p) => p.id === 'lyrarakis-winery'
+      );
+
+      expect(producer).toBeDefined();
       expect(config).toBeDefined();
       expect(config?.producerId).toBe('lyrarakis-winery');
-      expect(config?.coordinates).toEqual([35.183416, 25.176466]);
+      expect(config?.coordinates).toEqual(producer?.coordinates);
     });
   });
 
@@ -131,7 +143,9 @@ describe('Google Places UI Kit & Allowlist', () => {
 
       const mockDoc = {
         getElementById: vi.fn((id: string) => {
-          return appendedScripts.find((s) => (s as { id: string }).id === id) || null;
+          return (
+            appendedScripts.find((s) => (s as { id: string }).id === id) || null
+          );
         }),
         createElement: vi.fn((tag: string) => {
           if (tag === 'script') return mockScript;
