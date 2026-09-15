@@ -4,12 +4,21 @@ import { renderToString } from 'react-dom/server';
 import { GooglePlaceMedia } from './GooglePlaceMedia';
 import { CRETAN_PRODUCERS } from '../../data/producers';
 import { SANTORINI_PRODUCERS } from '../../data/santoriniProducers';
+import { PHASE10B_PRODUCERS } from '../../data/phase10bProducers';
 import { GOOGLE_PLACES_PROTOTYPE_ITEMS } from '../../config/googlePlacesAllowlist';
 import * as uiKitModule from '../../services/googlePlacesUiKit';
 
-const AUDITED_REGIONAL_PRODUCERS = [
+const PHASE10B_GOOGLE_MEDIA_PRODUCERS = PHASE10B_PRODUCERS.filter(
+  (producer) =>
+    Boolean(producer.googlePlaceId?.trim()) &&
+    (producer.locationStatus === 'verified_location' ||
+      producer.locationStatus === 'verified_entrance')
+);
+
+const AUDITED_GOOGLE_MEDIA_PRODUCERS = [
   ...CRETAN_PRODUCERS,
   ...SANTORINI_PRODUCERS,
+  ...PHASE10B_GOOGLE_MEDIA_PRODUCERS,
 ];
 
 vi.mock('./GooglePlacePhotoCarousel', () => ({
@@ -27,16 +36,18 @@ describe('Google Places integration for audited regional producers', () => {
     vi.restoreAllMocks();
   });
 
-  it('contains all audited Crete and Santorini records with verified Place IDs', () => {
+  it('contains every audited record that has both a verified location and persistent Place ID', () => {
     expect(CRETAN_PRODUCERS).toHaveLength(27);
     expect(SANTORINI_PRODUCERS).toHaveLength(9);
-    expect(GOOGLE_PLACES_PROTOTYPE_ITEMS).toHaveLength(36);
+    expect(PHASE10B_PRODUCERS).toHaveLength(19);
+    expect(PHASE10B_GOOGLE_MEDIA_PRODUCERS).toHaveLength(10);
+    expect(GOOGLE_PLACES_PROTOTYPE_ITEMS).toHaveLength(46);
 
     const eligibleIds = new Set(
       GOOGLE_PLACES_PROTOTYPE_ITEMS.map((item) => item.producerId)
     );
 
-    for (const producer of AUDITED_REGIONAL_PRODUCERS) {
+    for (const producer of AUDITED_GOOGLE_MEDIA_PRODUCERS) {
       expect(
         producer.googlePlaceId,
         `${producer.id} should have a verified Google Place ID`
@@ -62,7 +73,7 @@ describe('Google Places integration for audited regional producers', () => {
       isReady: true,
     });
 
-    for (const producer of AUDITED_REGIONAL_PRODUCERS) {
+    for (const producer of AUDITED_GOOGLE_MEDIA_PRODUCERS) {
       expect(producer.googlePlaceId).toBeTruthy();
       if (!producer.googlePlaceId) continue;
 
