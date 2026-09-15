@@ -19,11 +19,12 @@ describe('producerCategory taxonomy helper', () => {
     expect(getEffectiveProducerCategory(kazaniProducer)).toBe('kazani');
   });
 
-  it('preserves non-kazani categories for any producer', () => {
+  it('preserves producer categories without coercing their entity type', () => {
     const categories: Category[] = [
       'winery',
       'brewery',
       'olive_mill',
+      'olive_oil_producer',
       'cheese_dairy',
       'apiary',
       'farm',
