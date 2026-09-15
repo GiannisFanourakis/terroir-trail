@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect, Suspense, lazy } from 'react';
 import { useProducers } from './hooks/useProducers';
 import { Producer, FilterState, Destination, DayTripLoop } from './types/terroir';
+import type { UserProfile } from './types/auth';
 import { Header } from './components/Header/Header';
 import { FilterBar } from './components/FilterBar/FilterBar';
 import { MapCanvas } from './components/Map/MapCanvas';
@@ -55,8 +56,12 @@ export const App: React.FC = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
   const [viewMode, setViewMode] = useState<'map' | 'list'>('map');
   const [activeModal, setActiveModal] = useState<ActiveModal>(null);
+  const [adminPortalPreviewProducerId, setAdminPortalPreviewProducerId] = useState<string | null>(null);
 
-  const closeModal = () => setActiveModal(null);
+  const closeModal = () => {
+    setActiveModal(null);
+    setAdminPortalPreviewProducerId(null);
+  };
 
   const {
     user,
@@ -133,6 +138,38 @@ export const App: React.FC = () => {
     searchQuery: filters.searchQuery,
   });
 
+  const adminPortalPreviewProducer = useMemo(
+    () => adminPortalPreviewProducerId
+      ? producers.find((producer) => producer.id === adminPortalPreviewProducerId) || null
+      : null,
+    [adminPortalPreviewProducerId, producers]
+  );
+
+  const producerPortalUser = useMemo<UserProfile | null>(() => {
+    if (!adminPortalPreviewProducer || !user) return user;
+
+    return {
+      ...user,
+      name: 'Preview Host',
+      email: 'producer-preview@terroirtrail.local',
+      role: 'producer',
+      isProducer: true,
+      claimedProducerId: adminPortalPreviewProducer.id,
+      producerName: adminPortalPreviewProducer.name,
+      claimStatus: 'verified_host',
+    };
+  }, [adminPortalPreviewProducer, user]);
+
+  const handleOpenProducerPortal = (producer?: Producer | null) => {
+    const previewTarget = producer || selectedProducer || producers[0] || null;
+    if (accountCapabilities?.isAdmin && !user?.isProducer && previewTarget) {
+      setAdminPortalPreviewProducerId(previewTarget.id);
+    } else {
+      setAdminPortalPreviewProducerId(null);
+    }
+    setActiveModal({ type: 'portal' });
+  };
+
   const handleFilterChange = <K extends keyof FilterState>(key: K, value: FilterState[K]) => {
     setFilters((prev) => ({ ...prev, [key]: value }));
   };
@@ -203,7 +240,7 @@ export const App: React.FC = () => {
         onOpenPassport={() => setActiveModal({ type: 'passport' })}
         onLogout={logout}
         totalProducersCount={producers.length}
-        onOpenProducerPortal={() => setActiveModal({ type: 'portal' })}
+        onOpenProducerPortal={() => handleOpenProducerPortal()}
         isAdmin={Boolean(accountCapabilities?.isAdmin)}
         isPlatformOwner={Boolean(accountCapabilities?.isPlatformOwner)}
         onOpenAdmin={accountCapabilities?.isAdmin ? () => setActiveModal({ type: 'admin' }) : undefined}
@@ -312,7 +349,7 @@ export const App: React.FC = () => {
             producer={selectedProducer}
             onClose={() => setIsDrawerOpen(false)}
             user={user}
-            onOpenProducerPortal={() => setActiveModal({ type: 'portal' })}
+            onOpenProducerPortal={() => handleOpenProducerPortal(selectedProducer)}
             isFavorite={selectedProducer ? isFavorite(selectedProducer.id) : false}
             onToggleFavorite={toggleFavorite}
             isVisited={selectedProducer ? isVisited(selectedProducer.id) : false}
@@ -398,26 +435,33 @@ export const App: React.FC = () => {
         )}
 
         {activeModal?.type === 'portal' && (
-          <ProducerPortalModal
-            isOpen
-            onClose={closeModal}
-            user={user}
-            onOpenAuth={(role) => setActiveModal({ type: 'auth', initialRole: role || 'producer' })}
-            onLoginWithGoogle={loginWithGoogle}
-            onLoginWithApple={loginWithApple}
-            producers={producers}
-            bookings={hostBookings}
-            onUpdateBookingStatus={setHostStatus}
-            onSaveProducerOverride={updateOverride}
-            getProducerOverride={getOverride}
-            onUpdateProducerTaxDetails={updateProducerTaxDetails}
-            onSelectProducerForDrawer={(producer) => {
-              setSelectedProducer(producer);
-              setIsDrawerOpen(true);
-              closeModal();
-            }}
-            onPassVerified={(info) => setActiveModal({ type: 'host_verify', guestInfo: info })}
-          />
+          <>
+            {adminPortalPreviewProducer && (
+              <div className="fixed top-20 left-1/2 -translate-x-1/2 z-[70] pointer-events-none max-w-[calc(100%-2rem)] rounded-full border border-sky-400/30 bg-sky-950/95 px-3 py-1.5 text-[10px] sm:text-xs font-bold text-sky-200 shadow-xl backdrop-blur-md text-center">
+                Admin preview · {adminPortalPreviewProducer.name} · UI only — producer writes are disabled
+              </div>
+            )}
+            <ProducerPortalModal
+              isOpen
+              onClose={closeModal}
+              user={producerPortalUser}
+              onOpenAuth={(role) => setActiveModal({ type: 'auth', initialRole: role || 'producer' })}
+              onLoginWithGoogle={loginWithGoogle}
+              onLoginWithApple={loginWithApple}
+              producers={producers}
+              bookings={adminPortalPreviewProducer ? [] : hostBookings}
+              onUpdateBookingStatus={adminPortalPreviewProducer ? async () => undefined : setHostStatus}
+              onSaveProducerOverride={adminPortalPreviewProducer ? async () => undefined : updateOverride}
+              getProducerOverride={getOverride}
+              onUpdateProducerTaxDetails={adminPortalPreviewProducer ? async () => undefined : updateProducerTaxDetails}
+              onSelectProducerForDrawer={(producer) => {
+                setSelectedProducer(producer);
+                setIsDrawerOpen(true);
+                closeModal();
+              }}
+              onPassVerified={adminPortalPreviewProducer ? undefined : (info) => setActiveModal({ type: 'host_verify', guestInfo: info })}
+            />
+          </>
         )}
 
         {activeModal?.type === 'admin' && accountCapabilities?.isAdmin && (
@@ -488,7 +532,7 @@ export const App: React.FC = () => {
             onClose={closeModal}
             initialTab={activeModal.initialTab || 'about'}
             onOpenAuth={(role) => setActiveModal({ type: 'auth', initialRole: role || 'traveler' })}
-            onOpenProducerPortal={() => setActiveModal({ type: 'portal' })}
+            onOpenProducerPortal={() => handleOpenProducerPortal()}
             onOpenLoops={() => setActiveModal({ type: 'loops' })}
             onOpenLegal={(tab) => setActiveModal({ type: 'legal', initialTab: tab })}
           />
