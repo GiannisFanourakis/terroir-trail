@@ -33,7 +33,13 @@ const makeHarness = () => {
 
   const db = {
     collection: (name: string) => ({
-      doc: (id?: string) => makeDocRef(name, id || `generated-${++generated}`),
+      doc: (id?: string) => {
+        const ref = makeDocRef(name, id || `generated-${++generated}`);
+        return {
+          ...ref,
+          get: async () => readDoc(ref),
+        };
+      },
       where: (field: string, _operator: string, value: unknown) => {
         const filters = [{ field, value }];
         const chain: any = {
