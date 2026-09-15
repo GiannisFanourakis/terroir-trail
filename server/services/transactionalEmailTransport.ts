@@ -220,6 +220,19 @@ export async function sendProducerApprovalEmail(
 export async function sendTravelerWelcomeEmail(
   input: TravelerWelcomeEmailInput
 ): Promise<EmailDeliveryResult> {
-  if (!smtpConfigured()) return notConfiguredResult();
-  return sendTravelerWelcomeEmailBase(input, undefined, undefined, sendViaAlignedGmailSmtp);
+  const delivery = smtpConfigured()
+    ? await sendTravelerWelcomeEmailBase(input, undefined, undefined, sendViaAlignedGmailSmtp)
+    : notConfiguredResult();
+
+  // Producer claim creation already calls this authenticated welcome flow after
+  // persisting the pending claim. Trigger verification server-side so the
+  // browser never needs authority to mark VAT/contact evidence as verified.
+  try {
+    const { runPendingProducerVerificationsForUser } = await import('./producerVerificationAutomation');
+    await runPendingProducerVerificationsForUser(input.uid);
+  } catch (error) {
+    console.error('Automatic producer verification could not start:', error);
+  }
+
+  return delivery;
 }
