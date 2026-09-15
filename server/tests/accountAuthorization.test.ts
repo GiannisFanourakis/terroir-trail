@@ -3,10 +3,12 @@ import assert from 'node:assert/strict';
 import {
   getTrustedAccountCapabilities,
   isActiveAdmin,
+  isPlatformOwner,
 } from '../services/accountAuthorization';
 
 const makeDb = (options?: {
   adminStatus?: 'active' | 'revoked';
+  adminLevel?: 'owner' | 'admin';
   adminUserId?: string;
   ownerships?: Array<{ id: string; ownerUid: string; status: string; producerId?: string }>;
 }) => ({
@@ -21,6 +23,7 @@ const makeDb = (options?: {
                 ? {
                     userId: options.adminUserId || uid,
                     status: options.adminStatus,
+                    level: options.adminLevel,
                   }
                 : undefined,
           }),
@@ -30,7 +33,7 @@ const makeDb = (options?: {
 
     if (name === 'producer_owners') {
       return {
-        where: (_field: string, _operator: string, uid: string) => ({
+        where: (_field: string, _operator: string, _uid: string) => ({
           get: async () => ({
             docs: (options?.ownerships || []).map((ownership) => ({
               id: ownership.id,
@@ -51,11 +54,15 @@ test('traveler has no privileged capabilities without trusted authority records'
   assert.deepEqual(capabilities.roles, ['traveler']);
   assert.equal(capabilities.primaryRole, 'traveler');
   assert.equal(capabilities.isAdmin, false);
+  assert.equal(capabilities.adminLevel, null);
+  assert.equal(capabilities.isPlatformOwner, false);
   assert.deepEqual(capabilities.producerIds, []);
   assert.equal(capabilities.canManageOwnedListings, false);
   assert.equal(capabilities.canReviewProducerClaims, false);
   assert.equal(capabilities.canAssignProducerOwnership, false);
   assert.equal(capabilities.canModerateProducerContent, false);
+  assert.equal(capabilities.canManageUserAccounts, false);
+  assert.equal(capabilities.canManageAdmins, false);
 });
 
 test('active producer ownership grants only owned-listing host capability', async () => {
@@ -75,11 +82,13 @@ test('active producer ownership grants only owned-listing host capability', asyn
   assert.equal(capabilities.canManageOwnedListings, true);
   assert.equal(capabilities.isAdmin, false);
   assert.equal(capabilities.canReviewProducerClaims, false);
+  assert.equal(capabilities.canManageAdmins, false);
 });
 
-test('active admin record grants admin capabilities independently of host ownership', async () => {
+test('ordinary admin gets admin capabilities but cannot create or revoke admins', async () => {
   const db = makeDb({
     adminStatus: 'active',
+    adminLevel: 'admin',
     adminUserId: 'admin-uid',
   });
 
@@ -88,19 +97,43 @@ test('active admin record grants admin capabilities independently of host owners
   assert.deepEqual(capabilities.roles, ['traveler', 'admin']);
   assert.equal(capabilities.primaryRole, 'admin');
   assert.equal(capabilities.isAdmin, true);
+  assert.equal(capabilities.adminLevel, 'admin');
+  assert.equal(capabilities.isPlatformOwner, false);
   assert.equal(capabilities.canReviewProducerClaims, true);
   assert.equal(capabilities.canAssignProducerOwnership, true);
   assert.equal(capabilities.canModerateProducerContent, true);
-  assert.equal(capabilities.canManageOwnedListings, false);
+  assert.equal(capabilities.canManageUserAccounts, true);
+  assert.equal(capabilities.canManageAdmins, false);
   assert.equal(await isActiveAdmin('admin-uid', db as any), true);
+  assert.equal(await isPlatformOwner('admin-uid', db as any), false);
 });
 
-test('revoked or mismatched admin record cannot grant admin authority', async () => {
-  const revoked = makeDb({ adminStatus: 'revoked', adminUserId: 'admin-uid' });
-  const mismatched = makeDb({ adminStatus: 'active', adminUserId: 'someone-else' });
+test('platform owner is an admin and is the only account allowed to manage admins', async () => {
+  const db = makeDb({
+    adminStatus: 'active',
+    adminLevel: 'owner',
+    adminUserId: 'owner-uid',
+  });
+
+  const capabilities = await getTrustedAccountCapabilities('owner-uid', db as any);
+
+  assert.deepEqual(capabilities.roles, ['traveler', 'admin']);
+  assert.equal(capabilities.primaryRole, 'admin');
+  assert.equal(capabilities.isAdmin, true);
+  assert.equal(capabilities.adminLevel, 'owner');
+  assert.equal(capabilities.isPlatformOwner, true);
+  assert.equal(capabilities.canManageAdmins, true);
+  assert.equal(await isPlatformOwner('owner-uid', db as any), true);
+});
+
+test('revoked, mismatched or malformed admin record cannot grant admin authority', async () => {
+  const revoked = makeDb({ adminStatus: 'revoked', adminLevel: 'admin', adminUserId: 'admin-uid' });
+  const mismatched = makeDb({ adminStatus: 'active', adminLevel: 'admin', adminUserId: 'someone-else' });
+  const missingLevel = makeDb({ adminStatus: 'active', adminUserId: 'admin-uid' });
 
   assert.equal(await isActiveAdmin('admin-uid', revoked as any), false);
   assert.equal(await isActiveAdmin('admin-uid', mismatched as any), false);
+  assert.equal(await isActiveAdmin('admin-uid', missingLevel as any), false);
 });
 
 test('authority lookup fails closed when the trusted store is unavailable', async () => {

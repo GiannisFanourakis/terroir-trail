@@ -1,78 +1,59 @@
 import 'dotenv/config';
-import { adminDb } from '../server/firebaseAdmin';
-
-export type AdminAuthorityAction = 'grant' | 'revoke';
-
-interface AdminAuthorityResult {
-  action: AdminAuthorityAction;
-  userId: string;
-  actorUid: string;
-  occurredAt: string;
-}
+import { adminAuth, adminDb } from '../server/firebaseAdmin';
 
 /**
- * Operator-only Admin SDK routine for granting or revoking TerroirTrail admin authority.
- * Possession of Admin SDK credentials is required to run this command.
+ * One-time Platform Owner bootstrap.
  *
- * Authority lives in admin_users/{uid}; ordinary clients cannot write that collection.
- * Every change is accompanied by an immutable-style admin_audit event so sensitive
- * authority changes have an operator trail from day one.
+ * Run only with trusted Admin SDK credentials. After bootstrap, the Platform
+ * Owner can grant/revoke ordinary Admin access through the authenticated admin
+ * API/UI; clients can never self-assign this authority.
  */
-export async function setAdminAuthority(
-  action: AdminAuthorityAction,
-  userId: string,
-  actorUid: string
-): Promise<AdminAuthorityResult> {
-  if (action !== 'grant' && action !== 'revoke') {
-    throw new Error("Action must be 'grant' or 'revoke'.");
-  }
-  if (!userId || !actorUid) {
-    throw new Error('Both target userId and actorUid are required.');
+export async function bootstrapPlatformOwner(identifier: string) {
+  if (!identifier) {
+    throw new Error('A Firebase user UID or email is required.');
   }
 
   const db = adminDb();
+  const auth = adminAuth();
+  const normalized = identifier.trim();
+  const targetUser = normalized.includes('@')
+    ? await auth.getUserByEmail(normalized.toLowerCase())
+    : await auth.getUser(normalized);
+
+  const existingOwners = await db.collection('admin_users').where('level', '==', 'owner').get();
+  const activeOwner = existingOwners.docs.find((doc) => doc.data()?.status === 'active');
+  if (activeOwner && activeOwner.id !== targetUser.uid) {
+    throw new Error(`A Platform Owner already exists (${activeOwner.id}).`);
+  }
+
   const occurredAt = new Date().toISOString();
-  const authorityRef = db.collection('admin_users').doc(userId);
+  const authorityRef = db.collection('admin_users').doc(targetUser.uid);
   const auditRef = db.collection('admin_audit').doc();
   const batch = db.batch();
 
-  if (action === 'grant') {
-    batch.set(authorityRef, {
-      userId,
+  batch.set(
+    authorityRef,
+    {
+      userId: targetUser.uid,
+      level: 'owner',
       status: 'active',
       grantedAt: occurredAt,
-      grantedBy: actorUid,
+      grantedBy: 'bootstrap_operator',
       updatedAt: occurredAt,
-    });
-  } else {
-    const current = await authorityRef.get();
-    if (!current.exists || current.data()?.status !== 'active') {
-      throw new Error(`User '${userId}' does not currently have active admin authority.`);
-    }
-    batch.set(
-      authorityRef,
-      {
-        userId,
-        status: 'revoked',
-        revokedAt: occurredAt,
-        revokedBy: actorUid,
-        updatedAt: occurredAt,
-      },
-      { merge: true }
-    );
-  }
+    },
+    { merge: true }
+  );
 
   batch.set(auditRef, {
-    eventType: action === 'grant' ? 'admin_authority_granted' : 'admin_authority_revoked',
-    actorUid,
-    targetUid: userId,
+    eventType: 'platform_owner_bootstrapped',
+    actorUid: 'bootstrap_operator',
+    targetUid: targetUser.uid,
     occurredAt,
     source: 'operator_cli',
   });
 
   await batch.commit();
-
-  return { action, userId, actorUid, occurredAt };
+  return { userId: targetUser.uid, occurredAt };
 }
 
 if (
@@ -80,26 +61,25 @@ if (
   (process.argv[1].endsWith('setAdminAuthority.ts') ||
     process.argv[1].endsWith('setAdminAuthority.js'))
 ) {
-  const action = process.argv[2] as AdminAuthorityAction | undefined;
-  const userId = process.argv[3];
-  const actorUid = process.argv[4];
+  const command = process.argv[2];
+  const identifier = process.argv[3];
 
-  if ((action !== 'grant' && action !== 'revoke') || !userId || !actorUid) {
+  if (command !== 'bootstrap-owner' || !identifier) {
     console.error(
-      'Usage: tsx scripts/setAdminAuthority.ts <grant|revoke> <target-user-uid> <operator-uid>'
+      'Usage: tsx scripts/setAdminAuthority.ts bootstrap-owner <firebase-user-uid-or-email>'
     );
     process.exit(1);
   }
 
-  setAdminAuthority(action, userId, actorUid)
+  bootstrapPlatformOwner(identifier)
     .then((result) => {
       console.log(
-        `[TerroirTrail Operator] Admin authority ${result.action} completed for '${result.userId}' by '${result.actorUid}' at ${result.occurredAt}`
+        `[TerroirTrail Operator] Platform Owner '${result.userId}' bootstrapped at ${result.occurredAt}`
       );
       process.exit(0);
     })
     .catch((error) => {
-      console.error(`[TerroirTrail Operator Error] Admin authority change failed: ${error.message}`);
+      console.error(`[TerroirTrail Operator Error] Platform Owner bootstrap failed: ${error.message}`);
       process.exit(1);
     });
 }

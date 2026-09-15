@@ -3,15 +3,26 @@ import cors from 'cors';
 import { adminAuth } from './firebaseAdmin';
 import { createPassCheckout, fulfillPass, getExplorerPass, verifyExplorerPass } from './services/passService';
 import { isActiveProducerOwner } from './services/producerAuthorization';
+import { getTrustedAccountCapabilities } from './services/accountAuthorization';
+import { AdminAuthorityError, changeAdminAuthority } from './services/adminAuthorityService';
 import { handleWebhookEvent } from './services/webhookService';
 
 const defaults = {
   verifyToken: (token: string) => adminAuth().verifyIdToken(token, true),
   isActiveProducerOwner,
-  createPassCheckout, fulfillPass, getExplorerPass, verifyExplorerPass, handleWebhookEvent,
+  getTrustedAccountCapabilities,
+  changeAdminAuthority,
+  createPassCheckout,
+  fulfillPass,
+  getExplorerPass,
+  verifyExplorerPass,
+  handleWebhookEvent,
 };
 
-export function createApp(deps = defaults) {
+type AppDependencies = typeof defaults;
+
+export function createApp(overrides: Partial<AppDependencies> = {}) {
+  const deps: AppDependencies = { ...defaults, ...overrides };
   const app = express();
   const origins = (process.env.ALLOWED_ORIGINS || 'http://localhost:5173,https://localhost,capacitor://localhost')
     .split(',').map(origin => origin.trim());
@@ -56,6 +67,44 @@ export function createApp(deps = defaults) {
       res.status(503).json({ error: 'Pass verification is temporarily unavailable.' });
     }
   };
+
+  app.get('/api/account/capabilities', requireAuth, async (_req, res) => {
+    try {
+      const capabilities = await deps.getTrustedAccountCapabilities(res.locals.identity.uid);
+      res.json({ capabilities });
+    } catch (error) {
+      console.error('Account capability lookup unavailable:', error);
+      res.status(503).json({ error: 'Account permissions are temporarily unavailable.' });
+    }
+  });
+
+  app.post('/api/admin/authority', requireAuth, async (req, res) => {
+    const action = req.body?.action;
+    const target = {
+      userId: typeof req.body?.userId === 'string' ? req.body.userId.trim() : undefined,
+      email: typeof req.body?.email === 'string' ? req.body.email.trim() : undefined,
+    };
+
+    try {
+      const result = await deps.changeAdminAuthority(
+        res.locals.identity.uid,
+        action,
+        target
+      );
+      res.json({ authority: result });
+    } catch (error) {
+      if (error instanceof AdminAuthorityError) {
+        const status =
+          error.code === 'bad_request' ? 400 :
+          error.code === 'forbidden' ? 403 :
+          error.code === 'not_found' ? 404 : 409;
+        res.status(status).json({ error: error.message });
+        return;
+      }
+      console.error('Admin authority change unavailable:', error);
+      res.status(503).json({ error: 'Admin authority management is temporarily unavailable.' });
+    }
+  });
 
   app.post('/api/passes/checkout', requireAuth, async (req, res) => {
     if (req.body?.plan !== 'holiday' && req.body?.plan !== 'annual') {

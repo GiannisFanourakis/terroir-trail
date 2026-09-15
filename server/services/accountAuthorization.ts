@@ -1,17 +1,22 @@
 import { adminDb } from '../firebaseAdmin';
 
 export type TrustedAccountRole = 'traveler' | 'producer_host' | 'admin';
+export type AdminLevel = 'owner' | 'admin';
 
 export interface TrustedAccountCapabilities {
   uid: string;
   roles: TrustedAccountRole[];
   primaryRole: TrustedAccountRole;
   isAdmin: boolean;
+  adminLevel: AdminLevel | null;
+  isPlatformOwner: boolean;
   producerIds: string[];
   canManageOwnedListings: boolean;
   canReviewProducerClaims: boolean;
   canAssignProducerOwnership: boolean;
   canModerateProducerContent: boolean;
+  canManageUserAccounts: boolean;
+  canManageAdmins: boolean;
 }
 
 /**
@@ -20,6 +25,8 @@ export interface TrustedAccountCapabilities {
  * - Traveler access is the baseline for every authenticated account.
  * - Host authority comes only from active producer_owners records.
  * - Admin authority comes only from an active admin_users/{uid} record.
+ * - The single Platform Owner is an admin with level='owner' and is the only
+ *   account allowed to grant or revoke ordinary TerroirTrail admins.
  *
  * Client profile fields such as role/isProducer/claimedProducerId are never
  * consulted here and therefore cannot grant privileged capabilities.
@@ -38,11 +45,17 @@ export async function getTrustedAccountCapabilities(
   ]);
 
   const adminData = adminDoc.exists ? adminDoc.data() : undefined;
+  const adminLevel: AdminLevel | null =
+    adminData?.level === 'owner' || adminData?.level === 'admin'
+      ? adminData.level
+      : null;
   const isAdmin = Boolean(
     adminDoc.exists &&
       adminData?.userId === uid &&
-      adminData?.status === 'active'
+      adminData?.status === 'active' &&
+      adminLevel
   );
+  const isPlatformOwner = isAdmin && adminLevel === 'owner';
 
   const producerIds = ownerships.docs
     .map((doc) => ({ id: doc.id, data: doc.data() }))
@@ -59,15 +72,24 @@ export async function getTrustedAccountCapabilities(
     roles,
     primaryRole: isAdmin ? 'admin' : producerIds.length > 0 ? 'producer_host' : 'traveler',
     isAdmin,
+    adminLevel: isAdmin ? adminLevel : null,
+    isPlatformOwner,
     producerIds,
     canManageOwnedListings: producerIds.length > 0,
     canReviewProducerClaims: isAdmin,
     canAssignProducerOwnership: isAdmin,
     canModerateProducerContent: isAdmin,
+    canManageUserAccounts: isAdmin,
+    canManageAdmins: isPlatformOwner,
   };
 }
 
 export async function isActiveAdmin(uid: string, db = adminDb()): Promise<boolean> {
   const capabilities = await getTrustedAccountCapabilities(uid, db);
   return capabilities.isAdmin;
+}
+
+export async function isPlatformOwner(uid: string, db = adminDb()): Promise<boolean> {
+  const capabilities = await getTrustedAccountCapabilities(uid, db);
+  return capabilities.isPlatformOwner;
 }
