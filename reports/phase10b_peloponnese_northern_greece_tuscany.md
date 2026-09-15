@@ -120,11 +120,20 @@ The total bundled audited producer catalogue is therefore 55 records: 27 Crete +
 
 ### Road-access state
 
-Road access remains fully fail-closed for Phase 10B:
+The separate road-evidence audit is now in progress. Batch 1 verified only records with sufficiently specific approach-road evidence:
 
-- verified/classified roads: **0 / 19**
-- no producer currently receives a paved/unpaved/rental-car-suitability claim;
-- no Phase 10B multi-stop driving navigation may be enabled from the current evidence state.
+- verified/classified roads: **4 / 19**;
+- `tetramythos-winery`: `narrow_paved`;
+- `ktima-tselepos`: `paved`;
+- `siris-craft-brewery`: `paved`;
+- `monemvasia-winery`: `paved`;
+- remaining unreviewed roads: **15 / 19**;
+- vineyard, orchard, agricultural and unrelated service tracks are not inferred from the public-point classification;
+- no Phase 10B multi-stop driving navigation is enabled merely because individual stops have passed road review.
+
+Applied road migration:
+
+- `20260915121803_phase10b_road_access_audit_batch1`
 
 ## Shared quality bar
 

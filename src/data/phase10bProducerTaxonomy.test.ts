@@ -36,10 +36,35 @@ describe('Phase 10B producer taxonomy', () => {
     expect(shopPoints[0]?.visitStatus).not.toBe('public_visits');
   });
 
-  it('keeps all Phase 10B road classifications fail-closed', () => {
+  it('exposes only independently verified Phase 10B road classifications', () => {
+    const expectedVerifiedRoads = new Map([
+      ['tetramythos-winery', 'narrow_paved'],
+      ['ktima-tselepos', 'paved'],
+      ['siris-craft-brewery', 'paved'],
+      ['monemvasia-winery', 'paved'],
+    ] as const);
+
+    const verified = PHASE10B_PRODUCERS.filter(
+      (producer) => producer.roadAccessStatus === 'verified'
+    );
+    expect(verified).toHaveLength(4);
+
     for (const producer of PHASE10B_PRODUCERS) {
-      expect(producer.roadAccess).toBeUndefined();
-      expect(producer.roadAccessStatus).toBe('unreviewed');
+      const expectedRoad = expectedVerifiedRoads.get(producer.id);
+      if (expectedRoad) {
+        expect(producer.roadAccess).toBe(expectedRoad);
+        expect(producer.roadAccessStatus).toBe('verified');
+        expect(producer.roadAccessSourceUrl).toBeTruthy();
+        expect(producer.roadAccessNotes).toBeTruthy();
+      } else {
+        expect(producer.roadAccess).toBeUndefined();
+        expect(producer.roadAccessStatus).toBe('unreviewed');
+      }
     }
+
+    expect(
+      PHASE10B_PRODUCERS.find((producer) => producer.id === 'liokareas-olive-estate')
+        ?.roadAccessStatus
+    ).toBe('unreviewed');
   });
 });

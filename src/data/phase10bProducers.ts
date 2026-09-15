@@ -7,9 +7,9 @@ import { Producer } from '../types/terroir';
  * Source: live Supabase after the Phase 10B trust, narrative, location, and
  * Liokareas taxonomy migrations on 2026-09-15.
  *
- * Road access intentionally remains unclassified for every record until the
- * separate road-evidence audit. Producer visitability remains independent from
- * the role of a mapped public point.
+ * Road access reflects the Phase 10B evidence audit. Verified classifications are
+ * exposed only where explicit supporting evidence exists; remaining records stay
+ * unreviewed. Producer visitability remains independent from mapped-point role.
  */
 export const PHASE10B_PRODUCERS: Producer[] = [
   {
@@ -258,7 +258,10 @@ export const PHASE10B_PRODUCERS: Producer[] = [
     openingHours: '',
     phone: '+30 2321 099 949',
     website: 'https://www.sirisbrewery.com/',
-    roadAccessStatus: 'unreviewed',
+    roadAccess: 'paved',
+    roadAccessStatus: 'verified',
+    roadAccessSourceUrl: 'https://www.ia.ihu.gr/en/howtogetthere/',
+    roadAccessNotes: 'Verified for the mapped brewery point. Siris publishes its brewery at the 6th km of the Serres-Thessaloniki National Road; International Hellenic University documents the Thessaloniki-Serres National Highway as the road approach into Serres. Classification applies to the public brewery point, not any unrelated service tracks.',
     ethos: ['unpasteurized', 'craft_batch'],
     locationStatus: 'verified_location',
     locationSourceUrl: 'https://mapcarta.com/W1091010202',
@@ -387,7 +390,10 @@ export const PHASE10B_PRODUCERS: Producer[] = [
     website: 'https://tselepos.gr',
     googleMapsUrl: 'https://www.google.com/maps/place/?q=place_id:ChIJHXFisgYYYBMRZxx-VMAJx1s',
     googlePlaceId: 'ChIJHXFisgYYYBMRZxx-VMAJx1s',
-    roadAccessStatus: 'unreviewed',
+    roadAccess: 'paved',
+    roadAccessStatus: 'verified',
+    roadAccessSourceUrl: 'https://www.climbagiospetros.gr/en/getting-to-agios-petros/',
+    roadAccessNotes: 'Verified for the mapped winery approach. Ktima Tselepos publishes its address at the 14th km Tripoli-Kastri road; the Tripoli-Kastri-Agios Petros corridor is documented as a paved mountain road. No claim is made about vineyard tracks beyond the visitor site.',
     ethos: [],
     locationStatus: 'verified_location',
     locationSourceUrl: 'https://tripntravel.gr/2024/06/25/wine-tour-tasting/',
@@ -485,7 +491,10 @@ export const PHASE10B_PRODUCERS: Producer[] = [
     phone: '+30 2732 071 705',
     website: 'https://monemvasiawinery.gr',
     googleMapsUrl: 'https://maps.app.goo.gl/hw393D9Q1NCfbeAD9',
-    roadAccessStatus: 'unreviewed',
+    roadAccess: 'paved',
+    roadAccessStatus: 'verified',
+    roadAccessSourceUrl: 'https://www.monemvasiawinery.gr/privacy-policy/',
+    roadAccessNotes: 'Verified for the mapped winery point from the producer legal premises address, which explicitly places the business on the Tarapsa-Monemvasia National Road. This does not classify vineyard or agricultural tracks.',
     ethos: ['indigenous_only', 'family_estate'],
     locationStatus: 'verified_location',
     locationSourceUrl: 'https://www.monemvasiawinery.gr/en/contact/',
@@ -584,7 +593,10 @@ export const PHASE10B_PRODUCERS: Producer[] = [
     website: 'https://tetramythoswines.com',
     googleMapsUrl: 'https://www.google.com/maps/place/?q=place_id:ChIJ7XGKjVO-XxMReVt7WVgbCJ8',
     googlePlaceId: 'ChIJ7XGKjVO-XxMReVt7WVgbCJ8',
-    roadAccessStatus: 'unreviewed',
+    roadAccess: 'narrow_paved',
+    roadAccessStatus: 'verified',
+    roadAccessSourceUrl: 'https://visit-achaia.gr/en/see-and-do/routes/202-route5',
+    roadAccessNotes: 'Verified for the mapped winery approach, not vineyard tracks. Tetramythos publishes its winery at the 8th km of the Pounta-Kalavryta road; the Achaia regional route guide describes this ascending road through Ano Diakopto as good but a little narrow and winding.',
     ethos: ['organic'],
     locationStatus: 'verified_location',
     locationSourceUrl: 'https://mapcarta.com/W292772878',
