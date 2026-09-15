@@ -12,11 +12,20 @@ import {
 } from '../config/googlePlacesAllowlist';
 import { CRETAN_PRODUCERS } from '../data/producers';
 import { SANTORINI_PRODUCERS } from '../data/santoriniProducers';
+import { PHASE10B_PRODUCERS } from '../data/phase10bProducers';
 
 const AUDITED_REGIONAL_PRODUCERS = [
   ...CRETAN_PRODUCERS,
   ...SANTORINI_PRODUCERS,
+  ...PHASE10B_PRODUCERS,
 ];
+
+const EXPECTED_GOOGLE_PLACES_PRODUCERS = AUDITED_REGIONAL_PRODUCERS.filter(
+  (producer) =>
+    Boolean(producer.googlePlaceId?.trim()) &&
+    (producer.locationStatus === 'verified_location' ||
+      producer.locationStatus === 'verified_entrance')
+);
 
 describe('Google Places UI Kit & Allowlist', () => {
   beforeEach(() => {
@@ -29,11 +38,19 @@ describe('Google Places UI Kit & Allowlist', () => {
   });
 
   describe('Allowlist Verification', () => {
-    it('covers all audited Crete and Santorini producers across supported categories', () => {
+    it('covers every audited producer with a verified location and persistent Google Place ID', () => {
       expect(CRETAN_PRODUCERS).toHaveLength(27);
       expect(SANTORINI_PRODUCERS).toHaveLength(9);
-      expect(GOOGLE_PLACES_PROTOTYPE_ITEMS).toHaveLength(36);
-      expect(GOOGLE_PLACES_PROTOTYPE_ALLOWLIST).toHaveLength(36);
+      expect(PHASE10B_PRODUCERS).toHaveLength(19);
+      expect(GOOGLE_PLACES_PROTOTYPE_ITEMS).toHaveLength(
+        EXPECTED_GOOGLE_PLACES_PRODUCERS.length
+      );
+      expect(GOOGLE_PLACES_PROTOTYPE_ALLOWLIST).toHaveLength(
+        EXPECTED_GOOGLE_PLACES_PRODUCERS.length
+      );
+      expect(GOOGLE_PLACES_PROTOTYPE_ALLOWLIST).toEqual(
+        EXPECTED_GOOGLE_PLACES_PRODUCERS.map((producer) => producer.id)
+      );
 
       const eligibleCategories = new Set(
         GOOGLE_PLACES_PROTOTYPE_ITEMS.map((item) => item.category)

@@ -2,9 +2,13 @@ import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { producerService } from './producerService';
 import { CRETAN_PRODUCERS } from '../data/producers';
 import { SANTORINI_PRODUCERS } from '../data/santoriniProducers';
+import { PHASE10B_PRODUCERS } from '../data/phase10bProducers';
 import { ALL_EXPERIENCES } from '../data/experiences';
 
-const EXPECTED_FALLBACK_COUNT = CRETAN_PRODUCERS.length + SANTORINI_PRODUCERS.length;
+const EXPECTED_FALLBACK_COUNT =
+  CRETAN_PRODUCERS.length +
+  SANTORINI_PRODUCERS.length +
+  PHASE10B_PRODUCERS.length;
 
 // Mock Supabase module
 const { mockSupabaseState } = vi.hoisted(() => {
@@ -462,7 +466,7 @@ describe('producerService — Supabase / Fallback Data Ownership', () => {
       expect(producers.every((p) => p.rating === undefined)).toBe(true);
       expect(producers.every((p) => p.reviewCount === undefined)).toBe(true);
 
-      // Verify single producer fetches from both audited fallback regions
+      // Verify single producer fetches across audited fallback regions
       const creteSingle = await producerService.getProducerById('lafkas-brewery');
       expect(creteSingle).not.toBeNull();
       expect(creteSingle?.name).toBe('Lafkas Brewery');

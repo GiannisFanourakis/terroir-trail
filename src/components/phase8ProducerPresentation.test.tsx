@@ -265,7 +265,7 @@ describe('Phase 8 Producer Card + Detail Hierarchy', () => {
       expect(html).toContain('Passable unpaved road access');
       expect(html).toContain('Passable unpaved track suitable for standard cars with care');
       expect(html).toContain('Route Safety Notice');
-      expect(html).toContain('does not guarantee a paved entrance or standard rental-car road');
+      expect(html).toContain('does not by itself establish road conditions or the location of every production asset');
     });
 
     it('preserves unknown road access without making positive claims', () => {

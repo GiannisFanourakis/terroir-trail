@@ -172,7 +172,7 @@ describe('Producer Verification and Visitability UI Integrity', () => {
       );
 
       expect(htmlTab3).toContain('Exact Navigation Point Under Verification');
-      expect(htmlTab3).toContain('The precise visitor entrance for this producer is still being verified');
+      expect(htmlTab3).toContain('The precise public point for this producer is still being verified');
 
       // Check Sticky Footer: Must NOT render a link pointing to Google Maps directions
       expect(htmlTab3).toContain('Navigation Pending');
