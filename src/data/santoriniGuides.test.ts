@@ -74,12 +74,12 @@ describe('Phase 10A — Santorini discovery guides', () => {
     }
   });
 
-  it('does not accidentally publish the legacy pre-audit Santorini marketing route', () => {
-    const legacy = CURATED_ROUTES.find(
-      (guide) => guide.id === 'santorini-volcanic-terroir'
-    );
-    expect(legacy).toBeDefined();
-    expect(legacy?.verificationStatus).toBeUndefined();
+  it('removes the legacy pre-audit Santorini marketing route entirely', () => {
+    expect(
+      CURATED_ROUTES.some(
+        (guide) => guide.id === 'santorini-volcanic-terroir'
+      )
+    ).toBe(false);
 
     const publishableSantorini = CURATED_ROUTES.filter(
       (guide) =>
