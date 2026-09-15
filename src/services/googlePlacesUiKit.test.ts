@@ -11,6 +11,12 @@ import {
   GOOGLE_PLACES_PROTOTYPE_ITEMS,
 } from '../config/googlePlacesAllowlist';
 import { CRETAN_PRODUCERS } from '../data/producers';
+import { SANTORINI_PRODUCERS } from '../data/santoriniProducers';
+
+const AUDITED_REGIONAL_PRODUCERS = [
+  ...CRETAN_PRODUCERS,
+  ...SANTORINI_PRODUCERS,
+];
 
 describe('Google Places UI Kit & Allowlist', () => {
   beforeEach(() => {
@@ -23,17 +29,18 @@ describe('Google Places UI Kit & Allowlist', () => {
   });
 
   describe('Allowlist Verification', () => {
-    it('covers all 27 audited Crete producers across supported categories', () => {
+    it('covers all audited Crete and Santorini producers across supported categories', () => {
       expect(CRETAN_PRODUCERS).toHaveLength(27);
-      expect(GOOGLE_PLACES_PROTOTYPE_ITEMS).toHaveLength(27);
-      expect(GOOGLE_PLACES_PROTOTYPE_ALLOWLIST).toHaveLength(27);
+      expect(SANTORINI_PRODUCERS).toHaveLength(9);
+      expect(GOOGLE_PLACES_PROTOTYPE_ITEMS).toHaveLength(36);
+      expect(GOOGLE_PLACES_PROTOTYPE_ALLOWLIST).toHaveLength(36);
 
       const eligibleCategories = new Set(
         GOOGLE_PLACES_PROTOTYPE_ITEMS.map((item) => item.category)
       );
 
       const catalogueCategories = new Set(
-        CRETAN_PRODUCERS.map((producer) => producer.category)
+        AUDITED_REGIONAL_PRODUCERS.map((producer) => producer.category)
       );
 
       expect([...eligibleCategories].sort()).toEqual(
@@ -47,6 +54,8 @@ describe('Google Places UI Kit & Allowlist', () => {
       expect(isGooglePlacesEligible('cretan-brewery-charma')).toBe(true);
       expect(isGooglePlacesEligible('biolea-estate')).toBe(true);
       expect(isGooglePlacesEligible('stathakis-honey-park')).toBe(true);
+      expect(isGooglePlacesEligible('domaine-sigalas-santorini')).toBe(true);
+      expect(isGooglePlacesEligible('santorini-brewing-company')).toBe(true);
     });
 
     it('rejects unlisted producers', () => {
