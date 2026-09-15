@@ -238,9 +238,9 @@ Phase 8 reconciliation notes:
 
 ## Phase 9 — Crete as the First Finished Region
 
-**Status:** In progress — the core Crete discovery/trust foundation, polished producer pages, authentic live imagery, and the complete mobile journey are verified. Remaining work is discovery guides/day trips and final regional QA.
+**Status:** Completed — Crete is production-verified as the first reference-quality TerroirTrail region, including the audited catalogue, trust/location/media model, mobile discovery journey, Discovery Guides, automated QA, deployment, and final production smoke.
 
-Crete becomes the reference implementation before rapid geographic expansion.
+Crete is the reference implementation for subsequent geographic expansion.
 
 - [x] ~~Finish the trustworthy Crete map.~~
 - [x] ~~Finish the authentic Crete producer catalogue.~~
@@ -249,9 +249,9 @@ Crete becomes the reference implementation before rapid geographic expansion.
 - [x] ~~Finish real producer stories.~~
 - [x] ~~Finish direct producer contact flows.~~
 - [x] ~~Finish polished producer pages.~~
-- [ ] Finish useful self-guided routes/day trips using verified pins only.
+- [x] ~~Finish useful self-guided routes/day trips using verified pins only.~~
 - [x] ~~Finish mobile UX for the complete Crete journey.~~
-- [ ] Perform final Crete regional QA.
+- [x] ~~Perform final Crete regional QA.~~
 
 ### Phase 9A — Verified Google Place ID foundation
 
@@ -297,15 +297,17 @@ Production behavior was visually verified by the project owner across the left p
 
 ### Phase 9D — Crete discovery guides & regional closeout
 
-**Status:** Outstanding Crete closeout backlog; Phase 9 is not yet marked complete.
+**Status:** Complete / closed.
 
 - [x] ~~Convert the Western Chania guide to verified-stop discovery data.~~
 - [x] ~~Convert the Heraklion discovery guides to verified-stop discovery data.~~
-- [ ] Complete the Rethymno discovery guide; keep it draft/unpublished until its stop set and presentation are ready.
-- [ ] Present Crete guides as discovery itineraries/stop collections, not as road-safety guarantees.
-- [ ] Keep multi-stop driving/navigation fail-closed wherever road-access evidence is insufficient.
-- [ ] Complete a final Crete production smoke pass across discovery, producer imagery, mobile, deep links, and guide presentation.
-- [ ] Reconcile the final Phase 9 checklist and mark Phase 9 complete only after the guide/QA closeout is verified.
+- [x] ~~Complete the Rethymno Discovery Guide using the visit-ready verified stop set; keep Tzourmpakis out while ordinary visitor access remains uncertain.~~
+- [x] ~~Present Crete guides as discovery itineraries/stop collections, not as road-safety guarantees.~~
+- [x] ~~Keep multi-stop driving/navigation fail-closed wherever road-access evidence is insufficient.~~
+- [x] ~~Complete a final Crete production smoke pass across discovery, producer imagery, mobile/deep-link behavior, and guide presentation.~~
+- [x] ~~Reconcile the final Phase 9 checklist and mark Phase 9 complete after guide/QA closeout verification.~~
+
+Phase 9 closeout is recorded in `reports/phase9_crete_closeout.md`. The final Crete guide quality gate passed on `fd9d27479672eb6ab277fc1feaac7b89d94b45c9`, and the project owner confirmed the final Firebase Hosting deployment and requested production smoke passed on 2026-09-15.
 
 ---
 
