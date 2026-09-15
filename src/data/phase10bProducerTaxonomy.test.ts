@@ -1,0 +1,45 @@
+import { describe, expect, it } from 'vitest';
+import { PHASE10B_PRODUCERS } from './phase10bProducers';
+import { isGooglePlacesEligible } from '../config/googlePlacesAllowlist';
+
+describe('Phase 10B producer taxonomy', () => {
+  it('keeps the merged regional fallback at the audited 19-record inventory', () => {
+    expect(PHASE10B_PRODUCERS).toHaveLength(19);
+    expect(PHASE10B_PRODUCERS.filter((p) => p.destination === 'peloponnese')).toHaveLength(9);
+    expect(PHASE10B_PRODUCERS.filter((p) => p.destination === 'northern_greece')).toHaveLength(9);
+    expect(PHASE10B_PRODUCERS.filter((p) => p.destination === 'tuscany')).toHaveLength(1);
+  });
+
+  it('models Liokareas as a producer with a producer-owned shop public point', () => {
+    const liokareas = PHASE10B_PRODUCERS.find((p) => p.id === 'liokareas-olive-estate');
+
+    expect(liokareas).toBeDefined();
+    expect(liokareas?.name).toBe('Liokareas');
+    expect(liokareas?.category).toBe('olive_oil_producer');
+    expect(liokareas?.publicPointType).toBe('producer_shop');
+    expect(liokareas?.locationStatus).toBe('verified_location');
+    expect(liokareas?.visitStatus).toBe('not_publicly_confirmed');
+    expect(liokareas?.roadAccessStatus).toBe('unreviewed');
+    expect(liokareas?.roadAccess).toBeUndefined();
+    expect(liokareas?.googlePlaceId).toBe('ChIJhUj2fKPpYRMRLPwSoXMbgBM');
+    expect(liokareas?.coordinates).toEqual([36.7821875, 22.3396875]);
+    expect(isGooglePlacesEligible('liokareas-olive-estate')).toBe(true);
+  });
+
+  it('does not turn producer-owned shop points into shop catalogue categories', () => {
+    const shopPoints = PHASE10B_PRODUCERS.filter(
+      (producer) => producer.publicPointType === 'producer_shop'
+    );
+
+    expect(shopPoints).toHaveLength(1);
+    expect(shopPoints[0]?.category).toBe('olive_oil_producer');
+    expect(shopPoints[0]?.visitStatus).not.toBe('public_visits');
+  });
+
+  it('keeps all Phase 10B road classifications fail-closed', () => {
+    for (const producer of PHASE10B_PRODUCERS) {
+      expect(producer.roadAccess).toBeUndefined();
+      expect(producer.roadAccessStatus).toBe('unreviewed');
+    }
+  });
+});
