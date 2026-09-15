@@ -2,7 +2,7 @@
 
 Date: 2026-09-15
 
-Status: **Current regional workstream. Trust/narrative cleanup, exact-location coverage, producer/public-point taxonomy, and bundled fallback parity are complete; remaining Google identity, road/access, Discovery Guide, and production-reference gates remain open.**
+Status: **Current regional workstream. Trust/narrative cleanup, exact-location coverage, producer/public-point taxonomy, and bundled fallback parity are complete; remaining Google identity, Discovery Guide, and production-reference gates remain open; 13 road approaches remain explicitly reviewed-but-unconfirmed.**
 
 Phase 10B combines Peloponnese, Northern Greece, and Tuscany / Italy into one coordinated regional expansion batch. The purpose is to reuse one audit and QA framework across all three regions while preserving region-specific evidence and verification decisions.
 
@@ -120,20 +120,24 @@ The total bundled audited producer catalogue is therefore 55 records: 27 Crete +
 
 ### Road-access state
 
-The separate road-evidence audit is now in progress. Batch 1 verified only records with sufficiently specific approach-road evidence:
+The Phase 10B public road-evidence review is complete. Classifications are exposed only where sufficiently specific evidence exists:
 
-- verified/classified roads: **4 / 19**;
+- verified/classified roads: **6 / 19**;
+- reviewed but not publicly confirmed: **13 / 19**;
+- unreviewed roads: **0 / 19**;
 - `tetramythos-winery`: `narrow_paved`;
 - `ktima-tselepos`: `paved`;
 - `siris-craft-brewery`: `paved`;
 - `monemvasia-winery`: `paved`;
-- remaining unreviewed roads: **15 / 19**;
-- vineyard, orchard, agricultural and unrelated service tracks are not inferred from the public-point classification;
+- `propator-sknipa-brewery`: `paved`;
+- `monteraponi-tuscany`: `unpaved_passable` and therefore not treated as normal rental-car route evidence;
+- vineyard, orchard, agricultural and unrelated service tracks are never inferred from the public-point classification;
 - no Phase 10B multi-stop driving navigation is enabled merely because individual stops have passed road review.
 
-Applied road migration:
+Applied road migrations:
 
 - `20260915121803_phase10b_road_access_audit_batch1`
+- `20260915123105_phase10b_road_access_audit_batch2_and_review_close`
 
 ## Shared quality bar
 

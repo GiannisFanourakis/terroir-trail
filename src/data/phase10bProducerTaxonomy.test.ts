@@ -19,7 +19,7 @@ describe('Phase 10B producer taxonomy', () => {
     expect(liokareas?.publicPointType).toBe('producer_shop');
     expect(liokareas?.locationStatus).toBe('verified_location');
     expect(liokareas?.visitStatus).toBe('not_publicly_confirmed');
-    expect(liokareas?.roadAccessStatus).toBe('unreviewed');
+    expect(liokareas?.roadAccessStatus).toBe('not_publicly_confirmed');
     expect(liokareas?.roadAccess).toBeUndefined();
     expect(liokareas?.googlePlaceId).toBe('ChIJhUj2fKPpYRMRLPwSoXMbgBM');
     expect(liokareas?.coordinates).toEqual([36.7821875, 22.3396875]);
@@ -42,12 +42,19 @@ describe('Phase 10B producer taxonomy', () => {
       ['ktima-tselepos', 'paved'],
       ['siris-craft-brewery', 'paved'],
       ['monemvasia-winery', 'paved'],
+      ['propator-sknipa-brewery', 'paved'],
+      ['monteraponi-tuscany', 'unpaved_passable'],
     ] as const);
 
     const verified = PHASE10B_PRODUCERS.filter(
       (producer) => producer.roadAccessStatus === 'verified'
     );
-    expect(verified).toHaveLength(4);
+    expect(verified).toHaveLength(6);
+
+    const reviewedUnknown = PHASE10B_PRODUCERS.filter(
+      (producer) => producer.roadAccessStatus === 'not_publicly_confirmed'
+    );
+    expect(reviewedUnknown).toHaveLength(13);
 
     for (const producer of PHASE10B_PRODUCERS) {
       const expectedRoad = expectedVerifiedRoads.get(producer.id);
@@ -58,13 +65,14 @@ describe('Phase 10B producer taxonomy', () => {
         expect(producer.roadAccessNotes).toBeTruthy();
       } else {
         expect(producer.roadAccess).toBeUndefined();
-        expect(producer.roadAccessStatus).toBe('unreviewed');
+        expect(producer.roadAccessStatus).toBe('not_publicly_confirmed');
+        expect(producer.roadAccessNotes).toBeTruthy();
       }
     }
 
     expect(
       PHASE10B_PRODUCERS.find((producer) => producer.id === 'liokareas-olive-estate')
         ?.roadAccessStatus
-    ).toBe('unreviewed');
+    ).toBe('not_publicly_confirmed');
   });
 });
