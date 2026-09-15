@@ -122,6 +122,9 @@ function verifySeoAssets(): void {
       'and self-guided rural discovery routes.',
       'Curated Crete Agritourism & Local Producer Guide',
       'Curated Agritourism & Local Producer Discovery Guide',
+      'Curated Rural Routes Under Verification',
+      'Starting in Greece with our inaugural audited Crete dataset',
+      'Verified Crete Producer Directory',
     ];
 
     for (const claim of bannedClaims) {
@@ -150,9 +153,18 @@ function verifySeoAssets(): void {
       process.exit(1);
     }
 
-    if (!indexContent.includes('Curated Rural Routes Under Verification')) {
-      console.error('[SEO Verification Failed] dist/index.html is missing the curated-route verification notice.');
-      process.exit(1);
+    const requiredIndexClaims = [
+      'Discovery Guides &amp; Navigation Safety',
+      'Verified Crete &amp; Santorini Producer Directory',
+      'Crete and Santorini are the current reference-quality regions',
+      'Santorini Brewing Company',
+    ];
+
+    for (const claim of requiredIndexClaims) {
+      if (!indexContent.includes(claim)) {
+        console.error(`[SEO Verification Failed] dist/index.html is missing current regional product-state claim: ${claim}`);
+        process.exit(1);
+      }
     }
 
     const bannedMonetizationTags = [
@@ -173,7 +185,8 @@ function verifySeoAssets(): void {
   console.log(`  - dist/sitemap.xml present and valid (${locMatches.length} URLs mapped to ${CANONICAL_HOST})`);
   console.log(`  - dist/robots.txt present and advertises ${CANONICAL_SITEMAP_URL}`);
   console.log('  - dist/llms.txt reflects the current Crete + Santorini product state');
-  console.log(`  - Canonical link, draft-route quarantine, and unconsented ad-script quarantine verified in dist/index.html`);
+  console.log('  - dist/index.html reflects current Discovery Guides and Crete + Santorini reference regions');
+  console.log(`  - Canonical link, stale-claim quarantine, and unconsented ad-script quarantine verified in dist/index.html`);
 }
 
 verifySeoAssets();
