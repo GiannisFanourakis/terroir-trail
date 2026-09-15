@@ -82,7 +82,7 @@ describe('Production Demo & Fake UI Removal Suite', () => {
       expect(html).not.toContain('Tuscan Hillside (Demo)');
     });
 
-    it('renders null when closed and mounts cleanly when opened without hook lifecycle errors', () => {
+    it('renders safely when closed and opened', () => {
       const closedHtml = renderToString(
         React.createElement(ProducerPortalModal, {
           isOpen: false,
@@ -110,7 +110,9 @@ describe('Production Demo & Fake UI Removal Suite', () => {
         })
       );
       expect(openHtml).toContain('Producer &amp; Host Portal');
-      expect(openHtml).toContain('Host access is granted only after verification and Admin approval.');
+      expect(openHtml).toContain(
+        'Host access is granted only after verification and Admin approval.'
+      );
     });
   });
 
