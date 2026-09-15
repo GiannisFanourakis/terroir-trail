@@ -2,7 +2,7 @@
 
 Date: 2026-09-15
 
-Status: **Current regional workstream. Trust and narrative cleanup complete; location/access audit remains open.**
+Status: **Current regional workstream. Trust and narrative cleanup complete; final location/access audit remains open.**
 
 Phase 10B combines Peloponnese, Northern Greece, and Tuscany / Italy into one coordinated regional expansion batch. The purpose is to reuse one audit and QA framework across all three regions while preserving region-specific evidence and verification decisions.
 
@@ -75,11 +75,21 @@ Public or appointment status is based on current first-party evidence. A produce
 
 ### Location and Google identity state
 
-Current exact-location state:
+Current exact-location state after batch 2:
 
-- verified locations: **5 / 19**
-- unresolved locations: **14 / 19**
+- verified locations: **16 / 19**
+- unresolved locations: **3 / 19**
 - accepted Google Place IDs: **9 / 19**
+
+Exact-location batch 2 independently verified 11 additional producer points without changing road-access status. The migration is:
+
+- `20260915103850_phase10b_verify_exact_locations_batch2`
+
+The three records that remain intentionally unresolved are:
+
+- Domaine Mercouri
+- GAIA Wines Nemea
+- Liokareas
 
 A Google Place ID by itself does not upgrade `location_status`. Exact map-point verification remains a separate evidence step.
 
@@ -114,13 +124,15 @@ For each region:
 
 ## Next Phase 10B gate
 
-The next gate is the **remaining exact-location and Google identity audit**:
+The next gate is the **final three-record location/entity audit plus remaining Google identity work**:
 
-1. resolve the 14 remaining exact producer/business map points from producer-controlled or equivalently strong evidence;
-2. complete the remaining Google Place ID matches without inferring IDs from coordinates or CIDs;
-3. enable Google imagery only where both the persistent Place ID and location audit pass;
-4. keep road access untouched until a separate road-evidence review;
-5. only after exact-location parity, design candidate Discovery Guides from verified stops.
+1. resolve Domaine Mercouri only if its exact current estate point can be independently corroborated strongly enough;
+2. resolve GAIA Wines Nemea only when an exact current winery point is independently established, not merely the village/locality;
+3. review Liokareas as both a location and entity-type question, because current first-party material supports a family olive-oil business and packaged harvest-trip activity but not yet an ordinary public Greek mill/estate point;
+4. complete remaining Google Place ID matches without inferring IDs from coordinates or CIDs;
+5. enable Google imagery only where both the persistent Place ID and location audit pass;
+6. keep road access untouched until a separate road-evidence review;
+7. only after exact-location parity, design candidate Discovery Guides from verified stops.
 
 No Phase 10B regional closeout or production-reference claim should be made before the location, media, road/access, fallback and production-smoke gates are complete.
 
