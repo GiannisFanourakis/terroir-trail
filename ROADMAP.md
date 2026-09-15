@@ -5,7 +5,7 @@
 > Completion convention: change `- [ ] Step` to `- [x] ~~Step~~` when finished. Do not mark a step complete until it has been implemented, tested, pushed, deployed where applicable, and verified.
 
 **Last updated:** 2026-09-15
-**Current focus:** Phase 10C — Wider Mediterranean Expansion
+**Current focus:** Phase 11 — Account, Admin & Host Management
 
 ---
 
@@ -23,7 +23,7 @@
 
 ## Phase 2 — Admin, Producer & Account Authority
 
-**Status:** Deferred into Phase 11 — Account, Admin & Host Management. This early checklist is retained as a requirements record. Do not start the broad account-management programme before regional completion unless a security issue requires an immediate fix.
+**Status:** Deferred into Phase 11 — Account, Admin & Host Management. This early checklist is retained as a requirements record.
 
 ### Account roles
 
@@ -240,7 +240,7 @@ Phase 8 reconciliation notes:
 
 **Status:** Completed — Crete is production-verified as the first reference-quality TerroirTrail region, including the audited catalogue, trust/location/media model, mobile discovery journey, Discovery Guides, automated QA, deployment, and final production smoke.
 
-Crete is the reference implementation for subsequent geographic expansion.
+Crete is the reference implementation for subsequent geographic and category expansion.
 
 - [x] ~~Finish the trustworthy Crete map.~~
 - [x] ~~Finish the authentic Crete producer catalogue.~~
@@ -311,57 +311,28 @@ Phase 9 closeout is recorded in `reports/phase9_crete_closeout.md`. The final Cr
 
 ---
 
-## Phase 10 — Complete All Remaining Regions
+## Phase 10 — Complete the Existing Regional Programme
 
-**Status:** In progress — Phase 10A Santorini and Phase 10B Peloponnese + Northern Greece + Tuscany / Italy are complete and production-verified. Phase 10C Wider Mediterranean is next; Northern Europe follows.
+**Status:** Completed — Santorini, Peloponnese, Northern Greece, and the current Tuscany / Italy foothold are audited, production-verified, and closed at the agreed trust standard.
 
-Bring every other intended TerroirTrail region to the same deliberate trust and product-quality standard before moving on to account/admin/host management.
-
-### Regional sequence
-
-1. Santorini
-2. Peloponnese
-3. Northern Greece
-4. Tuscany / Italy
-5. Wider Mediterranean regions added to the product
-6. Northern Europe regions added to the product
+Phase 10 closes the regional programme that was already present in the product. It no longer acts as a container for indefinite Mediterranean or Northern European expansion. New expansion happens only after Phase 11 and is split into explicit phases below.
 
 ### Phase 10 progress
 
 - [x] ~~Phase 10A — Complete the Santorini regional trust/location/media/Discovery Guide programme.~~
 - [x] ~~Phase 10B — Complete Peloponnese + Northern Greece + Tuscany / Italy, including 19/19 audited Google identities, road review, bundled fallback parity, rebuilt Discovery Guides, deployment, and production smoke verification.~~
-- [ ] Phase 10C — Define and complete the next wider Mediterranean regional batch using the same evidence-first quality bar.
-- [ ] Phase 10D — Define and complete the Northern Europe regional batch after the wider Mediterranean work.
 
 Phase 10B closeout is recorded in `reports/phase10b_peloponnese_northern_greece_tuscany.md`. The project owner confirmed the final guide build was deployed and passed the requested production smoke checks on 2026-09-15.
 
-The order inside Phase 10 can be adjusted deliberately, but the rule remains: **finish the regional content/product layer before moving into account-management and partnership work.** The architecture must remain geography-open rather than reintroducing a Greece-only fence.
-
-### Required quality bar for every region
-
-- [ ] Audit real producers/projects and remove invented or stale claims.
-- [ ] Verify category/entity type so farms, heritage projects, geoparks, and other local projects do not masquerade as a different kind of listing.
-- [ ] Verify locations and preserve unresolved/uncertain states where evidence is insufficient.
-- [ ] Verify public visitability separately from partnership status.
-- [ ] Verify road/access evidence independently from location evidence and keep route safety fail-closed.
-- [ ] Verify producer-controlled public contact channels.
-- [ ] Add verified Google Place IDs where Google imagery is used.
-- [ ] Apply the same media hierarchy and attribution rules used for Crete.
-- [ ] Keep stories, taglines, products, and local context source-backed and human.
-- [ ] Bring search, filters, map/list browsing, detail pages, deep links, and mobile presentation to parity with the Crete reference implementation.
-- [ ] Build discovery guides only from verified stops and never present them as road-safety guarantees without route evidence.
-- [ ] Synchronize bundled fallback/offline data so stale defaults cannot reappear.
-- [ ] Run the full automated quality gate and a regional production smoke pass before marking each region complete.
-
-**Definition of done:** every region TerroirTrail intends to have publicly available before partnerships has reached an explicit reference-quality standard, with no knowingly half-built public region left behind.
+**Definition of done:** the regions already carried by the product before the next expansion programme have explicit audited states and production-verified presentation. Further category or geographic growth is deliberately sequenced after account handling rather than being mixed into this completed phase.
 
 ---
 
 ## Phase 11 — Account, Admin & Host Management
 
-**Status:** Begins only after Phase 10 regional completion. This phase defines who can sign in, what each account type can do, and which actions require trusted backend authority.
+**Status:** Next. Begins now that the existing regional programme is complete. This phase defines who can sign in, what each account type can do, and which actions require trusted backend authority.
 
-This phase absorbs the unfinished requirements recorded in Phase 2 and turns them into one complete account-management programme.
+This phase absorbs the unfinished requirements recorded in Phase 2 and turns them into one complete account-management programme before TerroirTrail broadens its Greek catalogue further.
 
 ### Traveler accounts
 
@@ -406,15 +377,155 @@ This phase absorbs the unfinished requirements recorded in Phase 2 and turns the
 - [ ] Complete full desktop/mobile/account accessibility and recovery QA.
 - [ ] Run the full automated quality gate and end-to-end production account smoke pass.
 
-**Definition of done:** Traveler, Host, and Admin accounts have clear, tested, server-enforced capabilities and the platform can be safely operated before any partnership/deal outreach begins.
+**Definition of done:** Traveler, Host, and Admin accounts have clear, tested, server-enforced capabilities and the platform can be safely operated before the next producer/category expansion begins.
 
 ---
 
-## Phase 12 — Producer Partnerships & Deals
+## Expansion Quality Bar — Applies to Phases 12–19
 
-**Status:** Deferred until Crete, all intended regions, and Phase 11 account/admin/host management are complete.
+Every new Greek producer, project, category, or later international region must follow the same evidence-first standard:
 
-Only after the product, regional catalogue, and account-management model are finished do we begin talking to producers about formal relationships or commercial terms. Independent researched listings and direct links to producer-controlled public channels may continue without implying a partnership.
+- [ ] Audit real producers/projects and remove invented or stale claims.
+- [ ] Verify entity type so production sites, shops, cooperatives, farms, heritage projects, geoparks, and other local projects are not misrepresented.
+- [ ] Verify locations and preserve unresolved/uncertain states where evidence is insufficient.
+- [ ] Verify public visitability separately from partnership status.
+- [ ] Verify road/access evidence independently from location evidence and keep route safety fail-closed.
+- [ ] Verify producer-controlled public contact channels.
+- [ ] Add verified Google Place IDs where Google imagery is used.
+- [ ] Apply the same media hierarchy and attribution rules used for Crete.
+- [ ] Keep stories, taglines, products, origin claims, and local context source-backed and human.
+- [ ] Bring search, filters, map/list browsing, detail pages, deep links, and mobile presentation to reference-quality parity.
+- [ ] Build Discovery Guides only from verified stops and never present them as road-safety guarantees without route evidence.
+- [ ] Synchronize bundled fallback/offline data so stale defaults cannot reappear.
+- [ ] Run the full automated quality gate and a production smoke pass before marking an expansion phase complete.
+
+---
+
+## Phase 12 — Greek Cheese & Dairy Expansion
+
+**Status:** Planned after Phase 11. Greece-first category expansion begins here, with feta as an anchor but not the only product.
+
+- [ ] Define first-class cheese/dairy taxonomy and filters without treating every dairy as a visitor attraction.
+- [ ] Build an audited Greek producer batch covering genuine feta production and other regional cheeses such as graviera, manouri, kefalotyri, and locally important cheeses where evidence supports inclusion.
+- [ ] Distinguish farm, dairy/creamery, maturation/production site, cooperative, and retail shop identities.
+- [ ] Verify product and protected-origin claims rather than inferring them from geography or business names.
+- [ ] Verify production-site location separately from any public shop or office.
+- [ ] Verify visitor access independently; factory or dairy existence does not imply tours or walk-ins.
+- [ ] Bring the new records through the common Expansion Quality Bar.
+
+**Definition of done:** Greek cheese and dairy is a credible, source-backed TerroirTrail vertical rather than a handful of generic dairy pins.
+
+---
+
+## Phase 13 — Greek Olive & Olive Oil Expansion
+
+**Status:** Planned after Phase 12.
+
+- [ ] Expand beyond the current olive coverage with audited independent mills, growers, estates, cooperatives, and other appropriate olive-oil producers across Greece.
+- [ ] Distinguish olive grove, working mill, bottling/brand operation, visitor centre, and retail shop identities.
+- [ ] Verify origin, cultivar, production, and visitor claims from reliable sources.
+- [ ] Keep mill access and rural-road evidence separate from simple business-location verification.
+- [ ] Bring the new records through the common Expansion Quality Bar.
+
+**Definition of done:** olive and olive-oil discovery represents multiple Greek regions and real production contexts without confusing shops with production sites.
+
+---
+
+## Phase 14 — Greek Honey & Apiary Expansion
+
+**Status:** Planned after Phase 13.
+
+- [ ] Build an audited apiary/honey producer batch across appropriate Greek regions.
+- [ ] Distinguish beekeeper/apiary operations, packing/production premises, shops, cooperatives, and educational visitor sites.
+- [ ] Verify honey type, botanical/geographic claims, public contact channels, and visitability.
+- [ ] Avoid publishing sensitive or unsuitable hive locations simply to create map pins.
+- [ ] Bring the new records through the common Expansion Quality Bar.
+
+**Definition of done:** honey discovery is useful to travelers while respecting both evidence quality and the practical sensitivity of apiary locations.
+
+---
+
+## Phase 15 — Greek Herbs & Botanicals Expansion
+
+**Status:** Planned after Phase 14.
+
+- [ ] Build an audited batch of herb growers, botanical producers, distillers, and related small-scale makers where they fit TerroirTrail.
+- [ ] Distinguish cultivation/production sites from shops and reseller locations.
+- [ ] Verify species/product claims and avoid unsupported medicinal or health claims.
+- [ ] Include regionally meaningful herbs and botanical traditions only where a real producer/project can be verified.
+- [ ] Bring the new records through the common Expansion Quality Bar.
+
+**Definition of done:** herbs and botanicals become a real producer-led category, not a collection of generic retail listings or folklore claims.
+
+---
+
+## Phase 16 — Greek Farm & Regional Produce Expansion
+
+**Status:** Planned after Phase 15.
+
+- [ ] Expand verified farms and primary-produce makers beyond the current catalogue.
+- [ ] Prioritize genuinely place-linked produce such as pulses, grains, carob, nuts, fruit, vegetables, and other regional crops where a traveler-facing listing makes sense.
+- [ ] Distinguish farms, packing facilities, cooperatives, markets, and shops.
+- [ ] Verify whether a site is appropriate for public discovery before publishing visitor language.
+- [ ] Bring the new records through the common Expansion Quality Bar.
+
+**Definition of done:** TerroirTrail represents Greek terroir through primary agricultural production as well as drinks and processed foods.
+
+---
+
+## Phase 17 — Greek Regional Specialty Foods Expansion
+
+**Status:** Planned after Phase 16.
+
+- [ ] Identify regional food crafts that have a strong producer-and-place connection and fit TerroirTrail's discovery model.
+- [ ] Audit makers of preserves, traditional grain products, regional sweets, cured or preserved foods, and other local specialties where inclusion is evidence-backed and meaningful.
+- [ ] Avoid becoming a generic restaurant, supermarket, souvenir-shop, or packaged-food directory.
+- [ ] Give each new category appropriate terminology and presentation rather than forcing it into winery-style UI.
+- [ ] Bring the new records through the common Expansion Quality Bar.
+
+**Definition of done:** regional specialty foods broaden TerroirTrail without diluting its producer-first, place-based identity.
+
+---
+
+## Phase 18 — Greek Geoparks, Heritage & Local Projects
+
+**Status:** Planned after the core Greek food-producer verticals.
+
+- [ ] Define first-class non-producer entity types for geoparks, heritage projects, community initiatives, and other local projects that genuinely help travelers understand terroir and place.
+- [ ] Ensure these entities never masquerade as producers or commercial partners.
+- [ ] Add Greek UNESCO Global Geoparks and other appropriate projects only with verified identity, location, public-access, and official-source information.
+- [ ] Design search/filter/detail presentation that clearly separates projects/places from producer listings while allowing useful discovery connections.
+- [ ] Bring the new records through the common Expansion Quality Bar where applicable.
+
+**Definition of done:** TerroirTrail can represent the landscape and cultural context around production without corrupting the producer taxonomy.
+
+---
+
+## Phase 19 — International Geographic Expansion
+
+**Status:** Deferred until the Greece-first category programme is complete and production-verified.
+
+Greece remains the priority. Once the Greek catalogue has meaningful breadth beyond wine and the existing categories, geographic expansion can resume without reintroducing a Greece-only architecture.
+
+### Sequence
+
+1. Wider Mediterranean regions
+2. Northern Europe regions
+
+- [ ] Define small, manageable regional batches rather than opening entire countries at once.
+- [ ] Apply the same producer/category/entity trust model established in Greece.
+- [ ] Preserve local product diversity rather than exporting a wine-centric Greek taxonomy to other countries.
+- [ ] Complete each international batch through the common Expansion Quality Bar before opening the next.
+
+**Definition of done:** international growth happens from a mature, inclusive Greek reference model rather than by rapidly multiplying thin regional catalogues.
+
+---
+
+## Phase 20 — Producer Partnerships & Deals
+
+**Status:** Deferred until Phase 11 account handling and the planned discovery-expansion programme are complete enough to support formal producer relationships safely.
+
+Independent researched listings and direct links to producer-controlled public channels may continue without implying a partnership.
 
 - [ ] Define producer partnership onboarding.
 - [ ] Verify producer identity and authorized representative.
@@ -433,7 +544,7 @@ Relationship levels:
 
 ---
 
-## Phase 13 — Experiences
+## Phase 21 — Experiences
 
 **Status:** Do not populate before producer agreements.
 
@@ -453,7 +564,7 @@ Relationship levels:
 
 ---
 
-## Phase 14 — Booking & Payments
+## Phase 22 — Booking & Payments
 
 **Status:** Future.
 
@@ -469,7 +580,7 @@ Only after real approved Experiences exist.
 
 ---
 
-## Phase 15 — Monetisation & Scale
+## Phase 23 — Monetisation & Scale
 
 **Status:** Future.
 
@@ -478,7 +589,7 @@ Only after real approved Experiences exist.
 - [ ] Introduce sponsored visibility/advertising only with clear disclosure and trust safeguards.
 - [ ] Validate affiliate travel services.
 - [ ] Validate chauffeur partnerships.
-- [ ] Expand direct producer bottle-shop linking where appropriate.
+- [ ] Expand direct producer shop linking where appropriate.
 - [ ] Revisit booking revenue only if the commercial model deliberately supports it.
 
 Monetisation follows the product and trust model; it must not dictate or weaken producer verification.
@@ -496,8 +607,11 @@ Monetisation follows the product and trust model; it must not dictate or weaken 
 7. **Admin and producer authority must be server-trusted.**
 8. **Every completed roadmap item is crossed out in this file when verified complete.**
 9. **Before starting a major new feature, place it against this roadmap first.**
-10. **Crete is the reference-quality region before broad expansion.**
-11. **Finish Crete before beginning the remaining-region programme.**
-12. **Finish all intended public regions before beginning the broad Traveler/Host/Admin account-management programme.**
-13. **Finish and production-verify Traveler, Host, and Admin account capabilities before producer-partnership or deal outreach begins.**
-14. **Partnership-dependent commercial features stay dormant rather than forcing premature deals.**
+10. **Crete is the reference-quality regional implementation.**
+11. **Finish and production-verify Phase 11 account/admin/host handling before beginning the new Greek category-expansion phases.**
+12. **Expand Greece by product field before resuming broad international geographic expansion.**
+13. **A shop, office, cooperative outlet, or visitor centre must never be silently treated as the underlying production site.**
+14. **New categories must receive category-appropriate taxonomy and UI rather than inheriting wine-centric assumptions.**
+15. **Finish the planned discovery expansion to an explicit reference-quality standard before producer-partnership/deal outreach becomes the main programme.**
+16. **Finish and production-verify Traveler, Host, and Admin account capabilities before producer-partnership or deal outreach begins.**
+17. **Partnership-dependent commercial features stay dormant rather than forcing premature deals.**
