@@ -1,5 +1,6 @@
 name: Phase 10B Road Fallback Sync
 
+# Registered on main; this update triggers the one-time parity patch.
 on:
   push:
     branches: [main]
