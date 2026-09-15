@@ -1,6 +1,7 @@
 import { Category } from '../types/terroir';
 import { CRETAN_PRODUCERS } from '../data/producers';
 import { SANTORINI_PRODUCERS } from '../data/santoriniProducers';
+import { PHASE10B_PRODUCERS } from '../data/phase10bProducers';
 
 export interface GooglePlacesAllowlistEntry {
   producerId: string;
@@ -12,11 +13,15 @@ export interface GooglePlacesAllowlistEntry {
 const AUDITED_GOOGLE_PLACE_PRODUCERS = [
   ...CRETAN_PRODUCERS,
   ...SANTORINI_PRODUCERS,
+  ...PHASE10B_PRODUCERS,
 ];
 
 /**
  * Eligibility comes only from manually audited regional catalogues.
  * A verified persistent Google Place ID and verified TT location are required.
+ * A producer-owned shop can be an eligible public point only when the underlying
+ * catalogue entity is itself a qualified producer; generic retailers are never
+ * added to this list merely because they sell local products.
  */
 export const GOOGLE_PLACES_PROTOTYPE_ITEMS: readonly GooglePlacesAllowlistEntry[] =
   Object.freeze(
