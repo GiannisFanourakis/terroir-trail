@@ -6,6 +6,15 @@ import { CRETAN_PRODUCERS } from '../../data/producers';
 import { GOOGLE_PLACES_PROTOTYPE_ITEMS } from '../../config/googlePlacesAllowlist';
 import * as uiKitModule from '../../services/googlePlacesUiKit';
 
+vi.mock('./GooglePlacePhotoCarousel', () => ({
+  GooglePlacePhotoCarousel: ({ producer }: { producer: { googlePlaceId?: string } }) => (
+    <div
+      data-testid="google-place-photo-carousel-mock"
+      data-place-id={producer.googlePlaceId}
+    />
+  ),
+}));
+
 describe('Google Places integration for audited Crete producers', () => {
   afterEach(() => {
     vi.unstubAllEnvs();
@@ -38,7 +47,7 @@ describe('Google Places integration for audited Crete producers', () => {
     }
   });
 
-  it('renders all eligible producers using Place ID only', () => {
+  it('routes all eligible producers into the live carousel by Place ID only', () => {
     vi.stubEnv('VITE_ENABLE_GOOGLE_PLACES_MEDIA', 'true');
 
     vi.spyOn(uiKitModule, 'useGooglePlacesUiKit').mockReturnValue({
@@ -54,17 +63,10 @@ describe('Google Places integration for audited Crete producers', () => {
         React.createElement(GooglePlaceMedia, { producer })
       );
 
-      expect(html).toContain('gmp-place-details');
-      expect(html).toContain(
-        `place="places/${producer.googlePlaceId}"`
-      );
-
-      expect(html).not.toContain(
-        'gmp-place-details-location-request'
-      );
-
-      expect(html).toContain('gmp-place-media');
-      expect(html).toContain('gmp-place-attribution');
+      expect(html).toContain('google-place-photo-carousel-mock');
+      expect(html).toContain(`data-place-id="${producer.googlePlaceId}"`);
+      expect(html).not.toContain('gmp-place-details-location-request');
+      expect(html).not.toContain('location=');
       expect(html).toContain('Photos from Google Maps');
       expect(html).toContain('Live Google Places');
     }
