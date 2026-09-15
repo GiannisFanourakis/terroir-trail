@@ -72,8 +72,8 @@ const FAQ_DATA: FaqItem[] = [
     categoryLabel: 'About & Curation',
     question: 'Which regions are currently covered?',
     answer:
-      'Crete is the current reference-quality catalogue, with 27 audited producer and agricultural-project records. TerroirTrail is designed to expand across Greece, Italy and wider Europe, but expansion data is not treated as equivalent to the audited Crete reference set until it passes the same verification process.',
-    highlight: 'Crete is the verification standard that future regions must match.',
+      'Crete and Santorini are the current reference-quality regions, with 36 audited records in total: 27 in Crete and 9 in Santorini. TerroirTrail is designed to expand across Greece, Italy, the wider Mediterranean and Northern Europe, but future regions are not treated as reference-quality until they pass the same catalogue, trust, imagery and access review.',
+    highlight: 'Crete established the reference standard; Santorini now meets the same quality bar.',
   },
   {
     id: 'visits',
@@ -113,18 +113,18 @@ const FAQ_DATA: FaqItem[] = [
   {
     id: 'routes-status',
     category: 'routes',
-    categoryLabel: 'Routes & Rural Access',
-    question: 'Are curated driving routes available?',
+    categoryLabel: 'Discovery Guides & Rural Access',
+    question: 'Are Discovery Guides available?',
     answer:
-      'Curated route guides are available when their stop identities and locations have been re-verified. These guides can expose individual verified stop locations while road-access evidence is still pending. Multi-stop turn-by-turn navigation remains disabled until every stop also passes the road-access safety checks. Draft routes remain hidden.',
-    highlight: 'No draft route is silently converted into turn-by-turn navigation.',
-    actionText: 'Browse Curated Routes',
+      'Yes. TerroirTrail publishes Discovery Guides when their stop identities, locations and visitor states have been reviewed. Three are currently published in Crete and three in Santorini. Individual verified stop locations can be opened while road-access evidence is still incomplete, but multi-stop turn-by-turn driving navigation remains withheld until the required road-access safety evidence is available. Draft guides remain hidden.',
+    highlight: 'A Discovery Guide is a verified stop collection, not a road-safety guarantee.',
+    actionText: 'Browse Discovery Guides',
     actionType: 'loops',
   },
   {
     id: 'road-access',
     category: 'routes',
-    categoryLabel: 'Routes & Rural Access',
+    categoryLabel: 'Discovery Guides & Rural Access',
     question: 'How does TerroirTrail handle rural road access?',
     answer:
       'Location confidence and road-access confidence are separate. Road classifications are only shown when supported by evidence; reviewed locations without publishable road evidence remain explicitly unclassified. Current-access uncertainty is shown rather than replaced with a guess.',
@@ -169,7 +169,7 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
     { id: 'about', label: '🌍 About & Curation' },
     { id: 'visiting', label: '🍷 Visiting Producers' },
     { id: 'passport', label: '🎖️ Traveler Passport' },
-    { id: 'routes', label: '🧭 Routes & Access' },
+    { id: 'routes', label: '🧭 Discovery Guides & Access' },
     { id: 'producers', label: '🏛️ For Producers' },
   ];
 
@@ -265,7 +265,7 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
                 </p>
 
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-5 border-t border-white/10">
-                  <Metric value="27" label="Audited Crete records" />
+                  <Metric value="36" label="Audited reference records" />
                   <Metric value="7" label="Producer categories" />
                   <Metric value="Source-backed" label="Access confidence" />
                   <Metric value="Direct" label="Producer contact" />
@@ -281,7 +281,7 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
                 <Principle
                   icon={<MapPin className="w-5 h-5" />}
                   title="Rural navigation safety"
-                  text="Exact location confidence and road-access confidence are separate. Draft routes and uncertain access fail closed rather than generating confident directions."
+                  text="Exact location confidence and road-access confidence are separate. Draft Discovery Guides and uncertain access fail closed rather than generating confident directions."
                 />
                 <Principle
                   icon={<Award className="w-5 h-5" />}
@@ -301,13 +301,13 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
                   <span>Greece first, then outward</span>
                 </div>
                 <p className="text-xs text-stone-300 leading-relaxed">
-                  Crete is the current reference-quality catalogue, with 27 audited records. TerroirTrail is designed for Mediterranean and European expansion, but new regions must earn the same level of data, location and access confidence before they are treated as reference-quality coverage.
+                  Crete and Santorini are the current reference-quality regions, with 36 audited records in total: 27 in Crete and 9 in Santorini. Peloponnese is next, and future regions must earn the same level of catalogue, trust, imagery, location and access confidence before they are treated as reference-quality coverage.
                 </p>
               </div>
 
               <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30">
                 <p className="text-xs text-stone-300 text-center sm:text-left">
-                  Curated driving routes are not currently published as a public route feature while their stops and access conditions are being re-verified.
+                  Six Discovery Guides are currently published across Crete and Santorini. They expose reviewed stop collections, while multi-stop driving navigation remains withheld wherever independent road-access evidence is incomplete.
                 </p>
                 <div className="flex items-center gap-2 shrink-0">
                   <button
@@ -324,7 +324,7 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
                       className="px-3.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 text-xs font-bold shadow-md transition active:scale-95 cursor-pointer flex items-center gap-1.5"
                     >
                       <Compass className="w-3.5 h-3.5" />
-                      <span>Route status</span>
+                      <span>Discovery Guides</span>
                     </button>
                   )}
                 </div>
@@ -339,7 +339,7 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
                     type="text"
                     value={searchQuery}
                     onChange={(event) => setSearchQuery(event.target.value)}
-                    placeholder="Search visiting, routes, road access, passport, producer claims..."
+                    placeholder="Search visiting, guides, road access, passport, producer claims..."
                     className="w-full pl-10 pr-4 py-2.5 rounded-2xl bg-stone-900 border border-white/15 text-white placeholder-stone-500 text-xs focus:outline-none focus:border-amber-400/80 transition"
                   />
                 </div>
