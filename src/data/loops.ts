@@ -1,5 +1,6 @@
 import { DayTripLoop, Producer } from '../types/terroir';
 import { SANTORINI_DISCOVERY_GUIDES } from './santoriniGuides';
+import { PHASE10B_DISCOVERY_GUIDES } from './phase10bGuides';
 
 export const CURATED_ROUTES: DayTripLoop[] = [
   {
@@ -136,114 +137,13 @@ export const CURATED_ROUTES: DayTripLoop[] = [
     isVipOnly: false,
     verificationStatus: 'draft',
   },
-  {
-    id: 'peloponnese-mythic-trail',
-    title: 'Peloponnese Mythic Terroir: Blood of Hercules & High Arcadia',
-    greekTitle: 'Μυθικό Terroir Πελοποννήσου: Αγιωργίτικο & Μοσχοφίλερο',
-    subtitle: 'Nemea Limestone Hills (650m) to High Arcadia Sparkling',
-    destination: 'peloponnese',
-    region: 'Peloponnese',
-    totalDuration: '6.0 hours',
-    drivingDistance: '64 km (Scenic paved mountain pass)',
-    stops: [
-      {
-        producerId: 'gaia-wines-nemea',
-        suggestedTime: '10:30 AM - 12:00 PM',
-        activity: 'Gravity-flow cellar tour in Koutsi and tasting velvety reserve Agiorgitiko with local cheeses.'
-      },
-      {
-        producerId: 'skouras-winery-nemea',
-        suggestedTime: '12:30 PM - 2:00 PM',
-        activity: 'Tasting of the mythical "Megas Oenos" (Agiorgitiko & Cabernet) in contemporary art tasting galleries.'
-      },
-      {
-        producerId: 'semeli-estate-nemea',
-        suggestedTime: '2:30 PM - 3:45 PM',
-        activity: 'High-altitude panoramic tasting (650m) overlooking the entire Nemean valley.'
-      },
-      {
-        producerId: 'ktima-tselepos',
-        suggestedTime: '4:15 PM - 5:30 PM',
-        activity: 'Cold continental Mantinia plateau tasting of traditional method Amalia Brut sparkling and wild Moschofilero.'
-      }
-    ],
-    description: 'A journey through mythical Greece. Experience Nemea, where Hercules slew the lion, through velvety deep reds, before crossing the mountain pass to the chilly Arcadia plateau for aromatic floral whites.',
-    highlightPointers: [
-      'Nemea ancient stadium and limestone hills',
-      'The legendary "Megas Oenos" vertical library',
-      'Champagne-method sparkling wine at 750m elevation'
-    ],
-    isVipOnly: false,
-  },
-  {
-    id: 'northern-greece-royal-trail',
-    title: 'Kingdom of Macedonia: Epanomi Malagousia & Naoussa Royal Xinomavro',
-    greekTitle: 'Μακεδονία: Μαλαγουζιά Επανομής & Βασιλικό Ξινόμαυρο',
-    subtitle: 'Sea-Breeze Revived Whites, Fresh Craft Brews & Mount Vermio Old Vines',
-    destination: 'northern_greece',
-    region: 'Macedonia',
-    totalDuration: '6.0 hours',
-    drivingDistance: '75 km (Highway & wine slopes)',
-    stops: [
-      {
-        producerId: 'ktima-gerovassiliou',
-        suggestedTime: '10:00 AM - 12:30 PM',
-        activity: 'Tour the world-renowned corkscrew museum (2,600+ pieces) and taste the revived Malagousia facing Mount Olympus.'
-      },
-      {
-        producerId: 'propator-sknipa-brewery',
-        suggestedTime: '1:00 PM - 2:30 PM',
-        activity: 'Sample unpasteurized, unfiltered Sknipa craft beers fresh from the tanks in Thermi.'
-      },
-      {
-        producerId: 'thymiopoulos-naoussa',
-        suggestedTime: '3:30 PM - 5:00 PM',
-        activity: 'Biodynamic vineyard walk and tasting of "Earth and Sky" natural Xinomavro straight from old oak casks.'
-      },
-      {
-        producerId: 'kir-yianni-naoussa',
-        suggestedTime: '5:15 PM - 6:30 PM',
-        activity: 'High-elevation vineyard stroll facing Mount Vermio tasting legendary single-vineyard Ramnista.'
-      }
-    ],
-    description: 'Northern Greece is the land of Alexander the Great and Dionysian mystery. This route pairs the world’s benchmark aromatic Malagousia and craft brews with the legendary structured Xinomavro of Naoussa.',
-    highlightPointers: [
-      'The world’s premier private corkscrew museum (2,600+ pieces)',
-      'Mount Olympus panoramic sea-view terraces',
-      'Biodynamic century-old Xinomavro vines in Naoussa'
-    ],
-    isVipOnly: false,
-  },
-  {
-    id: 'tuscany-chianti-classico-trail',
-    title: 'Tuscany Chianti Classico: Cypress Hills & Organic Sangiovese',
-    greekTitle: 'Κλασικό Κιάντι Τοσκάνης: Βιολογικό Sangiovese',
-    subtitle: '10th-Century Stone Watchtower & High-Altitude Terraced Vineyards',
-    destination: 'tuscany',
-    region: 'Tuscany',
-    totalDuration: '4.5 hours',
-    drivingDistance: '25 km (Scenic Tuscan hills)',
-    stops: [
-      {
-        producerId: 'monteraponi-tuscany',
-        suggestedTime: '11:00 AM - 2:00 PM',
-        activity: 'Tour a medieval 10th-century hamlet, ancient stone cellars, and taste organic Chianti Classico paired with local pecorino and olive oil.'
-      }
-    ],
-    description: 'An idyllic journey through the heart of Chianti Classico. Experience high-altitude organic Sangiovese farmed on limestone terraces surrounding a historic stone watchtower.',
-    highlightPointers: [
-      '10th-century medieval watchtower and stone cellars',
-      'Organic high-altitude Sangiovese and Chianti Classico Riserva',
-      'Panoramic cypress-lined views of the Tuscan hills'
-    ],
-    isVipOnly: false,
-  }
 ];
 
-// Phase 10A: append only audited Santorini discovery guides. The pre-audit
-// Santorini marketing route was removed so stale visit, timing and road claims
-// cannot resurface through another UI path.
+// Only audited guide collections are appended here. Legacy pre-audit marketing
+// routes for Santorini and Phase 10B were removed rather than upgraded in place,
+// so stale timing, tasting, distance and road claims cannot resurface.
 CURATED_ROUTES.push(...SANTORINI_DISCOVERY_GUIDES);
+CURATED_ROUTES.push(...PHASE10B_DISCOVERY_GUIDES);
 
 // Backwards compatibility alias
 export const CRETAN_DAY_TRIP_LOOPS = CURATED_ROUTES;
