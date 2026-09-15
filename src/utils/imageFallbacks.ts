@@ -10,6 +10,7 @@ const PLACEHOLDER_META: Record<Producer['category'], CategoryPlaceholder> = {
   brewery: { label: 'Brewery', accent: '#d97706' },
   kazani: { label: 'Rakokazano', accent: '#b45309' },
   olive_mill: { label: 'Olive Mill', accent: '#15803d' },
+  olive_oil_producer: { label: 'Olive Oil Producer', accent: '#15803d' },
   cheese_dairy: { label: 'Dairy', accent: '#a16207' },
   apiary: { label: 'Apiary / Honey', accent: '#c2410c' },
   farm: { label: 'Farm', accent: '#047857' },
