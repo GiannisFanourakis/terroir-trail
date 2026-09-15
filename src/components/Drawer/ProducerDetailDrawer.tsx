@@ -14,6 +14,9 @@ import { getEffectiveProducerCategory } from '../../utils/producerCategory';
 import { getProducerRoadAccessWarning } from '../../utils/routeSafety';
 import { resolveProducerCover, resolveProducerGallery } from '../../utils/producerMediaResolver';
 import { GooglePlaceMedia } from '../GooglePlaces/GooglePlaceMedia';
+import { GooglePlacePhotoCarousel } from '../GooglePlaces/GooglePlacePhotoCarousel';
+import { isGooglePlacesEligible } from '../../config/googlePlacesAllowlist';
+import { runtimeConfig } from '../../config/runtimeConfig';
 
 interface ProducerDetailDrawerProps {
   producer: Producer | null;
@@ -77,6 +80,16 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
   const resolvedGallery = producer ? resolveProducerGallery(producer, producerOverride) : [];
   const hasHostMedia = Boolean(
     resolvedCover?.isHostManaged || resolvedGallery.some((g) => g.isHostManaged)
+  );
+  const hasTrustedLocalPhoto =
+    resolvedCover?.source === 'host_upload' ||
+    resolvedCover?.source === 'curated_estate';
+  const canUseGoogleHero = Boolean(
+    producer &&
+      !hasTrustedLocalPhoto &&
+      runtimeConfig.googlePlacesMedia.enabled &&
+      producer.googlePlaceId?.trim() &&
+      isGooglePlacesEligible(producer.id)
   );
 
   const [heroImgSrc, setHeroImgSrc] = useState<string>('');
@@ -416,21 +429,42 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
 
         {/* 1. Hero Gallery & Header */}
         <div className="relative h-48 sm:h-60 lg:h-64 w-full shrink-0 bg-stone-900 overflow-hidden group">
-          <img
-            src={
-              heroImgSrc ||
-              activePhoto?.url ||
-              getCategoryFallbackImage(getEffectiveProducerCategory(producer))
-            }
-            alt={producer.name}
-            className="w-full h-full object-cover transition-all duration-300"
-            decoding="async"
-            onError={handleHeroImgError}
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/40 to-black/30" />
+          {canUseGoogleHero ? (
+            <GooglePlacePhotoCarousel
+              producer={producer}
+              className="w-full h-full"
+              imageClassName="w-full h-full object-cover transition-all duration-500"
+              fallbackUrl={
+                resolvedCover?.url ||
+                getCategoryFallbackImage(getEffectiveProducerCategory(producer))
+              }
+              fallbackAlt={producer.name}
+              maxPhotos={10}
+              autoPlay
+              intervalMs={5200}
+              showControls
+              showCounter
+              showDots={false}
+              showAttribution
+              pauseOnHover={false}
+            />
+          ) : (
+            <img
+              src={
+                heroImgSrc ||
+                activePhoto?.url ||
+                getCategoryFallbackImage(getEffectiveProducerCategory(producer))
+              }
+              alt={producer.name}
+              className="w-full h-full object-cover transition-all duration-300"
+              decoding="async"
+              onError={handleHeroImgError}
+            />
+          )}
+          <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/40 to-black/30 pointer-events-none" />
 
-          {/* Carousel Arrows (if multiple photos) */}
-          {photos.length > 1 && (
+          {/* Local credited-media carousel arrows. Google hero controls are rendered by the Google carousel itself. */}
+          {!canUseGoogleHero && photos.length > 1 && (
             <>
               <button
                 type="button"
@@ -455,7 +489,6 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                 <ChevronRight className="w-4 h-4" />
               </button>
 
-              {/* Photo indicator dots / counter */}
               <div className="absolute bottom-20 right-4 z-10 px-2 py-0.5 rounded-full bg-black/65 backdrop-blur-md text-[10px] font-mono text-stone-300 border border-white/10 flex items-center gap-1.5">
                 <Camera className="w-3 h-3 text-amber-400" />
                 <span>{activePhotoIndex + 1} / {photos.length}</span>
@@ -496,7 +529,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
             </button>
           </div>
 
-          {/* Category & Pro Badge & Google Maps attribution */}
+          {/* Category & provenance */}
           <div className="absolute top-4 left-4 z-20 flex flex-col items-start gap-1.5 max-w-[calc(100%-130px)]">
             <div className="flex items-center gap-2 flex-wrap">
               <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border backdrop-blur-md ${cat.color}`}>
@@ -511,8 +544,14 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
               )}
             </div>
 
-            {/* Attribution Badge: Host-Managed Provenance OR Verified Photographer & Estate Media */}
-            {resolvedCover?.isHostManaged ? (
+            {canUseGoogleHero ? (
+              <div className="flex items-center">
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-black/75 backdrop-blur-md text-[10px] text-stone-200 border border-white/15 shadow-sm">
+                  <Camera className="w-3 h-3 text-amber-400 shrink-0" />
+                  <span>Google Maps imagery</span>
+                </span>
+              </div>
+            ) : resolvedCover?.isHostManaged ? (
               <div className="flex items-center">
                 <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-950/85 backdrop-blur-md text-[10px] text-emerald-300 border border-emerald-500/30 shadow-sm truncate max-w-[240px] sm:max-w-[300px]">
                   <CheckCircle2 className="w-3 h-3 text-emerald-400 shrink-0" />
@@ -520,9 +559,9 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                   <span className="text-[9px] text-emerald-400/90 font-medium shrink-0">· Host verified</span>
                 </span>
               </div>
-            ) : (activeCredit || activePhoto?.attributions?.[0]) ? (
+            ) : activeCredit ? (
               <div className="flex items-center">
-                {activeCredit?.url ? (
+                {activeCredit.url ? (
                   <a
                     href={activeCredit.url}
                     target="_blank"
@@ -537,16 +576,23 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                 ) : (
                   <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-black/75 backdrop-blur-md text-[10px] text-stone-300 border border-white/15 shadow-sm truncate max-w-[240px] sm:max-w-[300px]">
                     <Camera className="w-3 h-3 text-amber-400 shrink-0" />
-                    <span className="truncate">Photo: {activeCredit?.author || activePhoto?.attributions?.[0]?.displayName}</span>
-                    <span className="text-[9px] text-amber-400/90 font-medium shrink-0">· {activeCredit?.license || activeCredit?.source || 'Listing image'}</span>
+                    <span className="truncate">Photo: {activeCredit.author}</span>
+                    <span className="text-[9px] text-amber-400/90 font-medium shrink-0">· {activeCredit.license || activeCredit.source}</span>
                   </span>
                 )}
+              </div>
+            ) : resolvedCover?.source === 'category_fallback' ? (
+              <div className="flex items-center">
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-black/75 backdrop-blur-md text-[10px] text-stone-300 border border-white/15 shadow-sm">
+                  <Camera className="w-3 h-3 text-stone-400 shrink-0" />
+                  <span>Producer photo pending</span>
+                </span>
               </div>
             ) : null}
           </div>
 
         {/* Title Overlay */}
-        <div className="absolute bottom-4 left-4 right-4">
+        <div className={`absolute ${canUseGoogleHero ? 'bottom-9' : 'bottom-4'} left-4 right-4 z-10`}>
           <div className="flex items-center gap-1.5 text-amber-400 text-xs font-bold uppercase tracking-wider mb-1">
             <MapPin className="w-3.5 h-3.5" />
             <span>
@@ -665,8 +711,6 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
             )}
           </div>
         )}
-
-
 
         {/* Passport Stamp & Tasting Notes Action */}
         <div className="p-3.5 rounded-2xl bg-gradient-to-r from-amber-950/30 to-stone-900 border border-amber-500/20 flex flex-col gap-2.5">
@@ -923,7 +967,6 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                 <ArrowRight className="w-4 h-4 text-amber-400 group-hover:translate-x-0.5 transition" />
               </a>
             )}
-
 
             {/* Producer / Estate Host Login Prompt */}
             {(!user?.isProducer || user.claimedProducerId !== producer.id) && (

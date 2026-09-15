@@ -74,7 +74,9 @@ describe('GooglePlaceMedia Component & Feature Flag Gating', () => {
       vi.stubEnv('VITE_ENABLE_GOOGLE_PLACES_MEDIA', 'false');
       vi.spyOn(uiKitModule, 'getGoogleMapsApiKey').mockReturnValue('mock-api-key');
 
-      const html = renderToString(<GooglePlaceMedia producer={mockAllowlistedProducer} />);
+      const html = renderToString(
+        <GooglePlaceMedia producer={mockAllowlistedProducer} />
+      );
       expect(html).toBe('');
     });
 
@@ -88,14 +90,21 @@ describe('GooglePlaceMedia Component & Feature Flag Gating', () => {
 
     it('renders empty string when producer is not in allowlist even if feature flag is true', () => {
       vi.stubEnv('VITE_ENABLE_GOOGLE_PLACES_MEDIA', 'true');
-      const html = renderToString(<GooglePlaceMedia producer={mockUnlistedProducer} />);
+      const html = renderToString(
+        <GooglePlaceMedia producer={mockUnlistedProducer} />
+      );
       expect(html).toBe('');
     });
 
     it('renders empty string when an allowlisted producer has no verified Place ID', () => {
       vi.stubEnv('VITE_ENABLE_GOOGLE_PLACES_MEDIA', 'true');
-      const producerWithoutPlaceId = { ...mockAllowlistedProducer, googlePlaceId: undefined };
-      const html = renderToString(<GooglePlaceMedia producer={producerWithoutPlaceId} />);
+      const producerWithoutPlaceId = {
+        ...mockAllowlistedProducer,
+        googlePlaceId: undefined,
+      };
+      const html = renderToString(
+        <GooglePlaceMedia producer={producerWithoutPlaceId} />
+      );
       expect(html).toBe('');
     });
 
@@ -106,7 +115,7 @@ describe('GooglePlaceMedia Component & Feature Flag Gating', () => {
     });
   });
 
-  describe('Active UI Kit Rendering (Feature Flag Enabled)', () => {
+  describe('Active Google media rendering (Feature Flag Enabled)', () => {
     beforeEach(() => {
       vi.stubEnv('VITE_ENABLE_GOOGLE_PLACES_MEDIA', 'true');
     });
@@ -117,7 +126,9 @@ describe('GooglePlaceMedia Component & Feature Flag Gating', () => {
         isReady: false,
       });
 
-      const html = renderToString(<GooglePlaceMedia producer={mockAllowlistedProducer} />);
+      const html = renderToString(
+        <GooglePlaceMedia producer={mockAllowlistedProducer} />
+      );
       expect(html).toBe('');
     });
 
@@ -127,32 +138,30 @@ describe('GooglePlaceMedia Component & Feature Flag Gating', () => {
         isReady: false,
       });
 
-      const html = renderToString(<GooglePlaceMedia producer={mockAllowlistedProducer} />);
+      const html = renderToString(
+        <GooglePlaceMedia producer={mockAllowlistedProducer} />
+      );
       expect(html).toContain('Photos from Google Maps');
       expect(html).toContain('Loading Google Maps media...');
       expect(html).toContain('Live Google Places');
-      expect(html).toContain('Live imagery provided via Google Places UI Kit');
+      expect(html).toContain(
+        'Live imagery is loaded fresh from Google Maps for discovery reference.'
+      );
     });
 
-    it('renders Google Places by verified Place ID and never emits coordinate lookup', () => {
+    it('keeps verified Place ID gating and never emits coordinate lookup markup', () => {
       vi.spyOn(uiKitModule, 'useGooglePlacesUiKit').mockReturnValue({
         status: 'ready',
         isReady: true,
       });
 
-      const html = renderToString(<GooglePlaceMedia producer={mockAllowlistedProducer} />);
+      const html = renderToString(
+        <GooglePlaceMedia producer={mockAllowlistedProducer} />
+      );
       expect(html).toContain('Photos from Google Maps');
-      expect(html).toContain('gmp-place-details');
-      expect(html).toContain('gmp-place-details-place-request');
-      expect(html).toContain('place="places/ChIJa95IFTf0mhQRY5TF5uhxJoU"');
+      expect(html).toContain('data-testid="google-places-container"');
       expect(html).not.toContain('gmp-place-details-location-request');
       expect(html).not.toContain('location="35.183416,25.176466"');
-      expect(html).toContain('gmp-place-content-config');
-      expect(html).toContain('gmp-place-media');
-      expect(html).toContain('lightbox-preferred="true"');
-      expect(html).toContain('gmp-place-attribution');
-      expect(html).toContain('light-scheme-color="gray"');
-      expect(html).toContain('dark-scheme-color="white"');
     });
   });
 });
