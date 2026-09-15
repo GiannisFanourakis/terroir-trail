@@ -37,14 +37,14 @@ describe('Phase 10B producer taxonomy', () => {
   });
 
   it('exposes only independently verified Phase 10B road classifications', () => {
-    const expectedVerifiedRoads = new Map([
+    const expectedVerifiedRoads = new Map<string, string>([
       ['tetramythos-winery', 'narrow_paved'],
       ['ktima-tselepos', 'paved'],
       ['siris-craft-brewery', 'paved'],
       ['monemvasia-winery', 'paved'],
       ['propator-sknipa-brewery', 'paved'],
       ['monteraponi-tuscany', 'unpaved_passable'],
-    ] as const);
+    ]);
 
     const verified = PHASE10B_PRODUCERS.filter(
       (producer) => producer.roadAccessStatus === 'verified'
