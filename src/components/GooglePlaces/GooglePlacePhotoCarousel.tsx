@@ -28,7 +28,9 @@ interface GooglePlacePhotoCarouselProps {
   intervalMs?: number;
   showControls?: boolean;
   showCounter?: boolean;
+  showDots?: boolean;
   showAttribution?: boolean;
+  pauseOnHover?: boolean;
   onAvailabilityChange?: (hasPhotos: boolean) => void;
 }
 
@@ -55,7 +57,9 @@ export const GooglePlacePhotoCarousel: React.FC<
   intervalMs = 5500,
   showControls = true,
   showCounter = true,
+  showDots = true,
   showAttribution = true,
+  pauseOnHover = true,
   onAvailabilityChange,
 }) => {
   const googlePlaceId = producer?.googlePlaceId?.trim();
@@ -195,8 +199,12 @@ export const GooglePlacePhotoCarousel: React.FC<
     <div
       className={`relative overflow-hidden bg-stone-950 ${className}`}
       data-testid="google-place-photo-carousel"
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
+      onMouseEnter={() => {
+        if (pauseOnHover) setIsPaused(true);
+      }}
+      onMouseLeave={() => {
+        if (pauseOnHover) setIsPaused(false);
+      }}
       onFocusCapture={() => setIsPaused(true)}
       onBlurCapture={() => setIsPaused(false)}
       onTouchStart={(event) => {
@@ -254,7 +262,7 @@ export const GooglePlacePhotoCarousel: React.FC<
         </div>
       )}
 
-      {photos.length > 1 && (
+      {photos.length > 1 && showDots && (
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5 max-w-[70%]">
           {photos.map((_, index) => (
             <button
