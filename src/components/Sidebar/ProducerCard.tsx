@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Producer } from '../../types/terroir';
 import { MapPin, ArrowUpRight, Car, Heart } from 'lucide-react';
 import { getCategoryFallbackImage } from '../../utils/imageFallbacks';
@@ -36,10 +36,43 @@ export const ProducerCard: React.FC<ProducerCardProps> = ({
     isGooglePlacesEligible(producer.id);
 
   const [imgSrc, setImgSrc] = useState<string>(resolvedCover.url);
+  const mediaHostRef = useRef<HTMLDivElement>(null);
+  const [shouldLoadGoogleMedia, setShouldLoadGoogleMedia] = useState(false);
 
   useEffect(() => {
     setImgSrc(resolvedCover.url);
   }, [resolvedCover.url]);
+
+  useEffect(() => {
+    if (!canUseGoogleMedia) {
+      setShouldLoadGoogleMedia(false);
+      return;
+    }
+
+    const element = mediaHostRef.current;
+    if (!element) return;
+
+    if (typeof IntersectionObserver === 'undefined') {
+      setShouldLoadGoogleMedia(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setShouldLoadGoogleMedia(true);
+          observer.disconnect();
+        }
+      },
+      {
+        rootMargin: '300px 0px',
+      }
+    );
+
+    observer.observe(element);
+
+    return () => observer.disconnect();
+  }, [canUseGoogleMedia, producer.id]);
 
   const handleImageError = () => {
     const fallback = getCategoryFallbackImage(
@@ -183,8 +216,11 @@ export const ProducerCard: React.FC<ProducerCardProps> = ({
       }`}
     >
       {/* Cover Image */}
-      <div className="relative h-40 w-full overflow-hidden bg-stone-950">
-        {canUseGoogleMedia ? (
+      <div
+        ref={mediaHostRef}
+        className="relative h-40 w-full overflow-hidden bg-stone-950"
+      >
+        {canUseGoogleMedia && shouldLoadGoogleMedia ? (
           <GooglePlaceMedia
             producer={producer}
             variant="card"
