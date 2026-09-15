@@ -109,7 +109,8 @@ describe('Production Demo & Fake UI Removal Suite', () => {
           getProducerOverride: () => undefined,
         })
       );
-      expect(openHtml).toContain('Winery, Brewery &amp; Farm Portal');
+      expect(openHtml).toContain('Producer &amp; Host Portal');
+      expect(openHtml).toContain('Host access is granted only after verification and Admin approval.');
     });
   });
 
