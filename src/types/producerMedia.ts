@@ -6,6 +6,7 @@ export interface ProducerUploadedImage {
   producerId: string;
   url: string;
   thumbnailUrl?: string;
+  storagePath?: string;
   type: ProducerImageType;
   status: ProducerImageStatus;
   caption?: string;
