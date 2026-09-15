@@ -1,5 +1,9 @@
 import { adminDb } from '../firebaseAdmin';
 import { getTrustedAccountCapabilities } from './accountAuthorization';
+import type {
+  ProducerBusinessVerificationStatus,
+  ProducerContactVerificationStatus,
+} from './producerVerificationService';
 
 export class AdminClaimError extends Error {
   constructor(
@@ -21,6 +25,20 @@ export interface PendingProducerClaim {
   countryCode?: string;
   submittedAt?: string;
   notesFromProducer?: string;
+  legalBusinessName?: string;
+  vatNumber?: string;
+  registeredAddress?: string;
+  businessVerificationStatus?: ProducerBusinessVerificationStatus;
+  businessVerificationProvider?: 'vies' | 'manual';
+  businessVerificationCheckedAt?: string;
+  businessVerificationVatValid?: boolean | null;
+  businessVerificationRegistryName?: string;
+  businessVerificationRegistryAddress?: string;
+  businessVerificationNameMatch?: 'match' | 'mismatch' | 'unavailable';
+  businessVerificationReason?: string;
+  contactVerificationStatus?: ProducerContactVerificationStatus;
+  contactVerifiedAt?: string;
+  verificationReadyForAdminReview?: boolean;
 }
 
 async function requireClaimAdmin(uid: string, db: any) {
@@ -54,6 +72,25 @@ export async function listPendingProducerClaims(
         countryCode: data.countryCode ? String(data.countryCode) : undefined,
         submittedAt: data.submittedAt ? String(data.submittedAt) : undefined,
         notesFromProducer: data.notesFromProducer ? String(data.notesFromProducer) : undefined,
+        legalBusinessName: data.legalBusinessName ? String(data.legalBusinessName) : undefined,
+        vatNumber: data.vatNumber ? String(data.vatNumber) : undefined,
+        registeredAddress: data.registeredAddress ? String(data.registeredAddress) : undefined,
+        businessVerificationStatus: data.businessVerificationStatus || undefined,
+        businessVerificationProvider: data.businessVerificationProvider || undefined,
+        businessVerificationCheckedAt: data.businessVerificationCheckedAt || undefined,
+        businessVerificationVatValid:
+          typeof data.businessVerificationVatValid === 'boolean'
+            ? data.businessVerificationVatValid
+            : data.businessVerificationVatValid === null
+              ? null
+              : undefined,
+        businessVerificationRegistryName: data.businessVerificationRegistryName || undefined,
+        businessVerificationRegistryAddress: data.businessVerificationRegistryAddress || undefined,
+        businessVerificationNameMatch: data.businessVerificationNameMatch || undefined,
+        businessVerificationReason: data.businessVerificationReason || undefined,
+        contactVerificationStatus: data.contactVerificationStatus || undefined,
+        contactVerifiedAt: data.contactVerifiedAt || undefined,
+        verificationReadyForAdminReview: data.verificationReadyForAdminReview === true,
       } satisfies PendingProducerClaim;
     })
     .sort((a: PendingProducerClaim, b: PendingProducerClaim) =>
@@ -126,6 +163,9 @@ export async function approveProducerClaim(
       producerId,
       occurredAt,
       source: 'admin_api',
+      verificationReadyForAdminReview: registration.verificationReadyForAdminReview === true,
+      businessVerificationStatus: registration.businessVerificationStatus || null,
+      contactVerificationStatus: registration.contactVerificationStatus || null,
     });
 
     return { producerId, ownerUid: registration.userId, status: 'verified_active' as const, occurredAt };
