@@ -12,6 +12,10 @@ import {
   rejectProducerClaim,
 } from './services/adminClaimsService';
 import { AdminMetricsError, getAdminDashboardMetrics } from './services/adminMetricsService';
+import {
+  sendProducerApprovalEmail,
+  sendTravelerWelcomeEmail,
+} from './services/transactionalEmailService';
 import { handleWebhookEvent } from './services/webhookService';
 
 const defaults = {
@@ -23,6 +27,8 @@ const defaults = {
   approveProducerClaim,
   rejectProducerClaim,
   getAdminDashboardMetrics,
+  sendProducerApprovalEmail,
+  sendTravelerWelcomeEmail,
   createPassCheckout,
   fulfillPass,
   getExplorerPass,
@@ -89,6 +95,19 @@ export function createApp(overrides: Partial<AppDependencies> = {}) {
     }
   });
 
+  app.post('/api/account/welcome-email', requireAuth, async (req, res) => {
+    try {
+      const delivery = await deps.sendTravelerWelcomeEmail({
+        uid: res.locals.identity.uid,
+        preferredName: typeof req.body?.name === 'string' ? req.body.name.trim() : undefined,
+      });
+      res.json({ delivery });
+    } catch (error) {
+      console.error('Traveler welcome email unavailable:', error);
+      res.status(503).json({ error: 'Welcome email delivery is temporarily unavailable.' });
+    }
+  });
+
   app.get('/api/admin/metrics', requireAuth, async (_req, res) => {
     try {
       const metrics = await deps.getAdminDashboardMetrics(res.locals.identity.uid);
@@ -151,7 +170,24 @@ export function createApp(overrides: Partial<AppDependencies> = {}) {
         res.locals.identity.uid,
         String(req.params.producerId)
       );
-      res.json({ claim: result });
+
+      let emailDelivery;
+      try {
+        emailDelivery = await deps.sendProducerApprovalEmail({
+          actorUid: res.locals.identity.uid,
+          ownerUid: result.ownerUid,
+          producerId: result.producerId,
+        });
+      } catch (error) {
+        console.error('Producer approval email failed after approval:', error);
+        emailDelivery = {
+          status: 'failed' as const,
+          occurredAt: new Date().toISOString(),
+          reason: 'Approval succeeded, but the notification email could not be sent.',
+        };
+      }
+
+      res.json({ claim: result, emailDelivery });
     } catch (error) {
       if (error instanceof AdminClaimError) {
         const status =
