@@ -6,6 +6,7 @@ import { UserAvatar } from '../Common/UserAvatar';
 import { getCategoryFallbackImage } from '../../utils/imageFallbacks';
 import { getEffectiveProducerCategory } from '../../utils/producerCategory';
 import { producerService } from '../../services/producerService';
+import { resolveProducerCover } from '../../utils/producerMediaResolver';
 
 interface PassportModalProps {
   isOpen: boolean;
@@ -169,7 +170,7 @@ export const PassportModal: React.FC<PassportModalProps> = ({
                   >
                     <div className="w-12 h-12 rounded-xl overflow-hidden shrink-0 bg-stone-800 border border-white/10">
                       <img
-                        src={producer.coverImage}
+                        src={resolveProducerCover(producer).url}
                         alt={producer.name}
                         className="w-full h-full object-cover"
                         loading="lazy"

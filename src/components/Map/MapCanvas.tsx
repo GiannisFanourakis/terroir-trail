@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { getCategoryFallbackImage } from '../../utils/imageFallbacks';
 import { getEffectiveProducerCategory } from '../../utils/producerCategory';
+import { resolveProducerCover } from '../../utils/producerMediaResolver';
 import { getUserCoordinates } from '../../services/geolocation';
 
 interface MapCanvasProps {
@@ -536,7 +537,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
 
             <div className="relative h-20 w-22 sm:h-24 sm:w-32 rounded-xl sm:rounded-2xl overflow-hidden shrink-0 bg-stone-900 border border-white/10">
               <img
-                src={selectedProducer.coverImage}
+                src={resolveProducerCover(selectedProducer).url}
                 alt={selectedProducer.name}
                 className="w-full h-full object-cover"
                 loading="lazy"

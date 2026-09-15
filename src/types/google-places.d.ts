@@ -1,27 +1,54 @@
 import type React from 'react';
 
-interface GmpPlaceDetailsProps extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> {
+interface GmpPlaceDetailsProps extends React.DetailedHTMLProps<
+  React.HTMLAttributes<HTMLElement>,
+  HTMLElement
+> {
   role?: string;
   children?: React.ReactNode;
 }
 
-interface GmpPlaceDetailsLocationRequestProps extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> {
-  location?: string;
-}
-
-interface GmpPlaceDetailsPlaceRequestProps extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> {
-  place?: string;
-}
-
-interface GmpPlaceContentConfigProps extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> {
+interface GmpPlaceDetailsCompactProps extends React.DetailedHTMLProps<
+  React.HTMLAttributes<HTMLElement>,
+  HTMLElement
+> {
+  orientation?: 'horizontal' | 'vertical';
+  'truncation-preferred'?: boolean | string;
   children?: React.ReactNode;
 }
 
-interface GmpPlaceMediaProps extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> {
+interface GmpPlaceDetailsLocationRequestProps extends React.DetailedHTMLProps<
+  React.HTMLAttributes<HTMLElement>,
+  HTMLElement
+> {
+  location?: string;
+}
+
+interface GmpPlaceDetailsPlaceRequestProps extends React.DetailedHTMLProps<
+  React.HTMLAttributes<HTMLElement>,
+  HTMLElement
+> {
+  place?: string;
+}
+
+interface GmpPlaceContentConfigProps extends React.DetailedHTMLProps<
+  React.HTMLAttributes<HTMLElement>,
+  HTMLElement
+> {
+  children?: React.ReactNode;
+}
+
+interface GmpPlaceMediaProps extends React.DetailedHTMLProps<
+  React.HTMLAttributes<HTMLElement>,
+  HTMLElement
+> {
   'lightbox-preferred'?: boolean | string;
 }
 
-interface GmpPlaceAttributionProps extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> {
+interface GmpPlaceAttributionProps extends React.DetailedHTMLProps<
+  React.HTMLAttributes<HTMLElement>,
+  HTMLElement
+> {
   'light-scheme-color'?: string;
   'dark-scheme-color'?: string;
   children?: React.ReactNode;
