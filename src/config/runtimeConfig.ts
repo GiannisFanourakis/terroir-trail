@@ -187,13 +187,24 @@ export function isGooglePlacesMediaEnabled(
 }
 
 /**
- * Legacy helper retained for old blob-media quarantine logic. It remains
- * opt-in so legacy temporary blob URLs never become trusted public media.
+ * Legacy blob-media prototype gate. This remains opt-in so historical browser
+ * blob URLs stay quarantined from production public media resolution.
  */
 export function isHostMediaPrototypeEnabled(
   customEnv?: Record<string, string | undefined>
 ): boolean {
   return getRawEnv('VITE_ENABLE_HOST_MEDIA_PROTOTYPE', customEnv) === 'true';
+}
+
+/**
+ * Production producer-image upload control. This is separate from the legacy
+ * prototype flag so enabling durable Firebase Storage uploads never re-enables
+ * temporary blob URLs in public producer media resolution.
+ */
+export function isHostMediaUploadsEnabled(
+  customEnv?: Record<string, string | undefined>
+): boolean {
+  return getRawEnv('VITE_ENABLE_HOST_MEDIA_UPLOADS', customEnv) === 'true';
 }
 
 /**
@@ -292,10 +303,12 @@ export const runtimeConfig = {
   get googlePlacesMedia(): { enabled: boolean } {
     return { enabled: isGooglePlacesMediaEnabled() };
   },
-  // Producer image upload is now a launch feature. The legacy property name is
-  // retained so existing portal code can transition without another flag.
+  // Existing portal code reads this compatibility property. Production durable
+  // uploads can enable it without weakening the legacy blob-media resolver gate.
   get hostMediaPrototype(): { enabled: boolean } {
-    return { enabled: true };
+    return {
+      enabled: isHostMediaPrototypeEnabled() || isHostMediaUploadsEnabled(),
+    };
   },
   get app(): AppRuntimeConfig {
     return { publicUrl: getPublicAppUrl() };
