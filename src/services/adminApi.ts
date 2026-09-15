@@ -57,6 +57,19 @@ export interface PendingProducerClaim {
   verificationReadyForAdminReview?: boolean;
 }
 
+export interface PendingProducerMediaItem {
+  producerId: string;
+  producerName: string;
+  imageId: string;
+  url: string;
+  thumbnailUrl?: string;
+  storagePath?: string;
+  type: 'cover' | 'gallery';
+  caption?: string;
+  uploadedAt: string;
+  rightsConfirmed: boolean;
+}
+
 export interface ActiveProducerOwnership {
   producerId: string;
   producerName: string;
@@ -127,6 +140,35 @@ export const fetchAdminDashboardMetrics = () =>
 
 export const fetchPendingProducerClaims = () =>
   request<{ claims: PendingProducerClaim[] }>('/admin/claims');
+
+export const fetchPendingProducerMedia = () =>
+  request<{ media: PendingProducerMediaItem[] }>('/admin/media');
+
+export const approveProducerMedia = (producerId: string, imageId: string) =>
+  request<{
+    media: {
+      producerId: string;
+      imageId: string;
+      status: 'approved';
+      occurredAt: string;
+    };
+  }>(
+    `/admin/media/${encodeURIComponent(producerId)}/${encodeURIComponent(imageId)}/approve`,
+    { method: 'POST', body: JSON.stringify({}) }
+  );
+
+export const rejectProducerMedia = (producerId: string, imageId: string, reason: string) =>
+  request<{
+    media: {
+      producerId: string;
+      imageId: string;
+      status: 'rejected';
+      occurredAt: string;
+    };
+  }>(
+    `/admin/media/${encodeURIComponent(producerId)}/${encodeURIComponent(imageId)}/reject`,
+    { method: 'POST', body: JSON.stringify({ reason }) }
+  );
 
 export const approveProducerClaim = (producerId: string) =>
   request<{ claim: { producerId: string; status: 'verified_active'; occurredAt: string } }>(
