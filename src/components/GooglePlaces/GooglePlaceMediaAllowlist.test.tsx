@@ -40,8 +40,10 @@ describe('Google Places integration for audited regional producers', () => {
     expect(CRETAN_PRODUCERS).toHaveLength(27);
     expect(SANTORINI_PRODUCERS).toHaveLength(9);
     expect(PHASE10B_PRODUCERS).toHaveLength(19);
-    expect(PHASE10B_GOOGLE_MEDIA_PRODUCERS).toHaveLength(10);
-    expect(GOOGLE_PLACES_PROTOTYPE_ITEMS).toHaveLength(46);
+    expect(PHASE10B_GOOGLE_MEDIA_PRODUCERS).toHaveLength(14);
+    expect(GOOGLE_PLACES_PROTOTYPE_ITEMS).toHaveLength(
+      AUDITED_GOOGLE_MEDIA_PRODUCERS.length
+    );
 
     const eligibleIds = new Set(
       GOOGLE_PLACES_PROTOTYPE_ITEMS.map((item) => item.producerId)
