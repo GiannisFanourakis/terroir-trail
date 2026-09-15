@@ -23,7 +23,7 @@
 
 ## Phase 2 — Admin, Producer & Account Authority
 
-**Status:** Not complete. Must be completed as part of the pre-partnership website-completion programme.
+**Status:** Deferred into Phase 11 — Account, Admin & Host Management. This early checklist is retained as a requirements record. Do not start the broad account-management programme before regional completion unless a security issue requires an immediate fix.
 
 ### Account roles
 
@@ -307,58 +307,112 @@ Production behavior was visually verified by the project owner across the left p
 - [ ] Complete a final Crete production smoke pass across discovery, producer imagery, mobile, deep links, and guide presentation.
 - [ ] Reconcile the final Phase 9 checklist and mark Phase 9 complete only after the guide/QA closeout is verified.
 
-Expansion order after Crete can proceed through Santorini, Peloponnese, Northern Greece, Italy/wider Mediterranean, and Northern Europe based on product priorities.
+---
+
+## Phase 10 — Complete All Remaining Regions
+
+**Status:** Next after Crete. No account-management programme or partnership/deal work begins until the regional expansion programme is complete.
+
+After Crete is closed, bring every other intended TerroirTrail region to the same deliberate trust and product-quality standard before moving on to account/admin/host management.
+
+### Regional sequence
+
+1. Santorini
+2. Peloponnese
+3. Northern Greece
+4. Tuscany / Italy
+5. Wider Mediterranean regions added to the product
+6. Northern Europe regions added to the product
+
+The order inside Phase 10 can be adjusted deliberately, but the rule remains: **finish the regional content/product layer before moving into account-management and partnership work.** The architecture must remain geography-open rather than reintroducing a Greece-only fence.
+
+### Required quality bar for every region
+
+- [ ] Audit real producers/projects and remove invented or stale claims.
+- [ ] Verify category/entity type so farms, heritage projects, geoparks, and other local projects do not masquerade as a different kind of listing.
+- [ ] Verify locations and preserve unresolved/uncertain states where evidence is insufficient.
+- [ ] Verify public visitability separately from partnership status.
+- [ ] Verify road/access evidence independently from location evidence and keep route safety fail-closed.
+- [ ] Verify producer-controlled public contact channels.
+- [ ] Add verified Google Place IDs where Google imagery is used.
+- [ ] Apply the same media hierarchy and attribution rules used for Crete.
+- [ ] Keep stories, taglines, products, and local context source-backed and human.
+- [ ] Bring search, filters, map/list browsing, detail pages, deep links, and mobile presentation to parity with the Crete reference implementation.
+- [ ] Build discovery guides only from verified stops and never present them as road-safety guarantees without route evidence.
+- [ ] Synchronize bundled fallback/offline data so stale defaults cannot reappear.
+- [ ] Run the full automated quality gate and a regional production smoke pass before marking each region complete.
+
+**Definition of done:** every region TerroirTrail intends to have publicly available before partnerships has reached an explicit reference-quality standard, with no knowingly half-built public region left behind.
 
 ---
 
-## Phase 10 — Website Completion & Platform Readiness
+## Phase 11 — Account, Admin & Host Management
 
-**Status:** Required before any producer-partnership outreach. This is the next major non-commercial programme after Phase 9.
+**Status:** Begins only after Phase 10 regional completion. This phase defines who can sign in, what each account type can do, and which actions require trusted backend authority.
 
-The website should be functionally and operationally complete before TerroirTrail asks producers to enter a partnership. This means completing every meaningful product, trust, administration, content, UX, and production-readiness item that can be completed **without** a producer agreement. Features that inherently require producer consent (for example approved Experiences or commercial booking terms) remain dormant and do not block this phase.
+This phase absorbs the unfinished requirements recorded in Phase 2 and turns them into one complete account-management programme.
 
-### Product and structure
+### Traveler accounts
 
-- [ ] Close all remaining non-partnership-dependent Phase 8 structural/UI items.
-- [ ] Complete the outstanding Phase 2 admin, producer-ownership, role, moderation, and audit-authority work.
-- [ ] Ensure heritage/local projects are represented as the correct entity type and never masquerade as producers.
-- [ ] Standardize producer detail hierarchy and eliminate empty/null-only presentation sections.
-- [ ] Finish all intended public navigation, destination, discovery, account, saved-content, Passport, journal, and contact surfaces.
-- [ ] Decide the intended pre-partnership geographic scope and bring every included region to a deliberate quality bar rather than leaving half-built public coverage.
+- [ ] Define the complete Traveler account lifecycle: signup, login, recovery, profile, session management, logout, and account deletion/deactivation behavior.
+- [ ] Preserve favorites/saved producers as account-scoped data.
+- [ ] Preserve Passport visited stamps as account-scoped data.
+- [ ] Preserve private journal/tasting notes as account-scoped data.
+- [ ] Define which traveler preferences/settings are stored and how they are edited.
+- [ ] Ensure one traveler cannot access another traveler’s private state.
+- [ ] Make account state, loading, empty, error, and recovery UX production-ready on desktop and mobile.
 
-### Reliability, UX and trust
+### Host accounts
 
-- [ ] Complete full-site mobile/responsive, keyboard/focus, accessibility, loading, error, and offline/fallback QA.
-- [ ] Complete performance and production-behavior review across the public site.
-- [ ] Complete SEO, metadata, deep-link, crawlability, and social-preview review.
-- [ ] Re-check privacy/legal/consent wording against the actual production behavior and third-party services in use.
-- [ ] Re-check that public claims, imagery, visitability, location, access, and route wording remain source-backed and fail closed where evidence is missing.
-- [ ] Keep advertising, commercial checkout, Explorer Pass, Host Pro, chauffeur, affiliate, Experience booking, and other unfinished commercial surfaces quarantined unless a later deliberate phase activates them.
+- [ ] Define the Host/Producer account lifecycle separately from Traveler accounts.
+- [ ] Require explicit, server-trusted listing ownership before host-management tools become available.
+- [ ] Ensure a host can manage only listings explicitly assigned to that account.
+- [ ] Define which listing fields a host may propose/edit directly and which fields require admin review.
+- [ ] Define host media upload/management with clear provenance and moderation status.
+- [ ] Keep location, visitability, road-access confidence, verification badges, and other trust-sensitive fields under controlled authority rather than unchecked client edits.
+- [ ] Provide clear draft/pending/published states for host-submitted changes.
+- [ ] Ensure having a Host account does **not** imply a TerroirTrail partnership or commercial agreement.
 
-### Operations and closeout
+### Admin accounts and authority
 
-- [ ] Complete production deployment/runbook documentation and recovery basics for the website as it actually operates.
-- [ ] Run the full automated quality gate and final end-to-end production smoke pass.
-- [ ] Resolve or explicitly defer every remaining website issue that does not require a producer agreement.
-- [ ] Record a formal website-complete / partnership-ready milestone before any producer outreach begins.
+- [ ] Establish server-trusted TerroirTrail Admin authority that cannot be self-assigned from the client.
+- [ ] Review and resolve producer/host claims.
+- [ ] Approve, reject, assign, remove, or reassign producer ownership.
+- [ ] Edit/correct producer and project listings.
+- [ ] Review verification, visitability, location, access, and media states.
+- [ ] Manage disputed/problematic listings and producers awaiting verification.
+- [ ] Moderate producer-supplied content and media.
+- [ ] Manage user/account status where operationally necessary.
+- [ ] Create an audit trail for sensitive administrative actions.
+- [ ] Prepare admin control over future Experience approval/publication without activating commercial Experiences yet.
 
-**Definition of done:** there is no known material website work remaining that can reasonably be completed without producer participation. Partnership-dependent capabilities may remain dormant, but the underlying website, authority model, trust model, operations, and public experience must already be ready.
+### Cross-role security and product QA
+
+- [ ] Define a role/capability matrix for Traveler, Host, and Admin accounts.
+- [ ] Enforce every privileged action on a trusted backend boundary; frontend role/profile fields alone are never authority.
+- [ ] Test ownership, role escalation, claim handling, account isolation, and failure modes.
+- [ ] Re-check privacy/legal wording for the actual account data and moderation workflows in production.
+- [ ] Complete full desktop/mobile/account accessibility and recovery QA.
+- [ ] Run the full automated quality gate and end-to-end production account smoke pass.
+
+**Definition of done:** Traveler, Host, and Admin accounts have clear, tested, server-enforced capabilities and the platform can be safely operated before any partnership/deal outreach begins.
 
 ---
 
-## Phase 11 — Producer Partnerships
+## Phase 12 — Producer Partnerships & Deals
 
-**Status:** Deferred until Phase 10 Website Completion & Platform Readiness is complete.
+**Status:** Deferred until Crete, all intended regions, and Phase 11 account/admin/host management are complete.
 
-No producer-partnership outreach or activation begins before the website-complete milestone. Independent researched listings and direct links to producer-controlled public channels may continue without implying a partnership.
+Only after the product, regional catalogue, and account-management model are finished do we begin talking to producers about formal relationships or commercial terms. Independent researched listings and direct links to producer-controlled public channels may continue without implying a partnership.
 
 - [ ] Define producer partnership onboarding.
 - [ ] Verify producer identity and authorized representative.
-- [ ] Establish listing ownership.
+- [ ] Convert the appropriate verified Host/listing ownership state into a formal partnership state only after agreement.
 - [ ] Obtain contact/inquiry permissions where applicable.
 - [ ] Obtain image/content rights where applicable.
 - [ ] Agree commercial terms where applicable.
 - [ ] Allow a producer to opt into TerroirTrail inquiries without requiring a full bookable Experience.
+- [ ] Define how partnership status is displayed without confusing it with public visitability or listing verification.
 
 Relationship levels:
 
@@ -368,7 +422,7 @@ Relationship levels:
 
 ---
 
-## Phase 12 — Experiences
+## Phase 13 — Experiences
 
 **Status:** Do not populate before producer agreements.
 
@@ -388,7 +442,7 @@ Relationship levels:
 
 ---
 
-## Phase 13 — Booking & Payments
+## Phase 14 — Booking & Payments
 
 **Status:** Future.
 
@@ -404,7 +458,7 @@ Only after real approved Experiences exist.
 
 ---
 
-## Phase 14 — Monetisation & Scale
+## Phase 15 — Monetisation & Scale
 
 **Status:** Future.
 
@@ -432,4 +486,7 @@ Monetisation follows the product and trust model; it must not dictate or weaken 
 8. **Every completed roadmap item is crossed out in this file when verified complete.**
 9. **Before starting a major new feature, place it against this roadmap first.**
 10. **Crete is the reference-quality region before broad expansion.**
-11. **Producer partnership outreach is blocked until Phase 10 Website Completion & Platform Readiness is complete.** Partnership-dependent features stay dormant rather than forcing premature producer outreach.
+11. **Finish Crete before beginning the remaining-region programme.**
+12. **Finish all intended public regions before beginning the broad Traveler/Host/Admin account-management programme.**
+13. **Finish and production-verify Traveler, Host, and Admin account capabilities before producer-partnership or deal outreach begins.**
+14. **Partnership-dependent commercial features stay dormant rather than forcing premature deals.**
