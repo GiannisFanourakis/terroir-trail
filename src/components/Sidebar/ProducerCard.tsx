@@ -109,6 +109,12 @@ export const ProducerCard: React.FC<ProducerCardProps> = ({
           icon: '🫒',
           bg: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
         };
+      case 'olive_oil_producer':
+        return {
+          label: 'Olive Oil Producer',
+          icon: '🫒',
+          bg: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
+        };
       case 'cheese_dairy':
         return {
           label: 'Dairy',
@@ -126,6 +132,12 @@ export const ProducerCard: React.FC<ProducerCardProps> = ({
           label: 'Farm',
           icon: '🌿',
           bg: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
+        };
+      default:
+        return {
+          label: 'Producer',
+          icon: '🌿',
+          bg: 'bg-stone-500/20 text-stone-300 border-white/10',
         };
     }
   };
@@ -215,7 +227,6 @@ export const ProducerCard: React.FC<ProducerCardProps> = ({
           : 'border-white/10 hover:border-amber-500/50 hover:shadow-xl hover:translate-y-[-1px]'
       }`}
     >
-      {/* Cover Image */}
       <div
         ref={mediaHostRef}
         className="relative h-40 w-full overflow-hidden bg-stone-950"
@@ -248,17 +259,20 @@ export const ProducerCard: React.FC<ProducerCardProps> = ({
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/30 to-transparent pointer-events-none" />
 
-        {/* Top Badges: Category Badge */}
-        <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5">
+        <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5 flex-wrap">
           <span
             className={`flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-full font-bold border backdrop-blur-md ${badge.bg}`}
           >
             <span aria-hidden="true">{badge.icon}</span>
             <span>{badge.label}</span>
           </span>
+          {producer.publicPointType === 'producer_shop' && (
+            <span className="text-[10px] px-2 py-1 rounded-full font-semibold border backdrop-blur-md bg-sky-500/15 text-sky-200 border-sky-400/30">
+              Public point: Producer Shop
+            </span>
+          )}
         </div>
 
-        {/* Top Right: Favorite Button */}
         <div className="absolute top-2.5 right-2.5 flex items-center gap-1.5">
           <button
             type="button"
@@ -285,7 +299,6 @@ export const ProducerCard: React.FC<ProducerCardProps> = ({
           </button>
         </div>
 
-        {/* Bottom Location Overlay */}
         <div className="absolute bottom-8 left-3 right-3 flex items-end justify-between pointer-events-none">
           <div className="flex items-center gap-1.5 text-stone-300 text-xs font-medium min-w-0">
             <MapPin
@@ -300,7 +313,6 @@ export const ProducerCard: React.FC<ProducerCardProps> = ({
         </div>
       </div>
 
-      {/* Card Content */}
       <div className="p-4 flex flex-col gap-2.5">
         <div>
           <h3 className="font-serif-title font-bold text-base text-white group-hover:text-amber-400 transition-colors line-clamp-1">
@@ -319,7 +331,6 @@ export const ProducerCard: React.FC<ProducerCardProps> = ({
           </p>
         )}
 
-        {/* Primary Discovery Signal: Visitability */}
         <div className="flex items-center gap-1.5 pt-0.5">
           <span
             className={`text-[10px] px-2.5 py-0.5 rounded-md font-medium border ${visitBadge.className}`}
@@ -328,7 +339,6 @@ export const ProducerCard: React.FC<ProducerCardProps> = ({
           </span>
         </div>
 
-        {/* Card Footer: Road / Access Signal & View Story */}
         <div className="flex items-center justify-between pt-2.5 border-t border-white/5 text-[11px] gap-2">
           {roadBadge ? (
             <span
