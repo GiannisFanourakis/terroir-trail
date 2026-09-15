@@ -15,7 +15,7 @@ import { AdminMetricsError, getAdminDashboardMetrics } from './services/adminMet
 import {
   sendProducerApprovalEmail,
   sendTravelerWelcomeEmail,
-} from './services/transactionalEmailService';
+} from './services/transactionalEmailTransport';
 import { handleWebhookEvent } from './services/webhookService';
 
 const defaults = {
