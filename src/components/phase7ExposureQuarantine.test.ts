@@ -14,7 +14,7 @@ describe('Phase 7 public prototype and direct-entry quarantine', () => {
     expect(routes).toContain("loop.verificationStatus === 'verified_stops'");
     expect(routes).toContain("loop.verificationStatus === 'verified'");
     expect(routes).toContain('evaluateRouteNavigation(currentLoop, producerCatalogue)');
-    expect(routes).toContain('Driving navigation withheld');
+    expect(routes).toContain('Multi-stop driving navigation withheld');
   });
 
   it('removes commercial query parameters, pass auto-verification, and stripe banners from App', () => {

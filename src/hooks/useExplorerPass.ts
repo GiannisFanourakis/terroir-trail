@@ -1,15 +1,27 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../services/firebase';
+import { isExplorerPassPurchasesEnabled } from '../config/runtimeConfig';
 import { confirmExplorerPass, fetchExplorerPass, type ExplorerPass } from '../services/explorerPass';
 
 export function useExplorerPass(userId?: string) {
   const [verified, setVerified] = useState<{ userId: string; pass: ExplorerPass } | null>(null);
   const sequence = useRef(0);
   const currentUserId = useRef(userId);
+  const passServiceEnabled = isExplorerPassPurchasesEnabled();
   currentUserId.current = userId;
+
   const refreshExplorerPass = useCallback(async (sessionId?: string) => {
     const requestId = ++sequence.current;
+
+    if (!passServiceEnabled) {
+      setVerified(null);
+      if (sessionId) {
+        throw new Error('Explorer Pass service is currently disabled.');
+      }
+      return null;
+    }
+
     try {
       await auth?.authStateReady();
       if (!userId || auth?.currentUser?.uid !== userId) {
@@ -27,10 +39,15 @@ export function useExplorerPass(userId?: string) {
       if (requestId === sequence.current) setVerified(null);
       throw error;
     }
-  }, [userId]);
+  }, [passServiceEnabled, userId]);
 
   useEffect(() => {
     setVerified(null);
+
+    // Explorer Pass is a future commercial feature. When its strict public
+    // feature gate is closed, do not poll the dormant API in the background.
+    if (!passServiceEnabled) return;
+
     const refresh = () => { void refreshExplorerPass().catch(() => {}); };
     const unsubscribe = auth ? onAuthStateChanged(auth, refresh) : undefined;
     refresh();
@@ -42,7 +59,7 @@ export function useExplorerPass(userId?: string) {
       clearInterval(timer);
       window.removeEventListener('focus', refresh);
     };
-  }, [refreshExplorerPass]);
+  }, [passServiceEnabled, refreshExplorerPass]);
 
   useEffect(() => {
     if (!verified) return;

@@ -19,7 +19,7 @@ const usableVisitStatuses = new Set([
   'appointment_only',
 ]);
 
-describe('Phase 9 published Crete route guides', () => {
+describe('Phase 9 published Crete discovery guides', () => {
   it('uses only current producers with verified locations and usable visit status', () => {
     expect(publishedCreteRoutes.length).toBeGreaterThanOrEqual(3);
 
@@ -83,11 +83,35 @@ describe('Phase 9 published Crete route guides', () => {
 
       if (route.verificationStatus === 'verified_stops') {
         expect(html).toContain('Stop locations verified');
-        expect(html).toContain('Driving navigation withheld');
+        expect(html).toContain('Multi-stop driving navigation withheld');
         expect(html).toContain('Open location');
         expect(html).not.toContain('Open in Google Maps');
       }
     }
+  });
+
+  it('frames published Crete collections as discovery guides and shows visit requirements', () => {
+    const route = CURATED_ROUTES.find(
+      (candidate) => candidate.id === 'heraklion-west-slopes-trail'
+    );
+
+    expect(route).toBeDefined();
+
+    const html = renderToString(
+      React.createElement(DayTripModal, {
+        isOpen: true,
+        onClose: () => {},
+        onSelectLoop: () => {},
+        onSelectProducer: () => {},
+        producers: CRETAN_PRODUCERS,
+        loops: [route!],
+      })
+    );
+
+    expect(html).toContain('Terroir Discovery Guides');
+    expect(html).toContain('Guide Stops');
+    expect(html).toContain('Advance arrangement is required before visiting.');
+    expect(html).not.toContain('Curated Terroir Routes');
   });
 
   it('contains no legacy missing producer references in the published guides', () => {
@@ -100,13 +124,17 @@ describe('Phase 9 published Crete route guides', () => {
     expect(ids).not.toContain('paraschakis-olive-mill');
   });
 
-  it('keeps the Rethymno guide draft until its remaining access evidence is sufficient', () => {
+  it('keeps the Rethymno guide deliberately unpublished until its second stop is visit-ready', () => {
     const route = CURATED_ROUTES.find(
       (candidate) => candidate.id === 'rethymno-mountain-cheese-mill-trail'
     );
 
     expect(route).toBeDefined();
     expect(route?.verificationStatus).toBe('draft');
+    expect(route?.title).toBe('Rethymno Producer Discovery: Olive Oil & Dairy');
+    expect(route?.subtitle).toBe('Melidoni · Mixorrouma');
+    expect(route?.description).toContain('deliberately unpublished');
+    expect(route?.description).toContain('Tzourmpakis does not currently publish');
     expect(route?.stops.map((stop) => stop.producerId)).toEqual([
       'parasiris-olive-mill',
       'tzourmpakis-dairy-amari',
@@ -121,10 +149,14 @@ describe('Phase 9 published Crete route guides', () => {
 
     expect(allCreteStopIds).not.toContain('paraschakis-olive-mill');
     expect(route?.drivingDistance.toLowerCase()).not.toContain('paved');
+
+    const tzourmpakis = CRETAN_PRODUCERS.find(
+      (producer) => producer.id === 'tzourmpakis-dairy-amari'
+    );
+    expect(tzourmpakis?.visitStatus).toBe('current_access_uncertain');
   });
 
-
-  it('resolves published route stops even when the current UI producer list is filtered', () => {
+  it('resolves published guide stops even when the current UI producer list is filtered', () => {
     const route = CURATED_ROUTES.find(
       (candidate) => candidate.id === 'chania-craft-beer-olive-trail'
     );
@@ -153,5 +185,4 @@ describe('Phase 9 published Crete route guides', () => {
     expect(html).toContain('Manousakis Winery');
     expect(html).not.toContain('is no longer present in the verified producer catalogue');
   });
-
 });
