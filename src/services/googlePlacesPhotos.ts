@@ -24,6 +24,33 @@ export interface EstatePhotosResult {
   source: 'verified_estate_media' | 'curated_fallback';
 }
 
+const placeholderPhotoCache = new Map<string, EstatePlacePhoto>();
+
+export function getProducerPlaceholderPhoto(
+  producer: Producer
+): EstatePlacePhoto {
+  const url = getCategoryFallbackImage(
+    getEffectiveProducerCategory(producer)
+  );
+  const cached = placeholderPhotoCache.get(url);
+
+  if (cached) return cached;
+
+  const placeholder: EstatePlacePhoto = {
+    url,
+    thumbUrl: url,
+    attributions: [
+      {
+        displayName:
+          'Neutral category placeholder · producer photo pending',
+      },
+    ],
+  };
+
+  placeholderPhotoCache.set(url, placeholder);
+  return placeholder;
+}
+
 function toListingPhoto(
   url: string,
   credit: PhotoCredit
@@ -111,26 +138,9 @@ export function useProducerPhotos(producer: Producer | null) {
 
   const photos = photosResult?.photos || [];
 
-  const placeholder = producer
-    ? getCategoryFallbackImage(
-        getEffectiveProducerCategory(producer)
-      )
-    : '';
-
   const activePhoto =
     photos[activePhotoIndex] ||
-    (producer
-      ? {
-          url: placeholder,
-          thumbUrl: placeholder,
-          attributions: [
-            {
-              displayName:
-                'Neutral category placeholder · producer photo pending',
-            },
-          ],
-        }
-      : null);
+    (producer ? getProducerPlaceholderPhoto(producer) : null);
 
   const activeCredit: PhotoCredit | null =
     activePhoto && 'credit' in activePhoto && activePhoto.credit
