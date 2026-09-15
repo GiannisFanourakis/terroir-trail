@@ -34,17 +34,16 @@ describe('Phase 8 Public Positioning & SEO Synchronization', () => {
       expect(indexHtml).not.toContain('name="geo.region"');
     });
 
-    it('preserves verified wineries producer identity while clearly labeling travel status', () => {
+    it('keeps broad producer identity while reflecting the audited Crete and Santorini state', () => {
       const expectedDesc =
-        'Independent producer and agritourism discovery guide. Explore verified wineries, craft breweries, artisanal olive mills, traditional dairies, apiaries, traditional distilleries, and farms, with clearly labeled visiting, location, and road-access status, starting in Greece.';
+        'Independent producer and agritourism discovery guide. Explore audited producers across Crete and Santorini with clearly labeled visiting, location, imagery, and road-access status.';
 
       expect(indexHtml).toContain(`meta name="description" content="${expectedDesc}"`);
       expect(indexHtml).toContain(`meta property="og:description" content="${expectedDesc}"`);
       expect(indexHtml).toContain(`meta name="twitter:description" content="${expectedDesc}"`);
 
-      // Preserves verified wineries producer-identity wording
-      expect(indexHtml).toContain('verified wineries');
-      expect(indexHtml).toContain('clearly labeled visiting, location, and road-access status');
+      expect(indexHtml).toContain('audited producers across Crete and Santorini');
+      expect(indexHtml).toContain('clearly labeled visiting, location, imagery, and road-access status');
 
       // Does not imply all visiting and road access is verified for every producer
       expect(indexHtml).not.toContain('with source-backed visiting and access details');
@@ -64,7 +63,9 @@ describe('Phase 8 Public Positioning & SEO Synchronization', () => {
       expect(parsedManifest.description).toContain('clearly labeled visiting, location, and road-access status');
 
       expect(llmsTxt).toContain('# TerroirTrail — Independent Producer & Agritourism Guide');
-      expect(llmsTxt).toContain('starting in Greece and designed to expand across the Mediterranean and beyond');
+      expect(llmsTxt).toContain('Crete and Santorini are the current reference-quality regions in Greece');
+      expect(llmsTxt).toContain('Next regional programme: Peloponnese');
+      expect(llmsTxt).toContain('wider Mediterranean regions, and Northern Europe');
     });
   });
 
@@ -103,23 +104,24 @@ describe('Phase 8 Public Positioning & SEO Synchronization', () => {
     });
   });
 
-  describe('3. Regional Crete Content Retained Truthfully', () => {
-    it('preserves Crete-specific producer directory and regional sections', () => {
-      // Crete regional directory in noscript
-      expect(indexHtml).toContain('<h2>Verified Crete Producer Directory</h2>');
-      expect(indexHtml).toContain('<h3>Chania</h3>');
-      expect(indexHtml).toContain('<h3>Heraklion</h3>');
-      expect(indexHtml).toContain('<h3>Rethymno</h3>');
-      expect(indexHtml).toContain('<h3>Lasithi</h3>');
+  describe('3. Regional Reference Content Retained Truthfully', () => {
+    it('preserves the Crete producer directory within the combined reference catalogue', () => {
+      expect(indexHtml).toContain('<h2>Verified Crete &amp; Santorini Producer Directory</h2>');
+      expect(indexHtml).toContain('<h3>Crete — Chania</h3>');
+      expect(indexHtml).toContain('<h3>Crete — Heraklion</h3>');
+      expect(indexHtml).toContain('<h3>Crete — Rethymno</h3>');
+      expect(indexHtml).toContain('<h3>Crete — Lasithi</h3>');
+      expect(indexHtml).toContain('<h3>Santorini</h3>');
 
       // Indigenous grapes of Crete FAQ is kept as legitimate regional FAQ
       expect(indexHtml).toContain('What indigenous grape varieties can I discover in Crete?');
       expect(indexHtml).toContain('Vidiano, Vilana, Dafni, Plyto, and Melissaki');
     });
 
-    it('retains Crete as inaugural reference catalogue in offers and about text', () => {
-      expect(indexHtml).toContain('with Crete as the inaugural reference catalogue');
-      expect(aboutFaqModal).toContain('Crete is the current reference-quality catalogue, with 27 audited records');
+    it('keeps Crete and Santorini as the current reference-quality regions', () => {
+      expect(indexHtml).toContain('Crete and Santorini are the current reference-quality regions');
+      expect(aboutFaqModal).toContain('Crete and Santorini are the current reference-quality regions');
+      expect(aboutFaqModal).toContain('27 in Crete and 9 in Santorini');
       expect(aboutFaqModal).toContain('Greece first, then outward');
     });
   });
