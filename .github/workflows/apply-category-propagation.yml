@@ -19,8 +19,9 @@ jobs:
           fetch-depth: 0
 
       - name: Apply precise source fixes
-        shell: python
+        shell: bash
         run: |
+          python3 <<'PY'
           from pathlib import Path
 
           reg = Path('src/components/Portal/ProducerRegistrationForm.tsx')
@@ -32,17 +33,17 @@ jobs:
           marker = "type TabKey = 'fiscal' | 'logistics' | 'packaging' | 'banking' | 'permits';\n"
           helper = """
 
-const getDestinationLabel = (destination?: Producer['destination']): string => {
-  switch (destination) {
-    case 'crete': return 'Crete';
-    case 'santorini': return 'Santorini';
-    case 'peloponnese': return 'Peloponnese';
-    case 'northern_greece': return 'Northern Greece';
-    case 'tuscany': return 'Tuscany';
-    default: return '';
-  }
-};
-"""
+          const getDestinationLabel = (destination?: Producer['destination']): string => {
+            switch (destination) {
+              case 'crete': return 'Crete';
+              case 'santorini': return 'Santorini';
+              case 'peloponnese': return 'Peloponnese';
+              case 'northern_greece': return 'Northern Greece';
+              case 'tuscany': return 'Tuscany';
+              default: return '';
+            }
+          };
+          """
           if 'const getDestinationLabel' not in text:
               text = text.replace(marker, marker + helper)
           text = text.replace(
@@ -78,8 +79,10 @@ const getDestinationLabel = (destination?: Producer['destination']): string => {
           exp.write_text(text, encoding='utf-8')
 
           Path('.github/workflows/apply-category-propagation.yml').unlink()
+          PY
 
       - name: Commit fixes
+        shell: bash
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
