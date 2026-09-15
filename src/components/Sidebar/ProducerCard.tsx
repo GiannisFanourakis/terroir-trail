@@ -4,7 +4,7 @@ import { MapPin, ArrowUpRight, Car, Heart } from 'lucide-react';
 import { getCategoryFallbackImage } from '../../utils/imageFallbacks';
 import { getEffectiveProducerCategory } from '../../utils/producerCategory';
 import { resolveProducerCover } from '../../utils/producerMediaResolver';
-import { GooglePlaceMedia } from '../GooglePlaces/GooglePlaceMedia';
+import { GooglePlacePhotoCarousel } from '../GooglePlaces/GooglePlacePhotoCarousel';
 import { isGooglePlacesEligible } from '../../config/googlePlacesAllowlist';
 import { runtimeConfig } from '../../config/runtimeConfig';
 
@@ -221,10 +221,20 @@ export const ProducerCard: React.FC<ProducerCardProps> = ({
         className="relative h-40 w-full overflow-hidden bg-stone-950"
       >
         {canUseGoogleMedia && shouldLoadGoogleMedia ? (
-          <GooglePlaceMedia
+          <GooglePlacePhotoCarousel
             producer={producer}
-            variant="card"
             className="w-full h-full"
+            imageClassName="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            fallbackUrl={imgSrc}
+            fallbackAlt={producer.name}
+            maxPhotos={5}
+            autoPlay
+            intervalMs={6200}
+            showControls={false}
+            showCounter={false}
+            showDots={false}
+            showAttribution
+            pauseOnHover={false}
           />
         ) : (
           <img
@@ -236,7 +246,7 @@ export const ProducerCard: React.FC<ProducerCardProps> = ({
             onError={handleImageError}
           />
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/30 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/30 to-transparent pointer-events-none" />
 
         {/* Top Badges: Category Badge */}
         <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5">
@@ -276,7 +286,7 @@ export const ProducerCard: React.FC<ProducerCardProps> = ({
         </div>
 
         {/* Bottom Location Overlay */}
-        <div className="absolute bottom-2.5 left-3 right-3 flex items-end justify-between">
+        <div className="absolute bottom-8 left-3 right-3 flex items-end justify-between pointer-events-none">
           <div className="flex items-center gap-1.5 text-stone-300 text-xs font-medium min-w-0">
             <MapPin
               className="w-3.5 h-3.5 text-amber-400 shrink-0"
