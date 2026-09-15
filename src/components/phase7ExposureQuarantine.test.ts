@@ -55,21 +55,17 @@ describe('Phase 7 public prototype and direct-entry quarantine', () => {
     expect(aboutFaq).toContain('Draft guides remain hidden.');
   });
 
-  it('quarantines producer pass scanning behind the disabled future-host flag while preserving infrastructure', () => {
+  it('keeps producer pass scanning out of the launch host portal while preserving future infrastructure', () => {
     const producerPortal = read('src/components/Portal/ProducerPortalModal.tsx');
 
-    expect(producerPortal).toContain('const ENABLE_FUTURE_HOST_FEATURES = false;');
-    expect(producerPortal).toMatch(
-      /\{ENABLE_FUTURE_HOST_FEATURES\s*&&\s*isProducerAuthenticated\s*&&\s*\([\s\S]{0,1000}<span>Scan Guest Pass<\/span>[\s\S]{0,1000}\)\}/
-    );
+    expect(producerPortal).not.toContain('Scan Guest Pass');
+    expect(producerPortal).not.toContain('Scan VIP Pass');
+    expect(producerPortal).not.toContain("import { HostQrScannerModal } from './HostQrScannerModal';");
+    expect(producerPortal).not.toContain('<HostQrScannerModal');
+    expect(producerPortal).not.toContain('<HostVerificationModal');
 
     expect(existsSync('src/components/Portal/HostQrScannerModal.tsx')).toBe(true);
-    expect(producerPortal).toContain("import { HostQrScannerModal } from './HostQrScannerModal';");
-    expect(producerPortal).toContain('const [isScannerOpen, setIsScannerOpen] = useState<boolean>(false);');
-    expect(producerPortal).toContain('const handlePassVerified = (info: VerifiedPassInfo) => {');
-    expect(producerPortal).toContain('<HostQrScannerModal');
-    expect(producerPortal).toContain('onPassVerified={handlePassVerified}');
-    expect(producerPortal).toContain('<HostVerificationModal');
+    expect(existsSync('src/components/Monetization/HostVerificationModal.tsx')).toBe(true);
   });
 
   it('preserves dormant future components and modal branches without deletion', () => {
