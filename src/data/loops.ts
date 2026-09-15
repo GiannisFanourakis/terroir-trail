@@ -107,35 +107,30 @@ export const CURATED_ROUTES: DayTripLoop[] = [
     verificationStatus: 'verified_stops',
   },
   {
-    id: 'rethymno-mountain-cheese-mill-trail',
-    title: 'Rethymno Producer Discovery: Olive Oil & Dairy',
-    greekTitle: 'Ρέθυμνο: Ελαιόλαδο & Τυροκομία — Οδηγός Ανακάλυψης',
-    subtitle: 'Melidoni · Mixorrouma',
+    id: 'rethymno-melidoni-olive-oil-discovery',
+    title: 'Rethymno: Melidoni Olive Oil Discovery',
+    greekTitle: 'Ρέθυμνο: Ανακάλυψη Ελαιολάδου στο Μελιδόνι',
+    subtitle: 'Melidoni',
     destination: 'crete',
     region: 'Rethymno',
-    totalDuration: 'Planning guide — unpublished',
-    drivingDistance: 'Driving distance pending access audit',
+    totalDuration: 'Flexible single stop',
+    drivingDistance: 'Single-stop discovery — no multi-stop route',
     stops: [
       {
         producerId: 'parasiris-olive-mill',
-        suggestedTime: 'Verified public visitor stop',
-        activity: 'The Paraschakis family olive oil factory in Melidoni publishes visitor access. Check the producer page for current opening information before travelling.'
-      },
-      {
-        producerId: 'tzourmpakis-dairy-amari',
-        suggestedTime: 'Location reference — confirm first',
-        activity: 'The Tzourmpakis Dairy location in Mixorrouma is verified, but current visitor access is not clear enough to recommend a normal walk-in visit. Contact the producer directly before planning to go.'
+        suggestedTime: 'Plan around current opening hours',
+        activity: 'Visit the Paraschakis family olive oil factory in Melidoni, which publishes visitor access. Check current opening information directly with the producer before a special trip.'
       }
     ],
-    description: 'A deliberately unpublished Rethymno discovery draft linking the public Paraschakis olive-oil factory in Melidoni with the verified Tzourmpakis Dairy location in Mixorrouma. Paraschakis publishes visitor access; Tzourmpakis does not currently publish clear enough walk-in access to recommend it as a normal visit. The draft remains hidden until that second stop gains sufficient visit evidence or is replaced by another verified Rethymno stop. Multi-stop driving navigation remains disabled independently because road access is not confirmed.',
+    description: 'A single-stop Rethymno discovery guide built from current verified evidence. The Paraschakis family olive-oil factory in Melidoni has a verified location and publishes visitor access. Tzourmpakis Dairy remains in the catalogue with a verified location, but is excluded from this guide because current ordinary visitor access is uncertain. No multi-stop route, road-surface claim or rental-car suitability claim is published.',
     highlightPointers: [
-      'Two current Rethymno catalogue locations with verified identities',
-      'Public visitor information available for the Melidoni olive-oil stop',
-      'Tzourmpakis Dairy retained only as a verified location reference until visitor access is clearer',
-      'No multi-stop navigation, road-surface or rental-car suitability claim'
+      'Verified Paraschakis family olive-oil factory location in Melidoni',
+      'Current producer-published visitor access',
+      'Tzourmpakis Dairy excluded until ordinary visitor access is clearly confirmed',
+      'No multi-stop navigation or road-suitability claim'
     ],
     isVipOnly: false,
-    verificationStatus: 'draft',
+    verificationStatus: 'verified_stops',
   },
 ];
 
