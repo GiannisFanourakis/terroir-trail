@@ -3,6 +3,17 @@ import { resolveApiBaseUrl } from './apiOrigin';
 
 export type TrustedAccountRole = 'traveler' | 'producer_host' | 'admin';
 export type AdminLevel = 'owner' | 'admin';
+export type ProducerBusinessVerificationStatus =
+  | 'verified'
+  | 'needs_review'
+  | 'failed'
+  | 'manual_required'
+  | 'unavailable';
+export type ProducerContactVerificationStatus =
+  | 'not_started'
+  | 'pending'
+  | 'verified'
+  | 'unavailable';
 
 export interface AccountCapabilities {
   uid: string;
@@ -30,6 +41,20 @@ export interface PendingProducerClaim {
   countryCode?: string;
   submittedAt?: string;
   notesFromProducer?: string;
+  legalBusinessName?: string;
+  vatNumber?: string;
+  registeredAddress?: string;
+  businessVerificationStatus?: ProducerBusinessVerificationStatus;
+  businessVerificationProvider?: 'vies' | 'manual';
+  businessVerificationCheckedAt?: string;
+  businessVerificationVatValid?: boolean | null;
+  businessVerificationRegistryName?: string;
+  businessVerificationRegistryAddress?: string;
+  businessVerificationNameMatch?: 'match' | 'mismatch' | 'unavailable';
+  businessVerificationReason?: string;
+  contactVerificationStatus?: ProducerContactVerificationStatus;
+  contactVerifiedAt?: string;
+  verificationReadyForAdminReview?: boolean;
 }
 
 export interface ActiveProducerOwnership {
