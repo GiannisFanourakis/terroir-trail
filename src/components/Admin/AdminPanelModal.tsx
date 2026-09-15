@@ -34,6 +34,7 @@ import {
   buildAdminCatalogueMetrics,
   type AdminCatalogueMetrics,
 } from '../../utils/adminCatalogueMetrics';
+import { ProducerOwnershipAdmin } from './ProducerOwnershipAdmin';
 
 interface AdminPanelModalProps {
   isOpen: boolean;
@@ -506,6 +507,11 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
               </div>
             )}
           </section>
+
+          <ProducerOwnershipAdmin
+            enabled={capabilities.canAssignProducerOwnership}
+            onChanged={() => void loadMetrics()}
+          />
 
           <section className="rounded-xl border border-white/10 bg-stone-900/60 overflow-hidden">
             <div className="px-4 py-3 border-b border-white/10">
