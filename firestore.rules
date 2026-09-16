@@ -29,6 +29,12 @@ service cloud.firestore {
       return isProducerOwner(producerId) && hostEditingAllowed();
     }
 
+    function hasValidFavoriteProducerIds() {
+      return !('favoriteProducerIds' in request.resource.data)
+        || (request.resource.data.favoriteProducerIds is list
+          && request.resource.data.favoriteProducerIds.size() <= 500);
+    }
+
     // 1. Traveler Passport & Profile
     // Users can strictly read their own profile.
     // Ordinary traveler profile fields are writable, but all authorization and role fields are blocked.
@@ -36,6 +42,7 @@ service cloud.firestore {
       allow read: if isOwner(userId);
 
       allow create: if isOwner(userId)
+        && hasValidFavoriteProducerIds()
         && !request.resource.data.keys().hasAny([
           'role',
           'isProducer',
@@ -51,6 +58,7 @@ service cloud.firestore {
         ]);
 
       allow update: if isOwner(userId)
+        && hasValidFavoriteProducerIds()
         && !request.resource.data.diff(resource.data).affectedKeys().hasAny([
           'role',
           'isProducer',
@@ -245,7 +253,18 @@ service cloud.firestore {
       allow delete: if false;
     }
 
-    // 6. Paid Explorer Passes (Issue #1 Protection)
+    // 6. Community reviews and review reports are API-only. The trusted server
+    // derives reviewer identity, verified-visit state and Host ownership before
+    // writing, and public API responses strip private Firebase account IDs.
+    match /producer_reviews/{reviewId} {
+      allow read, write: if false;
+    }
+
+    match /review_reports/{reportId} {
+      allow read, write: if false;
+    }
+
+    // 7. Paid Explorer Passes (Issue #1 Protection)
     // Paid entitlements are private and are issued/read only through the Admin SDK API.
     match /explorerPasses/{sessionId} {
       allow read, write: if false;
