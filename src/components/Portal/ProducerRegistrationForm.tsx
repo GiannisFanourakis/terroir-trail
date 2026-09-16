@@ -361,7 +361,7 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
             {vatValidation && !vatValidation.isValid && <div className="mt-1 text-[10px] text-amber-300">{vatValidation.error}</div>}
             {viesResult && (
               <div className={`mt-2 rounded-lg border px-3 py-2 text-[10px] ${viesResult.isValid ? 'border-emerald-500/25 bg-emerald-500/10 text-emerald-200' : 'border-amber-500/25 bg-amber-500/10 text-amber-200'}`}>
-                {viesResult.isValid ? 'VIES returned a valid VAT registration. Final Host access still requires TerroirTrail approval.' : (viesResult.error || 'VIES did not confirm this VAT registration. You may still submit for manual review.')}
+                {viesResult.isValid ? 'VIES returned a valid VAT registration. Final Host access still requires TerroirTrail approval.' : (viesResult.userError || 'VIES did not confirm this VAT registration. You may still submit for manual review.')}
               </div>
             )}
           </div>
