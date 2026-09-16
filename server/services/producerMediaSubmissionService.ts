@@ -82,6 +82,9 @@ export async function replaceOwnedProducerMedia(
   if (!capabilities.producerIds.includes(cleanProducerId)) {
     throw new ProducerMediaSubmissionError('forbidden', 'You are not an approved owner of this producer listing.');
   }
+  if (!capabilities.canManageOwnedListings) {
+    throw new ProducerMediaSubmissionError('forbidden', 'Host editing is temporarily unavailable while this account is under review.');
+  }
 
   const overrideRef = db.collection('producer_overrides').doc(cleanProducerId);
   const auditRef = db.collection('admin_audit').doc();
