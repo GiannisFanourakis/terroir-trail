@@ -182,9 +182,6 @@ export async function submitProducerListingChanges(
   if (!capabilities.producerIds.includes(cleanProducerId)) {
     throw new ProducerListingChangeError('forbidden', 'You are not an approved owner of this producer listing.');
   }
-  if (!capabilities.canManageOwnedListings) {
-    throw new ProducerListingChangeError('forbidden', 'Host editing is temporarily unavailable while this account is under review.');
-  }
 
   const changes = sanitizeProducerListingChanges(requestedChanges);
   const existing = await db.collection('producer_listing_change_requests')
