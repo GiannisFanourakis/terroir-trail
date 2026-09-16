@@ -10,6 +10,12 @@ export interface GooglePlacesAllowlistEntry {
   coordinates: [number, number];
 }
 
+export interface GooglePlacesEligibilityCandidate {
+  id: string;
+  googlePlaceId?: string | null;
+  locationStatus?: string | null;
+}
+
 const AUDITED_GOOGLE_PLACE_PRODUCERS = [
   ...CRETAN_PRODUCERS,
   ...SANTORINI_PRODUCERS,
@@ -17,11 +23,15 @@ const AUDITED_GOOGLE_PLACE_PRODUCERS = [
 ];
 
 /**
- * Eligibility comes only from manually audited regional catalogues.
- * A verified persistent Google Place ID and verified TT location are required.
- * A producer-owned shop can be an eligible public point only when the underlying
- * catalogue entity is itself a qualified producer; generic retailers are never
- * added to this list merely because they sell local products.
+ * The static catalogue remains the compatibility allowlist for bundled producer
+ * records. Live Supabase producers can also be eligible when the persisted
+ * producer record itself carries both a manually audited persistent Google Place
+ * ID and a verified TerroirTrail location status.
+ *
+ * Coordinates are never used as a fallback lookup. A producer-owned shop can be
+ * an eligible public point only when the underlying producer record has already
+ * passed the location/entity audit; generic retailers are never made eligible
+ * merely because they sell local products.
  */
 export const GOOGLE_PLACES_PROTOTYPE_ITEMS: readonly GooglePlacesAllowlistEntry[] =
   Object.freeze(
@@ -45,10 +55,21 @@ export const GOOGLE_PLACES_PROTOTYPE_ALLOWLIST = Object.freeze(
 export type GooglePlacesAllowedProducerId =
   (typeof GOOGLE_PLACES_PROTOTYPE_ALLOWLIST)[number];
 
-export function isGooglePlacesEligible(producerId: string): boolean {
-  return (GOOGLE_PLACES_PROTOTYPE_ALLOWLIST as readonly string[]).includes(
-    producerId
-  );
+export function isGooglePlacesEligible(
+  candidate: string | GooglePlacesEligibilityCandidate
+): boolean {
+  if (typeof candidate === 'string') {
+    return (GOOGLE_PLACES_PROTOTYPE_ALLOWLIST as readonly string[]).includes(
+      candidate
+    );
+  }
+
+  const hasPersistentPlaceId = Boolean(candidate.googlePlaceId?.trim());
+  const hasVerifiedLocation =
+    candidate.locationStatus === 'verified_location' ||
+    candidate.locationStatus === 'verified_entrance';
+
+  return hasPersistentPlaceId && hasVerifiedLocation;
 }
 
 export function getGooglePlacesPrototypeEntry(
