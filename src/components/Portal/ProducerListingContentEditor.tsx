@@ -43,7 +43,7 @@ export const ProducerListingContentEditor: React.FC<ProducerListingContentEditor
     foodOption: producerOverride?.foodOption !== undefined ? producerOverride.foodOption : (producer.foodOption || null),
     dogFriendly: producerOverride?.dogFriendly !== undefined ? producerOverride.dogFriendly : producer.dogFriendly,
     kidFriendly: producerOverride?.kidFriendly !== undefined ? producerOverride.kidFriendly : producer.kidFriendly,
-    walkIn: producerOverride?.walkIn !== undefined ? producerOverride.walkIn : producer.walkIn,
+    walkIn: producerOverride?.walkIn !== undefined ? producerOverride.walkIn : producer.walkInFriendly,
     campervanFriendly: producerOverride?.campervanFriendly !== undefined ? producerOverride.campervanFriendly : producer.campervanFriendly,
   }), [producer, producerOverride]);
 
