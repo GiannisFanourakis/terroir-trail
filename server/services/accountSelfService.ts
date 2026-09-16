@@ -25,13 +25,26 @@ export async function exportAccountData(
 ) {
   if (!uid) throw new AccountSelfServiceError('bad_request', 'Authenticated user ID is required.');
 
-  const [authUser, userDoc, bookings, ownerships, registrations, passes] = await Promise.all([
+  const [
+    authUser,
+    userDoc,
+    bookings,
+    ownerships,
+    registrations,
+    passes,
+    authoredReviews,
+    reviewReports,
+    hostReplyReviews,
+  ] = await Promise.all([
     authClient.getUser(uid),
     db.collection('users').doc(uid).get(),
     db.collection('bookings').where('userId', '==', uid).get(),
     db.collection('producer_owners').where('ownerUid', '==', uid).get(),
     db.collection('producer_registrations').where('userId', '==', uid).get(),
     db.collection('explorerPasses').where('userId', '==', uid).get(),
+    db.collection('producer_reviews').where('travelerUid', '==', uid).get(),
+    db.collection('review_reports').where('reporterUid', '==', uid).get(),
+    db.collection('producer_reviews').where('hostReply.hostUid', '==', uid).get(),
   ]);
 
   return {
@@ -50,6 +63,13 @@ export async function exportAccountData(
     producerRegistrations: mapDocs(registrations),
     bookings: mapDocs(bookings),
     explorerPasses: mapDocs(passes),
+    communityReviews: mapDocs(authoredReviews),
+    reviewReports: mapDocs(reviewReports),
+    hostReviewReplies: hostReplyReviews.docs.map((item: any) => ({
+      reviewId: item.id,
+      producerId: item.data()?.producerId,
+      hostReply: item.data()?.hostReply,
+    })),
   };
 }
 
@@ -69,6 +89,25 @@ async function deleteSnapshotDocs(snapshot: any, db: any) {
   }
   if (pending > 0) await batch.commit();
   return deleted;
+}
+
+async function removeHostReplies(uid: string, db: any) {
+  const snapshot = await db.collection('producer_reviews').where('hostReply.hostUid', '==', uid).get();
+  let batch = db.batch();
+  let pending = 0;
+  let removed = 0;
+  for (const item of snapshot.docs) {
+    batch.update(item.ref, { hostReply: FieldValue.delete() });
+    pending += 1;
+    removed += 1;
+    if (pending >= 400) {
+      await batch.commit();
+      batch = db.batch();
+      pending = 0;
+    }
+  }
+  if (pending > 0) await batch.commit();
+  return removed;
 }
 
 async function anonymizeAuditEvents(uid: string, db: any) {
@@ -98,8 +137,10 @@ async function anonymizeAuditEvents(uid: string, db: any) {
 /**
  * Permanently removes a normal traveler/host account. Public producer catalogue
  * entries are intentionally untouched. Trusted ownership assignments are
- * removed so the listings become unassigned. Admin accounts must first be
- * demoted by the Platform Owner; this prevents accidental governance lockout.
+ * removed so the listings become unassigned. Public traveler reviews and Host
+ * review replies authored by the deleted account are removed with that account.
+ * Admin accounts must first be demoted by the Platform Owner; this prevents
+ * accidental governance lockout.
  */
 export async function deleteOwnAccount(
   uid: string,
@@ -118,22 +159,36 @@ export async function deleteOwnAccount(
     );
   }
 
-  const [bookings, ownerships, registrations, passes] = await Promise.all([
+  const [bookings, ownerships, registrations, passes, authoredReviews, reviewReports] = await Promise.all([
     db.collection('bookings').where('userId', '==', uid).get(),
     db.collection('producer_owners').where('ownerUid', '==', uid).get(),
     db.collection('producer_registrations').where('userId', '==', uid).get(),
     db.collection('explorerPasses').where('userId', '==', uid).get(),
+    db.collection('producer_reviews').where('travelerUid', '==', uid).get(),
+    db.collection('review_reports').where('reporterUid', '==', uid).get(),
   ]);
 
   const producerIds = ownerships.docs
     .map((item: any) => String(item.data()?.producerId || item.id))
     .filter(Boolean);
 
-  const [deletedBookings, deletedOwnerships, deletedRegistrations, deletedPasses, anonymizedAudits] = await Promise.all([
+  const [
+    deletedBookings,
+    deletedOwnerships,
+    deletedRegistrations,
+    deletedPasses,
+    deletedReviews,
+    deletedReviewReports,
+    removedHostReplies,
+    anonymizedAudits,
+  ] = await Promise.all([
     deleteSnapshotDocs(bookings, db),
     deleteSnapshotDocs(ownerships, db),
     deleteSnapshotDocs(registrations, db),
     deleteSnapshotDocs(passes, db),
+    deleteSnapshotDocs(authoredReviews, db),
+    deleteSnapshotDocs(reviewReports, db),
+    removeHostReplies(uid, db),
     anonymizeAuditEvents(uid, db),
   ]);
 
@@ -149,6 +204,9 @@ export async function deleteOwnAccount(
     deletedOwnerships,
     deletedRegistrations,
     deletedPasses,
+    deletedReviews,
+    deletedReviewReports,
+    removedHostReplies,
     anonymizedAudits,
     occurredAt: new Date().toISOString(),
     source: 'self_service',
