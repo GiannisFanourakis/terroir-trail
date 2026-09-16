@@ -4,8 +4,8 @@
 >
 > Completion convention: change `- [ ] Step` to `- [x] ~~Step~~` when finished. Do not mark a step complete until it has been implemented, tested, pushed, deployed where applicable, and verified.
 
-**Last updated:** 2026-09-15
-**Current focus:** Phase 11 — Account, Admin & Host Management
+**Last updated:** 2026-09-16
+**Current focus:** Phase 12 — Greek Cheese & Dairy Expansion closeout; then resume Phase 11 before Phase 13 olive expansion
 
 ---
 
@@ -230,7 +230,8 @@ Phase 8 reconciliation notes:
 - Farm is now a first-class taxonomy and Peskesi is no longer carried through the legacy `kazani` compatibility path.
 - Producer presentation is category-aware and unverified visitability no longer produces positive hospitality claims such as `Walk-ins welcome`.
 - Imagery provenance was hardened so local/category fallback imagery cannot masquerade as verified estate media.
-- Google Places imagery is now production-enabled only for manually audited Crete records with verified Place IDs. Photos are loaded live at runtime, attribution remains visible, and Google photo URIs are not persisted, cached, proxied, or rehosted.
+- Google Places imagery is production-enabled only for manually audited records with persistent Google Place IDs and verified location identity. Photos are loaded live at runtime, attribution remains visible, and Google photo URIs are not persisted, cached, proxied, or rehosted.
+- Live Supabase producers no longer need to be precompiled into the legacy/static compatibility allowlist: producer-card and drawer eligibility now use the live producer trust state (`google_place_id` plus `verified_location` / `verified_entrance`).
 - The production image hierarchy is: approved host/producer media → explicitly credited local media → live Google Places imagery → neutral category fallback.
 - Producer-uploaded media remains a gated prototype; its proposed Supabase storage migration has not been applied.
 
@@ -330,7 +331,7 @@ Phase 10B closeout is recorded in `reports/phase10b_peloponnese_northern_greece_
 
 ## Phase 11 — Account, Admin & Host Management
 
-**Status:** Next. Begins now that the existing regional programme is complete. This phase defines who can sign in, what each account type can do, and which actions require trusted backend authority.
+**Status:** Open. Phase 12 dairy work was executed ahead of this phase; resume Phase 11 after the dairy closeout and complete it before starting Phase 13 olive expansion.
 
 This phase absorbs the unfinished requirements recorded in Phase 2 and turns them into one complete account-management programme before TerroirTrail broadens its Greek catalogue further.
 
@@ -403,15 +404,33 @@ Every new Greek producer, project, category, or later international region must 
 
 ## Phase 12 — Greek Cheese & Dairy Expansion
 
-**Status:** Planned after Phase 11. Greece-first category expansion begins here, with feta as an anchor but not the only product.
+**Status:** Substantially completed ahead of Phase 11 — 12 audited additions are live, the Google Places media path is deployed, and exact Google identity follow-up remains for 5 dairies.
 
-- [ ] Define first-class cheese/dairy taxonomy and filters without treating every dairy as a visitor attraction.
-- [ ] Build an audited Greek producer batch covering genuine feta production and other regional cheeses such as graviera, manouri, kefalotyri, and locally important cheeses where evidence supports inclusion.
-- [ ] Distinguish farm, dairy/creamery, maturation/production site, cooperative, and retail shop identities.
+> Implementation/reporting during this workstream used the label “Phase 13 dairy”. The canonical roadmap keeps Greek Cheese & Dairy as Phase 12 and records that work here rather than renumbering all subsequent phases.
+
+- [x] ~~Define first-class cheese/dairy taxonomy and filters without treating every dairy as a visitor attraction.~~
+- [x] ~~Build an audited Greek producer batch covering genuine feta production and other regional cheeses such as graviera, manouri, kefalotyri, and locally important cheeses where evidence supports inclusion.~~
+- [x] ~~Distinguish farm, dairy/creamery, maturation/production site, cooperative, and retail shop identities.~~
 - [ ] Verify product and protected-origin claims rather than inferring them from geography or business names.
-- [ ] Verify production-site location separately from any public shop or office.
-- [ ] Verify visitor access independently; factory or dairy existence does not imply tours or walk-ins.
+- [x] ~~Verify production-site location separately from any public shop or office.~~
+- [x] ~~Verify visitor access independently; factory or dairy existence does not imply tours or walk-ins.~~
 - [ ] Bring the new records through the common Expansion Quality Bar.
+
+Phase 12 dairy rollout notes:
+
+- The audited dairy catalogue now contains **14 dairy producers total**: 2 pre-existing records plus **12 new additions**.
+- The 12 new additions are Stamatogiorgis Dairy, ELATOS / Kapetanou Bros, Arvanitis Dairy, Baladinos & Sons, Katsouli Cheese Factory, Agricultural Dairy Cooperative of Kalavryta, Christakis / Patria Feta, Psiloritis Cheese Dairy, GYPAS / Gyparaki Bros, Tsatsoulis Cheese, ARGOGAL / Koromichi Family, and Iliakis Dairy / Meraki Iliaki.
+- Records that could not meet the agreed exact-location standard were excluded rather than guessed.
+- **9 / 14 total dairies** currently have persistent audited Google Place IDs; **7 / 12 new additions** have them.
+- The seven new additions currently eligible for live Google Places media are Stamatogiorgis, ELATOS / Kapetanou, Arvanitis, Baladinos, Christakis / Patria Feta, Psiloritis, and ARGOGAL.
+- Five exact Google identities remain unresolved: **GYPAS / Gyparaki Bros, Iliakis Dairy / Meraki Iliaki, Agricultural Dairy Cooperative of Kalavryta, Katsouli Cheese Factory, and Tsatsoulis Cheese**. They remain intentionally without persistent Google Place IDs until the exact business identity can be verified.
+- Google Place IDs are never inferred from coordinates or third-party directory IDs.
+- Local `cover_image` / gallery fields remain empty for the new dairy records unless appropriately sourced, credited, or producer-provided media is obtained.
+- Live producer media eligibility now uses the Supabase producer trust state (`google_place_id` plus `verified_location` / `verified_entrance`) rather than requiring new records to exist in the legacy static compatibility allowlist.
+- The frontend Google Places eligibility fix was deployed successfully with `npm run deploy`, and the project owner verified that the new eligible dairies now render the same live Google Places imagery path as the earlier catalogue.
+- Google imagery remains supplementary discovery media and is not evidence of partnership, visitability, entrance precision, or road safety.
+
+**Remaining Phase 12 closeout:** resolve the five Google identities only where defensible, finish the unchecked product/origin and common quality-bar items, then return to Phase 11 before beginning Phase 13.
 
 **Definition of done:** Greek cheese and dairy is a credible, source-backed TerroirTrail vertical rather than a handful of generic dairy pins.
 
@@ -419,7 +438,7 @@ Every new Greek producer, project, category, or later international region must 
 
 ## Phase 13 — Greek Olive & Olive Oil Expansion
 
-**Status:** Planned after Phase 12.
+**Status:** Planned after Phase 12 closeout and Phase 11 account/admin/host work.
 
 - [ ] Expand beyond the current olive coverage with audited independent mills, growers, estates, cooperatives, and other appropriate olive-oil producers across Greece.
 - [ ] Distinguish olive grove, working mill, bottling/brand operation, visitor centre, and retail shop identities.
@@ -608,7 +627,7 @@ Monetisation follows the product and trust model; it must not dictate or weaken 
 8. **Every completed roadmap item is crossed out in this file when verified complete.**
 9. **Before starting a major new feature, place it against this roadmap first.**
 10. **Crete is the reference-quality regional implementation.**
-11. **Finish and production-verify Phase 11 account/admin/host handling before beginning the new Greek category-expansion phases.**
+11. **Phase 12 dairy expansion was executed ahead of Phase 11; finish and production-verify Phase 11 before beginning Phase 13 olive expansion.**
 12. **Expand Greece by product field before resuming broad international geographic expansion.**
 13. **A shop, office, cooperative outlet, or visitor centre must never be silently treated as the underlying production site.**
 14. **New categories must receive category-appropriate taxonomy and UI rather than inheriting wine-centric assumptions.**
