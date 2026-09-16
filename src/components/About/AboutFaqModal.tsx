@@ -77,7 +77,7 @@ const FAQ_DATA: FaqItem[] = [
     categoryLabel: 'About & Curation',
     question: 'Which regions are currently covered?',
     answer:
-      'TerroirTrail currently includes 55 producer records across Crete, Santorini, the Peloponnese, Northern Greece and Tuscany. Coverage will expand across Greece, Italy and other European regions as new records meet the same research and presentation standard.',
+      'TerroirTrail currently includes 67 producer records across Crete, Santorini, the Peloponnese, Northern Greece and Tuscany. Coverage will expand across Greece, Italy and other European regions as new records meet the same research and presentation standard.',
     highlight: 'The catalogue already reaches beyond Greece while keeping a consistent research standard.',
   },
   {
@@ -253,7 +253,7 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
                 </p>
 
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-5 border-t border-white/10">
-                  <Metric value="55" label="Producer records" />
+                  <Metric value="67" label="Producer records" />
                   <Metric value="7" label="Producer categories" />
                   <Metric value="Direct" label="Maker contact" />
                   <Metric value="Clear" label="Visit & access notes" />
