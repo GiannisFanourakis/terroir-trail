@@ -21,9 +21,7 @@ export interface AdminAccountSummary {
   adminLevel: 'owner' | 'admin' | null;
   isPlatformOwner: boolean;
   producerIds: string[];
-  hostEditingFrozen: boolean;
   canDisable: boolean;
-  canFreezeHostEditing: boolean;
 }
 
 const cleanReason = (reason: unknown) => {
@@ -32,12 +30,6 @@ const cleanReason = (reason: unknown) => {
     throw new AdminAccountError('bad_request', 'Add a short reason for this account action.');
   }
   return value.slice(0, 1000);
-};
-
-const getControlState = async (uid: string, db: any) => {
-  const doc = await db.collection('account_controls').doc(uid).get();
-  const data = doc.exists ? doc.data() || {} : {};
-  return { hostEditingFrozen: data.hostEditingFrozen === true };
 };
 
 const assertActorMayManageTarget = async (
@@ -65,10 +57,9 @@ const assertActorMayManageTarget = async (
 };
 
 const toSummary = async (actorUid: string, user: any, db: any): Promise<AdminAccountSummary> => {
-  const [actor, target, control] = await Promise.all([
+  const [actor, target] = await Promise.all([
     getTrustedAccountCapabilities(actorUid, db),
     getTrustedAccountCapabilities(user.uid, db),
-    getControlState(user.uid, db),
   ]);
   const protectedTarget =
     user.uid === actorUid ||
@@ -85,9 +76,7 @@ const toSummary = async (actorUid: string, user: any, db: any): Promise<AdminAcc
     adminLevel: target.adminLevel,
     isPlatformOwner: target.isPlatformOwner,
     producerIds: target.producerIds,
-    hostEditingFrozen: control.hostEditingFrozen,
     canDisable: !protectedTarget,
-    canFreezeHostEditing: target.producerIds.length > 0 && !protectedTarget,
   };
 };
 
@@ -168,57 +157,4 @@ export async function setAccountDisabled(
   });
 
   return { targetUid: cleanTargetUid, disabled, occurredAt };
-}
-
-export async function setHostEditingFrozen(
-  actorUid: string,
-  targetUid: string,
-  frozen: boolean,
-  reason: string,
-  db = adminDb()
-) {
-  const cleanTargetUid = String(targetUid || '').trim();
-  if (!cleanTargetUid) throw new AdminAccountError('bad_request', 'Target account is required.');
-  const cleanActionReason = cleanReason(reason);
-  const { target } = await assertActorMayManageTarget(actorUid, cleanTargetUid, db);
-  if (target.producerIds.length === 0) {
-    throw new AdminAccountError('conflict', 'That account does not currently manage a producer listing.');
-  }
-
-  const controlsRef = db.collection('account_controls').doc(cleanTargetUid);
-  const current = await controlsRef.get();
-  const currentFrozen = current.exists && current.data()?.hostEditingFrozen === true;
-  if (currentFrozen === frozen) {
-    throw new AdminAccountError('conflict', frozen ? 'Host editing is already frozen.' : 'Host editing is not frozen.');
-  }
-
-  const occurredAt = new Date().toISOString();
-  const auditRef = db.collection('admin_audit').doc();
-  const batch = db.batch();
-  batch.set(controlsRef, {
-    userId: cleanTargetUid,
-    hostEditingFrozen: frozen,
-    updatedAt: occurredAt,
-    updatedBy: actorUid,
-    ...(frozen
-      ? { frozenAt: occurredAt, frozenBy: actorUid, freezeReason: cleanActionReason }
-      : { unfrozenAt: occurredAt, unfrozenBy: actorUid, unfreezeReason: cleanActionReason }),
-  }, { merge: true });
-  batch.set(auditRef, {
-    eventType: frozen ? 'host_editing_frozen' : 'host_editing_unfrozen',
-    actorUid,
-    targetUid: cleanTargetUid,
-    producerIds: target.producerIds,
-    reason: cleanActionReason,
-    occurredAt,
-    source: 'admin_api',
-  });
-  await batch.commit();
-
-  return {
-    targetUid: cleanTargetUid,
-    hostEditingFrozen: frozen,
-    producerIds: target.producerIds,
-    occurredAt,
-  };
 }
