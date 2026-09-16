@@ -42,7 +42,7 @@ interface GooglePlacePhotoCarouselProps {
  * - Google photo URIs / photo objects are never persisted, cached, proxied, or stored.
  * - Google Maps attribution remains visible in the same visual container.
  * - Photo author attribution is displayed whenever Google provides it.
- * - A manually audited Google Place ID and TerroirTrail allowlist eligibility are required.
+ * - A manually audited Google Place ID and verified TerroirTrail location are required.
  */
 export const GooglePlacePhotoCarousel: React.FC<
   GooglePlacePhotoCarouselProps
@@ -64,7 +64,7 @@ export const GooglePlacePhotoCarousel: React.FC<
 }) => {
   const googlePlaceId = producer?.googlePlaceId?.trim();
   const isEligible = Boolean(
-    producer && googlePlaceId && isGooglePlacesEligible(producer.id)
+    producer && googlePlaceId && isGooglePlacesEligible(producer)
   );
   const isFeatureEnabled = runtimeConfig.googlePlacesMedia.enabled;
   const shouldLoad = isEligible && isFeatureEnabled;

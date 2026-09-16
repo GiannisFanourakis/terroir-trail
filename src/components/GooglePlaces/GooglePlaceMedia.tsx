@@ -20,7 +20,7 @@ interface GooglePlaceMediaProps {
  * - Detail/gallery media is fetched fresh from a Place object and never persisted or cached.
  * - Google Maps and photo-author attributions remain visible with gallery imagery.
  * - Editorial TerroirTrail data (visit status, road safety, reviews) remains completely separate.
- * - A manually audited Google Place ID is required; coordinates are never used as a fallback lookup.
+ * - A manually audited Google Place ID plus verified TT location is required; coordinates are never used as a fallback lookup.
  */
 export const GooglePlaceMedia: React.FC<GooglePlaceMediaProps> = ({
   producer,
@@ -29,7 +29,7 @@ export const GooglePlaceMedia: React.FC<GooglePlaceMediaProps> = ({
 }) => {
   const googlePlaceId = producer?.googlePlaceId?.trim();
   const isEligible = Boolean(
-    producer && googlePlaceId && isGooglePlacesEligible(producer.id)
+    producer && googlePlaceId && isGooglePlacesEligible(producer)
   );
   const isFeatureEnabled = runtimeConfig.googlePlacesMedia.enabled;
   const { isReady, status } = useGooglePlacesUiKit(
@@ -87,7 +87,7 @@ export const GooglePlaceMedia: React.FC<GooglePlaceMediaProps> = ({
     };
   }, [variant, isReady, googlePlaceId]);
 
-  // Fail closed unless the producer is allowlisted and has a verified persistent Place ID.
+  // Fail closed unless the producer carries both a verified location and a persistent Place ID.
   if (!producer || !googlePlaceId || !isFeatureEnabled || !isEligible) {
     return null;
   }
