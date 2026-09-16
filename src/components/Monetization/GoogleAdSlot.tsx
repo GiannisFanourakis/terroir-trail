@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { runtimeConfig } from '../../config/runtimeConfig';
+import { SponsorBanner } from './SponsorBanner';
 
 declare global {
   interface Window {
@@ -28,11 +29,14 @@ export const GoogleAdSlot: React.FC<GoogleAdSlotProps> = ({
 }) => {
   const [adError, setAdError] = useState<boolean>(false);
   const adRef = useRef<HTMLModElement | null>(null);
+  const travelAffiliatesEnabled =
+    import.meta.env.VITE_ENABLE_TRAVEL_AFFILIATES === 'true';
 
-  // Advertising enablement strictly comes from the central runtime config gate.
-  // Callers cannot override the gate, and IDs alone never activate ads.
-  const canRenderAd = Boolean(
-    runtimeConfig.advertising.enabled &&
+  // Travelpayouts is the first-party-selected monetisation pilot for this slot.
+  // When enabled it takes priority over AdSense so the two ad surfaces never overlap.
+  const canRenderAdSense = Boolean(
+    !travelAffiliatesEnabled &&
+      runtimeConfig.advertising.enabled &&
       !hasExplorerPass &&
       client &&
       slot &&
@@ -40,7 +44,7 @@ export const GoogleAdSlot: React.FC<GoogleAdSlotProps> = ({
   );
 
   useEffect(() => {
-    if (!canRenderAd) return;
+    if (!canRenderAdSense) return;
 
     const existingScript = document.querySelector('script[src*="pagead2.googlesyndication.com"]');
     if (!existingScript) {
@@ -64,9 +68,13 @@ export const GoogleAdSlot: React.FC<GoogleAdSlotProps> = ({
       console.warn('Google AdSense render fallback:', error);
       setAdError(true);
     }
-  }, [canRenderAd, client]);
+  }, [canRenderAdSense, client]);
 
-  if (!canRenderAd) return null;
+  if (travelAffiliatesEnabled && !hasExplorerPass) {
+    return <SponsorBanner hasExplorerPass={hasExplorerPass} className={className} />;
+  }
+
+  if (!canRenderAdSense) return null;
 
   return (
     <div className={`relative z-20 mx-auto w-full max-w-4xl px-3 py-1 text-center select-none ${className}`}>
