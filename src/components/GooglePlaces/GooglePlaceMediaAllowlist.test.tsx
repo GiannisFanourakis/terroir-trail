@@ -5,7 +5,10 @@ import { GooglePlaceMedia } from './GooglePlaceMedia';
 import { CRETAN_PRODUCERS } from '../../data/producers';
 import { SANTORINI_PRODUCERS } from '../../data/santoriniProducers';
 import { PHASE10B_PRODUCERS } from '../../data/phase10bProducers';
-import { GOOGLE_PLACES_PROTOTYPE_ITEMS } from '../../config/googlePlacesAllowlist';
+import {
+  GOOGLE_PLACES_PROTOTYPE_ITEMS,
+  isGooglePlacesEligible,
+} from '../../config/googlePlacesAllowlist';
 import * as uiKitModule from '../../services/googlePlacesUiKit';
 
 const PHASE10B_GOOGLE_MEDIA_PRODUCERS = PHASE10B_PRODUCERS.filter(
@@ -65,6 +68,32 @@ describe('Google Places integration for audited regional producers', () => {
         `${producer.id} should be Google-media eligible`
       ).toBe(true);
     }
+  });
+
+  it('accepts live Supabase producers only when both Place ID and location audit are verified', () => {
+    expect(
+      isGooglePlacesEligible({
+        id: 'phase13-live-dairy',
+        googlePlaceId: 'ChIJverifiedPhase13',
+        locationStatus: 'verified_location',
+      })
+    ).toBe(true);
+
+    expect(
+      isGooglePlacesEligible({
+        id: 'phase13-live-dairy-no-place',
+        googlePlaceId: null,
+        locationStatus: 'verified_location',
+      })
+    ).toBe(false);
+
+    expect(
+      isGooglePlacesEligible({
+        id: 'phase13-live-dairy-unverified-location',
+        googlePlaceId: 'ChIJunverifiedPhase13',
+        locationStatus: 'approximate',
+      })
+    ).toBe(false);
   });
 
   it('routes all eligible regional producers into the live carousel by Place ID only', () => {
