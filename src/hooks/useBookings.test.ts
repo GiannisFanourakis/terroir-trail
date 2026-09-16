@@ -62,6 +62,7 @@ vi.mock('react', () => {
       if (cleanup) effectCleanups.push(cleanup);
     },
     useCallback: (fn: any) => fn,
+    useMemo: (factory: any) => factory(),
   };
 });
 
@@ -99,7 +100,7 @@ describe('useBookings hook logic', () => {
       return vi.fn();
     });
 
-    const hookResult = useBookings({ userId: 'user_123' });
+    useBookings({ userId: 'user_123' });
 
     expect(snapshotCallback).not.toBeNull();
     // Simulate empty Firestore snapshot
