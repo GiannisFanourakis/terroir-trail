@@ -67,24 +67,34 @@ export async function listPendingReviewReports(
 ): Promise<PendingReviewReport[]> {
   await requireModerator(actorUid, db);
   const reports = await db.collection('review_reports').where('status', '==', 'pending').get();
+  const items: PendingReviewReport[] = [];
 
-  const items = await Promise.all(reports.docs.map(async (reportDoc: any) => {
+  for (const reportDoc of reports.docs) {
     const report = reportDoc.data() || {};
     const reviewId = String(report.reviewId || '');
-    if (!reviewId) return null;
+    if (!reviewId) continue;
+
     const reviewDoc = await db.collection('producer_reviews').doc(reviewId).get();
-    if (!reviewDoc.exists) return null;
+    if (!reviewDoc.exists) continue;
     const review = reviewDoc.data() || {};
-    const hostReply = review.hostReply && typeof review.hostReply === 'object'
+
+    const rawHostReply = review.hostReply && typeof review.hostReply === 'object'
+      ? review.hostReply
+      : null;
+    const hostReply: PendingReviewReport['review']['hostReply'] = rawHostReply?.comment
       ? {
-          comment: String(review.hostReply.comment || ''),
-          createdAt: typeof review.hostReply.createdAt === 'string' ? review.hostReply.createdAt : undefined,
-          updatedAt: typeof review.hostReply.updatedAt === 'string' ? review.hostReply.updatedAt : undefined,
+          comment: String(rawHostReply.comment),
+          ...(typeof rawHostReply.createdAt === 'string'
+            ? { createdAt: rawHostReply.createdAt }
+            : {}),
+          ...(typeof rawHostReply.updatedAt === 'string'
+            ? { updatedAt: rawHostReply.updatedAt }
+            : {}),
         }
       : undefined;
 
-    return {
-      reportId: reportDoc.id,
+    items.push({
+      reportId: String(reportDoc.id),
       reviewId,
       producerId: String(review.producerId || report.producerId || ''),
       reason: String(report.reason || 'other'),
@@ -94,15 +104,13 @@ export async function listPendingReviewReports(
         rating: Number(review.rating || 0),
         comment: String(review.comment || ''),
         verifiedVisit: review.verifiedVisit === true,
-        status: review.status === 'hidden' ? 'hidden' as const : 'published' as const,
-        ...(hostReply?.comment ? { hostReply } : {}),
+        status: review.status === 'hidden' ? 'hidden' : 'published',
+        ...(hostReply ? { hostReply } : {}),
       },
-    };
-  }));
+    });
+  }
 
-  return items
-    .filter((item): item is PendingReviewReport => Boolean(item))
-    .sort((a, b) => b.reportedAt.localeCompare(a.reportedAt));
+  return items.sort((a, b) => b.reportedAt.localeCompare(a.reportedAt));
 }
 
 async function resolveReportsForReview(
