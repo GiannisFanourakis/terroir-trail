@@ -157,8 +157,12 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
   const [claimLoading, setClaimLoading] = useState(false);
   const [claimError, setClaimError] = useState<string | null>(null);
   const [customNotice, setCustomNotice] = useState('');
-  const [noticeSaving, setNoticeSaving] = useState(false);
-  const [noticeSaved, setNoticeSaved] = useState(false);
+  const [customHours, setCustomHours] = useState('');
+  const [contactEmail, setContactEmail] = useState('');
+  const [contactPhone, setContactPhone] = useState('');
+  const [visitorInfoSaving, setVisitorInfoSaving] = useState(false);
+  const [visitorInfoSaved, setVisitorInfoSaved] = useState(false);
+  const [visitorInfoError, setVisitorInfoError] = useState<string | null>(null);
   const [rightsConfirmed, setRightsConfirmed] = useState(false);
   const [mediaError, setMediaError] = useState<string | null>(null);
   const [mediaSaved, setMediaSaved] = useState(false);
@@ -172,7 +176,8 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
   useEffect(() => {
     if (!isOpen) return;
     setActiveTab('overview');
-    setNoticeSaved(false);
+    setVisitorInfoSaved(false);
+    setVisitorInfoError(null);
     setMediaSaved(false);
     setMediaError(null);
     setRightsConfirmed(false);
@@ -185,10 +190,22 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
 
   useEffect(() => {
     setCustomNotice(currentOverride?.customNotice || '');
-    setNoticeSaved(false);
+    setCustomHours(currentOverride?.customHours ?? selectedProducer?.openingHours ?? '');
+    setContactEmail(currentOverride?.contactEmail || '');
+    setContactPhone(currentOverride?.contactPhone ?? selectedProducer?.phone ?? '');
+    setVisitorInfoSaved(false);
+    setVisitorInfoError(null);
     setMediaSaved(false);
     setMediaError(null);
-  }, [currentOverride?.customNotice, selectedProducer?.id]);
+  }, [
+    currentOverride?.customNotice,
+    currentOverride?.customHours,
+    currentOverride?.contactEmail,
+    currentOverride?.contactPhone,
+    selectedProducer?.id,
+    selectedProducer?.openingHours,
+    selectedProducer?.phone,
+  ]);
 
   const loadClaim = async () => {
     if (!user || isProducerAuthenticated) {
@@ -230,19 +247,37 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
     };
   };
 
-  const handleSaveNotice = async (event: React.FormEvent) => {
+  const handleSaveVisitorInfo = async (event: React.FormEvent) => {
     event.preventDefault();
-    const override = buildOverride({ customNotice: customNotice.trim() });
+    const trimmedEmail = contactEmail.trim();
+    if (trimmedEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+      setVisitorInfoSaved(false);
+      setVisitorInfoError('Enter a valid public email address or leave the field blank.');
+      return;
+    }
+
+    const override = buildOverride({
+      customNotice: customNotice.trim(),
+      customHours: customHours.trim(),
+      contactEmail: trimmedEmail,
+      contactPhone: contactPhone.trim(),
+    });
     if (!override) return;
-    setNoticeSaving(true);
-    setNoticeSaved(false);
+
+    setVisitorInfoSaving(true);
+    setVisitorInfoSaved(false);
+    setVisitorInfoError(null);
     try {
       await onSaveProducerOverride(override);
-      setNoticeSaved(true);
+      setVisitorInfoSaved(true);
     } catch (error) {
-      setClaimError(error instanceof Error ? error.message : 'Unable to save the visitor notice.');
+      setVisitorInfoError(
+        error instanceof Error
+          ? error.message
+          : 'Unable to save visitor information.'
+      );
     } finally {
-      setNoticeSaving(false);
+      setVisitorInfoSaving(false);
     }
   };
 
@@ -537,7 +572,7 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
 
       <div className="flex border-b border-white/10 px-5 sm:px-6 overflow-x-auto shrink-0">
         <button type="button" onClick={() => setActiveTab('overview')} className={tabClass('overview')}>Overview</button>
-        <button type="button" onClick={() => setActiveTab('notice')} className={tabClass('notice')}>Visitor Notice</button>
+        <button type="button" onClick={() => setActiveTab('notice')} className={tabClass('notice')}>Visitor Information</button>
         {runtimeConfig.hostMediaPrototype.enabled && (
           <button type="button" onClick={() => setActiveTab('photos')} className={tabClass('photos')}>
             Profile Photos {currentImages.length > 0 ? `(${currentImages.length})` : ''}
@@ -575,6 +610,9 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
               <div className="mt-3 grid sm:grid-cols-2 gap-2 text-xs">
                 <div className="rounded-xl bg-stone-950/70 px-3 py-2"><span className="text-stone-500">Category</span><div className="text-stone-200 mt-1 capitalize">{selectedProducer.category.replaceAll('_', ' ')}</div></div>
                 <div className="rounded-xl bg-stone-950/70 px-3 py-2"><span className="text-stone-500">Location</span><div className="text-stone-200 mt-1">{selectedProducer.village}, {selectedProducer.region}</div></div>
+                <div className="rounded-xl bg-stone-950/70 px-3 py-2"><span className="text-stone-500">Opening hours</span><div className="text-stone-200 mt-1">{currentOverride?.customHours || selectedProducer.openingHours || 'Not provided'}</div></div>
+                <div className="rounded-xl bg-stone-950/70 px-3 py-2"><span className="text-stone-500">Public phone</span><div className="text-stone-200 mt-1">{currentOverride?.contactPhone || selectedProducer.phone || 'Not provided'}</div></div>
+                <div className="rounded-xl bg-stone-950/70 px-3 py-2"><span className="text-stone-500">Public email</span><div className="text-stone-200 mt-1">{currentOverride?.contactEmail || 'Not provided'}</div></div>
                 <div className="rounded-xl bg-stone-950/70 px-3 py-2"><span className="text-stone-500">Visitor notice</span><div className="text-stone-200 mt-1">{currentOverride?.customNotice || 'No host notice published'}</div></div>
                 <div className="rounded-xl bg-stone-950/70 px-3 py-2"><span className="text-stone-500">Host media</span><div className="text-stone-200 mt-1">{currentImages.length} submitted image{currentImages.length === 1 ? '' : 's'}</div></div>
               </div>
@@ -583,28 +621,75 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
         )}
 
         {activeTab === 'notice' && (
-          <form onSubmit={handleSaveNotice} className="max-w-2xl space-y-4">
+          <form onSubmit={handleSaveVisitorInfo} className="max-w-2xl space-y-4">
             <div className="rounded-2xl border border-amber-500/20 bg-amber-500/10 p-4">
               <div className="flex items-center gap-2 text-amber-300 font-bold text-sm">
                 <Bell className="w-4 h-4" />
-                Visitor Notice
+                Visitor Information
               </div>
               <p className="mt-1 text-[11px] text-stone-300 leading-relaxed">
-                Publish temporary, producer-supplied information such as seasonal opening notes, harvest activity, appointment requirements or an unexpected closure.
+                Keep current opening hours, public contact details and temporary visitor notices accurate. These operational fields can be updated immediately by a verified Host; protected identity and verification evidence remain Admin-controlled.
               </p>
             </div>
 
-            {noticeSaved && (
-              <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-xs text-emerald-300 flex items-center gap-2">
+            {visitorInfoSaved && (
+              <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-xs text-emerald-300 flex items-center gap-2" role="status" aria-live="polite">
                 <CheckCircle2 className="w-4 h-4" />
-                Visitor notice saved.
+                Visitor information saved.
               </div>
             )}
-            {claimError && <div className="rounded-xl border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-xs text-rose-300">{claimError}</div>}
+            {visitorInfoError && <div className="rounded-xl border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-xs text-rose-300" role="alert">{visitorInfoError}</div>}
 
             <div>
-              <label className="block text-xs font-semibold text-stone-300 mb-1.5">Current announcement</label>
+              <label className="block text-xs font-semibold text-stone-300 mb-1.5" htmlFor="host-opening-hours">Current opening hours</label>
               <textarea
+                id="host-opening-hours"
+                value={customHours}
+                onChange={event => setCustomHours(event.target.value)}
+                rows={3}
+                maxLength={300}
+                placeholder="Example: Mon-Sat 10:00-18:00; Sunday by appointment"
+                className="w-full rounded-xl border border-white/10 bg-stone-900 px-3 py-3 text-xs text-white placeholder:text-stone-600 focus:outline-none focus:border-amber-400/60"
+              />
+              <div className="mt-1 text-[10px] text-stone-600 text-right">{customHours.length}/300</div>
+            </div>
+
+            <div className="grid sm:grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs font-semibold text-stone-300 mb-1.5" htmlFor="host-contact-email">Public email</label>
+                <input
+                  id="host-contact-email"
+                  type="email"
+                  value={contactEmail}
+                  onChange={event => setContactEmail(event.target.value)}
+                  maxLength={254}
+                  autoComplete="email"
+                  placeholder="visits@example.com"
+                  className="w-full rounded-xl border border-white/10 bg-stone-900 px-3 py-2.5 text-xs text-white placeholder:text-stone-600 focus:outline-none focus:border-amber-400/60"
+                />
+                <p className="mt-1 text-[10px] text-stone-600">Shown as the producer's public visitor contact, not the private account email.</p>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-stone-300 mb-1.5" htmlFor="host-contact-phone">Public phone</label>
+                <input
+                  id="host-contact-phone"
+                  type="tel"
+                  value={contactPhone}
+                  onChange={event => setContactPhone(event.target.value)}
+                  maxLength={40}
+                  autoComplete="tel"
+                  placeholder="+30 2810 000000"
+                  className="w-full rounded-xl border border-white/10 bg-stone-900 px-3 py-2.5 text-xs text-white placeholder:text-stone-600 focus:outline-none focus:border-amber-400/60"
+                />
+                <p className="mt-1 text-[10px] text-stone-600">Use the number visitors should call for current visit information.</p>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-stone-300 mb-1.5" htmlFor="host-visitor-notice">Temporary visitor notice</label>
+              <textarea
+                id="host-visitor-notice"
                 value={customNotice}
                 onChange={event => setCustomNotice(event.target.value)}
                 rows={5}
@@ -617,10 +702,10 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
 
             <button
               type="submit"
-              disabled={noticeSaving}
+              disabled={visitorInfoSaving}
               className="rounded-xl bg-amber-500 px-4 py-2.5 text-xs font-bold text-stone-950 hover:bg-amber-400 disabled:opacity-50 cursor-pointer"
             >
-              {noticeSaving ? 'Saving…' : 'Save visitor notice'}
+              {visitorInfoSaving ? 'Saving…' : 'Save visitor information'}
             </button>
           </form>
         )}
