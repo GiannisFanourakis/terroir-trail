@@ -116,7 +116,7 @@ describe('Phase 8 Public Positioning & SEO Synchronization', () => {
     });
   });
 
-  describe('3. Regional Reference Content Retained Truthfully', () => {
+  describe('3. Regional Coverage Presented Truthfully', () => {
     it('preserves the Crete producer directory within the combined reference catalogue', () => {
       expect(indexHtml).toContain('<h2>Verified Crete &amp; Santorini Producer Directory</h2>');
       expect(indexHtml).toContain('<h3>Crete — Chania</h3>');
@@ -130,11 +130,13 @@ describe('Phase 8 Public Positioning & SEO Synchronization', () => {
       expect(indexHtml).toContain('Vidiano, Vilana, Dafni, Plyto, and Melissaki');
     });
 
-    it('keeps Crete and Santorini as the current reference-quality regions', () => {
-      expect(indexHtml).toContain('Crete and Santorini are the current reference-quality regions');
-      expect(aboutFaqModal).toContain('Crete and Santorini are the current reference-quality regions');
-      expect(aboutFaqModal).toContain('27 in Crete and 9 in Santorini');
-      expect(aboutFaqModal).toContain('Greece first, then outward');
+    it('keeps the About experience aligned with the current 55-record multi-region catalogue', () => {
+      expect(aboutFaqModal).toContain('55 producer records');
+      expect(aboutFaqModal).toContain('Crete, Santorini, the Peloponnese, Northern Greece and Tuscany');
+      expect(aboutFaqModal).toContain('Across Greece and into Italy');
+      expect(aboutFaqModal).not.toContain('27 in Crete and 9 in Santorini');
+      expect(aboutFaqModal).not.toContain('Greece first, then outward');
+      expect(aboutFaqModal).not.toContain('reference-quality');
     });
   });
 
@@ -144,10 +146,10 @@ describe('Phase 8 Public Positioning & SEO Synchronization', () => {
         'a map pin is not a guarantee of safe road access for standard rental vehicles'
       );
       expect(aboutFaqModal).toContain(
-        'Exact location confidence and road-access confidence are separate'
+        'TerroirTrail treats location and road access as separate facts'
       );
       expect(aboutFaqModal).toContain(
-        'Current-access uncertainty is shown rather than replaced with a guess'
+        'when it is not, the site does not invent a road condition'
       );
     });
 
