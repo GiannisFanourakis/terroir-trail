@@ -13,6 +13,9 @@ import { collection, onSnapshot, query, where, orderBy } from 'firebase/firestor
 
 export interface UseBookingsOptions {
   userId?: string;
+  /** Trusted listing IDs resolved by the account-capabilities API. */
+  trustedProducerIds?: string[];
+  /** @deprecated Compatibility for older callers. */
   trustedProducerId?: string;
 }
 
@@ -25,7 +28,16 @@ export const useBookings = (
       ? userIdOrOptions
       : { userId: userIdOrOptions, trustedProducerId: maybeProducerId };
 
-  const { userId, trustedProducerId } = options;
+  const { userId } = options;
+  const trustedProducerIds = Array.from(new Set(
+    (options.trustedProducerIds?.length
+      ? options.trustedProducerIds
+      : options.trustedProducerId
+        ? [options.trustedProducerId]
+        : [])
+      .filter(Boolean)
+  ));
+  const trustedProducerIdsKey = trustedProducerIds.slice().sort().join('|');
 
   const [travelerBookings, setTravelerBookings] = useState<TastingBooking[]>(() => {
     const all = getLocalBookings();
@@ -34,16 +46,16 @@ export const useBookings = (
 
   const [hostBookings, setHostBookings] = useState<TastingBooking[]>(() => {
     const all = getLocalBookings();
-    return trustedProducerId ? all.filter((b) => b.producerId === trustedProducerId) : [];
+    const trusted = new Set(trustedProducerIds);
+    return trusted.size ? all.filter((b) => trusted.has(b.producerId)) : [];
   });
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  // 1. Scoped Traveler Bookings Query (where("userId", "==", uid), orderBy("createdAt", "desc"))
+  // 1. Scoped Traveler Bookings Query
   useEffect(() => {
     if (!isFirebaseConfigured || !db || !userId) {
       if (userId?.startsWith('user_')) {
-        // Local demo traveler
         const local = getLocalBookings().filter((b) => b.userId === userId);
         setTravelerBookings(local);
       }
@@ -62,15 +74,10 @@ export const useBookings = (
           travelerQuery,
           (snapshot) => {
             const list: TastingBooking[] = [];
-            snapshot.forEach((docSnap) => {
-              list.push(docSnap.data() as TastingBooking);
-            });
-            // Empty snapshots must clear stale local/seed data
+            snapshot.forEach((docSnap) => list.push(docSnap.data() as TastingBooking));
             setTravelerBookings(list);
           },
-          (error) => {
-            console.warn('Firestore traveler bookings snapshot error:', error);
-          }
+          (error) => console.warn('Firestore traveler bookings snapshot error:', error)
         );
         return () => unsubscribe();
       } catch (e) {
@@ -79,47 +86,50 @@ export const useBookings = (
     }
   }, [userId]);
 
-  // 2. Scoped Host Bookings Query (where("producerId", "==", trustedProducerId), orderBy("createdAt", "desc"))
+  // 2. One scoped listener per explicitly assigned producer. This avoids using
+  // broad collection reads and supports one account managing multiple listings.
   useEffect(() => {
-    if (!isFirebaseConfigured || !db || !trustedProducerId) {
-      if (trustedProducerId) {
-        // Local demo host
-        const local = getLocalBookings().filter((b) => b.producerId === trustedProducerId);
-        setHostBookings(local);
-      }
+    if (trustedProducerIds.length === 0) {
+      setHostBookings([]);
       return;
     }
 
-    if (auth?.currentUser) {
-      try {
-        const hostQuery = query(
-          collection(db, 'bookings'),
-          where('producerId', '==', trustedProducerId),
-          orderBy('createdAt', 'desc')
-        );
-
-        const unsubscribe = onSnapshot(
-          hostQuery,
-          (snapshot) => {
-            const list: TastingBooking[] = [];
-            snapshot.forEach((docSnap) => {
-              list.push(docSnap.data() as TastingBooking);
-            });
-            // Empty snapshots must clear stale local/seed data
-            setHostBookings(list);
-          },
-          (error) => {
-            console.warn('Firestore host bookings snapshot error:', error);
-          }
-        );
-        return () => unsubscribe();
-      } catch (e) {
-        console.warn('Could not establish host bookings query listener:', e);
-      }
+    if (!isFirebaseConfigured || !db) {
+      const trusted = new Set(trustedProducerIds);
+      setHostBookings(getLocalBookings().filter((b) => trusted.has(b.producerId)));
+      return;
     }
-  }, [trustedProducerId]);
 
-  // Create new reservation (derives userId inside service from auth.currentUser.uid)
+    if (!auth?.currentUser) return;
+
+    const bookingsByProducer = new Map<string, TastingBooking[]>();
+    const publish = () => {
+      const merged = [...bookingsByProducer.values()].flat();
+      merged.sort((a, b) => String(b.createdAt).localeCompare(String(a.createdAt)));
+      setHostBookings(merged);
+    };
+
+    const unsubscribers = trustedProducerIds.map((producerId) => {
+      const hostQuery = query(
+        collection(db!, 'bookings'),
+        where('producerId', '==', producerId),
+        orderBy('createdAt', 'desc')
+      );
+      return onSnapshot(
+        hostQuery,
+        (snapshot) => {
+          const list: TastingBooking[] = [];
+          snapshot.forEach((docSnap) => list.push(docSnap.data() as TastingBooking));
+          bookingsByProducer.set(producerId, list);
+          publish();
+        },
+        (error) => console.warn(`Firestore host bookings snapshot error for ${producerId}:`, error)
+      );
+    });
+
+    return () => unsubscribers.forEach((unsubscribe) => unsubscribe());
+  }, [trustedProducerIdsKey]);
+
   const bookTasting = useCallback(
     async (
       bookingData: Omit<TastingBooking, 'id' | 'createdAt' | 'status'>
@@ -136,7 +146,6 @@ export const useBookings = (
     []
   );
 
-  // Traveler cancellation: pending -> cancelled only
   const cancelBooking = useCallback(
     async (bookingId: string) => {
       await cancelTastingBookingByTraveler(bookingId);
@@ -147,7 +156,6 @@ export const useBookings = (
     []
   );
 
-  // Host status transition: pending -> confirmed/cancelled, confirmed -> completed/cancelled
   const setHostStatus = useCallback(
     async (bookingId: string, status: BookingStatus) => {
       if (status === 'pending') {
