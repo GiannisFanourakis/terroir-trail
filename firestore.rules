@@ -29,6 +29,7 @@ service cloud.firestore {
         && !request.resource.data.keys().hasAny([
           'role',
           'isProducer',
+          'producerIds',
           'claimedProducerId',
           'producerName',
           'claimStatus',
@@ -43,6 +44,7 @@ service cloud.firestore {
         && !request.resource.data.diff(resource.data).affectedKeys().hasAny([
           'role',
           'isProducer',
+          'producerIds',
           'claimedProducerId',
           'producerName',
           'claimStatus',
@@ -102,20 +104,36 @@ service cloud.firestore {
       allow delete: if false;
     }
 
-    // 4. Producer Overrides (Special hours, notices, booking pause)
-    // Publicly readable for all travelers.
-    // Writable only by verified active owner from producer_owners.
-    // Requires document ID == embedded producerId. Client cannot set or mutate isProTier.
+    // 4. Producer Overrides
+    // Publicly readable operational data and approved media live here, but an
+    // authenticated host may change only immediate operational fields. Media
+    // review state, commercial flags and other curated content are written only
+    // through trusted Admin SDK services, which bypass client Security Rules.
     match /producer_overrides/{producerId} {
       allow read: if true;
 
       allow create: if isProducerOwner(producerId)
         && request.resource.data.producerId == producerId
-        && !('isProTier' in request.resource.data);
+        && request.resource.data.keys().hasOnly([
+          'producerId',
+          'customNotice',
+          'customHours',
+          'isAcceptingBookings',
+          'contactEmail',
+          'contactPhone',
+          'updatedAt'
+        ]);
 
       allow update: if isProducerOwner(producerId)
         && request.resource.data.producerId == producerId
-        && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['isProTier']);
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          'customNotice',
+          'customHours',
+          'isAcceptingBookings',
+          'contactEmail',
+          'contactPhone',
+          'updatedAt'
+        ]);
 
       allow delete: if false;
     }
