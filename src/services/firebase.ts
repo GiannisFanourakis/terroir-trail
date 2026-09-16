@@ -35,6 +35,7 @@ import {
   cleanupRemovedProducerMedia,
   persistProducerOverrideMedia,
 } from './producerMediaStorage';
+import { replaceProducerMedia } from './producerMediaApi';
 
 const firebaseConfig = runtimeConfig.firebase;
 
@@ -95,6 +96,8 @@ export const saveUserProfileToCloud = async (profile: Partial<UserProfile> & { i
   if (profile.email !== undefined) dataToSave.email = profile.email;
   if (profile.avatar !== undefined) dataToSave.avatar = profile.avatar;
   if (profile.hometown !== undefined) dataToSave.hometown = profile.hometown;
+  if (profile.interests !== undefined) dataToSave.interests = profile.interests;
+  // travelerType is retained only for backwards compatibility with older profiles.
   if (profile.travelerType !== undefined) dataToSave.travelerType = profile.travelerType;
   if (profile.visitedProducers !== undefined) dataToSave.visitedProducers = profile.visitedProducers;
   if (profile.personalNotes !== undefined) dataToSave.personalNotes = profile.personalNotes;
@@ -107,14 +110,17 @@ export interface ProducerOwnershipRecord {
   producerId: string;
   ownerUid: string;
   status: 'active';
-  approvedAt: string;
+  approvedAt?: string;
+  assignedAt?: string;
 }
 
 /**
- * Fetches trusted producer ownership from Cloud Firestore producer_owners collection
+ * Fetches every active producer listing owned by this account. One account may
+ * manage multiple listings, but each listing must still have a trusted
+ * producer_owners record created by TerroirTrail administration.
  */
-export const fetchUserProducerOwnership = async (userId: string): Promise<ProducerOwnershipRecord | null> => {
-  if (!isFirebaseConfigured || !db || !userId) return null;
+export const fetchUserProducerOwnerships = async (userId: string): Promise<ProducerOwnershipRecord[]> => {
+  if (!isFirebaseConfigured || !db || !userId) return [];
   try {
     const q = query(
       collection(db, 'producer_owners'),
@@ -122,13 +128,23 @@ export const fetchUserProducerOwnership = async (userId: string): Promise<Produc
       where('status', '==', 'active')
     );
     const snap = await getDocs(q);
-    if (!snap.empty) {
-      return snap.docs[0].data() as ProducerOwnershipRecord;
-    }
+    return snap.docs.map((ownershipDoc) => ({
+      ...(ownershipDoc.data() as ProducerOwnershipRecord),
+      producerId: String(ownershipDoc.data().producerId || ownershipDoc.id),
+    }));
   } catch (error) {
-    console.warn('Error fetching producer ownership from Firestore:', error);
+    console.warn('Error fetching producer ownerships from Firestore:', error);
+    return [];
   }
-  return null;
+};
+
+/**
+ * Backwards-compatible single-listing helper. New code should use
+ * fetchUserProducerOwnerships and the trusted producerIds array.
+ */
+export const fetchUserProducerOwnership = async (userId: string): Promise<ProducerOwnershipRecord | null> => {
+  const ownerships = await fetchUserProducerOwnerships(userId);
+  return ownerships[0] || null;
 };
 
 /**
@@ -357,8 +373,9 @@ export const updateBookingStatusByHost = async (
 export const updateBookingStatus = updateBookingStatusByHost;
 
 /**
- * Save custom winery/brewery announcement or schedule override.
- * Omits isProTier from ordinary client writes.
+ * Save producer-controlled operational overrides. Moderated media is submitted
+ * through the trusted API so a host cannot self-approve image metadata by
+ * writing Firestore directly.
  */
 const updateLocalProducerOverride = (override: ProducerOverride) => {
   const existing = readStorage<Record<string, ProducerOverride>>(OVERRIDES_LOCAL_KEY, {}, {
@@ -376,6 +393,9 @@ export const getLocalProducerOverrides = (): Record<string, ProducerOverride> =>
   });
 };
 
+const mediaSetsEqual = (a: ProducerOverride['uploadedImages'] = [], b: ProducerOverride['uploadedImages'] = []) =>
+  JSON.stringify(a) === JSON.stringify(b);
+
 export const saveProducerOverride = async (override: ProducerOverride): Promise<void> => {
   if (isFirebaseConfigured && db) {
     if (!auth?.currentUser) {
@@ -389,18 +409,37 @@ export const saveProducerOverride = async (override: ProducerOverride): Promise<
 
     const previousOverride = getLocalProducerOverrides()[override.producerId];
     const persistedOverride = await persistProducerOverrideMedia(app, auth, override);
-    const { isProTier: _ignoredProTier, ...cleanOverride } = persistedOverride;
+    const mediaChanged = !mediaSetsEqual(
+      previousOverride?.uploadedImages || [],
+      persistedOverride.uploadedImages || []
+    );
+
+    const hostWritableOverride: Record<string, unknown> = {
+      producerId: persistedOverride.producerId,
+      isAcceptingBookings: persistedOverride.isAcceptingBookings,
+      updatedAt: persistedOverride.updatedAt,
+    };
+    if (persistedOverride.customNotice !== undefined) hostWritableOverride.customNotice = persistedOverride.customNotice;
+    if (persistedOverride.customHours !== undefined) hostWritableOverride.customHours = persistedOverride.customHours;
+    if (persistedOverride.contactEmail !== undefined) hostWritableOverride.contactEmail = persistedOverride.contactEmail;
+    if (persistedOverride.contactPhone !== undefined) hostWritableOverride.contactPhone = persistedOverride.contactPhone;
 
     const docRef = doc(db, 'producer_overrides', persistedOverride.producerId);
     try {
-      // Authenticated cloud write first: only update local cache after Firestore succeeds
-      await setDoc(docRef, {
-        ...cleanOverride,
-        producerId: persistedOverride.producerId,
-      }, { merge: true });
+      // Only operational fields are client-writable. Moderated/admin-controlled
+      // fields such as uploadedImages, isProTier and partnership metadata are
+      // deliberately excluded from this Firestore write.
+      await setDoc(docRef, hostWritableOverride, { merge: true });
+
+      if (mediaChanged) {
+        await replaceProducerMedia(
+          persistedOverride.producerId,
+          persistedOverride.uploadedImages || []
+        );
+      }
     } catch (error) {
-      // If the metadata write fails after a new upload, remove the newly-created
-      // objects so the failed operation does not leave orphaned producer media.
+      // If a newly uploaded object cannot be registered, remove it so the
+      // failed operation does not leave orphaned producer media.
       await cleanupRemovedProducerMedia(
         app,
         persistedOverride.uploadedImages || [],
