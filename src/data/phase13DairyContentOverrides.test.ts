@@ -6,12 +6,12 @@ const PHASE13_IDS = new Set(PHASE13_DAIRY_PRODUCERS.map((producer) => producer.i
 const ENRICHED = AUDITED_PRODUCERS.filter((producer) => PHASE13_IDS.has(producer.id));
 
 describe('Phase 13 dairy content completeness', () => {
-  it('keeps all 12 approved additions in the audited bundled catalogue', () => {
-    expect(PHASE13_DAIRY_PRODUCERS).toHaveLength(12);
-    expect(ENRICHED).toHaveLength(12);
+  it('keeps all 7 retained additions in the audited bundled catalogue', () => {
+    expect(PHASE13_DAIRY_PRODUCERS).toHaveLength(7);
+    expect(ENRICHED).toHaveLength(7);
   });
 
-  it('gives every Phase 13 dairy a substantive story and source-backed product summary', () => {
+  it('gives every retained Phase 13 dairy a substantive story and source-backed product summary', () => {
     for (const producer of ENRICHED) {
       expect(producer.tagLine.trim().length, producer.id).toBeGreaterThan(20);
       expect(producer.description.trim().length, producer.id).toBeGreaterThan(100);
