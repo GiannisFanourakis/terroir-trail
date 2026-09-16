@@ -11,16 +11,9 @@ import {
   GOOGLE_PLACES_PROTOTYPE_ITEMS,
 } from '../config/googlePlacesAllowlist';
 import { CRETAN_PRODUCERS } from '../data/producers';
-import { SANTORINI_PRODUCERS } from '../data/santoriniProducers';
-import { PHASE10B_PRODUCERS } from '../data/phase10bProducers';
+import { AUDITED_PRODUCERS } from '../data/auditedProducers';
 
-const AUDITED_REGIONAL_PRODUCERS = [
-  ...CRETAN_PRODUCERS,
-  ...SANTORINI_PRODUCERS,
-  ...PHASE10B_PRODUCERS,
-];
-
-const EXPECTED_GOOGLE_PLACES_PRODUCERS = AUDITED_REGIONAL_PRODUCERS.filter(
+const EXPECTED_GOOGLE_PLACES_PRODUCERS = AUDITED_PRODUCERS.filter(
   (producer) =>
     Boolean(producer.googlePlaceId?.trim()) &&
     (producer.locationStatus === 'verified_location' ||
@@ -39,9 +32,8 @@ describe('Google Places UI Kit & Allowlist', () => {
 
   describe('Allowlist Verification', () => {
     it('covers every audited producer with a verified location and persistent Google Place ID', () => {
-      expect(CRETAN_PRODUCERS).toHaveLength(27);
-      expect(SANTORINI_PRODUCERS).toHaveLength(9);
-      expect(PHASE10B_PRODUCERS).toHaveLength(19);
+      expect(AUDITED_PRODUCERS).toHaveLength(67);
+      expect(EXPECTED_GOOGLE_PLACES_PRODUCERS).toHaveLength(60);
       expect(GOOGLE_PLACES_PROTOTYPE_ITEMS).toHaveLength(
         EXPECTED_GOOGLE_PLACES_PRODUCERS.length
       );
@@ -57,7 +49,7 @@ describe('Google Places UI Kit & Allowlist', () => {
       );
 
       const catalogueCategories = new Set(
-        AUDITED_REGIONAL_PRODUCERS.map((producer) => producer.category)
+        AUDITED_PRODUCERS.map((producer) => producer.category)
       );
 
       expect([...eligibleCategories].sort()).toEqual(
@@ -73,12 +65,15 @@ describe('Google Places UI Kit & Allowlist', () => {
       expect(isGooglePlacesEligible('stathakis-honey-park')).toBe(true);
       expect(isGooglePlacesEligible('domaine-sigalas-santorini')).toBe(true);
       expect(isGooglePlacesEligible('santorini-brewing-company')).toBe(true);
+      expect(isGooglePlacesEligible('stamatogiorgis-dairy-smari')).toBe(true);
+      expect(isGooglePlacesEligible('arvanitis-dairy-neochorouda')).toBe(true);
     });
 
     it('rejects unlisted producers', () => {
       expect(isGooglePlacesEligible('unknown-winery')).toBe(false);
       expect(isGooglePlacesEligible('random-producer-id')).toBe(false);
       expect(isGooglePlacesEligible('')).toBe(false);
+      expect(isGooglePlacesEligible('gypas-cheese-asi-gonia')).toBe(false);
     });
 
     it('retrieves config with current audited catalogue coordinates', () => {
@@ -206,7 +201,6 @@ describe('Google Places UI Kit & Allowlist', () => {
         expect(mockScript.src).toContain('libraries=places');
         expect(mockScript.src).toContain('v=weekly');
 
-        // Trigger load event
         const loadListeners = scriptListeners['load'] || [];
         expect(loadListeners.length).toBeGreaterThan(0);
         await loadListeners[0]();
@@ -247,7 +241,7 @@ describe('Google Places UI Kit & Allowlist', () => {
       try {
         const p1 = loadGooglePlacesUiKit();
         const p2 = loadGooglePlacesUiKit();
-        expect(p1).toBe(p2); // Exact same promise reference
+        expect(p1).toBe(p2);
         expect(appendedScripts.length).toBe(1);
       } finally {
         import.meta.env.VITE_GOOGLE_MAPS_API_KEY = originalKey;

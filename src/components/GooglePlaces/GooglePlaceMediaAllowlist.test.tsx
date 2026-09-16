@@ -2,27 +2,27 @@ import { describe, it, expect, vi, afterEach } from 'vitest';
 import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { GooglePlaceMedia } from './GooglePlaceMedia';
-import { CRETAN_PRODUCERS } from '../../data/producers';
-import { SANTORINI_PRODUCERS } from '../../data/santoriniProducers';
-import { PHASE10B_PRODUCERS } from '../../data/phase10bProducers';
+import { AUDITED_PRODUCERS } from '../../data/auditedProducers';
+import { PHASE13_DAIRY_PRODUCERS } from '../../data/phase13DairyProducers';
 import {
   GOOGLE_PLACES_PROTOTYPE_ITEMS,
   isGooglePlacesEligible,
 } from '../../config/googlePlacesAllowlist';
 import * as uiKitModule from '../../services/googlePlacesUiKit';
 
-const PHASE10B_GOOGLE_MEDIA_PRODUCERS = PHASE10B_PRODUCERS.filter(
+const AUDITED_GOOGLE_MEDIA_PRODUCERS = AUDITED_PRODUCERS.filter(
   (producer) =>
     Boolean(producer.googlePlaceId?.trim()) &&
     (producer.locationStatus === 'verified_location' ||
       producer.locationStatus === 'verified_entrance')
 );
 
-const AUDITED_GOOGLE_MEDIA_PRODUCERS = [
-  ...CRETAN_PRODUCERS,
-  ...SANTORINI_PRODUCERS,
-  ...PHASE10B_GOOGLE_MEDIA_PRODUCERS,
-];
+const PHASE13_GOOGLE_MEDIA_PRODUCERS = PHASE13_DAIRY_PRODUCERS.filter(
+  (producer) =>
+    Boolean(producer.googlePlaceId?.trim()) &&
+    (producer.locationStatus === 'verified_location' ||
+      producer.locationStatus === 'verified_entrance')
+);
 
 vi.mock('./GooglePlacePhotoCarousel', () => ({
   GooglePlacePhotoCarousel: ({ producer }: { producer: { googlePlaceId?: string } }) => (
@@ -40,10 +40,9 @@ describe('Google Places integration for audited regional producers', () => {
   });
 
   it('contains every audited record that has both a verified location and persistent Place ID', () => {
-    expect(CRETAN_PRODUCERS).toHaveLength(27);
-    expect(SANTORINI_PRODUCERS).toHaveLength(9);
-    expect(PHASE10B_PRODUCERS).toHaveLength(19);
-    expect(PHASE10B_GOOGLE_MEDIA_PRODUCERS).toHaveLength(19);
+    expect(AUDITED_PRODUCERS).toHaveLength(67);
+    expect(PHASE13_DAIRY_PRODUCERS).toHaveLength(12);
+    expect(PHASE13_GOOGLE_MEDIA_PRODUCERS).toHaveLength(5);
     expect(GOOGLE_PLACES_PROTOTYPE_ITEMS).toHaveLength(
       AUDITED_GOOGLE_MEDIA_PRODUCERS.length
     );
@@ -67,6 +66,24 @@ describe('Google Places integration for audited regional producers', () => {
         eligibleIds.has(producer.id),
         `${producer.id} should be Google-media eligible`
       ).toBe(true);
+    }
+  });
+
+  it('includes the five Phase 13 dairies that already have manually audited Place IDs', () => {
+    expect(
+      PHASE13_GOOGLE_MEDIA_PRODUCERS.map((producer) => producer.id).sort()
+    ).toEqual(
+      [
+        'arvanitis-dairy-neochorouda',
+        'baladinos-dairy-varipetro',
+        'christakis-patria-feta-proastio',
+        'elatos-kapetanou-schinochori',
+        'stamatogiorgis-dairy-smari',
+      ].sort()
+    );
+
+    for (const producer of PHASE13_GOOGLE_MEDIA_PRODUCERS) {
+      expect(isGooglePlacesEligible(producer.id)).toBe(true);
     }
   });
 
