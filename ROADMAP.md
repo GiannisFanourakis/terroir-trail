@@ -5,7 +5,7 @@
 > Completion convention: change `- [ ] Step` to `- [x] ~~Step~~` when finished. Do not mark a step complete until it has been implemented, tested, pushed, deployed where applicable, and verified.
 
 **Last updated:** 2026-09-16
-**Current focus:** Phase 12 — Greek Cheese & Dairy Expansion final removal/build/deploy verification; then Phase 13 — Greek Olive & Olive Oil Expansion
+**Current focus:** Phase 12 — Greek Cheese & Dairy Expansion final removal/build/deploy verification plus Travelpayouts affiliate-pilot deployment verification; then Phase 13 — Interactive Terroir Regions
 
 ---
 
@@ -384,9 +384,9 @@ Phase 11 production-smoke work is recorded by commit `5e95575ecfd26a28aafcc143f5
 
 ---
 
-## Expansion Quality Bar — Applies to Phases 12–19
+## Expansion Quality Bar — Applies to Phases 12–20 where relevant
 
-Every new Greek producer, project, category, or later international region must follow the same evidence-first standard:
+Every new Greek producer, project, category, regional context layer, or later international region must follow the same evidence-first standard where applicable:
 
 - [ ] Audit real producers/projects and remove invented or stale claims.
 - [ ] Verify entity type so production sites, shops, cooperatives, farms, heritage projects, geoparks, and other local projects are not misrepresented.
@@ -396,7 +396,7 @@ Every new Greek producer, project, category, or later international region must 
 - [ ] Verify producer-controlled public contact channels.
 - [ ] Add verified Google Place IDs where Google imagery is used.
 - [ ] Apply the same media hierarchy and attribution rules used for Crete.
-- [ ] Keep stories, taglines, products, origin claims, and local context source-backed and human.
+- [ ] Keep stories, taglines, products, origin claims, regional descriptions, and local context source-backed and human.
 - [ ] Bring search, filters, map/list browsing, detail pages, deep links, and mobile presentation to reference-quality parity.
 - [ ] Build Discovery Guides only from verified stops and never present them as road-safety guarantees without route evidence.
 - [ ] Synchronize bundled fallback/offline data so stale defaults cannot reappear.
@@ -408,7 +408,7 @@ Every new Greek producer, project, category, or later international region must 
 
 **Status:** Final closeout in progress — the five unresolved Google-identity listings were removed by owner decision; the retained dairy set is 9 / 9 on persistent audited Google Place IDs. Repository/build/deploy verification remains before Phase 12 is formally crossed off.
 
-> Implementation/reporting during this workstream used the label “Phase 13 dairy”. The canonical roadmap keeps Greek Cheese & Dairy as Phase 12 and records that work here rather than renumbering all subsequent phases.
+> Implementation/reporting during this workstream used the label “Phase 13 dairy”. The canonical roadmap keeps Greek Cheese & Dairy as Phase 12 and records that work here rather than renumbering subsequent phases.
 
 - [x] ~~Define first-class cheese/dairy taxonomy and filters without treating every dairy as a visitor attraction.~~
 - [x] ~~Build an audited Greek producer batch covering genuine feta production and other regional cheeses such as graviera, manouri, kefalotyri, and locally important cheeses where evidence supports inclusion.~~
@@ -439,9 +439,33 @@ Phase 12 dairy rollout notes:
 
 ---
 
-## Phase 13 — Greek Olive & Olive Oil Expansion
+## Phase 13 — Interactive Terroir Regions
 
-**Status:** Next major phase after Phase 12 final build/deploy verification. Phase 11 is already complete and does not block this phase.
+**Status:** Next major product phase after the current Phase 12 and Travelpayouts deployment/production-verification closeout. Crete is the reference implementation; Heraklion is the first prototype region.
+
+This phase adds a geographic discovery layer above individual producer pins so travelers can understand the character of a place before drilling into specific makers.
+
+- [ ] Define a reusable regional-boundary data model and GeoJSON layer that can support Crete first and later other Greek/international regions.
+- [ ] Prototype **Heraklion** with an accurate regional polygon, subtle map highlight, and clear region label.
+- [ ] Add hover/focus interaction on desktop and tap interaction on mobile without interfering with producer pins or map navigation.
+- [ ] Build a compact regional terroir card answering **“what makes this place distinctive?”** rather than presenting generic tourism copy.
+- [ ] Keep regional descriptions, agricultural context, products, cultivars, traditions, landscape and climate claims source-backed and appropriately scoped.
+- [ ] Show useful live catalogue context such as producer count and represented categories without fabricating completeness.
+- [ ] Add an **Explore region** action that zooms to the region and filters/browses the relevant producer set.
+- [ ] Expand the Crete reference layer to **Chania, Rethymno and Lasithi** after the Heraklion interaction is validated.
+- [ ] Define zoom-level behavior so regional context is useful at wider views while producer pins remain primary at closer zoom levels.
+- [ ] Ensure accessibility, keyboard/focus handling, mobile layout, reduced-motion behavior and map performance remain production quality.
+- [ ] Keep regional highlighting informational rather than implying administrative endorsement, producer partnership, route safety or exhaustive coverage.
+- [ ] Design the architecture so later regions such as Nemea, Santorini and Tuscany can use the same interaction model without Greece-specific assumptions.
+- [ ] Run the full automated quality gate, deploy, and complete a production smoke pass before marking Phase 13 complete.
+
+**Definition of done:** the map communicates regional terroir and place identity as well as individual producer locations, with Heraklion/Crete serving as the reusable reference implementation.
+
+---
+
+## Phase 14 — Greek Olive & Olive Oil Expansion
+
+**Status:** Planned after Phase 13 — Interactive Terroir Regions.
 
 - [ ] Expand beyond the current olive coverage with audited independent mills, growers, estates, cooperatives, and other appropriate olive-oil producers across Greece.
 - [ ] Distinguish olive grove, working mill, bottling/brand operation, visitor centre, and retail shop identities.
@@ -453,9 +477,9 @@ Phase 12 dairy rollout notes:
 
 ---
 
-## Phase 14 — Greek Honey & Apiary Expansion
+## Phase 15 — Greek Honey & Apiary Expansion
 
-**Status:** Planned after Phase 13.
+**Status:** Planned after Phase 14.
 
 - [ ] Build an audited apiary/honey producer batch across appropriate Greek regions.
 - [ ] Distinguish beekeeper/apiary operations, packing/production premises, shops, cooperatives, and educational visitor sites.
@@ -467,9 +491,9 @@ Phase 12 dairy rollout notes:
 
 ---
 
-## Phase 15 — Greek Herbs & Botanicals Expansion
+## Phase 16 — Greek Herbs & Botanicals Expansion
 
-**Status:** Planned after Phase 14.
+**Status:** Planned after Phase 15.
 
 - [ ] Build an audited batch of herb growers, botanical producers, distillers, and related small-scale makers where they fit TerroirTrail.
 - [ ] Distinguish cultivation/production sites from shops and reseller locations.
@@ -481,9 +505,9 @@ Phase 12 dairy rollout notes:
 
 ---
 
-## Phase 16 — Greek Farm & Regional Produce Expansion
+## Phase 17 — Greek Farm & Regional Produce Expansion
 
-**Status:** Planned after Phase 15.
+**Status:** Planned after Phase 16.
 
 - [ ] Expand verified farms and primary-produce makers beyond the current catalogue.
 - [ ] Prioritize genuinely place-linked produce such as pulses, grains, carob, nuts, fruit, vegetables, and other regional crops where a traveler-facing listing makes sense.
@@ -495,9 +519,9 @@ Phase 12 dairy rollout notes:
 
 ---
 
-## Phase 17 — Greek Regional Specialty Foods Expansion
+## Phase 18 — Greek Regional Specialty Foods Expansion
 
-**Status:** Planned after Phase 16.
+**Status:** Planned after Phase 17.
 
 - [ ] Identify regional food crafts that have a strong producer-and-place connection and fit TerroirTrail's discovery model.
 - [ ] Audit makers of preserves, traditional grain products, regional sweets, cured or preserved foods, and other local specialties where inclusion is evidence-backed and meaningful.
@@ -509,7 +533,7 @@ Phase 12 dairy rollout notes:
 
 ---
 
-## Phase 18 — Greek Geoparks, Heritage & Local Projects
+## Phase 19 — Greek Geoparks, Heritage & Local Projects
 
 **Status:** Planned after the core Greek food-producer verticals.
 
@@ -523,7 +547,7 @@ Phase 12 dairy rollout notes:
 
 ---
 
-## Phase 19 — International Geographic Expansion
+## Phase 20 — International Geographic Expansion
 
 **Status:** Deferred until the Greece-first category programme is complete and production-verified.
 
@@ -543,7 +567,7 @@ Greece remains the priority. Once the Greek catalogue has meaningful breadth bey
 
 ---
 
-## Phase 20 — Producer Partnerships & Deals
+## Phase 21 — Producer Partnerships & Deals
 
 **Status:** Deferred until the planned discovery-expansion programme is complete enough to support formal producer relationships safely. The Phase 11 account/authority prerequisite is already complete.
 
@@ -566,7 +590,7 @@ Relationship levels:
 
 ---
 
-## Phase 21 — Experiences
+## Phase 22 — Experiences
 
 **Status:** Do not populate before producer agreements.
 
@@ -586,7 +610,7 @@ Relationship levels:
 
 ---
 
-## Phase 22 — Booking & Payments
+## Phase 23 — Booking & Payments
 
 **Status:** Future.
 
@@ -602,14 +626,14 @@ Only after real approved Experiences exist.
 
 ---
 
-## Phase 23 — Monetisation & Scale
+## Phase 24 — Monetisation & Scale
 
-**Status:** Future.
+**Status:** Future overall; the Travelpayouts affiliate-carousel pilot is an intentionally early cross-cutting monetisation experiment and does not activate the rest of this phase.
 
 - [ ] Validate Host Pro based on real producer needs.
 - [ ] Validate Explorer Pass based on real traveler value.
 - [ ] Introduce sponsored visibility/advertising only with clear disclosure and trust safeguards.
-- [ ] Validate affiliate travel services.
+- [ ] Validate affiliate travel services beyond the current controlled Travelpayouts pilot.
 - [ ] Validate chauffeur partnerships.
 - [ ] Expand direct producer shop linking where appropriate.
 - [ ] Revisit booking revenue only if the commercial model deliberately supports it.
@@ -630,11 +654,12 @@ Monetisation follows the product and trust model; it must not dictate or weaken 
 8. **Every completed roadmap item is crossed out in this file when verified complete.**
 9. **Before starting a major new feature, place it against this roadmap first.**
 10. **Crete is the reference-quality regional implementation.**
-11. **Phase 11 account/admin/host handling is complete; finish the Phase 12 dairy removal build/deploy verification before beginning Phase 13 olive expansion.**
-12. **Expand Greece by product field before resuming broad international geographic expansion.**
+11. **Phase 11 account/admin/host handling is complete; finish the current Phase 12 and Travelpayouts deployment/production-verification closeout before beginning Phase 13 Interactive Terroir Regions.**
+12. **Expand Greece by product field before resuming broad international geographic expansion, with Phase 13 first adding the reusable regional-terroir interaction layer that supports those later expansions.**
 13. **A shop, office, cooperative outlet, or visitor centre must never be silently treated as the underlying production site.**
 14. **New categories must receive category-appropriate taxonomy and UI rather than inheriting wine-centric assumptions.**
 15. **Finish the planned discovery expansion to an explicit reference-quality standard before producer-partnership/deal outreach becomes the main programme.**
 16. **Traveler, Host, and Admin account capabilities are production architecture prerequisites and remain subject to regression testing as the platform expands.**
 17. **Partnership-dependent commercial features stay dormant rather than forcing premature deals.**
 18. **A candidate listing may be removed when exact identity cannot meet the publication standard; catalogue size is never a reason to guess a Google business identity.**
+19. **Regional map overlays are contextual discovery layers, not evidence of exhaustive coverage, administrative endorsement, route safety, or commercial partnership.**
