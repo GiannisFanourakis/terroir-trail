@@ -30,6 +30,8 @@ interface ProducerPortalModalProps {
   isOpen: boolean;
   onClose: () => void;
   user: UserProfile | null;
+  /** Server-derived producer IDs this account may manage. */
+  trustedProducerIds?: string[];
   onOpenAuth?: (role?: 'producer') => void;
   onLoginWithGoogle?: (
     role?: 'traveler' | 'producer',
@@ -123,21 +125,31 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
   isOpen,
   onClose,
   user,
+  trustedProducerIds,
   onOpenAuth,
   producers,
   onSaveProducerOverride,
   getProducerOverride,
   onSelectProducerForDrawer,
 }) => {
-  const isProducerAuthenticated = Boolean(
-    user?.isProducer && user.claimedProducerId
-  );
+  const managedProducerIds = useMemo(() => {
+    const ids = trustedProducerIds?.length
+      ? trustedProducerIds
+      : user?.producerIds?.length
+        ? user.producerIds
+        : user?.claimedProducerId
+          ? [user.claimedProducerId]
+          : [];
+    return Array.from(new Set(ids.filter(Boolean)));
+  }, [trustedProducerIds, user?.producerIds, user?.claimedProducerId]);
+
+  const isProducerAuthenticated = Boolean(user && managedProducerIds.length > 0);
+  const [selectedProducerId, setSelectedProducerId] = useState<string | null>(null);
   const selectedProducer = useMemo(
-    () =>
-      isProducerAuthenticated
-        ? producers.find(producer => producer.id === user?.claimedProducerId)
-        : undefined,
-    [isProducerAuthenticated, producers, user?.claimedProducerId]
+    () => selectedProducerId
+      ? producers.find(producer => producer.id === selectedProducerId)
+      : undefined,
+    [producers, selectedProducerId]
   );
 
   const [activeTab, setActiveTab] = useState<PortalTab>('overview');
@@ -164,10 +176,18 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
     setMediaSaved(false);
     setMediaError(null);
     setRightsConfirmed(false);
-  }, [isOpen]);
+    setSelectedProducerId((current) =>
+      current && managedProducerIds.includes(current)
+        ? current
+        : managedProducerIds[0] || null
+    );
+  }, [isOpen, managedProducerIds.join('|')]);
 
   useEffect(() => {
     setCustomNotice(currentOverride?.customNotice || '');
+    setNoticeSaved(false);
+    setMediaSaved(false);
+    setMediaError(null);
   }, [currentOverride?.customNotice, selectedProducer?.id]);
 
   const loadClaim = async () => {
@@ -219,6 +239,8 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
     try {
       await onSaveProducerOverride(override);
       setNoticeSaved(true);
+    } catch (error) {
+      setClaimError(error instanceof Error ? error.message : 'Unable to save the visitor notice.');
     } finally {
       setNoticeSaving(false);
     }
@@ -260,8 +282,14 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
         : [...currentImages, newImage];
     const override = buildOverride({ uploadedImages });
     if (!override) return;
-    await onSaveProducerOverride(override);
-    setMediaSaved(true);
+    try {
+      await onSaveProducerOverride(override);
+      setMediaSaved(true);
+    } catch (error) {
+      setMediaError(error instanceof Error ? error.message : 'Unable to submit this producer photo.');
+    } finally {
+      URL.revokeObjectURL(localUrl);
+    }
   };
 
   const handleDeletePhoto = async (imageId: string) => {
@@ -269,8 +297,13 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
       uploadedImages: currentImages.filter(image => image.id !== imageId),
     });
     if (!override) return;
-    await onSaveProducerOverride(override);
-    setMediaSaved(true);
+    setMediaError(null);
+    try {
+      await onSaveProducerOverride(override);
+      setMediaSaved(true);
+    } catch (error) {
+      setMediaError(error instanceof Error ? error.message : 'Unable to remove this producer photo.');
+    }
   };
 
   const shell = (content: React.ReactNode) => (
@@ -434,7 +467,7 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
         <AlertTriangle className="w-10 h-10 text-amber-400 mx-auto mb-3" />
         <h3 className="text-lg font-bold text-white">Assigned producer is not in the current catalogue</h3>
         <p className="text-sm text-stone-400 mt-2">
-          Your trusted ownership is active, but the assigned producer record could not be loaded. No other producer has been substituted.
+          Your trusted ownership is active, but the assigned producer record could not be loaded. No unassigned producer has been substituted.
         </p>
       </div>
     );
@@ -468,19 +501,38 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
           </div>
         </div>
 
-        {onSelectProducerForDrawer && (
-          <button
-            type="button"
-            onClick={() => {
-              onSelectProducerForDrawer(selectedProducer);
-              onClose();
-            }}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-stone-950 px-3 py-2 text-xs font-semibold text-stone-300 hover:text-white cursor-pointer"
-          >
-            <Eye className="w-3.5 h-3.5 text-amber-400" />
-            View public page
-          </button>
-        )}
+        <div className="flex flex-wrap items-center gap-2">
+          {managedProducerIds.length > 1 && (
+            <label className="flex items-center gap-2 rounded-lg border border-white/10 bg-stone-950 px-2.5 py-1.5 text-[10px] text-stone-400">
+              <span>Listing</span>
+              <select
+                value={selectedProducerId || ''}
+                onChange={(event) => setSelectedProducerId(event.target.value)}
+                className="max-w-[220px] bg-transparent text-xs font-semibold text-stone-200 focus:outline-none"
+                aria-label="Choose producer listing"
+              >
+                {managedProducerIds.map((producerId) => {
+                  const producer = producers.find((item) => item.id === producerId);
+                  return <option key={producerId} value={producerId} className="bg-stone-900">{producer?.name || producerId}</option>;
+                })}
+              </select>
+            </label>
+          )}
+
+          {onSelectProducerForDrawer && (
+            <button
+              type="button"
+              onClick={() => {
+                onSelectProducerForDrawer(selectedProducer);
+                onClose();
+              }}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-stone-950 px-3 py-2 text-xs font-semibold text-stone-300 hover:text-white cursor-pointer"
+            >
+              <Eye className="w-3.5 h-3.5 text-amber-400" />
+              View public page
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="flex border-b border-white/10 px-5 sm:px-6 overflow-x-auto shrink-0">
@@ -504,7 +556,7 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
                   Your listing
                 </div>
                 <p className="mt-2 text-xs text-stone-400 leading-relaxed">
-                  You can manage producer-supplied visitor information for <strong className="text-stone-200">{selectedProducer.name}</strong>. Your account cannot switch to or edit another producer listing.
+                  You can manage producer-supplied visitor information for <strong className="text-stone-200">{selectedProducer.name}</strong>. {managedProducerIds.length > 1 ? 'Use the listing selector to switch only among listings explicitly assigned to this account.' : 'Only listings explicitly assigned by TerroirTrail can be edited.'}
                 </p>
               </div>
               <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/5 p-4">
@@ -548,6 +600,7 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
                 Visitor notice saved.
               </div>
             )}
+            {claimError && <div className="rounded-xl border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-xs text-rose-300">{claimError}</div>}
 
             <div>
               <label className="block text-xs font-semibold text-stone-300 mb-1.5">Current announcement</label>
@@ -577,10 +630,10 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
             <div className="rounded-2xl border border-sky-500/20 bg-sky-500/10 p-4">
               <div className="flex items-center gap-2 text-sky-300 font-bold text-sm">
                 <Camera className="w-4 h-4" />
-                Profile Photos · prototype
+                Profile Photos
               </div>
               <p className="mt-1 text-[11px] text-stone-300 leading-relaxed">
-                Only upload images you own or are expressly licensed to use. New submissions are marked pending review rather than being treated as verified TerroirTrail media automatically.
+                Only upload images you own or are expressly licensed to use. Every new image is submitted as pending review and can become public only after TerroirTrail moderation.
               </p>
             </div>
 
@@ -636,7 +689,7 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
                 Trusted producer ownership active
               </div>
               <p className="mt-1 text-xs text-stone-400 leading-relaxed">
-                Host permissions come from TerroirTrail's trusted producer ownership record, not from browser profile fields or a self-selected role.
+                Host permissions come from TerroirTrail's trusted producer ownership records, not from browser profile fields or a self-selected role. This account currently has {managedProducerIds.length} assigned listing{managedProducerIds.length === 1 ? '' : 's'}.
               </p>
             </div>
             <div className="rounded-2xl border border-white/10 bg-stone-900/60 divide-y divide-white/5">
