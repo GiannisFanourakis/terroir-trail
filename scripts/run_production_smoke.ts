@@ -17,19 +17,14 @@ for (const path of ['.env.smoke.local', '.env.local', '.env']) {
 
 const publicOrigin = (process.env.SMOKE_PUBLIC_ORIGIN || 'https://terroir-trail.web.app').replace(/\/+$/, '');
 const timeoutMs = Number(process.env.SMOKE_TIMEOUT_MS || 20000);
+const producerId = String(process.env.SMOKE_PRODUCER_ID || 'anoskeli-estate').trim();
 
 function requiredEnv(name: string): string {
   const value = String(process.env[name] || '').trim();
   if (!value) {
-    throw new Error(
-      `Missing ${name}. Copy .env.smoke.example to .env.smoke.local and fill the Host/Admin smoke credentials.`
-    );
+    throw new Error(`Missing ${name}. Add it to .env.smoke.local.`);
   }
   return value;
-}
-
-function optionalEnv(name: string): string {
-  return String(process.env[name] || '').trim();
 }
 
 const firebaseConfig: FirebaseOptions = {
@@ -45,11 +40,6 @@ const firebaseConfig: FirebaseOptions = {
   ...(process.env.VITE_FIREBASE_APP_ID ? { appId: process.env.VITE_FIREBASE_APP_ID } : {}),
 };
 
-const hostCredential = {
-  email: requiredEnv('SMOKE_HOST_EMAIL'),
-  password: requiredEnv('SMOKE_HOST_PASSWORD'),
-};
-
 requiredEnv('SMOKE_ADMIN_EMAIL');
 requiredEnv('SMOKE_ADMIN_PASSWORD');
 
@@ -59,71 +49,11 @@ type TempTraveler = {
   password: string;
 };
 
-type AccountCapabilities = {
-  producerIds: string[];
-  canManageOwnedListings: boolean;
-};
-
 function namedApp(prefix: string): FirebaseApp {
   return initializeApp(
     firebaseConfig,
     `${prefix}-${Date.now()}-${randomBytes(4).toString('hex')}`
   );
-}
-
-async function fetchHostProducerId(): Promise<string> {
-  const app = namedApp('production-smoke-host-discovery');
-  const auth = getAuth(app);
-  try {
-    const signedIn = await signInWithEmailAndPassword(
-      auth,
-      hostCredential.email,
-      hostCredential.password
-    );
-    const token = await signedIn.user.getIdToken(true);
-    const response = await fetch(`${publicOrigin}/api/account/capabilities`, {
-      headers: {
-        Accept: 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      cache: 'no-store',
-      signal: AbortSignal.timeout(timeoutMs),
-    });
-    const rawBody = await response.text();
-    if (!response.ok) {
-      throw new Error(
-        `Host capability lookup returned HTTP ${response.status}: ${rawBody.slice(0, 500)}`
-      );
-    }
-    const parsed = JSON.parse(rawBody) as { capabilities?: AccountCapabilities };
-    const capabilities = parsed.capabilities;
-    if (!capabilities?.canManageOwnedListings || !Array.isArray(capabilities.producerIds)) {
-      throw new Error('The configured smoke Host does not have active producer-management authority.');
-    }
-    const ownedProducerIds = capabilities.producerIds.filter(
-      (producerId) => typeof producerId === 'string' && producerId.trim().length > 0
-    );
-    if (ownedProducerIds.length === 0) {
-      throw new Error('The configured smoke Host does not own any active producer listing.');
-    }
-
-    const requested = optionalEnv('SMOKE_PRODUCER_ID');
-    if (requested) {
-      if (!ownedProducerIds.includes(requested)) {
-        throw new Error('SMOKE_PRODUCER_ID is not owned by the configured Host account.');
-      }
-      return requested;
-    }
-
-    return [...ownedProducerIds].sort()[0];
-  } finally {
-    try {
-      await signOut(auth);
-    } catch {
-      // App disposal below is the important local cleanup.
-    }
-    await deleteApp(app);
-  }
 }
 
 async function callAccountDelete(auth: Auth): Promise<void> {
@@ -140,15 +70,11 @@ async function callAccountDelete(auth: Auth): Promise<void> {
   });
   if (!response.ok && response.status !== 404) {
     const body = await response.text();
-    throw new Error(
-      `Temporary Traveler cleanup returned HTTP ${response.status}: ${body.slice(0, 500)}`
-    );
+    throw new Error(`Temporary Traveler cleanup returned HTTP ${response.status}: ${body.slice(0, 500)}`);
   }
 }
 
-async function createTemporaryTraveler(
-  label: TempTraveler['label']
-): Promise<TempTraveler> {
+async function createTemporaryTraveler(label: TempTraveler['label']): Promise<TempTraveler> {
   const app = namedApp(`production-smoke-bootstrap-${label}`);
   const auth = getAuth(app);
   const suffix = `${Date.now()}-${randomBytes(5).toString('hex')}`;
@@ -175,9 +101,7 @@ async function createTemporaryTraveler(
       try {
         await callAccountDelete(auth);
       } catch (cleanupError) {
-        console.error(
-          `WARNING: failed to remove partially created ${label} account: ${String(cleanupError)}`
-        );
+        console.error(`WARNING: failed to remove partially created ${label} account: ${String(cleanupError)}`);
       }
     }
     throw error;
@@ -206,20 +130,18 @@ async function deleteTemporaryTraveler(traveler: TempTraveler): Promise<void> {
     try {
       await signOut(auth);
     } catch {
-      // The account may already have been deleted successfully.
+      // Account may already have been deleted successfully.
     }
     await deleteApp(app);
   }
 }
 
 async function main(): Promise<void> {
-  console.log('\nTerroirTrail automated Phase 11 production smoke setup');
+  console.log('\nTerroirTrail automated Phase 11 production smoke');
   console.log(`Target: ${publicOrigin}`);
-  console.log('Traveler accounts: temporary @example.com accounts will be created and deleted automatically.');
-  console.log('Only Host/Admin credentials are read from .env.smoke.local. Passwords are never printed.\n');
-
-  const producerId = await fetchHostProducerId();
-  console.log(`Auto-selected Host-owned producer: ${producerId}`);
+  console.log(`Producer: ${producerId}`);
+  console.log('Mode: Traveler/Admin. Host checks are skipped until a verified producer exists.');
+  console.log('Two disposable Traveler accounts will be created and deleted automatically.\n');
 
   const temporaryTravelers: TempTraveler[] = [];
   let smokeExitCode = 1;
@@ -230,10 +152,9 @@ async function main(): Promise<void> {
     temporaryTravelers.push(travelerA);
     const travelerB = await createTemporaryTraveler('traveler-b');
     temporaryTravelers.push(travelerB);
-    console.log('Created two disposable Traveler accounts.\n');
 
     const npx = process.platform === 'win32' ? 'npx.cmd' : 'npx';
-    const child = spawnSync(npx, ['tsx', 'scripts/production_account_smoke.ts'], {
+    const child = spawnSync(npx, ['tsx', 'scripts/production_account_smoke_no_host.ts'], {
       stdio: 'inherit',
       env: {
         ...process.env,
