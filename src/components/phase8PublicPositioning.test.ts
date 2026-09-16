@@ -67,7 +67,7 @@ describe('Phase 8 Public Positioning & SEO Synchronization', () => {
       );
 
       expect(llmsTxt).toContain('# TerroirTrail — Independent Producer & Agritourism Guide');
-      expect(llmsTxt).toContain('67 producer/project records');
+      expect(llmsTxt).toContain('62 producer/project records');
       expect(llmsTxt).toContain('Crete, Santorini, the Peloponnese, Northern Greece');
       expect(llmsTxt).toContain('Tuscany / Italy');
       expect(llmsTxt).toContain('/producers/<producer-id>/');
@@ -134,7 +134,7 @@ describe('Phase 8 Public Positioning & SEO Synchronization', () => {
     });
 
     it('keeps the About experience aligned with the current multi-region catalogue', () => {
-      expect(aboutFaqModal).toContain('67 producer records');
+      expect(aboutFaqModal).toContain('62 producer records');
       expect(aboutFaqModal).toContain('Crete, Santorini, the Peloponnese, Northern Greece and Tuscany');
       expect(aboutFaqModal).toContain('Across Greece and into Italy');
       expect(aboutFaqModal).not.toContain('27 in Crete and 9 in Santorini');
