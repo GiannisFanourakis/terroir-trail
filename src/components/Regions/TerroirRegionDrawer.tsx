@@ -141,7 +141,7 @@ export const TerroirRegionDrawer: React.FC<TerroirRegionDrawerProps> = ({
               Sources
             </div>
             <div className="mt-2 grid gap-1.5">
-              {region.sources.slice(0, 5).map((source) => (
+              {region.sources.map((source) => (
                 <a
                   key={source.url}
                   href={source.url}
