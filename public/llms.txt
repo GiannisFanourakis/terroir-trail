@@ -6,9 +6,9 @@ Canonical URL: https://terroir-trail.web.app/
 
 TerroirTrail is an independent, discovery-first agritourism and producer guide. Its current audited catalogue spans Crete, Santorini, the Peloponnese, Northern Greece, and a Tuscany / Italy foothold. The same evidence-first rules apply across the catalogue: unknown facts stay unknown, public visitability is separate from partnership status, and location confidence is separate from road-access confidence.
 
-The current audited bundled catalogue contains 67 producer/project records: 32 in Crete, 9 in Santorini, and 26 across the Peloponnese, Northern Greece and Tuscany / Italy. Current first-class producer categories include wineries, craft breweries, olive mills, olive-oil producers, dairies/cheesemakers, apiaries/honey producers, traditional distilleries/rakokazana, and farms.
+The current audited bundled catalogue contains 62 producer/project records: 30 in Crete, 9 in Santorini, and 23 across the Peloponnese, Northern Greece and Tuscany / Italy. Current first-class producer categories include wineries, craft breweries, olive mills, olive-oil producers, dairies/cheesemakers, apiaries/honey producers, traditional distilleries/rakokazana, and farms.
 
-Greek cheese and dairy expansion is now included in the audited catalogue. Phase 13 added 12 new dairy/cheese producer records to the bundled discovery and search catalogue while retaining the two previously published dairy records. The dairy set therefore contains 14 records in total. Exact location, visitability and road access remain independent trust dimensions; factory existence does not imply public tours or safe rental-car access.
+Greek cheese and dairy expansion is now included in the audited catalogue. The implementation workstream retains 7 new dairy/cheese producer records in the bundled discovery and search catalogue alongside the two previously published dairy records, for 9 dairy records in total. Listings that could not meet the agreed exact persistent Google business-identity standard were removed rather than guessed. All 9 retained dairy records now carry persistent audited Google Place IDs. Exact location, visitability and road access remain independent trust dimensions; factory existence does not imply public tours or safe rental-car access.
 
 TerroirTrail is not currently a public booking marketplace. Public visitability is researched separately from any TerroirTrail commercial relationship. A producer being publicly visitable does not mean that TerroirTrail is authorized to sell or reserve an Experience there.
 
@@ -77,11 +77,11 @@ Third-party travel links, advertisements or affiliate links are separate from pr
 
 Current audited public catalogue:
 
-- Crete, Greece — 32 audited records.
+- Crete, Greece — 30 audited records.
 - Santorini, Greece — 9 audited records.
-- Peloponnese, Northern Greece and Tuscany / Italy — 26 audited records combined.
+- Peloponnese, Northern Greece and Tuscany / Italy — 23 audited records combined.
 
-The SEO, AEO and entity-discovery foundation now includes the Phase 13 dairy expansion. New category and regional additions should follow the same evidence-first publication rules and be synchronized into both the live catalogue and deterministic deploy-time entity catalogue.
+The SEO, AEO and entity-discovery foundation includes the retained dairy expansion. New category and regional additions should follow the same evidence-first publication rules and be synchronized into both the live catalogue and deterministic deploy-time entity catalogue.
 
 ## Contact
 
