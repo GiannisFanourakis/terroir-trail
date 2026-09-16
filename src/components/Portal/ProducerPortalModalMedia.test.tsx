@@ -62,6 +62,25 @@ describe('Host-Managed Producer Imagery Integration', () => {
     });
   });
 
+  describe('ProducerPortalModal — Immediate Host Visitor Information', () => {
+    it('keeps the approved immediate-edit operational fields in the Host Portal', () => {
+      const portalSource = readFileSync(
+        'src/components/Portal/ProducerPortalModal.tsx',
+        'utf8'
+      );
+
+      expect(portalSource).toContain('Visitor Information');
+      expect(portalSource).toContain('customHours: customHours.trim()');
+      expect(portalSource).toContain('contactEmail: trimmedEmail');
+      expect(portalSource).toContain('contactPhone: contactPhone.trim()');
+      expect(portalSource).toContain('Save visitor information');
+      expect(portalSource).toContain('id="host-opening-hours"');
+      expect(portalSource).toContain('id="host-contact-email"');
+      expect(portalSource).toContain('id="host-contact-phone"');
+      expect(portalSource).toContain('id="host-visitor-notice"');
+    });
+  });
+
   describe('ProducerDetailDrawer — Host Media Provenance Display', () => {
     it('renders "Provided by the producer" badge when approved host cover is present', () => {
       const hostOverride: ProducerOverride = {
