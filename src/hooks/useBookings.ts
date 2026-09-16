@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { TastingBooking, BookingStatus } from '../types/booking';
 import { 
   getLocalBookings, 
@@ -29,15 +29,18 @@ export const useBookings = (
       : { userId: userIdOrOptions, trustedProducerId: maybeProducerId };
 
   const { userId } = options;
-  const trustedProducerIds = Array.from(new Set(
-    (options.trustedProducerIds?.length
+  const trustedProducerIdsKey = useMemo(() => {
+    const source = options.trustedProducerIds?.length
       ? options.trustedProducerIds
       : options.trustedProducerId
         ? [options.trustedProducerId]
-        : [])
-      .filter(Boolean)
-  ));
-  const trustedProducerIdsKey = trustedProducerIds.slice().sort().join('|');
+        : [];
+    return Array.from(new Set(source.filter(Boolean))).sort().join('|');
+  }, [options.trustedProducerId, options.trustedProducerIds]);
+  const trustedProducerIds = useMemo(
+    () => trustedProducerIdsKey ? trustedProducerIdsKey.split('|') : [],
+    [trustedProducerIdsKey]
+  );
 
   const [travelerBookings, setTravelerBookings] = useState<TastingBooking[]>(() => {
     const all = getLocalBookings();
@@ -128,7 +131,7 @@ export const useBookings = (
     });
 
     return () => unsubscribers.forEach((unsubscribe) => unsubscribe());
-  }, [trustedProducerIdsKey]);
+  }, [trustedProducerIds]);
 
   const bookTasting = useCallback(
     async (
