@@ -220,6 +220,18 @@ export const App: React.FC = () => {
     setFilters(initialFilters);
   };
 
+  const handleExploreRegion = (destination: Destination) => {
+    setFilters((prev) => ({
+      ...prev,
+      destination,
+      searchQuery: '',
+      favoritesOnly: false,
+    }));
+    setSelectedProducer(null);
+    setIsDrawerOpen(false);
+    setViewMode('map');
+  };
+
   const filteredProducers = useMemo(() => {
     return filterProducers(publicProducers, filters, isFavorite);
   }, [publicProducers, filters, isFavorite]);
@@ -359,6 +371,7 @@ export const App: React.FC = () => {
             selectedDestination={filters.destination}
             isFavorite={isFavorite}
             onToggleFavorite={toggleFavorite}
+            onExploreRegion={handleExploreRegion}
             viewMode={viewMode}
           />
         </div>
