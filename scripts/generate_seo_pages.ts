@@ -35,7 +35,6 @@ const escapeHtml = (value: string): string =>
     .replaceAll("'", '&#039;');
 
 const escapeXml = escapeHtml;
-
 const normalizeText = (value: string): string => value.replace(/\s+/g, ' ').trim();
 
 const truncate = (value: string, maxLength: number): string => {
@@ -163,15 +162,9 @@ const buildJsonLd = (producer: Producer, canonicalUrl: string, pageTitle: string
     location,
   };
 
-  if (producer.greekName && producer.greekName !== producer.name) {
-    entity.alternateName = producer.greekName;
-  }
-  if (producer.website) {
-    entity.sameAs = [producer.website];
-  }
-  if (producer.phone) {
-    entity.telephone = producer.phone;
-  }
+  if (producer.greekName && producer.greekName !== producer.name) entity.alternateName = producer.greekName;
+  if (producer.website) entity.sameAs = [producer.website];
+  if (producer.phone) entity.telephone = producer.phone;
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -198,22 +191,14 @@ const buildJsonLd = (producer: Producer, canonicalUrl: string, pageTitle: string
   return JSON.stringify(jsonLd, null, 2).replace(/</g, '\\u003c');
 };
 
-const extractRuntimeAssets = (homeHtml: string): string => {
-  const tags = [
-    ...(homeHtml.match(/<script[^>]*type="module"[^>]*src="[^"]+"[^>]*><\/script>/g) || []),
-    ...(homeHtml.match(/<link[^>]*rel="stylesheet"[^>]*>/g) || []),
-    ...(homeHtml.match(/<link[^>]*rel="modulepreload"[^>]*>/g) || []),
-  ];
-  return [...new Set(tags)].join('\n    ');
-};
-
 const renderSourceLink = (label: string, url?: string): string => {
   if (!url) return '';
   return `<li><a href="${escapeHtml(url)}" rel="nofollow noopener noreferrer">${escapeHtml(label)}</a></li>`;
 };
 
-const renderProducerPage = (producer: Producer, runtimeAssets: string): string => {
+const renderProducerPage = (producer: Producer): string => {
   const canonicalUrl = producerUrl(producer);
+  const interactiveUrl = `${CANONICAL_HOST}/?producer=${encodeURIComponent(producer.id)}`;
   const title = `${producer.name} — ${producer.region} | TerroirTrail`;
   const description = buildDescription(producer);
   const category = categoryLabels[producer.category];
@@ -257,38 +242,39 @@ const renderProducerPage = (producer: Producer, runtimeAssets: string): string =
     <meta name="twitter:description" content="${escapeHtml(description)}" />
     <meta name="twitter:image" content="${CANONICAL_HOST}/logo.png" />
     <script type="application/ld+json">${jsonLd}</script>
-    ${runtimeAssets}
     <style>
-      .seo-fallback{box-sizing:border-box;min-height:100vh;background:#0c0a09;color:#e7e5e4;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding:32px 20px}.seo-fallback article{max-width:820px;margin:0 auto}.seo-fallback a{color:#fbbf24}.seo-fallback h1{font-size:clamp(2rem,5vw,3.6rem);line-height:1.05;color:#fff;margin:.5rem 0 1rem}.seo-fallback h2{color:#fff;margin-top:2rem}.seo-fallback .eyebrow{color:#fbbf24;font-weight:800;text-transform:uppercase;letter-spacing:.08em;font-size:.8rem}.seo-fallback .lead{font-size:1.15rem;line-height:1.7}.seo-fallback p,.seo-fallback dd{line-height:1.7}.seo-fallback dl{display:grid;gap:1rem}.seo-fallback dt{font-weight:800;color:#fff}.seo-fallback dd{margin:.25rem 0 0;color:#d6d3d1}.seo-fallback .notice{border-left:3px solid #f59e0b;padding-left:1rem;color:#d6d3d1}.seo-fallback ul{line-height:1.9}
+      :root{color-scheme:dark}.seo-page{box-sizing:border-box;min-height:100vh;background:#0c0a09;color:#e7e5e4;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding:32px 20px}.seo-page article{max-width:820px;margin:0 auto}.seo-page a{color:#fbbf24}.seo-page h1{font-size:clamp(2rem,5vw,3.6rem);line-height:1.05;color:#fff;margin:.5rem 0 1rem}.seo-page h2{color:#fff;margin-top:2rem}.seo-page .eyebrow{color:#fbbf24;font-weight:800;text-transform:uppercase;letter-spacing:.08em;font-size:.8rem}.seo-page .lead{font-size:1.15rem;line-height:1.7}.seo-page p,.seo-page dd{line-height:1.7}.seo-page dl{display:grid;gap:1rem}.seo-page dt{font-weight:800;color:#fff}.seo-page dd{margin:.25rem 0 0;color:#d6d3d1}.seo-page .notice{border-left:3px solid #f59e0b;padding-left:1rem;color:#d6d3d1}.seo-page ul{line-height:1.9}.seo-page .actions{display:flex;gap:12px;flex-wrap:wrap;margin:1.5rem 0}.seo-page .button{display:inline-block;background:#f59e0b;color:#1c1917;text-decoration:none;font-weight:800;padding:10px 14px;border-radius:999px}.seo-page .secondary{background:#292524;color:#fbbf24}
     </style>
   </head>
-  <body>
-    <div id="root">
-      <main class="seo-fallback">
-        <article>
-          <p><a href="/">← TerroirTrail</a></p>
-          <p class="eyebrow">${escapeHtml(category)} · ${escapeHtml(producer.region)}</p>
-          <h1>${escapeHtml(producer.name)}</h1>
-          ${producer.greekName && producer.greekName !== producer.name ? `<p lang="el">${escapeHtml(producer.greekName)}</p>` : ''}
-          ${producer.tagLine ? `<p class="lead">${escapeHtml(producer.tagLine)}</p>` : ''}
-          ${producer.description ? `<section><h2>About</h2><p>${escapeHtml(producer.description)}</p></section>` : ''}
-          ${producer.story ? `<section><h2>Story</h2><p>${escapeHtml(producer.story)}</p></section>` : ''}
-          ${publishedItems}
-          <section>
-            <h2>Visit and location facts</h2>
-            <dl>
-              <div><dt>What is it?</dt><dd>${escapeHtml(category)} listed in TerroirTrail's audited catalogue.</dd></div>
-              <div><dt>Where is it?</dt><dd>${escapeHtml(location)}</dd></div>
-              <div><dt>Can you visit?</dt><dd>${escapeHtml(visiting)}</dd></div>
-              <div><dt>What is known about road access?</dt><dd>${escapeHtml(access)}</dd></div>
-            </dl>
-          </section>
-          <p class="notice">TerroirTrail is an independent discovery guide. A researched listing or confirmed public visit does not imply a commercial partnership, booking relationship, or road-safety guarantee.</p>
-          ${sourceLinks ? `<section><h2>Sources and direct channels</h2><ul>${sourceLinks}</ul></section>` : ''}
-          ${producer.phone ? `<p><strong>Published phone:</strong> ${escapeHtml(producer.phone)}</p>` : ''}
-        </article>
-      </main>
-    </div>
+  <body style="margin:0">
+    <main class="seo-page">
+      <article>
+        <p><a href="/">← TerroirTrail</a></p>
+        <p class="eyebrow">${escapeHtml(category)} · ${escapeHtml(producer.region)}</p>
+        <h1>${escapeHtml(producer.name)}</h1>
+        ${producer.greekName && producer.greekName !== producer.name ? `<p lang="el">${escapeHtml(producer.greekName)}</p>` : ''}
+        ${producer.tagLine ? `<p class="lead">${escapeHtml(producer.tagLine)}</p>` : ''}
+        <div class="actions">
+          <a class="button" href="${interactiveUrl}">Open in the interactive TerroirTrail map</a>
+          ${producer.website ? `<a class="button secondary" href="${escapeHtml(producer.website)}" rel="nofollow noopener noreferrer">Official website</a>` : ''}
+        </div>
+        ${producer.description ? `<section><h2>About</h2><p>${escapeHtml(producer.description)}</p></section>` : ''}
+        ${producer.story ? `<section><h2>Story</h2><p>${escapeHtml(producer.story)}</p></section>` : ''}
+        ${publishedItems}
+        <section>
+          <h2>Visit and location facts</h2>
+          <dl>
+            <div><dt>What is it?</dt><dd>${escapeHtml(category)} listed in TerroirTrail's audited catalogue.</dd></div>
+            <div><dt>Where is it?</dt><dd>${escapeHtml(location)}</dd></div>
+            <div><dt>Can you visit?</dt><dd>${escapeHtml(visiting)}</dd></div>
+            <div><dt>What is known about road access?</dt><dd>${escapeHtml(access)}</dd></div>
+          </dl>
+        </section>
+        <p class="notice">TerroirTrail is an independent discovery guide. A researched listing or confirmed public visit does not imply a commercial partnership, booking relationship, or road-safety guarantee.</p>
+        ${sourceLinks ? `<section><h2>Sources and direct channels</h2><ul>${sourceLinks}</ul></section>` : ''}
+        ${producer.phone ? `<p><strong>Published phone:</strong> ${escapeHtml(producer.phone)}</p>` : ''}
+      </article>
+    </main>
   </body>
 </html>\n`;
 };
@@ -299,9 +285,61 @@ const renderSitemap = (): string => {
     `${CANONICAL_HOST}/privacy.html`,
     ...PRODUCERS.map(producerUrl),
   ];
-
   const entries = urls.map((url) => `  <url>\n    <loc>${escapeXml(url)}</loc>\n  </url>`).join('\n');
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${entries}\n</urlset>\n`;
+};
+
+const replaceRequired = (html: string, from: string, to: string): string => {
+  if (!html.includes(from)) {
+    console.error(`[SEO Generation Failed] Expected homepage text not found: ${from.slice(0, 100)}`);
+    process.exit(1);
+  }
+  return html.replaceAll(from, to);
+};
+
+const refreshHomepageSeoState = (sourceHtml: string): string => {
+  let html = sourceHtml;
+  const oldDescription = 'Independent producer and agritourism discovery guide. Explore audited producers across Crete and Santorini with clearly labeled visiting, location, imagery, and road-access status.';
+  const newDescription = 'Independent producer and agritourism discovery guide. Explore 55 audited producer/project records across Greece and Tuscany with clearly labeled visiting, location, imagery, and road-access status.';
+  html = replaceRequired(html, oldDescription, newDescription);
+
+  html = replaceRequired(
+    html,
+    'Independent producer and agritourism discovery guide connecting travelers directly with audited wineries, craft breweries, artisanal olive mills, traditional dairies, apiaries, traditional distilleries, and farms across Crete and Santorini, with clearly labeled visiting, location, imagery, and road-access status.',
+    'Independent producer and agritourism discovery guide connecting travelers directly with 55 audited producer/project records across Crete, Santorini, the Peloponnese, Northern Greece and Tuscany, with clearly labeled visiting, location, imagery, and road-access status.'
+  );
+  html = replaceRequired(
+    html,
+    'Interactive agritourism discovery map and directory with audited reference catalogues in Crete and Santorini. Discovery Guides are built from verified stops; multi-stop driving navigation remains withheld wherever road-access evidence is incomplete.',
+    'Interactive agritourism discovery map and directory with 55 audited producer/project records across Crete, Santorini, the Peloponnese, Northern Greece and Tuscany. Discovery Guides are built from verified stops; multi-stop driving navigation remains withheld wherever road-access evidence is incomplete.'
+  );
+  html = replaceRequired(
+    html,
+    'TerroirTrail is an independent producer and agritourism discovery guide. It connects slow travelers and road-trippers directly with independent wineries, craft breweries, artisanal olive mills, traditional dairies, apiaries, traditional distilleries, and farms, with audited reference catalogues in Crete and Santorini and further regional expansion in progress.',
+    'TerroirTrail is an independent producer and agritourism discovery guide with 55 audited producer/project records across Crete, Santorini, the Peloponnese, Northern Greece and Tuscany. It connects travelers with source-backed producer identity, visiting, location and access information while keeping unknown facts unknown.'
+  );
+  html = replaceRequired(html, 'Which regions are currently audited to reference quality?', 'Which regions are currently represented in the audited catalogue?');
+  html = replaceRequired(
+    html,
+    'Crete and Santorini are the current reference-quality regions. Crete has 27 audited producer/project records and Santorini has 9 audited producer records.',
+    'The audited catalogue currently covers Crete, Santorini, the Peloponnese, Northern Greece and a Tuscany / Italy foothold: 55 producer/project records in total.'
+  );
+  html = replaceRequired(
+    html,
+    'Crete and Santorini are the current reference-quality regions, with clearly labeled visiting, location, imagery, and road-access status and no commission markups.',
+    'The current audited catalogue spans Crete, Santorini, the Peloponnese, Northern Greece and Tuscany, with clearly labeled visiting, location, imagery, and road-access status and no commission markups.'
+  );
+  html = replaceRequired(
+    html,
+    'TerroirTrail publishes Discovery Guides from verified producer stops. Six guides are currently published across Crete and Santorini. They are discovery stop collections, not road-safety guarantees.',
+    'TerroirTrail publishes Discovery Guides from verified producer stops. Ten verified-stop guides are currently published across Crete, Santorini, the Peloponnese, Northern Greece and Tuscany. They are discovery stop collections, not road-safety guarantees.'
+  );
+  html = replaceRequired(
+    html,
+    '<h2>Verified Crete &amp; Santorini Producer Directory</h2>',
+    '<p>The full audited catalogue contains 55 producer/project records, each published as a canonical producer entity page for search and answer-engine discovery.</p>\n        <h2>Audited Crete &amp; Santorini Directory — Homepage Excerpt</h2>'
+  );
+  return html;
 };
 
 function generateSeoPages(): void {
@@ -324,11 +362,8 @@ function generateSeoPages(): void {
   }
 
   const homeHtml = fs.readFileSync(homeIndexPath, 'utf-8');
-  const runtimeAssets = extractRuntimeAssets(homeHtml);
-  if (!runtimeAssets.includes('type="module"')) {
-    console.error('[SEO Generation Failed] Could not locate the built Vite module script in dist/index.html.');
-    process.exit(1);
-  }
+  const refreshedHomeHtml = refreshHomepageSeoState(homeHtml);
+  fs.writeFileSync(homeIndexPath, refreshedHomeHtml, 'utf-8');
 
   const producerRoot = path.join(distDir, 'producers');
   fs.rmSync(producerRoot, { recursive: true, force: true });
@@ -336,12 +371,11 @@ function generateSeoPages(): void {
   for (const producer of PRODUCERS) {
     const pageDir = path.join(producerRoot, producer.id);
     fs.mkdirSync(pageDir, { recursive: true });
-    fs.writeFileSync(path.join(pageDir, 'index.html'), renderProducerPage(producer, runtimeAssets), 'utf-8');
+    fs.writeFileSync(path.join(pageDir, 'index.html'), renderProducerPage(producer), 'utf-8');
   }
 
   fs.writeFileSync(path.join(distDir, 'sitemap.xml'), renderSitemap(), 'utf-8');
-
-  console.log(`✓ SEO generation complete: ${PRODUCERS.length} canonical producer pages + sitemap.`);
+  console.log(`✓ SEO generation complete: homepage refreshed + ${PRODUCERS.length} canonical producer pages + sitemap.`);
 }
 
 generateSeoPages();
