@@ -1,10 +1,12 @@
 import 'dotenv/config';
 import { app } from './app';
+import { registerAccountSelfRoutes } from './accountSelfRoutes';
 import { registerAdminMediaRoutes } from './adminMediaRoutes';
 import { registerProducerMediaRoutes } from './producerMediaRoutes';
 
 registerAdminMediaRoutes(app);
 registerProducerMediaRoutes(app);
+registerAccountSelfRoutes(app);
 
 const port = Number(process.env.PORT || 4242);
 app.listen(port, '0.0.0.0', () => {
