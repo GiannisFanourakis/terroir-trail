@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect, Suspense, lazy } from 'react';
 import { useProducers } from './hooks/useProducers';
 import { Producer, FilterState, Destination, DayTripLoop } from './types/terroir';
 import type { UserProfile } from './types/auth';
+import type { ProducerOverride } from './types/booking';
 import { Header } from './components/Header/Header';
 import { FilterBar } from './components/FilterBar/FilterBar';
 import { MapCanvas } from './components/Map/MapCanvas';
@@ -53,6 +54,26 @@ export type ActiveModal =
   | { type: 'about_faq'; initialTab?: 'about' | 'faq' }
   | { type: 'legal'; initialTab?: 'privacy' | 'terms' | 'producers' | 'licenses' }
   | null;
+
+const applyApprovedListingOverride = (
+  producer: Producer,
+  override?: ProducerOverride
+): Producer => {
+  if (!override) return producer;
+  return {
+    ...producer,
+    ...(override.tagLine !== undefined ? { tagLine: override.tagLine } : {}),
+    ...(override.description !== undefined ? { description: override.description } : {}),
+    ...(override.story !== undefined ? { story: override.story } : {}),
+    ...(override.tastingHighlights !== undefined ? { tastingHighlights: override.tastingHighlights } : {}),
+    ...(override.website !== undefined ? { website: override.website || undefined } : {}),
+    ...(override.foodOption !== undefined ? { foodOption: override.foodOption || undefined } : {}),
+    ...(override.dogFriendly !== undefined ? { dogFriendly: override.dogFriendly } : {}),
+    ...(override.kidFriendly !== undefined ? { kidFriendly: override.kidFriendly } : {}),
+    ...(override.walkIn !== undefined ? { walkIn: override.walkIn } : {}),
+    ...(override.campervanFriendly !== undefined ? { campervanFriendly: override.campervanFriendly } : {}),
+  };
+};
 
 export const App: React.FC = () => {
   const [selectedProducer, setSelectedProducer] = useState<Producer | null>(null);
@@ -111,6 +132,7 @@ export const App: React.FC = () => {
   });
 
   const {
+    overrides,
     getOverride,
     updateOverride,
   } = useProducerPortal();
@@ -140,6 +162,18 @@ export const App: React.FC = () => {
     category: filters.category,
     searchQuery: filters.searchQuery,
   });
+
+  const publicProducers = useMemo(
+    () => producers.map(producer => applyApprovedListingOverride(producer, overrides[producer.id])),
+    [producers, overrides]
+  );
+
+  const publicSelectedProducer = useMemo(
+    () => selectedProducer
+      ? applyApprovedListingOverride(selectedProducer, overrides[selectedProducer.id])
+      : null,
+    [selectedProducer, overrides]
+  );
 
   const adminPortalPreviewProducer = useMemo(
     () => adminPortalPreviewProducerId
@@ -183,15 +217,15 @@ export const App: React.FC = () => {
   };
 
   const filteredProducers = useMemo(() => {
-    return filterProducers(producers, filters, isFavorite);
-  }, [producers, filters, isFavorite]);
+    return filterProducers(publicProducers, filters, isFavorite);
+  }, [publicProducers, filters, isFavorite]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const params = new URLSearchParams(window.location.search);
     const target = params.get('producer');
-    if (target && producers.length > 0) {
-      const match = producers.find(
+    if (target && publicProducers.length > 0) {
+      const match = publicProducers.find(
         (p) =>
           p.id.toLowerCase() === target.toLowerCase() ||
           p.id.toLowerCase().includes(target.toLowerCase())
@@ -201,7 +235,7 @@ export const App: React.FC = () => {
         setIsDrawerOpen(true);
       }
     }
-  }, [producers]);
+  }, [publicProducers]);
 
   const handleSelectLoop = async (loop: DayTripLoop) => {
     setFilters((prev) => ({
@@ -286,7 +320,7 @@ export const App: React.FC = () => {
         >
           <ProducerList
             producers={filteredProducers}
-            selectedProducer={selectedProducer}
+            selectedProducer={publicSelectedProducer}
             onSelectProducer={(p) => {
               setSelectedProducer(p);
               setIsDrawerOpen(true);
@@ -310,7 +344,7 @@ export const App: React.FC = () => {
 
           <MapCanvas
             producers={filteredProducers}
-            selectedProducer={selectedProducer}
+            selectedProducer={publicSelectedProducer}
             onSelectProducer={(producer) => {
               setSelectedProducer(producer);
             }}
@@ -351,7 +385,7 @@ export const App: React.FC = () => {
 
         {isDrawerOpen && (
           <ProducerDetailDrawer
-            producer={selectedProducer}
+            producer={publicSelectedProducer}
             onClose={() => setIsDrawerOpen(false)}
             user={user}
             onOpenProducerPortal={() => handleOpenProducerPortal(selectedProducer)}
@@ -385,7 +419,7 @@ export const App: React.FC = () => {
               closeModal();
             }}
             user={user}
-            producers={producers}
+            producers={publicProducers}
           />
         )}
 
@@ -416,7 +450,7 @@ export const App: React.FC = () => {
             isOpen
             onClose={closeModal}
             user={user}
-            producers={producers}
+            producers={publicProducers}
             onToggleVisited={toggleVisited}
             onSaveTastingNote={saveTastingNote}
             onSelectProducer={(producer) => {
@@ -443,7 +477,7 @@ export const App: React.FC = () => {
           <BookingModal
             isOpen
             onClose={closeModal}
-            producer={activeModal.producer || selectedProducer}
+            producer={activeModal.producer || publicSelectedProducer}
             user={user}
             initialExperienceId={activeModal.experienceId}
             onBookTasting={bookTasting}
@@ -463,6 +497,7 @@ export const App: React.FC = () => {
               onClose={closeModal}
               user={producerPortalUser}
               trustedProducerIds={adminPortalPreviewProducer ? [adminPortalPreviewProducer.id] : (accountCapabilities?.producerIds || [])}
+              isReadOnlyPreview={Boolean(adminPortalPreviewProducer)}
               onOpenAuth={(role) => setActiveModal({ type: 'auth', initialRole: role || 'producer' })}
               onLoginWithGoogle={loginWithGoogle}
               onLoginWithApple={loginWithApple}
@@ -495,7 +530,7 @@ export const App: React.FC = () => {
             isOpen
             onClose={closeModal}
             bookings={travelerBookings}
-            producers={producers}
+            producers={publicProducers}
             onCancelBooking={cancelBooking}
             onSelectProducer={(producer) => {
               setSelectedProducer(producer);

@@ -1,5 +1,6 @@
 import { auth } from './firebase';
 import { resolveApiBaseUrl } from './apiOrigin';
+import type { ProducerListingChanges } from '../types/producerListingChange';
 
 export type TrustedAccountRole = 'traveler' | 'producer_host' | 'admin';
 export type AdminLevel = 'owner' | 'admin';
@@ -68,6 +69,17 @@ export interface PendingProducerMediaItem {
   caption?: string;
   uploadedAt: string;
   rightsConfirmed: boolean;
+}
+
+export interface PendingProducerListingChange {
+  id: string;
+  producerId: string;
+  producerName: string;
+  requesterUid: string;
+  requesterEmail?: string;
+  status: 'pending_review';
+  changes: ProducerListingChanges;
+  submittedAt: string;
 }
 
 export interface ActiveProducerOwnership {
@@ -143,6 +155,21 @@ export const fetchPendingProducerClaims = () =>
 
 export const fetchPendingProducerMedia = () =>
   request<{ media: PendingProducerMediaItem[] }>('/admin/media');
+
+export const fetchPendingProducerListingChanges = () =>
+  request<{ requests: PendingProducerListingChange[] }>('/admin/listing-changes');
+
+export const approveProducerListingChange = (requestId: string) =>
+  request<{ request: { requestId: string; producerId: string; status: 'approved'; occurredAt: string } }>(
+    `/admin/listing-changes/${encodeURIComponent(requestId)}/approve`,
+    { method: 'POST', body: JSON.stringify({}) }
+  );
+
+export const rejectProducerListingChange = (requestId: string, reason: string) =>
+  request<{ request: { requestId: string; producerId: string; status: 'rejected'; occurredAt: string } }>(
+    `/admin/listing-changes/${encodeURIComponent(requestId)}/reject`,
+    { method: 'POST', body: JSON.stringify({ reason }) }
+  );
 
 export const approveProducerMedia = (producerId: string, imageId: string) =>
   request<{

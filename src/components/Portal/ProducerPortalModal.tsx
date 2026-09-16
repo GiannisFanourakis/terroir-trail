@@ -25,6 +25,7 @@ import {
   fetchOwnProducerClaimStatus,
   type OwnProducerClaimStatus,
 } from '../../services/producerClaimStatus';
+import { ProducerListingContentEditor } from './ProducerListingContentEditor';
 
 interface ProducerPortalModalProps {
   isOpen: boolean;
@@ -32,6 +33,8 @@ interface ProducerPortalModalProps {
   user: UserProfile | null;
   /** Server-derived producer IDs this account may manage. */
   trustedProducerIds?: string[];
+  /** Admin preview uses the real portal UI but must never perform Host writes. */
+  isReadOnlyPreview?: boolean;
   onOpenAuth?: (role?: 'producer') => void;
   onLoginWithGoogle?: (
     role?: 'traveler' | 'producer',
@@ -58,7 +61,7 @@ interface ProducerPortalModalProps {
   onPassVerified?: (info: any) => void;
 }
 
-type PortalTab = 'overview' | 'notice' | 'photos' | 'account';
+type PortalTab = 'overview' | 'notice' | 'content' | 'photos' | 'account';
 
 const claimBusinessLabel = (claim: OwnProducerClaimStatus) => {
   switch (claim.businessVerificationStatus) {
@@ -126,6 +129,7 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
   onClose,
   user,
   trustedProducerIds,
+  isReadOnlyPreview = false,
   onOpenAuth,
   producers,
   onSaveProducerOverride,
@@ -249,6 +253,7 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
 
   const handleSaveVisitorInfo = async (event: React.FormEvent) => {
     event.preventDefault();
+    if (isReadOnlyPreview) return;
     const trimmedEmail = contactEmail.trim();
     if (trimmedEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
       setVisitorInfoSaved(false);
@@ -282,7 +287,7 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
   };
 
   const handleAddPhoto = async (file: File, type: 'cover' | 'gallery') => {
-    if (!selectedProducer || !runtimeConfig.hostMediaPrototype.enabled) return;
+    if (!selectedProducer || !runtimeConfig.hostMediaPrototype.enabled || isReadOnlyPreview) return;
     setMediaError(null);
     setMediaSaved(false);
 
@@ -328,6 +333,7 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
   };
 
   const handleDeletePhoto = async (imageId: string) => {
+    if (isReadOnlyPreview) return;
     const override = buildOverride({
       uploadedImages: currentImages.filter(image => image.id !== imageId),
     });
@@ -529,6 +535,9 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
                 <ShieldCheck className="w-3 h-3" />
                 Verified Host
               </span>
+              {isReadOnlyPreview && (
+                <span className="px-2 py-0.5 rounded-full border border-sky-400/30 bg-sky-500/10 text-sky-200 text-[9px] uppercase font-bold tracking-wide">Read only</span>
+              )}
             </div>
             <div className="text-[10px] text-stone-500 mt-0.5">
               {selectedProducer.village}, {selectedProducer.region} · Producer ID: {selectedProducer.id}
@@ -573,6 +582,7 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
       <div className="flex border-b border-white/10 px-5 sm:px-6 overflow-x-auto shrink-0">
         <button type="button" onClick={() => setActiveTab('overview')} className={tabClass('overview')}>Overview</button>
         <button type="button" onClick={() => setActiveTab('notice')} className={tabClass('notice')}>Visitor Information</button>
+        <button type="button" onClick={() => setActiveTab('content')} className={tabClass('content')}>Listing Content</button>
         {runtimeConfig.hostMediaPrototype.enabled && (
           <button type="button" onClick={() => setActiveTab('photos')} className={tabClass('photos')}>
             Profile Photos {currentImages.length > 0 ? `(${currentImages.length})` : ''}
@@ -614,6 +624,7 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
                 <div className="rounded-xl bg-stone-950/70 px-3 py-2"><span className="text-stone-500">Public phone</span><div className="text-stone-200 mt-1">{currentOverride?.contactPhone || selectedProducer.phone || 'Not provided'}</div></div>
                 <div className="rounded-xl bg-stone-950/70 px-3 py-2"><span className="text-stone-500">Public email</span><div className="text-stone-200 mt-1">{currentOverride?.contactEmail || 'Not provided'}</div></div>
                 <div className="rounded-xl bg-stone-950/70 px-3 py-2"><span className="text-stone-500">Visitor notice</span><div className="text-stone-200 mt-1">{currentOverride?.customNotice || 'No host notice published'}</div></div>
+                <div className="rounded-xl bg-stone-950/70 px-3 py-2"><span className="text-stone-500">Listing content</span><div className="text-stone-200 mt-1">Admin review required for story, products, website and amenities</div></div>
                 <div className="rounded-xl bg-stone-950/70 px-3 py-2"><span className="text-stone-500">Host media</span><div className="text-stone-200 mt-1">{currentImages.length} submitted image{currentImages.length === 1 ? '' : 's'}</div></div>
               </div>
             </div>
@@ -632,6 +643,9 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
               </p>
             </div>
 
+            {isReadOnlyPreview && (
+              <div className="rounded-xl border border-sky-500/25 bg-sky-500/10 px-3 py-2 text-xs text-sky-200">Admin preview is read-only. Visitor information can only be changed by the verified Host.</div>
+            )}
             {visitorInfoSaved && (
               <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-xs text-emerald-300 flex items-center gap-2" role="status" aria-live="polite">
                 <CheckCircle2 className="w-4 h-4" />
@@ -648,8 +662,9 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
                 onChange={event => setCustomHours(event.target.value)}
                 rows={3}
                 maxLength={300}
+                disabled={isReadOnlyPreview}
                 placeholder="Example: Mon-Sat 10:00-18:00; Sunday by appointment"
-                className="w-full rounded-xl border border-white/10 bg-stone-900 px-3 py-3 text-xs text-white placeholder:text-stone-600 focus:outline-none focus:border-amber-400/60"
+                className="w-full rounded-xl border border-white/10 bg-stone-900 px-3 py-3 text-xs text-white placeholder:text-stone-600 focus:outline-none focus:border-amber-400/60 disabled:opacity-60"
               />
               <div className="mt-1 text-[10px] text-stone-600 text-right">{customHours.length}/300</div>
             </div>
@@ -663,9 +678,10 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
                   value={contactEmail}
                   onChange={event => setContactEmail(event.target.value)}
                   maxLength={254}
+                  disabled={isReadOnlyPreview}
                   autoComplete="email"
                   placeholder="visits@example.com"
-                  className="w-full rounded-xl border border-white/10 bg-stone-900 px-3 py-2.5 text-xs text-white placeholder:text-stone-600 focus:outline-none focus:border-amber-400/60"
+                  className="w-full rounded-xl border border-white/10 bg-stone-900 px-3 py-2.5 text-xs text-white placeholder:text-stone-600 focus:outline-none focus:border-amber-400/60 disabled:opacity-60"
                 />
                 <p className="mt-1 text-[10px] text-stone-600">Shown as the producer's public visitor contact, not the private account email.</p>
               </div>
@@ -678,9 +694,10 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
                   value={contactPhone}
                   onChange={event => setContactPhone(event.target.value)}
                   maxLength={40}
+                  disabled={isReadOnlyPreview}
                   autoComplete="tel"
                   placeholder="+30 2810 000000"
-                  className="w-full rounded-xl border border-white/10 bg-stone-900 px-3 py-2.5 text-xs text-white placeholder:text-stone-600 focus:outline-none focus:border-amber-400/60"
+                  className="w-full rounded-xl border border-white/10 bg-stone-900 px-3 py-2.5 text-xs text-white placeholder:text-stone-600 focus:outline-none focus:border-amber-400/60 disabled:opacity-60"
                 />
                 <p className="mt-1 text-[10px] text-stone-600">Use the number visitors should call for current visit information.</p>
               </div>
@@ -694,20 +711,29 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
                 onChange={event => setCustomNotice(event.target.value)}
                 rows={5}
                 maxLength={800}
+                disabled={isReadOnlyPreview}
                 placeholder="Example: Harvest work is underway this week. Visits remain available by appointment between 11:00 and 16:00."
-                className="w-full rounded-xl border border-white/10 bg-stone-900 px-3 py-3 text-xs text-white placeholder:text-stone-600 focus:outline-none focus:border-amber-400/60"
+                className="w-full rounded-xl border border-white/10 bg-stone-900 px-3 py-3 text-xs text-white placeholder:text-stone-600 focus:outline-none focus:border-amber-400/60 disabled:opacity-60"
               />
               <div className="mt-1 text-[10px] text-stone-600 text-right">{customNotice.length}/800</div>
             </div>
 
             <button
               type="submit"
-              disabled={visitorInfoSaving}
+              disabled={visitorInfoSaving || isReadOnlyPreview}
               className="rounded-xl bg-amber-500 px-4 py-2.5 text-xs font-bold text-stone-950 hover:bg-amber-400 disabled:opacity-50 cursor-pointer"
             >
               {visitorInfoSaving ? 'Saving…' : 'Save visitor information'}
             </button>
           </form>
+        )}
+
+        {activeTab === 'content' && (
+          <ProducerListingContentEditor
+            producer={selectedProducer}
+            producerOverride={currentOverride}
+            readOnly={isReadOnlyPreview}
+          />
         )}
 
         {activeTab === 'photos' && runtimeConfig.hostMediaPrototype.enabled && (
@@ -722,24 +748,25 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
               </p>
             </div>
 
+            {isReadOnlyPreview && <div className="rounded-xl border border-sky-500/25 bg-sky-500/10 px-3 py-2 text-xs text-sky-200">Admin preview is read-only. Photo submissions can only be changed by the verified Host.</div>}
             {mediaError && <div className="rounded-xl border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-xs text-rose-300">{mediaError}</div>}
             {mediaSaved && <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-xs text-emerald-300">Photo submission updated.</div>}
 
             <label className="flex items-start gap-2 rounded-xl border border-white/10 bg-stone-900/60 p-3 text-xs text-stone-300 cursor-pointer">
-              <input type="checkbox" checked={rightsConfirmed} onChange={event => setRightsConfirmed(event.target.checked)} className="mt-0.5" />
+              <input type="checkbox" checked={rightsConfirmed} onChange={event => setRightsConfirmed(event.target.checked)} disabled={isReadOnlyPreview} className="mt-0.5" />
               <span>I confirm that this producer owns these images or has express permission to publish them on TerroirTrail.</span>
             </label>
 
             <div className="flex flex-wrap gap-2">
-              <label className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-stone-900 px-3 py-2 text-xs font-semibold text-stone-300 hover:text-white cursor-pointer">
+              <label className={`inline-flex items-center gap-2 rounded-xl border border-white/10 bg-stone-900 px-3 py-2 text-xs font-semibold text-stone-300 ${isReadOnlyPreview ? 'opacity-50' : 'hover:text-white cursor-pointer'}`}>
                 <UploadCloud className="w-4 h-4 text-amber-400" />
                 Submit cover image
-                <input type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={event => { const file = event.target.files?.[0]; if (file) void handleAddPhoto(file, 'cover'); event.currentTarget.value = ''; }} />
+                <input type="file" accept="image/jpeg,image/png,image/webp" disabled={isReadOnlyPreview} className="hidden" onChange={event => { const file = event.target.files?.[0]; if (file) void handleAddPhoto(file, 'cover'); event.currentTarget.value = ''; }} />
               </label>
-              <label className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-stone-900 px-3 py-2 text-xs font-semibold text-stone-300 hover:text-white cursor-pointer">
+              <label className={`inline-flex items-center gap-2 rounded-xl border border-white/10 bg-stone-900 px-3 py-2 text-xs font-semibold text-stone-300 ${isReadOnlyPreview ? 'opacity-50' : 'hover:text-white cursor-pointer'}`}>
                 <ImagePlus className="w-4 h-4 text-sky-400" />
                 Submit gallery image
-                <input type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={event => { const file = event.target.files?.[0]; if (file) void handleAddPhoto(file, 'gallery'); event.currentTarget.value = ''; }} />
+                <input type="file" accept="image/jpeg,image/png,image/webp" disabled={isReadOnlyPreview} className="hidden" onChange={event => { const file = event.target.files?.[0]; if (file) void handleAddPhoto(file, 'gallery'); event.currentTarget.value = ''; }} />
               </label>
             </div>
 
@@ -755,7 +782,7 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
                         <div className="text-xs font-semibold text-stone-200 capitalize">{image.type}</div>
                         <div className="text-[10px] text-stone-500 capitalize">{image.status.replaceAll('_', ' ')}</div>
                       </div>
-                      <button type="button" onClick={() => void handleDeletePhoto(image.id)} className="w-8 h-8 rounded-lg border border-rose-500/20 bg-rose-500/10 text-rose-300 flex items-center justify-center cursor-pointer" aria-label="Remove photo">
+                      <button type="button" disabled={isReadOnlyPreview} onClick={() => void handleDeletePhoto(image.id)} className="w-8 h-8 rounded-lg border border-rose-500/20 bg-rose-500/10 text-rose-300 flex items-center justify-center cursor-pointer disabled:opacity-40" aria-label="Remove photo">
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
                     </div>
