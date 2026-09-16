@@ -1,6 +1,21 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import {
+  Award,
+  BookOpen,
+  Building2,
+  Calendar,
+  ChevronDown,
+  Compass,
+  Crown,
+  Heart,
+  HelpCircle,
+  LogOut,
+  Scale,
+  Settings,
+  ShieldCheck,
+  User,
+} from 'lucide-react';
 import { UserProfile } from '../../types/auth';
-import { User, LogOut, Compass, Heart, Award, ChevronDown, Calendar, Building2, Crown, Package, LogIn, BookOpen, HelpCircle, Scale, Sparkles, ShieldCheck } from 'lucide-react';
 import { UserAvatar } from '../Common/UserAvatar';
 
 interface ProfileMenuProps {
@@ -12,6 +27,7 @@ interface ProfileMenuProps {
   totalProducersCount: number;
   onOpenMyBookings?: () => void;
   onOpenProducerPortal?: () => void;
+  onOpenAccountSettings?: () => void;
   bookingsCount?: number;
   onOpenExplorerPass?: () => void;
   onOpenDigitalPass?: () => void;
@@ -33,6 +49,7 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
   totalProducersCount,
   onOpenMyBookings,
   onOpenProducerPortal,
+  onOpenAccountSettings,
   bookingsCount = 0,
   onOpenExplorerPass,
   onOpenDigitalPass,
@@ -49,18 +66,13 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
 
   useEffect(() => {
     if (!isOpen) return;
-
-    const handleOutside = (e: Event) => {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-        setIsOpen(false);
-      }
+    const handleOutside = (event: Event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) setIsOpen(false);
     };
-
     const timer = setTimeout(() => {
       document.addEventListener('pointerdown', handleOutside);
       document.addEventListener('click', handleOutside);
     }, 10);
-
     return () => {
       clearTimeout(timer);
       document.removeEventListener('pointerdown', handleOutside);
@@ -70,11 +82,7 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
 
   if (!user) {
     return (
-      <button
-        type="button"
-        onClick={() => onOpenAuth('traveler')}
-        className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 active:scale-95 text-stone-950 text-xs font-bold transition shadow-md shadow-amber-500/20 shrink-0 cursor-pointer"
-      >
+      <button type="button" onClick={() => onOpenAuth('traveler')} className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 active:scale-95 text-stone-950 text-xs font-bold transition shadow-md shadow-amber-500/20 shrink-0 cursor-pointer">
         <User className="w-3.5 h-3.5" />
         <span>Sign In</span>
       </button>
@@ -83,301 +91,92 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
 
   const visitedCount = user.visitedProducers?.length ?? 0;
   const progressPercent = Math.min(100, Math.round((visitedCount / (totalProducersCount || 1)) * 100));
+  const isHost = Boolean(user.producerIds?.length || user.isProducer);
 
-  const getBadgeLabel = (type: string) => {
-    switch (type) {
-      case 'crete_local': return 'Crete Local Explorer';
-      case 'wine_enthusiast': return 'Heritage Wine Enthusiast';
-      case 'craft_beer_explorer': return 'Craft Beer Explorer';
-      case 'culinary_nomad': return 'Artisan Culinary Nomad';
-      default: return 'Terroir Explorer';
-    }
+  const runAndClose = (action?: () => void) => {
+    setIsOpen(false);
+    action?.();
   };
 
   return (
     <div ref={menuRef} className="relative z-40 shrink-0">
-      <button
-        type="button"
-        onClick={(e) => {
-          e.stopPropagation();
-          setIsOpen((prev) => !prev);
-        }}
-        className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-2.5 py-1 rounded-xl bg-stone-900 hover:bg-stone-850 border border-amber-500/30 hover:border-amber-400/50 text-stone-200 transition active:scale-95 shrink-0 cursor-pointer group"
-      >
+      <button type="button" onClick={(event) => { event.stopPropagation(); setIsOpen(value => !value); }} className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-2.5 py-1 rounded-xl bg-stone-900 hover:bg-stone-850 border border-amber-500/30 hover:border-amber-400/50 text-stone-200 transition active:scale-95 shrink-0 cursor-pointer group">
         <UserAvatar user={user} size="xs" className="ring-1 ring-amber-500/50" />
-        <span className="text-xs font-bold text-white hidden md:inline truncate max-w-[90px] group-hover:text-amber-300 transition-colors">
-          {user.name.split(' ')[0]}
-        </span>
-        <ChevronDown className={`w-3 h-3 text-stone-400 shrink-0 group-hover:text-amber-300 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+        <span className="text-xs font-bold text-white hidden md:inline truncate max-w-[90px] group-hover:text-amber-300 transition-colors">{user.name.split(' ')[0]}</span>
+        <ChevronDown className={`w-3 h-3 text-stone-400 shrink-0 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
       {isOpen && (
-        <div
-          onClick={(e) => e.stopPropagation()}
-          className="absolute right-0 mt-2 w-72 sm:w-80 bg-stone-950/95 backdrop-blur-2xl border border-white/15 rounded-2xl shadow-2xl p-3 animate-in fade-in slide-in-from-top-2 duration-150 text-xs z-50"
-        >
+        <div onClick={event => event.stopPropagation()} className="absolute right-0 mt-2 w-72 sm:w-80 bg-stone-950/95 backdrop-blur-2xl border border-white/15 rounded-2xl shadow-2xl p-3 animate-in fade-in slide-in-from-top-2 duration-150 text-xs z-50">
           <div className="pb-3 border-b border-white/10 mb-2.5">
-            <div className="flex items-center gap-2.5 mb-1">
+            <div className="flex items-center gap-2.5">
               <UserAvatar user={user} size="md" className="ring-2 ring-amber-500/50 shadow-md" />
-              <div className="min-w-0">
+              <div className="min-w-0 flex-1">
                 <div className="font-bold text-white truncate text-sm">{user.name}</div>
                 <div className="text-[10px] text-stone-400 truncate">{user.email}</div>
               </div>
             </div>
-
-            <div className="flex items-center justify-between mt-2 pt-1 text-[10px]">
+            <div className="flex items-center justify-between mt-2 text-[10px]">
               {isAdmin ? (
-                <span className="px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 font-bold border border-emerald-500/30 flex items-center gap-1">
-                  <ShieldCheck className="w-3 h-3" />
-                  <span>{isPlatformOwner ? 'Platform Owner' : 'TerroirTrail Admin'}</span>
-                </span>
-              ) : user.isProducer ? (
-                <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-bold border border-amber-500/30 flex items-center gap-1">
-                  <span>🏛️</span>
-                  <span>{user.producerName || 'Verified Host'}</span>
-                </span>
+                <span className="px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 font-bold border border-emerald-500/30 flex items-center gap-1"><ShieldCheck className="w-3 h-3" />{isPlatformOwner ? 'Platform Owner' : 'TerroirTrail Admin'}</span>
+              ) : isHost ? (
+                <span className="px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-300 font-bold border border-amber-500/30 flex items-center gap-1"><Building2 className="w-3 h-3" />Verified Host</span>
               ) : (
-                <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-bold border border-amber-500/30">
-                  {getBadgeLabel(user.travelerType || '')}
-                </span>
+                <span className="px-2 py-0.5 rounded-full bg-stone-900 text-stone-300 font-bold border border-white/10">Traveler</span>
               )}
-              <span className="text-stone-400 font-medium">Member {user.memberSince}</span>
+              <span className="text-stone-500">Member {user.memberSince}</span>
             </div>
           </div>
 
-          <button
-            onClick={() => {
-              setIsOpen(false);
-              onOpenPassport();
-            }}
-            className="w-full text-left p-2.5 rounded-xl bg-stone-900/80 hover:bg-stone-850 border border-amber-500/20 hover:border-amber-400/40 transition mb-2 group"
-          >
-            <div className="flex items-center justify-between text-[11px] font-bold text-stone-200 group-hover:text-amber-300 mb-1.5">
-              <span className="flex items-center gap-1.5">
-                <Award className="w-3.5 h-3.5 text-amber-400" />
-                <span>Terroir Passport</span>
-              </span>
-              <span className="text-amber-400">{visitedCount} / {totalProducersCount}</span>
-            </div>
-            <div className="w-full h-1.5 bg-stone-800 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-gradient-to-r from-amber-500 to-rose-500 rounded-full transition-all duration-300"
-                style={{ width: `${progressPercent}%` }}
-              />
-            </div>
-            <p className="text-[9px] text-stone-400 mt-1">Tap to view your collection stamps</p>
+          <button type="button" onClick={() => runAndClose(onOpenPassport)} className="w-full text-left p-2.5 rounded-xl bg-stone-900/80 hover:bg-stone-850 border border-amber-500/20 hover:border-amber-400/40 transition mb-2 group cursor-pointer">
+            <div className="flex items-center justify-between text-[11px] font-bold text-stone-200 group-hover:text-amber-300 mb-1.5"><span className="flex items-center gap-1.5"><Award className="w-3.5 h-3.5 text-amber-400" />Terroir Passport</span><span className="text-amber-400">{visitedCount} / {totalProducersCount}</span></div>
+            <div className="w-full h-1.5 bg-stone-800 rounded-full overflow-hidden"><div className="h-full bg-gradient-to-r from-amber-500 to-rose-500 rounded-full" style={{ width: `${progressPercent}%` }} /></div>
           </button>
 
           <div className="space-y-1">
-            <button
-              onClick={() => {
-                setIsOpen(false);
-                onOpenWishlist();
-              }}
-              className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-stone-300 hover:text-white hover:bg-white/5 transition"
-            >
-              <Heart className="w-3.5 h-3.5 text-rose-400" />
-              <span>My Saved Wishlist</span>
-            </button>
+            <button type="button" onClick={() => runAndClose(onOpenWishlist)} className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-stone-300 hover:text-white hover:bg-white/5 transition cursor-pointer"><Heart className="w-3.5 h-3.5 text-rose-400" />My saved producers</button>
+            <button type="button" onClick={() => runAndClose(onOpenPassport)} className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-stone-300 hover:text-white hover:bg-white/5 transition cursor-pointer"><Compass className="w-3.5 h-3.5 text-amber-400" />Passport stamps & notes</button>
 
-            <button
-              onClick={() => {
-                setIsOpen(false);
-                onOpenPassport();
-              }}
-              className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-stone-300 hover:text-white hover:bg-white/5 transition cursor-pointer"
-            >
-              <Compass className="w-3.5 h-3.5 text-amber-400" />
-              <span>Terroir Passport Stamps</span>
-            </button>
+            {onOpenLoops && <button type="button" onClick={() => runAndClose(onOpenLoops)} className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-stone-300 hover:text-amber-300 hover:bg-amber-500/10 transition cursor-pointer"><Compass className="w-3.5 h-3.5 text-amber-400" />Discovery Guides</button>}
 
-            {onOpenLoops && (
-              <button
-                onClick={() => {
-                  setIsOpen(false);
-                  onOpenLoops();
-                }}
-                className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-stone-300 hover:text-amber-300 hover:bg-amber-500/10 transition cursor-pointer"
-              >
-                <Compass className="w-3.5 h-3.5 text-amber-400" />
-                <span>Discovery Guides</span>
+            {onOpenMyBookings && (
+              <button type="button" onClick={() => runAndClose(onOpenMyBookings)} className="w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-stone-300 hover:text-white hover:bg-white/5 transition cursor-pointer">
+                <span className="flex items-center gap-2"><Calendar className="w-3.5 h-3.5 text-amber-400" />My bookings</span>
+                {bookingsCount > 0 && <span className="px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-[10px] font-bold">{bookingsCount}</span>}
               </button>
             )}
 
             {onOpenExplorerPass && (
-              <button
-                onClick={() => {
-                  setIsOpen(false);
-                  if (user.hasExplorerPass && onOpenDigitalPass) {
-                    onOpenDigitalPass();
-                  } else {
-                    onOpenExplorerPass();
-                  }
-                }}
-                className="w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-stone-300 hover:text-amber-300 hover:bg-amber-500/10 transition cursor-pointer"
-              >
-                <span className="flex items-center gap-2">
-                  <Crown className="w-3.5 h-3.5 text-amber-400" />
-                  <span>{user.hasExplorerPass ? 'Digital Explorer Pass' : 'Explorer Pass (Optional)'}</span>
-                </span>
-                <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
-                  user.hasExplorerPass
-                    ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
-                    : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
-                }`}>
-                  {user.hasExplorerPass ? 'Active' : '€14.99'}
-                </span>
-              </button>
-            )}
-
-            {onOpenMyBookings && (
-              <button
-                onClick={() => {
-                  setIsOpen(false);
-                  onOpenMyBookings();
-                }}
-                className="w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-stone-300 hover:text-white hover:bg-white/5 transition cursor-pointer"
-              >
-                <span className="flex items-center gap-2">
-                  <Calendar className="w-3.5 h-3.5 text-amber-400" />
-                  <span>My Tasting Bookings</span>
-                </span>
-                {bookingsCount > 0 && (
-                  <span className="px-1.5 py-0.2 rounded-full bg-amber-500/20 text-amber-300 text-[10px] font-bold border border-amber-500/30">
-                    {bookingsCount}
-                  </span>
-                )}
+              <button type="button" onClick={() => runAndClose(user.hasExplorerPass && onOpenDigitalPass ? onOpenDigitalPass : onOpenExplorerPass)} className="w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-stone-300 hover:text-amber-300 hover:bg-amber-500/10 transition cursor-pointer">
+                <span className="flex items-center gap-2"><Crown className="w-3.5 h-3.5 text-amber-400" />{user.hasExplorerPass ? 'Digital Explorer Pass' : 'Explorer Pass'}</span>
+                {user.hasExplorerPass && <span className="text-[9px] font-bold text-emerald-300">Active</span>}
               </button>
             )}
 
             {isAdmin && onOpenAdmin && (
-              <button
-                onClick={() => {
-                  setIsOpen(false);
-                  onOpenAdmin();
-                }}
-                className="w-full flex items-center justify-between px-2.5 py-2 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/15 border border-emerald-500/25 text-emerald-300 transition cursor-pointer font-bold"
-              >
-                <span className="flex items-center gap-2">
-                  <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                  <span>Admin Requests & Controls</span>
-                </span>
-                <span className="text-[9px] px-1.5 py-0.5 rounded bg-emerald-400 text-stone-950 font-extrabold uppercase">
-                  {isPlatformOwner ? 'Owner' : 'Admin'}
-                </span>
-              </button>
+              <button type="button" onClick={() => runAndClose(onOpenAdmin)} className="w-full flex items-center justify-between px-2.5 py-2 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/15 border border-emerald-500/25 text-emerald-300 transition cursor-pointer font-bold"><span className="flex items-center gap-2"><ShieldCheck className="w-4 h-4" />Admin Requests & Controls</span><span className="text-[9px] px-1.5 py-0.5 rounded bg-emerald-400 text-stone-950 uppercase">{isPlatformOwner ? 'Owner' : 'Admin'}</span></button>
             )}
 
-            {isAdmin && !user.isProducer && onOpenProducerPortal && (
-              <button
-                onClick={() => {
-                  setIsOpen(false);
-                  onOpenProducerPortal();
-                }}
-                className="w-full flex items-center justify-between px-2.5 py-2 rounded-xl bg-sky-500/10 hover:bg-sky-500/15 border border-sky-500/25 text-sky-200 transition cursor-pointer font-bold"
-              >
-                <span className="flex items-center gap-2">
-                  <Building2 className="w-4 h-4 text-sky-300" />
-                  <span>Preview Producer Portal</span>
-                </span>
-                <span className="text-[9px] px-1.5 py-0.5 rounded bg-sky-400 text-stone-950 font-extrabold uppercase">
-                  Read only
-                </span>
-              </button>
+            {isAdmin && !isHost && onOpenProducerPortal && (
+              <button type="button" onClick={() => runAndClose(onOpenProducerPortal)} className="w-full flex items-center justify-between px-2.5 py-2 rounded-xl bg-sky-500/10 border border-sky-500/25 text-sky-200 cursor-pointer font-bold"><span className="flex items-center gap-2"><Building2 className="w-4 h-4" />Preview Producer Portal</span><span className="text-[9px] uppercase">Read only</span></button>
             )}
 
-            {user.isProducer ? (
-              onOpenProducerPortal && (
-                <button
-                  onClick={() => {
-                    setIsOpen(false);
-                    onOpenProducerPortal();
-                  }}
-                  className="w-full flex items-center justify-between px-2.5 py-2 rounded-xl bg-gradient-to-r from-amber-500/20 to-rose-500/15 hover:from-amber-500/30 hover:to-rose-500/25 border border-amber-500/30 text-amber-300 transition cursor-pointer font-bold"
-                >
-                  <span className="flex items-center gap-2">
-                    <Building2 className="w-4 h-4 text-amber-400" />
-                    <span>My Estate Dashboard</span>
-                  </span>
-                  <span className="text-[9px] px-1.5 py-0.2 rounded bg-amber-400 text-stone-950 font-extrabold uppercase">
-                    Host
-                  </span>
-                </button>
-              )
-            ) : (
-              <button
-                onClick={() => {
-                  setIsOpen(false);
-                  onOpenAuth('producer');
-                }}
-                className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-stone-400 hover:text-amber-300 hover:bg-white/5 transition cursor-pointer text-[11px]"
-              >
-                <Building2 className="w-3.5 h-3.5 text-stone-500" />
-                <span>Producer & Estate Login</span>
-              </button>
+            {isHost && onOpenProducerPortal ? (
+              <button type="button" onClick={() => runAndClose(onOpenProducerPortal)} className="w-full flex items-center gap-2 px-2.5 py-2 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-300 cursor-pointer font-bold"><Building2 className="w-4 h-4" />My Producer Dashboard</button>
+            ) : !isHost ? (
+              <button type="button" onClick={() => { setIsOpen(false); onOpenAuth('producer'); }} className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-stone-400 hover:text-amber-300 hover:bg-white/5 transition cursor-pointer"><Building2 className="w-3.5 h-3.5" />Producer / Host access</button>
+            ) : null}
+
+            {onOpenAccountSettings && (
+              <button type="button" onClick={() => runAndClose(onOpenAccountSettings)} className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-stone-300 hover:text-white hover:bg-white/5 transition cursor-pointer"><Settings className="w-3.5 h-3.5 text-sky-300" />Account & privacy</button>
             )}
 
-            {onOpenAbout && (
-              <button
-                onClick={() => {
-                  setIsOpen(false);
-                  onOpenAbout();
-                }}
-                className="w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-stone-300 hover:text-amber-300 hover:bg-white/5 transition cursor-pointer"
-              >
-                <span className="flex items-center gap-2">
-                  <BookOpen className="w-3.5 h-3.5 text-amber-400" />
-                  <span>About Us & Story</span>
-                </span>
-              </button>
-            )}
+            {onOpenAbout && <button type="button" onClick={() => runAndClose(onOpenAbout)} className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-stone-300 hover:text-amber-300 hover:bg-white/5 transition cursor-pointer"><BookOpen className="w-3.5 h-3.5 text-amber-400" />About TerroirTrail</button>}
+            {onOpenFaq && <button type="button" onClick={() => runAndClose(onOpenFaq)} className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-stone-300 hover:text-amber-300 hover:bg-white/5 transition cursor-pointer"><HelpCircle className="w-3.5 h-3.5 text-amber-400" />FAQ & Guide</button>}
+            {onOpenLegal && <button type="button" onClick={() => { setIsOpen(false); onOpenLegal('privacy'); }} className="w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-stone-400 hover:text-white hover:bg-white/5 transition cursor-pointer"><span className="flex items-center gap-2"><Scale className="w-3.5 h-3.5" />Privacy & Legal</span><span className="text-[9px]">GDPR</span></button>}
 
-            {onOpenFaq && (
-              <button
-                onClick={() => {
-                  setIsOpen(false);
-                  onOpenFaq();
-                }}
-                className="w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-stone-300 hover:text-amber-300 hover:bg-white/5 transition cursor-pointer"
-              >
-                <span className="flex items-center gap-2">
-                  <HelpCircle className="w-3.5 h-3.5 text-amber-400" />
-                  <span>FAQ & Guide</span>
-                </span>
-                <span className="px-1.5 py-0.2 rounded-full bg-stone-800 text-stone-400 text-[10px] font-mono">
-                  14
-                </span>
-              </button>
-            )}
-
-            {onOpenLegal && (
-              <button
-                onClick={() => {
-                  setIsOpen(false);
-                  onOpenLegal('privacy');
-                }}
-                className="w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-stone-400 hover:text-white hover:bg-white/5 transition cursor-pointer text-xs"
-              >
-                <span className="flex items-center gap-2">
-                  <Scale className="w-3.5 h-3.5 text-stone-400" />
-                  <span>Privacy & Legal Terms</span>
-                </span>
-                <span className="text-[10px] text-stone-500 font-mono">GDPR</span>
-              </button>
-            )}
-
-            <div className="h-[1px] bg-white/10 my-1" />
-
-            <button
-              onClick={() => {
-                setIsOpen(false);
-                onLogout();
-              }}
-              className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 transition"
-            >
-              <LogOut className="w-3.5 h-3.5" />
-              <span>Sign Out</span>
-            </button>
+            <div className="h-px bg-white/10 my-1" />
+            <button type="button" onClick={() => runAndClose(onLogout)} className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 transition cursor-pointer"><LogOut className="w-3.5 h-3.5" />Sign Out</button>
           </div>
         </div>
       )}
