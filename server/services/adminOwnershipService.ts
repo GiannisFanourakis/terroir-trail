@@ -169,16 +169,11 @@ export async function reassignProducerOwnership(
   const ownerRef = db.collection('producer_owners').doc(producerId);
   const registrationRef = db.collection('producer_registrations').doc(producerId);
   const auditRef = db.collection('admin_audit').doc();
-  const targetOwnerships = db
-    .collection('producer_owners')
-    .where('ownerUid', '==', targetUid)
-    .where('status', '==', 'active');
 
   return db.runTransaction(async (transaction: any) => {
-    const [ownerDoc, registrationDoc, existingTargetOwnerships] = await Promise.all([
+    const [ownerDoc, registrationDoc] = await Promise.all([
       transaction.get(ownerRef),
       transaction.get(registrationRef),
-      transaction.get(targetOwnerships),
     ]);
 
     if (!ownerDoc.exists || ownerDoc.data()?.status !== 'active') {
@@ -188,11 +183,6 @@ export async function reassignProducerOwnership(
     const currentOwnerUid = String(ownerDoc.data()?.ownerUid || '');
     if (currentOwnerUid === targetUid) {
       throw new AdminOwnershipError('conflict', 'That account already owns this producer listing.');
-    }
-
-    const conflicting = existingTargetOwnerships.docs.find((doc: any) => doc.id !== producerId);
-    if (conflicting) {
-      throw new AdminOwnershipError('conflict', 'That account already owns another active producer listing.');
     }
 
     const occurredAt = new Date().toISOString();
