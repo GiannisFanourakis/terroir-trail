@@ -13,7 +13,7 @@ import { useAuth } from './hooks/useAuth';
 import { useAccountCapabilities } from './hooks/useAccountCapabilities';
 import { useBookings } from './hooks/useBookings';
 import { useProducerPortal } from './hooks/useProducerPortal';
-import { GoogleAdSlot } from './components/Monetization/GoogleAdSlot';
+import { SponsorBanner } from './components/Monetization/SponsorBanner';
 import { ChauffeurBooking } from './types/monetization';
 import type { VerifiedPassInfo } from './components/Monetization/HostVerificationModal';
 import { readStorage, writeStorage, STORAGE_KEYS } from './services/browserStorage';
@@ -107,6 +107,10 @@ export const App: React.FC = () => {
     saveTastingNote,
     getTastingNote,
   } = useAuth();
+
+  // The existing entitlement is shared by both Explorer/Holiday and Annual plans.
+  // explorerPassPlan identifies the plan; hasExplorerPass remains the active/expiry-aware gate.
+  const hasAdFreeTravelerPass = Boolean(user?.hasExplorerPass);
 
   const { capabilities: accountCapabilities } = useAccountCapabilities(user?.id);
   const { favorites, toggleFavorite, isFavorite } = useFavorites(user?.id);
@@ -338,7 +342,7 @@ export const App: React.FC = () => {
         >
           <div className="absolute top-2.5 left-0 right-0 z-20 pointer-events-none flex justify-center px-3">
             <div className="pointer-events-auto w-full max-w-2xl">
-              <GoogleAdSlot hasExplorerPass={!!user?.hasExplorerPass} />
+              <SponsorBanner hasExplorerPass={hasAdFreeTravelerPass} />
             </div>
           </div>
 
