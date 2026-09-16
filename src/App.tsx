@@ -16,6 +16,7 @@ import { GoogleAdSlot } from './components/Monetization/GoogleAdSlot';
 import { ChauffeurBooking } from './types/monetization';
 import type { VerifiedPassInfo } from './components/Monetization/HostVerificationModal';
 import { readStorage, writeStorage, STORAGE_KEYS } from './services/browserStorage';
+import { saveUserProfileToCloud } from './services/firebase';
 import { filterProducers } from './utils/filterProducers';
 import { producerService } from './services/producerService';
 import { List, MapPin } from 'lucide-react';
@@ -24,6 +25,7 @@ import { List, MapPin } from 'lucide-react';
 const DayTripModal = lazy(() => import('./components/Loops/DayTripModal').then(m => ({ default: m.DayTripModal })));
 const AuthModal = lazy(() => import('./components/Auth/AuthModal').then(m => ({ default: m.AuthModal })));
 const PassportModal = lazy(() => import('./components/Auth/PassportModal').then(m => ({ default: m.PassportModal })));
+const AccountSettingsModal = lazy(() => import('./components/Auth/AccountSettingsModal').then(m => ({ default: m.AccountSettingsModal })));
 const BookingModal = lazy(() => import('./components/Bookings/BookingModal').then(m => ({ default: m.BookingModal })));
 const ProducerPortalModal = lazy(() => import('./components/Portal/ProducerPortalModal').then(m => ({ default: m.ProducerPortalModal })));
 const AdminPanelModal = lazy(() => import('./components/Admin/AdminPanelModal').then(m => ({ default: m.AdminPanelModal })));
@@ -39,6 +41,7 @@ export type ActiveModal =
   | { type: 'loops' }
   | { type: 'auth'; initialRole?: 'traveler' | 'producer' }
   | { type: 'passport' }
+  | { type: 'account_settings' }
   | { type: 'booking'; producer?: Producer | null; experienceId?: string }
   | { type: 'portal' }
   | { type: 'admin' }
@@ -239,6 +242,7 @@ export const App: React.FC = () => {
         user={user}
         onOpenAuth={(role) => setActiveModal({ type: 'auth', initialRole: role || 'traveler' })}
         onOpenPassport={() => setActiveModal({ type: 'passport' })}
+        onOpenAccountSettings={user ? () => setActiveModal({ type: 'account_settings' }) : undefined}
         onLogout={logout}
         totalProducersCount={producers.length}
         onOpenProducerPortal={() => handleOpenProducerPortal()}
@@ -392,7 +396,7 @@ export const App: React.FC = () => {
             initialRole={activeModal.initialRole || 'traveler'}
             producers={producers}
             onLogin={loginWithEmail}
-            onSignup={(name, email, password, travelerType) => signupWithEmail(name, email, password, travelerType)}
+            onSignup={signupWithEmail}
             onLoginAsProducer={loginAsProducer}
             onClaimProducer={claimAndRegisterProducer}
             onResetPassword={sendPasswordResetLink}
@@ -420,6 +424,18 @@ export const App: React.FC = () => {
               setIsDrawerOpen(true);
               closeModal();
             }}
+          />
+        )}
+
+        {activeModal?.type === 'account_settings' && user && (
+          <AccountSettingsModal
+            isOpen
+            onClose={closeModal}
+            user={user}
+            onSaveProfile={async (updates) => {
+              await saveUserProfileToCloud({ id: user.id, ...updates });
+            }}
+            onAccountDeleted={logout}
           />
         )}
 
