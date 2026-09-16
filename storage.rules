@@ -9,16 +9,27 @@ service firebase.storage {
         && firestore.get(/databases/(default)/documents/producer_owners/$(producerId)).data.status == 'active';
     }
 
+    function hostEditingAllowed() {
+      return request.auth != null
+        && (!firestore.exists(/databases/(default)/documents/account_controls/$(request.auth.uid))
+          || firestore.get(/databases/(default)/documents/account_controls/$(request.auth.uid)).data.hostEditingFrozen != true);
+    }
+
+    function canEditProducer(producerId) {
+      return isProducerOwner(producerId) && hostEditingAllowed();
+    }
+
     match /producer-media/{producerId}/{fileName} {
       // Public pages need to render approved producer imagery. Upload authority
-      // is still restricted to the verified active producer owner.
+      // is restricted to the verified active producer owner and is suspended
+      // while an Admin dispute freeze is active.
       allow read: if true;
 
-      allow create, update: if isProducerOwner(producerId)
+      allow create, update: if canEditProducer(producerId)
         && request.resource.size <= 8 * 1024 * 1024
         && request.resource.contentType.matches('image/(jpeg|png|webp)');
 
-      allow delete: if isProducerOwner(producerId);
+      allow delete: if canEditProducer(producerId);
     }
 
     match /{allPaths=**} {
