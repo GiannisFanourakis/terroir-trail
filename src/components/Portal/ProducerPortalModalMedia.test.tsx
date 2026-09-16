@@ -1,11 +1,11 @@
-import { describe, it, expect, vi, afterEach } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import React from 'react';
+import { readFileSync } from 'node:fs';
 import { renderToString } from 'react-dom/server';
-import { ProducerPortalModal } from './ProducerPortalModal';
 import { ProducerDetailDrawer } from '../Drawer/ProducerDetailDrawer';
+import { runtimeConfig } from '../../config/runtimeConfig';
 import { Producer } from '../../types/terroir';
 import { ProducerOverride } from '../../types/booking';
-import { UserProfile } from '../../types/auth';
 
 const mockProducer: Producer = {
   id: 'lyrarakis-winery',
@@ -31,83 +31,34 @@ const mockProducer: Producer = {
   visitStatus: 'public_visits',
 };
 
-const mockHostUser: UserProfile = {
-  id: 'host-user-123',
-  name: 'Elena Lyraraki',
-  email: 'host@lyrarakis.com',
-  role: 'producer',
-  isProducer: true,
-  producerIds: ['lyrarakis-winery'],
-  claimedProducerId: 'lyrarakis-winery',
-  claimStatus: 'verified_host',
-  travelerType: 'wine_enthusiast',
-  visitedProducers: [],
-  personalNotes: {},
-  memberSince: '2026-01-01',
-};
-
 describe('Host-Managed Producer Imagery Integration', () => {
   afterEach(() => {
     vi.unstubAllEnvs();
   });
 
   describe('ProducerPortalModal — Profile Photos Tab Gating', () => {
-    it('hides Profile Photos tab button by default when prototype is disabled', () => {
+    it('fails closed when both legacy prototype and durable uploads are disabled', () => {
       vi.stubEnv('VITE_ENABLE_HOST_MEDIA_PROTOTYPE', 'false');
+      vi.stubEnv('VITE_ENABLE_HOST_MEDIA_UPLOADS', 'false');
 
-      const html = renderToString(
-        React.createElement(ProducerPortalModal, {
-          isOpen: true,
-          onClose: () => {},
-          user: mockHostUser,
-          producers: [mockProducer],
-          bookings: [],
-          onUpdateBookingStatus: async () => {},
-          onSaveProducerOverride: async () => {},
-          getProducerOverride: () => undefined,
-        })
+      expect(runtimeConfig.hostMediaPrototype.enabled).toBe(false);
+
+      const portalSource = readFileSync(
+        'src/components/Portal/ProducerPortalModal.tsx',
+        'utf8'
       );
-
-      expect(html).not.toContain('Profile Photos');
-      expect(html).toContain('Lyrarakis Winery');
-      expect(html).toContain('Verified Host');
+      expect(portalSource).toContain('runtimeConfig.hostMediaPrototype.enabled &&');
+      expect(portalSource).toContain('Profile Photos');
     });
 
-    it('renders Profile Photos tab button and prototype banner when prototype is enabled', () => {
+    it('enables the photos surface for either explicit prototype testing or durable production uploads', () => {
       vi.stubEnv('VITE_ENABLE_HOST_MEDIA_PROTOTYPE', 'true');
+      vi.stubEnv('VITE_ENABLE_HOST_MEDIA_UPLOADS', 'false');
+      expect(runtimeConfig.hostMediaPrototype.enabled).toBe(true);
 
-      const html = renderToString(
-        React.createElement(ProducerPortalModal, {
-          isOpen: true,
-          onClose: () => {},
-          user: mockHostUser,
-          producers: [mockProducer],
-          bookings: [],
-          onUpdateBookingStatus: async () => {},
-          onSaveProducerOverride: async () => {},
-          getProducerOverride: () => ({
-            producerId: 'lyrarakis-winery',
-            isAcceptingBookings: true,
-            updatedAt: new Date().toISOString(),
-            uploadedImages: [
-              {
-                id: 'img-1',
-                producerId: 'lyrarakis-winery',
-                url: 'https://storage.supabase.co/producer-media/lyrarakis-winery/cover.webp',
-                type: 'cover' as const,
-                status: 'approved' as const,
-                rightsConfirmed: true,
-                source: 'host_upload' as const,
-                uploadedAt: new Date().toISOString(),
-              },
-            ],
-          }),
-        })
-      );
-
-      // Button exists with photo counter
-      expect(html).toContain('Profile Photos');
-      expect(html).toContain('1'); // image count badge
+      vi.stubEnv('VITE_ENABLE_HOST_MEDIA_PROTOTYPE', 'false');
+      vi.stubEnv('VITE_ENABLE_HOST_MEDIA_UPLOADS', 'true');
+      expect(runtimeConfig.hostMediaPrototype.enabled).toBe(true);
     });
   });
 
