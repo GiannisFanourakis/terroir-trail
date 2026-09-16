@@ -37,7 +37,9 @@ describe('Phase 7 discovery readiness boundaries', () => {
   it('does not fly the map to unresolved producer coordinates', () => {
     const map = read('src/components/Map/MapCanvas.tsx');
     expect(map).toContain("selectedProducer.locationStatus === 'unresolved'");
-    expect(map).toContain('role="region" aria-label="Interactive producer map"');
+    expect(map).toContain(
+      'role="region" aria-label="Interactive producer and terroir-region map"'
+    );
   });
 
   it('surfaces catalogue and lazy-modal loading state instead of failing silently', () => {
