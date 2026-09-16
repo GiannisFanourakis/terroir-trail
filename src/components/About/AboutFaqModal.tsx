@@ -41,7 +41,7 @@ interface FaqItem {
   actionType?: FaqAction;
 }
 
-const CONTACT_EMAIL = 'gian.fanourakis@gmail.com';
+const CONTACT_EMAIL = 'terroirtrail@gmail.com';
 const INSTAGRAM_URL = 'https://www.instagram.com/terroirtrail/';
 
 const FAQ_DATA: FaqItem[] = [
