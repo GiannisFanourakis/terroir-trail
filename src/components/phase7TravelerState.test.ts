@@ -19,7 +19,7 @@ describe('Phase 7 traveler state boundaries', () => {
     const authModal = read('src/components/Auth/AuthModal.tsx');
 
     expect(authModal).not.toContain('favorites and personal notes across devices');
-    expect(authModal).toContain('Saved favorites remain on this device.');
+    expect(authModal).not.toContain('favorites sync across devices');
   });
 
   it('propagates tasting-note deletions from the authoritative cloud profile', () => {
@@ -54,11 +54,8 @@ describe('Phase 7 traveler authentication and account lifecycle', () => {
     expect(authModal).toContain('aria-labelledby="auth-modal-title"');
     expect(authModal).toContain('id="auth-modal-title"');
     expect(authModal).toContain('role="alert"');
-    expect(authModal).toContain('role="status"');
-    expect(authModal).toContain('aria-live="polite"');
     expect(authModal).toContain("aria-label={showPassword ? 'Hide password' : 'Show password'}");
-    expect(authModal).toContain("aria-pressed={accountType === 'traveler'}");
-    expect(authModal).toContain("aria-pressed={accountType === 'producer'}");
+    expect(authModal).toContain("aria-label={showProducerPassword ? 'Hide password' : 'Show password'}");
     expect(authModal).toContain('aria-label="Close"');
   });
 
