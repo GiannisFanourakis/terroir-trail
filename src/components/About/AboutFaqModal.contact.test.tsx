@@ -9,16 +9,17 @@ import { AboutFaqModal } from './AboutFaqModal';
 const INSTAGRAM_URL = 'https://www.instagram.com/terroirtrail/';
 const INSTAGRAM_QR_SHA256 = 'ac21f4dff0991a18b326e0be493bbe5b5bc75cf62e93f9803497a8a1a7979cbd';
 
-describe('AboutFaqModal contact channels', () => {
-  it('publishes the real TerroirTrail Gmail and Instagram contact paths', () => {
+describe('AboutFaqModal public copy and contact channels', () => {
+  it('exposes Contact as a first-class tab with the real Gmail and Instagram paths', () => {
     const html = renderToString(
       React.createElement(AboutFaqModal, {
         isOpen: true,
         onClose: () => {},
-        initialTab: 'faq',
+        initialTab: 'contact',
       })
     );
 
+    expect(html).toContain('Contact');
     expect(html).toContain('Contact TerroirTrail');
     expect(html).toContain('mailto:gian.fanourakis@gmail.com');
     expect(html).toContain('gian.fanourakis@gmail.com');
@@ -27,13 +28,29 @@ describe('AboutFaqModal contact channels', () => {
     expect(html).toContain('/terroirtrail-instagram-qr.svg');
   });
 
-  it('ships the verified Instagram QR asset used by the contact block', () => {
+  it('uses current public-facing About copy instead of the old internal QA language', () => {
+    const html = renderToString(
+      React.createElement(AboutFaqModal, {
+        isOpen: true,
+        onClose: () => {},
+        initialTab: 'about',
+      })
+    );
+
+    expect(html).toContain('Independent Producer &amp; Agritourism Guide');
+    expect(html).toContain('Discover independent makers and the places behind what they make.');
+    expect(html).toContain('Across Greece and into Italy');
+    expect(html).toContain('55');
+    expect(html).not.toContain('Find real makers without turning missing evidence into travel promises.');
+    expect(html).not.toContain('36');
+    expect(html).not.toContain('reference-quality');
+  });
+
+  it('ships the verified Instagram QR asset used by the contact tab', () => {
     const qrAsset = readFileSync(
       resolve(process.cwd(), 'public/terroirtrail-instagram-qr.svg')
     );
 
-    // This digest pins the QR generated for INSTAGRAM_URL so a missing, malformed,
-    // or accidentally replaced QR fails the regression test instead of silently shipping.
     expect(createHash('sha256').update(qrAsset).digest('hex')).toBe(INSTAGRAM_QR_SHA256);
   });
 });
