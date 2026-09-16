@@ -130,17 +130,21 @@ export async function replaceOwnedProducerMedia(
 
       const existing = existingById.get(id) as any;
       if (existing) {
-        // Preserve the media identity and all review-controlled fields. Hosts
-        // must upload replacements under a new image ID for fresh moderation.
+        // Preserve media identity and all review-controlled fields. A host may
+        // edit/remove only the caption for an existing image. Build a fresh
+        // object without undefined values because Firestore rejects them.
+        const { caption: _oldCaption, ...immutableExisting } = existing;
+        const caption = cleanOptionalText(input.caption, 300);
         return {
-          ...existing,
-          caption: cleanOptionalText(input.caption, 300),
+          ...immutableExisting,
+          ...(caption ? { caption } : {}),
         };
       }
 
       const uploadedAt = typeof input.uploadedAt === 'string' && input.uploadedAt
         ? input.uploadedAt
         : new Date().toISOString();
+      const caption = cleanOptionalText(input.caption, 300);
 
       return {
         id,
@@ -152,7 +156,7 @@ export async function replaceOwnedProducerMedia(
         storagePath: input.storagePath,
         type: input.type,
         status: 'pending_review',
-        ...(cleanOptionalText(input.caption, 300) ? { caption: cleanOptionalText(input.caption, 300) } : {}),
+        ...(caption ? { caption } : {}),
         uploadedAt,
         rightsConfirmed: true,
         source: 'host_upload',
