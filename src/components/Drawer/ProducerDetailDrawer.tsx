@@ -3,7 +3,7 @@ import { Producer, VisitStatus } from '../../types/terroir';
 import { UserProfile } from '../../types/auth';
 import { ProducerOverride } from '../../types/booking';
 import {
-  X, MapPin, Star, Phone, Globe, Navigation, Clock,
+  X, MapPin, Star, Phone, Mail, Globe, Navigation, Clock,
   Dog, Footprints, Caravan, Car, Sparkles, Share2, Check, Heart, Award,
   CheckCircle2, Wine, ShoppingBag, ArrowRight, Building2,
   Camera, ChevronLeft, ChevronRight, Beer
@@ -433,6 +433,18 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
     producer.name
   );
   const visitDetails = getVisitStatusDetails(producer.visitStatus, producer);
+  const effectiveOpeningHours =
+    producerOverride?.customHours !== undefined
+      ? producerOverride.customHours.trim()
+      : producer.openingHours?.trim() || '';
+  const effectivePhone =
+    producerOverride?.contactPhone !== undefined
+      ? producerOverride.contactPhone.trim()
+      : producer.phone?.trim() || '';
+  const effectiveEmail =
+    producerOverride?.contactEmail !== undefined
+      ? producerOverride.contactEmail.trim()
+      : '';
 
   return (
     <>
@@ -1024,7 +1036,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                   </div>
                 )}
 
-                {(visitDetails.visitingStyle || producer.openingHours || producer.bestSeason) && (
+                {(visitDetails.visitingStyle || effectiveOpeningHours || producer.bestSeason) && (
                   <div className="grid grid-cols-2 gap-2 text-[11px] pt-1 border-t border-white/5">
                     {visitDetails.visitingStyle && (
                       <div className="space-y-0.5">
@@ -1034,11 +1046,11 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                         </span>
                       </div>
                     )}
-                    {producer.openingHours && (
+                    {effectiveOpeningHours && (
                       <div className="space-y-0.5">
                         <span className="text-[10px] text-stone-400 block font-medium">Opening Hours</span>
-                        <span className="font-semibold text-stone-200 truncate block">
-                          {producer.openingHours}
+                        <span className="font-semibold text-stone-200 block whitespace-pre-line">
+                          {effectiveOpeningHours}
                         </span>
                       </div>
                     )}
@@ -1065,13 +1077,22 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                       <span>Visit Producer Website</span>
                     </a>
                   )}
-                  {producer.phone && (
+                  {effectivePhone && (
                     <a
-                      href={`tel:${producer.phone}`}
+                      href={`tel:${effectivePhone}`}
                       className="flex-1 py-2.5 px-3 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 font-bold text-xs transition flex items-center justify-center gap-1.5 active:scale-98"
                     >
                       <Phone className="w-3.5 h-3.5" />
                       <span>{term.callAction}</span>
+                    </a>
+                  )}
+                  {effectiveEmail && (
+                    <a
+                      href={`mailto:${effectiveEmail}`}
+                      className="flex-1 py-2.5 px-3 rounded-xl bg-sky-500/15 hover:bg-sky-500/25 border border-sky-500/30 text-sky-200 font-bold text-xs transition flex items-center justify-center gap-1.5 active:scale-98"
+                    >
+                      <Mail className="w-3.5 h-3.5" />
+                      <span>Email Producer</span>
                     </a>
                   )}
                 </div>
@@ -1228,14 +1249,23 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
           </a>
         ) : null}
 
-        {producer.phone ? (
+        {effectivePhone ? (
           <a
-            href={`tel:${producer.phone}`}
+            href={`tel:${effectivePhone}`}
             className="flex-1 min-w-0 flex items-center justify-center gap-1.5 py-3 px-2.5 sm:px-3.5 bg-stone-800 hover:bg-stone-750 text-stone-100 font-bold text-xs rounded-2xl border border-white/10 transition transform active:scale-98 whitespace-nowrap"
-            title={`Call ${producer.phone}`}
+            title={`Call ${effectivePhone}`}
           >
             <Phone className="w-4 h-4 text-emerald-400 shrink-0" />
             <span className="truncate">{term.callShortLabel || 'Call'}</span>
+          </a>
+        ) : effectiveEmail ? (
+          <a
+            href={`mailto:${effectiveEmail}`}
+            className="flex-1 min-w-0 flex items-center justify-center gap-1.5 py-3 px-2.5 sm:px-3.5 bg-stone-800 hover:bg-stone-750 text-stone-100 font-bold text-xs rounded-2xl border border-white/10 transition transform active:scale-98 whitespace-nowrap"
+            title={`Email ${effectiveEmail}`}
+          >
+            <Mail className="w-4 h-4 text-sky-400 shrink-0" />
+            <span className="truncate">Email</span>
           </a>
         ) : producer.website ? (
           <a
@@ -1262,7 +1292,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
           </a>
         )}
 
-        {producer.phone && producer.website && (
+        {(effectivePhone || effectiveEmail) && producer.website && (
           <a
             href={producer.website}
             target="_blank"
