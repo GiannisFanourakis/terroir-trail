@@ -33,7 +33,7 @@ export const ProducerCard: React.FC<ProducerCardProps> = ({
     !hasTrustedLocalPhoto &&
     runtimeConfig.googlePlacesMedia.enabled &&
     Boolean(producer.googlePlaceId?.trim()) &&
-    isGooglePlacesEligible(producer.id);
+    isGooglePlacesEligible(producer);
 
   const [imgSrc, setImgSrc] = useState<string>(resolvedCover.url);
   const mediaHostRef = useRef<HTMLDivElement>(null);

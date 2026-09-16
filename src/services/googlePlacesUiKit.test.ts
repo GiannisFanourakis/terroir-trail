@@ -33,7 +33,7 @@ describe('Google Places UI Kit & Allowlist', () => {
   describe('Allowlist Verification', () => {
     it('covers every audited producer with a verified location and persistent Google Place ID', () => {
       expect(AUDITED_PRODUCERS).toHaveLength(67);
-      expect(EXPECTED_GOOGLE_PLACES_PRODUCERS).toHaveLength(60);
+      expect(EXPECTED_GOOGLE_PLACES_PRODUCERS).toHaveLength(61);
       expect(GOOGLE_PLACES_PROTOTYPE_ITEMS).toHaveLength(
         EXPECTED_GOOGLE_PLACES_PRODUCERS.length
       );
@@ -67,6 +67,7 @@ describe('Google Places UI Kit & Allowlist', () => {
       expect(isGooglePlacesEligible('santorini-brewing-company')).toBe(true);
       expect(isGooglePlacesEligible('stamatogiorgis-dairy-smari')).toBe(true);
       expect(isGooglePlacesEligible('arvanitis-dairy-neochorouda')).toBe(true);
+      expect(isGooglePlacesEligible('psiloritis-cheese-dairy-livadia')).toBe(true);
     });
 
     it('rejects unlisted producers', () => {
