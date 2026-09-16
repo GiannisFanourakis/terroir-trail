@@ -70,7 +70,7 @@ const applyApprovedListingOverride = (
     ...(override.foodOption !== undefined ? { foodOption: override.foodOption || undefined } : {}),
     ...(override.dogFriendly !== undefined ? { dogFriendly: override.dogFriendly } : {}),
     ...(override.kidFriendly !== undefined ? { kidFriendly: override.kidFriendly } : {}),
-    ...(override.walkIn !== undefined ? { walkIn: override.walkIn } : {}),
+    ...(override.walkIn !== undefined ? { walkInFriendly: override.walkIn } : {}),
     ...(override.campervanFriendly !== undefined ? { campervanFriendly: override.campervanFriendly } : {}),
   };
 };
