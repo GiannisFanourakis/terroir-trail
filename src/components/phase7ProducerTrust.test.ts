@@ -35,7 +35,7 @@ describe('Phase 7 producer claim trust boundaries', () => {
     const drawer = read('src/components/Drawer/ProducerDetailDrawer.tsx');
 
     expect(portal).toContain("type PortalTab = 'overview' | 'notice' | 'photos' | 'account';");
-    expect(portal).toContain('Visitor Notice');
+    expect(portal).toContain('Visitor Information');
     expect(portal).toContain('Protected TerroirTrail evidence');
     expect(portal).toContain('cannot be self-declared by a host');
     expect(portal).not.toContain('Reservations Queue');
