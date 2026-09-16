@@ -24,7 +24,6 @@ export interface AccountCapabilities {
   adminLevel: AdminLevel | null;
   isPlatformOwner: boolean;
   producerIds: string[];
-  hostEditingFrozen: boolean;
   canManageOwnedListings: boolean;
   canReviewProducerClaims: boolean;
   canAssignProducerOwnership: boolean;
@@ -43,9 +42,7 @@ export interface AdminAccountSummary {
   adminLevel: AdminLevel | null;
   isPlatformOwner: boolean;
   producerIds: string[];
-  hostEditingFrozen: boolean;
   canDisable: boolean;
-  canFreezeHostEditing: boolean;
 }
 
 export interface PendingProducerClaim {
@@ -173,12 +170,6 @@ export const setAdminAccountDisabled = (uid: string, disabled: boolean, reason: 
   request<{ account: { targetUid: string; disabled: boolean; occurredAt: string } }>(
     `/admin/accounts/${encodeURIComponent(uid)}/access`,
     { method: 'POST', body: JSON.stringify({ disabled, reason }) }
-  );
-
-export const setAdminHostEditingFrozen = (uid: string, frozen: boolean, reason: string) =>
-  request<{ account: { targetUid: string; hostEditingFrozen: boolean; producerIds: string[]; occurredAt: string } }>(
-    `/admin/accounts/${encodeURIComponent(uid)}/host-freeze`,
-    { method: 'POST', body: JSON.stringify({ frozen, reason }) }
   );
 
 export const fetchPendingProducerClaims = () =>
