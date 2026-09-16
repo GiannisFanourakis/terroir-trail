@@ -8,10 +8,12 @@ const DRAWER_SOURCE = readFileSync(
 );
 
 function dairyTerminologyBlock(): string {
-  const start = DRAWER_SOURCE.indexOf("case 'cheese_dairy':");
+  const terminologyStart = DRAWER_SOURCE.indexOf('const getCategoryTerminology');
+  const start = DRAWER_SOURCE.indexOf("case 'cheese_dairy':", terminologyStart);
   const end = DRAWER_SOURCE.indexOf("case 'apiary':", start);
 
-  expect(start).toBeGreaterThanOrEqual(0);
+  expect(terminologyStart).toBeGreaterThanOrEqual(0);
+  expect(start).toBeGreaterThan(terminologyStart);
   expect(end).toBeGreaterThan(start);
   return DRAWER_SOURCE.slice(start, end);
 }
