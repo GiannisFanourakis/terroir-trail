@@ -1,7 +1,5 @@
 import { Category } from '../types/terroir';
-import { CRETAN_PRODUCERS } from '../data/producers';
-import { SANTORINI_PRODUCERS } from '../data/santoriniProducers';
-import { PHASE10B_PRODUCERS } from '../data/phase10bProducers';
+import { AUDITED_PRODUCERS } from '../data/auditedProducers';
 
 export interface GooglePlacesAllowlistEntry {
   producerId: string;
@@ -16,17 +14,11 @@ export interface GooglePlacesEligibilityCandidate {
   locationStatus?: string | null;
 }
 
-const AUDITED_GOOGLE_PLACE_PRODUCERS = [
-  ...CRETAN_PRODUCERS,
-  ...SANTORINI_PRODUCERS,
-  ...PHASE10B_PRODUCERS,
-];
-
 /**
- * The static catalogue remains the compatibility allowlist for bundled producer
- * records. Live Supabase producers can also be eligible when the persisted
- * producer record itself carries both a manually audited persistent Google Place
- * ID and a verified TerroirTrail location status.
+ * The canonical audited catalogue is the compatibility allowlist for bundled
+ * producer records. Live Supabase producers can also be eligible when the
+ * persisted producer record itself carries both a manually audited persistent
+ * Google Place ID and a verified TerroirTrail location status.
  *
  * Coordinates are never used as a fallback lookup. A producer-owned shop can be
  * an eligible public point only when the underlying producer record has already
@@ -35,7 +27,7 @@ const AUDITED_GOOGLE_PLACE_PRODUCERS = [
  */
 export const GOOGLE_PLACES_PROTOTYPE_ITEMS: readonly GooglePlacesAllowlistEntry[] =
   Object.freeze(
-    AUDITED_GOOGLE_PLACE_PRODUCERS.filter(
+    AUDITED_PRODUCERS.filter(
       (producer) =>
         Boolean(producer.googlePlaceId?.trim()) &&
         (producer.locationStatus === 'verified_location' ||
