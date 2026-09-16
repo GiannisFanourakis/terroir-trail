@@ -208,7 +208,7 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200 select-none">
       <div className="relative w-full max-w-4xl bg-stone-950 text-stone-100 rounded-3xl shadow-2xl border border-white/15 overflow-hidden flex flex-col max-h-[92vh]">
-        <div className="px-3 sm:px-6 py-4 bg-stone-900 border-b border-white/10 shrink-0 flex items-center justify-between gap-2 sm:gap-3">
+        <div className="px-3 sm:px-6 py-4 bg-stone-900 border-b border-white/10 shrink-0 flex flex-wrap items-center justify-between gap-2 sm:gap-3">
           <div className="flex items-center gap-2 sm:gap-3 min-w-0">
             <img src="/logo.png" alt="TerroirTrail" className="w-8 h-8 sm:w-9 sm:h-9 object-contain drop-shadow-md shrink-0" />
             <div className="min-w-0">
@@ -221,7 +221,7 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
             </div>
           </div>
 
-          <div className="flex items-center gap-0.5 sm:gap-1 p-1 bg-stone-950 rounded-2xl border border-white/10">
+          <div className="order-3 flex w-full min-w-0 max-w-full items-center justify-center gap-0.5 overflow-x-auto p-1 bg-stone-950 rounded-2xl border border-white/10 sm:order-none sm:w-auto sm:gap-1 sm:overflow-visible">
             <TabButton active={activeTab === 'about'} onClick={() => setActiveTab('about')} icon={<BookOpen className="w-3.5 h-3.5" />} label="About" />
             <TabButton active={activeTab === 'faq'} onClick={() => setActiveTab('faq')} icon={<HelpCircle className="w-3.5 h-3.5" />} label="FAQ" />
             <TabButton active={activeTab === 'contact'} onClick={() => setActiveTab('contact')} icon={<Mail className="w-3.5 h-3.5" />} label="Contact" />
