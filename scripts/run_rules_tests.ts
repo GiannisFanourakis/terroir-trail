@@ -59,7 +59,7 @@ const child = spawn(
     'emulators:exec',
     '--only',
     'firestore',
-    '"vitest run tests/firestoreRules.test.ts"',
+    '"vitest run tests/firestoreRules.test.ts tests/firestoreDisputeRules.test.ts"',
   ],
   {
     stdio: 'inherit',
