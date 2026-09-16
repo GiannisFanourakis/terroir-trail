@@ -56,4 +56,4 @@ const finalizeIndex = ({ path: urlPath, name }: IndexConfig): void => {
 };
 
 for (const index of INDEXES) finalizeIndex(index);
-console.log('✓ Phase 12B destination/category index BreadcrumbList JSON-LD finalized.');
+console.log('✓ Destination/category index BreadcrumbList JSON-LD finalized.');
