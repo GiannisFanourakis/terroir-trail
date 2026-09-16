@@ -1,9 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import type { Producer } from '../src/types/terroir';
-import { CRETAN_PRODUCERS } from '../src/data/producers';
-import { SANTORINI_PRODUCERS } from '../src/data/santoriniProducers';
-import { PHASE10B_PRODUCERS } from '../src/data/phase10bProducers';
+import { SEO_PRODUCERS } from './seoCatalogue';
 
 const CANONICAL_HOST = 'https://terroir-trail.web.app';
 const CANONICAL_SITEMAP_URL = `${CANONICAL_HOST}/sitemap.xml`;
@@ -13,11 +11,10 @@ const MIN_CATEGORY_RECORDS = 2;
 const MIN_REGION_RECORDS = 2;
 const MIN_DESTINATION_CATEGORY_RECORDS = 3;
 
-const PRODUCERS: Producer[] = [
-  ...CRETAN_PRODUCERS,
-  ...SANTORINI_PRODUCERS,
-  ...PHASE10B_PRODUCERS,
-];
+const PRODUCERS: Producer[] = SEO_PRODUCERS;
+const CRETE_COUNT = PRODUCERS.filter((producer) => producer.destination === 'crete').length;
+const SANTORINI_COUNT = PRODUCERS.filter((producer) => producer.destination === 'santorini').length;
+const OTHER_DESTINATION_COUNT = PRODUCERS.length - CRETE_COUNT - SANTORINI_COUNT;
 
 const categorySlugs: Record<Producer['category'], string> = {
   winery: 'wineries',
@@ -175,7 +172,7 @@ function verifySeo(): void {
   const baseUrls = [`${CANONICAL_HOST}/`, `${CANONICAL_HOST}/privacy.html`, PRODUCER_DIRECTORY_URL, ...PRODUCERS.map(producerUrl)];
   const landingUrls = [`${CANONICAL_HOST}/destinations/`, `${CANONICAL_HOST}/categories/`, ...[...expectedLandingPaths.keys()].map((urlPath) => `${CANONICAL_HOST}${urlPath}`)];
   const expectedSitemapUrls = [...baseUrls, ...landingUrls];
-  if (sitemapUrls.length !== expectedSitemapUrls.length) fail(`Sitemap has ${sitemapUrls.length} URLs; expected ${expectedSitemapUrls.length} after Phase 12B.`);
+  if (sitemapUrls.length !== expectedSitemapUrls.length) fail(`Sitemap has ${sitemapUrls.length} URLs; expected ${expectedSitemapUrls.length} for the current catalogue.`);
   for (const url of expectedSitemapUrls) if (!sitemapUrls.includes(url)) fail(`Sitemap is missing expected URL: ${url}`);
 
   const robotsContent = requireFile(path.join(distDir, 'robots.txt'), 'dist/robots.txt');
@@ -185,17 +182,26 @@ function verifySeo(): void {
   const llmsContent = requireFile(path.join(distDir, 'llms.txt'), 'dist/llms.txt');
   const requiredLlmsClaims = [
     `${PRODUCERS.length} producer/project records`,
-    'Crete, Greece — 27 audited records.',
-    'Santorini, Greece — 9 audited records.',
-    'Peloponnese, Northern Greece and Tuscany / Italy — 19 audited Phase 10B records combined.',
+    `Crete, Greece — ${CRETE_COUNT} audited records.`,
+    `Santorini, Greece — ${SANTORINI_COUNT} audited records.`,
+    `Peloponnese, Northern Greece and Tuscany / Italy — ${OTHER_DESTINATION_COUNT} audited records combined.`,
     '10 published verified-stop Discovery Guides',
     '/producers/<producer-id>/',
     'does not represent Santorini as a UNESCO Global Geopark',
-    'SEO, AEO and entity-discovery foundation',
-    'Greek cheese and dairy is the next planned catalogue expansion',
+    'Greek cheese and dairy expansion is now included in the audited catalogue',
   ];
   for (const claim of requiredLlmsClaims) requireIncludes(llmsContent, claim, 'dist/llms.txt');
-  const staleLlmsClaims = ['36 producer/project records', 'Next regional programme: Peloponnese', 'Current reference region: Crete, Greece.', 'Future expansion may include Santorini', '58+ verified producers', '6 turn-by-turn', 'Santorini Complete Volcanic Caldera & Donkey Beer Trail'];
+  const staleLlmsClaims = [
+    '36 producer/project records',
+    '55 producer/project records',
+    'Next regional programme: Peloponnese',
+    'Current reference region: Crete, Greece.',
+    'Future expansion may include Santorini',
+    '58+ verified producers',
+    '6 turn-by-turn',
+    'Santorini Complete Volcanic Caldera & Donkey Beer Trail',
+    'Greek cheese and dairy is the next planned catalogue expansion',
+  ];
   for (const claim of staleLlmsClaims) banIncludes(llmsContent, claim, 'dist/llms.txt');
 
   const indexContent = requireFile(path.join(distDir, 'index.html'), 'dist/index.html');
@@ -209,7 +215,22 @@ function verifySeo(): void {
   requireIncludes(indexContent, 'href="/categories/"', 'dist/index.html');
   requireIncludes(indexContent, 'Discovery Guides &amp; Navigation Safety', 'dist/index.html');
   requireIncludes(indexContent, 'Santorini Brewing Company', 'dist/index.html');
-  const staleIndexClaims = ['36 producer/project records', 'Six guides are currently published across Crete and Santorini', 'Crete and Santorini are the current reference-quality regions', 'Verified Crete &amp; Santorini Producer Directory', '58 featured independent', 'Curated Crete Rural Discovery Loops', 'Heraklion Peza & Archanes Wine Loop', 'Chania Mountain & Artisan Olive Oil Circuit', 'Rethymno Foothills & Heritage Circuit', 'Lasithi & Sitia Monastic Terroir Route', 'Curated Rural Routes Under Verification', 'Starting in Greece with our inaugural audited Crete dataset', 'Verified Crete Producer Directory'];
+  const staleIndexClaims = [
+    '36 producer/project records',
+    '55 audited producer/project records',
+    'Six guides are currently published across Crete and Santorini',
+    'Crete and Santorini are the current reference-quality regions',
+    'Verified Crete &amp; Santorini Producer Directory',
+    '58 featured independent',
+    'Curated Crete Rural Discovery Loops',
+    'Heraklion Peza & Archanes Wine Loop',
+    'Chania Mountain & Artisan Olive Oil Circuit',
+    'Rethymno Foothills & Heritage Circuit',
+    'Lasithi & Sitia Monastic Terroir Route',
+    'Curated Rural Routes Under Verification',
+    'Starting in Greece with our inaugural audited Crete dataset',
+    'Verified Crete Producer Directory',
+  ];
   for (const claim of staleIndexClaims) banIncludes(indexContent, claim, 'dist/index.html');
   for (const tag of ['geo.placename', '35.3387;25.1442', '35.3387, 25.1442', 'pagead2.googlesyndication.com', 'emrld.ltd', 'ca-pub-1608902378435149']) banIncludes(indexContent, tag, 'dist/index.html');
 
@@ -261,11 +282,11 @@ function verifySeo(): void {
   verifyIndexPage('/categories/', eligibleCategories.length, eligibleCategories.map(([category]) => categoryPath(category)), 'Categories index');
   for (const [urlPath, count] of expectedLandingPaths) verifyLandingPage(urlPath, count, `Landing page ${urlPath}`);
 
-  console.log('✓ SEO/AEO verification passed:');
-  console.log(`  - ${PRODUCERS.length} canonical producer entities retain Phase 12A metadata, factual answers and JSON-LD`);
-  console.log(`  - ${expectedLandingPaths.size + 2} Phase 12B country/destination/region/category/index pages verified`);
+  console.log('✓ SEO/AEO landing verification passed:');
+  console.log(`  - ${PRODUCERS.length} canonical producer entities retain metadata, factual answers and JSON-LD`);
+  console.log(`  - ${expectedLandingPaths.size + 2} country/destination/region/category/index pages verified`);
   console.log(`  - thin destination/category combinations remain withheld below ${MIN_DESTINATION_CATEGORY_RECORDS} records`);
-  console.log(`  - all producer pages link into applicable destination/category/region entities`);
+  console.log('  - all producer pages link into applicable destination/category/region entities');
   console.log(`  - final sitemap contains exactly ${expectedSitemapUrls.length} canonical URLs with no duplicates or legacy producer-query URLs`);
   console.log(`  - robots.txt advertises ${CANONICAL_SITEMAP_URL}`);
   console.log('  - homepage/llms state, stale-claim bans and monetization quarantine remain enforced');
