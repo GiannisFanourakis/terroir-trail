@@ -186,6 +186,10 @@ export const CRETE_TERROIR_REGION: TerroirRegion = {
       url: 'https://whc.unesco.org/en/list/1733',
     },
     {
+      label: 'Eurostat/GISCO regional boundary source',
+      url: 'https://ec.europa.eu/eurostat/web/gisco/geodata/reference-data/administrative-units-statistical-units/nuts',
+    },
+    {
       label: 'Region of Crete — intangible cultural heritage',
       url: 'https://www.crete.gov.gr/diimerida-perifereias-kritis-perifereiako-eyretirio-aylis-politistikis-klironomias-tis-kritis-paroysiasi-dynatotites-kai-prooptikes/',
     },
@@ -196,10 +200,6 @@ export const CRETE_TERROIR_REGION: TerroirRegion = {
     {
       label: 'Visit Greece — Chania cultural layers',
       url: 'https://www.visitgreece.gr/en/islands/Crete/Chania',
-    },
-    {
-      label: 'Eurostat/GISCO regional boundary source',
-      url: 'https://ec.europa.eu/eurostat/web/gisco/geodata/reference-data/administrative-units-statistical-units/nuts',
     },
   ],
 };
