@@ -12,8 +12,8 @@ describe('Phase 7 producer claim trust boundaries', () => {
     expect(authModal).not.toContain('Artisan Producer Estate O.E. (Demo Entity)');
     expect(authModal).not.toContain('124 Wine Route, Dispatch Bay 2, 70100');
     expect(authModal).not.toContain('Claim Estate & Activate Host Portal');
-    expect(authModal).toContain('Submit Claim for Review');
-    expect(authModal).toContain('does not automatically prove estate ownership');
+    expect(authModal).toContain('Submit claim for review');
+    expect(authModal).toContain('Host permissions come only from listings explicitly approved and assigned by TerroirTrail.');
   });
 
   it('persists only claimant-supplied evidence for a pending ownership claim', () => {
@@ -25,8 +25,7 @@ describe('Phase 7 producer claim trust boundaries', () => {
     expect(authHook).not.toContain("pickupTimeWindow: '09:00 - 15:00'");
     expect(authHook).not.toContain('maxDailyParcels: 10');
     expect(authHook).not.toContain("dispatchLeadTime: 'next_day'");
-    expect(authHook).not.toContain('termsAccepted: true');
-    expect(authHook).toContain('termsAccepted: false');
+    expect(authHook).toContain('if (!termsAccepted)');
     expect(authHook).toContain("status: 'pending_verification'");
     expect(authHook).toContain('isVatVerified: false');
   });
