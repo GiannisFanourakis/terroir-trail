@@ -1,30 +1,28 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Capacitor } from '@capacitor/core';
-import { UserProfile, TravelerType, ProducerTaxDetails, ProducerRegistrationRecord, HostClaimStatus } from '../types/auth';
-import { 
-  auth, 
-  googleProvider, 
-  appleProvider, 
+import { UserProfile, TravelerType, ProducerTaxDetails, ProducerRegistrationRecord } from '../types/auth';
+import {
+  auth,
+  googleProvider,
+  appleProvider,
   isFirebaseConfigured,
   saveUserProfileToCloud,
   fetchUserProfileFromCloud,
-  fetchUserProducerOwnership,
+  fetchUserProducerOwnerships,
   ProducerOwnershipRecord,
   saveProducerRegistrationToCloud,
   sendPasswordReset,
   subscribeToCloudUserProfile
 } from '../services/firebase';
-import { 
-  signInWithPopup, 
+import {
+  signInWithPopup,
   signInWithCredential,
-  signOut as firebaseSignOut, 
+  signOut as firebaseSignOut,
   onAuthStateChanged,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   updateProfile as firebaseUpdateProfile,
-  User as FirebaseUser,
-  GoogleAuthProvider,
-  OAuthProvider
+  User as FirebaseUser
 } from 'firebase/auth';
 import { DEMO_PROFILES, DEMO_PRODUCER_PROFILES } from '../data/demoProfiles';
 import { formatAuthError } from '../utils/authErrors';
@@ -54,7 +52,6 @@ const sendTravelerWelcomeSafely = async (name: string) => {
   }
 };
 
-// Helper to load user stamps and notes from local storage by user ID
 const getUserData = (userId: string): Partial<UserProfile> & {
   visitedProducers: string[];
   personalNotes: Record<string, string>;
@@ -74,8 +71,8 @@ const getUserData = (userId: string): Partial<UserProfile> & {
 };
 
 const saveUserData = (
-  userId: string, 
-  visitedProducers: string[], 
+  userId: string,
+  visitedProducers: string[],
   personalNotes: Record<string, string>,
   extra?: Partial<UserProfile>
 ) => {
@@ -87,7 +84,6 @@ const saveUserData = (
   );
 };
 
-// Exact historical demo profile identifiers from TerroirTrail demo fixtures
 export const KNOWN_HISTORICAL_DEMO_USER_IDS = new Set([
   'user_john_smith',
   'user_jane_doe',
@@ -117,14 +113,14 @@ export const useAuth = () => {
   const [user, setUser] = useState<UserProfile | null>(() => {
     const parsed = readStorage<any>(STORAGE_KEY, null, { scope: 'Auth' });
     if (!parsed || typeof parsed !== 'object' || !parsed.id) return null;
-    if (isFirebaseConfigured) {
-      if (isKnownDemoUserId(parsed.id)) {
-        removeStorage(STORAGE_KEY, { scope: 'Auth' });
-        return null;
-      }
+    if (isFirebaseConfigured && isKnownDemoUserId(parsed.id)) {
+      removeStorage(STORAGE_KEY, { scope: 'Auth' });
+      return null;
     }
     return {
       ...parsed,
+      producerIds: Array.isArray(parsed.producerIds) ? parsed.producerIds : [],
+      interests: Array.isArray(parsed.interests) ? parsed.interests : [],
       visitedProducers: Array.isArray(parsed.visitedProducers) ? parsed.visitedProducers : [],
       personalNotes: parsed.personalNotes && typeof parsed.personalNotes === 'object' ? parsed.personalNotes : {},
     };
@@ -134,33 +130,43 @@ export const useAuth = () => {
   const [authError, setAuthError] = useState<string | null>(null);
   const { pass, refreshExplorerPass } = useExplorerPass(user?.id);
 
-  // Helper to map a Firebase User + Cloud Firestore Profile + Trusted Ownership to our UserProfile model
   const mapFirebaseUser = (
-    fbUser: FirebaseUser, 
+    fbUser: FirebaseUser,
     customType?: TravelerType,
     cloudProfile?: Partial<UserProfile> | null,
-    trustedOwnership?: ProducerOwnershipRecord | null
+    trustedOwnerships: ProducerOwnershipRecord[] = []
   ): UserProfile => {
     const existing = getUserData(fbUser.uid);
     const displayName = cloudProfile?.name || fbUser.displayName || existing.name || fbUser.email?.split('@')[0] || 'Terroir Explorer';
-    const photo = fbUser.photoURL || cloudProfile?.avatar || existing.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=d97706&color=ffffff&bold=true&format=svg`;
-    
-    // Cloud host privileges are derived exclusively from trusted producer_owners
-    const isTrustedHost = Boolean(trustedOwnership && trustedOwnership.status === 'active');
-    const trustedProducerId = isTrustedHost ? trustedOwnership?.producerId : undefined;
+    const photo = fbUser.photoURL || cloudProfile?.avatar || existing.avatar || undefined;
+    const producerIds = Array.from(new Set(
+      trustedOwnerships
+        .filter(ownership => ownership.status === 'active' && ownership.producerId)
+        .map(ownership => ownership.producerId)
+    ));
+    const isTrustedHost = producerIds.length > 0;
+    const primaryProducerId = producerIds[0];
 
     return {
       id: fbUser.uid,
       name: displayName,
       email: fbUser.email || cloudProfile?.email || existing.email || '',
-      avatar: photo,
-      hometown: cloudProfile?.hometown || existing.hometown || 'Explorer',
+      ...(photo ? { avatar: photo } : {}),
+      ...(cloudProfile?.hometown || existing.hometown
+        ? { hometown: cloudProfile?.hometown || existing.hometown }
+        : {}),
       role: isTrustedHost ? 'producer' : 'traveler',
       isProducer: isTrustedHost,
-      claimedProducerId: trustedProducerId,
+      producerIds,
+      claimedProducerId: primaryProducerId,
       producerName: isTrustedHost ? (cloudProfile?.producerName || existing.producerName) : undefined,
-      claimStatus: isTrustedHost ? 'verified_host' : (existing.claimStatus === 'verified_host' ? 'unclaimed' : (existing.claimStatus || 'unclaimed')),
+      claimStatus: isTrustedHost
+        ? 'verified_host'
+        : (existing.claimStatus === 'verified_host' ? 'unclaimed' : (existing.claimStatus || 'unclaimed')),
       taxDetails: isTrustedHost ? existing.taxDetails : undefined,
+      interests: Array.isArray(cloudProfile?.interests)
+        ? cloudProfile?.interests
+        : (Array.isArray(existing.interests) ? existing.interests : []),
       travelerType: customType || cloudProfile?.travelerType || existing.travelerType || 'culinary_nomad',
       visitedProducers: cloudProfile?.visitedProducers || existing.visitedProducers || [],
       personalNotes: cloudProfile?.personalNotes || existing.personalNotes || {},
@@ -170,18 +176,17 @@ export const useAuth = () => {
     };
   };
 
-  // Listen to Firebase Auth state changes if Firebase is configured
   useEffect(() => {
     if (!isFirebaseConfigured || !auth) return;
 
     const unsubscribe = onAuthStateChanged(auth, async (fbUser) => {
       if (fbUser) {
         try {
-          const [cloudProfile, trustedOwnership] = await Promise.all([
+          const [cloudProfile, trustedOwnerships] = await Promise.all([
             fetchUserProfileFromCloud(fbUser.uid),
-            fetchUserProducerOwnership(fbUser.uid),
+            fetchUserProducerOwnerships(fbUser.uid),
           ]);
-          const mapped = mapFirebaseUser(fbUser, undefined, cloudProfile, trustedOwnership);
+          const mapped = mapFirebaseUser(fbUser, undefined, cloudProfile, trustedOwnerships);
           setUser(mapped);
           saveUserData(mapped.id, mapped.visitedProducers, mapped.personalNotes, mapped);
           if (!cloudProfile) {
@@ -192,7 +197,6 @@ export const useAuth = () => {
           setUser((prev) => mapFirebaseUser(fbUser, prev?.travelerType));
         }
       } else {
-        // When Firebase Auth confirms there is no active session, clear cached user account
         removeStorage(STORAGE_KEY, { scope: 'Auth' });
         setUser(null);
       }
@@ -201,7 +205,6 @@ export const useAuth = () => {
     return () => unsubscribe();
   }, []);
 
-  // Sync current user state to localStorage
   useEffect(() => {
     if (user) {
       writeStorage(STORAGE_KEY, user, { scope: 'Auth' });
@@ -211,7 +214,6 @@ export const useAuth = () => {
     }
   }, [user]);
 
-  // Real-Time Cross-Device Sync (Phone <-> Laptop) via Cloud Firestore
   useEffect(() => {
     if (!user?.id || !isFirebaseConfigured) return;
 
@@ -222,6 +224,9 @@ export const useAuth = () => {
           ...prev,
           name: cloudData.name || prev.name,
           email: cloudData.email || prev.email,
+          avatar: cloudData.avatar || prev.avatar,
+          hometown: cloudData.hometown ?? prev.hometown,
+          interests: Array.isArray(cloudData.interests) ? cloudData.interests : prev.interests,
           travelerType: cloudData.travelerType || prev.travelerType,
           visitedProducers: cloudData.visitedProducers || prev.visitedProducers,
           personalNotes: cloudData.personalNotes ?? prev.personalNotes,
@@ -234,46 +239,36 @@ export const useAuth = () => {
     return () => unsubscribe();
   }, [user?.id]);
 
-  // 1. Google (Gmail) Sign-In
   const loginWithGoogle = useCallback(async () => {
     setIsLoading(true);
     setAuthError(null);
     try {
-      if (!isFirebaseConfigured || !auth) {
-        throw new Error('FIREBASE_NOT_CONFIGURED');
-      }
+      if (!isFirebaseConfigured || !auth) throw new Error('FIREBASE_NOT_CONFIGURED');
 
       let firebaseUser: FirebaseUser;
-
       if (Capacitor.isNativePlatform()) {
         const { FirebaseAuthentication } = await import('@capacitor-firebase/authentication');
-        const nativeResult = await FirebaseAuthentication.signInWithGoogle({
-          skipNativeAuth: true,
-        });
-
+        const nativeResult = await FirebaseAuthentication.signInWithGoogle({ skipNativeAuth: true });
         if (nativeResult.credential?.idToken) {
           const credential = createGoogleWebCredential({
             idToken: nativeResult.credential.idToken,
             accessToken: nativeResult.credential.accessToken,
           });
-          const authRes = await signInWithCredential(auth, credential);
-          firebaseUser = authRes.user;
+          firebaseUser = (await signInWithCredential(auth, credential)).user;
         } else if (auth.currentUser) {
           firebaseUser = auth.currentUser;
         } else {
           throw new Error('No credentials returned from Google Sign-In.');
         }
       } else {
-        const result = await signInWithPopup(auth, googleProvider);
-        firebaseUser = result.user;
+        firebaseUser = (await signInWithPopup(auth, googleProvider)).user;
       }
 
-      const [cloudProfile, trustedOwnership] = await Promise.all([
+      const [cloudProfile, trustedOwnerships] = await Promise.all([
         fetchUserProfileFromCloud(firebaseUser.uid),
-        fetchUserProducerOwnership(firebaseUser.uid),
+        fetchUserProducerOwnerships(firebaseUser.uid),
       ]);
-      const mapped = mapFirebaseUser(firebaseUser, 'culinary_nomad', cloudProfile, trustedOwnership);
-
+      const mapped = mapFirebaseUser(firebaseUser, 'culinary_nomad', cloudProfile, trustedOwnerships);
       await saveUserProfileToCloud(mapped);
       await sendTravelerWelcomeSafely(mapped.name);
       setUser(mapped);
@@ -281,54 +276,43 @@ export const useAuth = () => {
       return mapped;
     } catch (error: any) {
       console.error('Google Sign-in error:', error);
-      const message = formatAuthError(error);
-      setAuthError(message);
+      setAuthError(formatAuthError(error));
       throw error;
     } finally {
       setIsLoading(false);
     }
   }, []);
 
-  // 2. Apple Sign-In
   const loginWithApple = useCallback(async () => {
     setIsLoading(true);
     setAuthError(null);
     try {
-      if (!isFirebaseConfigured || !auth) {
-        throw new Error('FIREBASE_NOT_CONFIGURED');
-      }
+      if (!isFirebaseConfigured || !auth) throw new Error('FIREBASE_NOT_CONFIGURED');
 
       let firebaseUser: FirebaseUser;
-
       if (Capacitor.isNativePlatform()) {
         const { FirebaseAuthentication } = await import('@capacitor-firebase/authentication');
-        const nativeResult = await FirebaseAuthentication.signInWithApple({
-          skipNativeAuth: true,
-        });
-
+        const nativeResult = await FirebaseAuthentication.signInWithApple({ skipNativeAuth: true });
         if (nativeResult.credential?.idToken) {
           const credential = createAppleWebCredential({
             idToken: nativeResult.credential.idToken,
             nonce: nativeResult.credential.nonce,
           });
-          const authRes = await signInWithCredential(auth, credential);
-          firebaseUser = authRes.user;
+          firebaseUser = (await signInWithCredential(auth, credential)).user;
         } else if (auth.currentUser) {
           firebaseUser = auth.currentUser;
         } else {
           throw new Error('No credentials returned from Apple Sign-In.');
         }
       } else {
-        const result = await signInWithPopup(auth, appleProvider);
-        firebaseUser = result.user;
+        firebaseUser = (await signInWithPopup(auth, appleProvider)).user;
       }
 
-      const [cloudProfile, trustedOwnership] = await Promise.all([
+      const [cloudProfile, trustedOwnerships] = await Promise.all([
         fetchUserProfileFromCloud(firebaseUser.uid),
-        fetchUserProducerOwnership(firebaseUser.uid),
+        fetchUserProducerOwnerships(firebaseUser.uid),
       ]);
-      const mapped = mapFirebaseUser(firebaseUser, 'culinary_nomad', cloudProfile, trustedOwnership);
-
+      const mapped = mapFirebaseUser(firebaseUser, 'culinary_nomad', cloudProfile, trustedOwnerships);
       await saveUserProfileToCloud(mapped);
       await sendTravelerWelcomeSafely(mapped.name);
       setUser(mapped);
@@ -336,60 +320,48 @@ export const useAuth = () => {
       return mapped;
     } catch (error: any) {
       console.error('Apple Sign-in error:', error);
-      const message = formatAuthError(error);
-      setAuthError(message);
+      setAuthError(formatAuthError(error));
       throw error;
     } finally {
       setIsLoading(false);
     }
   }, []);
 
-  // 3. Email & Password Sign-In (Real Firebase Auth)
   const loginWithEmail = useCallback(async (email: string, password?: string) => {
     setIsLoading(true);
     setAuthError(null);
     try {
-      if (!isFirebaseConfigured || !auth) {
-        throw new Error('FIREBASE_NOT_CONFIGURED');
-      }
-      if (!password) {
-        throw new Error('Password is required.');
-      }
+      if (!isFirebaseConfigured || !auth) throw new Error('FIREBASE_NOT_CONFIGURED');
+      if (!password) throw new Error('Password is required.');
       const cred = await signInWithEmailAndPassword(auth, email, password);
-      const [cloudProfile, trustedOwnership] = await Promise.all([
+      const [cloudProfile, trustedOwnerships] = await Promise.all([
         fetchUserProfileFromCloud(cred.user.uid),
-        fetchUserProducerOwnership(cred.user.uid),
+        fetchUserProducerOwnerships(cred.user.uid),
       ]);
-      const mapped = mapFirebaseUser(cred.user, undefined, cloudProfile, trustedOwnership);
+      const mapped = mapFirebaseUser(cred.user, undefined, cloudProfile, trustedOwnerships);
       setUser(mapped);
       saveUserData(mapped.id, mapped.visitedProducers, mapped.personalNotes, mapped);
       return mapped;
     } catch (error: any) {
       console.error('Email sign-in error:', error);
-      const msg = formatAuthError(error);
-      setAuthError(msg);
+      setAuthError(formatAuthError(error));
       throw error;
     } finally {
       setIsLoading(false);
     }
   }, []);
 
-  // 4. Email & Password Registration (Real Firebase Auth)
   const signupWithEmail = useCallback(async (
-    name: string, 
-    email: string, 
-    password?: string, 
+    name: string,
+    email: string,
+    password?: string,
     travelerType: TravelerType = 'culinary_nomad'
   ) => {
     setIsLoading(true);
     setAuthError(null);
     try {
-      if (!isFirebaseConfigured || !auth) {
-        throw new Error('FIREBASE_NOT_CONFIGURED');
-      }
-      if (!password) {
-        throw new Error('Password is required.');
-      }
+      if (!isFirebaseConfigured || !auth) throw new Error('FIREBASE_NOT_CONFIGURED');
+      if (!password) throw new Error('Password is required.');
       const cred = await createUserWithEmailAndPassword(auth, email, password);
       await firebaseUpdateProfile(cred.user, { displayName: name });
       const mapped = mapFirebaseUser(cred.user, travelerType);
@@ -401,34 +373,28 @@ export const useAuth = () => {
       return mapped;
     } catch (error: any) {
       console.error('Email signup error:', error);
-      const msg = formatAuthError(error);
-      setAuthError(msg);
+      setAuthError(formatAuthError(error));
       throw error;
     } finally {
       setIsLoading(false);
     }
   }, []);
 
-  // 5. Send Real Password Reset Link
   const sendPasswordResetLink = useCallback(async (email: string) => {
     setIsLoading(true);
     setAuthError(null);
     try {
-      if (!isFirebaseConfigured || !auth) {
-        throw new Error('FIREBASE_NOT_CONFIGURED');
-      }
+      if (!isFirebaseConfigured) throw new Error('FIREBASE_NOT_CONFIGURED');
       await sendPasswordReset(email);
     } catch (error: any) {
       console.error('Password reset error:', error);
-      const msg = formatAuthError(error);
-      setAuthError(msg);
+      setAuthError(formatAuthError(error));
       throw error;
     } finally {
       setIsLoading(false);
     }
   }, []);
 
-  // 6. 1-Click Demo Profiles (Giannis, Elena, Markos) - Test/Development fixtures only
   const loginAsDemo = useCallback((demoKey: 'giannis' | 'elena' | 'markos') => {
     if (isFirebaseConfigured) {
       throw new Error('DEMO_AUTH_DISABLED: Demo traveler logins are disabled when cloud services are configured');
@@ -438,7 +404,6 @@ export const useAuth = () => {
     return profile;
   }, []);
 
-  // 6b. 1-Click Demo Producer Profiles - Test/Development fixtures only
   const loginAsDemoProducer = useCallback((demoKey: 'paterianakis' | 'manousakis' | 'charma' | 'monteraponi') => {
     if (isFirebaseConfigured) {
       throw new Error('DEMO_AUTH_DISABLED: Demo producer logins are disabled when cloud services are configured');
@@ -448,7 +413,6 @@ export const useAuth = () => {
     return profile;
   }, []);
 
-  // 6c. Real Producer Sign In
   const loginAsProducer = useCallback(async (
     arg1: string,
     arg2?: string,
@@ -460,58 +424,50 @@ export const useAuth = () => {
 
     let targetEmail = '';
     let targetPassword = '';
-    let targetProducerId: string | undefined;
-    let targetProducerName: string | undefined;
-
     if (arg1.includes('@')) {
       targetEmail = arg1;
       targetPassword = arg2 || '';
-      targetProducerId = arg3;
-      targetProducerName = arg4;
     } else {
-      targetProducerId = arg1;
-      targetProducerName = arg2;
       targetEmail = arg3 || '';
       targetPassword = arg4 || '';
     }
 
     try {
-      if (!isFirebaseConfigured || !auth) {
-        throw new Error('FIREBASE_NOT_CONFIGURED');
-      }
-      if (!targetPassword) {
-        throw new Error('Password is required for producer login.');
-      }
+      if (!isFirebaseConfigured || !auth) throw new Error('FIREBASE_NOT_CONFIGURED');
+      if (!targetPassword) throw new Error('Password is required for producer login.');
       const cred = await signInWithEmailAndPassword(auth, targetEmail, targetPassword);
-      const [cloudProfile, trustedOwnership] = await Promise.all([
+      const [cloudProfile, trustedOwnerships] = await Promise.all([
         fetchUserProfileFromCloud(cred.user.uid),
-        fetchUserProducerOwnership(cred.user.uid),
+        fetchUserProducerOwnerships(cred.user.uid),
       ]);
-      const mapped = mapFirebaseUser(cred.user, undefined, cloudProfile, trustedOwnership);
-      
+      const mapped = mapFirebaseUser(cred.user, undefined, cloudProfile, trustedOwnerships);
       saveUserData(mapped.id, mapped.visitedProducers, mapped.personalNotes, mapped);
       setUser(mapped);
       return mapped;
     } catch (error: any) {
       console.error('Producer login error:', error);
-      const msg = formatAuthError(error);
-      setAuthError(msg);
+      setAuthError(formatAuthError(error));
       throw error;
     } finally {
       setIsLoading(false);
     }
   }, []);
 
-  // 6d. Submit an estate ownership claim for operator review.
-  // Authentication and client-side format checks are evidence inputs only; they never grant host authority.
   const claimAndRegisterProducer = useCallback(async (
-    producerId: string, producerName: string, hostName: string, email: string, password?: string, taxDetails?: ProducerTaxDetails
+    producerId: string,
+    producerName: string,
+    hostName: string,
+    email: string,
+    password?: string,
+    taxDetails?: ProducerTaxDetails,
+    termsAccepted = false
   ) => {
     setIsLoading(true);
     setAuthError(null);
     try {
       if (!isFirebaseConfigured || !auth) throw new Error('FIREBASE_NOT_CONFIGURED');
       if (!password) throw new Error('Password is required for producer registration.');
+      if (!termsAccepted) throw new Error('You must accept the TerroirTrail Producer Terms before submitting a claim.');
       const cred = await createUserWithEmailAndPassword(auth, email, password);
       await firebaseUpdateProfile(cred.user, { displayName: hostName });
       const mapped = mapFirebaseUser(cred.user);
@@ -520,14 +476,19 @@ export const useAuth = () => {
       mapped.claimStatus = 'pending_verification';
       const now = new Date().toISOString();
       const claimRecord: ProducerRegistrationRecord = {
-        id: producerId, producerId, userId: cred.user.uid, tradeBrandName: producerName,
-        isVatVerified: false, representativeName: hostName, officialEmail: email,
-        status: 'pending_verification', submittedAt: now, updatedAt: now, termsAccepted: false,
+        id: producerId,
+        producerId,
+        userId: cred.user.uid,
+        tradeBrandName: producerName,
+        isVatVerified: false,
+        representativeName: hostName,
+        officialEmail: email,
+        status: 'pending_verification',
+        submittedAt: now,
+        updatedAt: now,
+        termsAccepted: true,
         ...(taxDetails?.legalBusinessName ? { legalBusinessName: taxDetails.legalBusinessName } : {}),
         ...(taxDetails?.vatNumber ? { vatNumber: taxDetails.vatNumber } : {}),
-        ...(taxDetails?.taxOffice ? { taxOffice: taxDetails.taxOffice } : {}),
-        ...(taxDetails?.registeredAddress ? { registeredAddress: taxDetails.registeredAddress } : {}),
-        ...(taxDetails?.dispatchContactPhone ? { contactPhone: taxDetails.dispatchContactPhone } : {}),
         ...(taxDetails?.countryCode ? { countryCode: taxDetails.countryCode } : {}),
       };
       await saveProducerRegistrationToCloud(claimRecord);
@@ -538,13 +499,13 @@ export const useAuth = () => {
       return mapped;
     } catch (error: any) {
       console.error('Producer registration error:', error);
-      const msg = formatAuthError(error);
-      setAuthError(msg);
+      setAuthError(formatAuthError(error));
       throw error;
-    } finally { setIsLoading(false); }
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
 
-  // 6e. Update Producer Fiscal & Shipping Details (Local demo only)
   const updateProducerTaxDetails = useCallback(async (taxDetails: ProducerTaxDetails) => {
     setUser((prev) => {
       if (!prev) return prev;
@@ -557,7 +518,6 @@ export const useAuth = () => {
     });
   }, []);
 
-  // 6f. Sign Out
   const logout = useCallback(async () => {
     try {
       if (Capacitor.isNativePlatform()) {
@@ -577,7 +537,6 @@ export const useAuth = () => {
     setUser(null);
   }, []);
 
-  // 7. Toggle Passport Visited Stamp
   const toggleVisited = useCallback((producerId: string) => {
     setUser((prev) => {
       if (!prev) return prev;
@@ -585,13 +544,13 @@ export const useAuth = () => {
       const updated = isAlready
         ? prev.visitedProducers.filter((id) => id !== producerId)
         : [...prev.visitedProducers, producerId];
-      
+
       const newProfile = {
         ...prev,
         visitedProducers: updated,
       };
       saveUserData(newProfile.id, updated, newProfile.personalNotes, newProfile);
-      saveUserProfileToCloud(newProfile);
+      void saveUserProfileToCloud(newProfile);
       return newProfile;
     });
   }, []);
@@ -600,7 +559,6 @@ export const useAuth = () => {
     return user ? user.visitedProducers.includes(producerId) : false;
   }, [user]);
 
-  // 8. Personal Tasting Notes
   const saveTastingNote = useCallback((producerId: string, note: string) => {
     setUser((prev) => {
       if (!prev) return prev;
@@ -615,7 +573,7 @@ export const useAuth = () => {
         personalNotes: newNotes,
       };
       saveUserData(newProfile.id, newProfile.visitedProducers, newNotes, newProfile);
-      saveUserProfileToCloud(newProfile);
+      void saveUserProfileToCloud(newProfile);
       return newProfile;
     });
   }, []);
@@ -627,6 +585,8 @@ export const useAuth = () => {
   return {
     user: user ? {
       ...user,
+      producerIds: Array.isArray(user.producerIds) ? user.producerIds : [],
+      interests: Array.isArray(user.interests) ? user.interests : [],
       visitedProducers: Array.isArray(user.visitedProducers) ? user.visitedProducers : [],
       personalNotes: user.personalNotes && typeof user.personalNotes === 'object' ? user.personalNotes : {},
       hasExplorerPass: !!pass,
