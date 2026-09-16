@@ -21,8 +21,9 @@ describe('AboutFaqModal public copy and contact channels', () => {
 
     expect(html).toContain('Contact');
     expect(html).toContain('Contact TerroirTrail');
-    expect(html).toContain('mailto:gian.fanourakis@gmail.com');
-    expect(html).toContain('gian.fanourakis@gmail.com');
+    expect(html).toContain('mailto:terroirtrail@gmail.com');
+    expect(html).toContain('terroirtrail@gmail.com');
+    expect(html).not.toContain('gian.fanourakis@gmail.com');
     expect(html).toContain(INSTAGRAM_URL);
     expect(html).toContain('@TERROIRTRAIL');
     expect(html).toContain('/terroirtrail-instagram-qr.svg');
