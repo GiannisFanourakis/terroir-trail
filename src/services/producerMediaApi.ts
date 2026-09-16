@@ -1,13 +1,12 @@
 import type { ProducerUploadedImage } from '../types/producerMedia';
-import { auth } from './firebase';
 import { resolveApiBaseUrl } from './apiOrigin';
 
 export async function replaceProducerMedia(
+  idToken: string,
   producerId: string,
   images: ProducerUploadedImage[]
 ): Promise<void> {
-  await auth?.authStateReady();
-  if (!auth?.currentUser) {
+  if (!idToken) {
     throw new Error('Sign in with an approved producer account to manage photos.');
   }
 
@@ -16,7 +15,7 @@ export async function replaceProducerMedia(
     {
       method: 'PUT',
       headers: {
-        Authorization: `Bearer ${await auth.currentUser.getIdToken()}`,
+        Authorization: `Bearer ${idToken}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ images }),
