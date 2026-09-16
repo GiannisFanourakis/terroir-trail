@@ -10,6 +10,7 @@ const makeDb = (options?: {
   adminStatus?: 'active' | 'revoked';
   adminLevel?: 'owner' | 'admin';
   adminUserId?: string;
+  hostEditingFrozen?: boolean;
   ownerships?: Array<{ id: string; ownerUid: string; status: string; producerId?: string }>;
 }) => ({
   collection: (name: string) => {
@@ -25,6 +26,20 @@ const makeDb = (options?: {
                     status: options.adminStatus,
                     level: options.adminLevel,
                   }
+                : undefined,
+          }),
+        }),
+      };
+    }
+
+    if (name === 'account_controls') {
+      return {
+        doc: () => ({
+          get: async () => ({
+            exists: options?.hostEditingFrozen !== undefined,
+            data: () =>
+              options?.hostEditingFrozen !== undefined
+                ? { hostEditingFrozen: options.hostEditingFrozen }
                 : undefined,
           }),
         }),
@@ -57,6 +72,7 @@ test('traveler has no privileged capabilities without trusted authority records'
   assert.equal(capabilities.adminLevel, null);
   assert.equal(capabilities.isPlatformOwner, false);
   assert.deepEqual(capabilities.producerIds, []);
+  assert.equal(capabilities.hostEditingFrozen, false);
   assert.equal(capabilities.canManageOwnedListings, false);
   assert.equal(capabilities.canReviewProducerClaims, false);
   assert.equal(capabilities.canAssignProducerOwnership, false);
@@ -79,10 +95,26 @@ test('active producer ownership grants only owned-listing host capability', asyn
   assert.deepEqual(capabilities.roles, ['traveler', 'producer_host']);
   assert.equal(capabilities.primaryRole, 'producer_host');
   assert.deepEqual(capabilities.producerIds, ['producer-a']);
+  assert.equal(capabilities.hostEditingFrozen, false);
   assert.equal(capabilities.canManageOwnedListings, true);
   assert.equal(capabilities.isAdmin, false);
   assert.equal(capabilities.canReviewProducerClaims, false);
   assert.equal(capabilities.canManageAdmins, false);
+});
+
+test('trusted account control can freeze host editing without removing ownership', async () => {
+  const db = makeDb({
+    hostEditingFrozen: true,
+    ownerships: [
+      { id: 'producer-a', ownerUid: 'host-uid', status: 'active', producerId: 'producer-a' },
+    ],
+  });
+
+  const capabilities = await getTrustedAccountCapabilities('host-uid', db as any);
+
+  assert.deepEqual(capabilities.producerIds, ['producer-a']);
+  assert.equal(capabilities.hostEditingFrozen, true);
+  assert.equal(capabilities.canManageOwnedListings, false);
 });
 
 test('ordinary admin gets admin capabilities but cannot create or revoke admins', async () => {
@@ -99,6 +131,7 @@ test('ordinary admin gets admin capabilities but cannot create or revoke admins'
   assert.equal(capabilities.isAdmin, true);
   assert.equal(capabilities.adminLevel, 'admin');
   assert.equal(capabilities.isPlatformOwner, false);
+  assert.equal(capabilities.hostEditingFrozen, false);
   assert.equal(capabilities.canReviewProducerClaims, true);
   assert.equal(capabilities.canAssignProducerOwnership, true);
   assert.equal(capabilities.canModerateProducerContent, true);
@@ -144,9 +177,19 @@ test('authority lookup fails closed when the trusted store is unavailable', asyn
           doc: () => ({ get: async () => { throw new Error('firestore unavailable'); } }),
         };
       }
-      return {
-        where: () => ({ get: async () => ({ docs: [] }) }),
-      };
+      if (name === 'account_controls') {
+        return {
+          doc: () => ({
+            get: async () => ({ exists: false, data: () => undefined }),
+          }),
+        };
+      }
+      if (name === 'producer_owners') {
+        return {
+          where: () => ({ get: async () => ({ docs: [] }) }),
+        };
+      }
+      throw new Error(`Unexpected collection: ${name}`);
     },
   };
 
