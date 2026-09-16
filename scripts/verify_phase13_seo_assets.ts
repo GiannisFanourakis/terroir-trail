@@ -6,6 +6,7 @@ import { SANTORINI_PRODUCERS } from '../src/data/santoriniProducers';
 import { PHASE10B_PRODUCERS } from '../src/data/phase10bProducers';
 import { PHASE13_DAIRY_PRODUCERS } from '../src/data/phase13DairyProducers';
 
+// Phase 13 deploy invariant: deterministic SEO output must mirror the approved 67-record catalogue.
 const HOST = 'https://terroir-trail.web.app';
 const distDir = path.resolve(process.cwd(), 'dist');
 const PRODUCERS: Producer[] = [
