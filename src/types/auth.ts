@@ -4,6 +4,18 @@ export type TravelerType =
   | 'craft_beer_explorer' 
   | 'culinary_nomad';
 
+export type TravelerInterest =
+  | 'wine'
+  | 'cheese_dairy'
+  | 'olive_oil'
+  | 'beer'
+  | 'spirits'
+  | 'honey'
+  | 'farms'
+  | 'herbs_botanicals'
+  | 'heritage_geoparks'
+  | 'local_food';
+
 export type UserRole = 'traveler' | 'producer';
 
 export type HostClaimStatus = 'unclaimed' | 'pending_verification' | 'verified_host';
@@ -117,10 +129,16 @@ export interface UserProfile {
   hometown?: string;
   role?: UserRole;
   isProducer?: boolean;
+  /** Trusted listing IDs currently managed by this account. */
+  producerIds?: string[];
+  /** @deprecated Use producerIds. Retained while older UI paths migrate. */
   claimedProducerId?: string;
   producerName?: string;
   claimStatus?: HostClaimStatus;
   taxDetails?: ProducerTaxDetails;
+  /** Optional discovery interests. No persona is required. */
+  interests?: TravelerInterest[];
+  /** @deprecated Legacy persona retained only for backwards compatibility. */
   travelerType: TravelerType;
   visitedProducers: string[];
   personalNotes: Record<string, string>;
