@@ -192,10 +192,11 @@ test('admin can reassign ownership to an existing account', async () => {
   assert.equal(audit.previousOwnerUid, 'old-owner');
 });
 
-test('reassign rejects an account that already owns another active producer listing', async () => {
+test('admin can explicitly assign multiple producer listings to the same existing account', async () => {
   const { db, auth, getCollection, seedAdmin, seedUser } = makeHarness();
   seedAdmin('admin-uid');
-  seedUser('new-owner', 'new@example.com');
+  seedUser('old-owner', 'old@example.com');
+  seedUser('multi-owner', 'multi@example.com');
   getCollection('producer_owners').set('producer-a', {
     producerId: 'producer-a',
     ownerUid: 'old-owner',
@@ -203,19 +204,26 @@ test('reassign rejects an account that already owns another active producer list
   });
   getCollection('producer_owners').set('producer-b', {
     producerId: 'producer-b',
-    ownerUid: 'new-owner',
+    ownerUid: 'multi-owner',
     status: 'active',
   });
+  getCollection('producer_registrations').set('producer-a', {
+    producerId: 'producer-a',
+    status: 'verified_active',
+    assignedOwnerUid: 'old-owner',
+  });
 
-  await assert.rejects(
-    reassignProducerOwnership(
-      'admin-uid',
-      'producer-a',
-      'new@example.com',
-      'Ownership changed.',
-      db as any,
-      auth as any
-    ),
-    (error: unknown) => error instanceof AdminOwnershipError && error.code === 'conflict'
+  const result = await reassignProducerOwnership(
+    'admin-uid',
+    'producer-a',
+    'multi@example.com',
+    'The same verified operator manages both listings.',
+    db as any,
+    auth as any
   );
+
+  assert.equal(result.ownerUid, 'multi-owner');
+  assert.equal(getCollection('producer_owners').get('producer-a')?.ownerUid, 'multi-owner');
+  assert.equal(getCollection('producer_owners').get('producer-b')?.ownerUid, 'multi-owner');
+  assert.equal(getCollection('producer_registrations').get('producer-a')?.assignedOwnerUid, 'multi-owner');
 });
