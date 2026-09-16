@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && tsc -p tsconfig.server.json && vite build && tsx scripts/verify_seo_assets.ts",
+    "build": "tsc && tsc -p tsconfig.server.json && vite build && tsx scripts/generate_seo_pages.ts && tsx scripts/verify_seo_assets.ts",
+    "generate:seo": "tsx scripts/generate_seo_pages.ts",
     "verify:seo": "tsx scripts/verify_seo_assets.ts",
     "sync:fallback": "tsx scripts/sync_fallback_producers.ts",
     "audit:google-place-ids": "tsx scripts/audit_google_place_ids.ts",
@@ -62,7 +63,6 @@
     "@types/qrcode": "^1.5.6",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.7",
-    "@vitejs/plugin-react": "^6.1.1",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
