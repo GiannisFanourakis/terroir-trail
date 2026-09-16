@@ -7,7 +7,7 @@ import { Header } from './components/Header/Header';
 import { FilterBar } from './components/FilterBar/FilterBar';
 import { MapCanvas } from './components/Map/MapCanvas';
 import { ProducerList } from './components/Sidebar/ProducerList';
-import { ProducerDetailDrawer } from './components/Drawer/ProducerDetailDrawer';
+import { ProducerDetailDrawerWithReviews as ProducerDetailDrawer } from './components/Drawer/ProducerDetailDrawerWithReviews';
 import { useFavorites } from './hooks/useFavorites';
 import { useAuth } from './hooks/useAuth';
 import { useAccountCapabilities } from './hooks/useAccountCapabilities';
