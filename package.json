@@ -5,9 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && tsc -p tsconfig.server.json && vite build && tsx scripts/generate_seo_pages.ts && tsx scripts/finalize_phase12_homepage.ts && tsx scripts/verify_seo_assets.ts",
-    "generate:seo": "tsx scripts/generate_seo_pages.ts && tsx scripts/finalize_phase12_homepage.ts",
-    "verify:seo": "tsx scripts/verify_seo_assets.ts",
+    "build": "tsc && tsc -p tsconfig.server.json && vite build && tsx scripts/generate_seo_pages.ts && tsx scripts/finalize_phase12_homepage.ts && tsx scripts/verify_seo_assets.ts && tsx scripts/generate_seo_landings.ts && tsx scripts/verify_seo_landings.ts",
+    "generate:seo": "tsx scripts/generate_seo_pages.ts && tsx scripts/finalize_phase12_homepage.ts && tsx scripts/generate_seo_landings.ts",
+    "verify:seo": "tsx scripts/verify_seo_landings.ts",
     "sync:fallback": "tsx scripts/sync_fallback_producers.ts",
     "audit:google-place-ids": "tsx scripts/audit_google_place_ids.ts",
     "admin:bootstrap": "tsx scripts/setAdminAuthority.ts bootstrap-owner",
@@ -42,7 +42,7 @@
     "@types/google.maps": "^3.66.2",
     "@types/node": "^22.20.2",
     "eslint": "^9.39.5",
-    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-hooks": "^7.0.1",
     "prettier": "^3.9.6",
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.70.0",
@@ -63,7 +63,6 @@
     "@types/qrcode": "^1.5.6",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.7",
-    "@vitejs/plugin-react": "^6.1.1",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
@@ -76,7 +75,6 @@
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "stripe": "^22.6.2",
-    "tailwindcss": "^4.3.3",
-    "tsx": "^4.23.13"
+    "tailwindcss": "^4.3.3"
   }
 }
