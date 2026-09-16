@@ -16,6 +16,8 @@ const mockProducer: Producer = {
   destination: 'crete',
   description: 'Pioneering Cretan estate.',
   openingHours: 'Mon-Sat 10:00 - 18:00',
+  phone: '+30 2810 123456',
+  website: 'https://example.com',
   ethos: ['family_estate', 'indigenous_only'],
   coordinates: [35.183416, 25.176466],
   category: 'winery',
@@ -78,6 +80,59 @@ describe('Host-Managed Producer Imagery Integration', () => {
       expect(portalSource).toContain('id="host-contact-email"');
       expect(portalSource).toContain('id="host-contact-phone"');
       expect(portalSource).toContain('id="host-visitor-notice"');
+    });
+  });
+
+  describe('ProducerDetailDrawer — Public Host Visitor Information', () => {
+    it('renders current host-supplied hours, phone and email instead of stale catalogue contact values', () => {
+      const hostOverride: ProducerOverride = {
+        producerId: 'lyrarakis-winery',
+        isAcceptingBookings: true,
+        updatedAt: new Date().toISOString(),
+        customHours: 'Daily 11:00 - 17:00',
+        contactPhone: '+30 2810 765432',
+        contactEmail: 'visits@lyrarakis.example',
+      };
+
+      const html = renderToString(
+        React.createElement(ProducerDetailDrawer, {
+          producer: mockProducer,
+          onClose: () => {},
+          producerOverride: hostOverride,
+          initialTab: 'visit',
+        })
+      );
+
+      expect(html).toContain('Daily 11:00 - 17:00');
+      expect(html).not.toContain('Mon-Sat 10:00 - 18:00');
+      expect(html).toContain('tel:+30 2810 765432');
+      expect(html).not.toContain('tel:+30 2810 123456');
+      expect(html).toContain('mailto:visits@lyrarakis.example');
+      expect(html).toContain('Email Producer');
+    });
+
+    it('allows an explicit blank host override to suppress stale public hours and phone', () => {
+      const hostOverride: ProducerOverride = {
+        producerId: 'lyrarakis-winery',
+        isAcceptingBookings: true,
+        updatedAt: new Date().toISOString(),
+        customHours: '',
+        contactPhone: '',
+        contactEmail: 'visits@lyrarakis.example',
+      };
+
+      const html = renderToString(
+        React.createElement(ProducerDetailDrawer, {
+          producer: mockProducer,
+          onClose: () => {},
+          producerOverride: hostOverride,
+          initialTab: 'visit',
+        })
+      );
+
+      expect(html).not.toContain('Mon-Sat 10:00 - 18:00');
+      expect(html).not.toContain('tel:+30 2810 123456');
+      expect(html).toContain('mailto:visits@lyrarakis.example');
     });
   });
 
