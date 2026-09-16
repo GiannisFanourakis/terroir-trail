@@ -5,6 +5,14 @@ export interface TerroirRegionSource {
   url: string;
 }
 
+export interface TerroirRegionSection {
+  id: 'landscape' | 'history' | 'culture' | 'food' | 'explore';
+  title: string;
+  eyebrow: string;
+  body: string;
+  highlights?: string[];
+}
+
 export interface TerroirRegion {
   id: string;
   name: string;
@@ -12,6 +20,7 @@ export interface TerroirRegion {
   eyebrow: string;
   summary: string;
   highlights: string[];
+  sections: TerroirRegionSection[];
   center: [number, number];
   /** GeoJSON geometry coordinates use [longitude, latitude]. */
   geometry: {
@@ -27,8 +36,8 @@ export interface TerroirRegion {
  * Boundary geometry is the simplified 1:10 Greece regional geometry derived
  * from Eurostat/GISCO by the public `dimitris1ps/Geojson` dataset. Keeping the
  * geometry local makes the map deterministic and avoids a runtime GIS request.
- * Editorial claims are intentionally concise and sourced from the Region of
- * Crete's own regional/geographic and agricultural-sector material.
+ * Editorial claims are deliberately concise and tied to first-party or
+ * institutional sources listed below.
  */
 export const CRETE_TERROIR_REGION: TerroirRegion = {
   id: 'crete',
@@ -41,6 +50,48 @@ export const CRETE_TERROIR_REGION: TerroirRegion = {
     'Mountain massifs & plateaus',
     'Olive groves & vineyards',
     'Dairy, honey & regional produce',
+  ],
+  sections: [
+    {
+      id: 'landscape',
+      title: 'A mountain island in the Mediterranean',
+      eyebrow: 'Landscape',
+      body:
+        'Crete is Greece’s largest island. Its four regional units — Chania, Rethymno, Heraklion and Lasithi — stretch across a landscape of high massifs, gorges, plateaus, fertile valleys and long coastlines. Psiloritis reaches 2,456 metres, while the White Mountains and Dikti create sharply different local environments over relatively short distances.',
+      highlights: ['4 regional units', 'Psiloritis · 2,456 m', 'Gorges, plateaus & coast'],
+    },
+    {
+      id: 'history',
+      title: 'From Minoan Crete to a Mediterranean crossroads',
+      eyebrow: 'Deep history',
+      body:
+        'Crete was the heartland of the Minoan civilisation, whose palatial centres connected administration, ritual, craft production, farming and maritime exchange. In 2025 UNESCO inscribed six Minoan Palatial Centres — Knossos, Phaistos, Malia, Zakros, Zominthos and Kydonia — on the World Heritage List. Later Byzantine, Venetian and Ottoman periods added further architectural and cultural layers that remain visible across the island.',
+      highlights: ['Minoan civilisation', '6 UNESCO palatial centres', 'Byzantine · Venetian · Ottoman layers'],
+    },
+    {
+      id: 'culture',
+      title: 'A living culture, not only a museum landscape',
+      eyebrow: 'Culture & traditions',
+      body:
+        'Cretan identity is still carried through village life, music, dance, oral traditions, festivals, craft practices and agricultural knowledge. The Region of Crete’s intangible-heritage work explicitly records customs, music-and-dance traditions, storytelling, handicrafts, cultivation practices, ethnobotanical knowledge and food heritage as living parts of the island’s collective memory.',
+      highlights: ['Music & dance', 'Craft traditions', 'Village customs & oral memory'],
+    },
+    {
+      id: 'food',
+      title: 'Terroir you can taste',
+      eyebrow: 'Food & farming',
+      body:
+        'Olive oil, wine, sheep- and goat-milk dairy, honey, wild greens, herbs and seasonal produce connect the landscape directly to the table. Cretan gastronomy is built around simple ingredients and local production, with dishes such as dakos, kalitsounia, goat, wild greens and regional cheeses sitting alongside wine and tsikoudia traditions.',
+      highlights: ['Olive oil & wine', 'Sheep & goat dairy', 'Honey, herbs & wild greens'],
+    },
+    {
+      id: 'explore',
+      title: 'Follow the island through its producers',
+      eyebrow: 'On TerroirTrail',
+      body:
+        'Use the map to move from the island-scale story into individual places: wineries, olive producers, dairies, apiaries, farms and other small makers. TerroirTrail keeps producer identity, visitability and road-access evidence separate, so the cultural story never substitutes for practical verification.',
+      highlights: ['Producer stories', 'Verified map identity', 'Access evidence stays separate'],
+    },
   ],
   center: [35.2401, 24.8093],
   geometry: {
@@ -131,8 +182,20 @@ export const CRETE_TERROIR_REGION: TerroirRegion = {
       url: 'https://www.crete.gov.gr/perifereia/',
     },
     {
-      label: 'Region of Crete — agricultural priorities',
-      url: 'https://www.crete.gov.gr/dimosia-diavoyleysi-gia-ti-nea-koini-agrotiki-politiki-kap-2028-2034-stin-perifereia-kritis/',
+      label: 'UNESCO — Minoan Palatial Centres',
+      url: 'https://whc.unesco.org/en/list/1733',
+    },
+    {
+      label: 'Region of Crete — intangible cultural heritage',
+      url: 'https://www.crete.gov.gr/diimerida-perifereias-kritis-perifereiako-eyretirio-aylis-politistikis-klironomias-tis-kritis-paroysiasi-dynatotites-kai-prooptikes/',
+    },
+    {
+      label: 'Visit Greece — Cretan gastronomy',
+      url: 'https://www.visitgreece.gr/experiences/gastronomy/traditional-cuisine/local-flavours-of-the-greek-cuisine/',
+    },
+    {
+      label: 'Visit Greece — Chania cultural layers',
+      url: 'https://www.visitgreece.gr/en/islands/Crete/Chania',
     },
     {
       label: 'Eurostat/GISCO regional boundary source',
