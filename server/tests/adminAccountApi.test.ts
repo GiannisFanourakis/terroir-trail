@@ -5,7 +5,7 @@ import { createApp } from '../app';
 import { registerAdminAccountRoutes } from '../adminAccountRoutes';
 import { AdminAccountError } from '../services/adminAccountService';
 
-test('admin account API authenticates search, login access and Host freeze flows', async () => {
+test('admin account API authenticates search and login access flows', async () => {
   const calls: Array<{ type: string; args: unknown[] }> = [];
   const summary = {
     uid: 'host-uid',
@@ -16,9 +16,7 @@ test('admin account API authenticates search, login access and Host freeze flows
     adminLevel: null,
     isPlatformOwner: false,
     producerIds: ['producer-a'],
-    hostEditingFrozen: false,
     canDisable: true,
-    canFreezeHostEditing: true,
   };
 
   const app = createApp({
@@ -40,11 +38,6 @@ test('admin account API authenticates search, login access and Host freeze flows
       calls.push({ type: 'access', args: [uid, targetUid, disabled, reason] });
       if (!reason) throw new AdminAccountError('bad_request', 'Add a short reason for this account action.');
       return { targetUid, disabled, occurredAt: 'now' };
-    },
-    setHostEditingFrozen: async (uid, targetUid, frozen, reason) => {
-      calls.push({ type: 'freeze', args: [uid, targetUid, frozen, reason] });
-      if (!reason) throw new AdminAccountError('bad_request', 'Add a short reason for this account action.');
-      return { targetUid, hostEditingFrozen: frozen, producerIds: ['producer-a'], occurredAt: 'now' };
     },
   });
 
@@ -82,26 +75,11 @@ test('admin account API authenticates search, login access and Host freeze flows
       account: { targetUid: 'host-uid', disabled: true, occurredAt: 'now' },
     });
 
-    const frozen = await post('/api/admin/accounts/host-uid/host-freeze', 'admin', {
-      frozen: true,
-      reason: 'Ownership dispute',
-    });
-    assert.equal(frozen.status, 200);
-    assert.deepEqual(await frozen.json(), {
-      account: {
-        targetUid: 'host-uid',
-        hostEditingFrozen: true,
-        producerIds: ['producer-a'],
-        occurredAt: 'now',
-      },
-    });
-
     assert.deepEqual(calls, [
       { type: 'search', args: ['traveler', 'host'] },
       { type: 'search', args: ['admin', 'host'] },
       { type: 'access', args: ['admin', 'host-uid', true, ''] },
       { type: 'access', args: ['admin', 'host-uid', true, 'Security review'] },
-      { type: 'freeze', args: ['admin', 'host-uid', true, 'Ownership dispute'] },
     ]);
   } finally {
     await new Promise<void>((resolve, reject) =>
