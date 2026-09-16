@@ -7,7 +7,7 @@ import { renderToString } from 'react-dom/server';
 import { AboutFaqModal } from './AboutFaqModal';
 
 const INSTAGRAM_URL = 'https://www.instagram.com/terroirtrail/';
-const INSTAGRAM_QR_SHA256 = '81d5995c27b342aaf430d3b995a570b6b754bff59385a8bcbc80d475effe7af5';
+const INSTAGRAM_QR_SHA256 = 'ac21f4dff0991a18b326e0be493bbe5b5bc75cf62e93f9803497a8a1a7979cbd';
 
 describe('AboutFaqModal contact channels', () => {
   it('publishes the real TerroirTrail Gmail and Instagram contact paths', () => {
