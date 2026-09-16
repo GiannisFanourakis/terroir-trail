@@ -4,12 +4,14 @@ import { registerAccountSelfRoutes } from './accountSelfRoutes';
 import { registerAdminAccountRoutes } from './adminAccountRoutes';
 import { registerAdminListingChangeRoutes } from './adminListingChangeRoutes';
 import { registerAdminMediaRoutes } from './adminMediaRoutes';
+import { registerAdminReviewRoutes } from './adminReviewRoutes';
 import { registerProducerListingChangeRoutes } from './producerListingChangeRoutes';
 import { registerProducerMediaRoutes } from './producerMediaRoutes';
 import { registerReviewRoutes } from './reviewRoutes';
 
 registerAdminMediaRoutes(app);
 registerAdminListingChangeRoutes(app);
+registerAdminReviewRoutes(app);
 registerAdminAccountRoutes(app);
 registerProducerMediaRoutes(app);
 registerProducerListingChangeRoutes(app);
