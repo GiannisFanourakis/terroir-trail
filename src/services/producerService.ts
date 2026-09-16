@@ -70,6 +70,7 @@ export function mapRowToProducer(row: any): Producer {
     description: row.description || '',
     story: row.story || '',
     indigenousVarieties: Array.isArray(row.indigenous_varieties) ? row.indigenous_varieties : [],
+    productSpecialties: Array.isArray(row.product_specialties) ? row.product_specialties : undefined,
     tastingHighlights: Array.isArray(row.tasting_highlights) ? row.tasting_highlights : [],
     openingHours: row.opening_hours || '',
     bestSeason: row.best_season || undefined,
@@ -152,7 +153,8 @@ function filterProducersList(producers: Producer[], options: ProducerQueryOption
         p.region.toLowerCase().includes(q) ||
         p.village.toLowerCase().includes(q) ||
         (p.country && p.country.toLowerCase().includes(q)) ||
-        p.indigenousVarieties.some((v) => v.toLowerCase().includes(q))
+        p.indigenousVarieties.some((v) => v.toLowerCase().includes(q)) ||
+        p.productSpecialties?.some((specialty) => specialty.toLowerCase().includes(q))
     );
   }
 
