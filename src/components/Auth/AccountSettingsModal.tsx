@@ -79,7 +79,7 @@ export const AccountSettingsModal: React.FC<AccountSettingsModalProps> = ({
     try {
       const serverData = await exportOwnAccountData();
       const favorites = readStorage<string[]>(
-        `${STORAGE_KEYS.FAVORITES_PREFIX}_${user.id}`,
+        `${STORAGE_KEYS.FAVORITES}:${user.id}`,
         [],
         { scope: 'AccountSettings', validator: value => Array.isArray(value) }
       );
@@ -114,7 +114,7 @@ export const AccountSettingsModal: React.FC<AccountSettingsModalProps> = ({
     try {
       await deleteOwnAccount();
       removeStorage(`${STORAGE_KEYS.USER_DATA_PREFIX}${user.id}`, { scope: 'AccountSettings' });
-      removeStorage(`${STORAGE_KEYS.FAVORITES_PREFIX}_${user.id}`, { scope: 'AccountSettings' });
+      removeStorage(`${STORAGE_KEYS.FAVORITES}:${user.id}`, { scope: 'AccountSettings' });
       removeStorage(STORAGE_KEYS.AUTH_USER, { scope: 'AccountSettings' });
       await onAccountDeleted();
       onClose();
