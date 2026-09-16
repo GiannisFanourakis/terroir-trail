@@ -11,6 +11,7 @@ export interface TrustedAccountCapabilities {
   adminLevel: AdminLevel | null;
   isPlatformOwner: boolean;
   producerIds: string[];
+  hostEditingFrozen: boolean;
   canManageOwnedListings: boolean;
   canReviewProducerClaims: boolean;
   canAssignProducerOwnership: boolean;
@@ -25,6 +26,7 @@ export interface TrustedAccountCapabilities {
  * - Traveler access is the baseline for every authenticated account.
  * - Host authority comes only from active producer_owners records.
  * - Admin authority comes only from an active admin_users/{uid} record.
+ * - Host editing can be frozen only through the trusted account_controls record.
  * - The single Platform Owner is an admin with level='owner' and is the only
  *   account allowed to grant or revoke ordinary TerroirTrail admins.
  *
@@ -39,8 +41,9 @@ export async function getTrustedAccountCapabilities(
     throw new Error('Authenticated uid is required to resolve account capabilities.');
   }
 
-  const [adminDoc, ownerships] = await Promise.all([
+  const [adminDoc, controlDoc, ownerships] = await Promise.all([
     db.collection('admin_users').doc(uid).get(),
+    db.collection('account_controls').doc(uid).get(),
     db.collection('producer_owners').where('ownerUid', '==', uid).get(),
   ]);
 
@@ -56,6 +59,9 @@ export async function getTrustedAccountCapabilities(
       adminLevel
   );
   const isPlatformOwner = isAdmin && adminLevel === 'owner';
+  const hostEditingFrozen = Boolean(
+    controlDoc.exists && controlDoc.data()?.hostEditingFrozen === true
+  );
 
   const producerIds = ownerships.docs
     .map((doc) => ({ id: doc.id, data: doc.data() }))
@@ -75,7 +81,8 @@ export async function getTrustedAccountCapabilities(
     adminLevel: isAdmin ? adminLevel : null,
     isPlatformOwner,
     producerIds,
-    canManageOwnedListings: producerIds.length > 0,
+    hostEditingFrozen,
+    canManageOwnedListings: producerIds.length > 0 && !hostEditingFrozen,
     canReviewProducerClaims: isAdmin,
     canAssignProducerOwnership: isAdmin,
     canModerateProducerContent: isAdmin,
