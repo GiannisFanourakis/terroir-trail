@@ -1,19 +1,13 @@
 import fs from 'fs';
 import path from 'path';
 import type { Producer } from '../src/types/terroir';
-import { CRETAN_PRODUCERS } from '../src/data/producers';
-import { SANTORINI_PRODUCERS } from '../src/data/santoriniProducers';
-import { PHASE10B_PRODUCERS } from '../src/data/phase10bProducers';
+import { SEO_PRODUCERS } from './seoCatalogue';
 
 const CANONICAL_HOST = 'https://terroir-trail.web.app';
 const distDir = path.resolve(process.cwd(), 'dist');
 const homeIndexPath = path.join(distDir, 'index.html');
 
-const PRODUCERS: Producer[] = [
-  ...CRETAN_PRODUCERS,
-  ...SANTORINI_PRODUCERS,
-  ...PHASE10B_PRODUCERS,
-];
+const PRODUCERS: Producer[] = SEO_PRODUCERS;
 
 const categoryLabels: Record<Producer['category'], string> = {
   winery: 'Winery',
@@ -224,8 +218,11 @@ const renderProducerPage = (producer: Producer): string => {
     renderSourceLink('Location source', producer.locationSourceUrl),
     renderSourceLink('Road-access source', producer.roadAccessSourceUrl),
   ].filter(Boolean).join('\n            ');
-  const publishedItems = producer.indigenousVarieties?.length
-    ? `<section><h2>Published varieties or products</h2><p>${producer.indigenousVarieties.map(escapeHtml).join(', ')}</p></section>`
+  const publishedProducts = producer.productSpecialties?.length
+    ? producer.productSpecialties
+    : producer.indigenousVarieties;
+  const publishedItems = publishedProducts?.length
+    ? `<section><h2>Published varieties or products</h2><p>${publishedProducts.map(escapeHtml).join(', ')}</p></section>`
     : '';
 
   return `<!doctype html>
@@ -379,29 +376,29 @@ const replaceRequired = (html: string, from: string, to: string): string => {
 const refreshHomepageSeoState = (sourceHtml: string): string => {
   let html = sourceHtml;
   const oldDescription = 'Independent producer and agritourism discovery guide. Explore audited producers across Crete and Santorini with clearly labeled visiting, location, imagery, and road-access status.';
-  const newDescription = 'Independent producer and agritourism discovery guide. Explore 55 audited producer/project records across Greece and Tuscany with clearly labeled visiting, location, imagery, and road-access status.';
+  const newDescription = `Independent producer and agritourism discovery guide. Explore ${PRODUCERS.length} audited producer/project records across Greece and Tuscany with clearly labeled visiting, location, imagery, and road-access status.`;
   html = replaceRequired(html, oldDescription, newDescription);
 
   html = replaceRequired(
     html,
     'Independent producer and agritourism discovery guide connecting travelers directly with audited wineries, craft breweries, artisanal olive mills, traditional dairies, apiaries, traditional distilleries, and farms across Crete and Santorini, with clearly labeled visiting, location, imagery, and road-access status.',
-    'Independent producer and agritourism discovery guide connecting travelers directly with 55 audited producer/project records across Crete, Santorini, the Peloponnese, Northern Greece and Tuscany, with clearly labeled visiting, location, imagery, and road-access status.'
+    `Independent producer and agritourism discovery guide connecting travelers directly with ${PRODUCERS.length} audited producer/project records across Crete, Santorini, the Peloponnese, Northern Greece and Tuscany, with clearly labeled visiting, location, imagery, and road-access status.`
   );
   html = replaceRequired(
     html,
     'Interactive agritourism discovery map and directory with audited reference catalogues in Crete and Santorini. Discovery Guides are built from verified stops; multi-stop driving navigation remains withheld wherever road-access evidence is incomplete.',
-    'Interactive agritourism discovery map and directory with 55 audited producer/project records across Crete, Santorini, the Peloponnese, Northern Greece and Tuscany. Discovery Guides are built from verified stops; multi-stop driving navigation remains withheld wherever road-access evidence is incomplete.'
+    `Interactive agritourism discovery map and directory with ${PRODUCERS.length} audited producer/project records across Crete, Santorini, the Peloponnese, Northern Greece and Tuscany. Discovery Guides are built from verified stops; multi-stop driving navigation remains withheld wherever road-access evidence is incomplete.`
   );
   html = replaceRequired(
     html,
     'TerroirTrail is an independent producer and agritourism discovery guide. It connects slow travelers and road-trippers directly with independent wineries, craft breweries, artisanal olive mills, traditional dairies, apiaries, traditional distilleries, and farms, with audited reference catalogues in Crete and Santorini and further regional expansion in progress.',
-    'TerroirTrail is an independent producer and agritourism discovery guide with 55 audited producer/project records across Crete, Santorini, the Peloponnese, Northern Greece and Tuscany. It connects travelers with source-backed producer identity, visiting, location and access information while keeping unknown facts unknown.'
+    `TerroirTrail is an independent producer and agritourism discovery guide with ${PRODUCERS.length} audited producer/project records across Crete, Santorini, the Peloponnese, Northern Greece and Tuscany. It connects travelers with source-backed producer identity, visiting, location and access information while keeping unknown facts unknown.`
   );
   html = replaceRequired(html, 'Which regions are currently audited to reference quality?', 'Which regions are currently represented in the audited catalogue?');
   html = replaceRequired(
     html,
     'Crete and Santorini are the current reference-quality regions. Crete has 27 audited producer/project records and Santorini has 9 audited producer records.',
-    'The audited catalogue currently covers Crete, Santorini, the Peloponnese, Northern Greece and a Tuscany / Italy foothold: 55 producer/project records in total.'
+    `The audited catalogue currently covers Crete, Santorini, the Peloponnese, Northern Greece and a Tuscany / Italy foothold: ${PRODUCERS.length} producer/project records in total.`
   );
   html = replaceRequired(
     html,
@@ -416,7 +413,7 @@ const refreshHomepageSeoState = (sourceHtml: string): string => {
   html = replaceRequired(
     html,
     '<h2>Verified Crete &amp; Santorini Producer Directory</h2>',
-    '<p>The full audited catalogue contains 55 producer/project records, each published as a canonical producer entity page for search and answer-engine discovery. <a href="/producers/">Browse the full audited producer directory.</a></p>\n        <h2>Audited Crete &amp; Santorini Directory — Homepage Excerpt</h2>'
+    `<p>The full audited catalogue contains ${PRODUCERS.length} producer/project records, each published as a canonical producer entity page for search and answer-engine discovery. <a href="/producers/">Browse the full audited producer directory.</a></p>\n        <h2>Audited Producer Directory — Homepage Excerpt</h2>`
   );
   return html;
 };
