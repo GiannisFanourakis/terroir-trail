@@ -77,7 +77,7 @@ describe('Static-data Authority Leaks Cleanup', () => {
       }).not.toThrow();
 
       // 3. Confirm empty directory message is rendered
-      expect(html).toContain('No directory producers available in active catalogue');
+      expect(html).toContain('No producer listings are currently available to claim.');
 
       // 4. Confirm bundled static seed producers are NOT resurrected in the rendered HTML
       for (const p of CRETAN_PRODUCERS.slice(0, 10)) {
@@ -93,7 +93,7 @@ describe('Static-data Authority Leaks Cleanup', () => {
         );
       }).not.toThrow();
 
-      expect(htmlWithEmptyProp).toContain('No directory producers available in active catalogue');
+      expect(htmlWithEmptyProp).toContain('No producer listings are currently available to claim.');
       expect(htmlWithEmptyProp).not.toContain('Domaine Paterianakis');
     });
   });
