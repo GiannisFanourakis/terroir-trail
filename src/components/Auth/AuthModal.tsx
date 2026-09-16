@@ -1,10 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  X, Mail, Lock, User, ArrowRight, ShieldCheck, Loader2, AlertCircle, 
-  Building2, Sparkles, Eye, EyeOff, CheckCircle2, ChevronDown, ChevronUp,
-  FileText, Truck, HelpCircle, Crown, Compass
+import React, { useEffect, useMemo, useState } from 'react';
+import {
+  AlertCircle,
+  ArrowRight,
+  Building2,
+  CheckCircle2,
+  Eye,
+  EyeOff,
+  Loader2,
+  Lock,
+  Mail,
+  ShieldCheck,
+  User,
+  X,
 } from 'lucide-react';
-import { TravelerType, ProducerTaxDetails } from '../../types/auth';
+import { ProducerTaxDetails } from '../../types/auth';
 import { Producer } from '../../types/terroir';
 import { validateVatNumber, getFiscalLabels } from '../../utils/vatValidator';
 import { formatAuthError } from '../../utils/authErrors';
@@ -15,19 +24,20 @@ interface AuthModalProps {
   initialRole?: 'traveler' | 'producer';
   producers?: Producer[];
   onLogin: (email: string, password?: string) => Promise<any> | void;
-  onSignup: (name: string, email: string, password?: string, travelerType?: TravelerType) => Promise<any> | void;
+  onSignup: (name: string, email: string, password?: string) => Promise<any> | void;
   onLoginAsProducer?: (email: string, password?: string, producerId?: string, producerName?: string) => Promise<any> | void;
   onClaimProducer?: (
-    producerId: string, 
-    producerName: string, 
-    hostName: string, 
-    email: string, 
+    producerId: string,
+    producerName: string,
+    hostName: string,
+    email: string,
     password?: string,
-    taxDetails?: ProducerTaxDetails
+    taxDetails?: ProducerTaxDetails,
+    termsAccepted?: boolean
   ) => Promise<any> | void;
   onResetPassword?: (email: string) => Promise<any> | void;
-  onLoginWithGoogle?: (role?: 'traveler' | 'producer', claimedProducerId?: string, producerName?: string) => Promise<any>;
-  onLoginWithApple?: (role?: 'traveler' | 'producer', claimedProducerId?: string, producerName?: string) => Promise<any>;
+  onLoginWithGoogle?: () => Promise<any>;
+  onLoginWithApple?: () => Promise<any>;
   onOpenPrivacyNotice?: () => void;
   onOpenTerms?: () => void;
   onOpenLicenses?: () => void;
@@ -35,6 +45,17 @@ interface AuthModalProps {
   authError?: string | null;
   isFirebaseConfigured?: boolean;
 }
+
+type TravelerMode = 'login' | 'signup' | 'forgot';
+type ProducerMode = 'login' | 'claim' | 'forgot';
+
+const countryCodeForProducer = (producer?: Producer): string => {
+  const country = producer?.country?.trim().toLowerCase();
+  if (country === 'italy' || producer?.destination === 'tuscany') return 'IT';
+  if (country === 'france') return 'FR';
+  if (country === 'spain') return 'ES';
+  return 'GR';
+};
 
 export const AuthModal: React.FC<AuthModalProps> = ({
   isOpen,
@@ -56,146 +77,93 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   isFirebaseConfigured = false,
 }) => {
   const [accountType, setAccountType] = useState<'traveler' | 'producer'>(initialRole);
-  
-  // Modes: 'login' | 'signup' | 'forgot'
-  const [travelerMode, setTravelerMode] = useState<'login' | 'signup' | 'forgot'>('login');
-  const [producerMode, setProducerMode] = useState<'login' | 'claim' | 'forgot'>('login');
-
-  // Form Fields
+  const [travelerMode, setTravelerMode] = useState<TravelerMode>('login');
+  const [producerMode, setProducerMode] = useState<ProducerMode>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [name, setName] = useState('');
-  const [travelerType, setTravelerType] = useState<TravelerType>('crete_local');
 
-  // Producer Claim Fields
-  const [selectedProducerId, setSelectedProducerId] = useState<string>('');
+  const [selectedProducerId, setSelectedProducerId] = useState('');
   const [producerHostName, setProducerHostName] = useState('');
   const [producerEmail, setProducerEmail] = useState('');
   const [producerPassword, setProducerPassword] = useState('');
   const [showProducerPassword, setShowProducerPassword] = useState(false);
-
-  // Producer business evidence fields (optional VAT / Tax ID)
-  const [fiscalCountry, setFiscalCountry] = useState<string>('GR');
+  const [fiscalCountry, setFiscalCountry] = useState('GR');
   const [vatNumber, setVatNumber] = useState('');
   const [legalBusinessName, setLegalBusinessName] = useState('');
-  const [taxOffice, setTaxOffice] = useState('');
-  const [registeredAddress, setRegisteredAddress] = useState('');
-  const [dispatchContactPhone, setDispatchContactPhone] = useState('');
+  const [producerTermsAccepted, setProducerTermsAccepted] = useState(false);
 
-  // Statuses
-  const [localError, setLocalError] = useState<string>('');
+  const [localError, setLocalError] = useState('');
   const [resetSuccessEmail, setResetSuccessEmail] = useState<string | null>(null);
   const [localLoading, setLocalLoading] = useState<'google' | 'apple' | 'form' | 'reset' | null>(null);
 
-  // Sync initialRole when modal opens
   useEffect(() => {
-    if (isOpen) {
-      setAccountType(initialRole);
-      setTravelerMode('login');
-      setProducerMode('login');
-      setLocalError('');
-      setResetSuccessEmail(null);
-      const initialProdId = selectedProducerId || (producers.length > 0 ? producers[0].id : '');
-      if (initialProdId) {
-        setSelectedProducerId(initialProdId);
-        const p = producers.find((prod) => prod.id === initialProdId);
-        if (p) {
-          setLegalBusinessName('');
-          setRegisteredAddress('');
-          setDispatchContactPhone('');
-          const initialCountry = (p.country === 'Italy' || p.destination === 'tuscany') ? 'IT' : 'GR';
-          setFiscalCountry(initialCountry);
-        }
-      }
-    }
+    if (!isOpen) return;
+    setAccountType(initialRole);
+    setTravelerMode('login');
+    setProducerMode('login');
+    setLocalError('');
+    setResetSuccessEmail(null);
+    setProducerTermsAccepted(false);
+    const firstId = producers[0]?.id || '';
+    setSelectedProducerId(current => current && producers.some(p => p.id === current) ? current : firstId);
   }, [isOpen, initialRole, producers]);
 
-  const selectedProducer = producers.find((p) => p.id === selectedProducerId) || producers[0];
-  const fiscalLabels = getFiscalLabels(fiscalCountry);
-  const vatValidation = vatNumber.trim() ? validateVatNumber(vatNumber.trim(), fiscalCountry) : null;
+  const selectedProducer = useMemo(
+    () => producers.find(producer => producer.id === selectedProducerId) || producers[0],
+    [producers, selectedProducerId]
+  );
 
-  const handleSelectClaimProducer = (prodId: string) => {
-    setSelectedProducerId(prodId);
-    const p = producers.find((prod) => prod.id === prodId);
-    if (p) {
-      setLegalBusinessName('');
-      setRegisteredAddress('');
-      setDispatchContactPhone('');
-      const initialCountry = (p.country === 'Italy' || p.destination === 'tuscany') ? 'IT' : 'GR';
-      setFiscalCountry(initialCountry);
-    }
-  };
+  useEffect(() => {
+    if (selectedProducer) setFiscalCountry(countryCodeForProducer(selectedProducer));
+  }, [selectedProducer?.id]);
 
   if (!isOpen) return null;
 
   const currentError = localError || authError;
   const isBusy = isLoading || localLoading !== null;
+  const fiscalLabels = getFiscalLabels(fiscalCountry);
+  const vatValidation = vatNumber.trim() ? validateVatNumber(vatNumber.trim(), fiscalCountry) : null;
 
-  // 1. Google OAuth
-  const handleGoogleLogin = async () => {
+  const runSocialLogin = async (provider: 'google' | 'apple') => {
     setLocalError('');
-    setResetSuccessEmail(null);
-    if (!onLoginWithGoogle) return;
+    const action = provider === 'google' ? onLoginWithGoogle : onLoginWithApple;
+    if (!action) return;
     try {
-      setLocalLoading('google');
-      await onLoginWithGoogle();
+      setLocalLoading(provider);
+      await action();
       onClose();
-    } catch (err: any) {
-      setLocalError(formatAuthError(err));
+    } catch (error) {
+      setLocalError(formatAuthError(error));
     } finally {
       setLocalLoading(null);
     }
   };
 
-  // 2. Apple OAuth
-  const handleAppleLogin = async () => {
+  const handleTravelerLogin = async (event: React.FormEvent) => {
+    event.preventDefault();
     setLocalError('');
-    setResetSuccessEmail(null);
-    if (!onLoginWithApple) return;
-    try {
-      setLocalLoading('apple');
-      await onLoginWithApple();
-      onClose();
-    } catch (err: any) {
-      setLocalError(formatAuthError(err));
-    } finally {
-      setLocalLoading(null);
-    }
-  };
-
-  // 3. Traveler Sign In
-  const handleTravelerLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLocalError('');
-    setResetSuccessEmail(null);
-    if (!email.trim()) {
-      setLocalError('Please enter your email address.');
+    if (!email.trim() || !password) {
+      setLocalError('Enter your email address and password.');
       return;
     }
-    if (!password) {
-      setLocalError('Please enter your password.');
-      return;
-    }
-
     try {
       setLocalLoading('form');
       await onLogin(email.trim(), password);
       onClose();
-    } catch (err: any) {
-      setLocalError(formatAuthError(err));
+    } catch (error) {
+      setLocalError(formatAuthError(error));
     } finally {
       setLocalLoading(null);
     }
   };
 
-  // 4. Traveler Sign Up
-  const handleTravelerSignup = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleTravelerSignup = async (event: React.FormEvent) => {
+    event.preventDefault();
     setLocalError('');
-    setResetSuccessEmail(null);
     if (!name.trim()) {
-      setLocalError('Please enter your full name.');
+      setLocalError('Please enter your name.');
       return;
     }
     if (!email.trim()) {
@@ -206,1109 +174,269 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       setLocalError('Password must be at least 6 characters long.');
       return;
     }
-
     try {
       setLocalLoading('form');
-      await onSignup(name.trim(), email.trim(), password, travelerType);
+      // No persona is required. The legacy internal travelerType defaults in
+      // useAuth only for backwards compatibility with older stored profiles.
+      await onSignup(name.trim(), email.trim(), password);
       onClose();
-    } catch (err: any) {
-      setLocalError(formatAuthError(err));
+    } catch (error) {
+      setLocalError(formatAuthError(error));
     } finally {
       setLocalLoading(null);
     }
   };
 
-  // 5. Producer Sign In
-  const handleProducerLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleProducerLogin = async (event: React.FormEvent) => {
+    event.preventDefault();
     setLocalError('');
-    setResetSuccessEmail(null);
-    const targetEmail = (accountType === 'producer' ? producerEmail || email : email).trim();
-    const targetPassword = accountType === 'producer' ? producerPassword || password : password;
-
-    if (!targetEmail) {
-      setLocalError('Please enter your official estate email.');
+    if (!producerEmail.trim() || !producerPassword) {
+      setLocalError('Enter your producer account email and password.');
       return;
     }
-    if (!targetPassword) {
-      setLocalError('Please enter your host password.');
-      return;
-    }
-
     try {
       setLocalLoading('form');
-      if (onLoginAsProducer) {
-        await onLoginAsProducer(targetEmail, targetPassword);
-      } else {
-        await onLogin(targetEmail, targetPassword);
-      }
+      if (onLoginAsProducer) await onLoginAsProducer(producerEmail.trim(), producerPassword);
+      else await onLogin(producerEmail.trim(), producerPassword);
       onClose();
-    } catch (err: any) {
-      setLocalError(formatAuthError(err));
+    } catch (error) {
+      setLocalError(formatAuthError(error));
     } finally {
       setLocalLoading(null);
     }
   };
 
-  // 6. Producer Claim & Register
-  const handleProducerClaim = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleProducerClaim = async (event: React.FormEvent) => {
+    event.preventDefault();
     setLocalError('');
-    setResetSuccessEmail(null);
-
-    const producer = producers.find((p) => p.id === selectedProducerId) || producers[0];
-    if (!producer) {
-      setLocalError('Please select your estate from the registry.');
+    if (!selectedProducer) {
+      setLocalError('Choose the producer listing you represent.');
       return;
     }
     if (!producerHostName.trim()) {
-      setLocalError('Please enter the producer or host name.');
+      setLocalError('Enter the name of the person making this claim.');
       return;
     }
     if (!producerEmail.trim()) {
-      setLocalError('Please enter your official estate email.');
+      setLocalError('Enter an official producer contact email.');
       return;
     }
     if (!producerPassword || producerPassword.length < 6) {
-      setLocalError('Master password must be at least 6 characters long.');
+      setLocalError('Password must be at least 6 characters long.');
       return;
     }
-    const countryCode = fiscalCountry || ((producer.country === 'Italy' || producer.destination === 'tuscany') ? 'IT' : 'GR');
-    const vatCheck = vatNumber.trim() ? validateVatNumber(vatNumber.trim(), countryCode) : null;
-
-    if (vatNumber.trim() && !vatCheck?.isValid) {
-      setLocalError(vatCheck?.error || `Please enter a valid ${fiscalLabels.shortVatLabel} for ${fiscalLabels.countryName}.`);
+    if (!producerTermsAccepted) {
+      setLocalError('You must accept the TerroirTrail Producer Terms before submitting a claim.');
       return;
     }
-    if (vatNumber.trim() && !legalBusinessName.trim()) {
-      setLocalError('Please enter the registered business name when supplying a VAT / Tax ID.');
+    if (vatNumber.trim() && !vatValidation?.isValid) {
+      setLocalError(vatValidation?.error || `Enter a valid ${fiscalLabels.shortVatLabel}, or leave it blank for manual review.`);
       return;
     }
 
-    const taxDetails: ProducerTaxDetails | undefined = vatNumber.trim() ? {
-      vatNumber: vatCheck?.formatted || vatNumber.trim(),
-      legalBusinessName: legalBusinessName.trim(),
-      taxOffice: taxOffice.trim() || undefined,
-      registeredAddress: registeredAddress.trim() || undefined,
-      dispatchContactPhone: dispatchContactPhone.trim() || undefined,
-      countryCode,
-      isVatVerified: false,
-    } : undefined;
+    const taxDetails: ProducerTaxDetails | undefined = vatNumber.trim()
+      ? {
+          vatNumber: vatValidation?.formatted || vatNumber.trim().toUpperCase(),
+          legalBusinessName: legalBusinessName.trim() || selectedProducer.name,
+          countryCode: fiscalCountry,
+          isVatVerified: false,
+        }
+      : undefined;
 
     try {
       setLocalLoading('form');
-      if (onClaimProducer) {
-        await onClaimProducer(
-          producer.id,
-          producer.name,
-          producerHostName.trim(),
-          producerEmail.trim(),
-          producerPassword,
-          taxDetails
-        );
-      }
+      await onClaimProducer?.(
+        selectedProducer.id,
+        selectedProducer.name,
+        producerHostName.trim(),
+        producerEmail.trim(),
+        producerPassword,
+        taxDetails,
+        true
+      );
       onClose();
-    } catch (err: any) {
-      setLocalError(formatAuthError(err));
+    } catch (error) {
+      setLocalError(formatAuthError(error));
     } finally {
       setLocalLoading(null);
     }
   };
 
-  // 7. Password Reset
-  const handlePasswordReset = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handlePasswordReset = async (event: React.FormEvent) => {
+    event.preventDefault();
     setLocalError('');
-    setResetSuccessEmail(null);
-    const targetEmail = (accountType === 'producer' ? producerEmail || email : email).trim();
-
+    const targetEmail = accountType === 'producer' ? producerEmail.trim() : email.trim();
     if (!targetEmail) {
-      setLocalError('Please enter your registered email address.');
+      setLocalError('Enter your registered email address.');
       return;
     }
-
     try {
       setLocalLoading('reset');
-      if (onResetPassword) {
-        await onResetPassword(targetEmail);
-      }
+      await onResetPassword?.(targetEmail);
       setResetSuccessEmail(targetEmail);
-    } catch (err: any) {
-      setLocalError(formatAuthError(err));
+    } catch (error) {
+      setLocalError(formatAuthError(error));
     } finally {
       setLocalLoading(null);
     }
   };
 
+  const socialButtons = (
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+      {onLoginWithGoogle && (
+        <button
+          type="button"
+          onClick={() => void runSocialLogin('google')}
+          disabled={isBusy}
+          className="rounded-xl bg-white px-3 py-2.5 text-xs font-bold text-stone-900 disabled:opacity-50 cursor-pointer"
+        >
+          {localLoading === 'google' ? 'Connecting…' : 'Continue with Google'}
+        </button>
+      )}
+      {onLoginWithApple && (
+        <button
+          type="button"
+          onClick={() => void runSocialLogin('apple')}
+          disabled={isBusy}
+          className="rounded-xl border border-white/15 bg-stone-900 px-3 py-2.5 text-xs font-bold text-white disabled:opacity-50 cursor-pointer"
+        >
+          {localLoading === 'apple' ? 'Connecting…' : 'Continue with Apple'}
+        </button>
+      )}
+    </div>
+  );
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
       <div
         role="dialog"
         aria-modal="true"
         aria-labelledby="auth-modal-title"
         aria-busy={isBusy}
-        className="relative w-full max-w-md bg-stone-950 border border-white/15 rounded-3xl shadow-2xl overflow-hidden text-stone-100 max-h-[92vh] flex flex-col"
+        className="relative w-full max-w-md max-h-[92dvh] overflow-hidden rounded-3xl border border-white/15 bg-stone-950 text-stone-100 shadow-2xl flex flex-col"
       >
-        
-        {/* Close Button */}
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 p-2 rounded-full bg-white/5 hover:bg-white/10 text-stone-400 hover:text-white transition cursor-pointer z-20"
-          aria-label="Close"
-        >
+        <button type="button" onClick={onClose} className="absolute top-4 right-4 z-20 p-2 rounded-full bg-white/5 text-stone-400 hover:text-white cursor-pointer" aria-label="Close">
           <X className="w-5 h-5" />
         </button>
 
-        {/* Modal Header */}
-        <div className="p-6 pb-4 border-b border-white/10 text-center relative bg-gradient-to-b from-stone-900/80 to-transparent">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-stone-900/90 border border-white/10 text-xs font-semibold mb-2 shadow-sm">
-            <img src="/logo.png" alt="TerroirTrail" className="w-4 h-4 object-contain shrink-0" />
-            <span className="text-amber-300">TerroirTrail Authentication</span>
-            {isFirebaseConfigured && (
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" title="Live Cloud Auth Server"></span>
-            )}
+        <div className="p-6 pb-4 border-b border-white/10 text-center bg-stone-900/70">
+          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-stone-950 px-3 py-1 text-xs font-semibold text-amber-300">
+            <img src="/logo.png" alt="TerroirTrail" className="w-4 h-4 object-contain" />
+            TerroirTrail Account
+            {isFirebaseConfigured && <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" title="Cloud authentication enabled" />}
           </div>
-          
-          <h2 id="auth-modal-title" className="text-xl font-bold font-serif-title tracking-tight text-white">
-            {accountType === 'traveler' ? (
-              travelerMode === 'login' ? 'Sign In to TerroirTrail' :
-              travelerMode === 'signup' ? 'Create Explorer Account' : 'Reset Your Password'
-            ) : (
-              producerMode === 'login' ? 'Artisan Producer & Host Sign In' :
-              producerMode === 'claim' ? 'Claim Your Estate Listing' : 'Reset Host Password'
-            )}
+          <h2 id="auth-modal-title" className="mt-3 text-xl font-bold font-serif-title text-white">
+            {accountType === 'traveler'
+              ? travelerMode === 'login' ? 'Sign in' : travelerMode === 'signup' ? 'Create traveler account' : 'Reset password'
+              : producerMode === 'login' ? 'Producer sign in' : producerMode === 'claim' ? 'Claim a producer listing' : 'Reset producer password'}
           </h2>
 
-          <p className="text-xs text-stone-400 mt-1 max-w-xs mx-auto">
-            {accountType === 'traveler' ? (
-              travelerMode === 'login' ? 'Access your Terroir Passport, saved producers, and personal tasting notes.' :
-              travelerMode === 'signup' ? 'Create a free account to save your passport stamps & tasting notes.' :
-              'Enter your email address and we will send you a secure password reset link.'
-            ) : (
-              producerMode === 'login' ? 'Access your verified estate profile and visitor notice tools.' :
-              producerMode === 'claim' ? 'Submit evidence that you represent this estate. TerroirTrail reviews every claim before host access is granted.' :
-              'Enter your official estate email to reset your master password.'
-            )}
-          </p>
-
-          {/* Dual Account Type Switcher */}
-          <div className="mt-4 flex rounded-xl bg-stone-900 p-1 border border-white/10 text-xs font-semibold">
-            <button
-              type="button"
-              aria-pressed={accountType === 'traveler'}
-              onClick={() => {
-                setAccountType('traveler');
-                setLocalError('');
-                setResetSuccessEmail(null);
-              }}
-              className={`flex-1 py-1.5 rounded-lg flex items-center justify-center gap-1.5 transition cursor-pointer ${
-                accountType === 'traveler'
-                  ? 'bg-amber-500 text-stone-950 font-bold shadow-md'
-                  : 'text-stone-400 hover:text-white'
-              }`}
-            >
-              <span>🧭</span>
-              <span>Explorer & Traveler</span>
-            </button>
-
-            <button
-              type="button"
-              aria-pressed={accountType === 'producer'}
-              onClick={() => {
-                setAccountType('producer');
-                setLocalError('');
-                setResetSuccessEmail(null);
-              }}
-              className={`flex-1 py-1.5 rounded-lg flex items-center justify-center gap-1.5 transition cursor-pointer ${
-                accountType === 'producer'
-                  ? 'bg-amber-500 text-stone-950 font-bold shadow-md'
-                  : 'text-stone-400 hover:text-white'
-              }`}
-            >
-              <span>🏛️</span>
-              <span>Artisan Producer & Host</span>
-            </button>
+          <div className="mt-4 flex rounded-xl bg-stone-950 p-1 border border-white/10 text-xs font-semibold">
+            <button type="button" onClick={() => { setAccountType('traveler'); setLocalError(''); }} className={`flex-1 rounded-lg py-2 cursor-pointer ${accountType === 'traveler' ? 'bg-amber-500 text-stone-950' : 'text-stone-400'}`}>Traveler</button>
+            <button type="button" onClick={() => { setAccountType('producer'); setLocalError(''); }} className={`flex-1 rounded-lg py-2 cursor-pointer ${accountType === 'producer' ? 'bg-amber-500 text-stone-950' : 'text-stone-400'}`}>Producer / Host</button>
           </div>
         </div>
 
-        {/* Scrollable Content Body */}
         <div className="p-6 overflow-y-auto space-y-4">
-          
-          {/* Error Banner */}
           {currentError && (
-            <div
-              role="alert"
-              className="p-3 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-300 text-xs flex items-start gap-2 animate-in fade-in duration-200"
-            >
-              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-rose-400" />
-              <div className="flex-1 leading-relaxed">{currentError}</div>
+            <div role="alert" className="rounded-xl border border-rose-500/30 bg-rose-500/10 p-3 text-xs text-rose-200 flex gap-2">
+              <AlertCircle className="w-4 h-4 shrink-0" />
+              <span>{currentError}</span>
             </div>
           )}
-
-          {/* Reset Success Banner */}
           {resetSuccessEmail && (
-            <div
-              role="status"
-              aria-live="polite"
-              className="p-3.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs flex items-start gap-2.5 animate-in fade-in duration-200"
-            >
-              <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5 text-emerald-400" />
-              <div>
-                <p className="font-bold text-white">Password Reset Email Sent!</p>
-                <p className="mt-0.5 text-stone-300">
-                  Please check your inbox at <span className="text-emerald-300 font-semibold">{resetSuccessEmail}</span> for instructions to reset your password.
-                </p>
-              </div>
+            <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-3 text-xs text-emerald-200 flex gap-2">
+              <CheckCircle2 className="w-4 h-4 shrink-0" />
+              Reset instructions were sent to {resetSuccessEmail}.
             </div>
           )}
 
-          {/* ========================================================= */}
-          {/* SECTION A: TRAVELER & EXPLORER FLOWS                      */}
-          {/* ========================================================= */}
-          {accountType === 'traveler' && (
-            <>
-              {/* Free Account Notice & Optional VIP Pass Callout */}
-              <div className="p-3 rounded-2xl bg-gradient-to-r from-amber-500/10 via-stone-900 to-amber-900/15 border border-amber-500/25 flex items-center justify-between gap-3 text-left">
-                <div className="flex items-center gap-2.5 min-w-0">
-                  <div className="w-8 h-8 rounded-xl bg-amber-400/15 border border-amber-400/25 flex items-center justify-center text-amber-300 shrink-0">
-                    <Compass className="w-4 h-4" />
-                  </div>
-                  <div className="min-w-0">
-                    <div className="text-xs font-bold text-white flex items-center gap-1.5">
-                      <span>Free Traveler Account</span>
-                    </div>
-                    <div className="text-[10px] text-stone-400 truncate">
-                      Sign in to sync passport stamps and personal notes. Saved favorites remain on this device.
-                    </div>
-                  </div>
-                </div>
-                <span className="text-[9px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/30 shrink-0">
-                  FREE
-                </span>
-              </div>
-
-              {/* 1. TRAVELER LOGIN */}
-              {travelerMode === 'login' && (
-                <div className="space-y-4">
-                  {/* Social Single Sign-On (Google) */}
-                  <button
-                    type="button"
-                    onClick={handleGoogleLogin}
-                    disabled={isBusy}
-                    className="w-full flex items-center justify-center gap-2.5 px-4 py-2.5 rounded-xl bg-white text-stone-900 font-bold text-xs hover:bg-stone-100 active:scale-98 transition shadow disabled:opacity-50 cursor-pointer"
-                  >
-                    {localLoading === 'google' ? (
-                      <Loader2 className="w-4 h-4 animate-spin text-stone-800" />
-                    ) : (
-                      <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
-                        <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.8-2.4 3.66v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.15z"/>
-                        <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.34 24 12 24z"/>
-                        <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.16 0 9.94 0 12s.45 3.84 1.25 5.42l4.03-3.15z"/>
-                        <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.34 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
-                      </svg>
-                    )}
-                    <span>Continue with Google</span>
-                  </button>
-
-                  <div className="relative flex items-center justify-center">
-                    <div className="w-full border-t border-white/10"></div>
-                    <span className="relative px-3 bg-stone-950 text-[10px] uppercase font-bold tracking-wider text-stone-500">
-                      or sign in with email
-                    </span>
-                  </div>
-
-                  {/* Real Email & Password Form */}
-                  <form onSubmit={handleTravelerLogin} className="space-y-3">
-                    <div>
-                      <label htmlFor="traveler-login-email" className="block text-stone-300 text-xs font-semibold mb-1">
-                        Email Address
-                      </label>
-                      <div className="relative">
-                        <Mail className="w-4 h-4 text-stone-500 absolute left-3 top-1/2 -translate-y-1/2" />
-                        <input
-                          id="traveler-login-email"
-                          type="email"
-                          autoComplete="email"
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                          placeholder="you@example.com"
-                          className="w-full bg-stone-900 border border-white/10 text-white rounded-xl pl-9 pr-3 py-2.5 text-xs focus:outline-none focus:border-amber-400 transition"
-                          required
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <div className="flex items-center justify-between mb-1">
-                        <label htmlFor="traveler-login-password" className="block text-stone-300 text-xs font-semibold">
-                          Password
-                        </label>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setTravelerMode('forgot');
-                            setLocalError('');
-                          }}
-                          className="text-[11px] text-amber-400 hover:underline cursor-pointer"
-                        >
-                          Forgot password?
-                        </button>
-                      </div>
-                      <div className="relative">
-                        <Lock className="w-4 h-4 text-stone-500 absolute left-3 top-1/2 -translate-y-1/2" />
-                        <input
-                          id="traveler-login-password"
-                          type={showPassword ? 'text' : 'password'}
-                          autoComplete="current-password"
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
-                          placeholder="••••••••"
-                          className="w-full bg-stone-900 border border-white/10 text-white rounded-xl pl-9 pr-10 py-2.5 text-xs focus:outline-none focus:border-amber-400 transition"
-                          required
-                        />
-                        <button
-                          type="button"
-                          onClick={() => setShowPassword(!showPassword)}
-                          aria-label={showPassword ? 'Hide password' : 'Show password'}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-500 hover:text-stone-300 transition cursor-pointer"
-                        >
-                          {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                        </button>
-                      </div>
-                    </div>
-
-                    <button
-                      type="submit"
-                      disabled={isBusy}
-                      className="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs shadow-lg transition active:scale-98 disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer mt-1"
-                    >
-                      {localLoading === 'form' ? (
-                        <>
-                          <Loader2 className="w-4 h-4 animate-spin text-stone-950" />
-                          <span>Signing in...</span>
-                        </>
-                      ) : (
-                        <span>Sign In</span>
-                      )}
-                    </button>
-                  </form>
-
-                  {/* Switch to Signup */}
-                  <div className="text-center pt-2">
-                    <span className="text-xs text-stone-400">Don't have an account? </span>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setTravelerMode('signup');
-                        setLocalError('');
-                      }}
-                      className="text-xs text-amber-400 font-bold hover:underline cursor-pointer"
-                    >
-                      Create Free Account →
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {/* 2. TRAVELER SIGN UP */}
-              {travelerMode === 'signup' && (
-                <div className="space-y-4">
-                  <form onSubmit={handleTravelerSignup} className="space-y-3">
-                    <div>
-                      <label htmlFor="traveler-signup-name" className="block text-stone-300 text-xs font-semibold mb-1">
-                        Full Name
-                      </label>
-                      <div className="relative">
-                        <User className="w-4 h-4 text-stone-500 absolute left-3 top-1/2 -translate-y-1/2" />
-                        <input
-                          id="traveler-signup-name"
-                          type="text"
-                          autoComplete="name"
-                          value={name}
-                          onChange={(e) => setName(e.target.value)}
-                          placeholder="John Smith"
-                          className="w-full bg-stone-900 border border-white/10 text-white rounded-xl pl-9 pr-3 py-2.5 text-xs focus:outline-none focus:border-amber-400 transition"
-                          required
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <label htmlFor="traveler-signup-email" className="block text-stone-300 text-xs font-semibold mb-1">
-                        Email Address
-                      </label>
-                      <div className="relative">
-                        <Mail className="w-4 h-4 text-stone-500 absolute left-3 top-1/2 -translate-y-1/2" />
-                        <input
-                          id="traveler-signup-email"
-                          type="email"
-                          autoComplete="email"
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                          placeholder="you@example.com"
-                          className="w-full bg-stone-900 border border-white/10 text-white rounded-xl pl-9 pr-3 py-2.5 text-xs focus:outline-none focus:border-amber-400 transition"
-                          required
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <label htmlFor="traveler-signup-password" className="block text-stone-300 text-xs font-semibold mb-1">
-                        Create Password
-                      </label>
-                      <div className="relative">
-                        <Lock className="w-4 h-4 text-stone-500 absolute left-3 top-1/2 -translate-y-1/2" />
-                        <input
-                          id="traveler-signup-password"
-                          type={showPassword ? 'text' : 'password'}
-                          autoComplete="new-password"
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
-                          placeholder="At least 6 characters"
-                          className="w-full bg-stone-900 border border-white/10 text-white rounded-xl pl-9 pr-10 py-2.5 text-xs focus:outline-none focus:border-amber-400 transition"
-                          required
-                        />
-                        <button
-                          type="button"
-                          onClick={() => setShowPassword(!showPassword)}
-                          aria-label={showPassword ? 'Hide password' : 'Show password'}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-500 hover:text-stone-300 transition cursor-pointer"
-                        >
-                          {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                        </button>
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="block text-stone-400 text-[11px] font-semibold mb-1.5">
-                        Traveler Personality Style
-                      </label>
-                      <div className="grid grid-cols-2 gap-1.5">
-                        {[
-                          { id: 'crete_local', label: 'Crete Local', icon: '🇬🇷' },
-                          { id: 'wine_enthusiast', label: 'Wine Lover', icon: '🍷' },
-                          { id: 'craft_beer_explorer', label: 'Craft Brewer', icon: '🍺' },
-                          { id: 'culinary_nomad', label: 'Agritourist', icon: '🌿' },
-                        ].map((t) => (
-                          <button
-                            key={t.id}
-                            type="button"
-                            onClick={() => setTravelerType(t.id as TravelerType)}
-                            className={`flex items-center gap-1.5 p-2 rounded-xl border text-left transition cursor-pointer ${
-                              travelerType === t.id
-                                ? 'bg-amber-500/20 text-amber-300 border-amber-500/50 font-bold'
-                                : 'bg-stone-900 text-stone-400 border-white/5 hover:text-white'
-                            }`}
-                          >
-                            <span className="text-base">{t.icon}</span>
-                            <span className="text-[11px]">{t.label}</span>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    <button
-                      type="submit"
-                      disabled={isBusy}
-                      className="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs shadow-lg transition active:scale-98 disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer mt-1"
-                    >
-                      {localLoading === 'form' ? (
-                        <>
-                          <Loader2 className="w-4 h-4 animate-spin text-stone-950" />
-                          <span>Creating account...</span>
-                        </>
-                      ) : (
-                        <span>Create Free Account</span>
-                      )}
-                    </button>
-                  </form>
-
-                  {/* Switch to Login */}
-                  <div className="text-center pt-2">
-                    <span className="text-xs text-stone-400">Already have an account? </span>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setTravelerMode('login');
-                        setLocalError('');
-                      }}
-                      className="text-xs text-amber-400 font-bold hover:underline cursor-pointer"
-                    >
-                      Sign In →
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {/* 3. TRAVELER FORGOT PASSWORD */}
-              {travelerMode === 'forgot' && (
-                <div className="space-y-4">
-                  <form onSubmit={handlePasswordReset} className="space-y-3">
-                    <div>
-                      <label htmlFor="traveler-reset-email" className="block text-stone-300 text-xs font-semibold mb-1">
-                        Registered Email Address
-                      </label>
-                      <div className="relative">
-                        <Mail className="w-4 h-4 text-stone-500 absolute left-3 top-1/2 -translate-y-1/2" />
-                        <input
-                          id="traveler-reset-email"
-                          type="email"
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                          placeholder="you@example.com"
-                          className="w-full bg-stone-900 border border-white/10 text-white rounded-xl pl-9 pr-3 py-2.5 text-xs focus:outline-none focus:border-amber-400 transition"
-                          required
-                        />
-                      </div>
-                    </div>
-
-                    <button
-                      type="submit"
-                      disabled={isBusy}
-                      className="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs shadow-lg transition active:scale-98 disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
-                    >
-                      {localLoading === 'reset' ? (
-                        <>
-                          <Loader2 className="w-4 h-4 animate-spin text-stone-950" />
-                          <span>Sending Reset Link...</span>
-                        </>
-                      ) : (
-                        <span>Send Password Reset Link</span>
-                      )}
-                    </button>
-                  </form>
-
-                  <div className="text-center pt-2">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setTravelerMode('login');
-                        setLocalError('');
-                      }}
-                      className="text-xs text-stone-400 hover:text-white transition cursor-pointer"
-                    >
-                      ← Back to Sign In
-                    </button>
-                  </div>
-                </div>
-              )}
-            </>
-          )}
-
-          {/* ========================================================= */}
-          {/* SECTION B: ARTISAN PRODUCER & ESTATE HOST FLOWS           */}
-          {/* ========================================================= */}
-          {accountType === 'producer' && (
-            <>
-              <div className="p-3 rounded-2xl bg-stone-900 border border-white/10 text-left space-y-1.5">
-                <div className="flex items-center gap-2 text-xs font-bold text-white">
-                  <ShieldCheck className="w-4 h-4 text-amber-400" />
-                  <span>Host access is reviewed</span>
-                </div>
-                <p className="text-[10px] text-stone-400 leading-relaxed">Signing in, using a business email, or entering a VAT number does not automatically prove estate ownership. New claims remain pending until TerroirTrail approves the evidence.</p>
-              </div>
-
-
-              {/* 1. PRODUCER HOST SIGN IN */}
-              {producerMode === 'login' && (
-                <div className="space-y-4">
-                  {/* Host Social Single Sign-On */}
-                  <button
-                    type="button"
-                    onClick={handleGoogleLogin}
-                    disabled={isBusy}
-                    className="w-full flex items-center justify-center gap-2.5 px-4 py-2.5 rounded-xl bg-white text-stone-900 font-bold text-xs hover:bg-stone-100 active:scale-98 transition shadow disabled:opacity-50 cursor-pointer"
-                  >
-                    {localLoading === 'google' ? (
-                      <Loader2 className="w-4 h-4 animate-spin text-stone-800" />
-                    ) : (
-                      <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
-                        <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.8-2.4 3.66v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.15z"/>
-                        <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.34 24 12 24z"/>
-                        <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.16 0 9.94 0 12s.45 3.84 1.25 5.42l4.03-3.15z"/>
-                        <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.34 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
-                      </svg>
-                    )}
-                    <span>Continue with Google Workspace</span>
-                  </button>
-
-                  <div className="relative flex items-center justify-center">
-                    <div className="w-full border-t border-white/10"></div>
-                    <span className="relative px-3 bg-stone-950 text-[10px] uppercase font-bold tracking-wider text-stone-500">
-                      or sign in with estate email
-                    </span>
-                  </div>
-
-                  <form onSubmit={handleProducerLogin} className="space-y-3">
-                    <div>
-                      <label htmlFor="producer-login-email" className="block text-stone-300 text-xs font-semibold mb-1">
-                        Official Estate or Producer Email
-                      </label>
-                      <div className="relative">
-                        <Mail className="w-4 h-4 text-stone-500 absolute left-3 top-1/2 -translate-y-1/2" />
-                        <input
-                          id="producer-login-email"
-                          type="email"
-                          autoComplete="email"
-                          value={producerEmail}
-                          onChange={(e) => setProducerEmail(e.target.value)}
-                          placeholder="e.g. producer@example-artisan.com"
-                          className="w-full bg-stone-900 border border-white/10 text-white rounded-xl pl-9 pr-3 py-2.5 text-xs focus:outline-none focus:border-amber-400 transition"
-                          required
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <div className="flex items-center justify-between mb-1">
-                        <label htmlFor="producer-login-password" className="block text-stone-300 text-xs font-semibold">
-                          Host Password
-                        </label>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setProducerMode('forgot');
-                            setLocalError('');
-                          }}
-                          className="text-[11px] text-amber-400 hover:underline cursor-pointer"
-                        >
-                          Forgot password?
-                        </button>
-                      </div>
-                      <div className="relative">
-                        <Lock className="w-4 h-4 text-stone-500 absolute left-3 top-1/2 -translate-y-1/2" />
-                        <input
-                          id="producer-login-password"
-                          type={showProducerPassword ? 'text' : 'password'}
-                          autoComplete="current-password"
-                          value={producerPassword}
-                          onChange={(e) => setProducerPassword(e.target.value)}
-                          placeholder="••••••••"
-                          className="w-full bg-stone-900 border border-white/10 text-white rounded-xl pl-9 pr-10 py-2.5 text-xs focus:outline-none focus:border-amber-400 transition"
-                          required
-                        />
-                        <button
-                          type="button"
-                          onClick={() => setShowProducerPassword(!showProducerPassword)}
-                          aria-label={showProducerPassword ? 'Hide password' : 'Show password'}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-500 hover:text-stone-300 transition cursor-pointer"
-                        >
-                          {showProducerPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                        </button>
-                      </div>
-                    </div>
-
-                    <button
-                      type="submit"
-                      disabled={isBusy}
-                      className="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs shadow-lg transition active:scale-98 disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer mt-1"
-                    >
-                      {localLoading === 'form' ? (
-                        <>
-                          <Loader2 className="w-4 h-4 animate-spin text-stone-950" />
-                          <span>Signing in to Estate...</span>
-                        </>
-                      ) : (
-                        <>
-                          <Building2 className="w-4 h-4" />
-                          <span>Sign In as Estate Host</span>
-                        </>
-                      )}
-                    </button>
-                  </form>
-
-                  {/* Switch to Claim */}
-                  <div className="text-center pt-2">
-                    <span className="text-xs text-stone-400">First time here? </span>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setProducerMode('claim');
-                        setLocalError('');
-                      }}
-                      className="text-xs text-amber-400 font-bold hover:underline cursor-pointer"
-                    >
-                      Claim Your Estate & Register →
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {/* 2. CLAIM ESTATE & REGISTER */}
-              {producerMode === 'claim' && (
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-stone-300 text-xs font-semibold mb-1">
-                      1. Select Estate to Claim
-                    </label>
-                    <select
-                      value={selectedProducerId}
-                      onChange={(e) => handleSelectClaimProducer(e.target.value)}
-                      className="w-full bg-stone-900 border border-amber-500/30 text-white font-bold rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400 transition cursor-pointer"
-                      required
-                    >
-                      {producers.map((p) => (
-                        <option key={p.id} value={p.id}>
-                          {p.name} ({p.village}, {p.region} · {p.country || 'Greece'})
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="p-3 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-xs space-y-1.5">
-                    <div className="font-bold text-amber-300 flex items-center gap-1.5"><ShieldCheck className="w-3.5 h-3.5" /><span>Claim review</span></div>
-                    <p className="text-[11px] text-stone-300 leading-relaxed">Submit the claim below. Your account stays a traveler account until TerroirTrail reviews the evidence and the trusted backend assigns this estate to you.</p>
-                  </div>
-
-
-                  <form onSubmit={handleProducerClaim} className="space-y-3">
-
-                    <div>
-                      <label htmlFor="producer-claim-name" className="block text-stone-300 text-xs font-semibold mb-1">
-                        Producer / Host Full Name
-                      </label>
-                      <div className="relative">
-                        <User className="w-4 h-4 text-stone-500 absolute left-3 top-1/2 -translate-y-1/2" />
-                        <input
-                          id="producer-claim-name"
-                          type="text"
-                          value={producerHostName}
-                          onChange={(e) => setProducerHostName(e.target.value)}
-                          placeholder="John Smith"
-                          className="w-full bg-stone-900 border border-white/10 text-white rounded-xl pl-9 pr-3 py-2.5 text-xs focus:outline-none focus:border-amber-400 transition"
-                          required
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <label htmlFor="producer-claim-email" className="block text-stone-300 text-xs font-semibold mb-1">
-                        Official Estate Email
-                      </label>
-                      <div className="relative">
-                        <Mail className="w-4 h-4 text-stone-500 absolute left-3 top-1/2 -translate-y-1/2" />
-                        <input
-                          id="producer-claim-email"
-                          type="email"
-                          value={producerEmail}
-                          onChange={(e) => setProducerEmail(e.target.value)}
-                          placeholder="e.g. producer@example-artisan.com"
-                          className="w-full bg-stone-900 border border-white/10 text-white rounded-xl pl-9 pr-3 py-2.5 text-xs focus:outline-none focus:border-amber-400 transition"
-                          required
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <label htmlFor="producer-claim-password" className="block text-stone-300 text-xs font-semibold mb-1">
-                        Create Master Password
-                      </label>
-                      <div className="relative">
-                        <Lock className="w-4 h-4 text-stone-500 absolute left-3 top-1/2 -translate-y-1/2" />
-                        <input
-                          id="producer-claim-password"
-                          type={showProducerPassword ? 'text' : 'password'}
-                          value={producerPassword}
-                          onChange={(e) => setProducerPassword(e.target.value)}
-                          placeholder="At least 6 characters"
-                          className="w-full bg-stone-900 border border-white/10 text-white rounded-xl pl-9 pr-10 py-2.5 text-xs focus:outline-none focus:border-amber-400 transition"
-                          required
-                        />
-                        <button
-                          type="button"
-                          onClick={() => setShowProducerPassword(!showProducerPassword)}
-                          aria-label={showProducerPassword ? 'Hide password' : 'Show password'}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-500 hover:text-stone-300 transition cursor-pointer"
-                        >
-                          {showProducerPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* Estate Fiscal & Shipping Logistics (Pan-European VAT / Tax ID) */}
-                    <div className="p-3.5 rounded-2xl bg-stone-900/90 border border-amber-500/20 space-y-3">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                          <span className="font-bold text-white text-xs">
-                            Optional Business Evidence
-                          </span>
-                        </div>
-                        <span className="text-[9px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 font-bold uppercase tracking-wider flex items-center gap-1">
-                          <span>{fiscalLabels.countryFlag}</span>
-                          <span>{fiscalLabels.shortVatLabel} Format Check</span>
-                        </span>
-                      </div>
-
-                      <p className="text-[11px] text-stone-300 leading-relaxed">
-                        Business details can support the ownership review, but a valid format does not by itself prove that you own or represent the estate.
-                      </p>
-
-                      {/* Tax Residence Country Selector */}
-                      <div>
-                        <div className="flex items-center justify-between mb-1">
-                          <label className="block text-stone-300 text-[11px] font-semibold">
-                            Tax Residence / Country
-                          </label>
-                          <span className="text-[10px] text-stone-400 font-mono">
-                            {fiscalLabels.countryFlag} {fiscalLabels.countryName}
-                          </span>
-                        </div>
-                        <div className="grid grid-cols-3 sm:grid-cols-5 gap-1.5 text-center">
-                          {[
-                            { code: 'GR', label: '🇬🇷 Greece' },
-                            { code: 'IT', label: '🇮🇹 Italy' },
-                            { code: 'FR', label: '🇫🇷 France' },
-                            { code: 'ES', label: '🇪🇸 Spain' },
-                            { code: 'OTHER', label: '🇪🇺 Other EU' },
-                          ].map((c) => (
-                            <button
-                              key={c.code}
-                              type="button"
-                              onClick={() => {
-                                setFiscalCountry(c.code);
-                              }}
-                              className={`px-2 py-1.5 rounded-lg text-[11px] font-semibold border transition cursor-pointer ${
-                                fiscalCountry === c.code
-                                  ? 'bg-amber-500/20 border-amber-500/50 text-amber-300 font-bold'
-                                  : 'bg-stone-950/60 border-white/10 text-stone-400 hover:text-white hover:bg-white/5'
-                              }`}
-                            >
-                              {c.label}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* VAT / Tax ID Field */}
-                      <div>
-                        <div className="flex items-center justify-between mb-1">
-                          <label className="block text-stone-300 text-xs font-semibold">
-                            {fiscalLabels.fullVatLabel} <span className="text-stone-500">(optional evidence)</span>
-                          </label>
-                          {vatValidation && (
-                            <span className={`text-[10px] font-bold ${vatValidation.isValid ? 'text-emerald-400' : 'text-amber-400'}`}>
-                              {vatValidation.isValid ? '✓ Valid Format' : 'Verification Needed'}
-                            </span>
-                          )}
-                        </div>
-                        <div className="relative">
-                          <FileText className="w-4 h-4 text-stone-500 absolute left-3 top-1/2 -translate-y-1/2" />
-                          <input
-                            type="text"
-                            value={vatNumber}
-                            onChange={(e) => setVatNumber(e.target.value.toUpperCase())}
-                            placeholder={fiscalLabels.placeholder}
-                            className={`w-full bg-stone-950 border rounded-xl pl-9 pr-3 py-2.5 text-xs focus:outline-none placeholder:text-stone-500 transition ${
-                              vatValidation?.isValid
-                                ? 'border-emerald-500/60 text-emerald-300'
-                                : vatNumber.trim()
-                                ? 'border-amber-500/60 text-amber-300'
-                                : 'border-white/10 text-white focus:border-amber-400'
-                            }`}
-                          />
-                        </div>
-                        {vatValidation?.isValid ? (
-                          <p className="text-[10px] text-emerald-400 mt-1 flex items-center gap-1">
-                            <CheckCircle2 className="w-3 h-3 text-emerald-400 shrink-0" />
-                            <span>Tax ID format accepted — official business verification occurs during review.</span>
-                          </p>
-                        ) : vatNumber.trim() ? (
-                          <p className="text-[10px] text-amber-400 mt-1">
-                            {fiscalLabels.formatHint}
-                          </p>
-                        ) : (
-                          <p className="text-[10px] text-stone-400 mt-1">
-                            Submitted for business review ({fiscalLabels.authoritiesNote}).
-                          </p>
-                        )}
-                      </div>
-
-                      {/* Legal Company Name & Registered Address */}
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
-                        <div>
-                          <label className="block text-stone-300 text-[11px] font-semibold mb-1">
-                            {fiscalLabels.companyNameLabel}
-                          </label>
-                          <input
-                            type="text"
-                            value={legalBusinessName}
-                            onChange={(e) => setLegalBusinessName(e.target.value)}
-                            placeholder="Registered business name"
-                            className="w-full bg-stone-950 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-amber-400 transition"
-                          />
-                        </div>
-
-                        <div>
-                          <label className="block text-stone-300 text-[11px] font-semibold mb-1">
-                            Courier Dispatch Phone
-                          </label>
-                          <div className="relative">
-                            <Truck className="w-3.5 h-3.5 text-stone-500 absolute left-3 top-1/2 -translate-y-1/2" />
-                            <input
-                              type="tel"
-                              value={dispatchContactPhone}
-                              onChange={(e) => setDispatchContactPhone(e.target.value)}
-                              placeholder={fiscalCountry === 'IT' ? 'e.g. +39 0577 000000' : fiscalCountry === 'FR' ? 'e.g. +33 1 00 00 00 00' : fiscalCountry === 'ES' ? 'e.g. +34 910 000000' : 'e.g. +30 2810 000000'}
-                              className="w-full bg-stone-950 border border-white/10 text-white placeholder:text-stone-500 rounded-xl pl-8 pr-3 py-2 text-xs focus:outline-none focus:border-amber-400 transition"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                      <div>
-                        <label className="block text-stone-300 text-[11px] font-semibold mb-1">
-                          Registered Business Address (optional evidence)
-                        </label>
-                        <input
-                          type="text"
-                          value={registeredAddress}
-                          onChange={(e) => setRegisteredAddress(e.target.value)}
-                          placeholder="Registered business address"
-                          className="w-full bg-stone-950 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-amber-400 transition"
-                        />
-                      </div>
-
-                    <button
-                      type="submit"
-                      disabled={isBusy}
-                      className="w-full py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-rose-500 hover:from-amber-400 hover:to-rose-400 text-stone-950 font-bold text-xs shadow-lg transition active:scale-98 disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer mt-1"
-                    >
-                      {localLoading === 'form' ? (
-                        <>
-                          <Loader2 className="w-4 h-4 animate-spin text-stone-950" />
-                          <span>Submitting Claim...</span>
-                        </>
-                      ) : (
-                        <>
-                          <Sparkles className="w-4 h-4" />
-                          <span>Submit Claim for Review</span>
-                        </>
-                      )}
-                    </button>
-                  </form>
-
-                  {/* Switch to Login */}
-                  <div className="text-center pt-2">
-                    <span className="text-xs text-stone-400">Already claimed your estate? </span>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setProducerMode('login');
-                        setLocalError('');
-                      }}
-                      className="text-xs text-amber-400 font-bold hover:underline cursor-pointer"
-                    >
-                      Sign In to Estate →
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {/* 3. PRODUCER FORGOT PASSWORD */}
-              {producerMode === 'forgot' && (
-                <div className="space-y-4">
-                  <form onSubmit={handlePasswordReset} className="space-y-3">
-                    <div>
-                      <label htmlFor="producer-reset-email" className="block text-stone-300 text-xs font-semibold mb-1">
-                        Registered Estate Email
-                      </label>
-                      <div className="relative">
-                        <Mail className="w-4 h-4 text-stone-500 absolute left-3 top-1/2 -translate-y-1/2" />
-                        <input
-                          id="producer-reset-email"
-                          type="email"
-                          value={producerEmail}
-                          onChange={(e) => setProducerEmail(e.target.value)}
-                          placeholder="e.g. producer@example-artisan.com"
-                          className="w-full bg-stone-900 border border-white/10 text-white rounded-xl pl-9 pr-3 py-2.5 text-xs focus:outline-none focus:border-amber-400 transition"
-                          required
-                        />
-                      </div>
-                    </div>
-
-                    <button
-                      type="submit"
-                      disabled={isBusy}
-                      className="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs shadow-lg transition active:scale-98 disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
-                    >
-                      {localLoading === 'reset' ? (
-                        <>
-                          <Loader2 className="w-4 h-4 animate-spin text-stone-950" />
-                          <span>Sending Reset Link...</span>
-                        </>
-                      ) : (
-                        <span>Send Password Reset Link</span>
-                      )}
-                    </button>
-                  </form>
-
-                  <div className="text-center pt-2">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setProducerMode('login');
-                        setLocalError('');
-                      }}
-                      className="text-xs text-stone-400 hover:text-white transition cursor-pointer"
-                    >
-                      ← Back to Host Sign In
-                    </button>
-                  </div>
-                </div>
-              )}
-            </>
-          )}
-
-          <div className="flex flex-col items-center justify-center gap-1.5 pt-1 text-[10px] text-stone-500">
-            <div className="flex items-center gap-1.5">
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
-              <span>Encrypted Authentication · Stored per unique User ID</span>
+          {accountType === 'traveler' && travelerMode === 'login' && (
+            <div className="space-y-4">
+              {socialButtons}
+              <form onSubmit={handleTravelerLogin} className="space-y-3">
+                <label className="block text-xs font-semibold text-stone-300">Email
+                  <div className="relative mt-1.5"><Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-500" /><input type="email" autoComplete="email" value={email} onChange={event => setEmail(event.target.value)} className="w-full rounded-xl border border-white/10 bg-stone-900 pl-9 pr-3 py-2.5 text-xs text-white" required /></div>
+                </label>
+                <label className="block text-xs font-semibold text-stone-300">Password
+                  <div className="relative mt-1.5"><Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-500" /><input type={showPassword ? 'text' : 'password'} autoComplete="current-password" value={password} onChange={event => setPassword(event.target.value)} className="w-full rounded-xl border border-white/10 bg-stone-900 pl-9 pr-10 py-2.5 text-xs text-white" required /><button type="button" onClick={() => setShowPassword(value => !value)} className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-500 cursor-pointer" aria-label={showPassword ? 'Hide password' : 'Show password'}>{showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}</button></div>
+                </label>
+                <div className="flex justify-between text-[11px]"><button type="button" onClick={() => setTravelerMode('signup')} className="text-amber-400 font-semibold cursor-pointer">Create account</button><button type="button" onClick={() => setTravelerMode('forgot')} className="text-stone-400 cursor-pointer">Forgot password?</button></div>
+                <button type="submit" disabled={isBusy} className="w-full rounded-xl bg-amber-500 py-2.5 text-xs font-bold text-stone-950 disabled:opacity-50 cursor-pointer">{localLoading === 'form' ? 'Signing in…' : 'Sign in'}</button>
+              </form>
             </div>
-            <div className="flex items-center gap-2 text-stone-400">
-              {onOpenPrivacyNotice && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    onClose();
-                    onOpenPrivacyNotice();
-                  }}
-                  className="hover:text-amber-400 underline cursor-pointer"
-                >
-                  Privacy Notice (GDPR)
-                </button>
-              )}
-              <span>·</span>
-              {onOpenTerms && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    onClose();
-                    onOpenTerms();
-                  }}
-                  className="hover:text-amber-400 underline cursor-pointer"
-                >
-                  Terms of Service
-                </button>
-              )}
-              <span>·</span>
-              {onOpenLicenses && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    onClose();
-                    onOpenLicenses();
-                  }}
-                  className="hover:text-amber-400 underline cursor-pointer"
-                >
-                  Licenses
-                </button>
-              )}
+          )}
+
+          {accountType === 'traveler' && travelerMode === 'signup' && (
+            <form onSubmit={handleTravelerSignup} className="space-y-3">
+              <div className="rounded-xl border border-sky-500/20 bg-sky-500/5 p-3 text-[11px] leading-relaxed text-stone-300">No traveler persona is required. You can optionally add interests such as wine, cheese, olive oil, beer, farms, honey or heritage from your account settings later.</div>
+              <label className="block text-xs font-semibold text-stone-300">Name<div className="relative mt-1.5"><User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-500" /><input autoComplete="name" value={name} onChange={event => setName(event.target.value)} className="w-full rounded-xl border border-white/10 bg-stone-900 pl-9 pr-3 py-2.5 text-xs text-white" required /></div></label>
+              <label className="block text-xs font-semibold text-stone-300">Email<div className="relative mt-1.5"><Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-500" /><input type="email" autoComplete="email" value={email} onChange={event => setEmail(event.target.value)} className="w-full rounded-xl border border-white/10 bg-stone-900 pl-9 pr-3 py-2.5 text-xs text-white" required /></div></label>
+              <label className="block text-xs font-semibold text-stone-300">Password<div className="relative mt-1.5"><Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-500" /><input type={showPassword ? 'text' : 'password'} autoComplete="new-password" value={password} onChange={event => setPassword(event.target.value)} className="w-full rounded-xl border border-white/10 bg-stone-900 pl-9 pr-10 py-2.5 text-xs text-white" required /><button type="button" onClick={() => setShowPassword(value => !value)} className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-500 cursor-pointer" aria-label={showPassword ? 'Hide password' : 'Show password'}>{showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}</button></div></label>
+              <button type="submit" disabled={isBusy} className="w-full rounded-xl bg-amber-500 py-2.5 text-xs font-bold text-stone-950 disabled:opacity-50 cursor-pointer">{localLoading === 'form' ? 'Creating account…' : 'Create free account'}</button>
+              <button type="button" onClick={() => setTravelerMode('login')} className="w-full text-xs text-stone-400 cursor-pointer">← Back to sign in</button>
+            </form>
+          )}
+
+          {accountType === 'traveler' && travelerMode === 'forgot' && (
+            <form onSubmit={handlePasswordReset} className="space-y-3">
+              <label className="block text-xs font-semibold text-stone-300">Registered email<input type="email" value={email} onChange={event => setEmail(event.target.value)} className="mt-1.5 w-full rounded-xl border border-white/10 bg-stone-900 px-3 py-2.5 text-xs text-white" required /></label>
+              <button type="submit" disabled={isBusy} className="w-full rounded-xl bg-amber-500 py-2.5 text-xs font-bold text-stone-950 cursor-pointer">Send reset link</button>
+              <button type="button" onClick={() => setTravelerMode('login')} className="w-full text-xs text-stone-400 cursor-pointer">← Back to sign in</button>
+            </form>
+          )}
+
+          {accountType === 'producer' && producerMode === 'login' && (
+            <div className="space-y-4">
+              <div className="rounded-xl border border-amber-500/20 bg-amber-500/5 p-3 text-[11px] text-stone-300 flex gap-2"><ShieldCheck className="w-4 h-4 text-amber-300 shrink-0" />Host permissions come only from listings explicitly approved and assigned by TerroirTrail.</div>
+              {socialButtons}
+              <form onSubmit={handleProducerLogin} className="space-y-3">
+                <label className="block text-xs font-semibold text-stone-300">Producer account email<input type="email" autoComplete="email" value={producerEmail} onChange={event => setProducerEmail(event.target.value)} className="mt-1.5 w-full rounded-xl border border-white/10 bg-stone-900 px-3 py-2.5 text-xs text-white" required /></label>
+                <label className="block text-xs font-semibold text-stone-300">Password<div className="relative mt-1.5"><input type={showProducerPassword ? 'text' : 'password'} autoComplete="current-password" value={producerPassword} onChange={event => setProducerPassword(event.target.value)} className="w-full rounded-xl border border-white/10 bg-stone-900 px-3 pr-10 py-2.5 text-xs text-white" required /><button type="button" onClick={() => setShowProducerPassword(value => !value)} className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-500 cursor-pointer" aria-label={showProducerPassword ? 'Hide password' : 'Show password'}>{showProducerPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}</button></div></label>
+                <button type="submit" disabled={isBusy} className="w-full rounded-xl bg-amber-500 py-2.5 text-xs font-bold text-stone-950 cursor-pointer"><Building2 className="inline w-4 h-4 mr-1" /> Sign in as Host</button>
+                <div className="flex justify-between text-[11px]"><button type="button" onClick={() => setProducerMode('claim')} className="text-amber-400 font-semibold cursor-pointer">Claim a listing</button><button type="button" onClick={() => setProducerMode('forgot')} className="text-stone-400 cursor-pointer">Forgot password?</button></div>
+              </form>
+            </div>
+          )}
+
+          {accountType === 'producer' && producerMode === 'claim' && (
+            <form onSubmit={handleProducerClaim} className="space-y-3">
+              <div className="rounded-xl border border-sky-500/20 bg-sky-500/5 p-3 text-[11px] leading-relaxed text-stone-300">The initial claim only verifies legitimate representation. Banking, shipping, packaging and payout details are not collected here.</div>
+              <label className="block text-xs font-semibold text-stone-300">Producer listing<select value={selectedProducerId} onChange={event => setSelectedProducerId(event.target.value)} className="mt-1.5 w-full rounded-xl border border-white/10 bg-stone-900 px-3 py-2.5 text-xs text-white" required>{producers.map(producer => <option key={producer.id} value={producer.id}>{producer.name} · {producer.village}, {producer.region}</option>)}</select></label>
+              <label className="block text-xs font-semibold text-stone-300">Your name<input value={producerHostName} onChange={event => setProducerHostName(event.target.value)} className="mt-1.5 w-full rounded-xl border border-white/10 bg-stone-900 px-3 py-2.5 text-xs text-white" required /></label>
+              <label className="block text-xs font-semibold text-stone-300">Official producer email<input type="email" value={producerEmail} onChange={event => setProducerEmail(event.target.value)} className="mt-1.5 w-full rounded-xl border border-white/10 bg-stone-900 px-3 py-2.5 text-xs text-white" required /></label>
+              <label className="block text-xs font-semibold text-stone-300">Create password<input type="password" value={producerPassword} onChange={event => setProducerPassword(event.target.value)} className="mt-1.5 w-full rounded-xl border border-white/10 bg-stone-900 px-3 py-2.5 text-xs text-white" required /></label>
+
+              <div className="rounded-2xl border border-white/10 bg-stone-900/60 p-3 space-y-3">
+                <div><div className="text-xs font-bold text-white">Business evidence <span className="text-stone-500 font-normal">(optional where applicable)</span></div><div className="text-[10px] text-stone-500 mt-0.5">A VAT/business registration can help the review. Small producers without one can still submit for manual verification.</div></div>
+                <div className="grid grid-cols-[90px_1fr] gap-2"><input value={fiscalCountry} onChange={event => setFiscalCountry(event.target.value.toUpperCase().slice(0, 2))} maxLength={2} aria-label="Country code" className="rounded-xl border border-white/10 bg-stone-950 px-3 py-2 text-xs text-white uppercase" /><input value={legalBusinessName} onChange={event => setLegalBusinessName(event.target.value)} placeholder="Registered business name (optional)" className="rounded-xl border border-white/10 bg-stone-950 px-3 py-2 text-xs text-white" /></div>
+                <input value={vatNumber} onChange={event => setVatNumber(event.target.value.toUpperCase())} placeholder={`${fiscalLabels.shortVatLabel} / business tax ID (optional)`} className="w-full rounded-xl border border-white/10 bg-stone-950 px-3 py-2 text-xs text-white" />
+                {vatValidation && <div className={`text-[10px] ${vatValidation.isValid ? 'text-emerald-300' : 'text-amber-300'}`}>{vatValidation.isValid ? 'Format accepted; ownership still requires review.' : vatValidation.error}</div>}
+              </div>
+
+              <label className="flex items-start gap-2 rounded-xl border border-white/10 bg-stone-900/60 p-3 text-[11px] text-stone-300 cursor-pointer"><input type="checkbox" checked={producerTermsAccepted} onChange={event => setProducerTermsAccepted(event.target.checked)} className="mt-0.5" /><span>I am authorized to represent this producer and I accept the TerroirTrail Producer Terms. {onOpenTerms && <button type="button" onClick={() => { onClose(); onOpenTerms(); }} className="text-amber-400 underline cursor-pointer">Read Producer Terms</button>}</span></label>
+              <button type="submit" disabled={isBusy || producers.length === 0} className="w-full rounded-xl bg-amber-500 py-2.5 text-xs font-bold text-stone-950 disabled:opacity-50 cursor-pointer">{localLoading === 'form' ? 'Submitting claim…' : <><ArrowRight className="inline w-4 h-4 mr-1" /> Submit claim for review</>}</button>
+              <button type="button" onClick={() => setProducerMode('login')} className="w-full text-xs text-stone-400 cursor-pointer">← Back to producer sign in</button>
+            </form>
+          )}
+
+          {accountType === 'producer' && producerMode === 'forgot' && (
+            <form onSubmit={handlePasswordReset} className="space-y-3">
+              <label className="block text-xs font-semibold text-stone-300">Registered producer email<input type="email" value={producerEmail} onChange={event => setProducerEmail(event.target.value)} className="mt-1.5 w-full rounded-xl border border-white/10 bg-stone-900 px-3 py-2.5 text-xs text-white" required /></label>
+              <button type="submit" disabled={isBusy} className="w-full rounded-xl bg-amber-500 py-2.5 text-xs font-bold text-stone-950 cursor-pointer">Send reset link</button>
+              <button type="button" onClick={() => setProducerMode('login')} className="w-full text-xs text-stone-400 cursor-pointer">← Back to producer sign in</button>
+            </form>
+          )}
+
+          <div className="pt-2 text-center text-[10px] text-stone-500 space-y-1.5">
+            <div className="flex items-center justify-center gap-1.5"><ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />Firebase authentication · private account data</div>
+            <div className="flex justify-center gap-2">
+              {onOpenPrivacyNotice && <button type="button" onClick={() => { onClose(); onOpenPrivacyNotice(); }} className="underline hover:text-amber-400 cursor-pointer">Privacy</button>}
+              {onOpenTerms && <button type="button" onClick={() => { onClose(); onOpenTerms(); }} className="underline hover:text-amber-400 cursor-pointer">Terms</button>}
+              {onOpenLicenses && <button type="button" onClick={() => { onClose(); onOpenLicenses(); }} className="underline hover:text-amber-400 cursor-pointer">Licenses</button>}
             </div>
           </div>
-
         </div>
-
       </div>
     </div>
   );
