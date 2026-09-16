@@ -16,6 +16,7 @@
     "test:frontend": "vitest run src/",
     "test:server": "tsx --test server/tests/*.test.ts && vitest run server/tests/passService.spec.ts server/tests/approveProducerRegistration.spec.ts",
     "test:rules": "tsx scripts/run_rules_tests.ts",
+    "smoke:production": "tsx scripts/production_account_smoke.ts",
     "preview": "vite preview",
     "deploy": "npm run build && npx -y firebase-tools deploy --only hosting",
     "deploy:firestore": "npx -y firebase-tools deploy --only firestore:rules,firestore:indexes",
