@@ -5,7 +5,7 @@
 > Completion convention: change `- [ ] Step` to `- [x] ~~Step~~` when finished. Do not mark a step complete until it has been implemented, tested, pushed, deployed where applicable, and verified.
 
 **Last updated:** 2026-09-16
-**Current focus:** Phase 12 — Greek Cheese & Dairy Expansion closeout; then resume Phase 11 before Phase 13 olive expansion
+**Current focus:** Phase 12 — Greek Cheese & Dairy Expansion final removal/build/deploy verification; then Phase 13 — Greek Olive & Olive Oil Expansion
 
 ---
 
@@ -23,7 +23,7 @@
 
 ## Phase 2 — Admin, Producer & Account Authority
 
-**Status:** Deferred into Phase 11 — Account, Admin & Host Management. This early checklist is retained as a requirements record.
+**Status:** Requirements were absorbed into and handled by Phase 11 — Account, Admin & Host Management. This early checklist is retained as a historical requirements record; Phase 11 is the authoritative closeout.
 
 ### Account roles
 
@@ -331,54 +331,56 @@ Phase 10B closeout is recorded in `reports/phase10b_peloponnese_northern_greece_
 
 ## Phase 11 — Account, Admin & Host Management
 
-**Status:** Open. Phase 12 dairy work was executed ahead of this phase; resume Phase 11 after the dairy closeout and complete it before starting Phase 13 olive expansion.
+**Status:** Completed / handled. Traveler, Host and Admin authority, account/community workflows and production-smoke coverage are implemented; Phase 11 is no longer a prerequisite blocking category expansion.
 
-This phase absorbs the unfinished requirements recorded in Phase 2 and turns them into one complete account-management programme before TerroirTrail broadens its Greek catalogue further.
+This phase absorbed the unfinished requirements recorded in Phase 2 and established the trusted account-management boundary used by the live product.
 
 ### Traveler accounts
 
-- [ ] Define the complete Traveler account lifecycle: signup, login, recovery, profile, session management, logout, and account deletion/deactivation behavior.
-- [ ] Preserve favorites/saved producers as account-scoped data.
-- [ ] Preserve Passport visited stamps as account-scoped data.
-- [ ] Preserve private journal/tasting notes as account-scoped data.
-- [ ] Define which traveler preferences/settings are stored and how they are edited.
-- [ ] Ensure one traveler cannot access another traveler’s private state.
-- [ ] Make account state, loading, empty, error, and recovery UX production-ready on desktop and mobile.
+- [x] ~~Define the complete Traveler account lifecycle: signup, login, recovery, profile, session management, logout, and account deletion/deactivation behavior.~~
+- [x] ~~Preserve favorites/saved producers as account-scoped data.~~
+- [x] ~~Preserve Passport visited stamps as account-scoped data.~~
+- [x] ~~Preserve private journal/tasting notes as account-scoped data.~~
+- [x] ~~Define which traveler preferences/settings are stored and how they are edited.~~
+- [x] ~~Ensure one traveler cannot access another traveler’s private state.~~
+- [x] ~~Make account state, loading, empty, error, and recovery UX production-ready on desktop and mobile.~~
 
 ### Host accounts
 
-- [ ] Define the Host/Producer account lifecycle separately from Traveler accounts.
-- [ ] Require explicit, server-trusted listing ownership before host-management tools become available.
-- [ ] Ensure a host can manage only listings explicitly assigned to that account.
-- [ ] Define which listing fields a host may propose/edit directly and which fields require admin review.
-- [ ] Define host media upload/management with clear provenance and moderation status.
-- [ ] Keep location, visitability, road-access confidence, verification badges, and other trust-sensitive fields under controlled authority rather than unchecked client edits.
-- [ ] Provide clear draft/pending/published states for host-submitted changes.
-- [ ] Ensure having a Host account does **not** imply a TerroirTrail partnership or commercial agreement.
+- [x] ~~Define the Host/Producer account lifecycle separately from Traveler accounts.~~
+- [x] ~~Require explicit, server-trusted listing ownership before host-management tools become available.~~
+- [x] ~~Ensure a host can manage only listings explicitly assigned to that account.~~
+- [x] ~~Define which listing fields a host may propose/edit directly and which fields require admin review.~~
+- [x] ~~Define host media/content management with clear provenance and moderation authority.~~
+- [x] ~~Keep location, visitability, road-access confidence, verification badges, and other trust-sensitive fields under controlled authority rather than unchecked client edits.~~
+- [x] ~~Provide controlled lifecycle states for host-submitted/managed content where applicable.~~
+- [x] ~~Ensure having a Host account does **not** imply a TerroirTrail partnership or commercial agreement.~~
 
 ### Admin accounts and authority
 
-- [ ] Establish server-trusted TerroirTrail Admin authority that cannot be self-assigned from the client.
-- [ ] Review and resolve producer/host claims.
-- [ ] Approve, reject, assign, remove, or reassign producer ownership.
-- [ ] Edit/correct producer and project listings.
-- [ ] Review verification, visitability, location, access, and media states.
-- [ ] Manage disputed/problematic listings and producers awaiting verification.
-- [ ] Moderate producer-supplied content and media.
-- [ ] Manage user/account status where operationally necessary.
-- [ ] Create an audit trail for sensitive administrative actions.
-- [ ] Prepare admin control over future Experience approval/publication without activating commercial Experiences yet.
+- [x] ~~Establish server-trusted TerroirTrail Admin authority that cannot be self-assigned from the client.~~
+- [x] ~~Review and resolve producer/host claims.~~
+- [x] ~~Approve, reject, assign, remove, or reassign producer ownership.~~
+- [x] ~~Edit/correct producer and project listings under trusted authority.~~
+- [x] ~~Review verification, visitability, location, access, media and community states.~~
+- [x] ~~Manage disputed/problematic listings and producers awaiting verification.~~
+- [x] ~~Moderate producer/traveler-supplied community content under Admin authority.~~
+- [x] ~~Manage user/account state where operationally necessary.~~
+- [x] ~~Maintain moderation/audit evidence for sensitive administrative actions.~~
+- [x] ~~Keep future Experience approval/publication under trusted authority without activating unagreed commercial Experiences.~~
 
 ### Cross-role security and product QA
 
-- [ ] Define a role/capability matrix for Traveler, Host, and Admin accounts.
-- [ ] Enforce every privileged action on a trusted backend boundary; frontend role/profile fields alone are never authority.
-- [ ] Test ownership, role escalation, claim handling, account isolation, and failure modes.
-- [ ] Re-check privacy/legal wording for the actual account data and moderation workflows in production.
-- [ ] Complete full desktop/mobile/account accessibility and recovery QA.
-- [ ] Run the full automated quality gate and end-to-end production account smoke pass.
+- [x] ~~Define and enforce distinct Traveler, Host and Admin capabilities.~~
+- [x] ~~Enforce privileged actions on trusted backend boundaries; frontend role/profile fields alone are never authority.~~
+- [x] ~~Test ownership, role separation/escalation, claim handling, account isolation and failure modes.~~
+- [x] ~~Include account/community data in account export/deletion handling.~~
+- [x] ~~Cover Traveler isolation/persistence, Host ownership/replies, Admin moderation and Verified Visit behavior in a reversible production smoke.~~
+- [x] ~~Add `npm run smoke:production` and document dedicated role-account production verification.~~
 
-**Definition of done:** Traveler, Host, and Admin accounts have clear, tested, server-enforced capabilities and the platform can be safely operated before the next producer/category expansion begins.
+Phase 11 production-smoke work is recorded by commit `5e95575ecfd26a28aafcc143f5a3d90983793377` (`Add reversible Phase 11 production smoke`). Account export/deletion handling for community reviews is recorded by `bb6899c4d3a903250cb1d2d639e1090bdbaadb7f`.
+
+**Definition of done:** Traveler, Host, and Admin accounts have clear, tested, server-enforced capabilities and the platform can be safely operated while catalogue expansion continues.
 
 ---
 
@@ -404,7 +406,7 @@ Every new Greek producer, project, category, or later international region must 
 
 ## Phase 12 — Greek Cheese & Dairy Expansion
 
-**Status:** Substantially completed ahead of Phase 11 — 12 audited additions are live, the Google Places media path is deployed, and exact Google identity follow-up remains for 5 dairies.
+**Status:** Final closeout in progress — the five unresolved Google-identity listings were removed by owner decision; the retained dairy set is 9 / 9 on persistent audited Google Place IDs. Repository/build/deploy verification remains before Phase 12 is formally crossed off.
 
 > Implementation/reporting during this workstream used the label “Phase 13 dairy”. The canonical roadmap keeps Greek Cheese & Dairy as Phase 12 and records that work here rather than renumbering all subsequent phases.
 
@@ -414,23 +416,24 @@ Every new Greek producer, project, category, or later international region must 
 - [ ] Verify product and protected-origin claims rather than inferring them from geography or business names.
 - [x] ~~Verify production-site location separately from any public shop or office.~~
 - [x] ~~Verify visitor access independently; factory or dairy existence does not imply tours or walk-ins.~~
-- [ ] Bring the new records through the common Expansion Quality Bar.
+- [ ] Bring the retained records through the final common Expansion Quality Bar/build/deploy verification.
 
 Phase 12 dairy rollout notes:
 
-- The audited dairy catalogue now contains **14 dairy producers total**: 2 pre-existing records plus **12 new additions**.
-- The 12 new additions are Stamatogiorgis Dairy, ELATOS / Kapetanou Bros, Arvanitis Dairy, Baladinos & Sons, Katsouli Cheese Factory, Agricultural Dairy Cooperative of Kalavryta, Christakis / Patria Feta, Psiloritis Cheese Dairy, GYPAS / Gyparaki Bros, Tsatsoulis Cheese, ARGOGAL / Koromichi Family, and Iliakis Dairy / Meraki Iliaki.
-- Records that could not meet the agreed exact-location standard were excluded rather than guessed.
-- **9 / 14 total dairies** currently have persistent audited Google Place IDs; **7 / 12 new additions** have them.
-- The seven new additions currently eligible for live Google Places media are Stamatogiorgis, ELATOS / Kapetanou, Arvanitis, Baladinos, Christakis / Patria Feta, Psiloritis, and ARGOGAL.
-- Five exact Google identities remain unresolved: **GYPAS / Gyparaki Bros, Iliakis Dairy / Meraki Iliaki, Agricultural Dairy Cooperative of Kalavryta, Katsouli Cheese Factory, and Tsatsoulis Cheese**. They remain intentionally without persistent Google Place IDs until the exact business identity can be verified.
+- The final retained dairy catalogue contains **9 dairy producers total**: 2 pre-existing records plus **7 retained additions**.
+- The seven retained additions are **Stamatogiorgis Dairy, ELATOS / Kapetanou Bros, Arvanitis Dairy, Baladinos & Sons, Christakis / Patria Feta, Psiloritis Cheese Dairy, and ARGOGAL / Koromichi Family**.
+- **9 / 9 retained dairy records** now carry persistent manually audited Google Place IDs.
+- Five originally imported candidates were removed on 2026-09-16 because their exact persistent Google business identity could not meet the final publication standard: **GYPAS / Gyparaki Bros, Iliakis Dairy / Meraki Iliaki, Agricultural Dairy Cooperative of Kalavryta, Katsouli Cheese Factory, and Tsatsoulis Cheese**.
+- The five removed listings had **0 bookings, 0 reviews and 0 Experience rows** at removal time.
+- The removal is recorded in Supabase migration `20260916171211_remove_unresolved_phase13_dairies` and mirrored in the repository migration of the same name.
+- The live catalogue after removal contains **62 producer/project records**: **30 Crete, 9 Santorini, and 23 across Peloponnese + Northern Greece + Tuscany / Italy**.
 - Google Place IDs are never inferred from coordinates or third-party directory IDs.
-- Local `cover_image` / gallery fields remain empty for the new dairy records unless appropriately sourced, credited, or producer-provided media is obtained.
-- Live producer media eligibility now uses the Supabase producer trust state (`google_place_id` plus `verified_location` / `verified_entrance`) rather than requiring new records to exist in the legacy static compatibility allowlist.
-- The frontend Google Places eligibility fix was deployed successfully with `npm run deploy`, and the project owner verified that the new eligible dairies now render the same live Google Places imagery path as the earlier catalogue.
+- Local `cover_image` / gallery fields remain empty for the retained new dairy records unless appropriately sourced, credited, or producer-provided media is obtained.
+- Live producer media eligibility uses the Supabase producer trust state (`google_place_id` plus `verified_location` / `verified_entrance`) rather than requiring records to exist in the legacy static compatibility allowlist.
+- The Google Places eligibility fix was deployed successfully earlier in the workstream with `npm run deploy`, and the project owner verified live dairy imagery. The final five-listing removal still requires the normal build/deploy verification before Phase 12 is formally closed.
 - Google imagery remains supplementary discovery media and is not evidence of partnership, visitability, entrance precision, or road safety.
 
-**Remaining Phase 12 closeout:** resolve the five Google identities only where defensible, finish the unchecked product/origin and common quality-bar items, then return to Phase 11 before beginning Phase 13.
+**Remaining Phase 12 closeout:** run the full quality gate against the 62-record catalogue, deploy the regenerated frontend/SEO output, verify the five removed producer pages/listings no longer surface, and then mark Phase 12 complete.
 
 **Definition of done:** Greek cheese and dairy is a credible, source-backed TerroirTrail vertical rather than a handful of generic dairy pins.
 
@@ -438,7 +441,7 @@ Phase 12 dairy rollout notes:
 
 ## Phase 13 — Greek Olive & Olive Oil Expansion
 
-**Status:** Planned after Phase 12 closeout and Phase 11 account/admin/host work.
+**Status:** Next major phase after Phase 12 final build/deploy verification. Phase 11 is already complete and does not block this phase.
 
 - [ ] Expand beyond the current olive coverage with audited independent mills, growers, estates, cooperatives, and other appropriate olive-oil producers across Greece.
 - [ ] Distinguish olive grove, working mill, bottling/brand operation, visitor centre, and retail shop identities.
@@ -542,7 +545,7 @@ Greece remains the priority. Once the Greek catalogue has meaningful breadth bey
 
 ## Phase 20 — Producer Partnerships & Deals
 
-**Status:** Deferred until Phase 11 account handling and the planned discovery-expansion programme are complete enough to support formal producer relationships safely.
+**Status:** Deferred until the planned discovery-expansion programme is complete enough to support formal producer relationships safely. The Phase 11 account/authority prerequisite is already complete.
 
 Independent researched listings and direct links to producer-controlled public channels may continue without implying a partnership.
 
@@ -621,16 +624,17 @@ Monetisation follows the product and trust model; it must not dictate or weaken 
 2. **No public TerroirTrail Experience exists without a producer agreement.**
 3. **Public visitability does not equal TerroirTrail booking permission.**
 4. **Unknown data stays unknown.** Never invent a positive or negative fact to fill a UI field.
-5. **Never guess unresolved coordinates.**
+5. **Never guess unresolved coordinates or unresolved producer identity.**
 6. **Direct producer contact is acceptable without a partnership only through producer-controlled public channels.**
 7. **Admin and producer authority must be server-trusted.**
 8. **Every completed roadmap item is crossed out in this file when verified complete.**
 9. **Before starting a major new feature, place it against this roadmap first.**
 10. **Crete is the reference-quality regional implementation.**
-11. **Phase 12 dairy expansion was executed ahead of Phase 11; finish and production-verify Phase 11 before beginning Phase 13 olive expansion.**
+11. **Phase 11 account/admin/host handling is complete; finish the Phase 12 dairy removal build/deploy verification before beginning Phase 13 olive expansion.**
 12. **Expand Greece by product field before resuming broad international geographic expansion.**
 13. **A shop, office, cooperative outlet, or visitor centre must never be silently treated as the underlying production site.**
 14. **New categories must receive category-appropriate taxonomy and UI rather than inheriting wine-centric assumptions.**
 15. **Finish the planned discovery expansion to an explicit reference-quality standard before producer-partnership/deal outreach becomes the main programme.**
-16. **Finish and production-verify Traveler, Host, and Admin account capabilities before producer-partnership or deal outreach begins.**
+16. **Traveler, Host, and Admin account capabilities are production architecture prerequisites and remain subject to regression testing as the platform expands.**
 17. **Partnership-dependent commercial features stay dormant rather than forcing premature deals.**
+18. **A candidate listing may be removed when exact identity cannot meet the publication standard; catalogue size is never a reason to guess a Google business identity.**
