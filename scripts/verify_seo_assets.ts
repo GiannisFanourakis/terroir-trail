@@ -1,192 +1,224 @@
 import fs from 'fs';
 import path from 'path';
+import type { Producer } from '../src/types/terroir';
+import { CRETAN_PRODUCERS } from '../src/data/producers';
+import { SANTORINI_PRODUCERS } from '../src/data/santoriniProducers';
+import { PHASE10B_PRODUCERS } from '../src/data/phase10bProducers';
 
 const CANONICAL_HOST = 'https://terroir-trail.web.app';
 const CANONICAL_SITEMAP_URL = `${CANONICAL_HOST}/sitemap.xml`;
+const PRODUCER_DIRECTORY_URL = `${CANONICAL_HOST}/producers/`;
+const distDir = path.resolve(process.cwd(), 'dist');
+
+const PRODUCERS: Producer[] = [
+  ...CRETAN_PRODUCERS,
+  ...SANTORINI_PRODUCERS,
+  ...PHASE10B_PRODUCERS,
+];
+
+const fail = (message: string): never => {
+  console.error(`[SEO Verification Failed] ${message}`);
+  process.exit(1);
+};
+
+const requireFile = (filePath: string, label: string): string => {
+  if (!fs.existsSync(filePath)) fail(`${label} is missing at ${filePath}.`);
+  return fs.readFileSync(filePath, 'utf-8');
+};
+
+const requireIncludes = (content: string, value: string, label: string): void => {
+  if (!content.includes(value)) fail(`${label} is missing required value: ${value}`);
+};
+
+const banIncludes = (content: string, value: string, label: string): void => {
+  if (content.includes(value)) fail(`${label} still contains stale/quarantined value: ${value}`);
+};
+
+const producerUrl = (producer: Producer): string => `${CANONICAL_HOST}/producers/${producer.id}/`;
+
+const parseJsonLd = (html: string, label: string): Record<string, unknown> => {
+  const match = html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/);
+  if (!match) fail(`${label} has no JSON-LD block.`);
+  try {
+    return JSON.parse(match[1]) as Record<string, unknown>;
+  } catch (error) {
+    fail(`${label} contains invalid JSON-LD: ${error instanceof Error ? error.message : String(error)}`);
+  }
+};
 
 function verifySeoAssets(): void {
-  const distDir = path.resolve(process.cwd(), 'dist');
-
-  // 1. Verify dist directory exists
   if (!fs.existsSync(distDir)) {
-    console.error(`[SEO Verification Failed] dist directory does not exist at ${distDir}. Run build first.`);
-    process.exit(1);
+    fail(`dist directory does not exist at ${distDir}. Run build first.`);
   }
 
-  // 2. Verify dist/sitemap.xml exists
+  const ids = PRODUCERS.map((producer) => producer.id);
+  const uniqueIds = new Set(ids);
+  if (uniqueIds.size !== PRODUCERS.length) {
+    fail(`Audited producer catalogue contains duplicate ids (${uniqueIds.size}/${PRODUCERS.length} unique).`);
+  }
+  for (const id of ids) {
+    if (!/^[a-z0-9-]+$/.test(id)) fail(`Producer id is not path-safe: ${id}`);
+  }
+
   const sitemapPath = path.join(distDir, 'sitemap.xml');
-  if (!fs.existsSync(sitemapPath)) {
-    console.error(`[SEO Verification Failed] dist/sitemap.xml is missing.`);
-    process.exit(1);
-  }
-
-  // 3. Verify dist/robots.txt exists
-  const robotsPath = path.join(distDir, 'robots.txt');
-  if (!fs.existsSync(robotsPath)) {
-    console.error(`[SEO Verification Failed] dist/robots.txt is missing.`);
-    process.exit(1);
-  }
-
-  // 4. Verify sitemap.xml format, XML structure, and canonical host
-  const sitemapContent = fs.readFileSync(sitemapPath, 'utf-8').trim();
-
+  const sitemapContent = requireFile(sitemapPath, 'dist/sitemap.xml').trim();
   if (!sitemapContent.startsWith('<?xml') || !sitemapContent.includes('<urlset') || !sitemapContent.endsWith('</urlset>')) {
-    console.error('[SEO Verification Failed] dist/sitemap.xml is not valid XML or missing <urlset> root.');
-    process.exit(1);
-  }
-
-  if (!sitemapContent.includes(CANONICAL_HOST)) {
-    console.error(`[SEO Verification Failed] dist/sitemap.xml does not contain canonical host ${CANONICAL_HOST}.`);
-    process.exit(1);
+    fail('dist/sitemap.xml is not valid XML or is missing the <urlset> root.');
   }
 
   const locMatches = [...sitemapContent.matchAll(/<loc>(.*?)<\/loc>/g)];
-  if (locMatches.length === 0) {
-    console.error('[SEO Verification Failed] dist/sitemap.xml does not contain any <loc> entries.');
-    process.exit(1);
-  }
-
-  for (const match of locMatches) {
-    const locUrl = match[1].trim();
-    if (!locUrl.startsWith(`${CANONICAL_HOST}/`)) {
-      console.error(`[SEO Verification Failed] Sitemapped URL "${locUrl}" does not match canonical host ${CANONICAL_HOST}.`);
-      process.exit(1);
-    }
-  }
-
-  // 5. Verify robots.txt references canonical sitemap URL
-  const robotsContent = fs.readFileSync(robotsPath, 'utf-8');
-  const sitemapDirectivePattern = new RegExp(`^Sitemap:\\s*${CANONICAL_SITEMAP_URL.replace(/\./g, '\\.')}\\s*$`, 'm');
-
-  if (!sitemapDirectivePattern.test(robotsContent)) {
-    console.error(`[SEO Verification Failed] dist/robots.txt does not advertise Sitemap: ${CANONICAL_SITEMAP_URL}`);
-    process.exit(1);
-  }
-
-  // 6. Verify the public machine-readable product-state file is current.
-  const llmsPath = path.join(distDir, 'llms.txt');
-  if (!fs.existsSync(llmsPath)) {
-    console.error('[SEO Verification Failed] dist/llms.txt is missing.');
-    process.exit(1);
-  }
-
-  const llmsContent = fs.readFileSync(llmsPath, 'utf-8');
-  const requiredLlmsClaims = [
-    '36 producer/project records',
-    'Crete, Greece — 27 audited records.',
-    'Santorini, Greece — 9 audited records.',
-    'three published verified-stop Discovery Guides',
-    'does not represent Santorini as a UNESCO Global Geopark',
-    'Next regional programme: Peloponnese',
+  const sitemapUrls = locMatches.map((match) => match[1].trim());
+  const expectedUrls = [
+    `${CANONICAL_HOST}/`,
+    `${CANONICAL_HOST}/privacy.html`,
+    PRODUCER_DIRECTORY_URL,
+    ...PRODUCERS.map(producerUrl),
   ];
 
-  for (const claim of requiredLlmsClaims) {
-    if (!llmsContent.includes(claim)) {
-      console.error(`[SEO Verification Failed] dist/llms.txt is missing current product-state claim: ${claim}`);
-      process.exit(1);
-    }
+  if (sitemapUrls.length !== expectedUrls.length) {
+    fail(`dist/sitemap.xml has ${sitemapUrls.length} URLs; expected ${expectedUrls.length}.`);
+  }
+  if (new Set(sitemapUrls).size !== sitemapUrls.length) {
+    fail('dist/sitemap.xml contains duplicate URLs.');
+  }
+  for (const url of expectedUrls) {
+    if (!sitemapUrls.includes(url)) fail(`dist/sitemap.xml is missing expected URL: ${url}`);
+  }
+  for (const url of sitemapUrls) {
+    if (!url.startsWith(`${CANONICAL_HOST}/`)) fail(`Sitemapped URL uses the wrong host: ${url}`);
+    if (url.includes('?producer=')) fail(`Legacy query-state producer URL must not appear in the sitemap: ${url}`);
   }
 
+  const robotsPath = path.join(distDir, 'robots.txt');
+  const robotsContent = requireFile(robotsPath, 'dist/robots.txt');
+  const sitemapDirectivePattern = new RegExp(`^Sitemap:\\s*${CANONICAL_SITEMAP_URL.replace(/\./g, '\\.')}\\s*$`, 'm');
+  if (!sitemapDirectivePattern.test(robotsContent)) {
+    fail(`dist/robots.txt does not advertise Sitemap: ${CANONICAL_SITEMAP_URL}`);
+  }
+
+  const llmsPath = path.join(distDir, 'llms.txt');
+  const llmsContent = requireFile(llmsPath, 'dist/llms.txt');
+  const requiredLlmsClaims = [
+    `${PRODUCERS.length} producer/project records`,
+    'Crete, Greece — 27 audited records.',
+    'Santorini, Greece — 9 audited records.',
+    'Peloponnese, Northern Greece and Tuscany / Italy — 19 audited Phase 10B records combined.',
+    '10 published verified-stop Discovery Guides',
+    '/producers/<producer-id>/',
+    'does not represent Santorini as a UNESCO Global Geopark',
+    'SEO, AEO and entity-discovery foundation',
+    'Greek cheese and dairy is the next planned catalogue expansion',
+  ];
+  for (const claim of requiredLlmsClaims) requireIncludes(llmsContent, claim, 'dist/llms.txt');
+
   const staleLlmsClaims = [
+    '36 producer/project records',
+    'Next regional programme: Peloponnese',
     'Current reference region: Crete, Greece.',
     'Future expansion may include Santorini',
     '58+ verified producers',
     '6 turn-by-turn',
     'Santorini Complete Volcanic Caldera & Donkey Beer Trail',
   ];
+  for (const claim of staleLlmsClaims) banIncludes(llmsContent, claim, 'dist/llms.txt');
 
-  for (const claim of staleLlmsClaims) {
-    if (llmsContent.includes(claim)) {
-      console.error(`[SEO Verification Failed] dist/llms.txt still contains stale product-state claim: ${claim}`);
-      process.exit(1);
-    }
-  }
-
-  // 7. Verify dist/index.html canonical link and absence of stale/publicly quarantined claims
   const indexPath = path.join(distDir, 'index.html');
-  if (fs.existsSync(indexPath)) {
-    const indexContent = fs.readFileSync(indexPath, 'utf-8');
-    const canonicalExpected = `<link rel="canonical" href="${CANONICAL_HOST}/" />`;
-    if (!indexContent.includes(canonicalExpected)) {
-      console.error(`[SEO Verification Failed] dist/index.html is missing expected canonical link: ${canonicalExpected}`);
-      process.exit(1);
-    }
+  const indexContent = requireFile(indexPath, 'dist/index.html');
+  requireIncludes(indexContent, `<link rel="canonical" href="${CANONICAL_HOST}/" />`, 'dist/index.html');
+  requireIncludes(indexContent, 'TerroirTrail — Independent Producer &amp; Agritourism Guide', 'dist/index.html');
+  requireIncludes(indexContent, `${PRODUCERS.length} audited producer/project records`, 'dist/index.html');
+  requireIncludes(indexContent, 'Ten verified-stop guides are currently published', 'dist/index.html');
+  requireIncludes(indexContent, 'Crete, Santorini, the Peloponnese, Northern Greece and Tuscany', 'dist/index.html');
+  requireIncludes(indexContent, 'href="/producers/"', 'dist/index.html');
+  requireIncludes(indexContent, 'Discovery Guides &amp; Navigation Safety', 'dist/index.html');
+  requireIncludes(indexContent, 'Santorini Brewing Company', 'dist/index.html');
 
-    const bannedClaims = [
-      '58 featured independent',
-      'Curated Crete Rural Discovery Loops',
-      'Heraklion Peza & Archanes Wine Loop',
-      'Chania Mountain & Artisan Olive Oil Circuit',
-      'Rethymno Foothills & Heritage Circuit',
-      'Lasithi & Sitia Monastic Terroir Route',
-      'and self-guided rural discovery routes.',
-      'Curated Crete Agritourism & Local Producer Guide',
-      'Curated Agritourism & Local Producer Discovery Guide',
-      'Curated Rural Routes Under Verification',
-      'Starting in Greece with our inaugural audited Crete dataset',
-      'Verified Crete Producer Directory',
-    ];
+  const staleIndexClaims = [
+    '36 producer/project records',
+    'Six guides are currently published across Crete and Santorini',
+    'Crete and Santorini are the current reference-quality regions',
+    'Verified Crete &amp; Santorini Producer Directory',
+    '58 featured independent',
+    'Curated Crete Rural Discovery Loops',
+    'Heraklion Peza & Archanes Wine Loop',
+    'Chania Mountain & Artisan Olive Oil Circuit',
+    'Rethymno Foothills & Heritage Circuit',
+    'Lasithi & Sitia Monastic Terroir Route',
+    'Curated Rural Routes Under Verification',
+    'Starting in Greece with our inaugural audited Crete dataset',
+    'Verified Crete Producer Directory',
+  ];
+  for (const claim of staleIndexClaims) banIncludes(indexContent, claim, 'dist/index.html');
 
-    for (const claim of bannedClaims) {
-      if (indexContent.includes(claim)) {
-        console.error(`[SEO Verification Failed] dist/index.html still contains quarantined/stale claim: ${claim}`);
-        process.exit(1);
-      }
-    }
+  const bannedGlobalGeoTags = [
+    'geo.placename',
+    '35.3387;25.1442',
+    '35.3387, 25.1442',
+  ];
+  for (const tag of bannedGlobalGeoTags) banIncludes(indexContent, tag, 'dist/index.html');
 
-    const bannedGlobalGeoTags = [
-      'geo.placename',
-      'Heraklion, Crete, Greece',
-      '35.3387;25.1442',
-      '35.3387, 25.1442',
-    ];
+  const bannedMonetizationTags = [
+    'pagead2.googlesyndication.com',
+    'emrld.ltd',
+    'ca-pub-1608902378435149',
+  ];
+  for (const tag of bannedMonetizationTags) banIncludes(indexContent, tag, 'dist/index.html');
 
-    for (const tag of bannedGlobalGeoTags) {
-      if (indexContent.includes(tag)) {
-        console.error(`[SEO Verification Failed] dist/index.html still contains global Heraklion/Crete geo tag: ${tag}`);
-        process.exit(1);
-      }
-    }
+  const producerDirectoryPath = path.join(distDir, 'producers', 'index.html');
+  const producerDirectoryContent = requireFile(producerDirectoryPath, 'dist/producers/index.html');
+  requireIncludes(producerDirectoryContent, `<link rel="canonical" href="${PRODUCER_DIRECTORY_URL}" />`, 'producer directory');
+  requireIncludes(producerDirectoryContent, `${PRODUCERS.length} audited producer/project records`, 'producer directory');
+  requireIncludes(producerDirectoryContent, '"@type": "CollectionPage"', 'producer directory');
+  requireIncludes(producerDirectoryContent, `"numberOfItems": ${PRODUCERS.length}`, 'producer directory');
 
-    if (!indexContent.includes('TerroirTrail — Independent Producer &amp; Agritourism Guide') && !indexContent.includes('TerroirTrail — Independent Producer & Agritourism Guide')) {
-      console.error('[SEO Verification Failed] dist/index.html is missing expected homepage title/positioning.');
-      process.exit(1);
-    }
-
-    const requiredIndexClaims = [
-      'Discovery Guides &amp; Navigation Safety',
-      'Verified Crete &amp; Santorini Producer Directory',
-      'Crete and Santorini are the current reference-quality regions',
-      'Santorini Brewing Company',
-    ];
-
-    for (const claim of requiredIndexClaims) {
-      if (!indexContent.includes(claim)) {
-        console.error(`[SEO Verification Failed] dist/index.html is missing current regional product-state claim: ${claim}`);
-        process.exit(1);
-      }
-    }
-
-    const bannedMonetizationTags = [
-      'pagead2.googlesyndication.com',
-      'emrld.ltd',
-      'ca-pub-1608902378435149',
-    ];
-
-    for (const tag of bannedMonetizationTags) {
-      if (indexContent.includes(tag)) {
-        console.error(`[SEO Verification Failed] dist/index.html still contains unconsented third-party monetization script: ${tag}`);
-        process.exit(1);
-      }
-    }
+  const directoryJsonLd = parseJsonLd(producerDirectoryContent, 'producer directory');
+  if (directoryJsonLd['@type'] !== 'CollectionPage') {
+    fail('Producer directory JSON-LD must describe a CollectionPage.');
   }
 
-  console.log(`✓ SEO verification passed:`);
-  console.log(`  - dist/sitemap.xml present and valid (${locMatches.length} URLs mapped to ${CANONICAL_HOST})`);
-  console.log(`  - dist/robots.txt present and advertises ${CANONICAL_SITEMAP_URL}`);
-  console.log('  - dist/llms.txt reflects the current Crete + Santorini product state');
-  console.log('  - dist/index.html reflects current Discovery Guides and Crete + Santorini reference regions');
-  console.log(`  - Canonical link, stale-claim quarantine, and unconsented ad-script quarantine verified in dist/index.html`);
+  for (const producer of PRODUCERS) {
+    const canonicalUrl = producerUrl(producer);
+    const pagePath = path.join(distDir, 'producers', producer.id, 'index.html');
+    const pageContent = requireFile(pagePath, `Producer page ${producer.id}`);
+
+    requireIncludes(pageContent, `<link rel="canonical" href="${canonicalUrl}" />`, `Producer page ${producer.id}`);
+    requireIncludes(pageContent, `<h1>${producer.name.replaceAll('&', '&amp;')}</h1>`, `Producer page ${producer.id}`);
+    requireIncludes(pageContent, '<meta name="description" content="', `Producer page ${producer.id}`);
+    requireIncludes(pageContent, '<meta name="robots" content="index, follow', `Producer page ${producer.id}`);
+    requireIncludes(pageContent, 'What is it?', `Producer page ${producer.id}`);
+    requireIncludes(pageContent, 'Where is it?', `Producer page ${producer.id}`);
+    requireIncludes(pageContent, 'Can you visit?', `Producer page ${producer.id}`);
+    requireIncludes(pageContent, 'What is known about road access?', `Producer page ${producer.id}`);
+    requireIncludes(pageContent, 'does not imply a commercial partnership', `Producer page ${producer.id}`);
+    requireIncludes(pageContent, 'href="/producers/"', `Producer page ${producer.id}`);
+
+    if (!producer.description && !producer.story && !producer.tagLine) {
+      fail(`Producer ${producer.id} has no narrative source for an entity page.`);
+    }
+    if (pageContent.includes(`<link rel="canonical" href="${CANONICAL_HOST}/?producer=`)) {
+      fail(`Producer page ${producer.id} canonicalizes to legacy query state.`);
+    }
+
+    const jsonLd = parseJsonLd(pageContent, `Producer page ${producer.id}`);
+    const graph = jsonLd['@graph'];
+    if (!Array.isArray(graph)) fail(`Producer page ${producer.id} JSON-LD must contain an @graph.`);
+    const webPage = graph.find((node) => typeof node === 'object' && node !== null && (node as Record<string, unknown>)['@type'] === 'WebPage') as Record<string, unknown> | undefined;
+    const entity = graph.find((node) => typeof node === 'object' && node !== null && (node as Record<string, unknown>)['@id'] === `${canonicalUrl}#entity`) as Record<string, unknown> | undefined;
+    if (!webPage || webPage.url !== canonicalUrl) fail(`Producer page ${producer.id} JSON-LD WebPage URL is missing or incorrect.`);
+    if (!entity || entity.name !== producer.name) fail(`Producer page ${producer.id} JSON-LD entity identity is missing or incorrect.`);
+
+    const canonicalOccurrences = sitemapUrls.filter((url) => url === canonicalUrl).length;
+    if (canonicalOccurrences !== 1) fail(`Producer ${producer.id} must appear exactly once in the sitemap.`);
+    requireIncludes(producerDirectoryContent, `href="/producers/${producer.id}/"`, `Producer directory link for ${producer.id}`);
+  }
+
+  console.log('✓ SEO/AEO verification passed:');
+  console.log(`  - ${expectedUrls.length} canonical sitemap URLs (${PRODUCERS.length} producer entities + directory + core pages)`);
+  console.log(`  - ${PRODUCERS.length} producer pages have canonical metadata, visible answer-ready facts, JSON-LD and directory links`);
+  console.log('  - producer directory has CollectionPage/ItemList schema and links every audited entity');
+  console.log('  - llms.txt and homepage reflect the current 55-record / 10-guide product state');
+  console.log(`  - robots.txt advertises ${CANONICAL_SITEMAP_URL}`);
+  console.log('  - stale claims, legacy query canonicals and unconsented monetization tags are quarantined');
 }
 
 verifySeoAssets();

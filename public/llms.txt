@@ -4,9 +4,9 @@ Canonical URL: https://terroir-trail.web.app/
 
 ## Current product state
 
-TerroirTrail is an independent, discovery-first agritourism guide. Crete and Santorini are the current reference-quality regions in Greece, with the same trust rules applied across both catalogues.
+TerroirTrail is an independent, discovery-first agritourism and producer guide. Its current audited catalogue spans Crete, Santorini, the Peloponnese, Northern Greece, and a Tuscany / Italy foothold. The same evidence-first rules apply across the catalogue: unknown facts stay unknown, public visitability is separate from partnership status, and location confidence is separate from road-access confidence.
 
-The current audited public catalogue contains 36 producer/project records: 27 in Crete across Chania, Heraklion, Rethymno and Lasithi, plus 9 in Santorini. Current categories include wineries, craft breweries, olive mills, dairies/cheesemakers, apiaries/honey producers, traditional distilleries/rakokazana, and farms.
+The current audited bundled catalogue contains 55 producer/project records: 27 in Crete, 9 in Santorini, and 19 across the Phase 10B Peloponnese, Northern Greece and Tuscany programme. Current first-class producer categories include wineries, craft breweries, olive mills, olive-oil producers, dairies/cheesemakers, apiaries/honey producers, traditional distilleries/rakokazana, and farms.
 
 TerroirTrail is not currently a public booking marketplace. Public visitability is researched separately from any TerroirTrail commercial relationship. A producer being publicly visitable does not mean that TerroirTrail is authorized to sell or reserve an Experience there.
 
@@ -14,23 +14,32 @@ TerroirTrail is not currently a public booking marketplace. Public visitability 
 
 Travelers can:
 
-- explore the audited Crete and Santorini catalogues on a map or list;
+- explore the audited catalogue on a map or list;
 - search and filter producers/projects;
 - open producer detail views with researched story, contact and visiting information;
 - view live Google Places imagery only for manually audited listings with verified Google Place IDs, while keeping attribution visible;
 - save favorites;
 - use Terroir Passport stamps and personal notes;
+- publish traveler ratings/reviews under the current account/community model;
 - contact producers through public producer-controlled channels where available.
 
 Unknown facts remain unknown. TerroirTrail does not invent ratings, prices, hospitality amenities, road conditions or booking availability to fill empty fields.
 
+## Canonical producer discovery
+
+Phase 12 adds canonical, crawlable producer entity pages at `/producers/<producer-id>/`. These pages are generated from the same audited bundled catalogue used by the application fallback state. They expose source-backed identity, location, visitability and road-access facts without converting unknown data into positive claims.
+
+Legacy `?producer=<id>` URLs are application deep links and should not be treated as the canonical producer entity URLs.
+
 ## Discovery Guides and navigation safety
 
-TerroirTrail publishes Discovery Guides as verified stop collections, not as road-safety guarantees.
+TerroirTrail publishes Discovery Guides as verified-stop collections, not as road-safety guarantees.
 
-Crete currently has three published verified-stop Discovery Guides: two in the Heraklion area and one in Western Chania. The audited Rethymno guide remains draft and unpublished while visitor-access evidence for its stop set is insufficient.
+The current audited guide set contains 10 published verified-stop Discovery Guides:
 
-Santorini currently has three published verified-stop Discovery Guides: Northern Santorini, central/eastern Santorini, and Megalochori/Pyrgos/Caldera. Canava Santorini Distillery is intentionally excluded from the published guides because current visitor access is not sufficiently confirmed.
+- Crete: four guides covering Heraklion wine country, Heraklion west, Western Chania, and a single-stop Rethymno olive-oil discovery guide.
+- Santorini: three guides covering northern Santorini, the central/eastern producer cluster, and Megalochori/Pyrgos/caldera wine discovery.
+- Phase 10B: three guides covering Nemea, a Northern Greece winery planner, and a single verified Monteraponi discovery stop in Tuscany.
 
 Location confidence and road-access confidence are separate. Multi-stop driving navigation remains fail-closed wherever independent road-access evidence is incomplete. An individual map/location link identifies a place; it is not a guarantee that the approach road is suitable for a standard rental car.
 
@@ -60,15 +69,17 @@ Third-party travel links, advertisements or affiliate links are separate from pr
 - Google imagery is supplementary discovery media, not evidence of visitability, entrance precision or road safety.
 - Producer/admin authority must be server-trusted rather than inferred from editable client profile fields.
 - Geography remains open; no Greece-only architectural fence should be reintroduced.
+- Search/AEO pages may reorganize verified information but must not manufacture facts or partnerships.
 
 ## Geographic scope
 
-Current reference-quality regions:
+Current audited public catalogue:
 
 - Crete, Greece — 27 audited records.
 - Santorini, Greece — 9 audited records.
+- Peloponnese, Northern Greece and Tuscany / Italy — 19 audited Phase 10B records combined.
 
-Next regional programme: Peloponnese, followed by Northern Greece, Tuscany / Italy, wider Mediterranean regions, and Northern Europe. A future region should not be represented as reference-quality until its catalogue, trust data, imagery, fallback data, guides and QA reach the same standard.
+The next product programme is the SEO, AEO and entity-discovery foundation. New Greek category expansion is deliberately deferred until this foundation can expose existing producers, destinations, categories and guides as durable search/answer-engine entities. Greek cheese and dairy is the next planned catalogue expansion after that foundation.
 
 ## Contact
 

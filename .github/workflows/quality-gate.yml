@@ -1,8 +1,10 @@
 name: Quality Gate
 
-# Runs the repository's canonical quality gate on every main push.
+# Run the repository's canonical quality gate before merge and again on main.
 on:
   push:
+    branches: [main]
+  pull_request:
     branches: [main]
   workflow_dispatch:
 

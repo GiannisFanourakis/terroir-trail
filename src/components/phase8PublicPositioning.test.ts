@@ -59,13 +59,23 @@ describe('Phase 8 Public Positioning & SEO Synchronization', () => {
       const parsedManifest = JSON.parse(manifestJson);
       expect(parsedManifest.name).toBe('TerroirTrail — Independent Producer & Agritourism Guide');
       expect(parsedManifest.short_name).toBe('TerroirTrail');
-      expect(parsedManifest.description).toContain('verified independent wineries, craft breweries, olive mills, dairies, apiaries, traditional distilleries, and farms');
-      expect(parsedManifest.description).toContain('clearly labeled visiting, location, and road-access status');
+      expect(parsedManifest.description).toContain(
+        'verified independent wineries, craft breweries, olive mills, dairies, apiaries, traditional distilleries, and farms'
+      );
+      expect(parsedManifest.description).toContain(
+        'clearly labeled visiting, location, and road-access status'
+      );
 
       expect(llmsTxt).toContain('# TerroirTrail — Independent Producer & Agritourism Guide');
-      expect(llmsTxt).toContain('Crete and Santorini are the current reference-quality regions in Greece');
-      expect(llmsTxt).toContain('Next regional programme: Peloponnese');
-      expect(llmsTxt).toContain('wider Mediterranean regions, and Northern Europe');
+      expect(llmsTxt).toContain('55 producer/project records');
+      expect(llmsTxt).toContain('Crete, Santorini, the Peloponnese, Northern Greece');
+      expect(llmsTxt).toContain('Tuscany / Italy');
+      expect(llmsTxt).toContain('/producers/<producer-id>/');
+      expect(llmsTxt).toContain('SEO, AEO and entity-discovery foundation');
+      expect(llmsTxt).toContain(
+        'Greek cheese and dairy is the next planned catalogue expansion'
+      );
+      expect(llmsTxt).not.toContain('Next regional programme: Peloponnese');
     });
   });
 
@@ -98,7 +108,9 @@ describe('Phase 8 Public Positioning & SEO Synchronization', () => {
 
     it('represents all 7 categories in AboutFaqModal and metric counts', () => {
       expect(aboutFaqModal).toContain('TerroirTrail curates seven first-class producer categories');
-      expect(aboutFaqModal).toContain('Wineries, Breweries, Olive Mills, Dairies / Cheesemakers, Apiaries / Honey, Rakokazana / Traditional Distilleries, and Farms');
+      expect(aboutFaqModal).toContain(
+        'Wineries, Breweries, Olive Mills, Dairies / Cheesemakers, Apiaries / Honey, Rakokazana / Traditional Distilleries, and Farms'
+      );
       expect(aboutFaqModal).toContain('<Metric value="7" label="Producer categories" />');
       expect(aboutFaqModal).not.toContain('<Metric value="6" label="Producer categories" />');
     });
@@ -128,25 +140,38 @@ describe('Phase 8 Public Positioning & SEO Synchronization', () => {
 
   describe('4. Trust & Conservative Visitability Model Preserved', () => {
     it('retains distinction between location and road access safety', () => {
-      expect(indexHtml).toContain('a map pin is not a guarantee of safe road access for standard rental vehicles');
-      expect(aboutFaqModal).toContain('Exact location confidence and road-access confidence are separate');
-      expect(aboutFaqModal).toContain('Current-access uncertainty is shown rather than replaced with a guess');
+      expect(indexHtml).toContain(
+        'a map pin is not a guarantee of safe road access for standard rental vehicles'
+      );
+      expect(aboutFaqModal).toContain(
+        'Exact location confidence and road-access confidence are separate'
+      );
+      expect(aboutFaqModal).toContain(
+        'Current-access uncertainty is shown rather than replaced with a guess'
+      );
     });
 
     it('preserves direct-to-producer and 0% commission positioning', () => {
       expect(indexHtml).toContain('Does TerroirTrail handle bookings or charge commissions?');
-      expect(indexHtml).toContain('TerroirTrail is a discovery-first guide and does not charge booking fees or commissions');
-      expect(indexHtml).toContain('Travelers connect directly with producers via verified producer-controlled contact channels');
+      expect(indexHtml).toContain(
+        'TerroirTrail is a discovery-first guide and does not charge booking fees or commissions'
+      );
+      expect(indexHtml).toContain(
+        'Travelers connect directly with producers via verified producer-controlled contact channels'
+      );
     });
   });
 
   describe('5. Build & Verification Script Alignment', () => {
-    it('bans stale Crete-only global titles and Heraklion geo tags in verify_seo_assets.ts', () => {
-      expect(verifySeoScript).toContain('Curated Crete Agritourism & Local Producer Guide');
-      expect(verifySeoScript).toContain('Curated Agritourism & Local Producer Discovery Guide');
+    it('enforces current entity discovery and quarantines stale global claims', () => {
+      expect(verifySeoScript).toContain("'36 producer/project records'");
+      expect(verifySeoScript).toContain("'Next regional programme: Peloponnese'");
       expect(verifySeoScript).toContain('TerroirTrail — Independent Producer &amp; Agritourism Guide');
       expect(verifySeoScript).toContain('geo.placename');
-      expect(verifySeoScript).toContain('Heraklion, Crete, Greece');
+      expect(verifySeoScript).toContain("url.includes('?producer=')");
+      expect(verifySeoScript).toContain('PRODUCER_DIRECTORY_URL');
+      expect(verifySeoScript).toContain('CollectionPage');
+      expect(verifySeoScript).toContain('What is known about road access?');
       expect(verifySeoScript).not.toContain('Explore verified wineries');
     });
 
