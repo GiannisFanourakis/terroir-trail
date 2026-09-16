@@ -24,12 +24,28 @@ export interface AccountCapabilities {
   adminLevel: AdminLevel | null;
   isPlatformOwner: boolean;
   producerIds: string[];
+  hostEditingFrozen: boolean;
   canManageOwnedListings: boolean;
   canReviewProducerClaims: boolean;
   canAssignProducerOwnership: boolean;
   canModerateProducerContent: boolean;
   canManageUserAccounts: boolean;
   canManageAdmins: boolean;
+}
+
+export interface AdminAccountSummary {
+  uid: string;
+  email?: string;
+  displayName?: string;
+  disabled: boolean;
+  emailVerified: boolean;
+  roles: TrustedAccountRole[];
+  adminLevel: AdminLevel | null;
+  isPlatformOwner: boolean;
+  producerIds: string[];
+  hostEditingFrozen: boolean;
+  canDisable: boolean;
+  canFreezeHostEditing: boolean;
 }
 
 export interface PendingProducerClaim {
@@ -149,6 +165,21 @@ export const fetchAccountCapabilities = () =>
 
 export const fetchAdminDashboardMetrics = () =>
   request<{ metrics: AdminDashboardMetrics }>('/admin/metrics');
+
+export const searchAdminAccounts = (query: string) =>
+  request<{ accounts: AdminAccountSummary[] }>(`/admin/accounts?q=${encodeURIComponent(query)}`);
+
+export const setAdminAccountDisabled = (uid: string, disabled: boolean, reason: string) =>
+  request<{ account: { targetUid: string; disabled: boolean; occurredAt: string } }>(
+    `/admin/accounts/${encodeURIComponent(uid)}/access`,
+    { method: 'POST', body: JSON.stringify({ disabled, reason }) }
+  );
+
+export const setAdminHostEditingFrozen = (uid: string, frozen: boolean, reason: string) =>
+  request<{ account: { targetUid: string; hostEditingFrozen: boolean; producerIds: string[]; occurredAt: string } }>(
+    `/admin/accounts/${encodeURIComponent(uid)}/host-freeze`,
+    { method: 'POST', body: JSON.stringify({ frozen, reason }) }
+  );
 
 export const fetchPendingProducerClaims = () =>
   request<{ claims: PendingProducerClaim[] }>('/admin/claims');
