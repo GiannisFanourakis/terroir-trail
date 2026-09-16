@@ -24,10 +24,23 @@ describe('Interactive terroir region data', () => {
     expect(lat).toBeLessThan(36);
   });
 
+  it('contains the editorial sections needed by the Explore Crete drawer', () => {
+    expect(CRETE_TERROIR_REGION.sections.map((section) => section.id)).toEqual([
+      'landscape',
+      'history',
+      'culture',
+      'food',
+      'explore',
+    ]);
+    expect(CRETE_TERROIR_REGION.sections.every((section) => section.body.length > 80)).toBe(true);
+  });
+
   it('keeps editorial and boundary provenance attached to the region', () => {
     expect(CRETE_TERROIR_REGION.summary.length).toBeGreaterThan(80);
     expect(CRETE_TERROIR_REGION.highlights.length).toBeGreaterThanOrEqual(3);
     expect(CRETE_TERROIR_REGION.sources.some((source) => source.url.includes('crete.gov.gr'))).toBe(true);
+    expect(CRETE_TERROIR_REGION.sources.some((source) => source.url.includes('whc.unesco.org'))).toBe(true);
+    expect(CRETE_TERROIR_REGION.sources.some((source) => source.url.includes('visitgreece.gr'))).toBe(true);
     expect(CRETE_TERROIR_REGION.sources.some((source) => source.url.includes('eurostat'))).toBe(true);
   });
 });
