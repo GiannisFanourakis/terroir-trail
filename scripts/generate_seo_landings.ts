@@ -1,18 +1,12 @@
 import fs from 'fs';
 import path from 'path';
 import type { Producer } from '../src/types/terroir';
-import { CRETAN_PRODUCERS } from '../src/data/producers';
-import { SANTORINI_PRODUCERS } from '../src/data/santoriniProducers';
-import { PHASE10B_PRODUCERS } from '../src/data/phase10bProducers';
+import { SEO_PRODUCERS } from './seoCatalogue';
 
 const CANONICAL_HOST = 'https://terroir-trail.web.app';
 const distDir = path.resolve(process.cwd(), 'dist');
 
-const PRODUCERS: Producer[] = [
-  ...CRETAN_PRODUCERS,
-  ...SANTORINI_PRODUCERS,
-  ...PHASE10B_PRODUCERS,
-];
+const PRODUCERS: Producer[] = SEO_PRODUCERS;
 
 type CategoryConfig = { slug: string; singular: string; plural: string };
 type DestinationConfig = { label: string; slug: string; countryLabel: string; countrySlug: string };
@@ -217,7 +211,7 @@ const renderIndexPage = (pathValue: string, title: string, heading: string, desc
   </head>
   <body style="margin:0"><main class="seo-page"><article>
     <p><a href="/">← TerroirTrail</a> · <a href="/producers/">Producer directory</a></p>
-    <p class="eyebrow">Phase 12 entity discovery</p>
+    <p class="eyebrow">Entity discovery</p>
     <h1>${escapeHtml(heading)}</h1>
     <p class="lead">${escapeHtml(description)}</p>
     <ul class="directory">${groups.map((group) => `<li><a href="${group.path}"><strong>${escapeHtml(group.label)}</strong><small>${group.count} audited records · ${escapeHtml(group.detail)}</small></a></li>`).join('\n')}</ul>
@@ -419,13 +413,13 @@ function generateSeoLandings(): void {
   const categoryCount = pages.filter((page) => page.eyebrow === 'Producer category').length;
   const destinationCount = pages.filter((page) => page.eyebrow.endsWith(' destination')).length;
   const countryCount = pages.filter((page) => page.eyebrow === 'Country catalogue').length;
-  console.log('✓ Phase 12B SEO/AEO landing generation complete:');
+  console.log(`✓ SEO/AEO landing generation complete (${PRODUCERS.length} audited producer/project records):`);
   console.log(`  - ${countryCount} country pages`);
   console.log(`  - ${destinationCount} destination pages`);
   console.log(`  - ${regionCount} region pages (minimum ${MIN_REGION_RECORDS} records)`);
   console.log(`  - ${categoryCount} category pages (minimum ${MIN_CATEGORY_RECORDS} records)`);
   console.log(`  - ${comboCount} destination/category pages (minimum ${MIN_DESTINATION_CATEGORY_RECORDS} records)`);
-  console.log('  - producer pages, directory, homepage and sitemap linked into the new entity architecture');
+  console.log('  - producer pages, directory, homepage and sitemap linked into the current entity architecture');
 }
 
 generateSeoLandings();
