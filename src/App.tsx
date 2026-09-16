@@ -104,7 +104,7 @@ export const App: React.FC = () => {
     setHostStatus,
   } = useBookings({
     userId: user?.id,
-    trustedProducerId: user?.isProducer ? user.claimedProducerId : undefined,
+    trustedProducerIds: accountCapabilities?.producerIds || [],
   });
 
   const {
@@ -154,6 +154,7 @@ export const App: React.FC = () => {
       email: 'producer-preview@terroirtrail.local',
       role: 'producer',
       isProducer: true,
+      producerIds: [adminPortalPreviewProducer.id],
       claimedProducerId: adminPortalPreviewProducer.id,
       producerName: adminPortalPreviewProducer.name,
       claimStatus: 'verified_host',
@@ -162,7 +163,7 @@ export const App: React.FC = () => {
 
   const handleOpenProducerPortal = (producer?: Producer | null) => {
     const previewTarget = producer || selectedProducer || producers[0] || null;
-    if (accountCapabilities?.isAdmin && !user?.isProducer && previewTarget) {
+    if (accountCapabilities?.isAdmin && !accountCapabilities.canManageOwnedListings && previewTarget) {
       setAdminPortalPreviewProducerId(previewTarget.id);
     } else {
       setAdminPortalPreviewProducerId(null);
@@ -445,6 +446,7 @@ export const App: React.FC = () => {
               isOpen
               onClose={closeModal}
               user={producerPortalUser}
+              trustedProducerIds={adminPortalPreviewProducer ? [adminPortalPreviewProducer.id] : (accountCapabilities?.producerIds || [])}
               onOpenAuth={(role) => setActiveModal({ type: 'auth', initialRole: role || 'producer' })}
               onLoginWithGoogle={loginWithGoogle}
               onLoginWithApple={loginWithApple}
