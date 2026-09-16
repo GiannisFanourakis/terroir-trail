@@ -1,45 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
-  Building2,
-  FileText,
-  Truck,
-  Package,
-  CreditCard,
-  ShieldCheck,
-  CheckCircle2,
   AlertCircle,
-  Save,
-  RotateCcw,
-  Sparkles,
-  ChevronRight,
-  ChevronLeft,
-  Lock,
-  Download,
+  Building2,
+  CheckCircle2,
+  FileCheck2,
   Info,
-  Layers,
-  Clock,
-  Phone,
   Mail,
-  Copy,
-  Search,
-  Globe,
   RefreshCw,
+  Save,
+  ShieldCheck,
+  UserRound,
 } from 'lucide-react';
 import { Producer } from '../../types/terroir';
 import { ProducerRegistrationRecord } from '../../types/auth';
 import { producerService } from '../../services/producerService';
 import {
-  validateVatNumber,
-  validateIban,
-  validateGemiNumber,
-  getFiscalLabels,
-} from '../../utils/vatValidator';
-import {
-  saveProducerRegistrationToCloud,
   fetchProducerRegistrationFromCloud,
   isFirebaseConfigured,
+  saveProducerRegistrationToCloud,
 } from '../../services/firebase';
 import { checkVatAgainstVies, ViesCheckResult } from '../../services/viesService';
+import { validateVatNumber } from '../../utils/vatValidator';
 import { getEffectiveProducerCategory } from '../../utils/producerCategory';
 
 interface ProducerRegistrationFormProps {
@@ -50,28 +31,25 @@ interface ProducerRegistrationFormProps {
   onCancel?: () => void;
 }
 
-type TabKey = 'fiscal' | 'logistics' | 'packaging' | 'banking' | 'permits';
-
-
-const getDestinationLabel = (destination?: Producer['destination']): string => {
-  switch (destination) {
-    case 'crete': return 'Crete';
-    case 'santorini': return 'Santorini';
-    case 'peloponnese': return 'Peloponnese';
-    case 'northern_greece': return 'Northern Greece';
-    case 'tuscany': return 'Tuscany';
-    default: return '';
-  }
-};
-
 const mapProducerCategoryToRegistration = (
   producer?: Pick<Producer, 'id' | 'category'> | null
 ): ProducerRegistrationRecord['producerCategory'] => {
-  if (!producer) return 'winery';
-  const effectiveCat = getEffectiveProducerCategory(producer);
-  if (effectiveCat === 'kazani') return 'distillery';
-  if (effectiveCat === 'olive_mill' || effectiveCat === 'olive_oil_producer') return 'olive_oil';
-  return effectiveCat;
+  if (!producer) return 'other';
+  const category = getEffectiveProducerCategory(producer);
+  if (category === 'kazani') return 'distillery';
+  if (category === 'olive_mill' || category === 'olive_oil_producer') return 'olive_oil';
+  if (category === 'winery' || category === 'brewery' || category === 'cheese_dairy' || category === 'apiary' || category === 'farm') {
+    return category;
+  }
+  return 'other';
+};
+
+const producerCountryCode = (producer?: Producer): string => {
+  if (!producer) return '';
+  const normalized = producer.country?.trim().toLowerCase();
+  if (normalized === 'greece') return 'GR';
+  if (normalized === 'italy') return 'IT';
+  return '';
 };
 
 export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> = ({
@@ -81,1461 +59,354 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
   onSaved,
   onCancel,
 }) => {
-  const allProducers =
-    producersList !== undefined
-      ? producersList
-      : producerService.getCachedProducers();
+  const allProducers = producersList !== undefined ? producersList : producerService.getCachedProducers();
+  const initialProducer = allProducers.find(producer => producer.id === initialProducerId) || allProducers[0];
 
-  // Determine starting producer
-  const defaultProducer = allProducers.find((p: Producer) => p.id === initialProducerId) || allProducers[0];
-
-  const [selectedProducerId, setSelectedProducerId] = useState<string>(
-    initialProducerId || defaultProducer?.id || ''
+  const [selectedProducerId, setSelectedProducerId] = useState(initialProducerId || initialProducer?.id || '');
+  const selectedProducer = useMemo(
+    () => allProducers.find(producer => producer.id === selectedProducerId),
+    [allProducers, selectedProducerId]
   );
 
-  const [activeTab, setActiveTab] = useState<TabKey>('fiscal');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitSuccess, setSubmitSuccess] = useState<ProducerRegistrationRecord | null>(null);
-  const [formError, setFormError] = useState<string | null>(null);
-  const [copiedPayload, setCopiedPayload] = useState(false);
-
-  // --- Form State (Default empty strings so suggestive examples render strictly as ghost text placeholders) ---
-  // Step 1: Fiscal & Identity
-  const [producerCategory, setProducerCategory] = useState<ProducerRegistrationRecord['producerCategory']>(
-    mapProducerCategoryToRegistration(defaultProducer)
-  );
-  const [tradeBrandName, setTradeBrandName] = useState('');
+  const [tradeBrandName, setTradeBrandName] = useState(initialProducer?.name || '');
+  const [representativeName, setRepresentativeName] = useState('');
+  const [representativeRole, setRepresentativeRole] = useState('');
+  const [officialEmail, setOfficialEmail] = useState('');
+  const [countryCode, setCountryCode] = useState(producerCountryCode(initialProducer));
   const [legalBusinessName, setLegalBusinessName] = useState('');
-  const [legalEntityType, setLegalEntityType] = useState<ProducerRegistrationRecord['legalEntityType']>('general_partnership_oe');
-  const [countryCode, setCountryCode] = useState<'GR' | 'IT' | string>(
-    defaultProducer ? (defaultProducer.country === 'Italy' || defaultProducer.destination === 'tuscany' ? 'IT' : 'GR') : 'GR'
-  );
   const [vatNumber, setVatNumber] = useState('');
-  const [taxOffice, setTaxOffice] = useState('');
-  const [gemiNumber, setGemiNumber] = useState('');
-  const [eoriNumber, setEoriNumber] = useState('');
-  const [isCheckingVies, setIsCheckingVies] = useState(false);
+  const [notesFromProducer, setNotesFromProducer] = useState('');
+  const [termsAccepted, setTermsAccepted] = useState(false);
   const [viesResult, setViesResult] = useState<ViesCheckResult | null>(null);
+  const [isCheckingVies, setIsCheckingVies] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
+  const [submitSuccess, setSubmitSuccess] = useState<ProducerRegistrationRecord | null>(null);
+  const [existingSubmittedAt, setExistingSubmittedAt] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!selectedProducerId && allProducers.length > 0) {
+      setSelectedProducerId(initialProducerId || allProducers[0].id);
+    }
+  }, [allProducers, initialProducerId, selectedProducerId]);
+
+  useEffect(() => {
+    let active = true;
+    const load = async () => {
+      if (!selectedProducerId) return;
+      const producer = allProducers.find(item => item.id === selectedProducerId);
+      const existing = await fetchProducerRegistrationFromCloud(selectedProducerId);
+      if (!active) return;
+
+      setTradeBrandName(existing?.tradeBrandName || producer?.name || '');
+      setRepresentativeName(existing?.representativeName || '');
+      setRepresentativeRole(existing?.representativeRole || '');
+      setOfficialEmail(existing?.officialEmail || '');
+      setCountryCode(existing?.countryCode || producerCountryCode(producer));
+      setLegalBusinessName(existing?.legalBusinessName || '');
+      setVatNumber(existing?.vatNumber || '');
+      setNotesFromProducer(existing?.notesFromProducer || '');
+      setTermsAccepted(Boolean(existing?.termsAccepted));
+      setExistingSubmittedAt(existing?.submittedAt || null);
+      setViesResult(null);
+      setFormError(null);
+      setSubmitSuccess(null);
+    };
+    void load();
+    return () => {
+      active = false;
+    };
+  }, [allProducers, selectedProducerId]);
+
+  const normalizedCountryCode = countryCode.trim().toUpperCase();
+  const vatValidation = vatNumber.trim()
+    ? validateVatNumber(vatNumber, normalizedCountryCode)
+    : null;
 
   const handleVerifyVies = async () => {
-    if (!vatNumber.trim()) return;
+    if (!vatNumber.trim() || !normalizedCountryCode) return;
     setIsCheckingVies(true);
+    setFormError(null);
     try {
-      const res = await checkVatAgainstVies(vatNumber, countryCode);
-      setViesResult(res);
-    } catch (err) {
-      console.error('VIES verification error:', err);
+      setViesResult(await checkVatAgainstVies(vatNumber, normalizedCountryCode));
+    } catch (error) {
+      setFormError(error instanceof Error ? error.message : 'VIES verification is temporarily unavailable. You can still submit the claim for manual review.');
     } finally {
       setIsCheckingVies(false);
     }
   };
 
-  // Step 2: Logistics & Dispatch
-  const [facilityName, setFacilityName] = useState('');
-  const [streetAddress, setStreetAddress] = useState('');
-  const [postalCode, setPostalCode] = useState('');
-  const [cityOrVillage, setCityOrVillage] = useState('');
-  const [region, setRegion] = useState(
-    defaultProducer ? getDestinationLabel(defaultProducer.destination) : ''
-  );
-  const [accessType, setAccessType] = useState<NonNullable<ProducerRegistrationRecord['logistics']>['accessType']>('standard_courier_van');
-  const [contactPersonName, setContactPersonName] = useState('');
-  const [dispatchPhone, setDispatchPhone] = useState('');
-  const [dispatchEmail, setDispatchEmail] = useState('');
-  const [pickupTimeWindow, setPickupTimeWindow] = useState('');
-  const [loadingNotes, setLoadingNotes] = useState('');
-
-  // Step 3: Packaging & Order Fulfillment
-  const [supportsWineBottles, setSupportsWineBottles] = useState(false);
-  const [supportsBeerBottles, setSupportsBeerBottles] = useState(false);
-  const [supportsColdChainCheese, setSupportsColdChainCheese] = useState(false);
-  const [supportsHoneyJars, setSupportsHoneyJars] = useState(false);
-  const [supportsOliveOilTins, setSupportsOliveOilTins] = useState(false);
-  const [maxDailyParcels, setMaxDailyParcels] = useState<number | ''>('');
-  const [dispatchLeadTime, setDispatchLeadTime] = useState<NonNullable<ProducerRegistrationRecord['packaging']>['dispatchLeadTime']>('next_day');
-
-  // Step 4: Banking & Payouts (SEPA)
-  const [accountHolderName, setAccountHolderName] = useState('');
-  const [bankName, setBankName] = useState('');
-  const [iban, setIban] = useState('');
-  const [swiftBic, setSwiftBic] = useState('');
-  const [payoutCurrency] = useState('EUR');
-
-  // Step 5: Regulatory Permits & Legal
-  const [excisePermitNumber, setExcisePermitNumber] = useState('');
-  const [sanitaryPermitNumber, setSanitaryPermitNumber] = useState('');
-  const [organicCertificationBody, setOrganicCertificationBody] = useState('');
-  const [organicCertNumber, setOrganicCertNumber] = useState('');
-  const [representativeName, setRepresentativeName] = useState('');
-  const [representativeRole, setRepresentativeRole] = useState('');
-  const [officialEmail, setOfficialEmail] = useState('');
-  const [websiteStoreUrl, setWebsiteStoreUrl] = useState('');
-  const [notesFromProducer, setNotesFromProducer] = useState('');
-  const [termsAccepted, setTermsAccepted] = useState(false);
-
-  // Synchronize selection if initially empty and producers arrive
-  useEffect(() => {
-    if (!selectedProducerId && allProducers.length > 0) {
-      const initial = allProducers.find((p: Producer) => p.id === initialProducerId) || allProducers[0];
-      if (initial) {
-        setSelectedProducerId(initial.id);
-        setProducerCategory(mapProducerCategoryToRegistration(initial));
-        setCountryCode(initial.country === 'Italy' || initial.destination === 'tuscany' ? 'IT' : 'GR');
-        setRegion(getDestinationLabel(initial.destination));
-      }
-    }
-  }, [allProducers, initialProducerId, selectedProducerId]);
-
-  // Load existing database entry on mount or producer change
-  useEffect(() => {
-    let isMounted = true;
-    async function loadData() {
-      if (!selectedProducerId) {
-        if (isMounted) {
-          clearForm();
-        }
-        return;
-      }
-      const existing = await fetchProducerRegistrationFromCloud(selectedProducerId);
-      if (existing && isMounted) {
-        setTradeBrandName(existing.tradeBrandName || '');
-        setProducerCategory(existing.producerCategory || 'winery');
-        setLegalBusinessName(existing.legalBusinessName || '');
-        setLegalEntityType(existing.legalEntityType || 'general_partnership_oe');
-        setCountryCode(existing.countryCode || 'GR');
-        setVatNumber(existing.vatNumber || '');
-        setTaxOffice(existing.taxOffice || '');
-        setEoriNumber(existing.eoriNumber || '');
-        setGemiNumber(existing.permits?.gemiNumber || '');
-
-        if (existing.logistics) {
-          setFacilityName(existing.logistics.facilityName || '');
-          setStreetAddress(existing.logistics.streetAddress || '');
-          setPostalCode(existing.logistics.postalCode || '');
-          setCityOrVillage(existing.logistics.cityOrVillage || '');
-          setRegion(existing.logistics.region || '');
-          setAccessType(existing.logistics.accessType || 'standard_courier_van');
-          setContactPersonName(existing.logistics.contactPersonName || '');
-          setDispatchPhone(existing.logistics.dispatchPhone || '');
-          setDispatchEmail(existing.logistics.dispatchEmail || '');
-          setPickupTimeWindow(existing.logistics.pickupTimeWindow || '09:00 - 15:30 Mon-Fri');
-          setLoadingNotes(existing.logistics.loadingNotes || '');
-        }
-
-        if (existing.packaging) {
-          setSupportsWineBottles(Boolean(existing.packaging.supportsWineBottles));
-          setSupportsBeerBottles(Boolean(existing.packaging.supportsBeerBottles));
-          setSupportsColdChainCheese(Boolean(existing.packaging.supportsColdChainCheese));
-          setSupportsHoneyJars(Boolean(existing.packaging.supportsHoneyJars));
-          setSupportsOliveOilTins(Boolean(existing.packaging.supportsOliveOilTins));
-          setMaxDailyParcels(existing.packaging.maxDailyParcels || 25);
-          setDispatchLeadTime(existing.packaging.dispatchLeadTime || 'same_day');
-        }
-
-        if (existing.banking) {
-          setAccountHolderName(existing.banking.accountHolderName || '');
-          setBankName(existing.banking.bankName || '');
-          setIban(existing.banking.iban || '');
-          setSwiftBic(existing.banking.swiftBic || '');
-        }
-
-        if (existing.permits) {
-          setExcisePermitNumber(existing.permits.excisePermitNumber || '');
-          setSanitaryPermitNumber(existing.permits.sanitaryPermitNumber || '');
-          setOrganicCertificationBody(existing.permits.organicCertificationBody || '');
-          setOrganicCertNumber(existing.permits.organicCertNumber || '');
-        }
-
-        setRepresentativeName(existing.representativeName || '');
-        setRepresentativeRole(existing.representativeRole || '');
-        setOfficialEmail(existing.officialEmail || '');
-        setWebsiteStoreUrl(existing.websiteStoreUrl || '');
-        setNotesFromProducer(existing.notesFromProducer || '');
-        setTermsAccepted(Boolean(existing.termsAccepted));
-      } else if (isMounted) {
-        // If not registered in cloud/localStorage, start with empty fields so ghost text is visible
-        clearForm();
-      }
-    }
-    loadData();
-    return () => {
-      isMounted = false;
-    };
-  }, [selectedProducerId]);
-
-  // Real-time validations
-  const vatValidation = validateVatNumber(vatNumber, countryCode);
-  const ibanValidation = validateIban(iban);
-  const gemiValidation = validateGemiNumber(gemiNumber, countryCode);
-
-  // Clear / Reset all inputs so suggestive ghost text placeholders are fully visible
-  const clearForm = () => {
-    setTradeBrandName('');
-    setLegalBusinessName('');
-    setVatNumber('');
-    setTaxOffice('');
-    setGemiNumber('');
-    setEoriNumber('');
-    setFacilityName('');
-    setStreetAddress('');
-    setPostalCode('');
-    setCityOrVillage('');
-    setContactPersonName('');
-    setDispatchPhone('');
-    setDispatchEmail('');
-    setPickupTimeWindow('');
-    setLoadingNotes('');
-    setSupportsWineBottles(false);
-    setSupportsBeerBottles(false);
-    setSupportsColdChainCheese(false);
-    setSupportsHoneyJars(false);
-    setSupportsOliveOilTins(false);
-    setMaxDailyParcels('');
-    setAccountHolderName('');
-    setBankName('');
-    setIban('');
-    setSwiftBic('');
-    setExcisePermitNumber('');
-    setSanitaryPermitNumber('');
-    setOrganicCertificationBody('');
-    setOrganicCertNumber('');
-    setRepresentativeName('');
-    setRepresentativeRole('');
-    setOfficialEmail('');
-    setWebsiteStoreUrl('');
-    setNotesFromProducer('');
-    setTermsAccepted(false);
-    setViesResult(null);
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
     setFormError(null);
     setSubmitSuccess(null);
-  };
 
-  const handleProducerSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const id = e.target.value;
-    setSelectedProducerId(id);
-    const p = allProducers.find((item: Producer) => item.id === id);
-    if (p) {
-      setProducerCategory(mapProducerCategoryToRegistration(p));
-      setCountryCode(p.country === 'Italy' || p.destination === 'tuscany' ? 'IT' : 'GR');
-      setRegion(getDestinationLabel(p.destination));
-    }
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setFormError(null);
-
-    if (!selectedProducerId) {
-      setFormError('No target estate selected or available in active catalogue.');
+    if (!selectedProducerId || !selectedProducer) {
+      setFormError('Choose the producer listing you represent.');
       return;
     }
-
-    // Validate minimum required fields
     if (!tradeBrandName.trim()) {
-      setFormError('Please provide the commercial brand or estate name.');
-      setActiveTab('fiscal');
+      setFormError('Producer or business name is required.');
       return;
     }
-    if (!legalBusinessName.trim()) {
-      setFormError('Please enter the official registered legal business name.');
-      setActiveTab('fiscal');
+    if (!representativeName.trim()) {
+      setFormError('Your name is required so TerroirTrail can verify who is making this claim.');
       return;
     }
-    if (!vatNumber.trim() || !vatValidation.isValid) {
-      setFormError(vatValidation.error || 'Please enter a valid VAT number with check digits.');
-      setActiveTab('fiscal');
+    if (!officialEmail.trim() || !/^\S+@\S+\.\S+$/.test(officialEmail.trim())) {
+      setFormError('Enter a valid official contact email for the producer.');
       return;
     }
-    if (!taxOffice.trim()) {
-      setFormError('Please specify the competent Tax Authority or Tax Office.');
-      setActiveTab('fiscal');
+    if (!normalizedCountryCode || !/^[A-Z]{2}$/.test(normalizedCountryCode)) {
+      setFormError('Enter the producer country as a two-letter country code, for example GR or IT.');
       return;
     }
-    if (!streetAddress.trim() || !postalCode.trim()) {
-      setFormError('Please complete the dispatch facility street address and postal code.');
-      setActiveTab('logistics');
-      return;
-    }
-    if (!dispatchPhone.trim()) {
-      setFormError('Please provide a courier dispatch contact phone number.');
-      setActiveTab('logistics');
-      return;
-    }
-    if (!iban.trim() || !ibanValidation.isValid) {
-      setFormError(ibanValidation.error || 'Please enter a valid SEPA IBAN for order payout disbursements.');
-      setActiveTab('banking');
+    if (vatNumber.trim() && vatValidation && !vatValidation.isValid) {
+      setFormError(vatValidation.error || 'The VAT number format is not valid. You may leave VAT blank if it does not apply and submit other business evidence for manual review.');
       return;
     }
     if (!termsAccepted) {
-      setFormError('You must agree to the TerroirTrail Artisan Producer Terms & DAC7 fiscal declaration.');
-      setActiveTab('permits');
+      setFormError('You must accept the TerroirTrail Producer Terms before submitting the claim.');
       return;
     }
 
+    const now = new Date().toISOString();
     const payload: ProducerRegistrationRecord = {
       id: selectedProducerId,
       producerId: selectedProducerId,
       userId: userId || undefined,
       tradeBrandName: tradeBrandName.trim(),
-      producerCategory,
-      legalBusinessName: legalBusinessName.trim(),
-      legalEntityType,
-      vatNumber: vatValidation.formatted || vatNumber.trim().toUpperCase(),
-      taxOffice: taxOffice.trim(),
-      countryCode,
-      isVatVerified: false,
-      eoriNumber: eoriNumber.trim().toUpperCase() || undefined,
-      logistics: {
-        facilityName: facilityName.trim() || `${tradeBrandName} Facility`,
-        streetAddress: streetAddress.trim(),
-        postalCode: postalCode.trim(),
-        cityOrVillage: cityOrVillage.trim(),
-        region: region.trim(),
-        countryCode,
-        accessType,
-        contactPersonName: contactPersonName.trim() || representativeName.trim(),
-        dispatchPhone: dispatchPhone.trim(),
-        dispatchEmail: dispatchEmail.trim() || officialEmail.trim(),
-        pickupTimeWindow: pickupTimeWindow.trim(),
-        loadingNotes: loadingNotes.trim() || undefined,
-      },
-      packaging: {
-        supportsWineBottles,
-        supportsBeerBottles,
-        supportsColdChainCheese,
-        supportsHoneyJars,
-        supportsOliveOilTins,
-        maxDailyParcels: Number(maxDailyParcels) || 20,
-        dispatchLeadTime,
-      },
-      banking: {
-        accountHolderName: accountHolderName.trim() || legalBusinessName.trim(),
-        bankName: bankName.trim(),
-        iban: ibanValidation.formatted || iban.trim().toUpperCase(),
-        swiftBic: swiftBic.trim().toUpperCase(),
-        payoutCurrency,
-      },
-      permits: {
-        gemiNumber: gemiNumber.trim() || undefined,
-        excisePermitNumber: excisePermitNumber.trim() || undefined,
-        sanitaryPermitNumber: sanitaryPermitNumber.trim() || undefined,
-        organicCertificationBody: organicCertificationBody.trim() || undefined,
-        organicCertNumber: organicCertNumber.trim() || undefined,
-      },
+      producerCategory: mapProducerCategoryToRegistration(selectedProducer),
       representativeName: representativeName.trim(),
-      representativeRole: representativeRole.trim() || 'Producer & Owner',
-      officialEmail: officialEmail.trim(),
-      websiteStoreUrl: websiteStoreUrl.trim() || undefined,
+      representativeRole: representativeRole.trim() || undefined,
+      officialEmail: officialEmail.trim().toLowerCase(),
+      countryCode: normalizedCountryCode,
+      legalBusinessName: legalBusinessName.trim() || undefined,
+      vatNumber: vatNumber.trim()
+        ? (vatValidation?.formatted || vatNumber.trim().toUpperCase())
+        : undefined,
+      isVatVerified: false,
       status: 'pending_verification',
-      submittedAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      submittedAt: existingSubmittedAt || now,
+      updatedAt: now,
       notesFromProducer: notesFromProducer.trim() || undefined,
       termsAccepted: true,
     };
 
     try {
       setIsSubmitting(true);
-      const savedRecord = await saveProducerRegistrationToCloud(payload);
-      setSubmitSuccess(savedRecord);
-      if (onSaved) {
-        onSaved(savedRecord);
-      }
-    } catch (err: any) {
-      setFormError(err.message || 'Failed to save registration record to database.');
+      const saved = await saveProducerRegistrationToCloud(payload);
+      setSubmitSuccess(saved);
+      onSaved?.(saved);
+    } catch (error) {
+      setFormError(error instanceof Error ? error.message : 'Unable to submit the producer claim.');
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const tabs: { key: TabKey; label: string; icon: any; badge?: string }[] = [
-    { key: 'fiscal', label: '1. Fiscal & Entity', icon: Building2, badge: vatValidation.isValid ? '✓' : 'VAT' },
-    { key: 'logistics', label: '2. Logistics & Pickup', icon: Truck },
-    { key: 'packaging', label: '3. Packaging & Boxes', icon: Package },
-    { key: 'banking', label: '4. Banking & Payouts', icon: CreditCard, badge: ibanValidation.isValid ? '✓' : 'IBAN' },
-    { key: 'permits', label: '5. Permits & Declarations', icon: ShieldCheck },
-  ];
-
   return (
-    <div className="bg-stone-950 text-white rounded-3xl border border-white/10 overflow-hidden shadow-2xl">
-      {/* Top Banner Header */}
-      <div className="p-5 sm:p-6 bg-gradient-to-r from-stone-900 via-stone-900/90 to-amber-950/40 border-b border-white/10">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-2xl shadow-inner">
-              🏛️
+    <div className="rounded-3xl border border-white/10 bg-stone-950 text-white shadow-2xl overflow-hidden">
+      <div className="border-b border-white/10 bg-stone-900/70 p-5 sm:p-6">
+        <div className="flex items-start gap-3">
+          <div className="w-11 h-11 rounded-2xl bg-amber-500/10 border border-amber-500/25 text-amber-300 flex items-center justify-center shrink-0">
+            <ShieldCheck className="w-5 h-5" />
+          </div>
+          <div>
+            <div className="flex flex-wrap items-center gap-2">
+              <h2 className="text-lg sm:text-xl font-bold font-serif-title">Claim a producer listing</h2>
+              <span className="rounded-full border border-white/10 bg-stone-950 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-stone-400">
+                Ownership verification
+              </span>
             </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
-                  Official Database Onboarding
-                </span>
-                {isFirebaseConfigured ? (
-                  <span className="text-[10px] font-semibold text-emerald-400 flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                    Cloud Firestore Active
-                  </span>
-                ) : (
-                  <span className="text-[10px] font-semibold text-stone-400 flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
-                    Local Database Cache
-                  </span>
-                )}
-              </div>
-              <h2 className="text-lg sm:text-xl font-bold font-serif-title text-white mt-0.5">
-                Artisan Producer Fiscal & Logistics Registry
-              </h2>
-              <p className="text-xs text-stone-400">
-                Collects mandatory DAC7 tax verification, courier pickup coordinates, and SEPA payout accounts.
-              </p>
+            <p className="mt-1 max-w-2xl text-xs leading-relaxed text-stone-400">
+              We only collect what is needed to verify that you legitimately represent this producer. Banking, courier, packaging and payout details are not required to claim a listing and will only be requested later if you opt into a relevant commercial service.
+            </p>
+            <div className="mt-2 text-[10px] text-stone-500">
+              {isFirebaseConfigured ? 'Secure cloud submission enabled' : 'Local development mode'}
             </div>
           </div>
-
-          {/* Reset / Clear Form */}
-          <div className="flex items-center gap-1.5 flex-wrap">
-            <button
-              type="button"
-              onClick={clearForm}
-              className="text-[10px] px-2.5 py-1 rounded-lg bg-stone-900 hover:bg-stone-800 text-stone-400 hover:text-white border border-white/10 font-medium transition cursor-pointer flex items-center gap-1"
-              title="Clear all fields to inspect suggestive ghost text placeholders"
-            >
-              <RotateCcw className="w-3 h-3" />
-              <span>Clear Form</span>
-            </button>
-          </div>
-        </div>
-
-        {/* Directory Estate Selector */}
-        <div className="mt-4 pt-3 border-t border-white/10 flex flex-col sm:flex-row sm:items-center gap-3">
-          <label className="text-xs font-semibold text-stone-300 whitespace-nowrap flex items-center gap-1.5">
-            <Layers className="w-3.5 h-3.5 text-amber-400" />
-            <span>Target Estate / Directory Listing:</span>
-          </label>
-          {allProducers.length === 0 ? (
-            <div className="text-xs text-stone-400 italic bg-stone-950/60 border border-white/10 rounded-xl px-3 py-1.5">
-              No directory producers available in active catalogue
-            </div>
-          ) : (
-            <select
-              value={selectedProducerId}
-              onChange={handleProducerSelectChange}
-              className="bg-stone-950 border border-white/15 text-white text-xs rounded-xl px-3 py-1.5 focus:outline-none focus:border-amber-400 max-w-sm"
-            >
-              {allProducers.map((p: Producer) => (
-                <option key={p.id} value={p.id}>
-                  {p.name} ({p.village}, {getDestinationLabel(p.destination)})
-                </option>
-              ))}
-            </select>
-          )}
         </div>
       </div>
 
-      {/* Navigation Step Tabs */}
-      <div className="flex border-b border-white/10 overflow-x-auto bg-stone-900/50 no-scrollbar">
-        {tabs.map((tab) => {
-          const Icon = tab.icon;
-          const isActive = activeTab === tab.key;
-          return (
-            <button
-              key={tab.key}
-              type="button"
-              onClick={() => {
-                setActiveTab(tab.key);
-                setFormError(null);
-              }}
-              className={`flex-1 min-w-[150px] py-3 px-3 text-xs font-semibold flex items-center justify-center gap-2 border-b-2 transition cursor-pointer ${
-                isActive
-                  ? 'border-amber-500 text-amber-400 bg-amber-500/10 font-bold'
-                  : 'border-transparent text-stone-400 hover:text-white hover:bg-white/5'
-              }`}
-            >
-              <Icon className="w-4 h-4 shrink-0" />
-              <span>{tab.label}</span>
-              {tab.badge && (
-                <span
-                  className={`text-[9px] px-1.5 py-0.2 rounded-full font-bold ${
-                    tab.badge === '✓' ? 'bg-emerald-500/20 text-emerald-300' : 'bg-stone-800 text-stone-400'
-                  }`}
-                >
-                  {tab.badge}
-                </span>
-              )}
-            </button>
-          );
-        })}
-      </div>
-
-      {/* Main Form Body */}
-      <form onSubmit={handleSubmit} className="p-5 sm:p-7 space-y-6">
-        {/* Error Notification */}
+      <form onSubmit={handleSubmit} className="p-5 sm:p-6 space-y-5">
         {formError && (
-          <div className="p-3.5 rounded-2xl bg-rose-500/15 border border-rose-500/30 text-rose-300 text-xs flex items-center gap-2.5 animate-in fade-in">
-            <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
+          <div className="rounded-xl border border-rose-500/30 bg-rose-500/10 px-3 py-2.5 text-xs text-rose-200 flex items-start gap-2">
+            <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
             <span>{formError}</span>
           </div>
         )}
-
-        {/* Success Confirmation Card */}
         {submitSuccess && (
-          <div className="p-4 rounded-2xl bg-emerald-500/15 border border-emerald-500/40 text-emerald-200 text-xs space-y-2 animate-in fade-in">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 font-bold text-sm text-emerald-300">
-                <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
-                <span>Registration Application Submitted</span>
-              </div>
+          <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-3 py-2.5 text-xs text-emerald-200 flex items-start gap-2">
+            <CheckCircle2 className="w-4 h-4 mt-0.5 shrink-0" />
+            <span>Claim submitted. TerroirTrail will verify the business/contact evidence before assigning Host Portal access.</span>
+          </div>
+        )}
+
+        <section className="space-y-3">
+          <div className="flex items-center gap-2 text-sm font-bold text-stone-100">
+            <Building2 className="w-4 h-4 text-amber-400" />
+            Producer listing
+          </div>
+          {allProducers.length === 0 ? (
+            <div className="rounded-xl border border-white/10 bg-stone-900 p-3 text-xs text-stone-400">No producer listings are currently available to claim.</div>
+          ) : (
+            <select
+              value={selectedProducerId}
+              onChange={event => setSelectedProducerId(event.target.value)}
+              className="w-full rounded-xl border border-white/10 bg-stone-900 px-3 py-2.5 text-sm text-white focus:outline-none focus:border-amber-400/60"
+            >
+              {allProducers.map(producer => (
+                <option key={producer.id} value={producer.id}>{producer.name} · {producer.village}, {producer.region}</option>
+              ))}
+            </select>
+          )}
+
+          <label className="block">
+            <span className="text-xs font-semibold text-stone-300">Producer / business name</span>
+            <input
+              value={tradeBrandName}
+              onChange={event => setTradeBrandName(event.target.value)}
+              className="mt-1.5 w-full rounded-xl border border-white/10 bg-stone-900 px-3 py-2.5 text-sm text-white focus:outline-none focus:border-amber-400/60"
+              required
+            />
+          </label>
+        </section>
+
+        <section className="grid sm:grid-cols-2 gap-3">
+          <label className="block">
+            <span className="text-xs font-semibold text-stone-300 inline-flex items-center gap-1.5"><UserRound className="w-3.5 h-3.5" /> Your name</span>
+            <input
+              value={representativeName}
+              onChange={event => setRepresentativeName(event.target.value)}
+              placeholder="Representative name"
+              className="mt-1.5 w-full rounded-xl border border-white/10 bg-stone-900 px-3 py-2.5 text-sm text-white placeholder:text-stone-600 focus:outline-none focus:border-amber-400/60"
+              required
+            />
+          </label>
+          <label className="block">
+            <span className="text-xs font-semibold text-stone-300">Role at the producer <span className="font-normal text-stone-600">(optional)</span></span>
+            <input
+              value={representativeRole}
+              onChange={event => setRepresentativeRole(event.target.value)}
+              placeholder="Owner, manager, family member…"
+              className="mt-1.5 w-full rounded-xl border border-white/10 bg-stone-900 px-3 py-2.5 text-sm text-white placeholder:text-stone-600 focus:outline-none focus:border-amber-400/60"
+            />
+          </label>
+          <label className="block sm:col-span-2">
+            <span className="text-xs font-semibold text-stone-300 inline-flex items-center gap-1.5"><Mail className="w-3.5 h-3.5" /> Official producer email</span>
+            <input
+              type="email"
+              value={officialEmail}
+              onChange={event => setOfficialEmail(event.target.value)}
+              placeholder="name@producer-domain.example"
+              className="mt-1.5 w-full rounded-xl border border-white/10 bg-stone-900 px-3 py-2.5 text-sm text-white placeholder:text-stone-600 focus:outline-none focus:border-amber-400/60"
+              required
+            />
+            <span className="mt-1 block text-[10px] text-stone-500">Where possible, use an address controlled by the producer rather than a personal account. We may send a verification link here.</span>
+          </label>
+        </section>
+
+        <section className="space-y-3 rounded-2xl border border-white/10 bg-stone-900/50 p-4">
+          <div className="flex items-start gap-2">
+            <FileCheck2 className="w-4 h-4 text-sky-300 mt-0.5 shrink-0" />
+            <div>
+              <h3 className="text-sm font-bold text-stone-100">Business evidence</h3>
+              <p className="text-[11px] text-stone-500 mt-0.5">VAT/business registration evidence is helpful where applicable, but a VAT number is not mandatory for every small producer. Claims without one go to manual review.</p>
+            </div>
+          </div>
+
+          <div className="grid sm:grid-cols-[120px_1fr] gap-3">
+            <label className="block">
+              <span className="text-xs font-semibold text-stone-300">Country code</span>
+              <input
+                value={countryCode}
+                onChange={event => { setCountryCode(event.target.value.toUpperCase().slice(0, 2)); setViesResult(null); }}
+                placeholder="GR"
+                maxLength={2}
+                className="mt-1.5 w-full rounded-xl border border-white/10 bg-stone-950 px-3 py-2.5 text-sm uppercase text-white placeholder:text-stone-600 focus:outline-none focus:border-amber-400/60"
+                required
+              />
+            </label>
+            <label className="block">
+              <span className="text-xs font-semibold text-stone-300">Registered business name <span className="font-normal text-stone-600">(optional)</span></span>
+              <input
+                value={legalBusinessName}
+                onChange={event => setLegalBusinessName(event.target.value)}
+                placeholder="Name shown on official business records"
+                className="mt-1.5 w-full rounded-xl border border-white/10 bg-stone-950 px-3 py-2.5 text-sm text-white placeholder:text-stone-600 focus:outline-none focus:border-amber-400/60"
+              />
+            </label>
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-stone-300">VAT number <span className="font-normal text-stone-600">(optional, where applicable)</span></label>
+            <div className="mt-1.5 flex flex-col sm:flex-row gap-2">
+              <input
+                value={vatNumber}
+                onChange={event => { setVatNumber(event.target.value); setViesResult(null); }}
+                placeholder="VAT / tax registration number"
+                className="flex-1 rounded-xl border border-white/10 bg-stone-950 px-3 py-2.5 text-sm text-white placeholder:text-stone-600 focus:outline-none focus:border-amber-400/60"
+              />
               <button
                 type="button"
-                onClick={() => {
-                  navigator.clipboard.writeText(JSON.stringify(submitSuccess, null, 2));
-                  setCopiedPayload(true);
-                  setTimeout(() => setCopiedPayload(false), 2000);
-                }}
-                className="text-[10px] px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 flex items-center gap-1 font-semibold transition cursor-pointer"
+                onClick={() => void handleVerifyVies()}
+                disabled={!vatNumber.trim() || !normalizedCountryCode || isCheckingVies}
+                className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-white/10 bg-stone-950 px-3 py-2.5 text-xs font-semibold text-stone-300 hover:text-white disabled:opacity-40 cursor-pointer"
               >
-                <Copy className="w-3 h-3" />
-                <span>{copiedPayload ? 'Copied!' : 'Copy Database JSON'}</span>
+                <RefreshCw className={`w-3.5 h-3.5 ${isCheckingVies ? 'animate-spin' : ''}`} />
+                Check VIES
               </button>
             </div>
-            <p className="text-[11px] text-emerald-300/90 leading-relaxed">
-              Legal entity <strong>{submitSuccess.legalBusinessName}</strong> (Tax ID: {submitSuccess.vatNumber}) has been submitted for review. Submitting an application does not grant host access. TerroirTrail reviews ownership before activation.
-            </p>
-            <div className="flex items-center gap-3 pt-1 text-[10px] text-emerald-400 font-mono">
-              <span>Timestamp: {new Date(submitSuccess.updatedAt).toLocaleTimeString()}</span>
-              <span>•</span>
-              <span>Status: Submitted — Pending Review</span>
-              <span>•</span>
-              <span>SEPA IBAN: {submitSuccess.banking?.iban || 'Not supplied'}</span>
-            </div>
-          </div>
-        )}
-
-        {/* TAB 1: FISCAL & LEGAL ENTITY */}
-        {activeTab === 'fiscal' && (
-          <div className="space-y-4 animate-in fade-in">
-            <div className="border-b border-white/10 pb-2 flex items-center justify-between">
-              <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                <Building2 className="w-4 h-4 text-amber-400" />
-                <span>Commercial Entity & Tax Identification (DAC7 / Official Registry)</span>
-              </h3>
-              <span className="text-[10px] text-stone-400">EU Directive 2021/514 Compliant</span>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-stone-300 text-xs font-semibold mb-1">
-                  Tax Residence & Country <span className="text-rose-400">*</span>
-                </label>
-                <select
-                  value={countryCode}
-                  onChange={(e) => {
-                    const c = e.target.value;
-                    setCountryCode(c);
-                    if (c === 'IT' && vatNumber.startsWith('EL')) setVatNumber('IT99999999990');
-                    if (c === 'GR' && vatNumber.startsWith('IT')) setVatNumber('EL999999991');
-                    if (c === 'US') setVatNumber('12-3456789');
-                    if (c === 'GB') setVatNumber('GB123456789');
-                    setViesResult(null);
-                  }}
-                  className="w-full bg-stone-900 border border-white/10 text-white rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
-                >
-                  <optgroup label="European Union (Domestic & VIES)">
-                    <option value="GR">🇬🇷 Greece</option>
-                    <option value="IT">🇮🇹 Italy</option>
-                    <option value="FR">🇫🇷 France</option>
-                    <option value="ES">🇪🇸 Spain</option>
-                    <option value="DE">🇩🇪 Germany</option>
-                    <option value="OTHER_EU">🇪🇺 Other EU Member State</option>
-                  </optgroup>
-                  <optgroup label="Worldwide / Extra-EU">
-                    <option value="US">🇺🇸 United States</option>
-                    <option value="GB">🇬🇧 United Kingdom</option>
-                    <option value="CH">🇨🇭 Switzerland</option>
-                    <option value="CA">🇨🇦 Canada</option>
-                    <option value="AU">🇦🇺 Australia</option>
-                    <option value="OTHER">🌐 Other Third Country / Worldwide</option>
-                  </optgroup>
-                </select>
+            {vatValidation && !vatValidation.isValid && <div className="mt-1 text-[10px] text-amber-300">{vatValidation.error}</div>}
+            {viesResult && (
+              <div className={`mt-2 rounded-lg border px-3 py-2 text-[10px] ${viesResult.isValid ? 'border-emerald-500/25 bg-emerald-500/10 text-emerald-200' : 'border-amber-500/25 bg-amber-500/10 text-amber-200'}`}>
+                {viesResult.isValid ? 'VIES returned a valid VAT registration. Final Host access still requires TerroirTrail approval.' : (viesResult.error || 'VIES did not confirm this VAT registration. You may still submit for manual review.')}
               </div>
-
-              <div>
-                <label className="block text-stone-300 text-xs font-semibold mb-1">
-                  Artisan Category <span className="text-rose-400">*</span>
-                </label>
-                <select
-                  value={producerCategory}
-                  onChange={(e) => setProducerCategory(e.target.value as any)}
-                  className="w-full bg-stone-900 border border-white/10 text-white rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
-                >
-                  <option value="winery">🍇 Organic Winery & Estate Cellar</option>
-                  <option value="brewery">🍺 Independent Craft Brewery</option>
-                  <option value="distillery">🏺 Traditional Spirit Distillery</option>
-                  <option value="cheese_dairy">🧀 Artisan Cheese Dairy</option>
-                  <option value="apiary">🍯 Natural Honey Apiary</option>
-                  <option value="olive_oil">🫒 Olive Oil Producer / Mill</option>
-                  <option value="farm">🌿 Regenerative Farm & Estate</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-stone-300 text-xs font-semibold mb-1">
-                  Commercial Brand / Estate Name <span className="text-rose-400">*</span>
-                </label>
-                <input
-                  type="text"
-                  value={tradeBrandName}
-                  onChange={(e) => setTradeBrandName(e.target.value)}
-                  placeholder="e.g. Artisan Heritage Estate"
-                  className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-stone-300 text-xs font-semibold mb-1">
-                  Legal Registered Entity Name <span className="text-rose-400">*</span>
-                </label>
-                <input
-                  type="text"
-                  value={legalBusinessName}
-                  onChange={(e) => setLegalBusinessName(e.target.value)}
-                  placeholder="Registered business name"
-                  className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-stone-300 text-xs font-semibold mb-1">
-                  Legal Entity Structure <span className="text-rose-400">*</span>
-                </label>
-                <select
-                  value={legalEntityType}
-                  onChange={(e) => setLegalEntityType(e.target.value as any)}
-                  className="w-full bg-stone-900 border border-white/10 text-white rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
-                >
-                  <option value="general_partnership_oe">General Partnership (GP)</option>
-                  <option value="private_company_ike">Private Limited Company (LLC / Ltd)</option>
-                  <option value="limited_partnership_ee">Limited Partnership (LP)</option>
-                  <option value="corporation_ae">Corporation / Public Limited Company (PLC / S.A.)</option>
-                  <option value="sole_proprietorship">Sole Proprietorship / Independent Artisan</option>
-                  <option value="agricultural_coop">Agricultural Cooperative</option>
-                  <option value="italian_srl">Limited Liability Company (S.r.l.)</option>
-                  <option value="other">Other Legal Entity (US Corp / LLC / Foreign Corp)</option>
-                </select>
-              </div>
-
-              <div>
-                {(() => {
-                  const fiscalCfg = getFiscalLabels(countryCode);
-
-                  return (
-                    <>
-                      <div className="flex items-center justify-between mb-1">
-                        <label className="block text-stone-300 text-xs font-semibold">
-                          {fiscalCfg.fullVatLabel} <span className="text-rose-400">*</span>
-                        </label>
-                        {vatValidation && (
-                          <span
-                            className={`text-[10px] font-bold ${
-                              vatValidation.isValid ? 'text-emerald-400' : 'text-amber-400'
-                            }`}
-                          >
-                            {vatValidation.isValid ? '✓ Valid Format' : 'Checking'}
-                          </span>
-                        )}
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="relative flex-1">
-                          <FileText className="w-4 h-4 text-stone-500 absolute left-3 top-1/2 -translate-y-1/2" />
-                          <input
-                            type="text"
-                            value={vatNumber}
-                            onChange={(e) => {
-                              setVatNumber(e.target.value.toUpperCase());
-                              setViesResult(null);
-                            }}
-                            placeholder={fiscalCfg.placeholder}
-                            className={`w-full bg-stone-900 border rounded-xl pl-9 pr-3 py-2.5 text-xs focus:outline-none placeholder:text-stone-500 transition ${
-                              vatValidation.isValid
-                                ? 'border-emerald-500/60 text-emerald-300'
-                                : vatNumber.trim()
-                                ? 'border-amber-500/60 text-amber-300'
-                                : 'border-white/10 text-white focus:border-amber-400'
-                            }`}
-                            required
-                          />
-                        </div>
-                        <button
-                          type="button"
-                          onClick={handleVerifyVies}
-                          disabled={isCheckingVies || !vatNumber.trim()}
-                          className="px-3 py-2.5 bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-amber-300 hover:text-amber-200 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer disabled:opacity-50 shrink-0"
-                          title={fiscalCfg.isEuMember ? "Validate against official European Commission VIES database" : "Validate Tax ID format"}
-                        >
-                          {isCheckingVies ? (
-                            <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                          ) : (
-                            <Globe className="w-3.5 h-3.5" />
-                          )}
-                          <span>
-                            {fiscalCfg.isEuMember
-                              ? (isCheckingVies ? 'Querying...' : 'Verify EU VIES')
-                              : (isCheckingVies ? 'Checking...' : 'Validate Tax ID')}
-                          </span>
-                        </button>
-                      </div>
-
-                      <div className="flex items-center justify-between mt-1 text-[10px] text-stone-400">
-                        <span>{fiscalCfg.formatHint}</span>
-                        <span className="text-stone-500">{fiscalCfg.authoritiesNote}</span>
-                      </div>
-
-                      {/* Live VIES Verification Result Card */}
-                      {viesResult && (
-                        <div
-                          className={`mt-2.5 p-3 rounded-xl border text-xs space-y-1.5 animate-in fade-in ${
-                            viesResult.isValid
-                              ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-200'
-                              : viesResult.status === 'unavailable' || viesResult.status === 'not_applicable'
-                              ? 'bg-amber-500/10 border-amber-500/40 text-amber-200'
-                              : 'bg-rose-500/10 border-rose-500/40 text-rose-300'
-                          }`}
-                        >
-                          <div className="flex items-center justify-between font-semibold">
-                            <div className="flex items-center gap-1.5">
-                              {viesResult.isValid ? (
-                                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                              ) : viesResult.status === 'unavailable' || viesResult.status === 'not_applicable' ? (
-                                <AlertCircle className="w-4 h-4 text-amber-400 shrink-0" />
-                              ) : (
-                                <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
-                              )}
-                              <span>
-                                {viesResult.status === 'verified'
-                                  ? 'Official VIES Registry: Active & Valid'
-                                  : viesResult.status === 'demo'
-                                  ? 'Demo Sandbox Entity: Valid Test Record'
-                                  : viesResult.status === 'unavailable'
-                                  ? 'VIES Verification: Currently Unavailable'
-                                  : viesResult.status === 'not_applicable'
-                                  ? 'Non-EU Entity: Manual Review Required'
-                                  : 'Tax Registry: Inactive or Invalid'}
-                              </span>
-                            </div>
-                            <span className="text-[10px] font-mono opacity-70">
-                              {viesResult.status === 'verified'
-                                ? 'Live VIES REST API'
-                                : viesResult.status === 'demo'
-                                ? 'Demo Sandbox'
-                                : viesResult.status === 'not_applicable'
-                                ? 'Non-EU ID'
-                                : 'VIES Offline'}
-                            </span>
-                          </div>
-                          {viesResult.userError && (
-                            <p className="text-[11px] opacity-90">{viesResult.userError}</p>
-                          )}
-
-                          {viesResult.name && (
-                            <div className="text-[11px] pt-1">
-                              <span className="text-stone-400">Registered Name:</span>{' '}
-                              <strong className="text-white">{viesResult.name}</strong>
-                            </div>
-                          )}
-
-                          {viesResult.address && (
-                            <div className="text-[11px]">
-                              <span className="text-stone-400">Registered Address:</span>{' '}
-                              <span className="text-stone-300">{viesResult.address}</span>
-                            </div>
-                          )}
-
-                          {(viesResult.name || viesResult.address) && (
-                            <button
-                              type="button"
-                              onClick={() => {
-                                if (viesResult.name) setLegalBusinessName(viesResult.name);
-                                if (viesResult.address) setStreetAddress(viesResult.address);
-                              }}
-                              className="mt-1 text-[10px] px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 font-semibold flex items-center gap-1 transition cursor-pointer"
-                            >
-                              <Sparkles className="w-3 h-3" />
-                              <span>Auto-fill Official Business Name & Address</span>
-                            </button>
-                          )}
-                        </div>
-                      )}
-
-                      {/* Neutral Billing & Tax Notice */}
-                      <div className="mt-3 p-3.5 rounded-2xl bg-stone-950/80 border border-white/10 space-y-2 text-xs">
-                        <div className="flex items-center gap-1.5 font-semibold text-stone-200">
-                          <ShieldCheck className="w-4 h-4 text-amber-400 shrink-0" />
-                          <span>Billing & Tax Notice</span>
-                        </div>
-                        <p className="text-stone-400 text-[11px] leading-relaxed">
-                          Tax and VAT treatment depends on your business location, tax status, billing details and applicable law. Final tax treatment is determined during invoicing/payment setup. Consult your accountant or tax adviser.
-                        </p>
-                      </div>
-                    </>
-                  );
-                })()}
-              </div>
-
-              <div>
-                <label className="block text-stone-300 text-xs font-semibold mb-1">
-                  Competent Tax Office / Authority <span className="text-rose-400">*</span>
-                </label>
-                <input
-                  type="text"
-                  value={taxOffice}
-                  onChange={(e) => setTaxOffice(e.target.value)}
-                  placeholder={countryCode === 'IT' ? 'e.g. Tax Office of Siena or Florence' : 'e.g. Heraklion Revenue Office'}
-                  className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
-                  required
-                />
-              </div>
-
-              <div>
-                <div className="flex items-center justify-between mb-1">
-                  <label className="block text-stone-300 text-xs font-semibold">
-                    Commercial Company Registry Number
-                  </label>
-                  {gemiValidation.isValid && (
-                    <span className="text-[10px] font-bold text-emerald-400">✓ Valid Format</span>
-                  )}
-                </div>
-                <input
-                  type="text"
-                  value={gemiNumber}
-                  onChange={(e) => setGemiNumber(e.target.value)}
-                  placeholder={countryCode === 'IT' ? 'e.g. REA SI-123456 (Registro Imprese)' : 'e.g. 123456789001 (Commercial Registry Number)'}
-                  className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
-                />
-              </div>
-
-              <div>
-                <label className="block text-stone-300 text-xs font-semibold mb-1">
-                  Customs EORI Number (Cross-Border Dispatch)
-                </label>
-                <input
-                  type="text"
-                  value={eoriNumber}
-                  onChange={(e) => setEoriNumber(e.target.value.toUpperCase())}
-                  placeholder={countryCode === 'IT' ? 'e.g. IT99999999990' : 'e.g. EL999999991'}
-                  className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
-                />
-                <p className="text-[10px] text-stone-400 mt-1">
-                  Required for international parcels shipping beyond EU customs borders.
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* TAB 2: LOGISTICS & DISPATCH HUB */}
-        {activeTab === 'logistics' && (
-          <div className="space-y-4 animate-in fade-in">
-            <div className="border-b border-white/10 pb-2 flex items-center justify-between">
-              <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                <Truck className="w-4 h-4 text-amber-400" />
-                <span>Physical Dispatch Hub & Courier Collection Coordinates</span>
-              </h3>
-              <span className="text-[10px] text-stone-400">Where DHL, FedEx & Freight Trucks Arrive</span>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="sm:col-span-2">
-                <label className="block text-stone-300 text-xs font-semibold mb-1">
-                  Facility / Warehouse Name
-                </label>
-                <input
-                  type="text"
-                  value={facilityName}
-                  onChange={(e) => setFacilityName(e.target.value)}
-                  placeholder="e.g. Central Cellar & Dispatch Hub Gate 1"
-                  className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
-                />
-              </div>
-
-              <div>
-                <label className="block text-stone-300 text-xs font-semibold mb-1">
-                  Physical Street Address & Number <span className="text-rose-400">*</span>
-                </label>
-                <input
-                  type="text"
-                  value={streetAddress}
-                  onChange={(e) => setStreetAddress(e.target.value)}
-                  placeholder="e.g. 124 Wine Route, Dispatch Bay 2"
-                  className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
-                  required
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-2">
-                <div>
-                  <label className="block text-stone-300 text-xs font-semibold mb-1">
-                    Postal Code <span className="text-rose-400">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={postalCode}
-                    onChange={(e) => setPostalCode(e.target.value)}
-                    placeholder={countryCode === 'IT' ? 'e.g. 53017' : 'e.g. 70100'}
-                    className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-stone-300 text-xs font-semibold mb-1">
-                    City / Village <span className="text-rose-400">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={cityOrVillage}
-                    onChange={(e) => setCityOrVillage(e.target.value)}
-                    placeholder="e.g. Regional Logistics District"
-                    className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-stone-300 text-xs font-semibold mb-1">
-                  Driver & Freight Vehicle Access Type <span className="text-rose-400">*</span>
-                </label>
-                <select
-                  value={accessType}
-                  onChange={(e) => setAccessType(e.target.value as any)}
-                  className="w-full bg-stone-900 border border-white/10 text-white rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
-                >
-                  <option value="standard_courier_van">Standard Courier Van (Mercedes Sprinter / Ford Transit)</option>
-                  <option value="large_truck_ramp">Heavy Freight Truck with Elevated Loading Ramp</option>
-                  <option value="narrow_street_van_only">Narrow Mountain Alley (Small van only, no trucks)</option>
-                  <option value="forklift_available">Forklift Available On-Site for Palletized Cargo</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-stone-300 text-xs font-semibold mb-1">
-                  Dispatch Coordinator Contact Name <span className="text-rose-400">*</span>
-                </label>
-                <input
-                  type="text"
-                  value={contactPersonName}
-                  onChange={(e) => setContactPersonName(e.target.value)}
-                  placeholder="e.g. Alex Miller (Logistics Manager)"
-                  className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-stone-300 text-xs font-semibold mb-1">
-                  Courier Pickup Contact Phone (Driver Line) <span className="text-rose-400">*</span>
-                </label>
-                <div className="relative">
-                  <Phone className="w-4 h-4 text-stone-500 absolute left-3 top-1/2 -translate-y-1/2" />
-                  <input
-                    type="tel"
-                    value={dispatchPhone}
-                    onChange={(e) => setDispatchPhone(e.target.value)}
-                    placeholder={countryCode === 'IT' ? 'e.g. +39 0577 000000' : 'e.g. +30 2810 000000'}
-                    className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl pl-9 pr-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-stone-300 text-xs font-semibold mb-1">
-                  Logistics & Manifest Email
-                </label>
-                <div className="relative">
-                  <Mail className="w-4 h-4 text-stone-500 absolute left-3 top-1/2 -translate-y-1/2" />
-                  <input
-                    type="email"
-                    value={dispatchEmail}
-                    onChange={(e) => setDispatchEmail(e.target.value)}
-                    placeholder="e.g. dispatch@example-artisan.com"
-                    className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl pl-9 pr-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-stone-300 text-xs font-semibold mb-1">
-                  Courier Collection Time Window
-                </label>
-                <div className="relative">
-                  <Clock className="w-4 h-4 text-stone-500 absolute left-3 top-1/2 -translate-y-1/2" />
-                  <input
-                    type="text"
-                    value={pickupTimeWindow}
-                    onChange={(e) => setPickupTimeWindow(e.target.value)}
-                    placeholder="e.g. 09:00 - 15:30 Mon-Fri"
-                    className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl pl-9 pr-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
-                  />
-                </div>
-              </div>
-
-              <div className="sm:col-span-2">
-                <label className="block text-stone-300 text-xs font-semibold mb-1">
-                  Loading Gate Instructions for Freight Drivers
-                </label>
-                <input
-                  type="text"
-                  value={loadingNotes}
-                  onChange={(e) => setLoadingNotes(e.target.value)}
-                  placeholder="e.g. Ring the bell at gate 2; cellar warehouse on the left courtyard."
-                  className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
-                />
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* TAB 3: PACKAGING & ORDER FULFILLMENT */}
-        {activeTab === 'packaging' && (
-          <div className="space-y-4 animate-in fade-in">
-            <div className="border-b border-white/10 pb-2 flex items-center justify-between">
-              <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                <Package className="w-4 h-4 text-amber-400" />
-                <span>Parcel Packaging & Box Fulfillment Specifications</span>
-              </h3>
-              <span className="text-[10px] text-stone-400">Certified Carrier Protection</span>
-            </div>
-
-            <p className="text-xs text-stone-400">
-              Select which product categories your facility is certified to package safely for courier transport.
-            </p>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-              <label className="flex items-start gap-3 p-3.5 rounded-2xl bg-stone-900 border border-white/10 hover:border-amber-400/40 cursor-pointer transition">
-                <input
-                  type="checkbox"
-                  checked={supportsWineBottles}
-                  onChange={(e) => setSupportsWineBottles(e.target.checked)}
-                  className="mt-0.5 rounded text-amber-500 focus:ring-amber-400"
-                />
-                <div>
-                  <span className="text-xs font-bold text-white block">🍾 Wine Bottles (0.75L / Magnum)</span>
-                  <span className="text-[11px] text-stone-400">
-                    Styrofoam or drop-tested corrugated cartons for 1, 3, 6, and 12 bottle orders.
-                  </span>
-                </div>
-              </label>
-
-              <label className="flex items-start gap-3 p-3.5 rounded-2xl bg-stone-900 border border-white/10 hover:border-amber-400/40 cursor-pointer transition">
-                <input
-                  type="checkbox"
-                  checked={supportsBeerBottles}
-                  onChange={(e) => setSupportsBeerBottles(e.target.checked)}
-                  className="mt-0.5 rounded text-amber-500 focus:ring-amber-400"
-                />
-                <div>
-                  <span className="text-xs font-bold text-white block">🍺 Craft Beer Bottles & Cans</span>
-                  <span className="text-[11px] text-stone-400">
-                    Heavy-duty divider boxes for 330ml / 500ml craft brews and custom 12-packs.
-                  </span>
-                </div>
-              </label>
-
-              <label className="flex items-start gap-3 p-3.5 rounded-2xl bg-stone-900 border border-white/10 hover:border-amber-400/40 cursor-pointer transition">
-                <input
-                  type="checkbox"
-                  checked={supportsColdChainCheese}
-                  onChange={(e) => setSupportsColdChainCheese(e.target.checked)}
-                  className="mt-0.5 rounded text-amber-500 focus:ring-amber-400"
-                />
-                <div>
-                  <span className="text-xs font-bold text-white block">🧀 Cave-Aged Cheese Cold-Pack</span>
-                  <span className="text-[11px] text-stone-400">
-                    Vacuum-sealed cheese wheels with reflective insulation and dry gel ice packs.
-                  </span>
-                </div>
-              </label>
-
-              <label className="flex items-start gap-3 p-3.5 rounded-2xl bg-stone-900 border border-white/10 hover:border-amber-400/40 cursor-pointer transition">
-                <input
-                  type="checkbox"
-                  checked={supportsHoneyJars}
-                  onChange={(e) => setSupportsHoneyJars(e.target.checked)}
-                  className="mt-0.5 rounded text-amber-500 focus:ring-amber-400"
-                />
-                <div>
-                  <span className="text-xs font-bold text-white block">🍯 Honey Jars & Wild Mountain Herbs</span>
-                  <span className="text-[11px] text-stone-400">
-                    Inflatable air-column cushioning for glass jars and fragrant botanical sachets.
-                  </span>
-                </div>
-              </label>
-
-              <label className="flex items-start gap-3 p-3.5 rounded-2xl bg-stone-900 border border-white/10 hover:border-amber-400/40 cursor-pointer transition sm:col-span-2">
-                <input
-                  type="checkbox"
-                  checked={supportsOliveOilTins}
-                  onChange={(e) => setSupportsOliveOilTins(e.target.checked)}
-                  className="mt-0.5 rounded text-amber-500 focus:ring-amber-400"
-                />
-                <div>
-                  <span className="text-xs font-bold text-white block">🫒 Extra Virgin Olive Oil Tins & Bottles</span>
-                  <span className="text-[11px] text-stone-400">
-                    Reinforced corner protectors for 500ml dark glass and 5L stainless tin containers.
-                  </span>
-                </div>
-              </label>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-3 border-t border-white/10">
-              <div>
-                <label className="block text-stone-300 text-xs font-semibold mb-1">
-                  Maximum Daily Parcel Packing Capacity
-                </label>
-                <input
-                  type="number"
-                  min={1}
-                  max={500}
-                  value={maxDailyParcels}
-                  onChange={(e) => setMaxDailyParcels(e.target.value === '' ? '' : Number(e.target.value))}
-                  placeholder="e.g. 25"
-                  className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
-                />
-                <p className="text-[10px] text-stone-400 mt-1">
-                  Prevents overloading your estate during peak harvest periods.
-                </p>
-              </div>
-
-              <div>
-                <label className="block text-stone-300 text-xs font-semibold mb-1">
-                  Dispatch Preparation Lead Time
-                </label>
-                <select
-                  value={dispatchLeadTime}
-                  onChange={(e) => setDispatchLeadTime(e.target.value as any)}
-                  className="w-full bg-stone-900 border border-white/10 text-white rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
-                >
-                  <option value="same_day">⚡ Same-Day Dispatch (Orders confirmed before 12:00)</option>
-                  <option value="next_day">📅 Next Business Day Dispatch (Recommended)</option>
-                  <option value="two_days">⏳ 48 Hours Preparation (Hand-cured or aged items)</option>
-                </select>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* TAB 4: BANKING & SEPA PAYOUTS */}
-        {activeTab === 'banking' && (
-          <div className="space-y-4 animate-in fade-in">
-            <div className="border-b border-white/10 pb-2 flex items-center justify-between">
-              <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                <CreditCard className="w-4 h-4 text-amber-400" />
-                <span>Direct Bank Account & SEPA Payout Disbursal</span>
-              </h3>
-              <span className="text-[10px] text-stone-400">0% Commission Direct Payouts</span>
-            </div>
-
-            <div className="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-[11px] text-amber-300 flex items-start gap-2.5">
-              <Lock className="w-4 h-4 shrink-0 mt-0.5 text-amber-400" />
-              <span>
-                All payouts for customer order boxes and direct tasting bookings are transferred directly into this account. The account holder name must correspond to your official tax identification entity.
-              </span>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-stone-300 text-xs font-semibold mb-1">
-                  Bank Account Beneficiary Name <span className="text-rose-400">*</span>
-                </label>
-                <input
-                  type="text"
-                  value={accountHolderName}
-                  onChange={(e) => setAccountHolderName(e.target.value)}
-                  placeholder="e.g. Artisan Heritage Estate Partnership"
-                  className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-stone-300 text-xs font-semibold mb-1">
-                  Bank Name <span className="text-rose-400">*</span>
-                </label>
-                <input
-                  type="text"
-                  value={bankName}
-                  onChange={(e) => setBankName(e.target.value)}
-                  placeholder={countryCode === 'IT' ? 'e.g. UniCredit / Intesa Sanpaolo' : 'e.g. National Bank of Greece / Piraeus'}
-                  className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
-                  required
-                />
-              </div>
-
-              <div>
-                <div className="flex items-center justify-between mb-1">
-                  <label className="block text-stone-300 text-xs font-semibold">
-                    IBAN (SEPA Account) <span className="text-rose-400">*</span>
-                  </label>
-                  {ibanValidation && (
-                    <span
-                      className={`text-[10px] font-bold ${
-                        ibanValidation.isValid ? 'text-emerald-400' : 'text-amber-400'
-                      }`}
-                    >
-                      {ibanValidation.isValid ? '✓ Valid SEPA IBAN' : 'Checking'}
-                    </span>
-                  )}
-                </div>
-                <div className="relative">
-                  <CreditCard className="w-4 h-4 text-stone-500 absolute left-3 top-1/2 -translate-y-1/2" />
-                  <input
-                    type="text"
-                    value={iban}
-                    onChange={(e) => setIban(e.target.value.toUpperCase())}
-                    placeholder={countryCode === 'IT' ? 'e.g. IT02 L 1234 5678 0000 0001 2345 678' : 'e.g. GR96 0110 1250 0000 0001 2345 678'}
-                    className={`w-full bg-stone-900 border rounded-xl pl-9 pr-3 py-2.5 text-xs focus:outline-none placeholder:text-stone-500 transition ${
-                      ibanValidation.isValid
-                        ? 'border-emerald-500/60 text-emerald-300'
-                        : iban.trim()
-                        ? 'border-amber-500/60 text-amber-300'
-                        : 'border-white/10 text-white focus:border-amber-400'
-                    }`}
-                    required
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-stone-300 text-xs font-semibold mb-1">
-                  SWIFT / BIC Code <span className="text-rose-400">*</span>
-                </label>
-                <input
-                  type="text"
-                  value={swiftBic}
-                  onChange={(e) => setSwiftBic(e.target.value.toUpperCase())}
-                  placeholder={countryCode === 'IT' ? 'e.g. UNCRITM1' : 'e.g. ETHNGRAA'}
-                  className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
-                  required
-                />
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* TAB 5: LICENSES & REGULATORY PERMITS */}
-        {activeTab === 'permits' && (
-          <div className="space-y-4 animate-in fade-in">
-            <div className="border-b border-white/10 pb-2 flex items-center justify-between">
-              <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-amber-400" />
-                <span>Production Licenses, Organic Certs & Final Declaration</span>
-              </h3>
-              <span className="text-[10px] text-stone-400">Customs & EMCS Verified</span>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-stone-300 text-xs font-semibold mb-1">
-                  Alcohol Excise / Regulated Production Permit Number
-                </label>
-                <input
-                  type="text"
-                  value={excisePermitNumber}
-                  onChange={(e) => setExcisePermitNumber(e.target.value)}
-                  placeholder={countryCode === 'IT' ? 'e.g. IT00SI000123A' : 'e.g. GR-EIDIK-2026-0012'}
-                  className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
-                />
-                <p className="text-[10px] text-stone-400 mt-1">
-                  Issued by Customs or State Revenue Authority for licensed wineries and breweries.
-                </p>
-              </div>
-
-              <div>
-                <label className="block text-stone-300 text-xs font-semibold mb-1">
-                  Sanitary & Food Safety Permit (HACCP / Food Authority)
-                </label>
-                <input
-                  type="text"
-                  value={sanitaryPermitNumber}
-                  onChange={(e) => setSanitaryPermitNumber(e.target.value)}
-                  placeholder={countryCode === 'IT' ? 'e.g. ASL-TOSC-7744' : 'e.g. EFET-HER-8899'}
-                  className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
-                />
-              </div>
-
-              <div>
-                <label className="block text-stone-300 text-xs font-semibold mb-1">
-                  Organic Certification Inspection Body
-                </label>
-                <input
-                  type="text"
-                  value={organicCertificationBody}
-                  onChange={(e) => setOrganicCertificationBody(e.target.value)}
-                  placeholder={countryCode === 'IT' ? 'e.g. ICEA, CCPB, Bioagricert' : 'e.g. BIO Hellas, DIO, Q-Check'}
-                  className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
-                />
-              </div>
-
-              <div>
-                <label className="block text-stone-300 text-xs font-semibold mb-1">
-                  Organic Certificate Serial Number
-                </label>
-                <input
-                  type="text"
-                  value={organicCertNumber}
-                  onChange={(e) => setOrganicCertNumber(e.target.value)}
-                  placeholder={countryCode === 'IT' ? 'e.g. ICEA-IT-2026-4455' : 'e.g. BIO-GR-2026-7788'}
-                  className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
-                />
-              </div>
-
-              <div>
-                <label className="block text-stone-300 text-xs font-semibold mb-1">
-                  Authorized Representative Full Name <span className="text-rose-400">*</span>
-                </label>
-                <input
-                  type="text"
-                  value={representativeName}
-                  onChange={(e) => setRepresentativeName(e.target.value)}
-                  placeholder="e.g. Maria Smith (Authorized Representative)"
-                  className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-stone-300 text-xs font-semibold mb-1">
-                  Representative Role / Title
-                </label>
-                <input
-                  type="text"
-                  value={representativeRole}
-                  onChange={(e) => setRepresentativeRole(e.target.value)}
-                  placeholder="e.g. Owner & Producer, Master Brewer, Managing Director"
-                  className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
-                />
-              </div>
-
-              <div>
-                <label className="block text-stone-300 text-xs font-semibold mb-1">
-                  Official Representative Email <span className="text-rose-400">*</span>
-                </label>
-                <input
-                  type="email"
-                  value={officialEmail}
-                  onChange={(e) => setOfficialEmail(e.target.value)}
-                  placeholder="e.g. producer@example-artisan.com"
-                  className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-stone-300 text-xs font-semibold mb-1">
-                  Direct Estate Webshop URL
-                </label>
-                <input
-                  type="url"
-                  value={websiteStoreUrl}
-                  onChange={(e) => setWebsiteStoreUrl(e.target.value)}
-                  placeholder="e.g. https://example-estate.com/shop"
-                  className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400"
-                />
-              </div>
-
-              <div className="sm:col-span-2">
-                <label className="block text-stone-300 text-xs font-semibold mb-1">
-                  Additional Notes for Logistics Committee (Optional)
-                </label>
-                <textarea
-                  value={notesFromProducer}
-                  onChange={(e) => setNotesFromProducer(e.target.value)}
-                  placeholder="e.g. Any special handling, seasonal closures, or custom box requests..."
-                  rows={2}
-                  className="w-full bg-stone-900 border border-white/10 text-white placeholder:text-stone-500 rounded-xl p-3 text-xs focus:outline-none focus:border-amber-400"
-                />
-              </div>
-            </div>
-
-            {/* Mandatory DAC7 & Platform Agreement */}
-            <div className="p-4 rounded-2xl bg-stone-900 border border-white/10 space-y-2 mt-4">
-              <label className="flex items-start gap-3 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={termsAccepted}
-                  onChange={(e) => setTermsAccepted(e.target.checked)}
-                  className="mt-0.5 rounded text-amber-500 focus:ring-amber-400"
-                  required
-                />
-                <span className="text-xs text-stone-300 leading-relaxed">
-                  I certify and legally warrant that I am the authorized legal representative or owner of this artisan estate, with full power to submit fiscal and logistics records. All tax identification numbers, commercial registry details, and courier coordinates provided are truthful and accurate. I acknowledge that under EU DAC7 (Directive 2021/514) and national revenue legislation, platform revenue data is recorded in compliance with tax authorities (AADE / Agenzia delle Entrate). I agree to the <strong className="text-emerald-400">0% platform commission policy</strong> for direct visitor orders and understand that TerroirTrail acts solely as an independent discovery connection platform and not as a merchant of record.
-                </span>
-              </label>
-            </div>
-          </div>
-        )}
-
-        {/* Footer Navigation & Submit Actions */}
-        <div className="pt-4 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
-            {activeTab !== 'fiscal' && (
-              <button
-                type="button"
-                onClick={() => {
-                  const order: TabKey[] = ['fiscal', 'logistics', 'packaging', 'banking', 'permits'];
-                  const idx = order.indexOf(activeTab);
-                  if (idx > 0) setActiveTab(order[idx - 1]);
-                }}
-                className="px-3 py-2 rounded-xl bg-stone-900 hover:bg-stone-800 text-stone-300 text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer"
-              >
-                <ChevronLeft className="w-3.5 h-3.5" />
-                <span>Previous Step</span>
-              </button>
             )}
-
-            {activeTab !== 'permits' ? (
-              <button
-                type="button"
-                onClick={() => {
-                  const order: TabKey[] = ['fiscal', 'logistics', 'packaging', 'banking', 'permits'];
-                  const idx = order.indexOf(activeTab);
-                  if (idx < order.length - 1) setActiveTab(order[idx + 1]);
-                }}
-                className="px-4 py-2 rounded-xl bg-stone-800 hover:bg-stone-700 text-white text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer"
-              >
-                <span>Next Step</span>
-                <ChevronRight className="w-3.5 h-3.5" />
-              </button>
-            ) : null}
           </div>
 
-          <div className="flex items-center gap-2 w-full sm:w-auto">
+          <label className="block">
+            <span className="text-xs font-semibold text-stone-300">Additional verification note <span className="font-normal text-stone-600">(optional)</span></span>
+            <textarea
+              rows={3}
+              maxLength={800}
+              value={notesFromProducer}
+              onChange={event => setNotesFromProducer(event.target.value)}
+              placeholder="For example: official registry name, cooperative membership, or how TerroirTrail can verify your relationship to the listing."
+              className="mt-1.5 w-full rounded-xl border border-white/10 bg-stone-950 px-3 py-2.5 text-sm text-white placeholder:text-stone-600 focus:outline-none focus:border-amber-400/60"
+            />
+          </label>
+        </section>
+
+        <div className="rounded-xl border border-sky-500/20 bg-sky-500/5 p-3 flex items-start gap-2 text-[11px] text-stone-400">
+          <Info className="w-4 h-4 text-sky-300 mt-0.5 shrink-0" />
+          <span>Submitting a claim does not make the account a Host automatically. TerroirTrail verifies the evidence and explicitly assigns approved producer listings to the account.</span>
+        </div>
+
+        <label className="flex items-start gap-2 rounded-xl border border-white/10 bg-stone-900/50 p-3 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={termsAccepted}
+            onChange={event => setTermsAccepted(event.target.checked)}
+            className="mt-0.5"
+          />
+          <span className="text-xs leading-relaxed text-stone-300">I confirm that I am authorized to represent this producer and agree to the TerroirTrail Producer Terms. I understand that inaccurate ownership claims may be rejected or revoked.</span>
+        </label>
+
+        <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-3 pt-1">
+          <div className="text-[10px] text-stone-600">No banking or payout details are collected in this claim.</div>
+          <div className="flex gap-2 justify-end">
             {onCancel && (
-              <button
-                type="button"
-                onClick={onCancel}
-                className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-stone-900 hover:bg-stone-800 text-stone-400 text-xs font-semibold transition cursor-pointer"
-              >
-                Cancel
-              </button>
+              <button type="button" onClick={onCancel} className="rounded-xl border border-white/10 px-4 py-2.5 text-xs font-semibold text-stone-400 hover:text-white cursor-pointer">Cancel</button>
             )}
-
             <button
               type="submit"
-              disabled={isSubmitting}
-              className="flex-1 sm:flex-none px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-stone-950 font-bold text-xs shadow-lg transition active:scale-98 disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
+              disabled={isSubmitting || !selectedProducerId}
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-amber-500 px-4 py-2.5 text-xs font-bold text-stone-950 hover:bg-amber-400 disabled:opacity-50 cursor-pointer"
             >
-              {isSubmitting ? (
-                <>
-                  <Save className="w-4 h-4 animate-spin" />
-                  <span>Writing to Database...</span>
-                </>
-              ) : (
-                <>
-                  <Save className="w-4 h-4" />
-                  <span>Save & Commit to Database</span>
-                </>
-              )}
+              <Save className="w-4 h-4" />
+              {isSubmitting ? 'Submitting…' : 'Submit claim for verification'}
             </button>
           </div>
         </div>
