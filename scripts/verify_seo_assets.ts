@@ -1,20 +1,17 @@
 import fs from 'fs';
 import path from 'path';
 import type { Producer } from '../src/types/terroir';
-import { CRETAN_PRODUCERS } from '../src/data/producers';
-import { SANTORINI_PRODUCERS } from '../src/data/santoriniProducers';
-import { PHASE10B_PRODUCERS } from '../src/data/phase10bProducers';
+import { SEO_PRODUCERS } from './seoCatalogue';
 
 const CANONICAL_HOST = 'https://terroir-trail.web.app';
 const CANONICAL_SITEMAP_URL = `${CANONICAL_HOST}/sitemap.xml`;
 const PRODUCER_DIRECTORY_URL = `${CANONICAL_HOST}/producers/`;
 const distDir = path.resolve(process.cwd(), 'dist');
 
-const PRODUCERS: Producer[] = [
-  ...CRETAN_PRODUCERS,
-  ...SANTORINI_PRODUCERS,
-  ...PHASE10B_PRODUCERS,
-];
+const PRODUCERS: Producer[] = SEO_PRODUCERS;
+const CRETE_COUNT = PRODUCERS.filter((producer) => producer.destination === 'crete').length;
+const SANTORINI_COUNT = PRODUCERS.filter((producer) => producer.destination === 'santorini').length;
+const OTHER_DESTINATION_COUNT = PRODUCERS.length - CRETE_COUNT - SANTORINI_COUNT;
 
 const fail = (message: string): never => {
   console.error(`[SEO Verification Failed] ${message}`);
@@ -100,25 +97,26 @@ function verifySeoAssets(): void {
   const llmsContent = requireFile(llmsPath, 'dist/llms.txt');
   const requiredLlmsClaims = [
     `${PRODUCERS.length} producer/project records`,
-    'Crete, Greece — 27 audited records.',
-    'Santorini, Greece — 9 audited records.',
-    'Peloponnese, Northern Greece and Tuscany / Italy — 19 audited Phase 10B records combined.',
+    `Crete, Greece — ${CRETE_COUNT} audited records.`,
+    `Santorini, Greece — ${SANTORINI_COUNT} audited records.`,
+    `Peloponnese, Northern Greece and Tuscany / Italy — ${OTHER_DESTINATION_COUNT} audited records combined.`,
     '10 published verified-stop Discovery Guides',
     '/producers/<producer-id>/',
     'does not represent Santorini as a UNESCO Global Geopark',
-    'SEO, AEO and entity-discovery foundation',
-    'Greek cheese and dairy is the next planned catalogue expansion',
+    'Greek cheese and dairy expansion is now included in the audited catalogue',
   ];
   for (const claim of requiredLlmsClaims) requireIncludes(llmsContent, claim, 'dist/llms.txt');
 
   const staleLlmsClaims = [
     '36 producer/project records',
+    '55 producer/project records',
     'Next regional programme: Peloponnese',
     'Current reference region: Crete, Greece.',
     'Future expansion may include Santorini',
     '58+ verified producers',
     '6 turn-by-turn',
     'Santorini Complete Volcanic Caldera & Donkey Beer Trail',
+    'Greek cheese and dairy is the next planned catalogue expansion',
   ];
   for (const claim of staleLlmsClaims) banIncludes(llmsContent, claim, 'dist/llms.txt');
 
@@ -135,6 +133,7 @@ function verifySeoAssets(): void {
 
   const staleIndexClaims = [
     '36 producer/project records',
+    '55 audited producer/project records',
     'Six guides are currently published across Crete and Santorini',
     'Crete and Santorini are the current reference-quality regions',
     'Verified Crete &amp; Santorini Producer Directory',
@@ -216,7 +215,7 @@ function verifySeoAssets(): void {
   console.log(`  - ${expectedUrls.length} canonical sitemap URLs (${PRODUCERS.length} producer entities + directory + core pages)`);
   console.log(`  - ${PRODUCERS.length} producer pages have canonical metadata, visible answer-ready facts, JSON-LD and directory links`);
   console.log('  - producer directory has CollectionPage/ItemList schema and links every audited entity');
-  console.log('  - llms.txt and homepage reflect the current 55-record / 10-guide product state');
+  console.log(`  - llms.txt and homepage reflect the current ${PRODUCERS.length}-record / 10-guide product state`);
   console.log(`  - robots.txt advertises ${CANONICAL_SITEMAP_URL}`);
   console.log('  - stale claims, legacy query canonicals and unconsented monetization tags are quarantined');
 }

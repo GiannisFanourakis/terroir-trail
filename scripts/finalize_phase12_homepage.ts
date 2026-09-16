@@ -1,11 +1,12 @@
 import fs from 'fs';
 import path from 'path';
+import { SEO_PRODUCERS } from './seoCatalogue';
 
 const indexPath = path.resolve(process.cwd(), 'dist', 'index.html');
 const stale =
   'TerroirTrail is an independent producer and agritourism discovery guide connecting culinary travelers and road-trippers directly with independent wineries, craft breweries, artisanal olive mills, traditional dairies, apiaries, traditional distilleries, and farms. Crete and Santorini are the current reference-quality regions.';
 const current =
-  'TerroirTrail is an independent producer and agritourism discovery guide connecting culinary travelers and road-trippers with 55 audited producer/project records across Crete, Santorini, the Peloponnese, Northern Greece and Tuscany.';
+  `TerroirTrail is an independent producer and agritourism discovery guide connecting culinary travelers and road-trippers with ${SEO_PRODUCERS.length} audited producer/project records across Crete, Santorini, the Peloponnese, Northern Greece and Tuscany.`;
 
 if (!fs.existsSync(indexPath)) {
   console.error(`[SEO Homepage Finalization Failed] ${indexPath} is missing.`);
@@ -25,4 +26,4 @@ if (normalized.includes('Crete and Santorini are the current reference-quality r
 }
 
 fs.writeFileSync(indexPath, normalized, 'utf-8');
-console.log('✓ Phase 12 homepage FAQ normalization complete.');
+console.log(`✓ Homepage FAQ normalization complete (${SEO_PRODUCERS.length} audited records).`);

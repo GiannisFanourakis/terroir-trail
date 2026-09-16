@@ -67,12 +67,15 @@ describe('Phase 8 Public Positioning & SEO Synchronization', () => {
       );
 
       expect(llmsTxt).toContain('# TerroirTrail — Independent Producer & Agritourism Guide');
-      expect(llmsTxt).toContain('55 producer/project records');
+      expect(llmsTxt).toContain('67 producer/project records');
       expect(llmsTxt).toContain('Crete, Santorini, the Peloponnese, Northern Greece');
       expect(llmsTxt).toContain('Tuscany / Italy');
       expect(llmsTxt).toContain('/producers/<producer-id>/');
       expect(llmsTxt).toContain('SEO, AEO and entity-discovery foundation');
       expect(llmsTxt).toContain(
+        'Greek cheese and dairy expansion is now included in the audited catalogue'
+      );
+      expect(llmsTxt).not.toContain(
         'Greek cheese and dairy is the next planned catalogue expansion'
       );
       expect(llmsTxt).not.toContain('Next regional programme: Peloponnese');
@@ -130,8 +133,8 @@ describe('Phase 8 Public Positioning & SEO Synchronization', () => {
       expect(indexHtml).toContain('Vidiano, Vilana, Dafni, Plyto, and Melissaki');
     });
 
-    it('keeps the About experience aligned with the current 55-record multi-region catalogue', () => {
-      expect(aboutFaqModal).toContain('55 producer records');
+    it('keeps the About experience aligned with the current multi-region catalogue', () => {
+      expect(aboutFaqModal).toContain('67 producer records');
       expect(aboutFaqModal).toContain('Crete, Santorini, the Peloponnese, Northern Greece and Tuscany');
       expect(aboutFaqModal).toContain('Across Greece and into Italy');
       expect(aboutFaqModal).not.toContain('27 in Crete and 9 in Santorini');
@@ -167,6 +170,7 @@ describe('Phase 8 Public Positioning & SEO Synchronization', () => {
   describe('5. Build & Verification Script Alignment', () => {
     it('enforces current entity discovery and quarantines stale global claims', () => {
       expect(verifySeoScript).toContain("'36 producer/project records'");
+      expect(verifySeoScript).toContain("'55 producer/project records'");
       expect(verifySeoScript).toContain("'Next regional programme: Peloponnese'");
       expect(verifySeoScript).toContain('TerroirTrail — Independent Producer &amp; Agritourism Guide');
       expect(verifySeoScript).toContain('geo.placename');
