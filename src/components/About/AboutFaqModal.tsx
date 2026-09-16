@@ -438,28 +438,57 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
                 )}
               </div>
 
-              <div className="p-5 rounded-2xl bg-stone-900 border border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
-                <div>
-                  <h4 className="text-xs font-bold text-white">Need to correct a listing or ask a question?</h4>
-                  <p className="text-[11px] text-stone-400">Contact TerroirTrail or use the Host Portal for producer claims.</p>
-                </div>
-                <div className="flex items-center gap-2 shrink-0">
-                  <a
-                    href="mailto:terroirtrail@gmail.com"
-                    className="px-3.5 py-1.5 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-200 border border-white/15 text-xs font-bold transition"
-                  >
-                    Email
-                  </a>
-                  {(onOpenProducerPortal || onOpenAuth) && (
-                    <button
-                      type="button"
-                      onClick={() => handleAction('producer_portal')}
-                      className="px-3.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 text-xs font-bold shadow-sm transition cursor-pointer"
+              <div className="p-5 rounded-2xl bg-stone-900 border border-white/10 grid grid-cols-1 sm:grid-cols-[1fr_auto] items-center gap-5">
+                <div className="min-w-0 text-center sm:text-left">
+                  <h4 className="text-sm font-bold text-white">Contact TerroirTrail</h4>
+                  <p className="mt-1 text-[11px] text-stone-400 leading-relaxed">
+                    Questions, listing corrections, producer enquiries or collaboration ideas are welcome. For current visiting arrangements, contact the producer directly through the official details on its listing.
+                  </p>
+                  <div className="mt-3 flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                    <a
+                      href="mailto:gian.fanourakis@gmail.com"
+                      className="px-3.5 py-1.5 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-200 border border-white/15 text-xs font-bold transition"
                     >
-                      Host Portal
-                    </button>
-                  )}
+                      gian.fanourakis@gmail.com
+                    </a>
+                    <a
+                      href="https://www.instagram.com/terroirtrail/"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="px-3.5 py-1.5 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/30 text-xs font-bold transition"
+                    >
+                      @TERROIRTRAIL
+                    </a>
+                    {(onOpenProducerPortal || onOpenAuth) && (
+                      <button
+                        type="button"
+                        onClick={() => handleAction('producer_portal')}
+                        className="px-3.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 text-xs font-bold shadow-sm transition cursor-pointer"
+                      >
+                        Host Portal
+                      </button>
+                    )}
+                  </div>
                 </div>
+
+                <a
+                  href="https://www.instagram.com/terroirtrail/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mx-auto sm:mx-0 w-32 shrink-0 text-center group"
+                  aria-label="Open TerroirTrail on Instagram"
+                >
+                  <span className="block rounded-2xl bg-white p-2 border border-white/20 shadow-lg transition group-hover:scale-[1.02]">
+                    <img
+                      src="/terroirtrail-instagram-qr.svg"
+                      alt="QR code for TerroirTrail on Instagram"
+                      className="w-full h-auto"
+                    />
+                  </span>
+                  <span className="mt-1.5 block text-[10px] font-semibold text-stone-400 group-hover:text-amber-300 transition">
+                    Scan for Instagram
+                  </span>
+                </a>
               </div>
             </div>
           )}
