@@ -39,20 +39,23 @@ describe('Phase 7 public prototype and direct-entry quarantine', () => {
 
   it('documents the Discovery Guide model without weakening navigation quarantine', () => {
     const aboutFaq = read('src/components/About/AboutFaqModal.tsx');
+    const routes = read('src/components/Loops/DayTripModal.tsx');
 
     expect(aboutFaq).toContain('Browse Discovery Guides');
     expect(aboutFaq).toContain("actionType: 'loops'");
     expect(aboutFaq).toContain(
-      'TerroirTrail publishes Discovery Guides when their stop identities, locations and visitor states have been reviewed.'
-    );
-    expect(aboutFaq).toContain('Three are currently published in Crete and three in Santorini.');
-    expect(aboutFaq).toContain(
-      'multi-stop turn-by-turn driving navigation remains withheld until the required road-access safety evidence is available.'
+      'Discovery Guides group researched producers into useful themed or geographic collections.'
     );
     expect(aboutFaq).toContain(
-      'A Discovery Guide is a verified stop collection, not a road-safety guarantee.'
+      'They are discovery tools rather than a guarantee that every rural road is suitable for every vehicle'
     );
-    expect(aboutFaq).toContain('Draft guides remain hidden.');
+    expect(aboutFaq).toContain(
+      'Use Discovery Guides for inspiration, then check each producer’s current visit and access information.'
+    );
+
+    // Public copy can be traveler-friendly while the actual route UI remains safety-gated.
+    expect(routes).toContain('Multi-stop driving navigation withheld');
+    expect(routes).toContain('evaluateRouteNavigation(currentLoop, producerCatalogue)');
   });
 
   it('keeps producer pass scanning out of the launch host portal while preserving future infrastructure', () => {

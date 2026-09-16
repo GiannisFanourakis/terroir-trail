@@ -8,6 +8,7 @@ import {
   ChevronUp,
   Compass,
   HelpCircle,
+  Mail,
   MapPin,
   Search,
   ShieldCheck,
@@ -18,7 +19,7 @@ import {
 interface AboutFaqModalProps {
   isOpen: boolean;
   onClose: () => void;
-  initialTab?: 'about' | 'faq';
+  initialTab?: 'about' | 'faq' | 'contact';
   onOpenLoops?: () => void;
   onOpenAuth?: (role?: 'traveler' | 'producer') => void;
   onOpenProducerPortal?: () => void;
@@ -27,6 +28,7 @@ interface AboutFaqModalProps {
 
 type FaqCategory = 'about' | 'visiting' | 'passport' | 'routes' | 'producers';
 type FaqAction = 'loops' | 'producer_portal' | 'auth_traveler';
+type AboutTab = 'about' | 'faq' | 'contact';
 
 interface FaqItem {
   id: string;
@@ -39,6 +41,9 @@ interface FaqItem {
   actionType?: FaqAction;
 }
 
+const CONTACT_EMAIL = 'gian.fanourakis@gmail.com';
+const INSTAGRAM_URL = 'https://www.instagram.com/terroirtrail/';
+
 const FAQ_DATA: FaqItem[] = [
   {
     id: 'what-is-terroirtrail',
@@ -46,8 +51,8 @@ const FAQ_DATA: FaqItem[] = [
     categoryLabel: 'About & Curation',
     question: 'What is TerroirTrail?',
     answer:
-      'TerroirTrail is an independent producer and agritourism discovery guide for culinary travelers, road-trippers and slow travelers. It connects travelers directly with verified wineries, craft breweries, olive mills, dairies, apiaries, traditional distilleries, and farms, focusing on clearly labeled visiting, location, and road-access status, direct maker contact, and conservative rural-navigation guidance rather than mass-tourism listings or unverified travel claims.',
-    highlight: 'Discovery first: useful producer information without turning unknowns into promises.',
+      'TerroirTrail is an independent producer and agritourism guide for culinary travelers, road-trippers and slow travelers. It helps people discover wineries, breweries, olive mills, dairies, apiaries, traditional distilleries and farms, with direct producer contact and clear information about visiting, location and access where those details are known.',
+    highlight: 'Independent producer discovery built around useful, practical travel information.',
   },
   {
     id: 'categories-included',
@@ -56,15 +61,15 @@ const FAQ_DATA: FaqItem[] = [
     question: 'What categories of producers are included?',
     answer:
       'TerroirTrail curates seven first-class producer categories: Wineries, Breweries, Olive Mills, Dairies / Cheesemakers, Apiaries / Honey, Rakokazana / Traditional Distilleries, and Farms.',
-    highlight: 'Seven independent agricultural categories curated under equal verification standards.',
+    highlight: 'Seven producer categories are presented under the same research standard.',
   },
   {
     id: 'how-producers-selected',
     category: 'about',
     categoryLabel: 'About & Curation',
-    question: 'How are listings researched and verified?',
+    question: 'How are listings researched?',
     answer:
-      'Listings are assembled from producer websites, reliable public sources and direct evidence where available. Visitability, exact location and road access are tracked separately. A producer being publicly visitable does not mean that producer has a TerroirTrail partnership or bookable Experience.',
+      'Listings are researched from producer websites, reliable public sources and direct evidence when available. TerroirTrail separates producer identity, visiting information, location and road access so uncertain details can be shown as uncertain rather than guessed.',
   },
   {
     id: 'coverage',
@@ -72,8 +77,8 @@ const FAQ_DATA: FaqItem[] = [
     categoryLabel: 'About & Curation',
     question: 'Which regions are currently covered?',
     answer:
-      'Crete and Santorini are the current reference-quality regions, with 36 audited records in total: 27 in Crete and 9 in Santorini. TerroirTrail is designed to expand across Greece, Italy, the wider Mediterranean and Northern Europe, but future regions are not treated as reference-quality until they pass the same catalogue, trust, imagery and access review.',
-    highlight: 'Crete established the reference standard; Santorini now meets the same quality bar.',
+      'TerroirTrail currently includes 55 producer records across Crete, Santorini, the Peloponnese, Northern Greece and Tuscany. Coverage will expand across Greece, Italy and other European regions as new records meet the same research and presentation standard.',
+    highlight: 'The catalogue already reaches beyond Greece while keeping a consistent research standard.',
   },
   {
     id: 'visits',
@@ -116,8 +121,8 @@ const FAQ_DATA: FaqItem[] = [
     categoryLabel: 'Discovery Guides & Rural Access',
     question: 'Are Discovery Guides available?',
     answer:
-      'Yes. TerroirTrail publishes Discovery Guides when their stop identities, locations and visitor states have been reviewed. Three are currently published in Crete and three in Santorini. Individual verified stop locations can be opened while road-access evidence is still incomplete, but multi-stop turn-by-turn driving navigation remains withheld until the required road-access safety evidence is available. Draft guides remain hidden.',
-    highlight: 'A Discovery Guide is a verified stop collection, not a road-safety guarantee.',
+      'Yes. Discovery Guides group researched producers into useful themed or geographic collections. They are discovery tools rather than a guarantee that every rural road is suitable for every vehicle, so individual access notes still matter.',
+    highlight: 'Use Discovery Guides for inspiration, then check each producer’s current visit and access information.',
     actionText: 'Browse Discovery Guides',
     actionType: 'loops',
   },
@@ -127,7 +132,7 @@ const FAQ_DATA: FaqItem[] = [
     categoryLabel: 'Discovery Guides & Rural Access',
     question: 'How does TerroirTrail handle rural road access?',
     answer:
-      'Location confidence and road-access confidence are separate. Road classifications are only shown when supported by evidence; reviewed locations without publishable road evidence remain explicitly unclassified. Current-access uncertainty is shown rather than replaced with a guess.',
+      'TerroirTrail treats location and road access as separate facts. When useful access information is available, it is shown on the listing; when it is not, the site does not invent a road condition.',
   },
   {
     id: 'producer-claim',
@@ -136,7 +141,7 @@ const FAQ_DATA: FaqItem[] = [
     question: 'I own or represent a listed producer. How can I manage the listing?',
     answer:
       'Use the Host Portal to sign in or submit a producer claim. Host privileges are granted only from trusted ownership records after review; they cannot be self-assigned by changing browser or profile data.',
-    highlight: 'Producer ownership is server-trusted and reviewed before host access is granted.',
+    highlight: 'Producer ownership is reviewed before host access is granted.',
     actionText: 'Open Host Portal',
     actionType: 'producer_portal',
   },
@@ -159,7 +164,7 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
   onOpenProducerPortal,
   onOpenLegal,
 }) => {
-  const [activeTab, setActiveTab] = useState<'about' | 'faq'>(initialTab);
+  const [activeTab, setActiveTab] = useState<AboutTab>(initialTab);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<'all' | FaqCategory>('all');
   const [expandedFaqId, setExpandedFaqId] = useState<string | null>(null);
@@ -203,40 +208,23 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200 select-none">
       <div className="relative w-full max-w-4xl bg-stone-950 text-stone-100 rounded-3xl shadow-2xl border border-white/15 overflow-hidden flex flex-col max-h-[92vh]">
-        <div className="px-5 sm:px-6 py-4 bg-stone-900 border-b border-white/10 shrink-0 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-3 min-w-0">
-            <img src="/logo.png" alt="TerroirTrail" className="w-9 h-9 object-contain drop-shadow-md shrink-0" />
+        <div className="px-3 sm:px-6 py-4 bg-stone-900 border-b border-white/10 shrink-0 flex flex-wrap items-center justify-between gap-2 sm:gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+            <img src="/logo.png" alt="TerroirTrail" className="w-8 h-8 sm:w-9 sm:h-9 object-contain drop-shadow-md shrink-0" />
             <div className="min-w-0">
-              <h2 className="font-serif-title text-base sm:text-lg font-bold text-white">
+              <h2 className="font-serif-title text-sm sm:text-lg font-bold text-white">
                 Terroir<span className="text-amber-400 font-sans font-light">Trail</span>
               </h2>
               <p className="text-[11px] text-stone-400 hidden sm:block truncate">
-                Source-backed producer discovery and safer rural exploration
+                Independent Producer & Agritourism Guide
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-1 p-1 bg-stone-950 rounded-2xl border border-white/10">
-            <button
-              type="button"
-              onClick={() => setActiveTab('about')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-xl transition cursor-pointer ${
-                activeTab === 'about' ? 'bg-amber-500 text-stone-950 shadow-md' : 'text-stone-400 hover:text-white'
-              }`}
-            >
-              <BookOpen className="w-3.5 h-3.5" />
-              <span>About</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab('faq')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-xl transition cursor-pointer ${
-                activeTab === 'faq' ? 'bg-amber-500 text-stone-950 shadow-md' : 'text-stone-400 hover:text-white'
-              }`}
-            >
-              <HelpCircle className="w-3.5 h-3.5" />
-              <span>FAQ</span>
-            </button>
+          <div className="order-3 flex w-full min-w-0 max-w-full items-center justify-center gap-0.5 overflow-x-auto p-1 bg-stone-950 rounded-2xl border border-white/10 sm:order-none sm:w-auto sm:gap-1 sm:overflow-visible">
+            <TabButton active={activeTab === 'about'} onClick={() => setActiveTab('about')} icon={<BookOpen className="w-3.5 h-3.5" />} label="About" />
+            <TabButton active={activeTab === 'faq'} onClick={() => setActiveTab('faq')} icon={<HelpCircle className="w-3.5 h-3.5" />} label="FAQ" />
+            <TabButton active={activeTab === 'contact'} onClick={() => setActiveTab('contact')} icon={<Mail className="w-3.5 h-3.5" />} label="Contact" />
           </div>
 
           <button
@@ -255,59 +243,59 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
               <div className="rounded-3xl border border-amber-500/30 bg-gradient-to-br from-amber-500/10 via-stone-900 to-stone-950 p-6 sm:p-8 space-y-4">
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400/15 border border-amber-400/30 text-amber-300 text-xs font-bold">
                   <Sparkles className="w-3.5 h-3.5" />
-                  <span>Discovery first</span>
+                  <span>Independent discovery</span>
                 </div>
                 <h1 className="text-2xl sm:text-3xl font-bold font-serif-title text-white tracking-tight leading-snug max-w-3xl">
-                  Find real makers without turning missing evidence into travel promises.
+                  Discover independent makers and the places behind what they make.
                 </h1>
                 <p className="text-xs sm:text-sm text-stone-300 leading-relaxed max-w-3xl">
-                  TerroirTrail connects independent culinary travelers with wineries, breweries, olive mills, dairies, apiaries, traditional distilleries, and farms. The product separates what is known from what is merely assumed: producer identity, visitability, exact location and rural-road access are reviewed as distinct facts.
+                  TerroirTrail helps culinary travelers find wineries, breweries, olive mills, dairies, apiaries, traditional distilleries and farms — with direct producer contact, clear visiting information and practical access notes.
                 </p>
 
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-5 border-t border-white/10">
-                  <Metric value="36" label="Audited reference records" />
+                  <Metric value="55" label="Producer records" />
                   <Metric value="7" label="Producer categories" />
-                  <Metric value="Source-backed" label="Access confidence" />
-                  <Metric value="Direct" label="Producer contact" />
+                  <Metric value="Direct" label="Maker contact" />
+                  <Metric value="Clear" label="Visit & access notes" />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <Principle
                   icon={<ShieldCheck className="w-5 h-5" />}
-                  title="Source-backed curation"
-                  text="Unknown facts remain unknown. Public visitability is not presented as a partnership, and unsupported producer or road claims are withheld."
+                  title="Independent curation"
+                  text="The catalogue is built for travelers who want to move beyond generic tourism directories and discover producers in their own setting."
                 />
                 <Principle
                   icon={<MapPin className="w-5 h-5" />}
-                  title="Rural navigation safety"
-                  text="Exact location confidence and road-access confidence are separate. Draft Discovery Guides and uncertain access fail closed rather than generating confident directions."
+                  title="Useful visiting information"
+                  text="Visit status, location and access notes are shown when supported by evidence, while uncertain details stay clearly marked as uncertain."
                 />
                 <Principle
                   icon={<Award className="w-5 h-5" />}
-                  title="Personal travel journal"
-                  text="Signed-in travelers can save places, record visits and keep private tasting or trip notes without a paid stamp limit."
+                  title="Your travel journal"
+                  text="Signed-in travelers can save places, record visits and keep private tasting or trip notes as they explore."
                 />
                 <Principle
                   icon={<Building2 className="w-5 h-5" />}
-                  title="Trusted producer ownership"
-                  text="Producer claims are reviewed, and host privileges come from trusted ownership records instead of client-side profile switches."
+                  title="Direct producer connection"
+                  text="Official contact details make it easier to reach makers directly and confirm current visiting arrangements before you travel."
                 />
               </div>
 
               <div className="p-5 rounded-2xl bg-stone-900 border border-white/10 space-y-2">
                 <div className="flex items-center gap-2 text-amber-300 font-bold text-sm">
                   <Compass className="w-4 h-4" />
-                  <span>Greece first, then outward</span>
+                  <span>Across Greece and into Italy</span>
                 </div>
                 <p className="text-xs text-stone-300 leading-relaxed">
-                  Crete and Santorini are the current reference-quality regions, with 36 audited records in total: 27 in Crete and 9 in Santorini. Peloponnese is next, and future regions must earn the same level of catalogue, trust, imagery, location and access confidence before they are treated as reference-quality coverage.
+                  The current catalogue spans Crete, Santorini, the Peloponnese, Northern Greece and Tuscany. TerroirTrail is designed to grow into more Mediterranean and European regions without losing the same research standard.
                 </p>
               </div>
 
               <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30">
                 <p className="text-xs text-stone-300 text-center sm:text-left">
-                  Six Discovery Guides are currently published across Crete and Santorini. They expose reviewed stop collections, while multi-stop driving navigation remains withheld wherever independent road-access evidence is incomplete.
+                  Discovery Guides turn researched producers into themed and regional collections for trip inspiration. Check each producer’s current visiting and access information before setting out.
                 </p>
                 <div className="flex items-center gap-2 shrink-0">
                   <button
@@ -330,7 +318,7 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
                 </div>
               </div>
             </div>
-          ) : (
+          ) : activeTab === 'faq' ? (
             <div className="space-y-6 animate-in fade-in duration-200">
               <div className="space-y-3">
                 <div className="relative">
@@ -403,11 +391,7 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
                             </h4>
                           </div>
                           <div className="p-1 rounded-lg bg-stone-800 text-stone-300 shrink-0 mt-0.5">
-                            {isExpanded ? (
-                              <ChevronUp className="w-4 h-4" />
-                            ) : (
-                              <ChevronDown className="w-4 h-4" />
-                            )}
+                            {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                           </div>
                         </button>
 
@@ -438,56 +422,106 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
                 )}
               </div>
 
-              <div className="p-5 rounded-2xl bg-stone-900 border border-white/10 grid grid-cols-1 sm:grid-cols-[1fr_auto] items-center gap-5">
-                <div className="min-w-0 text-center sm:text-left">
-                  <h4 className="text-sm font-bold text-white">Contact TerroirTrail</h4>
-                  <p className="mt-1 text-[11px] text-stone-400 leading-relaxed">
-                    Questions, listing corrections, producer enquiries or collaboration ideas are welcome. For current visiting arrangements, contact the producer directly through the official details on its listing.
-                  </p>
-                  <div className="mt-3 flex flex-wrap items-center justify-center sm:justify-start gap-2">
-                    <a
-                      href="mailto:gian.fanourakis@gmail.com"
-                      className="px-3.5 py-1.5 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-200 border border-white/15 text-xs font-bold transition"
-                    >
-                      gian.fanourakis@gmail.com
-                    </a>
-                    <a
-                      href="https://www.instagram.com/terroirtrail/"
-                      target="_blank"
-                      rel="noreferrer"
-                      className="px-3.5 py-1.5 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/30 text-xs font-bold transition"
-                    >
-                      @TERROIRTRAIL
-                    </a>
-                    {(onOpenProducerPortal || onOpenAuth) && (
+              <div className="p-5 rounded-2xl bg-stone-900 border border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+                <div>
+                  <h4 className="text-sm font-bold text-white">Still have a question?</h4>
+                  <p className="mt-1 text-[11px] text-stone-400">Email us or find TerroirTrail on Instagram.</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('contact')}
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 text-xs font-bold transition cursor-pointer"
+                >
+                  <Mail className="w-3.5 h-3.5" />
+                  Contact us
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-6 animate-in fade-in duration-200">
+              <div className="rounded-3xl border border-amber-500/30 bg-gradient-to-br from-amber-500/10 via-stone-900 to-stone-950 p-6 sm:p-8">
+                <div className="flex items-center gap-2 text-amber-300 text-xs font-bold">
+                  <Mail className="w-4 h-4" />
+                  <span>Get in touch</span>
+                </div>
+                <h1 className="mt-3 text-2xl sm:text-3xl font-bold font-serif-title text-white">Contact TerroirTrail</h1>
+                <p className="mt-3 max-w-2xl text-xs sm:text-sm text-stone-300 leading-relaxed">
+                  Questions, listing corrections, producer enquiries or collaboration ideas are welcome. For current visit times, prices or same-day arrangements, contact the producer directly through the official details on its listing.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-[1fr_220px] gap-4">
+                <div className="space-y-4">
+                  <a
+                    href={`mailto:${CONTACT_EMAIL}`}
+                    className="group block p-5 rounded-2xl bg-stone-900 border border-white/10 hover:border-amber-500/40 transition"
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-400 flex items-center justify-center shrink-0">
+                        <Mail className="w-5 h-5" />
+                      </div>
+                      <div className="min-w-0">
+                        <div className="text-[10px] uppercase tracking-wider text-stone-500 font-bold">Email</div>
+                        <div className="mt-1 text-sm sm:text-base font-bold text-white group-hover:text-amber-300 transition break-all">{CONTACT_EMAIL}</div>
+                        <div className="mt-1 text-[11px] text-stone-400">Questions, corrections, producer enquiries and collaborations.</div>
+                      </div>
+                    </div>
+                  </a>
+
+                  <a
+                    href={INSTAGRAM_URL}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="group block p-5 rounded-2xl bg-stone-900 border border-white/10 hover:border-amber-500/40 transition"
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-400 flex items-center justify-center shrink-0 text-base font-black">
+                        @
+                      </div>
+                      <div>
+                        <div className="text-[10px] uppercase tracking-wider text-stone-500 font-bold">Instagram</div>
+                        <div className="mt-1 text-sm sm:text-base font-bold text-white group-hover:text-amber-300 transition">@TERROIRTRAIL</div>
+                        <div className="mt-1 text-[11px] text-stone-400">Follow the project and message us on Instagram.</div>
+                      </div>
+                    </div>
+                  </a>
+
+                  {(onOpenProducerPortal || onOpenAuth) && (
+                    <div className="p-5 rounded-2xl bg-stone-900 border border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                      <div>
+                        <div className="text-sm font-bold text-white">Are you a listed producer?</div>
+                        <p className="mt-1 text-[11px] text-stone-400">Use the Host Portal to claim or manage your producer presence.</p>
+                      </div>
                       <button
                         type="button"
                         onClick={() => handleAction('producer_portal')}
-                        className="px-3.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 text-xs font-bold shadow-sm transition cursor-pointer"
+                        className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 text-xs font-bold shadow-sm transition cursor-pointer shrink-0"
                       >
                         Host Portal
                       </button>
-                    )}
-                  </div>
+                    </div>
+                  )}
                 </div>
 
                 <a
-                  href="https://www.instagram.com/terroirtrail/"
+                  href={INSTAGRAM_URL}
                   target="_blank"
                   rel="noreferrer"
-                  className="mx-auto sm:mx-0 w-32 shrink-0 text-center group"
+                  className="group p-4 rounded-2xl bg-stone-900 border border-white/10 text-center self-start"
                   aria-label="Open TerroirTrail on Instagram"
                 >
-                  <span className="block rounded-2xl bg-white p-2 border border-white/20 shadow-lg transition group-hover:scale-[1.02]">
+                  <div className="rounded-2xl bg-white p-3 shadow-lg transition group-hover:scale-[1.01]">
                     <img
                       src="/terroirtrail-instagram-qr.svg"
                       alt="QR code for TerroirTrail on Instagram"
                       className="w-full h-auto"
                     />
-                  </span>
-                  <span className="mt-1.5 block text-[10px] font-semibold text-stone-400 group-hover:text-amber-300 transition">
-                    Scan for Instagram
-                  </span>
+                  </div>
+                  <div className="mt-3 flex items-center justify-center gap-1.5 text-xs font-bold text-stone-200 group-hover:text-amber-300 transition">
+                    <span className="text-sm font-black">@</span>
+                    @TERROIRTRAIL
+                  </div>
+                  <div className="mt-1 text-[10px] text-stone-500">Scan to open Instagram</div>
                 </a>
               </div>
             </div>
@@ -498,38 +532,11 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
           <span>Copyright © 2026 TerroirTrail · Independent agritourism discovery</span>
           {onOpenLegal && (
             <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => {
-                  onClose();
-                  onOpenLegal('privacy');
-                }}
-                className="hover:text-amber-400 underline transition cursor-pointer text-stone-400"
-              >
-                Privacy
-              </button>
+              <button type="button" onClick={() => { onClose(); onOpenLegal('privacy'); }} className="hover:text-amber-400 underline transition cursor-pointer text-stone-400">Privacy</button>
               <span>·</span>
-              <button
-                type="button"
-                onClick={() => {
-                  onClose();
-                  onOpenLegal('terms');
-                }}
-                className="hover:text-amber-400 underline transition cursor-pointer text-stone-400"
-              >
-                Terms
-              </button>
+              <button type="button" onClick={() => { onClose(); onOpenLegal('terms'); }} className="hover:text-amber-400 underline transition cursor-pointer text-stone-400">Terms</button>
               <span>·</span>
-              <button
-                type="button"
-                onClick={() => {
-                  onClose();
-                  onOpenLegal('licenses');
-                }}
-                className="hover:text-amber-400 underline transition cursor-pointer text-stone-400"
-              >
-                Licenses
-              </button>
+              <button type="button" onClick={() => { onClose(); onOpenLegal('licenses'); }} className="hover:text-amber-400 underline transition cursor-pointer text-stone-400">Licenses</button>
             </div>
           )}
         </div>
@@ -537,6 +544,24 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
     </div>
   );
 };
+
+const TabButton: React.FC<{ active: boolean; onClick: () => void; icon: React.ReactNode; label: string }> = ({
+  active,
+  onClick,
+  icon,
+  label,
+}) => (
+  <button
+    type="button"
+    onClick={onClick}
+    className={`flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 text-[11px] sm:text-xs font-bold rounded-xl transition cursor-pointer ${
+      active ? 'bg-amber-500 text-stone-950 shadow-md' : 'text-stone-400 hover:text-white'
+    }`}
+  >
+    {icon}
+    <span>{label}</span>
+  </button>
+);
 
 const Metric: React.FC<{ value: string; label: string }> = ({ value, label }) => (
   <div className="p-3 rounded-2xl bg-stone-950/60 border border-white/10 text-center">
