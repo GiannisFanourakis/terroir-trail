@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import { app } from './app';
 import { registerAccountSelfRoutes } from './accountSelfRoutes';
+import { registerAdminAccountRoutes } from './adminAccountRoutes';
 import { registerAdminListingChangeRoutes } from './adminListingChangeRoutes';
 import { registerAdminMediaRoutes } from './adminMediaRoutes';
 import { registerProducerListingChangeRoutes } from './producerListingChangeRoutes';
@@ -8,6 +9,7 @@ import { registerProducerMediaRoutes } from './producerMediaRoutes';
 
 registerAdminMediaRoutes(app);
 registerAdminListingChangeRoutes(app);
+registerAdminAccountRoutes(app);
 registerProducerMediaRoutes(app);
 registerProducerListingChangeRoutes(app);
 registerAccountSelfRoutes(app);
