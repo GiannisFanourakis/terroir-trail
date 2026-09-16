@@ -39,10 +39,11 @@ test('review API exposes public sanitized reads and authenticates all community 
       return { deleted: true as const, reviewId: 'review-1' };
     },
     upsertHostReviewReply: async (uid, reviewId, comment) => {
-      calls.push({ type: 'reply', args: [uid, reviewId, comment] });
+      const typedReviewId = String(reviewId);
+      calls.push({ type: 'reply', args: [uid, typedReviewId, comment] });
       return {
         ...review,
-        id: reviewId,
+        id: typedReviewId,
         hostReply: {
           comment: String(comment),
           createdAt: 'now',
@@ -51,8 +52,9 @@ test('review API exposes public sanitized reads and authenticates all community 
       };
     },
     reportProducerReview: async (uid, reviewId, reason) => {
-      calls.push({ type: 'report', args: [uid, reviewId, reason] });
-      return { reported: true as const, reviewId };
+      const typedReviewId = String(reviewId);
+      calls.push({ type: 'report', args: [uid, typedReviewId, reason] });
+      return { reported: true as const, reviewId: typedReviewId };
     },
   });
 
