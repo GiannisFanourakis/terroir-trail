@@ -8,7 +8,6 @@ import {
   ChevronUp,
   Compass,
   HelpCircle,
-  Instagram,
   Mail,
   MapPin,
   Search,
@@ -476,8 +475,8 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
                     className="group block p-5 rounded-2xl bg-stone-900 border border-white/10 hover:border-amber-500/40 transition"
                   >
                     <div className="flex items-start gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-400 flex items-center justify-center shrink-0">
-                        <Instagram className="w-5 h-5" />
+                      <div className="w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-400 flex items-center justify-center shrink-0 text-base font-black">
+                        @
                       </div>
                       <div>
                         <div className="text-[10px] uppercase tracking-wider text-stone-500 font-bold">Instagram</div>
@@ -519,7 +518,7 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
                     />
                   </div>
                   <div className="mt-3 flex items-center justify-center gap-1.5 text-xs font-bold text-stone-200 group-hover:text-amber-300 transition">
-                    <Instagram className="w-3.5 h-3.5" />
+                    <span className="text-sm font-black">@</span>
                     @TERROIRTRAIL
                   </div>
                   <div className="mt-1 text-[10px] text-stone-500">Scan to open Instagram</div>
