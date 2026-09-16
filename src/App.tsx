@@ -8,6 +8,8 @@ import { FilterBar } from './components/FilterBar/FilterBar';
 import { MapCanvas } from './components/Map/MapCanvas';
 import { ProducerList } from './components/Sidebar/ProducerList';
 import { ProducerDetailDrawerWithReviews as ProducerDetailDrawer } from './components/Drawer/ProducerDetailDrawerWithReviews';
+import { TerroirRegionDrawer } from './components/Regions/TerroirRegionDrawer';
+import { CRETE_TERROIR_REGION } from './data/terroirRegions';
 import { useFavorites } from './hooks/useFavorites';
 import { useAuth } from './hooks/useAuth';
 import { useAccountCapabilities } from './hooks/useAccountCapabilities';
@@ -78,6 +80,7 @@ const applyApprovedListingOverride = (
 export const App: React.FC = () => {
   const [selectedProducer, setSelectedProducer] = useState<Producer | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
+  const [isRegionGuideOpen, setIsRegionGuideOpen] = useState<boolean>(false);
   const [viewMode, setViewMode] = useState<'map' | 'list'>('map');
   const [activeModal, setActiveModal] = useState<ActiveModal>(null);
   const [adminPortalPreviewProducerId, setAdminPortalPreviewProducerId] = useState<string | null>(null);
@@ -179,6 +182,16 @@ export const App: React.FC = () => {
     [selectedProducer, overrides]
   );
 
+  const creteGuideProducers = useMemo(
+    () => publicProducers.filter((producer) => producer.destination === 'crete'),
+    [publicProducers]
+  );
+
+  const creteGuideCategoryCount = useMemo(
+    () => new Set(creteGuideProducers.map((producer) => producer.category)).size,
+    [creteGuideProducers]
+  );
+
   const adminPortalPreviewProducer = useMemo(
     () => adminPortalPreviewProducerId
       ? producers.find((producer) => producer.id === adminPortalPreviewProducerId) || null
@@ -218,6 +231,7 @@ export const App: React.FC = () => {
 
   const handleResetFilters = () => {
     setFilters(initialFilters);
+    setIsRegionGuideOpen(false);
   };
 
   const handleExploreRegion = (destination: Destination) => {
@@ -229,12 +243,19 @@ export const App: React.FC = () => {
     }));
     setSelectedProducer(null);
     setIsDrawerOpen(false);
+    setIsRegionGuideOpen(destination === CRETE_TERROIR_REGION.destination);
     setViewMode('map');
   };
 
   const filteredProducers = useMemo(() => {
     return filterProducers(publicProducers, filters, isFavorite);
   }, [publicProducers, filters, isFavorite]);
+
+  useEffect(() => {
+    if (filters.destination !== CRETE_TERROIR_REGION.destination) {
+      setIsRegionGuideOpen(false);
+    }
+  }, [filters.destination]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -248,6 +269,7 @@ export const App: React.FC = () => {
       );
       if (match) {
         setSelectedProducer(match);
+        setIsRegionGuideOpen(false);
         setIsDrawerOpen(true);
       }
     }
@@ -264,6 +286,7 @@ export const App: React.FC = () => {
 
     setViewMode('map');
     setIsDrawerOpen(false);
+    setIsRegionGuideOpen(false);
 
     const firstProducerId = loop.stops[0]?.producerId;
     if (!firstProducerId) {
@@ -339,6 +362,7 @@ export const App: React.FC = () => {
             selectedProducer={publicSelectedProducer}
             onSelectProducer={(p) => {
               setSelectedProducer(p);
+              setIsRegionGuideOpen(false);
               setIsDrawerOpen(true);
             }}
             onResetFilters={handleResetFilters}
@@ -363,9 +387,11 @@ export const App: React.FC = () => {
             selectedProducer={publicSelectedProducer}
             onSelectProducer={(producer) => {
               setSelectedProducer(producer);
+              if (producer) setIsRegionGuideOpen(false);
             }}
             onOpenDrawer={(producer) => {
               setSelectedProducer(producer);
+              setIsRegionGuideOpen(false);
               setIsDrawerOpen(true);
             }}
             selectedDestination={filters.destination}
@@ -374,9 +400,18 @@ export const App: React.FC = () => {
             onExploreRegion={handleExploreRegion}
             viewMode={viewMode}
           />
+
+          <TerroirRegionDrawer
+            region={CRETE_TERROIR_REGION}
+            producerCount={creteGuideProducers.length}
+            categoryCount={creteGuideCategoryCount}
+            isOpen={isRegionGuideOpen}
+            onClose={() => setIsRegionGuideOpen(false)}
+            onShowProducers={() => setIsRegionGuideOpen(false)}
+          />
         </div>
 
-        {(!selectedProducer || viewMode === 'list') && (
+        {(!selectedProducer || viewMode === 'list') && !isRegionGuideOpen && (
           <div 
             className="lg:hidden absolute left-1/2 -translate-x-1/2 z-30 pointer-events-auto transition-all animate-in fade-in duration-200"
             style={{ bottom: 'max(1.25rem, calc(1.25rem + env(safe-area-inset-bottom, 0px)))' }}
@@ -432,6 +467,7 @@ export const App: React.FC = () => {
             onSelectLoop={handleSelectLoop}
             onSelectProducer={(producer) => {
               setSelectedProducer(producer);
+              setIsRegionGuideOpen(false);
               setIsDrawerOpen(true);
               closeModal();
             }}
@@ -472,6 +508,7 @@ export const App: React.FC = () => {
             onSaveTastingNote={saveTastingNote}
             onSelectProducer={(producer) => {
               setSelectedProducer(producer);
+              setIsRegionGuideOpen(false);
               setIsDrawerOpen(true);
               closeModal();
             }}
@@ -526,6 +563,7 @@ export const App: React.FC = () => {
               onUpdateProducerTaxDetails={adminPortalPreviewProducer ? async () => undefined : updateProducerTaxDetails}
               onSelectProducerForDrawer={(producer) => {
                 setSelectedProducer(producer);
+                setIsRegionGuideOpen(false);
                 setIsDrawerOpen(true);
                 closeModal();
               }}
@@ -551,6 +589,7 @@ export const App: React.FC = () => {
             onCancelBooking={cancelBooking}
             onSelectProducer={(producer) => {
               setSelectedProducer(producer);
+              setIsRegionGuideOpen(false);
               setIsDrawerOpen(true);
               closeModal();
             }}
