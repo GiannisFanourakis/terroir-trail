@@ -3,7 +3,7 @@ import L from 'leaflet';
 import { Producer, Destination } from '../../types/terroir';
 import { 
   Plus, Minus, Navigation, Maximize2, Layers, MapPin, 
-  Star, ArrowRight, ExternalLink, X, Compass, ChevronRight, Heart, AlertCircle 
+  Star, ArrowRight, ExternalLink, X, Compass, ChevronRight, Heart, AlertCircle, Mountain
 } from 'lucide-react';
 import { getCategoryFallbackImage } from '../../utils/imageFallbacks';
 import { getEffectiveProducerCategory } from '../../utils/producerCategory';
@@ -12,6 +12,7 @@ import { getUserCoordinates } from '../../services/geolocation';
 import { GooglePlacePhotoCarousel } from '../GooglePlaces/GooglePlacePhotoCarousel';
 import { isGooglePlacesEligible } from '../../config/googlePlacesAllowlist';
 import { runtimeConfig } from '../../config/runtimeConfig';
+import { CRETE_TERROIR_REGION } from '../../data/terroirRegions';
 
 interface MapCanvasProps {
   producers: Producer[];
@@ -21,8 +22,30 @@ interface MapCanvasProps {
   selectedDestination: Destination | 'all';
   isFavorite: (id: string) => boolean;
   onToggleFavorite: (id: string) => void;
+  onExploreRegion?: (destination: Destination) => void;
   viewMode?: 'map' | 'list';
 }
+
+const CRETE_REGION_FEATURE = {
+  type: 'Feature',
+  properties: {
+    id: CRETE_TERROIR_REGION.id,
+    name: CRETE_TERROIR_REGION.name,
+  },
+  geometry: CRETE_TERROIR_REGION.geometry,
+};
+
+const getCreteRegionStyle = (isActive: boolean, zoom: number): L.PathOptions => {
+  const closeZoom = zoom >= 11;
+  return {
+    color: '#f59e0b',
+    weight: isActive ? 2.5 : 1.5,
+    opacity: closeZoom ? 0.22 : isActive ? 0.95 : 0.68,
+    fillColor: '#f59e0b',
+    fillOpacity: closeZoom ? 0.01 : isActive ? 0.14 : 0.055,
+    dashArray: isActive ? undefined : '6 6',
+  };
+};
 
 export const MapCanvas: React.FC<MapCanvasProps> = ({
   producers,
@@ -32,12 +55,16 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
   selectedDestination,
   isFavorite,
   onToggleFavorite,
+  onExploreRegion,
   viewMode,
 }) => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
   const markersRef = useRef<{ [id: string]: L.Marker }>({});
   const tileLayerRef = useRef<L.TileLayer | null>(null);
+  const regionLayerRef = useRef<L.GeoJSON | null>(null);
+  const regionLabelRef = useRef<L.Marker | null>(null);
+  const activeRegionRef = useRef<string | null>(null);
 
   type MapTheme = 'topo' | 'voyager' | 'dark' | 'satellite';
   const [mapTheme, setMapTheme] = useState<MapTheme>('topo');
@@ -46,6 +73,8 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
   const [pinDisplayMode, setPinDisplayMode] = useState<PinDisplayMode>('adaptive');
   const [locationError, setLocationError] = useState<string | null>(null);
   const [isLocating, setIsLocating] = useState<boolean>(false);
+  const [activeRegionId, setActiveRegionId] = useState<string | null>(null);
+  const [mapZoom, setMapZoom] = useState<number>(9);
 
   const DESTINATION_CENTERS: Record<Destination | 'all', { coords: [number, number]; zoom: number }> = {
     all: { coords: [37.9838, 24.2272], zoom: 7 },
@@ -173,10 +202,12 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       const target = e.originalEvent.target as HTMLElement;
       if (target.classList.contains('leaflet-container')) {
         onSelectProducer(null);
+        setActiveRegionId(null);
       }
     });
 
     mapInstanceRef.current = map;
+    setMapZoom(map.getZoom());
 
     let ro: ResizeObserver | null = null;
     if (typeof ResizeObserver !== 'undefined' && mapContainerRef.current) {
@@ -263,6 +294,113 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     const map = mapInstanceRef.current;
     if (!map) return;
 
+    const syncZoom = () => setMapZoom(map.getZoom());
+    syncZoom();
+    map.on('zoomend', syncZoom);
+    return () => {
+      map.off('zoomend', syncZoom);
+    };
+  }, []);
+
+  useEffect(() => {
+    const map = mapInstanceRef.current;
+    if (!map) return;
+
+    if (regionLayerRef.current) {
+      map.removeLayer(regionLayerRef.current);
+      regionLayerRef.current = null;
+    }
+    if (regionLabelRef.current) {
+      map.removeLayer(regionLabelRef.current);
+      regionLabelRef.current = null;
+    }
+
+    const shouldShowCrete = selectedDestination === 'all' || selectedDestination === 'crete';
+    if (!shouldShowCrete) {
+      setActiveRegionId(null);
+      return;
+    }
+
+    const selectCreteRegion = (bounds?: L.LatLngBounds) => {
+      onSelectProducer(null);
+      setActiveRegionId(CRETE_TERROIR_REGION.id);
+      const targetBounds = bounds || regionLayerRef.current?.getBounds();
+      if (targetBounds?.isValid()) {
+        map.fitBounds(targetBounds, {
+          padding: window.innerWidth < 768 ? [18, 18] : [44, 44],
+          maxZoom: 9,
+          animate: true,
+        });
+      }
+    };
+
+    const regionLayer = L.geoJSON(CRETE_REGION_FEATURE as any, {
+      style: () => getCreteRegionStyle(false, map.getZoom()),
+      onEachFeature: (_feature, featureLayer) => {
+        featureLayer.on({
+          mouseover: () => {
+            (featureLayer as L.Path).setStyle(getCreteRegionStyle(true, map.getZoom()));
+          },
+          mouseout: () => {
+            (featureLayer as L.Path).setStyle(
+              getCreteRegionStyle(activeRegionRef.current === CRETE_TERROIR_REGION.id, map.getZoom())
+            );
+          },
+          click: (event: L.LeafletMouseEvent) => {
+            L.DomEvent.stopPropagation(event.originalEvent);
+            const bounds = (featureLayer as L.Polygon).getBounds();
+            selectCreteRegion(bounds);
+          },
+        });
+      },
+    }).addTo(map);
+
+    regionLayer.bringToBack();
+    regionLayerRef.current = regionLayer;
+
+    const labelIcon = L.divIcon({
+      className: '',
+      iconSize: [0, 0],
+      html: '<div style="transform:translate(-50%,-50%);padding:5px 9px;border-radius:999px;border:1px solid rgba(245,158,11,.45);background:rgba(28,25,23,.82);box-shadow:0 8px 22px rgba(0,0,0,.28);backdrop-filter:blur(8px);color:#fbbf24;font-size:10px;font-weight:800;letter-spacing:.14em;white-space:nowrap;pointer-events:auto;">CRETE</div>',
+    });
+    const regionLabel = L.marker(CRETE_TERROIR_REGION.center, {
+      icon: labelIcon,
+      interactive: true,
+      keyboard: true,
+      zIndexOffset: -100,
+      title: 'Explore Crete terroir region',
+    }).addTo(map);
+    regionLabel.on('click', (event) => {
+      L.DomEvent.stopPropagation(event.originalEvent);
+      selectCreteRegion(regionLayer.getBounds());
+    });
+    regionLabelRef.current = regionLabel;
+
+    return () => {
+      map.removeLayer(regionLayer);
+      map.removeLayer(regionLabel);
+      if (regionLayerRef.current === regionLayer) regionLayerRef.current = null;
+      if (regionLabelRef.current === regionLabel) regionLabelRef.current = null;
+    };
+  }, [selectedDestination]);
+
+  useEffect(() => {
+    activeRegionRef.current = activeRegionId;
+    const regionLayer = regionLayerRef.current;
+    if (regionLayer) {
+      regionLayer.setStyle(
+        getCreteRegionStyle(activeRegionId === CRETE_TERROIR_REGION.id, mapZoom)
+      );
+    }
+    if (regionLabelRef.current) {
+      regionLabelRef.current.setOpacity(mapZoom >= 11 ? 0 : 1);
+    }
+  }, [activeRegionId, mapZoom]);
+
+  useEffect(() => {
+    const map = mapInstanceRef.current;
+    if (!map) return;
+
     Object.values(markersRef.current).forEach((m) => m.remove());
     markersRef.current = {};
 
@@ -289,6 +427,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
 
       marker.on('click', (e) => {
         L.DomEvent.stopPropagation(e);
+        setActiveRegionId(null);
         onSelectProducer(producer);
       });
 
@@ -302,6 +441,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     const map = mapInstanceRef.current;
     if (!map || !selectedProducer || selectedProducer.locationStatus === 'unresolved') return;
 
+    setActiveRegionId(null);
     const [lat, lng] = selectedProducer.coordinates;
     if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
     const targetLat = window.innerWidth < 768 ? lat - 0.015 : lat;
@@ -317,8 +457,23 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
 
   const handleResetView = () => {
     onSelectProducer(null);
+    setActiveRegionId(null);
     const target = DESTINATION_CENTERS[selectedDestination];
     mapInstanceRef.current?.flyTo(target.coords, target.zoom, { duration: 1 });
+  };
+
+  const handleExploreCrete = () => {
+    onSelectProducer(null);
+    setActiveRegionId(CRETE_TERROIR_REGION.id);
+    onExploreRegion?.(CRETE_TERROIR_REGION.destination);
+    const bounds = regionLayerRef.current?.getBounds();
+    if (bounds?.isValid()) {
+      mapInstanceRef.current?.fitBounds(bounds, {
+        padding: window.innerWidth < 768 ? [18, 18] : [44, 44],
+        maxZoom: 9,
+        animate: true,
+      });
+    }
   };
 
   const handleLocateMe = async () => {
@@ -327,6 +482,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     setLocationError(null);
     try {
       const coords = await getUserCoordinates();
+      setActiveRegionId(null);
       mapInstanceRef.current.flyTo([coords.latitude, coords.longitude], 13);
       L.circleMarker([coords.latitude, coords.longitude], {
         radius: 9,
@@ -376,9 +532,14 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       isGooglePlacesEligible(selectedProducer.id)
   );
 
+  const creteMatchingProducers = producers.filter((producer) => producer.destination === 'crete');
+  const creteCategoryCount = new Set(
+    creteMatchingProducers.map((producer) => getEffectiveProducerCategory(producer))
+  ).size;
+
   return (
     <div className="relative w-full h-full select-none overflow-hidden">
-      <div ref={mapContainerRef} className="w-full h-full z-0" role="region" aria-label="Interactive producer map" />
+      <div ref={mapContainerRef} className="w-full h-full z-0" role="region" aria-label="Interactive producer and terroir-region map" />
 
       <div className="absolute top-16 right-3 sm:top-4 sm:right-4 z-20 flex flex-col items-end gap-2">
         {locationError && (
@@ -525,6 +686,91 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
         </div>
       </div>
 
+      {activeRegionId === CRETE_TERROIR_REGION.id && !selectedProducer && (
+        <section
+          className="absolute left-3 sm:left-4 bottom-20 sm:bottom-5 z-30 w-[calc(100%-1.5rem)] sm:w-[360px] max-w-sm glass-panel rounded-3xl border border-amber-400/30 bg-stone-950/92 backdrop-blur-xl shadow-2xl overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-200"
+          aria-label="Crete terroir region"
+        >
+          <div className="relative p-4 sm:p-5">
+            <div className="absolute -right-12 -top-12 w-32 h-32 rounded-full bg-amber-500/15 blur-3xl pointer-events-none" />
+            <div className="relative flex items-start justify-between gap-3">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <div className="w-9 h-9 rounded-2xl border border-amber-400/25 bg-amber-400/10 flex items-center justify-center shrink-0">
+                  <Mountain className="w-4.5 h-4.5 text-amber-300" aria-hidden="true" />
+                </div>
+                <div className="min-w-0">
+                  <span className="block text-[9px] uppercase tracking-[0.18em] font-bold text-amber-400">
+                    {CRETE_TERROIR_REGION.eyebrow}
+                  </span>
+                  <h2 className="font-serif-title text-xl font-bold text-white leading-tight">
+                    {CRETE_TERROIR_REGION.name}
+                  </h2>
+                </div>
+              </div>
+              <button
+                onClick={() => setActiveRegionId(null)}
+                className="p-1.5 rounded-xl text-stone-400 hover:text-white hover:bg-white/10 transition"
+                aria-label="Close Crete region overview"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <p className="relative mt-3 text-xs sm:text-[13px] leading-relaxed text-stone-300">
+              {CRETE_TERROIR_REGION.summary}
+            </p>
+
+            <div className="relative mt-3 flex flex-wrap gap-1.5">
+              {CRETE_TERROIR_REGION.highlights.map((highlight) => (
+                <span
+                  key={highlight}
+                  className="px-2 py-1 rounded-lg bg-white/7 border border-white/10 text-[10px] font-medium text-stone-300"
+                >
+                  {highlight}
+                </span>
+              ))}
+            </div>
+
+            <div className="relative mt-4 pt-3 border-t border-white/10 flex items-center justify-between gap-3">
+              <div className="min-w-0">
+                <div className="text-[10px] uppercase tracking-wider font-bold text-stone-500">TerroirTrail catalogue</div>
+                <div className="text-xs text-stone-300">
+                  {creteMatchingProducers.length} matching producer{creteMatchingProducers.length === 1 ? '' : 's'}
+                  {creteCategoryCount > 0 ? ` · ${creteCategoryCount} categor${creteCategoryCount === 1 ? 'y' : 'ies'}` : ''}
+                </div>
+              </div>
+              <button
+                onClick={handleExploreCrete}
+                className="shrink-0 inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 text-xs font-bold shadow-lg transition active:scale-95"
+              >
+                Explore Crete
+                <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
+              </button>
+            </div>
+
+            <div className="relative mt-2 text-[9px] text-stone-500 flex items-center gap-2 flex-wrap">
+              <a
+                href={CRETE_TERROIR_REGION.sources[0].url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-stone-300 underline underline-offset-2"
+              >
+                Regional source
+              </a>
+              <span aria-hidden="true">·</span>
+              <a
+                href={CRETE_TERROIR_REGION.sources[2].url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-stone-300 underline underline-offset-2"
+              >
+                Boundary source
+              </a>
+            </div>
+          </div>
+        </section>
+      )}
+
       {selectedProducer && (
         <div
           className="absolute left-1/2 -translate-x-1/2 z-30 w-[95%] sm:w-[480px] max-w-lg animate-in slide-in-from-bottom-6 duration-300"
@@ -653,36 +899,38 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
         </div>
       )}
 
-      <div className="absolute bottom-5 left-4 z-10 hidden xl:flex items-center gap-3 bg-stone-900/90 backdrop-blur-md text-white text-[11px] px-3.5 py-2 rounded-2xl shadow-xl border border-stone-700">
-        <div className="flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
-          <span>Winery</span>
+      {activeRegionId !== CRETE_TERROIR_REGION.id && (
+        <div className="absolute bottom-5 left-4 z-10 hidden xl:flex items-center gap-3 bg-stone-900/90 backdrop-blur-md text-white text-[11px] px-3.5 py-2 rounded-2xl shadow-xl border border-stone-700">
+          <div className="flex items-center gap-1.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+            <span>Winery</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+            <span>Microbrewery</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-amber-600"></span>
+            <span>Rakokazano</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+            <span>Olive Mill / Oil Producer</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-yellow-500"></span>
+            <span>Dairy</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-orange-500"></span>
+            <span>Apiary / Honey</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+            <span>Farm</span>
+          </div>
         </div>
-        <div className="flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
-          <span>Microbrewery</span>
-        </div>
-        <div className="flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-full bg-amber-600"></span>
-          <span>Rakokazano</span>
-        </div>
-        <div className="flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-          <span>Olive Mill / Oil Producer</span>
-        </div>
-        <div className="flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-full bg-yellow-500"></span>
-          <span>Dairy</span>
-        </div>
-        <div className="flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-full bg-orange-500"></span>
-          <span>Apiary / Honey</span>
-        </div>
-        <div className="flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
-          <span>Farm</span>
-        </div>
-      </div>
+      )}
     </div>
   );
 };
