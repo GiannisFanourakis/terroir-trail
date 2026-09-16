@@ -4,7 +4,6 @@ import {
   AdminAccountError,
   searchAdminAccounts,
   setAccountDisabled,
-  setHostEditingFrozen,
 } from '../services/adminAccountService';
 
 const makeHarness = () => {
@@ -46,24 +45,6 @@ const makeHarness = () => {
         }),
       }),
     }),
-    batch: () => {
-      const writes: Array<{ ref: any; data: Record<string, any>; merge?: boolean }> = [];
-      return {
-        set: (ref: any, data: Record<string, any>, options?: { merge?: boolean }) => {
-          writes.push({ ref, data, merge: options?.merge });
-        },
-        commit: async () => {
-          for (const write of writes) {
-            const collection = getCollection(write.ref.collectionName);
-            const previous = collection.get(write.ref.id) || {};
-            collection.set(
-              write.ref.id,
-              write.merge ? { ...previous, ...write.data } : { ...write.data }
-            );
-          }
-        },
-      };
-    },
   };
 
   const auth = {
@@ -114,12 +95,11 @@ test('admin account search returns only operational status and trusted authority
   assert.deepEqual(results[0].roles, ['traveler', 'producer_host']);
   assert.deepEqual(results[0].producerIds, ['producer-a']);
   assert.equal(results[0].canDisable, true);
-  assert.equal(results[0].canFreezeHostEditing, true);
   assert.equal('favorites' in results[0], false);
   assert.equal('passportNotes' in results[0], false);
 });
 
-test('ordinary admin can disable a Host and freeze editing with audit reasons', async () => {
+test('ordinary admin can disable a Host with an audit reason', async () => {
   const { db, auth, users, revoked, getCollection } = makeHarness();
   seedAdmin(getCollection, 'admin-uid');
   users.set('admin-uid', { uid: 'admin-uid', email: 'admin@example.com', disabled: false });
@@ -134,15 +114,8 @@ test('ordinary admin can disable a Host and freeze editing with audit reasons', 
   assert.equal(users.get('host-uid')?.disabled, true);
   assert.equal(revoked.has('host-uid'), true);
 
-  const frozen = await setHostEditingFrozen('admin-uid', 'host-uid', true, 'Ownership dispute under review', db as any);
-  assert.equal(frozen.hostEditingFrozen, true);
-  assert.deepEqual(frozen.producerIds, ['producer-a']);
-  assert.equal(getCollection('account_controls').get('host-uid')?.hostEditingFrozen, true);
-  assert.equal(getCollection('account_controls').get('host-uid')?.freezeReason, 'Ownership dispute under review');
-
   const events = [...getCollection('admin_audit').values()].map(event => event.eventType);
   assert.ok(events.includes('account_disabled'));
-  assert.ok(events.includes('host_editing_frozen'));
 });
 
 test('ordinary admin cannot act against another active Admin', async () => {

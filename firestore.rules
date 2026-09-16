@@ -19,16 +19,6 @@ service cloud.firestore {
         && get(/databases/$(database)/documents/producer_owners/$(producerId)).data.status == 'active';
     }
 
-    function hostEditingAllowed() {
-      return isAuthenticated()
-        && (!exists(/databases/$(database)/documents/account_controls/$(request.auth.uid))
-          || get(/databases/$(database)/documents/account_controls/$(request.auth.uid)).data.hostEditingFrozen != true);
-    }
-
-    function canEditProducer(producerId) {
-      return isProducerOwner(producerId) && hostEditingAllowed();
-    }
-
     function hasValidFavoriteProducerIds() {
       return !('favoriteProducerIds' in request.resource.data)
         || (request.resource.data.favoriteProducerIds is list
@@ -84,12 +74,6 @@ service cloud.firestore {
       allow write: if false;
     }
 
-    // Trusted dispute/account controls are server-only. Hosts cannot inspect or
-    // alter the document used by Security Rules to freeze producer writes.
-    match /account_controls/{userId} {
-      allow read, write: if false;
-    }
-
     // 3. Producer Registrations & Claims
     // Authenticated applicants submit claims in pending_verification status with isVatVerified = false.
     // Applicants can read/edit their submission but cannot modify protected verification/approval fields.
@@ -110,7 +94,7 @@ service cloud.firestore {
 
       allow update: if isAuthenticated() && (
         resource.data.userId == request.auth.uid ||
-        canEditProducer(producerId)
+        isProducerOwner(producerId)
       )
         && request.resource.data.userId == resource.data.userId
         && request.resource.data.producerId == resource.data.producerId
@@ -133,11 +117,10 @@ service cloud.firestore {
     // authenticated host may change only immediate operational fields. Media
     // review state, commercial flags and other curated content are written only
     // through trusted Admin SDK services, which bypass client Security Rules.
-    // A trusted dispute freeze blocks all Host writes without hiding the public listing.
     match /producer_overrides/{producerId} {
       allow read: if true;
 
-      allow create: if canEditProducer(producerId)
+      allow create: if isProducerOwner(producerId)
         && request.resource.data.producerId == producerId
         && request.resource.data.keys().hasOnly([
           'producerId',
@@ -149,7 +132,7 @@ service cloud.firestore {
           'updatedAt'
         ]);
 
-      allow update: if canEditProducer(producerId)
+      allow update: if isProducerOwner(producerId)
         && request.resource.data.producerId == producerId
         && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
           'customNotice',
@@ -211,7 +194,7 @@ service cloud.firestore {
 
       function isValidHostLifecycleUpdate() {
         let diff = request.resource.data.diff(resource.data);
-        return canEditProducer(resource.data.producerId)
+        return isProducerOwner(resource.data.producerId)
           && (
             (
               resource.data.status == 'pending'
@@ -234,7 +217,6 @@ service cloud.firestore {
       allow create: if isAuthenticated() && isValidNewBooking();
 
       // Traveler reads own bookings; Host reads bookings for owned producer.
-      // A dispute freeze blocks edits, not operational visibility.
       allow read: if isAuthenticated() && (
         resource.data.userId == request.auth.uid ||
         isProducerOwner(resource.data.producerId)
@@ -242,7 +224,7 @@ service cloud.firestore {
 
       // Status updates:
       // - Traveler may only transition pending -> cancelled (affectedKeys must be ONLY status)
-      // - Approved, unfrozen host may transition pending -> confirmed (with confirmedAt) or cancelled,
+      // - Approved host may transition pending -> confirmed (with confirmedAt) or cancelled,
       //   and confirmed -> completed or cancelled (affectedKeys must be ONLY status)
       // All other fields remain strictly immutable.
       allow update: if isAuthenticated() && (

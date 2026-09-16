@@ -4,14 +4,12 @@ import {
   AdminAccountError,
   searchAdminAccounts,
   setAccountDisabled,
-  setHostEditingFrozen,
 } from './services/adminAccountService';
 
 const defaults = {
   verifyToken: (token: string) => adminAuth().verifyIdToken(token, true),
   searchAdminAccounts,
   setAccountDisabled,
-  setHostEditingFrozen,
 };
 
 type AdminAccountRouteDependencies = typeof defaults;
@@ -78,29 +76,6 @@ export function registerAdminAccountRoutes(
       }
       console.error('Admin account access update unavailable:', error);
       res.status(503).json({ error: 'Account access management is temporarily unavailable.' });
-    }
-  });
-
-  app.post('/api/admin/accounts/:uid/host-freeze', requireAuth, async (req, res) => {
-    try {
-      if (typeof req.body?.frozen !== 'boolean') {
-        res.status(400).json({ error: 'Host editing state is required.' });
-        return;
-      }
-      const account = await deps.setHostEditingFrozen(
-        res.locals.identity.uid,
-        String(req.params.uid),
-        req.body.frozen,
-        typeof req.body?.reason === 'string' ? req.body.reason : ''
-      );
-      res.json({ account });
-    } catch (error) {
-      if (error instanceof AdminAccountError) {
-        res.status(errorStatus(error)).json({ error: error.message });
-        return;
-      }
-      console.error('Host editing freeze update unavailable:', error);
-      res.status(503).json({ error: 'Host dispute controls are temporarily unavailable.' });
     }
   });
 }

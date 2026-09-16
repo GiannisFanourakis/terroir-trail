@@ -123,7 +123,7 @@ test('verified Host cannot rate a producer listing they manage', async () => {
   );
 });
 
-test('verified unfrozen Host may reply only to reviews on an owned listing', async () => {
+test('verified Host may reply only to reviews on an owned listing', async () => {
   const { db, store } = makeDb({
     producer_owners: {
       'producer-a': { producerId: 'producer-a', ownerUid: 'host-a', status: 'active' },
@@ -167,37 +167,5 @@ test('verified unfrozen Host may reply only to reviews on an owned listing', asy
   await assert.rejects(
     upsertHostReviewReply('host-a', 'review-b', 'Foreign listing reply', db as any),
     (error: unknown) => error instanceof ProducerReviewError && error.code === 'forbidden'
-  );
-});
-
-test('dispute-frozen Host cannot publish or edit an official review reply', async () => {
-  const { db } = makeDb({
-    producer_owners: {
-      'producer-a': { producerId: 'producer-a', ownerUid: 'host-a', status: 'active' },
-    },
-    account_controls: {
-      'host-a': { hostEditingFrozen: true },
-    },
-    producer_reviews: {
-      'review-a': {
-        producerId: 'producer-a',
-        travelerUid: 'traveler-a',
-        travelerName: 'Traveler A',
-        rating: 4,
-        comment: 'Lovely visit.',
-        verifiedVisit: false,
-        status: 'published',
-        createdAt: '2026-09-16T00:00:00.000Z',
-        updatedAt: '2026-09-16T00:00:00.000Z',
-      },
-    },
-  });
-
-  await assert.rejects(
-    upsertHostReviewReply('host-a', 'review-a', 'Reply while frozen', db as any),
-    (error: unknown) =>
-      error instanceof ProducerReviewError &&
-      error.code === 'forbidden' &&
-      /temporarily unavailable/.test(error.message)
   );
 });

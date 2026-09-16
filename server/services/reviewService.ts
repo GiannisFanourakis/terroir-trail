@@ -226,12 +226,10 @@ export async function upsertHostReviewReply(
 
   const capabilities = await getTrustedAccountCapabilities(uid, db);
   const ownsListing = capabilities.producerIds.includes(String(review.producerId || ''));
-  if (!ownsListing || !capabilities.canManageOwnedListings) {
+  if (!ownsListing) {
     throw new ProducerReviewError(
       'forbidden',
-      capabilities.hostEditingFrozen
-        ? 'Host replies are temporarily unavailable while this account is under review.'
-        : 'Only a verified Host for this producer may publish the official reply.'
+      'Only a verified Host for this producer may publish the official reply.'
     );
   }
 

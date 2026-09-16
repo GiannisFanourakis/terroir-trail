@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { Ban, LockKeyhole, RefreshCw, Search, ShieldAlert, UnlockKeyhole, UserCheck } from 'lucide-react';
+import { Ban, RefreshCw, Search, ShieldAlert, UserCheck } from 'lucide-react';
 import {
   searchAdminAccounts,
   setAdminAccountDisabled,
-  setAdminHostEditingFrozen,
   type AdminAccountSummary,
 } from '../../services/adminApi';
 
@@ -70,35 +69,14 @@ export const AdminAccountManagement: React.FC = () => {
     }
   };
 
-  const handleFreeze = async (account: AdminAccountSummary) => {
-    const reason = requireReason(account.uid);
-    if (!reason) return;
-    const nextFrozen = !account.hostEditingFrozen;
-    const verb = nextFrozen ? 'freeze Host editing for' : 'restore Host editing for';
-    if (!window.confirm(`Are you sure you want to ${verb} ${account.email || account.uid}?`)) return;
-
-    setActionUid(account.uid);
-    setError(null);
-    setNotice(null);
-    try {
-      await setAdminHostEditingFrozen(account.uid, nextFrozen, reason);
-      updateAccount(account.uid, { hostEditingFrozen: nextFrozen });
-      setNotice(nextFrozen ? 'Host editing frozen. The public listing remains online.' : 'Host editing restored.');
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unable to change Host editing status.');
-    } finally {
-      setActionUid(null);
-    }
-  };
-
   return (
     <section className="rounded-2xl border border-white/10 bg-stone-900/50 p-4 sm:p-5">
       <div className="flex items-start gap-3">
         <ShieldAlert className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
         <div className="min-w-0">
-          <h3 className="text-sm font-bold text-white">Account access & disputes</h3>
+          <h3 className="text-sm font-bold text-white">Account access</h3>
           <p className="mt-1 text-[11px] text-stone-400 leading-relaxed">
-            Search operational account status without exposing private favorites, Passport notes or journals. Disable login for a Traveler/Host, or freeze a disputed Host's editing rights while leaving the factual public producer listing online.
+            Search operational account status without exposing private favorites, Passport notes or journals. Host access to producer listings is controlled separately through trusted ownership assignment, removal and reassignment.
           </p>
         </div>
       </div>
@@ -156,7 +134,6 @@ export const AdminAccountManagement: React.FC = () => {
                     {!account.isPlatformOwner && account.roles.includes('admin') && <span className="rounded-full border border-violet-500/30 bg-violet-500/10 px-2 py-0.5 text-[9px] font-bold uppercase text-violet-300">Admin</span>}
                     {isHost && <span className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-[9px] font-bold uppercase text-emerald-300">Host</span>}
                     {account.disabled && <span className="rounded-full border border-rose-500/30 bg-rose-500/10 px-2 py-0.5 text-[9px] font-bold uppercase text-rose-300">Login disabled</span>}
-                    {account.hostEditingFrozen && <span className="rounded-full border border-orange-500/30 bg-orange-500/10 px-2 py-0.5 text-[9px] font-bold uppercase text-orange-300">Host edits frozen</span>}
                   </div>
                   <div className="mt-1 text-[10px] text-stone-500 break-all">{account.email || 'No email'} · UID {account.uid}</div>
                   {isHost && <div className="mt-1 text-[10px] text-stone-500">Listings: {account.producerIds.join(', ')}</div>}
@@ -173,34 +150,23 @@ export const AdminAccountManagement: React.FC = () => {
                       {account.disabled ? 'Re-enable login' : 'Disable login'}
                     </button>
                   )}
-                  {account.canFreezeHostEditing && (
-                    <button
-                      type="button"
-                      disabled={busy}
-                      onClick={() => void handleFreeze(account)}
-                      className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-2 text-[11px] font-bold disabled:opacity-50 cursor-pointer ${account.hostEditingFrozen ? 'border-sky-500/25 bg-sky-500/10 text-sky-300' : 'border-orange-500/25 bg-orange-500/10 text-orange-300'}`}
-                    >
-                      {account.hostEditingFrozen ? <UnlockKeyhole className="w-3.5 h-3.5" /> : <LockKeyhole className="w-3.5 h-3.5" />}
-                      {account.hostEditingFrozen ? 'Restore Host edits' : 'Freeze Host edits'}
-                    </button>
-                  )}
                 </div>
               </div>
 
-              {(account.canDisable || account.canFreezeHostEditing) && (
+              {account.canDisable && (
                 <label className="mt-3 block text-[10px] font-semibold text-stone-500">
-                  Reason required for the next action
+                  Reason required for the next account action
                   <input
                     value={reasonByUid[account.uid] || ''}
                     onChange={event => setReasonByUid(current => ({ ...current, [account.uid]: event.target.value }))}
                     maxLength={1000}
-                    placeholder="Example: Ownership dispute under review"
+                    placeholder="Example: Account access removed at user request"
                     className="mt-1.5 w-full rounded-lg border border-white/10 bg-stone-900 px-3 py-2 text-xs text-white placeholder:text-stone-600 focus:outline-none focus:border-amber-400/50"
                   />
                 </label>
               )}
 
-              {!account.canDisable && !account.canFreezeHostEditing && (
+              {!account.canDisable && (
                 <p className="mt-3 text-[10px] text-stone-600">This account is protected at your current authority level.</p>
               )}
             </div>
