@@ -26,6 +26,14 @@ const categoryLabels: Record<Producer['category'], string> = {
   farm: 'Farm',
 };
 
+const destinationLabels: Record<Producer['destination'], string> = {
+  crete: 'Crete',
+  santorini: 'Santorini',
+  peloponnese: 'Peloponnese',
+  northern_greece: 'Northern Greece',
+  tuscany: 'Tuscany',
+};
+
 const escapeHtml = (value: string): string =>
   value
     .replaceAll('&', '&amp;')
@@ -196,6 +204,10 @@ const renderSourceLink = (label: string, url?: string): string => {
   return `<li><a href="${escapeHtml(url)}" rel="nofollow noopener noreferrer">${escapeHtml(label)}</a></li>`;
 };
 
+const pageStyles = `
+      :root{color-scheme:dark}.seo-page{box-sizing:border-box;min-height:100vh;background:#0c0a09;color:#e7e5e4;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding:32px 20px}.seo-page article{max-width:900px;margin:0 auto}.seo-page a{color:#fbbf24}.seo-page h1{font-size:clamp(2rem,5vw,3.6rem);line-height:1.05;color:#fff;margin:.5rem 0 1rem}.seo-page h2{color:#fff;margin-top:2rem}.seo-page h3{color:#f5f5f4;margin-top:1.5rem}.seo-page .eyebrow{color:#fbbf24;font-weight:800;text-transform:uppercase;letter-spacing:.08em;font-size:.8rem}.seo-page .lead{font-size:1.15rem;line-height:1.7}.seo-page p,.seo-page dd,.seo-page li{line-height:1.7}.seo-page dl{display:grid;gap:1rem}.seo-page dt{font-weight:800;color:#fff}.seo-page dd{margin:.25rem 0 0;color:#d6d3d1}.seo-page .notice{border-left:3px solid #f59e0b;padding-left:1rem;color:#d6d3d1}.seo-page ul{line-height:1.9}.seo-page .actions{display:flex;gap:12px;flex-wrap:wrap;margin:1.5rem 0}.seo-page .button{display:inline-block;background:#f59e0b;color:#1c1917;text-decoration:none;font-weight:800;padding:10px 14px;border-radius:999px}.seo-page .secondary{background:#292524;color:#fbbf24}.seo-page .directory{display:grid;gap:10px;padding:0;list-style:none}.seo-page .directory a{display:block;border:1px solid #292524;border-radius:14px;padding:12px 14px;text-decoration:none;background:#1c1917}.seo-page .directory small{display:block;color:#a8a29e;margin-top:3px}
+`;
+
 const renderProducerPage = (producer: Producer): string => {
   const canonicalUrl = producerUrl(producer);
   const interactiveUrl = `${CANONICAL_HOST}/?producer=${encodeURIComponent(producer.id)}`;
@@ -242,14 +254,12 @@ const renderProducerPage = (producer: Producer): string => {
     <meta name="twitter:description" content="${escapeHtml(description)}" />
     <meta name="twitter:image" content="${CANONICAL_HOST}/logo.png" />
     <script type="application/ld+json">${jsonLd}</script>
-    <style>
-      :root{color-scheme:dark}.seo-page{box-sizing:border-box;min-height:100vh;background:#0c0a09;color:#e7e5e4;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding:32px 20px}.seo-page article{max-width:820px;margin:0 auto}.seo-page a{color:#fbbf24}.seo-page h1{font-size:clamp(2rem,5vw,3.6rem);line-height:1.05;color:#fff;margin:.5rem 0 1rem}.seo-page h2{color:#fff;margin-top:2rem}.seo-page .eyebrow{color:#fbbf24;font-weight:800;text-transform:uppercase;letter-spacing:.08em;font-size:.8rem}.seo-page .lead{font-size:1.15rem;line-height:1.7}.seo-page p,.seo-page dd{line-height:1.7}.seo-page dl{display:grid;gap:1rem}.seo-page dt{font-weight:800;color:#fff}.seo-page dd{margin:.25rem 0 0;color:#d6d3d1}.seo-page .notice{border-left:3px solid #f59e0b;padding-left:1rem;color:#d6d3d1}.seo-page ul{line-height:1.9}.seo-page .actions{display:flex;gap:12px;flex-wrap:wrap;margin:1.5rem 0}.seo-page .button{display:inline-block;background:#f59e0b;color:#1c1917;text-decoration:none;font-weight:800;padding:10px 14px;border-radius:999px}.seo-page .secondary{background:#292524;color:#fbbf24}
-    </style>
+    <style>${pageStyles}</style>
   </head>
   <body style="margin:0">
     <main class="seo-page">
       <article>
-        <p><a href="/">← TerroirTrail</a></p>
+        <p><a href="/">TerroirTrail</a> · <a href="/producers/">Producer directory</a></p>
         <p class="eyebrow">${escapeHtml(category)} · ${escapeHtml(producer.region)}</p>
         <h1>${escapeHtml(producer.name)}</h1>
         ${producer.greekName && producer.greekName !== producer.name ? `<p lang="el">${escapeHtml(producer.greekName)}</p>` : ''}
@@ -279,10 +289,79 @@ const renderProducerPage = (producer: Producer): string => {
 </html>\n`;
 };
 
+const renderProducerDirectory = (): string => {
+  const canonicalUrl = `${CANONICAL_HOST}/producers/`;
+  const title = 'Audited Producer Directory | TerroirTrail';
+  const description = `Browse ${PRODUCERS.length} audited producer/project records across Crete, Santorini, the Peloponnese, Northern Greece and Tuscany.`;
+  const grouped = Object.keys(destinationLabels).map((destinationKey) => {
+    const destination = destinationKey as Producer['destination'];
+    const producers = PRODUCERS
+      .filter((producer) => producer.destination === destination)
+      .sort((a, b) => a.region.localeCompare(b.region) || a.name.localeCompare(b.name));
+    if (producers.length === 0) return '';
+    const items = producers.map((producer) =>
+      `<li><a href="${producerPath(producer)}"><strong>${escapeHtml(producer.name)}</strong><small>${escapeHtml(categoryLabels[producer.category])} · ${escapeHtml(producer.village)}, ${escapeHtml(producer.region)}</small></a></li>`
+    ).join('\n');
+    return `<section><h2>${escapeHtml(destinationLabels[destination])}</h2><ul class="directory">${items}</ul></section>`;
+  }).join('\n');
+
+  const itemList = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    '@id': canonicalUrl,
+    url: canonicalUrl,
+    name: title,
+    description,
+    mainEntity: {
+      '@type': 'ItemList',
+      numberOfItems: PRODUCERS.length,
+      itemListElement: PRODUCERS.map((producer, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        url: producerUrl(producer),
+        name: producer.name,
+      })),
+    },
+  };
+
+  return `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>${escapeHtml(title)}</title>
+    <meta name="description" content="${escapeHtml(description)}" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+    <link rel="canonical" href="${canonicalUrl}" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="TerroirTrail" />
+    <meta property="og:url" content="${canonicalUrl}" />
+    <meta property="og:title" content="${escapeHtml(title)}" />
+    <meta property="og:description" content="${escapeHtml(description)}" />
+    <script type="application/ld+json">${JSON.stringify(itemList, null, 2).replace(/</g, '\\u003c')}</script>
+    <style>${pageStyles}</style>
+  </head>
+  <body style="margin:0">
+    <main class="seo-page">
+      <article>
+        <p><a href="/">← TerroirTrail</a></p>
+        <p class="eyebrow">Evidence-first catalogue</p>
+        <h1>Audited Producer Directory</h1>
+        <p class="lead">${escapeHtml(description)}</p>
+        <p class="notice">Listings are independent researched records. Inclusion does not imply a TerroirTrail partnership, public visitor access, or verified road suitability. Each entity page states the evidence available for that producer or project.</p>
+        ${grouped}
+      </article>
+    </main>
+  </body>
+</html>\n`;
+};
+
 const renderSitemap = (): string => {
   const urls = [
     `${CANONICAL_HOST}/`,
     `${CANONICAL_HOST}/privacy.html`,
+    `${CANONICAL_HOST}/producers/`,
     ...PRODUCERS.map(producerUrl),
   ];
   const entries = urls.map((url) => `  <url>\n    <loc>${escapeXml(url)}</loc>\n  </url>`).join('\n');
@@ -337,7 +416,7 @@ const refreshHomepageSeoState = (sourceHtml: string): string => {
   html = replaceRequired(
     html,
     '<h2>Verified Crete &amp; Santorini Producer Directory</h2>',
-    '<p>The full audited catalogue contains 55 producer/project records, each published as a canonical producer entity page for search and answer-engine discovery.</p>\n        <h2>Audited Crete &amp; Santorini Directory — Homepage Excerpt</h2>'
+    '<p>The full audited catalogue contains 55 producer/project records, each published as a canonical producer entity page for search and answer-engine discovery. <a href="/producers/">Browse the full audited producer directory.</a></p>\n        <h2>Audited Crete &amp; Santorini Directory — Homepage Excerpt</h2>'
   );
   return html;
 };
@@ -362,11 +441,12 @@ function generateSeoPages(): void {
   }
 
   const homeHtml = fs.readFileSync(homeIndexPath, 'utf-8');
-  const refreshedHomeHtml = refreshHomepageSeoState(homeHtml);
-  fs.writeFileSync(homeIndexPath, refreshedHomeHtml, 'utf-8');
+  fs.writeFileSync(homeIndexPath, refreshHomepageSeoState(homeHtml), 'utf-8');
 
   const producerRoot = path.join(distDir, 'producers');
   fs.rmSync(producerRoot, { recursive: true, force: true });
+  fs.mkdirSync(producerRoot, { recursive: true });
+  fs.writeFileSync(path.join(producerRoot, 'index.html'), renderProducerDirectory(), 'utf-8');
 
   for (const producer of PRODUCERS) {
     const pageDir = path.join(producerRoot, producer.id);
@@ -375,7 +455,7 @@ function generateSeoPages(): void {
   }
 
   fs.writeFileSync(path.join(distDir, 'sitemap.xml'), renderSitemap(), 'utf-8');
-  console.log(`✓ SEO generation complete: homepage refreshed + ${PRODUCERS.length} canonical producer pages + sitemap.`);
+  console.log(`✓ SEO generation complete: homepage refreshed + producer directory + ${PRODUCERS.length} canonical producer pages + sitemap.`);
 }
 
 generateSeoPages();
