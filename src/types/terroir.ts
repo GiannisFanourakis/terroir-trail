@@ -103,7 +103,10 @@ export interface Producer {
   tagLine: string;
   description: string;
   story: string;
-  indigenousVarieties: string[]; // e.g. ["Vidiano", "Assyrtiko", "Agiorgitiko", "Craft IPA", "Fresh Lager"]
+  /** Legacy field retained for wine/grape variety compatibility. */
+  indigenousVarieties: string[];
+  /** Category-neutral, source-backed products or specialties (for example cheeses, beer styles, oils or honey types). */
+  productSpecialties?: string[];
   tastingHighlights: string[];
   openingHours: string;
   bestSeason?: string;
