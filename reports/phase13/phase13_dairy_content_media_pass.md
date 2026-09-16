@@ -12,23 +12,25 @@ The live Supabase records now carry researched tag lines, descriptions, stories,
 
 All 12 Phase 13 additions currently have no persisted `cover_image` and an empty persisted `gallery`. TerroirTrail therefore must not pretend that stored producer photography exists.
 
-Five records already carry a manually audited persistent Google Place ID and a verified location. Once the Phase 13 records are included in the Google Places compatibility allowlist, they are eligible for live Google Maps imagery (subject to Google actually returning photos):
+Seven records now carry a manually audited persistent Google Place ID and a verified location. The current card and drawer media eligibility checks use the live producer object, so these records are eligible for live Google Maps imagery without needing to be precompiled into the bundled compatibility allowlist (subject to the Google Places media feature being enabled and Google actually returning photos):
 
+- ARGOGAL / Koromichi Family
 - Arvanitis Dairy
 - Baladinos & Sons
 - Christakis / Patria Feta
 - ELATOS / Kapetanou Bros
+- Psiloritis Cheese Dairy
 - Stamatogiorgis Dairy
 
-Seven records remain on the neutral category placeholder because no persistent audited Google Place ID is currently stored:
+Five records remain on the neutral category placeholder because no persistent audited Google Place ID is currently stored:
 
-- ARGOGAL / Koromichi Family
 - GYPAS / Gyparaki Bros
 - Iliakis Dairy / Meraki Iliaki
 - Agricultural Dairy Cooperative of Kalavryta
 - Katsouli Cheese Factory
-- Psiloritis Cheese Dairy
 - Tsatsoulis Cheese
+
+Across the final 14-producer dairy set, including the pre-existing Aerakis Cheese Products and Tzourmpakis Dairy records, 9 currently carry a persistent audited Google Place ID and 5 remain unresolved.
 
 No Place ID was inferred from coordinates and no website photograph was hot-linked without an explicit media-provenance path.
 
