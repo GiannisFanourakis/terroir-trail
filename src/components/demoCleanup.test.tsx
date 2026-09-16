@@ -128,8 +128,8 @@ describe('Production Demo & Fake UI Removal Suite', () => {
       expect(html).not.toContain('Demo Producer (GR)');
       expect(html).not.toContain('Demo Brewery (GR)');
       expect(html).not.toContain('Demo Producer (IT)');
-      // Genuine utility action "Clear Form" remains intact
-      expect(html).toContain('Clear Form');
+      expect(html).toContain('No banking or payout details are collected in this claim.');
+      expect(html).toContain('Submit claim for verification');
     });
   });
 });
