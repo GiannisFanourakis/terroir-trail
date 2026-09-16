@@ -1,11 +1,17 @@
 import { Producer, Destination, Category, Ethos, RoadAccess, FoodOption } from '../types/terroir';
 import { TastingExperience } from '../types/booking';
-import { AUDITED_PRODUCERS } from '../data/auditedProducers';
+import { CRETAN_PRODUCERS } from '../data/producers';
+import { SANTORINI_PRODUCERS } from '../data/santoriniProducers';
+import { PHASE10B_PRODUCERS } from '../data/phase10bProducers';
 import { ALL_EXPERIENCES } from '../data/experiences';
 import { supabase, isSupabaseConfigured } from './supabase';
 import { logger } from './logger';
 
-const FALLBACK_PRODUCERS: Producer[] = AUDITED_PRODUCERS;
+const FALLBACK_PRODUCERS: Producer[] = [
+  ...CRETAN_PRODUCERS,
+  ...SANTORINI_PRODUCERS,
+  ...PHASE10B_PRODUCERS,
+];
 
 export interface ViewportBounds {
   north: number;
@@ -158,7 +164,7 @@ function filterProducersList(producers: Producer[], options: ProducerQueryOption
 /**
  * Authoritative in-memory state and provenance tracking.
  *
- * - fallback: canonical audited bundled producer snapshot.
+ * - fallback: audited bundled Crete, Santorini, and Phase 10B producer snapshots.
  * - live: Supabase successfully returned data and remains the sole authority.
  */
 let cacheProvenance: DataProvenance = 'fallback';
