@@ -89,7 +89,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
       !hasTrustedLocalPhoto &&
       runtimeConfig.googlePlacesMedia.enabled &&
       producer.googlePlaceId?.trim() &&
-      isGooglePlacesEligible(producer.id)
+      isGooglePlacesEligible(producer)
   );
 
   const [heroImgSrc, setHeroImgSrc] = useState<string>('');
