@@ -40,9 +40,10 @@ describe('Google Places integration for audited regional producers', () => {
   });
 
   it('contains every audited record that has both a verified location and persistent Place ID', () => {
-    expect(AUDITED_PRODUCERS).toHaveLength(67);
-    expect(PHASE13_DAIRY_PRODUCERS).toHaveLength(12);
+    expect(AUDITED_PRODUCERS).toHaveLength(62);
+    expect(PHASE13_DAIRY_PRODUCERS).toHaveLength(7);
     expect(PHASE13_GOOGLE_MEDIA_PRODUCERS).toHaveLength(5);
+    expect(AUDITED_GOOGLE_MEDIA_PRODUCERS).toHaveLength(62);
     expect(GOOGLE_PLACES_PROTOTYPE_ITEMS).toHaveLength(
       AUDITED_GOOGLE_MEDIA_PRODUCERS.length
     );
@@ -69,7 +70,7 @@ describe('Google Places integration for audited regional producers', () => {
     }
   });
 
-  it('includes the five Phase 13 dairies that already have manually audited Place IDs', () => {
+  it('includes the five Phase 13 dairies whose Place IDs are stored directly in the raw Phase 13 batch', () => {
     expect(
       PHASE13_GOOGLE_MEDIA_PRODUCERS.map((producer) => producer.id).sort()
     ).toEqual(
@@ -84,6 +85,20 @@ describe('Google Places integration for audited regional producers', () => {
 
     for (const producer of PHASE13_GOOGLE_MEDIA_PRODUCERS) {
       expect(isGooglePlacesEligible(producer.id)).toBe(true);
+    }
+  });
+
+  it('keeps the two post-import dairy Place ID fixes eligible through the audited fallback layer', () => {
+    const syncedDairyIds = [
+      'argogal-koromichi-kefalari',
+      'psiloritis-cheese-dairy-livadia',
+    ];
+
+    for (const id of syncedDairyIds) {
+      const producer = AUDITED_PRODUCERS.find((candidate) => candidate.id === id);
+      expect(producer?.googlePlaceId).toBeTruthy();
+      expect(producer?.locationStatus).toBe('verified_location');
+      expect(isGooglePlacesEligible(id)).toBe(true);
     }
   });
 
