@@ -1,8 +1,8 @@
 # TerroirTrail Terms of Service
 
-**Effective Date:** January 1, 2026  
-**Last Updated:** September 16, 2026  
-**Platform Operator:** ΙΩΑΝΝΗΣ ΚΩΝΣΤΑΝΤΙΝΟΣ ΦΑΝΟΥΡΑΚΗΣ, sole proprietorship  
+**Effective Date:** January 1, 2026<br />
+**Last Updated:** September 17, 2026<br />
+**Platform Operator:** ΙΩΑΝΝΗΣ ΚΩΝΣΤΑΝΤΙΝΟΣ ΦΑΝΟΥΡΑΚΗΣ, sole proprietorship<br />
 **Contact:** terroirtrail@gmail.com
 
 ---
@@ -117,7 +117,18 @@ Private traveler notes are not treated as public producer content.
 
 ---
 
-## 11. Privacy, Export, and Account Deletion
+## 11. Outbound Travel Links and Affiliate Disclosure
+
+TerroirTrail may feature links to third-party travel services (such as car rentals, airport transfers, ferries, experiences, and connectivity) via curated affiliate partnerships, including Travelpayouts.
+
+- **Independent Providers:** Third-party travel services are offered, operated, and fulfilled entirely by independent commercial providers under their own respective terms, conditions, and privacy policies. TerroirTrail is not an online travel agency (OTA), transportation carrier, tour operator, or party to any booking made with external partners.
+- **Affiliate Commission:** If you follow an outbound affiliate link and complete a qualifying booking, TerroirTrail may earn a referral commission at no additional cost to you.
+- **Pass-Holder Experience:** Active TerroirTrail Explorer Pass holders enjoy an ad-free discovery environment and do not see promotional travel-affiliate carousels.
+- **Dormant Commercial Infrastructure:** Live consumer payment processing for digital passes (via Stripe) and third-party display advertising (via Google AdSense) remain dormant/inactive in this production release.
+
+---
+
+## 12. Privacy, Export, and Account Deletion
 
 Personal data is handled as described in the TerroirTrail Privacy Notice.
 
@@ -127,7 +138,7 @@ Deleting a Host's personal account removes the user's management assignment but 
 
 ---
 
-## 12. Administrative Controls
+## 13. Administrative Controls
 
 TerroirTrail administrators may take proportionate action to protect users, producers, catalogue integrity, and the service. This may include disabling or re-enabling account access, freezing disputed Host edits, reviewing claims, and moderating producer content.
 
@@ -137,7 +148,7 @@ Only the Platform Owner may grant or revoke administrator status or take adminis
 
 ---
 
-## 13. Service Availability and Changes
+## 14. Service Availability and Changes
 
 TerroirTrail is under active development. Features, geographic coverage, catalogue content, integrations, and commercial options may be added, changed, suspended, or removed.
 
@@ -145,7 +156,7 @@ We do not guarantee uninterrupted availability, that every producer will remain 
 
 ---
 
-## 14. Disclaimer and Limitation of Liability
+## 15. Disclaimer and Limitation of Liability
 
 To the maximum extent permitted by applicable law, TerroirTrail is provided on an "as available" basis. Public listing information may contain errors or become outdated, and third-party producers remain responsible for their own products and services.
 
@@ -155,7 +166,7 @@ Subject to those mandatory rights, the Platform Operator is not responsible for 
 
 ---
 
-## 15. Governing Law
+## 16. Governing Law
 
 These Terms are governed by the laws of the Hellenic Republic (Greece), together with directly applicable European Union law and any mandatory consumer-protection rules that apply to the user.
 
@@ -163,13 +174,13 @@ Any mandatory rights concerning jurisdiction or dispute resolution remain unaffe
 
 ---
 
-## 16. Changes to these Terms
+## 17. Changes to these Terms
 
 These Terms may be updated as TerroirTrail develops. The current version will show the latest update date. Material changes may also be communicated in the application where appropriate.
 
 ---
 
-## 17. Contact
+## 18. Contact
 
 Questions about these Terms may be sent to:
 

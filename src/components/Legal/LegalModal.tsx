@@ -78,7 +78,7 @@ export const LegalModal: React.FC<LegalModalProps> = ({
                 <div>
                   <h3 className="font-bold text-white text-sm">Privacy at the current launch stage</h3>
                   <p className="text-[11px] text-stone-300 mt-1">
-                    TerroirTrail is currently a discovery-first product. Public tasting reservations, paid Explorer Pass sales, chauffeur bookings and producer subscriptions are not part of the current launch surface.
+                    TerroirTrail is currently a discovery-first product across Greece and Italy (Crete, Santorini, Peloponnese, Macedonia, Greece, and Tuscany). Public tasting reservations, consumer Explorer Pass purchases via Stripe, and display advertising are dormant or inactive in this release.
                   </p>
                 </div>
               </div>
@@ -89,7 +89,7 @@ export const LegalModal: React.FC<LegalModalProps> = ({
                   Authentication and account features may use your name, email address, authentication identifier, optional profile information, Passport stamp IDs and private tasting notes. Passport stamps and notes can be stored in the authenticated cloud profile.
                 </p>
                 <p>
-                  Saved favorites are currently device-local. Signed-in favorites are separated by account on that browser, but they are not currently cloud-synced.
+                  Saved favorites are currently device-local. Signed-in favorites are separated by account on that browser.
                 </p>
               </section>
 
@@ -101,19 +101,19 @@ export const LegalModal: React.FC<LegalModalProps> = ({
               </section>
 
               <section className="space-y-2">
-                <h4 className="font-bold text-white">Location, storage and advertising</h4>
+                <h4 className="font-bold text-white">Location, storage, affiliates and advertising</h4>
                 <p>
                   User-initiated device location can be used to support map features; TerroirTrail does not intentionally run background location tracking. Browser local storage is used for device-local preferences such as favorites.
                 </p>
                 <p>
-                  The app contains infrastructure for a Google AdSense display slot, which is disabled for the current public launch. If advertising is explicitly enabled and configured in the future, it renders only when a verified slot is configured and available; otherwise it fails closed and no fallback sponsor claim is shown. When Google advertising loads, Google may process technical information under its own policies and applicable consent requirements.
+                  Outbound links to third-party travel services (such as car rentals, transfers, or ferries via Travelpayouts) do not transmit personal profile data or set tracking cookies. Explorer Pass holders enjoy an ad-free experience. Display advertising (Google AdSense) and live consumer pass purchases (Stripe) are currently disabled/dormant.
                 </p>
               </section>
 
               <section className="space-y-2">
-                <h4 className="font-bold text-white">Privacy requests</h4>
+                <h4 className="font-bold text-white">Privacy requests & account deletion</h4>
                 <p>
-                  There is not yet an in-app account deletion control. Requests to access, correct or delete account-related personal information can be sent to{' '}
+                  Authenticated users may download a machine-readable data export or permanently delete their account at any time via the in-app <strong>Account & privacy</strong> settings. Requests to access, correct or delete account-related personal information can also be sent to{' '}
                   <a href="mailto:terroirtrail@gmail.com" className="text-amber-400 underline">
                     terroirtrail@gmail.com
                   </a>.
@@ -162,6 +162,13 @@ export const LegalModal: React.FC<LegalModalProps> = ({
                 <h4 className="font-bold text-white">Independent third parties</h4>
                 <p>
                   Producers, map providers, linked websites and other third parties operate independently. A researched listing does not itself mean that the producer has entered a commercial partnership with TerroirTrail.
+                </p>
+              </section>
+
+              <section className="space-y-2">
+                <h4 className="font-bold text-white">Travel affiliate links</h4>
+                <p>
+                  TerroirTrail may feature outbound affiliate links for travel services (car hire, transfers, ferries, connectivity via Travelpayouts). TerroirTrail is not an online travel agency or transportation provider; third-party bookings are fulfilled directly by independent providers under their own terms.
                 </p>
               </section>
             </div>
@@ -225,23 +232,23 @@ export const LegalModal: React.FC<LegalModalProps> = ({
               </div>
 
               <section className="space-y-2">
-                <h4 className="font-bold text-white">TerroirTrail code</h4>
+                <h4 className="font-bold text-white">TerroirTrail software</h4>
                 <p>
-                  The repository is distributed under the MIT License. Third-party libraries remain subject to their own license terms.
+                  The TerroirTrail application, proprietary schemas, and brand assets are proprietary works owned by TerroirTrail (All Rights Reserved). Open-source libraries and bundled dependencies remain subject to their respective licenses. See LICENSE.md for complete terms.
                 </p>
               </section>
 
               <section className="space-y-2">
-                <h4 className="font-bold text-white">Map data</h4>
+                <h4 className="font-bold text-white">Geospatial and map data</h4>
                 <p>
-                  Map content can include OpenStreetMap-derived data and configured tile providers. Required map attribution should remain visible wherever those maps are displayed.
+                  Map layers include regional terroir boundaries sourced from geoBoundaries (CC BY 4.0), Eurostat GISCO NUTS, and base tiles from OpenStreetMap (ODbL), CARTO, and Esri. Third-party attributions remain visible across all interactive maps.
                 </p>
               </section>
 
               <section className="space-y-2">
                 <h4 className="font-bold text-white">Producer images and editorial content</h4>
                 <p>
-                  A software license does not automatically grant rights to third-party photographs, producer logos or editorial source material. Image provenance and usage rights are reviewed separately as part of the product roadmap.
+                  A software license does not automatically grant rights to third-party photographs, producer logos or editorial source material. Official producer photos may also be loaded via verified Google Places media.
                 </p>
               </section>
             </div>
@@ -249,7 +256,7 @@ export const LegalModal: React.FC<LegalModalProps> = ({
         </div>
 
         <div className="px-5 sm:px-7 py-3 border-t border-white/10 bg-stone-900/50 text-[10px] text-stone-500 flex items-center justify-between gap-3 shrink-0">
-          <span>Last product-alignment review: 13 Sep 2026</span>
+          <span>Last product-alignment review: 17 Sep 2026</span>
           <a href="mailto:terroirtrail@gmail.com" className="text-amber-400 hover:text-amber-300 underline">
             Contact TerroirTrail
           </a>

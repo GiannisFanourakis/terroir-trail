@@ -34,7 +34,7 @@
       </span>
       <h1 class="text-3xl sm:text-4xl font-bold text-white mb-2">TerroirTrail Privacy Notice</h1>
       <p class="text-xs text-stone-400 mb-8 pb-6 border-b border-white/10">
-        Last updated: September 13, 2026 · Privacy contact:
+        Last updated: September 17, 2026 · Privacy contact:
         <a href="mailto:terroirtrail@gmail.com" class="text-amber-400 underline">terroirtrail@gmail.com</a>
       </p>
 
@@ -42,7 +42,7 @@
         <div>
           <h2 class="text-xl font-bold text-stone-100 mb-3">1. What TerroirTrail is</h2>
           <p>
-            TerroirTrail is currently a discovery-first guide for independent producers and rural projects. The launch product does not publicly offer TerroirTrail-operated tasting reservations, paid Explorer Pass sales, chauffeur bookings, or producer subscription plans.
+            TerroirTrail is an independent discovery platform for authentic producers, agritourism estates, wineries, breweries, distilleries, olive oil mills, and artisan food makers across Greece and Italy (Crete, Santorini, Peloponnese, Macedonia, Greece, and Tuscany). The public application is discovery-first; direct tasting bookings, consumer Explorer Pass purchases via Stripe, and third-party display advertising are currently dormant or inactive.
           </p>
         </div>
 
@@ -50,7 +50,7 @@
           <h2 class="text-xl font-bold text-stone-100 mb-3">2. Information used by the current product</h2>
           <ul class="list-disc pl-5 space-y-2">
             <li><strong>Traveler accounts:</strong> authentication identifiers, name, email address, optional profile information, passport stamp IDs and personal tasting notes.</li>
-            <li><strong>Saved favorites:</strong> favorites are stored in the browser on the current device. Signed-in favorites are separated by account on that device, but they are not currently cloud-synced.</li>
+            <li><strong>Saved favorites:</strong> favorites are stored in the browser on the current device. Signed-in favorites are separated by account on that device.</li>
             <li><strong>Producer claims:</strong> a claimant may submit their name, account/email, selected estate and optional business evidence such as a tax/VAT identifier, registered business name, address or contact details. Submission does not itself grant host authority.</li>
             <li><strong>Public producer information:</strong> researched listing information such as producer/project name, location, contact details, visiting information and source-backed access metadata may be displayed publicly.</li>
             <li><strong>Location:</strong> if you use a browser or device location feature, location is requested for the user-initiated map action. TerroirTrail does not intentionally run background location tracking.</li>
@@ -70,35 +70,37 @@
         <div>
           <h2 class="text-xl font-bold text-stone-100 mb-3">4. Services and storage</h2>
           <ul class="list-disc pl-5 space-y-2">
-            <li><strong>Firebase / Google:</strong> used for authentication, user-profile storage and hosting-related services.</li>
+            <li><strong>Firebase / Google Cloud:</strong> used for authentication, private user-profile storage, operational records, and hosting-related services.</li>
             <li><strong>Apple:</strong> may be used when Sign in with Apple is enabled and selected.</li>
-            <li><strong>Supabase:</strong> used for the producer catalogue and related application data.</li>
-            <li><strong>Map/tile providers:</strong> map tiles and geographic content can result in normal network requests to the configured mapping providers.</li>
+            <li><strong>Supabase:</strong> used for the authoritative public producer catalogue and geospatial data.</li>
+            <li><strong>Map/tile providers:</strong> requests for map imagery or tiles (OpenStreetMap, CARTO, Esri) involve standard network communication (such as IP address) with the respective providers.</li>
+            <li><strong>Google Places / Maps Media:</strong> for verified listings, place photo media may be fetched directly from Google Places API or linked to Google Maps.</li>
+            <li><strong>Travel affiliate links (Travelpayouts):</strong> curated outbound links to third-party travel services (car rentals, ferries, transfers, connectivity). TerroirTrail transmits no account, personal profile, or booking data to affiliate partners, and sets no third-party tracking cookies. Pass-holders enjoy an ad-free experience without affiliate banners.</li>
             <li><strong>Browser local storage:</strong> used for device-local preferences and saved favorites.</li>
           </ul>
         </div>
 
         <div>
-          <h2 class="text-xl font-bold text-stone-100 mb-3">5. Advertising</h2>
+          <h2 class="text-xl font-bold text-stone-100 mb-3">5. Advertising and payment infrastructure</h2>
           <p>
-            The application contains infrastructure for a Google AdSense display slot, which is disabled for the current public launch. If advertising is explicitly enabled and configured in the future, it renders only when an advertising slot is configured and available; otherwise it fails closed and no fallback sponsor claim is shown. When Google advertising is loaded, Google may receive technical information and may use cookies or similar technologies subject to its own policies and any consent requirements that apply in your region.
+            Display advertising infrastructure (Google AdSense) and live consumer payment processing for digital passes (Stripe checkout) are currently <strong>disabled/dormant</strong> in this production release. No AdSense tracking scripts are executed, and no consumer credit card data is collected or processed on the public application.
           </p>
         </div>
 
         <div>
           <h2 class="text-xl font-bold text-stone-100 mb-3">6. Sharing and public visibility</h2>
           <p>
-            Private traveler notes and account data are not intended to be public. Public producer listings use business information that is researched from public or producer-controlled sources. A producer claim is reviewed separately from the public listing and does not automatically create a commercial partnership or public Experience.
+            Private traveler notes and account data are never public or shared with producers. Public producer listings use business information researched from public or producer-controlled sources. A producer claim is reviewed separately from the public listing and does not automatically create a commercial partnership or public Experience.
           </p>
         </div>
 
         <div>
-          <h2 class="text-xl font-bold text-stone-100 mb-3">7. Access, correction and deletion requests</h2>
+          <h2 class="text-xl font-bold text-stone-100 mb-3">7. Access, export, and deletion requests</h2>
           <p>
-            You may contact TerroirTrail to request access to, correction of, or deletion of personal information associated with your account, subject to applicable law and any information that must be retained for legitimate legal or security reasons.
+            Authenticated users can access self-service account data export (downloading a machine-readable JSON archive) and self-service permanent account deletion directly within the in-app <strong>Account & privacy</strong> settings.
           </p>
           <p class="mt-2">
-            There is not yet an in-app account deletion control. Requests can be sent to
+            You may also contact TerroirTrail to exercise any data protection rights (access, correction, erasure, objection, restriction, or portability) at
             <a href="mailto:terroirtrail@gmail.com" class="text-amber-400 underline font-mono">terroirtrail@gmail.com</a>.
           </p>
         </div>

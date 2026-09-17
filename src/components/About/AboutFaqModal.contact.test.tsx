@@ -41,7 +41,7 @@ describe('AboutFaqModal public copy and contact channels', () => {
     expect(html).toContain('Independent Producer &amp; Agritourism Guide');
     expect(html).toContain('Discover independent makers and the places behind what they make.');
     expect(html).toContain('Across Greece and into Italy');
-    expect(html).toContain('55');
+    expect(html).toContain('62');
     expect(html).not.toContain('Find real makers without turning missing evidence into travel promises.');
     expect(html).not.toContain('36');
     expect(html).not.toContain('reference-quality');

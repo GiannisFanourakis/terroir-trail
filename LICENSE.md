@@ -11,7 +11,7 @@ This software, source code, design assets, proprietary database schemas, and all
 Unauthorized copying, reverse engineering, decompiling, redistribution, commercial resale, public hosting, or creating derivative works of this repository, in whole or in part, is strictly prohibited without prior written authorization from TerroirTrail.
 
 For commercial licensing, enterprise partnerships, or integration inquiries, please contact:
-**legal@terroirtrail.com**
+**terroirtrail@gmail.com**
 
 ---
 

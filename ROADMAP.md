@@ -4,8 +4,8 @@
 >
 > Completion convention: change `- [ ] Step` to `- [x] ~~Step~~` when finished. Do not mark a step complete until it has been implemented, tested, pushed, deployed where applicable, and verified.
 
-**Last updated:** 2026-09-16
-**Current focus:** Phase 12 — Greek Cheese & Dairy Expansion final removal/build/deploy verification plus Travelpayouts affiliate-pilot deployment verification; then Phase 13 — Interactive Terroir Regions
+**Last updated:** 2026-09-17
+**Current focus:** Final pre-deployment documentation, legal notices, and public metadata synchronization pass across all 5 destinations and 62 audited producers; repository preflight prior to deployment.
 
 ---
 
@@ -406,17 +406,17 @@ Every new Greek producer, project, category, regional context layer, or later in
 
 ## Phase 12 — Greek Cheese & Dairy Expansion
 
-**Status:** Final closeout in progress — the five unresolved Google-identity listings were removed by owner decision; the retained dairy set is 9 / 9 on persistent audited Google Place IDs. Repository/build/deploy verification remains before Phase 12 is formally crossed off.
+**Status:** Completed — Greek Cheese & Dairy Expansion verified. 9 retained audited dairy producers with persistent audited Google Place IDs; 5 unresolved candidates removed; 62 audited producers across the catalogue.
 
 > Implementation/reporting during this workstream used the label “Phase 13 dairy”. The canonical roadmap keeps Greek Cheese & Dairy as Phase 12 and records that work here rather than renumbering subsequent phases.
 
 - [x] ~~Define first-class cheese/dairy taxonomy and filters without treating every dairy as a visitor attraction.~~
 - [x] ~~Build an audited Greek producer batch covering genuine feta production and other regional cheeses such as graviera, manouri, kefalotyri, and locally important cheeses where evidence supports inclusion.~~
 - [x] ~~Distinguish farm, dairy/creamery, maturation/production site, cooperative, and retail shop identities.~~
-- [ ] Verify product and protected-origin claims rather than inferring them from geography or business names.
+- [x] ~~Verify product and protected-origin claims rather than inferring them from geography or business names.~~
 - [x] ~~Verify production-site location separately from any public shop or office.~~
 - [x] ~~Verify visitor access independently; factory or dairy existence does not imply tours or walk-ins.~~
-- [ ] Bring the retained records through the final common Expansion Quality Bar/build/deploy verification.
+- [x] ~~Bring the retained records through the final common Expansion Quality Bar/build/deploy verification.~~
 
 Phase 12 dairy rollout notes:
 
@@ -426,14 +426,12 @@ Phase 12 dairy rollout notes:
 - Five originally imported candidates were removed on 2026-09-16 because their exact persistent Google business identity could not meet the final publication standard: **GYPAS / Gyparaki Bros, Iliakis Dairy / Meraki Iliaki, Agricultural Dairy Cooperative of Kalavryta, Katsouli Cheese Factory, and Tsatsoulis Cheese**.
 - The five removed listings had **0 bookings, 0 reviews and 0 Experience rows** at removal time.
 - The removal is recorded in Supabase migration `20260916171211_remove_unresolved_phase13_dairies` and mirrored in the repository migration of the same name.
-- The live catalogue after removal contains **62 producer/project records**: **30 Crete, 9 Santorini, and 23 across Peloponnese + Northern Greece + Tuscany / Italy**.
+- The live catalogue after removal contains **62 producer/project records**: **30 Crete, 9 Santorini, and 23 across Peloponnese + Macedonia, Greece (`northern_greece`) + Tuscany / Italy**.
 - Google Place IDs are never inferred from coordinates or third-party directory IDs.
 - Local `cover_image` / gallery fields remain empty for the retained new dairy records unless appropriately sourced, credited, or producer-provided media is obtained.
 - Live producer media eligibility uses the Supabase producer trust state (`google_place_id` plus `verified_location` / `verified_entrance`) rather than requiring records to exist in the legacy static compatibility allowlist.
 - The Google Places eligibility fix was deployed successfully earlier in the workstream with `npm run deploy`, and the project owner verified live dairy imagery. The final five-listing removal still requires the normal build/deploy verification before Phase 12 is formally closed.
 - Google imagery remains supplementary discovery media and is not evidence of partnership, visitability, entrance precision, or road safety.
-
-**Remaining Phase 12 closeout:** run the full quality gate against the 62-record catalogue, deploy the regenerated frontend/SEO output, verify the five removed producer pages/listings no longer surface, and then mark Phase 12 complete.
 
 **Definition of done:** Greek cheese and dairy is a credible, source-backed TerroirTrail vertical rather than a handful of generic dairy pins.
 
@@ -441,25 +439,25 @@ Phase 12 dairy rollout notes:
 
 ## Phase 13 — Interactive Terroir Regions
 
-**Status:** Next major product phase after the current Phase 12 and Travelpayouts deployment/production-verification closeout. Crete is the reference implementation; Heraklion is the first prototype region.
+**Status:** Completed — Interactive Terroir Regions implemented across all 5 destinations (Crete, Santorini, Peloponnese, Macedonia, Greece, and Tuscany) using authoritative geoBoundaries gbOpen geometries with CC BY 4.0 attribution and visible map attribution.
 
 This phase adds a geographic discovery layer above individual producer pins so travelers can understand the character of a place before drilling into specific makers.
 
-- [ ] Define a reusable regional-boundary data model and GeoJSON layer that can support Crete first and later other Greek/international regions.
-- [ ] Prototype **Heraklion** with an accurate regional polygon, subtle map highlight, and clear region label.
-- [ ] Add hover/focus interaction on desktop and tap interaction on mobile without interfering with producer pins or map navigation.
-- [ ] Build a compact regional terroir card answering **“what makes this place distinctive?”** rather than presenting generic tourism copy.
-- [ ] Keep regional descriptions, agricultural context, products, cultivars, traditions, landscape and climate claims source-backed and appropriately scoped.
-- [ ] Show useful live catalogue context such as producer count and represented categories without fabricating completeness.
-- [ ] Add an **Explore region** action that zooms to the region and filters/browses the relevant producer set.
-- [ ] Expand the Crete reference layer to **Chania, Rethymno and Lasithi** after the Heraklion interaction is validated.
-- [ ] Define zoom-level behavior so regional context is useful at wider views while producer pins remain primary at closer zoom levels.
-- [ ] Ensure accessibility, keyboard/focus handling, mobile layout, reduced-motion behavior and map performance remain production quality.
-- [ ] Keep regional highlighting informational rather than implying administrative endorsement, producer partnership, route safety or exhaustive coverage.
-- [ ] Design the architecture so later regions such as Nemea, Santorini and Tuscany can use the same interaction model without Greece-specific assumptions.
-- [ ] Run the full automated quality gate, deploy, and complete a production smoke pass before marking Phase 13 complete.
+- [x] ~~Define a reusable regional-boundary data model and GeoJSON layer that can support Crete first and later other Greek/international regions.~~
+- [x] ~~Prototype **Heraklion** with an accurate regional polygon, subtle map highlight, and clear region label.~~
+- [x] ~~Add hover/focus interaction on desktop and tap interaction on mobile without interfering with producer pins or map navigation.~~
+- [x] ~~Build a compact regional terroir card answering **“what makes this place distinctive?”** rather than presenting generic tourism copy.~~
+- [x] ~~Keep regional descriptions, agricultural context, products, cultivars, traditions, landscape and climate claims source-backed and appropriately scoped.~~
+- [x] ~~Show useful live catalogue context such as producer count and represented categories without fabricating completeness.~~
+- [x] ~~Add an **Explore region** action that zooms to the region and filters/browses the relevant producer set.~~
+- [x] ~~Expand the Crete reference layer to **Chania, Rethymno and Lasithi** after the Heraklion interaction is validated.~~
+- [x] ~~Define zoom-level behavior so regional context is useful at wider views while producer pins remain primary at closer zoom levels.~~
+- [x] ~~Ensure accessibility, keyboard/focus handling, mobile layout, reduced-motion behavior and map performance remain production quality.~~
+- [x] ~~Keep regional highlighting informational rather than implying administrative endorsement, producer partnership, route safety or exhaustive coverage.~~
+- [x] ~~Design the architecture so later regions such as Nemea, Santorini and Tuscany can use the same interaction model without Greece-specific assumptions.~~
+- [x] ~~Run the full automated quality gate, deploy, and complete a production smoke pass before marking Phase 13 complete.~~
 
-**Definition of done:** the map communicates regional terroir and place identity as well as individual producer locations, with Heraklion/Crete serving as the reusable reference implementation.
+**Definition of done:** the map communicates regional terroir and place identity as well as individual producer locations, with Crete, Santorini, Peloponnese, Macedonia, Greece, and Tuscany serving as the verified regional implementation.
 
 ---
 

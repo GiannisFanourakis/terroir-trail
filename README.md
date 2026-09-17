@@ -1,147 +1,136 @@
 # TerroirTrail
 
-TerroirTrail is an open-source, discovery-first agritourism and local-producer guide for independent culinary travelers, road-trippers and slow travelers.
+TerroirTrail is a discovery-first agritourism, craft beverage, and artisan food guide for independent culinary travelers, road-trippers, and slow travelers across Greece and Italy.
 
-**Crete is the current reference-quality region.** The live Crete catalogue contains 27 audited producer/project records across Chania, Heraklion, Rethymno and Lasithi. Future geographic expansion may include Santorini, the Peloponnese, Macedonia, Greece, Italy/wider Mediterranean regions and Northern Europe, but those regions are not represented as equally complete until their catalogue and verification work is finished.
+The platform provides researched, evidence-backed discovery for independent producers across 5 destinations:
+- **Crete** (30 audited producers across Chania, Heraklion, Rethymno, and Lasithi)
+- **Santorini** (9 audited wineries and craft breweries)
+- **Peloponnese** (11 audited wineries and estates)
+- **Macedonia, Greece** (11 audited wineries and distilleries)
+- **Tuscany** (1 audited flagship estate)
 
 Production: https://terroir-trail.web.app/
 
-## Product principles
+---
 
-TerroirTrail is built around trust rather than catalogue volume.
+## Product Principles
 
-- **Discovery and Experiences are separate product layers.** A producer can be listed without being a TerroirTrail commercial partner.
-- **Public visitability does not equal booking permission.** Visiting information can be researched from public producer-controlled sources without implying a TerroirTrail reservation relationship.
-- **Unknown stays unknown.** The app does not invent ratings, prices, hospitality amenities, road conditions, tasting packages or other facts to fill empty UI fields.
-- **Location confidence and road-access confidence are separate.** A verified map point does not automatically mean the approach road is suitable for a standard rental car.
-- **Direct producer contact is preferred.** Where available, travelers are sent to producer-controlled public channels such as the official website or public phone number.
-- **Crete is the reference-quality region before broad expansion.**
+TerroirTrail is built around authenticity, safety, and rigorous verification rather than uncurated volume:
 
-The canonical implementation plan and completion state are maintained in [`ROADMAP.md`](ROADMAP.md).
+- **Discovery and Commercial Partnerships are Separate Layers:** A producer can be catalogued and discovered without being a commercial partner. Editorial discovery does not imply a paid relationship.
+- **Public Visitability Does Not Equal Booking Permission:** Visiting information is researched from producer-controlled or verified public channels without implying a TerroirTrail booking relationship.
+- **Unknown Stays Unknown:** The platform never fabricates ratings, review scores, visitor prices, amenities, road conditions, or hours to fill empty fields.
+- **Location Confidence and Road-Access Confidence are Separate:** A verified geographic coordinate does not mean the access road is suitable for a standard low-clearance rental car.
+- **Direct Producer Contact is Preferred:** Travelers are connected directly to official producer-controlled channels (official website, direct phone, email).
+- **Rural Road Safety (Fail-Closed Navigation):** Turn-by-turn navigation is deliberately suppressed if coordinates, road access, or vehicle suitability are unverified or require 4x4 vehicles.
 
-## Current public product
+The canonical implementation state and milestone history are maintained in [`ROADMAP.md`](ROADMAP.md).
 
-The current launch-oriented product centers on:
+---
 
-- interactive Leaflet map and producer/project directory;
-- category, region, search and evidence-aware filtering;
-- audited producer stories and contact details;
-- researched visitability status;
-- source-backed location and road-access confidence;
-- favorites / saved places;
-- traveler accounts;
-- Terroir Passport visited-place stamps and private notes;
-- direct producer-controlled contact links;
-- resilient bundled Crete fallback data when Supabase is unavailable.
+## Current Public Product
 
-Curated driving routes are currently **under verification**. Legacy draft route definitions are quarantined and are not published as normal turn-by-turn itineraries.
+- **Interactive Terroir Map:** High-performance Leaflet map featuring administrative terroir region boundaries sourced from geoBoundaries (CC BY 4.0) and custom tile providers.
+- **Multi-Category Producer Directory (62 Audited Producers):** Wineries, craft breweries, artisan cheese dairies, olive mills, apiaries, farms, and traditional distilleries across Greece and Italy.
+- **Curated Regional Discovery Guides (10 Guides):** Verified slow-travel discovery loops across Crete (4), Santorini (3), Peloponnese (1), Macedonia, Greece (1), and Tuscany (1).
+- **Evidence-Backed Auditing:** Independent verification badges for location precision, visitability status, and road-access suitability.
+- **Traveler Accounts & Passport:** Private accounts (Firebase Auth), visited-place passport stamps, and private tasting notes.
+- **Favorites / Saved Places:** Account-partitioned saved producers in device local storage.
+- **Travel Affiliate Links (Travelpayouts):** Curated, non-intrusive outbound affiliate links for car hire, transfers, and ferries. No personal profile data or tracking cookies are transmitted; active Explorer Pass holders enjoy an ad-free experience.
+- **Fail-Closed Route Safety:** Automated safety gates suppress turn-by-turn routing whenever road classification is unconfirmed or hazardous.
+- **Resilient Fallback Data:** Offline/static catalogue fallback ensures full usability even if remote services are unavailable.
 
-## Experiences, bookings and commercial features
+---
 
-TerroirTrail is currently discovery-first, not a public booking marketplace.
+## Experiences, Bookings, and Commercial Features
 
-No public TerroirTrail Experience should be created or published without explicit producer agreement. Prototype booking/Experience infrastructure may remain in the repository for future development, but it must not be interpreted as a current public offer.
+TerroirTrail is currently **discovery-first**, not an online travel agency (OTA) or open booking marketplace.
 
-Explorer Pass, Host Pro, chauffeur workflows and other monetisation concepts are future/pilot functionality unless explicitly enabled and described as such by the current product roadmap. Commercial functionality must not weaken producer verification or create unsupported partnership claims.
+- **Experiences:** All prototype commercial experiences in the database remain inactive (`is_active = FALSE`). Public experiences require explicit, negotiated agreements with individual hosts.
+- **Dormant Commercial Infrastructure:** Payment workflows (Stripe checkout) and display advertising (Google AdSense) are architecturally integrated but **disabled/dormant (pilot safety active)** in this production release.
+- **Affiliate Disclosure:** Outbound links to external travel providers (e.g. car rental or ferry tickets) may earn TerroirTrail a referral commission at no additional cost to the user.
 
-## Crete data integrity
+---
 
-The authoritative Crete catalogue currently contains **27 audited records**.
+## Catalogue Statistics & Structure
 
-Producer/project records can carry independent confidence metadata for:
+- **Total Audited Producers:** 62
+  - **Crete:** 30 (wineries, breweries, olive mills, dairies, apiaries, kazani)
+  - **Santorini:** 9 (wineries, breweries)
+  - **Peloponnese:** 11 (wineries)
+  - **Macedonia, Greece:** 11 (wineries)
+  - **Tuscany:** 1 (winery)
+- **Categories Represented:** Winery, Brewery, Cheese Dairy, Olive Mill, Apiary, Farm, Traditional Kazani, Olive Oil Producer.
+- **Discovery Guides:** 10 curated regional loops.
 
-- location status and source;
-- visitability status and source;
-- road-access status, classification, source and notes.
+---
 
-Road-access classifications are exposed only when verified. Reviewed records without adequate public road evidence remain unclassified rather than being guessed.
+## Technology Stack
 
-The bundled fallback catalogue in `src/data/producers.ts` is synchronized from the audited Crete state and is tested separately from live Supabase behavior.
+- **Frontend:** React 19, TypeScript, Vite, Tailwind CSS v4, Lucide Icons
+- **Mapping & Geospatial:** Leaflet, React-Leaflet, geoBoundaries gbOpen (ADM2 Crete, ADM1 Greece/Italy)
+- **Data & Backend:** Supabase (PostgreSQL / PostGIS) for producer catalogue, Firebase Authentication + Cloud Firestore for traveler accounts & private passport notes
+- **Hosting & Infrastructure:** Firebase Hosting (production web), Google Cloud Platform
+- **Mobile Packaging:** Capacitor (iOS & Android native wrappers)
 
-## Rural navigation safety
+---
 
-Curated multi-stop navigation is deliberately fail-closed. A route is not generated as normal turn-by-turn driving navigation when the route or any stop lacks the required verification, including cases such as:
+## Development & Verification
 
-- draft/unverified route;
-- missing producer;
-- unresolved or unverified navigation point;
-- invalid coordinates;
-- unreviewed, unconfirmed or currently uncertain road access;
-- passable unpaved access without separate ordinary-vehicle suitability evidence;
-- access requiring/recommending a high-clearance or 4x4 vehicle.
-
-Individual map links identify locations; they are not presented as road-safety guarantees.
-
-## Technology
-
-- React 19
-- TypeScript
-- Vite
-- Tailwind CSS v4
-- Leaflet
-- Supabase PostgreSQL / PostGIS for producer data
-- Firebase Authentication + Firestore for account-related functionality
-- Firebase Hosting
-- Capacitor for mobile packaging work
-
-## Development
-
-Install dependencies:
+### Install Dependencies
 
 ```bash
 npm install
 ```
 
-Run locally:
+### Run Locally
 
 ```bash
 npm run dev
 ```
 
-Run the full project gate:
+### Full Quality & Verification Gate
 
 ```bash
 npm run check
 ```
 
-The check currently covers TypeScript, ESLint, formatting checks, frontend tests, server tests, Firestore rules tests, production build and SEO asset verification.
+The check gate runs:
+1. TypeScript compiler checks (`tsc --noEmit`)
+2. ESLint code quality checks
+3. Prettier format validation
+4. Vitest frontend component & logic test suites
+5. Node / Vitest server test suites
+6. Firestore Security Rules unit tests (Firestore emulator)
+7. Production Vite build & static SEO/metadata generation
 
-Synchronize the authoritative Crete fallback catalogue from Supabase:
-
-```bash
-npm run sync:fallback
-```
-
-Build:
-
-```bash
-npm run build
-```
-
-Deploy Firebase Hosting:
+### Additional Tests
 
 ```bash
-npm run deploy
+# Python verification tools
+npm run test:python
+
+# Mobile preflight validation
+npm run mobile:preflight -- all
 ```
 
-## Important project files
+---
 
-- `ROADMAP.md` — canonical product roadmap and completion state
-- `src/data/producers.ts` — audited bundled Crete fallback catalogue
-- `src/services/producerService.ts` — live/fallback producer mapping and authority rules
-- `src/utils/routeSafety.ts` — fail-closed route-navigation rules
-- `src/components/Drawer/ProducerDetailDrawer.tsx` — producer detail, visit and access UI
-- `src/components/Loops/DayTripModal.tsx` — curated-route verification UI
-- `scripts/sync_fallback_producers.ts` — regenerates the Crete fallback catalogue
-- `scripts/verify_seo_assets.ts` — validates canonical/SEO assets and quarantined route claims
-- `reports/product-readiness/phase7_audit.md` — current launch-readiness audit
+## Important Project Files
 
-## Data and contribution rule
+- [`LICENSE.md`](LICENSE.md) — Proprietary software license, open-source acknowledgements, and geospatial attributions
+- [`PRIVACY_POLICY.md`](PRIVACY_POLICY.md) — Comprehensive privacy policy and GDPR disclosure
+- [`TERMS_OF_SERVICE.md`](TERMS_OF_SERVICE.md) — Terms of service and commercial disclosures
+- [`ROADMAP.md`](ROADMAP.md) — Canonical product roadmap and feature statuses
+- [`src/data/terroirRegions.ts`](src/data/terroirRegions.ts) — Sourced regional terroir polygon boundaries
+- [`src/data/loops.ts`](src/data/loops.ts) — Curated discovery loops and guide definitions
+- [`src/utils/routeSafety.ts`](src/utils/routeSafety.ts) — Fail-closed navigation and road-safety rules
+- [`public/llms.txt`](public/llms.txt) — Authoritative machine-readable catalogue summary
 
-Do not add or “complete” producer facts by inference. For factual producer, visitability, location or road-access changes, use a reliable source and preserve uncertainty when evidence is insufficient.
+---
 
-Do not reactivate dormant Experiences, route claims or commercial functionality simply because supporting code exists. Match public behavior to the canonical roadmap.
+## License & Attribution
 
-## License
+TerroirTrail software, design assets, and proprietary database schemas are **Proprietary Works** owned exclusively by TerroirTrail. All rights reserved. See [`LICENSE.md`](LICENSE.md).
 
-MIT. See [`LICENSE`](LICENSE).
+Third-party dependencies and open-source packages remain subject to their respective licenses. Regional boundary geometries are sourced from geoBoundaries (CC BY 4.0) and Eurostat GISCO NUTS. Map base tiles are provided by OpenStreetMap contributors (ODbL), CARTO, and Esri.

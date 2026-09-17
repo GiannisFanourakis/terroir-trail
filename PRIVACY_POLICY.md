@@ -1,8 +1,8 @@
 # TerroirTrail Privacy Notice
 
-**Effective Date:** January 1, 2026  
-**Last Updated:** September 16, 2026  
-**Data Controller / Platform Operator:** ΙΩΑΝΝΗΣ ΚΩΝΣΤΑΝΤΙΝΟΣ ΦΑΝΟΥΡΑΚΗΣ, sole proprietorship  
+**Effective Date:** January 1, 2026<br />
+**Last Updated:** September 17, 2026<br />
+**Data Controller / Platform Operator:** ΙΩΑΝΝΗΣ ΚΩΝΣΤΑΝΤΙΝΟΣ ΦΑΝΟΥΡΑΚΗΣ, sole proprietorship<br />
 **Contact:** terroirtrail@gmail.com
 
 ---
@@ -70,17 +70,21 @@ Depending on the feature and circumstances, processing may rely on one or more l
 
 ---
 
-## 4. Service Providers and Data Sharing
+## 4. Service Providers, Affiliates and Data Sharing
 
 TerroirTrail does **not sell personal data to data brokers or advertisers**.
 
 Personal data may be shared only as needed to operate the platform, including:
 
 - **Firebase / Google Cloud:** authentication, private account/profile data, trusted producer ownership data, operational records, and producer media storage used by TerroirTrail.
-- **Supabase:** the authoritative public producer catalogue and geospatial catalogue data. The browser catalogue is intended to expose public listing information, not private traveler profile data.
-- **Map/tile providers used by the application:** requests for map imagery or tiles may expose ordinary network information such as IP address to the relevant provider.
-- **A producer you contact or book with:** when you deliberately submit a request that requires the producer to receive the relevant contact/request details.
-- **Professional advisers, authorities, or service providers:** where reasonably necessary for security, legal obligations, dispute handling, or operation of the service.
+- **Supabase:** the authoritative public producer catalogue and geospatial catalogue data. The browser catalogue exposes public listing information, not private traveler profile data.
+- **Map/tile providers:** requests for map imagery or tiles (OpenStreetMap, CARTO, Esri) involve standard network communication (such as IP address and user agent) with the respective service provider.
+- **Google Places / Google Maps Media:** for audited listings with verified Google Place IDs, the application may fetch and render official place photo media directly from the Google Places API, or link to Google Maps for directions.
+- **Travel affiliate links (Travelpayouts pilot):** the application includes a curated travel-services affiliate carousel (e.g. for car rentals, transfers, experiences, and connectivity). Clicking an affiliate banner sends you to a third-party travel platform via an outbound link that may include an operational campaign SubID. TerroirTrail transmits no account, personal profile, or booking data to affiliate partners, and sets no third-party tracking cookies on your device. Third-party travel services operate entirely under their own terms and privacy notices. Active Explorer Pass holders receive an ad-free experience without these affiliate placements.
+- **Advertising Services (Google AdSense):** display advertising infrastructure is **disabled/dormant** in the production application. No third-party AdSense scripts or trackers are loaded.
+- **Payment Infrastructure (Stripe):** payment and subscription backend infrastructure exists, but public checkout flows remain **disabled/dormant (pilot safety active)**. TerroirTrail does not collect or process live consumer payment cards on the public application at this time.
+- **A producer you contact or request a visit with:** when you voluntarily submit a request that requires the producer to receive your contact/visit details.
+- **Professional advisers, authorities, or service providers:** where reasonably necessary for security, legal compliance, dispute resolution, or service operations.
 
 Producer hosts do not receive access to travelers' private favorites, Passport notes, or personal tasting journals merely because they manage a producer listing.
 

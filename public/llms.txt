@@ -80,6 +80,9 @@ Current audited public catalogue:
 - Crete, Greece — 30 audited records.
 - Santorini, Greece — 9 audited records.
 - Peloponnese, Macedonia, Greece and Tuscany / Italy — 23 audited records combined.
+  - Peloponnese, Greece — 11 audited records.
+  - Macedonia, Greece — 11 audited records.
+  - Tuscany, Italy — 1 audited record.
 
 The SEO, AEO and entity-discovery foundation includes the retained dairy expansion. New category and regional additions should follow the same evidence-first publication rules and be synchronized into both the live catalogue and deterministic deploy-time entity catalogue.
 
@@ -87,3 +90,4 @@ The SEO, AEO and entity-discovery foundation includes the retained dairy expansi
 
 Project: TerroirTrail
 Canonical site: https://terroir-trail.web.app/
+Contact: terroirtrail@gmail.com
