@@ -14,6 +14,7 @@ export type Destination =
   | 'crete' 
   | 'santorini' 
   | 'peloponnese' 
+  | 'thessaly'
   | 'northern_greece'
   | 'tuscany';
 
