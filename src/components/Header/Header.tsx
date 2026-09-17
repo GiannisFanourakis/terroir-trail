@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Destination } from '../../types/terroir';
 import { UserProfile } from '../../types/auth';
 import { ProfileMenu } from '../Auth/ProfileMenu';
@@ -78,7 +78,6 @@ export const Header: React.FC<HeaderProps> = ({
   const [menuOpen, setMenuOpen] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [destMenuOpen, setDestMenuOpen] = useState(false);
-  const [countryScope, setCountryScope] = useState<CountryScope>(() => getActiveCountryScope());
   const closeMenu = () => setMenuOpen(false);
   const isHost = Boolean(user?.producerIds?.length || user?.isProducer);
 
@@ -90,15 +89,9 @@ export const Header: React.FC<HeaderProps> = ({
     { id: 'tuscany', label: 'Tuscany', flag: '🍷' },
   ];
 
-  useEffect(() => {
-    if (selectedDestination === 'all') {
-      setCountryScope(getActiveCountryScope());
-      return;
-    }
-    const country = getDestinationCountry(selectedDestination);
-    setActiveCountryScope(country);
-    setCountryScope(country);
-  }, [selectedDestination]);
+  const countryScope: CountryScope = selectedDestination === 'all'
+    ? getActiveCountryScope()
+    : getDestinationCountry(selectedDestination);
 
   const visibleDestinations = countryScope === 'all'
     ? []
@@ -110,14 +103,12 @@ export const Header: React.FC<HeaderProps> = ({
 
   const selectCountry = (country: CountryScope) => {
     setActiveCountryScope(country);
-    setCountryScope(country);
     onSelectDestination('all');
   };
 
   const selectDestination = (destination: Destination) => {
     const country = getDestinationCountry(destination);
     setActiveCountryScope(country);
-    setCountryScope(country);
     onSelectDestination(destination);
   };
 
