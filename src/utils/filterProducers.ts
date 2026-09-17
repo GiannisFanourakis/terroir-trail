@@ -1,5 +1,6 @@
 import { Producer, FilterState } from '../types/terroir';
 import { getEffectiveProducerCategory } from './producerCategory';
+import { getActiveCountryScope, producerMatchesCountry } from '../config/geography';
 
 /**
  * Pure function to filter a list of producers based on user filter criteria,
@@ -11,12 +12,24 @@ export function filterProducers(
   filters: FilterState,
   isFavorite: (id: string) => boolean = () => false
 ): Producer[] {
+  const activeCountryScope = getActiveCountryScope();
+
   return producers.filter((producer) => {
     // Use the discovery-facing category so legacy rows do not leak incorrect
     // taxonomy while their persisted source is being migrated.
     if (
       filters.category !== 'all' &&
       getEffectiveProducerCategory(producer) !== filters.category
+    ) {
+      return false;
+    }
+
+    // Country scope applies only while no specific terroir destination is selected.
+    // A region selection is already more specific than its parent country.
+    if (
+      filters.destination === 'all' &&
+      activeCountryScope !== 'all' &&
+      !producerMatchesCountry(producer, activeCountryScope)
     ) {
       return false;
     }
