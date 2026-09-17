@@ -18,6 +18,10 @@ import {
   getCountryLayer,
   getDestinationCountry,
 } from '../../config/geography';
+import {
+  COUNTRY_BOUNDARY_ATTRIBUTION,
+  loadCountryBoundary,
+} from '../../data/countryBoundaries';
 
 interface MapCanvasProps {
   producers: Producer[];
@@ -143,6 +147,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
   const markersRef = useRef<{ [id: string]: L.Marker }>({});
   const markerSignaturesRef = useRef<{ [id: string]: string }>({});
   const tileLayerRef = useRef<L.TileLayer | null>(null);
+  const countryBoundaryLayerRef = useRef<L.GeoJSON | null>(null);
   const regionLayersRef = useRef<Map<string, L.GeoJSON>>(new Map());
   const regionLabelsRef = useRef<Map<string, L.Marker>>(new Map());
   const activeRegionRef = useRef<string | null>(null);
@@ -302,6 +307,10 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       preferCanvas: true,
     });
 
+    const countryBoundaryPane = map.createPane('country-boundary-pane');
+    countryBoundaryPane.style.zIndex = '350';
+    countryBoundaryPane.style.pointerEvents = 'none';
+
     tileLayerRef.current = L.tileLayer(TILE_CONFIGS[mapTheme].url, {
       attribution: TILE_CONFIGS[mapTheme].attribution,
       maxZoom: TILE_CONFIGS[mapTheme].maxZoom,
@@ -345,6 +354,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       Object.values(markersRef.current).forEach((m) => m.remove());
       markersRef.current = {};
       markerSignaturesRef.current = {};
+      countryBoundaryLayerRef.current = null;
       regionLayersRef.current.clear();
       regionLabelsRef.current.clear();
       map.remove();
@@ -381,6 +391,59 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       : DESTINATION_CENTERS[selectedDestination];
     flyOrSetView(map, target.coords, target.zoom, { mobileDuration: 0.5, desktopDuration: 1.0 });
   }, [selectedDestination, countryScope]);
+
+  useEffect(() => {
+    const map = mapInstanceRef.current;
+    if (!map) return;
+
+    if (countryBoundaryLayerRef.current) {
+      if (map.hasLayer(countryBoundaryLayerRef.current)) {
+        map.removeLayer(countryBoundaryLayerRef.current);
+      }
+      countryBoundaryLayerRef.current = null;
+    }
+
+    if (countryScope === 'all') return;
+
+    let cancelled = false;
+    const isCountryLevel = selectedDestination === 'all';
+
+    loadCountryBoundary(countryScope)
+      .then((feature) => {
+        if (cancelled || !feature || !mapInstanceRef.current) return;
+
+        const countryLayer = L.geoJSON(feature as any, {
+          pane: 'country-boundary-pane',
+          interactive: false,
+          style: {
+            color: '#f59e0b',
+            weight: isCountryLevel ? 3 : 1.5,
+            opacity: isCountryLevel ? 0.95 : 0.45,
+            fillColor: '#f59e0b',
+            fillOpacity: isCountryLevel ? 0.12 : 0.025,
+          },
+        }).addTo(map);
+
+        countryBoundaryLayerRef.current = countryLayer;
+        map.attributionControl.addAttribution(COUNTRY_BOUNDARY_ATTRIBUTION);
+      })
+      .catch((error) => {
+        if (import.meta.env.DEV && !cancelled) {
+          console.warn('[MapCanvas] Unable to render NUTS 0 country boundary', error);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+      if (countryBoundaryLayerRef.current) {
+        if (map.hasLayer(countryBoundaryLayerRef.current)) {
+          map.removeLayer(countryBoundaryLayerRef.current);
+        }
+        countryBoundaryLayerRef.current = null;
+      }
+      map.attributionControl.removeAttribution(COUNTRY_BOUNDARY_ATTRIBUTION);
+    };
+  }, [countryScope, selectedDestination]);
 
   useEffect(() => {
     const map = mapInstanceRef.current;
@@ -764,7 +827,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
 
   return (
     <div className="relative w-full h-full select-none overflow-hidden">
-      <div ref={mapContainerRef} className="w-full h-full z-0" role="region" aria-label="Interactive producer and NUTS-backed terroir-region map" />
+      <div ref={mapContainerRef} className="w-full h-full z-0" role="region" aria-label="Interactive producer, country and NUTS-backed terroir-region map" />
 
       <div className="absolute top-16 right-3 sm:top-4 sm:right-4 z-20 flex flex-col items-end gap-2">
         {locationError && (
