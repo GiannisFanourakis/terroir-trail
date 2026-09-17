@@ -30,10 +30,10 @@ export const COUNTRY_LAYERS: CountryLayer[] = [
 ];
 
 /**
- * NUTS metadata follows the NUTS 2021 geometry already used by the bundled
- * terroir-region boundaries. Some product regions are deliberately narrower
- * or broader than a single NUTS unit, so Macedonia is represented by the
- * exact NUTS 3 units used by its current composite boundary.
+ * NUTS metadata follows the NUTS 2021 geometry used by TerroirTrail's
+ * geography layers. Some product regions are deliberately narrower or broader
+ * than a single NUTS unit, so Macedonia is represented by the exact NUTS 3
+ * units used by its current composite boundary.
  */
 export const DESTINATION_GEOGRAPHY: Record<Destination, DestinationGeography> = {
   crete: {
@@ -68,12 +68,26 @@ export const DESTINATION_GEOGRAPHY: Record<Destination, DestinationGeography> = 
       'EL531', 'EL532', 'EL533',
     ],
   },
+  thessaly: {
+    countryCode: 'GR',
+    country: 'Greece',
+    nutsVersion: '2021',
+    nutsLevel: 2,
+    nutsCodes: ['EL61'],
+  },
   tuscany: {
     countryCode: 'IT',
     country: 'Italy',
     nutsVersion: '2021',
     nutsLevel: 2,
     nutsCodes: ['ITI1'],
+  },
+  piedmont: {
+    countryCode: 'IT',
+    country: 'Italy',
+    nutsVersion: '2021',
+    nutsLevel: 2,
+    nutsCodes: ['ITC1'],
   },
 };
 
