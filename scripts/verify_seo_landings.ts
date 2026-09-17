@@ -249,14 +249,15 @@ function verifySeo(): void {
   for (const producer of PRODUCERS) {
     const canonicalUrl = producerUrl(producer);
     const pageContent = requireFile(path.join(distDir, 'producers', producer.id, 'index.html'), `Producer page ${producer.id}`);
+    const escapedName = escapeHtml(producer.name);
     requireIncludes(pageContent, `<link rel="canonical" href="${canonicalUrl}" />`, `Producer page ${producer.id}`);
-    requireIncludes(pageContent, `<h1>${escapeHtml(producer.name)}</h1>`, `Producer page ${producer.id}`);
+    requireIncludes(pageContent, `<h1>${escapedName}</h1>`, `Producer page ${producer.id}`);
     requireIncludes(pageContent, '<meta name="description" content="', `Producer page ${producer.id}`);
     requireIncludes(pageContent, '<meta name="robots" content="index, follow', `Producer page ${producer.id}`);
-    requireIncludes(pageContent, 'What is it?', `Producer page ${producer.id}`);
-    requireIncludes(pageContent, 'Where is it?', `Producer page ${producer.id}`);
-    requireIncludes(pageContent, 'Can you visit?', `Producer page ${producer.id}`);
-    requireIncludes(pageContent, 'What is known about road access?', `Producer page ${producer.id}`);
+    requireIncludes(pageContent, `<dt>What is ${escapedName}?</dt>`, `Producer page ${producer.id}`);
+    requireIncludes(pageContent, `<dt>Where is ${escapedName}?</dt>`, `Producer page ${producer.id}`);
+    requireIncludes(pageContent, `<dt>Can you visit ${escapedName}?</dt>`, `Producer page ${producer.id}`);
+    requireIncludes(pageContent, `<dt>What is known about road access to ${escapedName}?</dt>`, `Producer page ${producer.id}`);
     requireIncludes(pageContent, 'does not imply a commercial partnership', `Producer page ${producer.id}`);
     requireIncludes(pageContent, 'href="/producers/"', `Producer page ${producer.id}`);
     requireIncludes(pageContent, `href="${destinationPath(producer.destination)}"`, `Producer destination link ${producer.id}`);
