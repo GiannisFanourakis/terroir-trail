@@ -9,7 +9,8 @@ import { MapCanvas } from './components/Map/MapCanvas';
 import { ProducerList } from './components/Sidebar/ProducerList';
 import { ProducerDetailDrawerWithReviews as ProducerDetailDrawer } from './components/Drawer/ProducerDetailDrawerWithReviews';
 import { TerroirRegionDrawer } from './components/Regions/TerroirRegionDrawer';
-import { CRETE_TERROIR_REGION } from './data/terroirRegions';
+import { TERROIR_REGIONS } from './data/terroirRegions';
+import { withTerroirRegionStory } from './data/terroirRegionStories';
 import { useFavorites } from './hooks/useFavorites';
 import { useAuth } from './hooks/useAuth';
 import { useAccountCapabilities } from './hooks/useAccountCapabilities';
@@ -182,14 +183,22 @@ export const App: React.FC = () => {
     [selectedProducer, overrides]
   );
 
-  const creteGuideProducers = useMemo(
-    () => publicProducers.filter((producer) => producer.destination === 'crete'),
-    [publicProducers]
+  const selectedTerroirRegion = useMemo(() => {
+    if (filters.destination === 'all') return null;
+    const region = TERROIR_REGIONS.find((candidate) => candidate.destination === filters.destination);
+    return region ? withTerroirRegionStory(region) : null;
+  }, [filters.destination]);
+
+  const regionGuideProducers = useMemo(
+    () => selectedTerroirRegion
+      ? publicProducers.filter((producer) => producer.destination === selectedTerroirRegion.destination)
+      : [],
+    [publicProducers, selectedTerroirRegion]
   );
 
-  const creteGuideCategoryCount = useMemo(
-    () => new Set(creteGuideProducers.map((producer) => producer.category)).size,
-    [creteGuideProducers]
+  const regionGuideCategoryCount = useMemo(
+    () => new Set(regionGuideProducers.map((producer) => producer.category)).size,
+    [regionGuideProducers]
   );
 
   const adminPortalPreviewProducer = useMemo(
@@ -227,6 +236,9 @@ export const App: React.FC = () => {
 
   const handleFilterChange = <K extends keyof FilterState>(key: K, value: FilterState[K]) => {
     setFilters((prev) => ({ ...prev, [key]: value }));
+    if (key === 'destination') {
+      setIsRegionGuideOpen(false);
+    }
   };
 
   const handleResetFilters = () => {
@@ -235,6 +247,7 @@ export const App: React.FC = () => {
   };
 
   const handleExploreRegion = (destination: Destination) => {
+    const hasStory = TERROIR_REGIONS.some((region) => region.destination === destination);
     setFilters((prev) => ({
       ...prev,
       destination,
@@ -243,7 +256,7 @@ export const App: React.FC = () => {
     }));
     setSelectedProducer(null);
     setIsDrawerOpen(false);
-    setIsRegionGuideOpen(destination === CRETE_TERROIR_REGION.destination);
+    setIsRegionGuideOpen(hasStory);
     setViewMode('map');
   };
 
@@ -252,10 +265,10 @@ export const App: React.FC = () => {
   }, [publicProducers, filters, isFavorite]);
 
   useEffect(() => {
-    if (filters.destination !== CRETE_TERROIR_REGION.destination) {
+    if (filters.destination === 'all' && isRegionGuideOpen) {
       setIsRegionGuideOpen(false);
     }
-  }, [filters.destination]);
+  }, [filters.destination, isRegionGuideOpen]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -401,14 +414,16 @@ export const App: React.FC = () => {
             viewMode={viewMode}
           />
 
-          <TerroirRegionDrawer
-            region={CRETE_TERROIR_REGION}
-            producerCount={creteGuideProducers.length}
-            categoryCount={creteGuideCategoryCount}
-            isOpen={isRegionGuideOpen}
-            onClose={() => setIsRegionGuideOpen(false)}
-            onShowProducers={() => setIsRegionGuideOpen(false)}
-          />
+          {selectedTerroirRegion && (
+            <TerroirRegionDrawer
+              region={selectedTerroirRegion}
+              producerCount={regionGuideProducers.length}
+              categoryCount={regionGuideCategoryCount}
+              isOpen={isRegionGuideOpen}
+              onClose={() => setIsRegionGuideOpen(false)}
+              onShowProducers={() => setIsRegionGuideOpen(false)}
+            />
+          )}
         </div>
 
         {(!selectedProducer || viewMode === 'list') && !isRegionGuideOpen && (
