@@ -17,6 +17,9 @@ dist-ssr
 !.vscode/extensions.json
 .idea
 .DS_Store
+Thumbs.db
+ehthumbs.db
+desktop.ini
 *.suo
 *.ntvs*
 *.njsproj
@@ -50,3 +53,13 @@ ios/App/App/GoogleService-Info.plist
 # Stripe datastore
 server/data/*.json
 !server/data/.gitkeep
+
+# Firebase deployment cache
+.firebase/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
