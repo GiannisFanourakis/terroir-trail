@@ -1,9 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Destination } from '../../types/terroir';
 import { UserProfile } from '../../types/auth';
 import { ProfileMenu } from '../Auth/ProfileMenu';
 import { UserAvatar } from '../Common/UserAvatar';
 import { Compass, Search, X, Heart, Building2, Calendar, Sparkles, BookOpen, Menu, Award, LogOut, User, ChevronDown } from 'lucide-react';
+import {
+  COUNTRY_LAYERS,
+  CountryScope,
+  getActiveCountryScope,
+  getDestinationCountry,
+  setActiveCountryScope,
+} from '../../config/geography';
 
 interface HeaderProps {
   selectedDestination: Destination | 'all';
@@ -71,19 +78,48 @@ export const Header: React.FC<HeaderProps> = ({
   const [menuOpen, setMenuOpen] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [destMenuOpen, setDestMenuOpen] = useState(false);
+  const [countryScope, setCountryScope] = useState<CountryScope>(() => getActiveCountryScope());
   const closeMenu = () => setMenuOpen(false);
   const isHost = Boolean(user?.producerIds?.length || user?.isProducer);
 
-  const destinations: { id: Destination | 'all'; label: string; flag: string }[] = [
-    { id: 'all', label: 'All Terroir', flag: '🍇' },
+  const destinations: { id: Destination; label: string; flag: string }[] = [
     { id: 'crete', label: 'Crete', flag: '🌿' },
     { id: 'santorini', label: 'Santorini', flag: '🌋' },
     { id: 'peloponnese', label: 'Peloponnese', flag: '🏛️' },
     { id: 'northern_greece', label: 'Macedonia, Greece', flag: '🏔️' },
-    { id: 'tuscany', label: 'Tuscany', flag: '🇮🇹' },
+    { id: 'tuscany', label: 'Tuscany', flag: '🍷' },
   ];
 
-  const activeDestObj = destinations.find(d => d.id === selectedDestination) || destinations[0];
+  useEffect(() => {
+    if (selectedDestination === 'all') {
+      setCountryScope(getActiveCountryScope());
+      return;
+    }
+    const country = getDestinationCountry(selectedDestination);
+    setActiveCountryScope(country);
+    setCountryScope(country);
+  }, [selectedDestination]);
+
+  const visibleDestinations = countryScope === 'all'
+    ? []
+    : destinations.filter((destination) => getDestinationCountry(destination.id) === countryScope);
+  const activeCountry = COUNTRY_LAYERS.find((country) => country.id === countryScope) || COUNTRY_LAYERS[0];
+  const activeDestObj = selectedDestination === 'all'
+    ? activeCountry
+    : destinations.find((destination) => destination.id === selectedDestination) || activeCountry;
+
+  const selectCountry = (country: CountryScope) => {
+    setActiveCountryScope(country);
+    setCountryScope(country);
+    onSelectDestination('all');
+  };
+
+  const selectDestination = (destination: Destination) => {
+    const country = getDestinationCountry(destination);
+    setActiveCountryScope(country);
+    setCountryScope(country);
+    onSelectDestination(destination);
+  };
 
   const profileMenu = (
     <ProfileMenu
@@ -169,35 +205,61 @@ export const Header: React.FC<HeaderProps> = ({
                 type="button"
                 onClick={() => setDestMenuOpen((prev) => !prev)}
                 className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-stone-900 border border-white/10 text-stone-200 text-xs font-semibold hover:border-amber-400/40 min-h-[44px] cursor-pointer"
-                aria-label="Select destination"
+                aria-label="Select geography"
                 aria-expanded={destMenuOpen}
               >
                 <span className="text-xs shrink-0">{activeDestObj.flag}</span>
-                <span className="font-bold text-amber-300 max-w-[80px] truncate">{activeDestObj.label}</span>
+                <span className="font-bold text-amber-300 max-w-[92px] truncate">{activeDestObj.label}</span>
                 <ChevronDown className="w-3.5 h-3.5 text-stone-400 shrink-0" />
               </button>
               {destMenuOpen && (
                 <>
                   <div className="fixed inset-0 z-40 bg-black/40 backdrop-blur-xs" onClick={() => setDestMenuOpen(false)} />
-                  <div className="absolute left-0 top-full mt-1.5 z-50 bg-stone-950 border border-white/15 rounded-2xl p-1.5 shadow-2xl flex flex-col gap-1 min-w-[200px] backdrop-blur-xl">
-                    {destinations.map((d) => (
+                  <div className="absolute left-0 top-full mt-1.5 z-50 bg-stone-950 border border-white/15 rounded-2xl p-1.5 shadow-2xl flex flex-col gap-1 min-w-[220px] backdrop-blur-xl">
+                    <div className="px-2 pt-1 pb-0.5 text-[9px] uppercase tracking-[0.18em] font-bold text-stone-500">Country</div>
+                    {COUNTRY_LAYERS.map((country) => (
                       <button
-                        key={d.id}
+                        key={country.id}
                         type="button"
                         onClick={() => {
-                          onSelectDestination(d.id);
-                          setDestMenuOpen(false);
+                          selectCountry(country.id);
+                          if (country.id === 'all') setDestMenuOpen(false);
                         }}
                         className={`flex items-center gap-2.5 px-3 py-2.5 text-xs font-semibold rounded-xl text-left min-h-[44px] cursor-pointer transition ${
-                          selectedDestination === d.id
+                          selectedDestination === 'all' && countryScope === country.id
                             ? 'bg-amber-500 text-stone-950 font-bold shadow-md'
                             : 'text-stone-300 hover:text-white hover:bg-white/10'
                         }`}
                       >
-                        <span className="text-sm">{d.flag}</span>
-                        <span>{d.label}</span>
+                        <span className="text-sm">{country.flag}</span>
+                        <span>{country.label}</span>
                       </button>
                     ))}
+
+                    {visibleDestinations.length > 0 && (
+                      <>
+                        <div className="mx-2 my-1 h-px bg-white/10" />
+                        <div className="px-2 pt-0.5 pb-0.5 text-[9px] uppercase tracking-[0.18em] font-bold text-stone-500">Terroir regions</div>
+                        {visibleDestinations.map((destination) => (
+                          <button
+                            key={destination.id}
+                            type="button"
+                            onClick={() => {
+                              selectDestination(destination.id);
+                              setDestMenuOpen(false);
+                            }}
+                            className={`flex items-center gap-2.5 px-3 py-2.5 text-xs font-semibold rounded-xl text-left min-h-[44px] cursor-pointer transition ${
+                              selectedDestination === destination.id
+                                ? 'bg-amber-500 text-stone-950 font-bold shadow-md'
+                                : 'text-stone-300 hover:text-white hover:bg-white/10'
+                            }`}
+                          >
+                            <span className="text-sm">{destination.flag}</span>
+                            <span>{destination.label}</span>
+                          </button>
+                        ))}
+                      </>
+                    )}
                   </div>
                 </>
               )}
@@ -280,10 +342,35 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
 
           <div className="flex items-center justify-between gap-2 pt-1 border-t border-white/5">
-            <div className="flex items-center bg-stone-900/90 p-0.5 sm:p-1 rounded-xl border border-white/10 overflow-x-auto scrollbar-none shrink-0 max-w-[62%] sm:max-w-none">
-              {destinations.map(destination => {
+            <div className="flex items-center bg-stone-900/90 p-0.5 sm:p-1 rounded-xl border border-white/10 overflow-x-auto scrollbar-none shrink-0 max-w-[70%] sm:max-w-none">
+              {COUNTRY_LAYERS.map((country) => {
+                const isActive = selectedDestination === 'all' && countryScope === country.id;
+                return (
+                  <button
+                    key={country.id}
+                    onClick={() => selectCountry(country.id)}
+                    className={`flex items-center gap-1 px-2 sm:px-3 py-1 rounded-lg text-[11px] sm:text-xs font-semibold whitespace-nowrap transition-all duration-200 shrink-0 cursor-pointer ${isActive ? 'bg-amber-500 text-stone-950 shadow-md font-bold' : 'text-stone-400 hover:text-white hover:bg-white/5'}`}
+                  >
+                    <span className="text-xs shrink-0">{country.flag}</span>
+                    <span>{country.label}</span>
+                  </button>
+                );
+              })}
+
+              {visibleDestinations.length > 0 && <span className="h-4 w-px bg-white/15 mx-1 shrink-0" aria-hidden="true" />}
+
+              {visibleDestinations.map((destination) => {
                 const isActive = selectedDestination === destination.id;
-                return <button key={destination.id} onClick={() => onSelectDestination(destination.id)} className={`flex items-center gap-1 px-2 sm:px-3 py-1 rounded-lg text-[11px] sm:text-xs font-semibold whitespace-nowrap transition-all duration-200 shrink-0 cursor-pointer ${isActive ? 'bg-amber-500 text-stone-950 shadow-md font-bold' : 'text-stone-400 hover:text-white hover:bg-white/5'}`}><span className="text-xs shrink-0">{destination.flag}</span><span>{destination.label}</span></button>;
+                return (
+                  <button
+                    key={destination.id}
+                    onClick={() => selectDestination(destination.id)}
+                    className={`flex items-center gap-1 px-2 sm:px-3 py-1 rounded-lg text-[11px] sm:text-xs font-semibold whitespace-nowrap transition-all duration-200 shrink-0 cursor-pointer ${isActive ? 'bg-amber-500 text-stone-950 shadow-md font-bold' : 'text-stone-400 hover:text-white hover:bg-white/5'}`}
+                  >
+                    <span className="text-xs shrink-0">{destination.flag}</span>
+                    <span>{destination.label}</span>
+                  </button>
+                );
               })}
             </div>
 
