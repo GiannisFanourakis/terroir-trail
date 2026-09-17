@@ -23,6 +23,7 @@ import { readStorage, writeStorage, STORAGE_KEYS } from './services/browserStora
 import { saveUserProfileToCloud } from './services/firebase';
 import { filterProducers } from './utils/filterProducers';
 import { producerService } from './services/producerService';
+import { CountryScope, setActiveCountryScope } from './config/geography';
 import { List, MapPin } from 'lucide-react';
 
 // Performance optimization: lazy-load modals on demand to shrink initial bundle
@@ -242,6 +243,7 @@ export const App: React.FC = () => {
   };
 
   const handleResetFilters = () => {
+    setActiveCountryScope('all');
     setFilters(initialFilters);
     setIsRegionGuideOpen(false);
   };
@@ -257,6 +259,20 @@ export const App: React.FC = () => {
     setSelectedProducer(null);
     setIsDrawerOpen(false);
     setIsRegionGuideOpen(hasStory);
+    setViewMode('map');
+  };
+
+  const handleExploreCountry = (country: Exclude<CountryScope, 'all'>) => {
+    setActiveCountryScope(country);
+    setFilters((prev) => ({
+      ...prev,
+      destination: 'all',
+      searchQuery: '',
+      favoritesOnly: false,
+    }));
+    setSelectedProducer(null);
+    setIsDrawerOpen(false);
+    setIsRegionGuideOpen(false);
     setViewMode('map');
   };
 
@@ -410,6 +426,7 @@ export const App: React.FC = () => {
             selectedDestination={filters.destination}
             isFavorite={isFavorite}
             onToggleFavorite={toggleFavorite}
+            onExploreCountry={handleExploreCountry}
             onExploreRegion={handleExploreRegion}
             viewMode={viewMode}
           />
