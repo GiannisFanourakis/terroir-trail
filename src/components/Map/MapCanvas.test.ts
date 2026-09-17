@@ -1,8 +1,25 @@
 import { describe, expect, it, vi } from 'vitest';
 import type { Producer } from '../../types/terroir';
 
-describe('MapCanvas marker diffing and selection isolation', () => {
-  const createMockProducer = (id: string, name: string): Producer => ({
+vi.mock('leaflet', () => ({
+  default: {
+    map: vi.fn(),
+    tileLayer: vi.fn(),
+    marker: vi.fn(),
+    divIcon: vi.fn(),
+    geoJSON: vi.fn(),
+    circleMarker: vi.fn(),
+    DomEvent: { stopPropagation: vi.fn() },
+  },
+}));
+
+import {
+  getProducerMarkerSignature,
+  getMapMotionPreference,
+} from './MapCanvas';
+
+describe('MapCanvas marker diffing, in-place updates, and motion preferences', () => {
+  const createMockProducer = (id: string, name: string, overrides: Partial<Producer> = {}): Producer => ({
     id,
     name,
     greekName: name,
@@ -25,6 +42,7 @@ describe('MapCanvas marker diffing and selection isolation', () => {
     story: 'Traditional vineyard',
     tagLine: 'Organic family estate',
     description: 'Traditional vineyard',
+    ...overrides,
   });
 
   it('diffs markers by ID without destroying existing markers', () => {
@@ -32,8 +50,7 @@ describe('MapCanvas marker diffing and selection isolation', () => {
     const p2 = createMockProducer('p2', 'Estate Two');
     const p3 = createMockProducer('p3', 'Estate Three');
 
-    // Simulate markers collection tracking
-    const markers: Record<string, { id: string; removed: boolean; iconUpdated: boolean }> = {};
+    const markers: Record<string, { id: string; removed: boolean }> = {};
     const createdIds: string[] = [];
 
     const applyProducers = (currentProducers: Producer[]) => {
@@ -43,7 +60,6 @@ describe('MapCanvas marker diffing and selection isolation', () => {
           .map((p) => p.id)
       );
 
-      // Remove stale markers
       Object.keys(markers).forEach((id) => {
         if (!validIds.has(id)) {
           markers[id].removed = true;
@@ -51,24 +67,20 @@ describe('MapCanvas marker diffing and selection isolation', () => {
         }
       });
 
-      // Add new markers
       currentProducers.forEach((producer) => {
         if (!markers[producer.id]) {
-          markers[producer.id] = { id: producer.id, removed: false, iconUpdated: false };
+          markers[producer.id] = { id: producer.id, removed: false };
           createdIds.push(producer.id);
         }
       });
     };
 
-    // Step 1: Initial list [p1, p2]
     applyProducers([p1, p2]);
     expect(Object.keys(markers)).toEqual(['p1', 'p2']);
     expect(createdIds).toEqual(['p1', 'p2']);
 
-    // Step 2: Filter/Update to [p2, p3] (p1 removed, p2 kept, p3 added)
     applyProducers([p2, p3]);
     expect(Object.keys(markers)).toEqual(['p2', 'p3']);
-    // p2 was NOT recreated; createdIds only added 'p3'
     expect(createdIds).toEqual(['p1', 'p2', 'p3']);
   });
 
@@ -76,7 +88,6 @@ describe('MapCanvas marker diffing and selection isolation', () => {
     const p1 = createMockProducer('p1', 'Estate One');
     const p2 = createMockProducer('p2', 'Estate Two');
 
-    // Mock markers
     const markers: Record<string, { id: string; active: boolean; zIndex: number; recreations: number }> = {
       p1: { id: 'p1', active: false, zIndex: 0, recreations: 1 },
       p2: { id: 'p2', active: false, zIndex: 0, recreations: 1 },
@@ -99,7 +110,6 @@ describe('MapCanvas marker diffing and selection isolation', () => {
       }
     };
 
-    // Select p1
     selectProducer(p1);
     expect(markers.p1.active).toBe(true);
     expect(markers.p1.zIndex).toBe(1000);
@@ -107,20 +117,204 @@ describe('MapCanvas marker diffing and selection isolation', () => {
     expect(markers.p2.active).toBe(false);
     expect(markers.p2.recreations).toBe(1);
 
-    // Switch selection to p2
     selectProducer(p2);
     expect(markers.p1.active).toBe(false);
     expect(markers.p1.zIndex).toBe(0);
-    expect(markers.p1.recreations).toBe(1); // Not recreated
+    expect(markers.p1.recreations).toBe(1);
     expect(markers.p2.active).toBe(true);
     expect(markers.p2.zIndex).toBe(1000);
-    expect(markers.p2.recreations).toBe(1); // Not recreated
+    expect(markers.p2.recreations).toBe(1);
 
-    // Deselect (click map backdrop)
     selectProducer(null);
     expect(markers.p1.active).toBe(false);
     expect(markers.p2.active).toBe(false);
     expect(markers.p1.recreations).toBe(1);
     expect(markers.p2.recreations).toBe(1);
+  });
+
+  it('updates existing marker LatLng when same-ID producer coordinates change', () => {
+    const p1Initial = createMockProducer('p1', 'Estate One', { coordinates: [35.2, 25.1] });
+    const p1Updated = createMockProducer('p1', 'Estate One', { coordinates: [35.35, 25.25] });
+
+    interface MockMarker {
+      id: string;
+      coordinates: [number, number];
+      latLngUpdates: number;
+    }
+
+    const markers: Record<string, MockMarker> = {};
+    const signatures: Record<string, string> = {};
+
+    const syncProducers = (producers: Producer[]) => {
+      producers.forEach((producer) => {
+        const newSig = getProducerMarkerSignature(producer);
+        const existingMarker = markers[producer.id];
+
+        if (existingMarker) {
+          const oldSig = signatures[producer.id];
+          if (oldSig !== newSig) {
+            if (
+              existingMarker.coordinates[0] !== producer.coordinates[0] ||
+              existingMarker.coordinates[1] !== producer.coordinates[1]
+            ) {
+              existingMarker.coordinates = producer.coordinates;
+              existingMarker.latLngUpdates++;
+            }
+            signatures[producer.id] = newSig;
+          }
+          return;
+        }
+
+        markers[producer.id] = {
+          id: producer.id,
+          coordinates: producer.coordinates,
+          latLngUpdates: 0,
+        };
+        signatures[producer.id] = newSig;
+      });
+    };
+
+    syncProducers([p1Initial]);
+    expect(markers.p1.coordinates).toEqual([35.2, 25.1]);
+    expect(markers.p1.latLngUpdates).toBe(0);
+
+    syncProducers([p1Updated]);
+    expect(markers.p1.coordinates).toEqual([35.35, 25.25]);
+    expect(markers.p1.latLngUpdates).toBe(1);
+  });
+
+  it('updates existing marker icon when same-ID producer display data changes while preserving selection state', () => {
+    const p1 = createMockProducer('p1', 'Estate One', { rating: 4.8, village: 'Archanes' });
+    const p1Renamed = createMockProducer('p1', 'Estate One Premium', { rating: 5.0, village: 'Peza' });
+
+    interface MockMarker {
+      id: string;
+      iconHtml: string;
+      iconUpdates: number;
+    }
+
+    const markers: Record<string, MockMarker> = {};
+    const signatures: Record<string, string> = {};
+    const selectedId = 'p1';
+
+    const syncProducers = (producers: Producer[]) => {
+      producers.forEach((producer) => {
+        const newSig = getProducerMarkerSignature(producer);
+        const existingMarker = markers[producer.id];
+
+        if (existingMarker) {
+          const oldSig = signatures[producer.id];
+          if (oldSig !== newSig) {
+            const isSelected = selectedId === producer.id;
+            existingMarker.iconHtml = `pin-${producer.name}-${producer.rating}-${isSelected ? 'active' : 'normal'}`;
+            existingMarker.iconUpdates++;
+            signatures[producer.id] = newSig;
+          }
+          return;
+        }
+
+        const isSelected = selectedId === producer.id;
+        markers[producer.id] = {
+          id: producer.id,
+          iconHtml: `pin-${producer.name}-${producer.rating}-${isSelected ? 'active' : 'normal'}`,
+          iconUpdates: 0,
+        };
+        signatures[producer.id] = newSig;
+      });
+    };
+
+    syncProducers([p1]);
+    expect(markers.p1.iconHtml).toBe('pin-Estate One-4.8-active');
+    expect(markers.p1.iconUpdates).toBe(0);
+
+    syncProducers([p1Renamed]);
+    expect(markers.p1.iconHtml).toBe('pin-Estate One Premium-5-active');
+    expect(markers.p1.iconUpdates).toBe(1);
+  });
+
+  it('resolves latest producer object from producersMapRef at click time to prevent stale closure data', () => {
+    const p1Initial = createMockProducer('p1', 'Estate Alpha', { rating: 4.5 });
+    const p1Updated = createMockProducer('p1', 'Estate Alpha (Updated)', { rating: 4.9 });
+
+    const producersMap = new Map<string, Producer>();
+    producersMap.set('p1', p1Initial);
+
+    let selectedResult: Producer | null = null;
+    const onSelect = (producer: Producer) => {
+      selectedResult = producer;
+    };
+
+    const createMarkerClickHandler = (producerId: string, initialFallback: Producer) => {
+      return () => {
+        const current = producersMap.get(producerId) || initialFallback;
+        onSelect(current);
+      };
+    };
+
+    const clickHandler = createMarkerClickHandler('p1', p1Initial);
+
+    clickHandler();
+    expect((selectedResult as Producer | null)?.name).toBe('Estate Alpha');
+    expect((selectedResult as Producer | null)?.rating).toBe(4.5);
+
+    producersMap.set('p1', p1Updated);
+
+    clickHandler();
+    expect((selectedResult as Producer | null)?.name).toBe('Estate Alpha (Updated)');
+    expect((selectedResult as Producer | null)?.rating).toBe(4.9);
+  });
+
+  it('computes correct producer marker signature', () => {
+    const p1 = createMockProducer('p1', 'Estate One', {
+      coordinates: [35.2, 25.1],
+      village: 'Archanes',
+      region: 'Heraklion',
+      rating: 4.8,
+    });
+    const sig1 = getProducerMarkerSignature(p1);
+    expect(sig1).toContain('p1|35.2,25.1|Estate One|Archanes|Heraklion|winery|4.8');
+
+    const p1ChangedRating = { ...p1, rating: 4.9 };
+    const sig2 = getProducerMarkerSignature(p1ChangedRating);
+    expect(sig2).not.toBe(sig1);
+  });
+
+  it('getMapMotionPreference respects prefers-reduced-motion and adjusts mobile duration', () => {
+    const originalWindow = (globalThis as any).window;
+
+    // Test reduced motion on desktop
+    (globalThis as any).window = {
+      innerWidth: 1024,
+      matchMedia: vi.fn().mockImplementation((query: string) => ({
+        matches: query === '(prefers-reduced-motion: reduce)',
+        media: query,
+        onchange: null,
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      })),
+    };
+
+    const reducedMotion = getMapMotionPreference({ desktopDuration: 1.0, mobileDuration: 0.5 });
+    expect(reducedMotion.isReduced).toBe(true);
+    expect(reducedMotion.animate).toBe(false);
+    expect(reducedMotion.duration).toBe(0);
+
+    // Test mobile viewport with normal motion
+    (globalThis as any).window.matchMedia = vi.fn().mockReturnValue({ matches: false });
+    (globalThis as any).window.innerWidth = 390;
+    const mobileMotion = getMapMotionPreference({ desktopDuration: 1.0, mobileDuration: 0.5 });
+    expect(mobileMotion.isReduced).toBe(false);
+    expect(mobileMotion.isMobile).toBe(true);
+    expect(mobileMotion.duration).toBe(0.5);
+
+    // Restore
+    if (originalWindow === undefined) {
+      delete (globalThis as any).window;
+    } else {
+      (globalThis as any).window = originalWindow;
+    }
   });
 });

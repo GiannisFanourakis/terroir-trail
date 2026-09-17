@@ -74,3 +74,25 @@ The following test suites and preflight verification scripts were run:
 - **Mobile Preflight:** `npm run mobile:preflight -- all`.
 - **Python Audit Tools:** `npm run test:python`.
 - **Git Diff Hygiene:** `git diff --check`.
+
+---
+
+## 4. Corrective Pass Additions
+
+Following initial verification, a targeted corrective pass completed the following items:
+1. **Mobile FilterBar Progressive Disclosure:**
+   - Replaced permanent 9-category horizontal chip strip on `< sm` with a compact `Categories & Filters` trigger button showing active category icon/label and total active filter count badge.
+   - Preserved rich desktop chip strip on `sm+`.
+   - Exposed category grid and secondary filter controls inside an accessible animated expandable mobile panel (`min-h-[44px]` touch targets, zero horizontal overflow).
+   - Ensured `Reset` button displays only when filters or search queries are active.
+2. **Same-ID In-Place Marker Updates & Stale Click-Handler Resolution:**
+   - Introduced lightweight marker signatures (`id`, `coordinates`, `name`, `village`, `region`, `effectiveCategory`, `rating`).
+   - For existing markers with unchanged ID, updates `LatLng` if coordinates change and updates icon HTML if display data changes, preserving current selection state.
+   - Refactored click handlers to resolve the current `Producer` object from `producersMapRef.current` at click time instead of permanently closing over stale objects.
+3. **Mobile Search Font (16px):**
+   - Updated mobile search input to `text-base sm:text-xs` (16px on mobile) to eliminate iOS Safari viewport auto-zoom upon focus.
+4. **Consistent Map Motion & Reduced-Motion Preference:**
+   - Created `getMapMotionPreference`, `flyOrSetView`, and `fitBoundsWithMotion` helpers.
+   - Applied consistently across producer selection, destination switching, reset destination view, locate me, and region fit/focus.
+   - Automatically zeroes animation and uses instant `setView` when `prefers-reduced-motion: reduce` is active.
+   - Keeps mobile camera animations short and snappy (0.5s duration).

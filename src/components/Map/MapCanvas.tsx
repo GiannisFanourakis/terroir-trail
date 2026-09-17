@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import { Producer, Destination } from '../../types/terroir';
-import { 
-  Plus, Minus, Navigation, Maximize2, Layers, MapPin, 
+import {
+  Plus, Minus, Navigation, Maximize2, Layers, MapPin,
   Star, ArrowRight, ExternalLink, X, Compass, ChevronRight, Heart, AlertCircle, Mountain
 } from 'lucide-react';
 import { getCategoryFallbackImage } from '../../utils/imageFallbacks';
@@ -47,6 +47,81 @@ const getRegionStyle = (isActive: boolean, zoom: number): L.PathOptions => {
   };
 };
 
+export interface MapMotionOptions {
+  desktopDuration?: number;
+  mobileDuration?: number;
+}
+
+export const getMapMotionPreference = (options?: MapMotionOptions) => {
+  const isReduced =
+    typeof window !== 'undefined' &&
+    typeof window.matchMedia === 'function' &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+
+  if (isReduced) {
+    return {
+      animate: false,
+      duration: 0,
+      isReduced: true,
+      isMobile,
+    };
+  }
+
+  const duration = isMobile
+    ? (options?.mobileDuration ?? 0.5)
+    : (options?.desktopDuration ?? 1.0);
+
+  return {
+    animate: true,
+    duration,
+    isReduced: false,
+    isMobile,
+  };
+};
+
+export const flyOrSetView = (
+  map: L.Map,
+  target: L.LatLngExpression,
+  zoom?: number,
+  options?: MapMotionOptions & L.ZoomPanOptions
+) => {
+  const motion = getMapMotionPreference(options);
+  const targetZoom = zoom ?? map.getZoom();
+
+  if (motion.isReduced) {
+    map.setView(target, targetZoom, { animate: false });
+  } else {
+    map.flyTo(target, targetZoom, {
+      duration: motion.duration,
+      easeLinearity: 0.25,
+      ...options,
+    });
+  }
+};
+
+export const fitBoundsWithMotion = (
+  map: L.Map,
+  bounds: L.LatLngBoundsExpression,
+  options?: L.FitBoundsOptions & MapMotionOptions
+) => {
+  const motion = getMapMotionPreference(options);
+  const isMobile = motion.isMobile;
+
+  map.fitBounds(bounds, {
+    padding: isMobile ? [18, 18] : [44, 44],
+    animate: !motion.isReduced,
+    duration: motion.isReduced ? 0 : motion.duration,
+    ...options,
+  });
+};
+
+export const getProducerMarkerSignature = (producer: Producer): string => {
+  const [lat, lng] = producer.coordinates;
+  const effectiveCat = getEffectiveProducerCategory(producer);
+  return `${producer.id}|${lat},${lng}|${producer.name}|${producer.village || ''}|${producer.region}|${effectiveCat}|${producer.rating ?? ''}`;
+};
+
 export const MapCanvas: React.FC<MapCanvasProps> = ({
   producers,
   selectedProducer,
@@ -61,6 +136,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
   const markersRef = useRef<{ [id: string]: L.Marker }>({});
+  const markerSignaturesRef = useRef<{ [id: string]: string }>({});
   const tileLayerRef = useRef<L.TileLayer | null>(null);
   const regionLayerRef = useRef<L.GeoJSON | null>(null);
   const regionLabelRef = useRef<L.Marker | null>(null);
@@ -249,6 +325,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       window.removeEventListener('resize', scheduleInvalidate);
       Object.values(markersRef.current).forEach((m) => m.remove());
       markersRef.current = {};
+      markerSignaturesRef.current = {};
       map.remove();
       mapInstanceRef.current = null;
     };
@@ -278,7 +355,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     if (!map || selectedProducer) return;
 
     const target = DESTINATION_CENTERS[selectedDestination];
-    map.flyTo(target.coords, target.zoom, { duration: 1.2 });
+    flyOrSetView(map, target.coords, target.zoom, { mobileDuration: 0.5, desktopDuration: 1.0 });
   }, [selectedDestination]);
 
   useEffect(() => {
@@ -342,10 +419,10 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       setActiveRegionId(activeDestinationRegion.id);
       const targetBounds = bounds || regionLayerRef.current?.getBounds();
       if (targetBounds?.isValid()) {
-        map.fitBounds(targetBounds, {
-          padding: window.innerWidth < 768 ? [18, 18] : [44, 44],
+        fitBoundsWithMotion(map, targetBounds, {
           maxZoom: Math.max(9, DESTINATION_CENTERS[activeDestinationRegion.destination].zoom),
-          animate: true,
+          mobileDuration: 0.5,
+          desktopDuration: 0.8,
         });
       }
     };
@@ -414,7 +491,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     }
   }, [activeRegionId, mapZoom, activeDestinationRegion]);
 
-  // Effect 1: Marker collection diffing - depends ONLY on [producers]
+  // Effect 1: Marker collection diffing & in-place update - depends ONLY on [producers]
   useEffect(() => {
     const map = mapInstanceRef.current;
     if (!map) return;
@@ -429,17 +506,44 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       if (!validIds.has(id)) {
         markersRef.current[id].remove();
         delete markersRef.current[id];
+        delete markerSignaturesRef.current[id];
       }
     });
 
     if (validProducers.length === 0) return;
 
-    // Add only new markers that don't already exist on map
+    // Add new markers or update existing markers if marker-significant data changed
     validProducers.forEach((producer) => {
-      if (markersRef.current[producer.id]) {
+      const newSignature = getProducerMarkerSignature(producer);
+      const existingMarker = markersRef.current[producer.id];
+
+      if (existingMarker) {
+        const oldSignature = markerSignaturesRef.current[producer.id];
+        if (oldSignature !== newSignature) {
+          // Update LatLng if coordinates changed
+          const currentLatLng = existingMarker.getLatLng();
+          const [newLat, newLng] = producer.coordinates;
+          if (currentLatLng.lat !== newLat || currentLatLng.lng !== newLng) {
+            existingMarker.setLatLng(producer.coordinates);
+          }
+
+          // Update icon HTML if display data changed, preserving current selection state
+          const isSelected = selectedProducerIdRef.current === producer.id;
+          existingMarker.setIcon(
+            L.divIcon({
+              html: getMarkerHtml(producer, isSelected),
+              className: 'custom-leaflet-pin-wrapper',
+              iconSize: [180, 42],
+              iconAnchor: [90, 21],
+            })
+          );
+
+          markerSignaturesRef.current[producer.id] = newSignature;
+        }
         return;
       }
 
+      // Create new marker
       const isSelected = selectedProducerIdRef.current === producer.id;
 
       const customIcon = L.divIcon({
@@ -458,11 +562,14 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       marker.on('click', (e) => {
         L.DomEvent.stopPropagation(e);
         setActiveRegionId(null);
-        onSelectProducerRef.current(producer);
+        // Resolve current producer object by ID from producersMapRef at click time
+        const currentProducer = producersMapRef.current.get(producer.id) || producer;
+        onSelectProducerRef.current(currentProducer);
       });
 
       marker.addTo(map);
       markersRef.current[producer.id] = marker;
+      markerSignaturesRef.current[producer.id] = newSignature;
     });
   }, [producers]);
 
@@ -505,7 +612,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     }
   }, [selectedProducer]);
 
-  // Effect 3: Camera flyTo on selection - optimized for mobile responsiveness
+  // Effect 3: Camera flyTo on selection - optimized for mobile responsiveness & reduced motion
   useEffect(() => {
     const map = mapInstanceRef.current;
     if (!map || !selectedProducer || selectedProducer.locationStatus === 'unresolved') return;
@@ -513,17 +620,10 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     setActiveRegionId(null);
     const [lat, lng] = selectedProducer.coordinates;
     if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
-    const targetLat = window.innerWidth < 768 ? lat - 0.015 : lat;
+    const isMobile = window.innerWidth < 768;
+    const targetLat = isMobile ? lat - 0.015 : lat;
 
-    const prefersReducedMotion =
-      typeof window !== 'undefined' &&
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const duration = prefersReducedMotion ? 0 : window.innerWidth < 768 ? 0.5 : 0.8;
-
-    map.flyTo([targetLat, lng], 13, {
-      duration,
-      easeLinearity: 0.25,
-    });
+    flyOrSetView(map, [targetLat, lng], 13, { mobileDuration: 0.5, desktopDuration: 0.8 });
   }, [selectedProducer]);
 
   const handleZoomIn = () => mapInstanceRef.current?.zoomIn();
@@ -533,20 +633,22 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     onSelectProducer(null);
     setActiveRegionId(null);
     const target = DESTINATION_CENTERS[selectedDestination];
-    mapInstanceRef.current?.flyTo(target.coords, target.zoom, { duration: 1 });
+    if (mapInstanceRef.current) {
+      flyOrSetView(mapInstanceRef.current, target.coords, target.zoom, { mobileDuration: 0.5, desktopDuration: 1.0 });
+    }
   };
 
   const handleExploreCurrentRegion = () => {
-    if (!activeDestinationRegion) return;
+    if (!activeDestinationRegion || !mapInstanceRef.current) return;
     onSelectProducer(null);
     setActiveRegionId(activeDestinationRegion.id);
     onExploreRegion?.(activeDestinationRegion.destination);
     const bounds = regionLayerRef.current?.getBounds();
     if (bounds?.isValid()) {
-      mapInstanceRef.current?.fitBounds(bounds, {
-        padding: window.innerWidth < 768 ? [18, 18] : [44, 44],
+      fitBoundsWithMotion(mapInstanceRef.current, bounds, {
         maxZoom: Math.max(9, DESTINATION_CENTERS[activeDestinationRegion.destination].zoom),
-        animate: true,
+        mobileDuration: 0.5,
+        desktopDuration: 0.8,
       });
     }
   };
@@ -558,7 +660,10 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     try {
       const coords = await getUserCoordinates();
       setActiveRegionId(null);
-      mapInstanceRef.current.flyTo([coords.latitude, coords.longitude], 13);
+      flyOrSetView(mapInstanceRef.current, [coords.latitude, coords.longitude], 13, {
+        mobileDuration: 0.5,
+        desktopDuration: 0.8,
+      });
       L.circleMarker([coords.latitude, coords.longitude], {
         radius: 9,
         fillColor: '#38bdf8',
