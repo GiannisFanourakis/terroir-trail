@@ -45,11 +45,11 @@ export const PHASE10B_DISCOVERY_GUIDES: DayTripLoop[] = [
   },
   {
     id: 'northern-greece-verified-winery-planner',
-    title: 'Northern Greece: Verified Winery Visit Planner',
-    greekTitle: 'Βόρεια Ελλάδα: Οδηγός Επαληθευμένων Επισκέψεων σε Οινοποιεία',
+    title: 'Macedonia, Greece: Verified Winery Visit Planner',
+    greekTitle: 'Μακεδονία: Οδηγός Επαληθευμένων Επισκέψεων σε Οινοποιεία',
     subtitle: 'Epanomi · Naoussa · Amyndeon · Kokkinochori · Drama',
     destination: 'northern_greece',
-    region: 'Northern Greece',
+    region: 'Macedonia, Greece',
     totalDuration: 'Choose individual visits',
     drivingDistance: 'No regional driving route published',
     stops: [
@@ -85,7 +85,7 @@ export const PHASE10B_DISCOVERY_GUIDES: DayTripLoop[] = [
       },
     ],
     description:
-      'A regional planning collection of five Northern Greece wineries with verified locations and current first-party visitor evidence. This is deliberately not a same-day driving itinerary: choose stops independently, confirm each visit with the producer, and plan travel separately because TerroirTrail does not have sufficient verified road evidence for a combined regional route.',
+      'A regional planning collection of five Macedonia, Greece wineries with verified locations and current first-party visitor evidence. This is deliberately not a same-day driving itinerary: choose stops independently, confirm each visit with the producer, and plan travel separately because TerroirTrail does not have sufficient verified road evidence for a combined regional route.',
     highlightPointers: [
       'Five verified producer locations with current visitor evidence',
       'Public and appointment-based visits are labelled separately',

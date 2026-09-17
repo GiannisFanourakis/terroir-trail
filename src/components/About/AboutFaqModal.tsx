@@ -77,7 +77,7 @@ const FAQ_DATA: FaqItem[] = [
     categoryLabel: 'About & Curation',
     question: 'Which regions are currently covered?',
     answer:
-      'TerroirTrail currently includes 62 producer records across Crete, Santorini, the Peloponnese, Northern Greece and Tuscany. Coverage will expand across Greece, Italy and other European regions as new records meet the same research and presentation standard.',
+      'TerroirTrail currently includes 62 producer records across Crete, Santorini, the Peloponnese, Macedonia, Greece and Tuscany. Coverage will expand across Greece, Italy and other European regions as new records meet the same research and presentation standard.',
     highlight: 'The catalogue already reaches beyond Greece while keeping a consistent research standard.',
   },
   {
@@ -289,7 +289,7 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
                   <span>Across Greece and into Italy</span>
                 </div>
                 <p className="text-xs text-stone-300 leading-relaxed">
-                  The current catalogue spans Crete, Santorini, the Peloponnese, Northern Greece and Tuscany. TerroirTrail is designed to grow into more Mediterranean and European regions without losing the same research standard.
+                  The current catalogue spans Crete, Santorini, the Peloponnese, Macedonia, Greece and Tuscany. TerroirTrail is designed to grow into more Mediterranean and European regions without losing the same research standard.
                 </p>
               </div>
 

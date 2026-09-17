@@ -99,7 +99,7 @@ function verifySeoAssets(): void {
     `${PRODUCERS.length} producer/project records`,
     `Crete, Greece — ${CRETE_COUNT} audited records.`,
     `Santorini, Greece — ${SANTORINI_COUNT} audited records.`,
-    `Peloponnese, Northern Greece and Tuscany / Italy — ${OTHER_DESTINATION_COUNT} audited records combined.`,
+    `Peloponnese, Macedonia, Greece and Tuscany / Italy — ${OTHER_DESTINATION_COUNT} audited records combined.`,
     '10 published verified-stop Discovery Guides',
     '/producers/<producer-id>/',
     'does not represent Santorini as a UNESCO Global Geopark',
@@ -126,7 +126,7 @@ function verifySeoAssets(): void {
   requireIncludes(indexContent, 'TerroirTrail — Independent Producer &amp; Agritourism Guide', 'dist/index.html');
   requireIncludes(indexContent, `${PRODUCERS.length} audited producer/project records`, 'dist/index.html');
   requireIncludes(indexContent, 'Ten verified-stop guides are currently published', 'dist/index.html');
-  requireIncludes(indexContent, 'Crete, Santorini, the Peloponnese, Northern Greece and Tuscany', 'dist/index.html');
+  requireIncludes(indexContent, 'Crete, Santorini, the Peloponnese, Macedonia, Greece and Tuscany', 'dist/index.html');
   requireIncludes(indexContent, 'href="/producers/"', 'dist/index.html');
   requireIncludes(indexContent, 'Discovery Guides &amp; Navigation Safety', 'dist/index.html');
   requireIncludes(indexContent, 'Santorini Brewing Company', 'dist/index.html');

@@ -41,7 +41,7 @@ const DESTINATIONS: { id: Destination | 'all'; label: string }[] = [
   { id: 'crete', label: 'Crete' },
   { id: 'santorini', label: 'Santorini' },
   { id: 'peloponnese', label: 'Peloponnese' },
-  { id: 'northern_greece', label: 'Northern Greece' },
+  { id: 'northern_greece', label: 'Macedonia, Greece' },
 ];
 
 export const ExperienceExplorerModal: React.FC<ExperienceExplorerModalProps> = ({

@@ -24,7 +24,7 @@ const destinationLabels: Record<Producer['destination'], string> = {
   crete: 'Crete',
   santorini: 'Santorini',
   peloponnese: 'Peloponnese',
-  northern_greece: 'Northern Greece',
+  northern_greece: 'Macedonia, Greece',
   tuscany: 'Tuscany',
 };
 
@@ -289,7 +289,7 @@ const renderProducerPage = (producer: Producer): string => {
 const renderProducerDirectory = (): string => {
   const canonicalUrl = `${CANONICAL_HOST}/producers/`;
   const title = 'Audited Producer Directory | TerroirTrail';
-  const description = `Browse ${PRODUCERS.length} audited producer/project records across Crete, Santorini, the Peloponnese, Northern Greece and Tuscany.`;
+  const description = `Browse ${PRODUCERS.length} audited producer/project records across Crete, Santorini, the Peloponnese, Macedonia, Greece and Tuscany.`;
   const grouped = Object.keys(destinationLabels).map((destinationKey) => {
     const destination = destinationKey as Producer['destination'];
     const producers = PRODUCERS
@@ -382,33 +382,33 @@ const refreshHomepageSeoState = (sourceHtml: string): string => {
   html = replaceRequired(
     html,
     'Independent producer and agritourism discovery guide connecting travelers directly with audited wineries, craft breweries, artisanal olive mills, traditional dairies, apiaries, traditional distilleries, and farms across Crete and Santorini, with clearly labeled visiting, location, imagery, and road-access status.',
-    `Independent producer and agritourism discovery guide connecting travelers directly with ${PRODUCERS.length} audited producer/project records across Crete, Santorini, the Peloponnese, Northern Greece and Tuscany, with clearly labeled visiting, location, imagery, and road-access status.`
+    `Independent producer and agritourism discovery guide connecting travelers directly with ${PRODUCERS.length} audited producer/project records across Crete, Santorini, the Peloponnese, Macedonia, Greece and Tuscany, with clearly labeled visiting, location, imagery, and road-access status.`
   );
   html = replaceRequired(
     html,
     'Interactive agritourism discovery map and directory with audited reference catalogues in Crete and Santorini. Discovery Guides are built from verified stops; multi-stop driving navigation remains withheld wherever road-access evidence is incomplete.',
-    `Interactive agritourism discovery map and directory with ${PRODUCERS.length} audited producer/project records across Crete, Santorini, the Peloponnese, Northern Greece and Tuscany. Discovery Guides are built from verified stops; multi-stop driving navigation remains withheld wherever road-access evidence is incomplete.`
+    `Interactive agritourism discovery map and directory with ${PRODUCERS.length} audited producer/project records across Crete, Santorini, the Peloponnese, Macedonia, Greece and Tuscany. Discovery Guides are built from verified stops; multi-stop driving navigation remains withheld wherever road-access evidence is incomplete.`
   );
   html = replaceRequired(
     html,
     'TerroirTrail is an independent producer and agritourism discovery guide. It connects slow travelers and road-trippers directly with independent wineries, craft breweries, artisanal olive mills, traditional dairies, apiaries, traditional distilleries, and farms, with audited reference catalogues in Crete and Santorini and further regional expansion in progress.',
-    `TerroirTrail is an independent producer and agritourism discovery guide with ${PRODUCERS.length} audited producer/project records across Crete, Santorini, the Peloponnese, Northern Greece and Tuscany. It connects travelers with source-backed producer identity, visiting, location and access information while keeping unknown facts unknown.`
+    `TerroirTrail is an independent producer and agritourism discovery guide with ${PRODUCERS.length} audited producer/project records across Crete, Santorini, the Peloponnese, Macedonia, Greece and Tuscany. It connects travelers with source-backed producer identity, visiting, location and access information while keeping unknown facts unknown.`
   );
   html = replaceRequired(html, 'Which regions are currently audited to reference quality?', 'Which regions are currently represented in the audited catalogue?');
   html = replaceRequired(
     html,
     'Crete and Santorini are the current reference-quality regions. Crete has 27 audited producer/project records and Santorini has 9 audited producer records.',
-    `The audited catalogue currently covers Crete, Santorini, the Peloponnese, Northern Greece and a Tuscany / Italy foothold: ${PRODUCERS.length} producer/project records in total.`
+    `The audited catalogue currently covers Crete, Santorini, the Peloponnese, Macedonia, Greece and a Tuscany / Italy foothold: ${PRODUCERS.length} producer/project records in total.`
   );
   html = replaceRequired(
     html,
     'Crete and Santorini are the current reference-quality regions, with clearly labeled visiting, location, imagery, and road-access status and no commission markups.',
-    'The current audited catalogue spans Crete, Santorini, the Peloponnese, Northern Greece and Tuscany, with clearly labeled visiting, location, imagery, and road-access status and no commission markups.'
+    'The current audited catalogue spans Crete, Santorini, the Peloponnese, Macedonia, Greece and Tuscany, with clearly labeled visiting, location, imagery, and road-access status and no commission markups.'
   );
   html = replaceRequired(
     html,
     'TerroirTrail publishes Discovery Guides from verified producer stops. Six guides are currently published across Crete and Santorini. They are discovery stop collections, not road-safety guarantees.',
-    'TerroirTrail publishes Discovery Guides from verified producer stops. Ten verified-stop guides are currently published across Crete, Santorini, the Peloponnese, Northern Greece and Tuscany. They are discovery stop collections, not road-safety guarantees.'
+    'TerroirTrail publishes Discovery Guides from verified producer stops. Ten verified-stop guides are currently published across Crete, Santorini, the Peloponnese, Macedonia, Greece and Tuscany. They are discovery stop collections, not road-safety guarantees.'
   );
   html = replaceRequired(
     html,

@@ -2,7 +2,7 @@
 
 TerroirTrail is an open-source, discovery-first agritourism and local-producer guide for independent culinary travelers, road-trippers and slow travelers.
 
-**Crete is the current reference-quality region.** The live Crete catalogue contains 27 audited producer/project records across Chania, Heraklion, Rethymno and Lasithi. Future geographic expansion may include Santorini, the Peloponnese, Northern Greece, Italy/wider Mediterranean regions and Northern Europe, but those regions are not represented as equally complete until their catalogue and verification work is finished.
+**Crete is the current reference-quality region.** The live Crete catalogue contains 27 audited producer/project records across Chania, Heraklion, Rethymno and Lasithi. Future geographic expansion may include Santorini, the Peloponnese, Macedonia, Greece, Italy/wider Mediterranean regions and Northern Europe, but those regions are not represented as equally complete until their catalogue and verification work is finished.
 
 Production: https://terroir-trail.web.app/
 
