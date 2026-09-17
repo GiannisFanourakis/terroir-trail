@@ -1,0 +1,84 @@
+name: Apply Thessaly region wiring
+
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-thessaly-region.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  wire-thessaly:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Wire Thessaly into app
+        shell: python
+        run: |
+          from pathlib import Path
+
+          def replace_once(path: str, old: str, new: str):
+              p = Path(path)
+              text = p.read_text()
+              if old not in text:
+                  raise SystemExit(f'Expected text not found in {path}: {old!r}')
+              p.write_text(text.replace(old, new, 1))
+
+          # App and map use the app-facing catalogue that adds Thessaly without
+          # touching the large legacy region geometry bundle.
+          replace_once(
+              'src/App.tsx',
+              "import { TERROIR_REGIONS } from './data/terroirRegions';",
+              "import { TERROIR_REGIONS } from './data/terroirRegionCatalogue';",
+          )
+          replace_once(
+              'src/components/Map/MapCanvas.tsx',
+              "import { TERROIR_REGIONS, TerroirRegion } from '../../data/terroirRegions';",
+              "import { TERROIR_REGIONS, type TerroirRegion } from '../../data/terroirRegionCatalogue';",
+          )
+          replace_once(
+              'src/components/Map/MapCanvas.tsx',
+              "    peloponnese: { coords: [37.8280, 22.6580], zoom: 10 },\n    northern_greece:",
+              "    peloponnese: { coords: [37.8280, 22.6580], zoom: 10 },\n    thessaly: { coords: [39.592714, 22.056567], zoom: 9 },\n    northern_greece:",
+          )
+
+          # Region navigation menu.
+          replace_once(
+              'src/components/Header/Header.tsx',
+              "    { id: 'peloponnese', label: 'Peloponnese', flag: '🏛️' },\n    { id: 'northern_greece'",
+              "    { id: 'peloponnese', label: 'Peloponnese', flag: '🏛️' },\n    { id: 'thessaly', label: 'Thessaly', flag: '🌾' },\n    { id: 'northern_greece'",
+          )
+
+          # Thessaly carries its initial story inside thessalyRegion.ts. Existing
+          # curated story overrides remain authoritative for older regions.
+          replace_once(
+              'src/data/terroirRegionStories.ts',
+              'export const TERROIR_REGION_STORIES: Record<Destination, TerroirRegionStory> = {',
+              'export const TERROIR_REGION_STORIES: Partial<Record<Destination, TerroirRegionStory>> = {',
+          )
+          replace_once(
+              'src/data/terroirRegionStories.ts',
+              "  const story = TERROIR_REGION_STORIES[region.destination];\n  return {\n    ...region,\n    ...story,\n  };",
+              "  const story = TERROIR_REGION_STORIES[region.destination];\n  if (!story) return region;\n  return {\n    ...region,\n    ...story,\n  };",
+          )
+
+          # The one-shot workflow deletes itself after applying the patch.
+          Path('.github/workflows/apply-thessaly-region.yml').unlink()
+
+      - name: Validate TypeScript build
+        run: |
+          npm ci
+          npm run build
+
+      - name: Commit Thessaly wiring
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/App.tsx src/components/Map/MapCanvas.tsx src/components/Header/Header.tsx src/data/terroirRegionStories.ts .github/workflows/apply-thessaly-region.yml
+          git commit -m "Complete Thessaly region app wiring"
+          git push
