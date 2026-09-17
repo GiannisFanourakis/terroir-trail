@@ -30,9 +30,15 @@ export interface CountryLayer {
 export interface DestinationGeography {
   countryCode: SupportedCountryScope;
   country: string;
-  nutsVersion: '2021' | '2024';
-  nutsLevel: 2 | 3 | 'mixed';
-  nutsCodes: string[];
+  classificationType?: 'NUTS' | 'Statistical Region';
+  officialName?: string;
+  nativeName?: string;
+  nutsVersion?: '2021' | '2024';
+  nutsLevel?: 2 | 3 | 'mixed';
+  nutsCodes?: string[];
+  srVersion?: '2024';
+  srLevel?: 2 | 3;
+  srCodes?: string[];
 }
 
 export const SUPPORTED_COUNTRY_CODES: readonly SupportedCountryScope[] = [
@@ -265,9 +271,164 @@ export const DESTINATION_GEOGRAPHY: Record<Destination, DestinationGeography> =
     piedmont: {
       countryCode: 'IT',
       country: 'Italy',
+      classificationType: 'NUTS',
       nutsVersion: '2024',
       nutsLevel: 2,
       nutsCodes: ['ITC1'],
+    },
+    puglia: {
+      countryCode: 'IT',
+      country: 'Italy',
+      classificationType: 'NUTS',
+      officialName: 'Puglia',
+      nativeName: 'Puglia',
+      nutsVersion: '2024',
+      nutsLevel: 2,
+      nutsCodes: ['ITF4'],
+    },
+    sicily: {
+      countryCode: 'IT',
+      country: 'Italy',
+      classificationType: 'NUTS',
+      officialName: 'Sicilia',
+      nativeName: 'Sicilia',
+      nutsVersion: '2024',
+      nutsLevel: 2,
+      nutsCodes: ['ITG1'],
+    },
+    south_tyrol: {
+      countryCode: 'IT',
+      country: 'Italy',
+      classificationType: 'NUTS',
+      officialName: 'Provincia Autonoma di Bolzano/Bozen',
+      nativeName: 'Südtirol / Alto Adige',
+      nutsVersion: '2024',
+      nutsLevel: 2,
+      nutsCodes: ['ITH1'],
+    },
+    provence: {
+      countryCode: 'FR',
+      country: 'France',
+      classificationType: 'NUTS',
+      officialName: "Provence-Alpes-Côte d'Azur",
+      nativeName: "Provence-Alpes-Côte d'Azur",
+      nutsVersion: '2024',
+      nutsLevel: 2,
+      nutsCodes: ['FRL0'],
+    },
+    catalonia: {
+      countryCode: 'ES',
+      country: 'Spain',
+      classificationType: 'NUTS',
+      officialName: 'Cataluña',
+      nativeName: 'Catalunya / Cataluña',
+      nutsVersion: '2024',
+      nutsLevel: 2,
+      nutsCodes: ['ES51'],
+    },
+    alentejo: {
+      countryCode: 'PT',
+      country: 'Portugal',
+      classificationType: 'NUTS',
+      officialName: 'Alentejo',
+      nativeName: 'Alentejo',
+      nutsVersion: '2024',
+      nutsLevel: 2,
+      nutsCodes: ['PT1C'],
+    },
+    istria: {
+      countryCode: 'HR',
+      country: 'Croatia',
+      classificationType: 'NUTS',
+      officialName: 'Istarska županija',
+      nativeName: 'Istra',
+      nutsVersion: '2024',
+      nutsLevel: 3,
+      nutsCodes: ['HR036'],
+    },
+    pomurska: {
+      countryCode: 'SI',
+      country: 'Slovenia',
+      classificationType: 'NUTS',
+      officialName: 'Pomurska',
+      nativeName: 'Pomurska regija',
+      nutsVersion: '2024',
+      nutsLevel: 3,
+      nutsCodes: ['SI031'],
+    },
+    southeast_slovenia: {
+      countryCode: 'SI',
+      country: 'Slovenia',
+      classificationType: 'NUTS',
+      officialName: 'Jugovzhodna Slovenija',
+      nativeName: 'Jugovzhodna Slovenija',
+      nutsVersion: '2024',
+      nutsLevel: 3,
+      nutsCodes: ['SI037'],
+    },
+    central_slovenia: {
+      countryCode: 'SI',
+      country: 'Slovenia',
+      classificationType: 'NUTS',
+      officialName: 'Osrednjeslovenska',
+      nativeName: 'Osrednjeslovenska regija',
+      nutsVersion: '2024',
+      nutsLevel: 3,
+      nutsCodes: ['SI041'],
+    },
+    goriska: {
+      countryCode: 'SI',
+      country: 'Slovenia',
+      classificationType: 'NUTS',
+      officialName: 'Goriška',
+      nativeName: 'Goriška regija',
+      nutsVersion: '2024',
+      nutsLevel: 3,
+      nutsCodes: ['SI043'],
+    },
+    trondelag: {
+      countryCode: 'NO',
+      country: 'Norway',
+      classificationType: 'Statistical Region',
+      officialName: 'Trøndelag/Trööndelage',
+      nativeName: 'Trøndelag',
+      srVersion: '2024',
+      srLevel: 3,
+      srCodes: ['NO060'],
+      nutsCodes: ['NO060'],
+    },
+    more_og_romsdal: {
+      countryCode: 'NO',
+      country: 'Norway',
+      classificationType: 'Statistical Region',
+      officialName: 'Møre og Romsdal',
+      nativeName: 'Møre og Romsdal',
+      srVersion: '2024',
+      srLevel: 3,
+      srCodes: ['NO0A3'],
+      nutsCodes: ['NO0A3'],
+    },
+    buskerud: {
+      countryCode: 'NO',
+      country: 'Norway',
+      classificationType: 'Statistical Region',
+      officialName: 'Buskerud',
+      nativeName: 'Buskerud',
+      srVersion: '2024',
+      srLevel: 3,
+      srCodes: ['NO085'],
+      nutsCodes: ['NO085'],
+    },
+    vestland: {
+      countryCode: 'NO',
+      country: 'Norway',
+      classificationType: 'Statistical Region',
+      officialName: 'Vestland',
+      nativeName: 'Vestland',
+      srVersion: '2024',
+      srLevel: 3,
+      srCodes: ['NO0A2'],
+      nutsCodes: ['NO0A2'],
     },
   };
 

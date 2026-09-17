@@ -16,12 +16,20 @@ export interface TerroirRegionSection {
 export interface TerroirRegion {
   id: string;
   name: string;
+  nativeName?: string;
+  officialName?: string;
   destination: Destination;
+  countryCode?: string;
+  geographyType?: 'NUTS' | 'Statistical Region';
+  nutsCode?: string;
+  nutsLevel?: 2 | 3 | 'mixed';
+  classificationVersion?: '2021' | '2024';
   eyebrow: string;
   summary: string;
   highlights: string[];
   sections: TerroirRegionSection[];
   center: [number, number];
+  zoom?: number;
   /** GeoJSON geometry coordinates use [longitude, latitude]. */
   geometry: {
     type: 'MultiPolygon';

@@ -225,6 +225,21 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     northern_greece: { coords: [40.6650, 22.0450], zoom: 10 },
     tuscany: { coords: [43.4671, 11.3447], zoom: 10 },
     piedmont: { coords: [45.0500, 7.9000], zoom: 9 },
+    puglia: { coords: [41.0, 16.7], zoom: 8 },
+    sicily: { coords: [37.5, 14.25], zoom: 8 },
+    south_tyrol: { coords: [46.65, 11.43], zoom: 9 },
+    provence: { coords: [44.05, 5.97], zoom: 8 },
+    catalonia: { coords: [41.7, 1.8], zoom: 8 },
+    alentejo: { coords: [38.5, -7.9], zoom: 8 },
+    istria: { coords: [45.15, 13.9], zoom: 9 },
+    pomurska: { coords: [46.67, 16.2], zoom: 10 },
+    southeast_slovenia: { coords: [45.72, 14.97], zoom: 9 },
+    central_slovenia: { coords: [46.05, 14.52], zoom: 9 },
+    goriska: { coords: [46.1, 13.76], zoom: 9 },
+    trondelag: { coords: [63.7, 11.25], zoom: 7 },
+    more_og_romsdal: { coords: [62.7, 7.35], zoom: 8 },
+    buskerud: { coords: [60.03, 9.31], zoom: 8 },
+    vestland: { coords: [60.84, 6.44], zoom: 7 },
   };
 
   // Country scope is stored separately from Destination so the navigation can

@@ -45,6 +45,21 @@ const destinationConfig: Record<Producer['destination'], DestinationConfig> = {
   thessaly: { label: 'Thessaly', slug: 'thessaly', countryLabel: 'Greece', countrySlug: 'greece' },
   tuscany: { label: 'Tuscany', slug: 'tuscany', countryLabel: 'Italy', countrySlug: 'italy' },
   piedmont: { label: 'Piedmont', slug: 'piedmont', countryLabel: 'Italy', countrySlug: 'italy' },
+  puglia: { label: 'Puglia', slug: 'puglia', countryLabel: 'Italy', countrySlug: 'italy' },
+  sicily: { label: 'Sicily', slug: 'sicily', countryLabel: 'Italy', countrySlug: 'italy' },
+  south_tyrol: { label: 'South Tyrol', slug: 'south-tyrol', countryLabel: 'Italy', countrySlug: 'italy' },
+  provence: { label: "Provence-Alpes-Côte d'Azur", slug: 'provence', countryLabel: 'France', countrySlug: 'france' },
+  catalonia: { label: 'Catalonia', slug: 'catalonia', countryLabel: 'Spain', countrySlug: 'spain' },
+  alentejo: { label: 'Alentejo', slug: 'alentejo', countryLabel: 'Portugal', countrySlug: 'portugal' },
+  istria: { label: 'Istria', slug: 'istria', countryLabel: 'Croatia', countrySlug: 'croatia' },
+  pomurska: { label: 'Pomurska', slug: 'pomurska', countryLabel: 'Slovenia', countrySlug: 'slovenia' },
+  southeast_slovenia: { label: 'Southeast Slovenia', slug: 'southeast-slovenia', countryLabel: 'Slovenia', countrySlug: 'slovenia' },
+  central_slovenia: { label: 'Central Slovenia', slug: 'central-slovenia', countryLabel: 'Slovenia', countrySlug: 'slovenia' },
+  goriska: { label: 'Goriška', slug: 'goriska', countryLabel: 'Slovenia', countrySlug: 'slovenia' },
+  trondelag: { label: 'Trøndelag', slug: 'trondelag', countryLabel: 'Norway', countrySlug: 'norway' },
+  more_og_romsdal: { label: 'Møre og Romsdal', slug: 'more-og-romsdal', countryLabel: 'Norway', countrySlug: 'norway' },
+  buskerud: { label: 'Buskerud', slug: 'buskerud', countryLabel: 'Norway', countrySlug: 'norway' },
+  vestland: { label: 'Vestland', slug: 'vestland', countryLabel: 'Norway', countrySlug: 'norway' },
 };
 
 const escapeHtml = (value: string): string =>

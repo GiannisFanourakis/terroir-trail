@@ -13,6 +13,21 @@ const destinationPages: Record<Destination, { label: string; path: string }> = {
   thessaly: { label: 'Thessaly', path: '/greece/thessaly/' },
   tuscany: { label: 'Tuscany', path: '/italy/tuscany/' },
   piedmont: { label: 'Piedmont', path: '/italy/piedmont/' },
+  puglia: { label: 'Puglia', path: '/italy/puglia/' },
+  sicily: { label: 'Sicily', path: '/italy/sicily/' },
+  south_tyrol: { label: 'South Tyrol', path: '/italy/south-tyrol/' },
+  provence: { label: "Provence-Alpes-Côte d'Azur", path: '/france/provence/' },
+  catalonia: { label: 'Catalonia', path: '/spain/catalonia/' },
+  alentejo: { label: 'Alentejo', path: '/portugal/alentejo/' },
+  istria: { label: 'Istria', path: '/croatia/istria/' },
+  pomurska: { label: 'Pomurska', path: '/slovenia/pomurska/' },
+  southeast_slovenia: { label: 'Southeast Slovenia', path: '/slovenia/southeast-slovenia/' },
+  central_slovenia: { label: 'Central Slovenia', path: '/slovenia/central-slovenia/' },
+  goriska: { label: 'Goriška', path: '/slovenia/goriska/' },
+  trondelag: { label: 'Trøndelag', path: '/norway/trondelag/' },
+  more_og_romsdal: { label: 'Møre og Romsdal', path: '/norway/more-og-romsdal/' },
+  buskerud: { label: 'Buskerud', path: '/norway/buskerud/' },
+  vestland: { label: 'Vestland', path: '/norway/vestland/' },
 };
 
 const escapeHtml = (value: string): string =>

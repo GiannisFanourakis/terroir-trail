@@ -35,6 +35,21 @@ const destinationConfig: Record<Producer['destination'], { slug: string; country
   thessaly: { slug: 'thessaly', countrySlug: 'greece', label: 'Thessaly' },
   tuscany: { slug: 'tuscany', countrySlug: 'italy', label: 'Tuscany' },
   piedmont: { slug: 'piedmont', countrySlug: 'italy', label: 'Piedmont' },
+  puglia: { slug: 'puglia', countrySlug: 'italy', label: 'Puglia' },
+  sicily: { slug: 'sicily', countrySlug: 'italy', label: 'Sicily' },
+  south_tyrol: { slug: 'south-tyrol', countrySlug: 'italy', label: 'South Tyrol' },
+  provence: { slug: 'provence', countrySlug: 'france', label: "Provence-Alpes-Côte d'Azur" },
+  catalonia: { slug: 'catalonia', countrySlug: 'spain', label: 'Catalonia' },
+  alentejo: { slug: 'alentejo', countrySlug: 'portugal', label: 'Alentejo' },
+  istria: { slug: 'istria', countrySlug: 'croatia', label: 'Istria' },
+  pomurska: { slug: 'pomurska', countrySlug: 'slovenia', label: 'Pomurska' },
+  southeast_slovenia: { slug: 'southeast-slovenia', countrySlug: 'slovenia', label: 'Southeast Slovenia' },
+  central_slovenia: { slug: 'central-slovenia', countrySlug: 'slovenia', label: 'Central Slovenia' },
+  goriska: { slug: 'goriska', countrySlug: 'slovenia', label: 'Goriška' },
+  trondelag: { slug: 'trondelag', countrySlug: 'norway', label: 'Trøndelag' },
+  more_og_romsdal: { slug: 'more-og-romsdal', countrySlug: 'norway', label: 'Møre og Romsdal' },
+  buskerud: { slug: 'buskerud', countrySlug: 'norway', label: 'Buskerud' },
+  vestland: { slug: 'vestland', countrySlug: 'norway', label: 'Vestland' },
 };
 
 const fail = (message: string): never => {

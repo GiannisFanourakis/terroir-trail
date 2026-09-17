@@ -11,6 +11,21 @@ const destinations: Destination[] = [
   'thessaly',
   'tuscany',
   'piedmont',
+  'puglia',
+  'sicily',
+  'south_tyrol',
+  'provence',
+  'catalonia',
+  'alentejo',
+  'istria',
+  'pomurska',
+  'southeast_slovenia',
+  'central_slovenia',
+  'goriska',
+  'trondelag',
+  'more_og_romsdal',
+  'buskerud',
+  'vestland',
 ];
 
 const sectionOrder = ['landscape', 'history', 'culture', 'food', 'explore'];

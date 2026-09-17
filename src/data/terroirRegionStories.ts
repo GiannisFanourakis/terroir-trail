@@ -2,6 +2,21 @@ import type { Destination } from '../types/terroir';
 import type { TerroirRegion, TerroirRegionSection } from './terroirRegions';
 import { THESSALY_TERROIR_REGION } from './thessalyRegion';
 import { PIEDMONT_TERROIR_REGION } from './piedmontRegion';
+import { PUGLIA_TERROIR_REGION } from './regions/pugliaRegion';
+import { SICILY_TERROIR_REGION } from './regions/sicilyRegion';
+import { SOUTH_TYROL_TERROIR_REGION } from './regions/southTyrolRegion';
+import { PROVENCE_TERROIR_REGION } from './regions/provenceRegion';
+import { CATALONIA_TERROIR_REGION } from './regions/cataloniaRegion';
+import { ALENTEJO_TERROIR_REGION } from './regions/alentejoRegion';
+import { ISTRIA_TERROIR_REGION } from './regions/istriaRegion';
+import { POMURSKA_TERROIR_REGION } from './regions/pomurskaRegion';
+import { SOUTHEAST_SLOVENIA_TERROIR_REGION } from './regions/southeastSloveniaRegion';
+import { CENTRAL_SLOVENIA_TERROIR_REGION } from './regions/centralSloveniaRegion';
+import { GORISKA_TERROIR_REGION } from './regions/goriskaRegion';
+import { TRONDELAG_TERROIR_REGION } from './regions/trondelagRegion';
+import { MORE_OG_ROMSDAL_TERROIR_REGION } from './regions/moreOgRomsdalRegion';
+import { BUSKERUD_TERROIR_REGION } from './regions/buskerudRegion';
+import { VESTLAND_TERROIR_REGION } from './regions/vestlandRegion';
 
 export interface TerroirRegionStory {
   eyebrow: string;
@@ -295,6 +310,96 @@ export const TERROIR_REGION_STORIES: Record<Destination, TerroirRegionStory> = {
     summary: PIEDMONT_TERROIR_REGION.summary,
     highlights: PIEDMONT_TERROIR_REGION.highlights,
     sections: PIEDMONT_TERROIR_REGION.sections,
+  },
+  puglia: {
+    eyebrow: PUGLIA_TERROIR_REGION.eyebrow,
+    summary: PUGLIA_TERROIR_REGION.summary,
+    highlights: PUGLIA_TERROIR_REGION.highlights,
+    sections: PUGLIA_TERROIR_REGION.sections,
+  },
+  sicily: {
+    eyebrow: SICILY_TERROIR_REGION.eyebrow,
+    summary: SICILY_TERROIR_REGION.summary,
+    highlights: SICILY_TERROIR_REGION.highlights,
+    sections: SICILY_TERROIR_REGION.sections,
+  },
+  south_tyrol: {
+    eyebrow: SOUTH_TYROL_TERROIR_REGION.eyebrow,
+    summary: SOUTH_TYROL_TERROIR_REGION.summary,
+    highlights: SOUTH_TYROL_TERROIR_REGION.highlights,
+    sections: SOUTH_TYROL_TERROIR_REGION.sections,
+  },
+  provence: {
+    eyebrow: PROVENCE_TERROIR_REGION.eyebrow,
+    summary: PROVENCE_TERROIR_REGION.summary,
+    highlights: PROVENCE_TERROIR_REGION.highlights,
+    sections: PROVENCE_TERROIR_REGION.sections,
+  },
+  catalonia: {
+    eyebrow: CATALONIA_TERROIR_REGION.eyebrow,
+    summary: CATALONIA_TERROIR_REGION.summary,
+    highlights: CATALONIA_TERROIR_REGION.highlights,
+    sections: CATALONIA_TERROIR_REGION.sections,
+  },
+  alentejo: {
+    eyebrow: ALENTEJO_TERROIR_REGION.eyebrow,
+    summary: ALENTEJO_TERROIR_REGION.summary,
+    highlights: ALENTEJO_TERROIR_REGION.highlights,
+    sections: ALENTEJO_TERROIR_REGION.sections,
+  },
+  istria: {
+    eyebrow: ISTRIA_TERROIR_REGION.eyebrow,
+    summary: ISTRIA_TERROIR_REGION.summary,
+    highlights: ISTRIA_TERROIR_REGION.highlights,
+    sections: ISTRIA_TERROIR_REGION.sections,
+  },
+  pomurska: {
+    eyebrow: POMURSKA_TERROIR_REGION.eyebrow,
+    summary: POMURSKA_TERROIR_REGION.summary,
+    highlights: POMURSKA_TERROIR_REGION.highlights,
+    sections: POMURSKA_TERROIR_REGION.sections,
+  },
+  southeast_slovenia: {
+    eyebrow: SOUTHEAST_SLOVENIA_TERROIR_REGION.eyebrow,
+    summary: SOUTHEAST_SLOVENIA_TERROIR_REGION.summary,
+    highlights: SOUTHEAST_SLOVENIA_TERROIR_REGION.highlights,
+    sections: SOUTHEAST_SLOVENIA_TERROIR_REGION.sections,
+  },
+  central_slovenia: {
+    eyebrow: CENTRAL_SLOVENIA_TERROIR_REGION.eyebrow,
+    summary: CENTRAL_SLOVENIA_TERROIR_REGION.summary,
+    highlights: CENTRAL_SLOVENIA_TERROIR_REGION.highlights,
+    sections: CENTRAL_SLOVENIA_TERROIR_REGION.sections,
+  },
+  goriska: {
+    eyebrow: GORISKA_TERROIR_REGION.eyebrow,
+    summary: GORISKA_TERROIR_REGION.summary,
+    highlights: GORISKA_TERROIR_REGION.highlights,
+    sections: GORISKA_TERROIR_REGION.sections,
+  },
+  trondelag: {
+    eyebrow: TRONDELAG_TERROIR_REGION.eyebrow,
+    summary: TRONDELAG_TERROIR_REGION.summary,
+    highlights: TRONDELAG_TERROIR_REGION.highlights,
+    sections: TRONDELAG_TERROIR_REGION.sections,
+  },
+  more_og_romsdal: {
+    eyebrow: MORE_OG_ROMSDAL_TERROIR_REGION.eyebrow,
+    summary: MORE_OG_ROMSDAL_TERROIR_REGION.summary,
+    highlights: MORE_OG_ROMSDAL_TERROIR_REGION.highlights,
+    sections: MORE_OG_ROMSDAL_TERROIR_REGION.sections,
+  },
+  buskerud: {
+    eyebrow: BUSKERUD_TERROIR_REGION.eyebrow,
+    summary: BUSKERUD_TERROIR_REGION.summary,
+    highlights: BUSKERUD_TERROIR_REGION.highlights,
+    sections: BUSKERUD_TERROIR_REGION.sections,
+  },
+  vestland: {
+    eyebrow: VESTLAND_TERROIR_REGION.eyebrow,
+    summary: VESTLAND_TERROIR_REGION.summary,
+    highlights: VESTLAND_TERROIR_REGION.highlights,
+    sections: VESTLAND_TERROIR_REGION.sections,
   },
 };
 

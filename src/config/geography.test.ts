@@ -207,9 +207,24 @@ describe('country and NUTS geography', () => {
     expect(getDestinationCountry('thessaly')).toBe('GR');
     expect(getDestinationCountry('tuscany')).toBe('IT');
     expect(getDestinationCountry('piedmont')).toBe('IT');
+    expect(getDestinationCountry('puglia')).toBe('IT');
+    expect(getDestinationCountry('sicily')).toBe('IT');
+    expect(getDestinationCountry('south_tyrol')).toBe('IT');
+    expect(getDestinationCountry('provence')).toBe('FR');
+    expect(getDestinationCountry('catalonia')).toBe('ES');
+    expect(getDestinationCountry('alentejo')).toBe('PT');
+    expect(getDestinationCountry('istria')).toBe('HR');
+    expect(getDestinationCountry('pomurska')).toBe('SI');
+    expect(getDestinationCountry('southeast_slovenia')).toBe('SI');
+    expect(getDestinationCountry('central_slovenia')).toBe('SI');
+    expect(getDestinationCountry('goriska')).toBe('SI');
+    expect(getDestinationCountry('trondelag')).toBe('NO');
+    expect(getDestinationCountry('more_og_romsdal')).toBe('NO');
+    expect(getDestinationCountry('buskerud')).toBe('NO');
+    expect(getDestinationCountry('vestland')).toBe('NO');
   });
 
-  it('keeps the current NUTS identifiers explicit', () => {
+  it('keeps the current NUTS and Statistical Region identifiers explicit', () => {
     expect(DESTINATION_GEOGRAPHY.crete.nutsCodes).toEqual(['EL43']);
     expect(DESTINATION_GEOGRAPHY.santorini.nutsCodes).toEqual(['EL422']);
     expect(DESTINATION_GEOGRAPHY.peloponnese.nutsCodes).toEqual(['EL65']);
@@ -218,6 +233,23 @@ describe('country and NUTS geography', () => {
     expect(DESTINATION_GEOGRAPHY.piedmont.nutsCodes).toEqual(['ITC1']);
     expect(DESTINATION_GEOGRAPHY.northern_greece.nutsCodes).toContain('EL521');
     expect(DESTINATION_GEOGRAPHY.northern_greece.nutsCodes).toContain('EL533');
+    expect(DESTINATION_GEOGRAPHY.puglia.nutsCodes).toEqual(['ITF4']);
+    expect(DESTINATION_GEOGRAPHY.sicily.nutsCodes).toEqual(['ITG1']);
+    expect(DESTINATION_GEOGRAPHY.south_tyrol.nutsCodes).toEqual(['ITH1']);
+    expect(DESTINATION_GEOGRAPHY.provence.nutsCodes).toEqual(['FRL0']);
+    expect(DESTINATION_GEOGRAPHY.catalonia.nutsCodes).toEqual(['ES51']);
+    expect(DESTINATION_GEOGRAPHY.alentejo.nutsCodes).toEqual(['PT1C']);
+    expect(DESTINATION_GEOGRAPHY.istria.nutsCodes).toEqual(['HR036']);
+    expect(DESTINATION_GEOGRAPHY.pomurska.nutsCodes).toEqual(['SI031']);
+    expect(DESTINATION_GEOGRAPHY.southeast_slovenia.nutsCodes).toEqual([
+      'SI037',
+    ]);
+    expect(DESTINATION_GEOGRAPHY.central_slovenia.nutsCodes).toEqual(['SI041']);
+    expect(DESTINATION_GEOGRAPHY.goriska.nutsCodes).toEqual(['SI043']);
+    expect(DESTINATION_GEOGRAPHY.trondelag.nutsCodes).toEqual(['NO060']);
+    expect(DESTINATION_GEOGRAPHY.more_og_romsdal.nutsCodes).toEqual(['NO0A3']);
+    expect(DESTINATION_GEOGRAPHY.buskerud.nutsCodes).toEqual(['NO085']);
+    expect(DESTINATION_GEOGRAPHY.vestland.nutsCodes).toEqual(['NO0A2']);
   });
 
   it('matches producer country from explicit countryCode or destination fallback', () => {

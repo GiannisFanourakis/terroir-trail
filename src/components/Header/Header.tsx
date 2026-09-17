@@ -82,13 +82,36 @@ export const Header: React.FC<HeaderProps> = ({
   const isHost = Boolean(user?.producerIds?.length || user?.isProducer);
 
   const destinations: { id: Destination; label: string; flag: string }[] = [
+    // Greece
     { id: 'crete', label: 'Crete', flag: '🌿' },
     { id: 'santorini', label: 'Santorini', flag: '🌋' },
     { id: 'peloponnese', label: 'Peloponnese', flag: '🏛️' },
     { id: 'thessaly', label: 'Thessaly', flag: '🌾' },
     { id: 'northern_greece', label: 'Macedonia, Greece', flag: '🏔️' },
+    // Italy
     { id: 'tuscany', label: 'Tuscany', flag: '🍷' },
     { id: 'piedmont', label: 'Piedmont', flag: '🍇' },
+    { id: 'puglia', label: 'Puglia', flag: '🫒' },
+    { id: 'sicily', label: 'Sicily', flag: '🍊' },
+    { id: 'south_tyrol', label: 'South Tyrol', flag: '🏔️' },
+    // France
+    { id: 'provence', label: "Provence-Alpes-Côte d'Azur", flag: '🪻' },
+    // Spain
+    { id: 'catalonia', label: 'Catalonia', flag: '🏰' },
+    // Portugal
+    { id: 'alentejo', label: 'Alentejo', flag: '🌳' },
+    // Croatia
+    { id: 'istria', label: 'Istria', flag: '🫒' },
+    // Slovenia
+    { id: 'pomurska', label: 'Pomurska', flag: '🌻' },
+    { id: 'southeast_slovenia', label: 'Southeast Slovenia', flag: '🌲' },
+    { id: 'central_slovenia', label: 'Central Slovenia', flag: '🐝' },
+    { id: 'goriska', label: 'Goriška', flag: '🍒' },
+    // Norway
+    { id: 'trondelag', label: 'Trøndelag', flag: '🧀' },
+    { id: 'more_og_romsdal', label: 'Møre og Romsdal', flag: '🌊' },
+    { id: 'buskerud', label: 'Buskerud', flag: '⛰️' },
+    { id: 'vestland', label: 'Vestland', flag: '🍏' },
   ];
 
   const countryScope: CountryScope = selectedDestination === 'all'

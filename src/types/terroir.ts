@@ -11,13 +11,36 @@ export type Category =
 export type ProducerCategory = Category;
 
 export type Destination = 
+  // Greece (5)
   | 'crete' 
   | 'santorini' 
   | 'peloponnese' 
   | 'thessaly'
   | 'northern_greece'
+  // Italy (5)
   | 'tuscany'
-  | 'piedmont';
+  | 'piedmont'
+  | 'puglia'
+  | 'sicily'
+  | 'south_tyrol'
+  // France (1)
+  | 'provence'
+  // Spain (1)
+  | 'catalonia'
+  // Portugal (1)
+  | 'alentejo'
+  // Croatia (1)
+  | 'istria'
+  // Slovenia (4)
+  | 'pomurska'
+  | 'southeast_slovenia'
+  | 'central_slovenia'
+  | 'goriska'
+  // Norway (4)
+  | 'trondelag'
+  | 'more_og_romsdal'
+  | 'buskerud'
+  | 'vestland';
 
 export type RoadAccess = 
   | 'paved'
