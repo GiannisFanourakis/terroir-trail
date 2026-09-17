@@ -39,10 +39,10 @@ const getRegionStyle = (isActive: boolean, zoom: number): L.PathOptions => {
   const closeZoom = zoom >= 13;
   return {
     color: '#f59e0b',
-    weight: isActive ? 2.5 : 1.5,
-    opacity: closeZoom ? 0.22 : isActive ? 0.95 : 0.68,
+    weight: isActive ? 3 : 1.5,
+    opacity: isActive ? 0.95 : closeZoom ? 0.22 : 0.68,
     fillColor: '#f59e0b',
-    fillOpacity: closeZoom ? 0.01 : isActive ? 0.14 : 0.055,
+    fillOpacity: isActive ? 0.16 : closeZoom ? 0.01 : 0.055,
     dashArray: isActive ? undefined : '6 6',
   };
 };
@@ -138,8 +138,8 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
   const markersRef = useRef<{ [id: string]: L.Marker }>({});
   const markerSignaturesRef = useRef<{ [id: string]: string }>({});
   const tileLayerRef = useRef<L.TileLayer | null>(null);
-  const regionLayerRef = useRef<L.GeoJSON | null>(null);
-  const regionLabelRef = useRef<L.Marker | null>(null);
+  const regionLayersRef = useRef<Map<string, L.GeoJSON>>(new Map());
+  const regionLabelsRef = useRef<Map<string, L.Marker>>(new Map());
   const activeRegionRef = useRef<string | null>(null);
 
   type MapTheme = 'topo' | 'voyager' | 'dark' | 'satellite';
@@ -170,10 +170,13 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     tuscany: { coords: [43.4671, 11.3447], zoom: 10 },
   };
 
-  const activeDestinationRegion =
+  const selectedDestinationRegion =
     selectedDestination === 'all'
       ? null
       : TERROIR_REGIONS.find((r) => r.destination === selectedDestination) || null;
+  const activeTerroirRegion = activeRegionId
+    ? TERROIR_REGIONS.find((r) => r.id === activeRegionId) || null
+    : null;
 
   const CARTO_API_KEY = (import.meta.env.VITE_CARTO_API_KEY as string) || '';
 
@@ -326,6 +329,8 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       Object.values(markersRef.current).forEach((m) => m.remove());
       markersRef.current = {};
       markerSignaturesRef.current = {};
+      regionLayersRef.current.clear();
+      regionLabelsRef.current.clear();
       map.remove();
       mapInstanceRef.current = null;
     };
@@ -400,96 +405,109 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     const map = mapInstanceRef.current;
     if (!map) return;
 
-    if (regionLayerRef.current) {
-      map.removeLayer(regionLayerRef.current);
-      regionLayerRef.current = null;
-    }
-    if (regionLabelRef.current) {
-      map.removeLayer(regionLabelRef.current);
-      regionLabelRef.current = null;
-    }
+    regionLayersRef.current.forEach((layer) => map.removeLayer(layer));
+    regionLayersRef.current.clear();
+    regionLabelsRef.current.forEach((label) => map.removeLayer(label));
+    regionLabelsRef.current.clear();
+    activeRegionRef.current = null;
+    setActiveRegionId(null);
 
-    if (!activeDestinationRegion) {
-      setActiveRegionId(null);
-      return;
-    }
+    const visibleRegions =
+      selectedDestination === 'all'
+        ? TERROIR_REGIONS
+        : selectedDestinationRegion
+        ? [selectedDestinationRegion]
+        : [];
 
-    const selectRegion = (bounds?: L.LatLngBounds) => {
-      onSelectProducer(null);
-      setActiveRegionId(activeDestinationRegion.id);
-      const targetBounds = bounds || regionLayerRef.current?.getBounds();
-      if (targetBounds?.isValid()) {
-        fitBoundsWithMotion(map, targetBounds, {
-          maxZoom: Math.max(9, DESTINATION_CENTERS[activeDestinationRegion.destination].zoom),
-          mobileDuration: 0.5,
-          desktopDuration: 0.8,
+    const createdLayers: L.GeoJSON[] = [];
+    const createdLabels: L.Marker[] = [];
+
+    visibleRegions.forEach((region) => {
+      const selectRegion = (bounds?: L.LatLngBounds) => {
+        onSelectProducerRef.current(null);
+        activeRegionRef.current = region.id;
+        setActiveRegionId(region.id);
+        const targetBounds = bounds || regionLayersRef.current.get(region.id)?.getBounds();
+        if (targetBounds?.isValid()) {
+          fitBoundsWithMotion(map, targetBounds, {
+            maxZoom: Math.max(9, DESTINATION_CENTERS[region.destination].zoom),
+            mobileDuration: 0.5,
+            desktopDuration: 0.8,
+          });
+        }
+      };
+
+      const regionLayer = L.geoJSON(getRegionFeature(region) as any, {
+        attribution: region.boundaryAttribution,
+        style: () => getRegionStyle(false, map.getZoom()),
+        onEachFeature: (_feature, featureLayer) => {
+          featureLayer.on({
+            mouseover: () => {
+              (featureLayer as L.Path).setStyle(getRegionStyle(true, map.getZoom()));
+            },
+            mouseout: () => {
+              (featureLayer as L.Path).setStyle(
+                getRegionStyle(activeRegionRef.current === region.id, map.getZoom())
+              );
+            },
+            click: (event: L.LeafletMouseEvent) => {
+              L.DomEvent.stopPropagation(event.originalEvent);
+              const bounds = (featureLayer as L.Polygon).getBounds();
+              selectRegion(bounds);
+            },
+          });
+        },
+      }).addTo(map);
+
+      regionLayer.bringToBack();
+      regionLayersRef.current.set(region.id, regionLayer);
+      createdLayers.push(regionLayer);
+
+      if (selectedDestination !== 'all') {
+        const labelIcon = L.divIcon({
+          className: '',
+          iconSize: [0, 0],
+          html: `<div style="transform:translate(-50%,-50%);padding:5px 9px;border-radius:999px;border:1px solid rgba(245,158,11,.45);background:rgba(28,25,23,.82);box-shadow:0 8px 22px rgba(0,0,0,.28);backdrop-filter:blur(8px);color:#fbbf24;font-size:10px;font-weight:800;letter-spacing:.14em;white-space:nowrap;pointer-events:auto;">${region.name.toUpperCase()}</div>`,
         });
+        const regionLabel = L.marker(region.center, {
+          icon: labelIcon,
+          interactive: true,
+          keyboard: true,
+          zIndexOffset: -100,
+          title: `Explore ${region.name} terroir region`,
+        }).addTo(map);
+        regionLabel.on('click', (event) => {
+          L.DomEvent.stopPropagation(event.originalEvent);
+          selectRegion(regionLayer.getBounds());
+        });
+        regionLabelsRef.current.set(region.id, regionLabel);
+        createdLabels.push(regionLabel);
       }
-    };
-
-    const regionLayer = L.geoJSON(getRegionFeature(activeDestinationRegion) as any, {
-      attribution: activeDestinationRegion.boundaryAttribution,
-      style: () => getRegionStyle(false, map.getZoom()),
-      onEachFeature: (_feature, featureLayer) => {
-        featureLayer.on({
-          mouseover: () => {
-            (featureLayer as L.Path).setStyle(getRegionStyle(true, map.getZoom()));
-          },
-          mouseout: () => {
-            (featureLayer as L.Path).setStyle(
-              getRegionStyle(activeRegionRef.current === activeDestinationRegion.id, map.getZoom())
-            );
-          },
-          click: (event: L.LeafletMouseEvent) => {
-            L.DomEvent.stopPropagation(event.originalEvent);
-            const bounds = (featureLayer as L.Polygon).getBounds();
-            selectRegion(bounds);
-          },
-        });
-      },
-    }).addTo(map);
-
-    regionLayer.bringToBack();
-    regionLayerRef.current = regionLayer;
-
-    const labelIcon = L.divIcon({
-      className: '',
-      iconSize: [0, 0],
-      html: `<div style="transform:translate(-50%,-50%);padding:5px 9px;border-radius:999px;border:1px solid rgba(245,158,11,.45);background:rgba(28,25,23,.82);box-shadow:0 8px 22px rgba(0,0,0,.28);backdrop-filter:blur(8px);color:#fbbf24;font-size:10px;font-weight:800;letter-spacing:.14em;white-space:nowrap;pointer-events:auto;">${activeDestinationRegion.name.toUpperCase()}</div>`,
     });
-    const regionLabel = L.marker(activeDestinationRegion.center, {
-      icon: labelIcon,
-      interactive: true,
-      keyboard: true,
-      zIndexOffset: -100,
-      title: `Explore ${activeDestinationRegion.name} terroir region`,
-    }).addTo(map);
-    regionLabel.on('click', (event) => {
-      L.DomEvent.stopPropagation(event.originalEvent);
-      selectRegion(regionLayer.getBounds());
-    });
-    regionLabelRef.current = regionLabel;
 
     return () => {
-      map.removeLayer(regionLayer);
-      map.removeLayer(regionLabel);
-      if (regionLayerRef.current === regionLayer) regionLayerRef.current = null;
-      if (regionLabelRef.current === regionLabel) regionLabelRef.current = null;
+      createdLayers.forEach((layer) => map.removeLayer(layer));
+      createdLabels.forEach((label) => map.removeLayer(label));
+      createdLayers.forEach((layer) => {
+        const entry = Array.from(regionLayersRef.current.entries()).find(([, candidate]) => candidate === layer);
+        if (entry) regionLayersRef.current.delete(entry[0]);
+      });
+      createdLabels.forEach((label) => {
+        const entry = Array.from(regionLabelsRef.current.entries()).find(([, candidate]) => candidate === label);
+        if (entry) regionLabelsRef.current.delete(entry[0]);
+      });
     };
-  }, [selectedDestination, activeDestinationRegion]);
+  }, [selectedDestination, selectedDestinationRegion]);
 
   useEffect(() => {
     activeRegionRef.current = activeRegionId;
-    const regionLayer = regionLayerRef.current;
-    if (regionLayer && activeDestinationRegion) {
-      regionLayer.setStyle(
-        getRegionStyle(activeRegionId === activeDestinationRegion.id, mapZoom)
-      );
-    }
-    if (regionLabelRef.current) {
-      regionLabelRef.current.setOpacity(mapZoom >= 13 ? 0 : 1);
-    }
-  }, [activeRegionId, mapZoom, activeDestinationRegion]);
+    regionLayersRef.current.forEach((regionLayer, regionId) => {
+      regionLayer.setStyle(getRegionStyle(activeRegionId === regionId, mapZoom));
+    });
+    regionLabelsRef.current.forEach((regionLabel) => {
+      regionLabel.setOpacity(mapZoom >= 13 ? 0 : 1);
+    });
+  }, [activeRegionId, mapZoom]);
 
   // Effect 1: Marker collection diffing & in-place update - depends ONLY on [producers]
   useEffect(() => {
@@ -639,14 +657,15 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
   };
 
   const handleExploreCurrentRegion = () => {
-    if (!activeDestinationRegion || !mapInstanceRef.current) return;
+    if (!activeTerroirRegion || !mapInstanceRef.current) return;
     onSelectProducer(null);
-    setActiveRegionId(activeDestinationRegion.id);
-    onExploreRegion?.(activeDestinationRegion.destination);
-    const bounds = regionLayerRef.current?.getBounds();
+    activeRegionRef.current = activeTerroirRegion.id;
+    setActiveRegionId(activeTerroirRegion.id);
+    onExploreRegion?.(activeTerroirRegion.destination);
+    const bounds = regionLayersRef.current.get(activeTerroirRegion.id)?.getBounds();
     if (bounds?.isValid()) {
       fitBoundsWithMotion(mapInstanceRef.current, bounds, {
-        maxZoom: Math.max(9, DESTINATION_CENTERS[activeDestinationRegion.destination].zoom),
+        maxZoom: Math.max(9, DESTINATION_CENTERS[activeTerroirRegion.destination].zoom),
         mobileDuration: 0.5,
         desktopDuration: 0.8,
       });
@@ -712,8 +731,8 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       isGooglePlacesEligible(selectedProducer.id)
   );
 
-  const currentRegionMatchingProducers = activeDestinationRegion
-    ? producers.filter((producer) => producer.destination === activeDestinationRegion.destination)
+  const currentRegionMatchingProducers = activeTerroirRegion
+    ? producers.filter((producer) => producer.destination === activeTerroirRegion.destination)
     : [];
   const currentRegionCategoryCount = new Set(
     currentRegionMatchingProducers.map((producer) => getEffectiveProducerCategory(producer))
@@ -923,10 +942,10 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
         </div>
       </div>
 
-      {activeDestinationRegion && activeRegionId === activeDestinationRegion.id && !selectedProducer && (
+      {activeTerroirRegion && !selectedProducer && (
         <section
           className="absolute left-3 sm:left-4 bottom-20 sm:bottom-5 z-30 w-[calc(100%-1.5rem)] sm:w-[360px] max-w-sm glass-panel rounded-3xl border border-amber-400/30 bg-stone-950/92 backdrop-blur-xl shadow-2xl overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-200"
-          aria-label={`${activeDestinationRegion.name} terroir region`}
+          aria-label={`${activeTerroirRegion.name} terroir region`}
         >
           <div className="relative p-4 sm:p-5">
             <div className="absolute -right-12 -top-12 w-32 h-32 rounded-full bg-amber-500/15 blur-3xl pointer-events-none" />
@@ -937,28 +956,28 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
                 </div>
                 <div className="min-w-0">
                   <span className="block text-[9px] uppercase tracking-[0.18em] font-bold text-amber-400">
-                    {activeDestinationRegion.eyebrow}
+                    {activeTerroirRegion.eyebrow}
                   </span>
                   <h2 className="font-serif-title text-xl font-bold text-white leading-tight">
-                    {activeDestinationRegion.name}
+                    {activeTerroirRegion.name}
                   </h2>
                 </div>
               </div>
               <button
                 onClick={() => setActiveRegionId(null)}
                 className="p-1.5 rounded-xl text-stone-400 hover:text-white hover:bg-white/10 transition"
-                aria-label={`Close ${activeDestinationRegion.name} region overview`}
+                aria-label={`Close ${activeTerroirRegion.name} region overview`}
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
             <p className="relative mt-3 text-xs sm:text-[13px] leading-relaxed text-stone-300">
-              {activeDestinationRegion.summary}
+              {activeTerroirRegion.summary}
             </p>
 
             <div className="relative mt-3 flex flex-wrap gap-1.5">
-              {activeDestinationRegion.highlights.map((highlight) => (
+              {activeTerroirRegion.highlights.map((highlight) => (
                 <span
                   key={highlight}
                   className="px-2 py-1 rounded-lg bg-white/7 border border-white/10 text-[10px] font-medium text-stone-300"
@@ -980,13 +999,13 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
                 onClick={handleExploreCurrentRegion}
                 className="shrink-0 inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 text-xs font-bold shadow-lg transition active:scale-95"
               >
-                Explore {activeDestinationRegion.name}
+                Explore {activeTerroirRegion.name}
                 <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
               </button>
             </div>
 
             <div className="relative mt-2 text-[9px] text-stone-500 flex items-center gap-2 flex-wrap">
-              {activeDestinationRegion.sources.slice(0, 2).map((source, idx) => (
+              {activeTerroirRegion.sources.slice(0, 2).map((source, idx) => (
                 <React.Fragment key={source.url}>
                   {idx > 0 && <span aria-hidden="true">·</span>}
                   <a
