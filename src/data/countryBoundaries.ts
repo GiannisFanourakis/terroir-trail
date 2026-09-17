@@ -2,8 +2,11 @@ import type { CountryScope } from '../config/geography';
 
 export type SupportedCountryScope = Exclude<CountryScope, 'all'>;
 
+// Use GISCO's 10M NUTS 2021 geometry so coastlines and islands remain accurate
+// enough for interactive country hover/selection without shipping the largest
+// available boundary dataset.
 const NUTS_LEVEL_0_URL =
-  'https://gisco-services.ec.europa.eu/distribution/v2/nuts/geojson/NUTS_RG_60M_2021_4326_LEVL_0.geojson';
+  'https://gisco-services.ec.europa.eu/distribution/v2/nuts/geojson/NUTS_RG_10M_2021_4326_LEVL_0.geojson';
 
 const NUTS_LEVEL_0_ID: Record<SupportedCountryScope, string> = {
   // Eurostat NUTS uses EL for Greece and IT for Italy.
@@ -12,7 +15,7 @@ const NUTS_LEVEL_0_ID: Record<SupportedCountryScope, string> = {
 };
 
 export const COUNTRY_BOUNDARY_ATTRIBUTION =
-  '&copy; <a href="https://ec.europa.eu/eurostat/web/gisco" target="_blank" rel="noopener noreferrer">Eurostat / GISCO</a> (NUTS 2021, CC BY 4.0)';
+  '&copy; <a href="https://ec.europa.eu/eurostat/web/gisco" target="_blank" rel="noopener noreferrer">Eurostat / GISCO</a> (NUTS 2021, 10M, CC BY 4.0)';
 
 let nutsLevel0Promise: Promise<any> | null = null;
 
