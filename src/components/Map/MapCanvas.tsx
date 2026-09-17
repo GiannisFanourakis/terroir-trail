@@ -13,6 +13,11 @@ import { GooglePlacePhotoCarousel } from '../GooglePlaces/GooglePlacePhotoCarous
 import { isGooglePlacesEligible } from '../../config/googlePlacesAllowlist';
 import { runtimeConfig } from '../../config/runtimeConfig';
 import { TERROIR_REGIONS, TerroirRegion } from '../../data/terroirRegions';
+import {
+  getActiveCountryScope,
+  getCountryLayer,
+  getDestinationCountry,
+} from '../../config/geography';
 
 interface MapCanvasProps {
   producers: Producer[];
@@ -161,8 +166,6 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
   const [activeRegionId, setActiveRegionId] = useState<string | null>(null);
   const [mapZoom, setMapZoom] = useState<number>(9);
 
-  // "All destinations" currently represents the European catalogue. As the
-  // catalogue expands, this can become a continent/country scope selector.
   const DESTINATION_CENTERS: Record<Destination | 'all', { coords: [number, number]; zoom: number }> = {
     all: { coords: [47.0, 10.0], zoom: 4 },
     crete: { coords: [35.2401, 24.8093], zoom: 9 },
@@ -171,6 +174,17 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     northern_greece: { coords: [40.6650, 22.0450], zoom: 10 },
     tuscany: { coords: [43.4671, 11.3447], zoom: 10 },
   };
+
+  // Country scope is stored separately from Destination so the navigation can
+  // scale Europe -> country -> NUTS-backed terroir region without changing
+  // persisted producer destination values.
+  const countryScope = selectedDestination === 'all'
+    ? getActiveCountryScope()
+    : getDestinationCountry(selectedDestination);
+  const activeCountryLayer = getCountryLayer(countryScope);
+  const currentMapTarget = selectedDestination === 'all'
+    ? { coords: activeCountryLayer.center, zoom: activeCountryLayer.zoom }
+    : DESTINATION_CENTERS[selectedDestination];
 
   const selectedDestinationRegion =
     selectedDestination === 'all'
@@ -276,7 +290,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
   useEffect(() => {
     if (!mapContainerRef.current || mapInstanceRef.current) return;
 
-    const initial = DESTINATION_CENTERS[selectedDestination];
+    const initial = currentMapTarget;
 
     const map = L.map(mapContainerRef.current, {
       center: initial.coords,
@@ -361,9 +375,12 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     const map = mapInstanceRef.current;
     if (!map || selectedProducer) return;
 
-    const target = DESTINATION_CENTERS[selectedDestination];
+    const countryTarget = getCountryLayer(countryScope);
+    const target = selectedDestination === 'all'
+      ? { coords: countryTarget.center, zoom: countryTarget.zoom }
+      : DESTINATION_CENTERS[selectedDestination];
     flyOrSetView(map, target.coords, target.zoom, { mobileDuration: 0.5, desktopDuration: 1.0 });
-  }, [selectedDestination]);
+  }, [selectedDestination, countryScope]);
 
   useEffect(() => {
     const map = mapInstanceRef.current;
@@ -416,7 +433,9 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
 
     const visibleRegions =
       selectedDestination === 'all'
-        ? TERROIR_REGIONS
+        ? countryScope === 'all'
+          ? TERROIR_REGIONS
+          : TERROIR_REGIONS.filter((region) => getDestinationCountry(region.destination) === countryScope)
         : selectedDestinationRegion
         ? [selectedDestinationRegion]
         : [];
@@ -465,7 +484,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       regionLayersRef.current.set(region.id, regionLayer);
       createdLayers.push(regionLayer);
 
-      if (selectedDestination !== 'all') {
+      if (selectedDestination !== 'all' || countryScope !== 'all') {
         const labelIcon = L.divIcon({
           className: '',
           iconSize: [0, 0],
@@ -499,7 +518,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
         if (entry) regionLabelsRef.current.delete(entry[0]);
       });
     };
-  }, [selectedDestination, selectedDestinationRegion]);
+  }, [selectedDestination, selectedDestinationRegion, countryScope]);
 
   useEffect(() => {
     activeRegionRef.current = activeRegionId;
@@ -652,7 +671,10 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
   const handleResetView = () => {
     onSelectProducer(null);
     setActiveRegionId(null);
-    const target = DESTINATION_CENTERS[selectedDestination];
+    const countryTarget = getCountryLayer(countryScope);
+    const target = selectedDestination === 'all'
+      ? { coords: countryTarget.center, zoom: countryTarget.zoom }
+      : DESTINATION_CENTERS[selectedDestination];
     if (mapInstanceRef.current) {
       flyOrSetView(mapInstanceRef.current, target.coords, target.zoom, { mobileDuration: 0.5, desktopDuration: 1.0 });
     }
@@ -742,7 +764,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
 
   return (
     <div className="relative w-full h-full select-none overflow-hidden">
-      <div ref={mapContainerRef} className="w-full h-full z-0" role="region" aria-label="Interactive producer and terroir-region map" />
+      <div ref={mapContainerRef} className="w-full h-full z-0" role="region" aria-label="Interactive producer and NUTS-backed terroir-region map" />
 
       <div className="absolute top-16 right-3 sm:top-4 sm:right-4 z-20 flex flex-col items-end gap-2">
         {locationError && (
@@ -896,8 +918,8 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
           <button
             onClick={handleResetView}
             className="w-11 h-11 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center text-stone-200 hover:text-amber-400 hover:bg-white/10 transition group cursor-pointer"
-            title="Reset Destination View"
-            aria-label="Reset destination view"
+            title="Reset Geography View"
+            aria-label="Reset geography view"
           >
             <Maximize2 className="w-4 h-4 group-hover:scale-110 transition-transform" />
           </button>
