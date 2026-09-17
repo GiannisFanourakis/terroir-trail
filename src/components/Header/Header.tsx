@@ -3,7 +3,7 @@ import { Destination } from '../../types/terroir';
 import { UserProfile } from '../../types/auth';
 import { ProfileMenu } from '../Auth/ProfileMenu';
 import { UserAvatar } from '../Common/UserAvatar';
-import { Compass, Search, X, Heart, Building2, Calendar, Sparkles, BookOpen, Menu, Award, LogOut, User } from 'lucide-react';
+import { Compass, Search, X, Heart, Building2, Calendar, Sparkles, BookOpen, Menu, Award, LogOut, User, ChevronDown } from 'lucide-react';
 
 interface HeaderProps {
   selectedDestination: Destination | 'all';
@@ -69,6 +69,8 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenAdmin,
 }) => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
+  const [destMenuOpen, setDestMenuOpen] = useState(false);
   const closeMenu = () => setMenuOpen(false);
   const isHost = Boolean(user?.producerIds?.length || user?.isProducer);
 
@@ -80,6 +82,8 @@ export const Header: React.FC<HeaderProps> = ({
     { id: 'northern_greece', label: 'Macedonia, Greece', flag: '🏔️' },
     { id: 'tuscany', label: 'Tuscany', flag: '🇮🇹' },
   ];
+
+  const activeDestObj = destinations.find(d => d.id === selectedDestination) || destinations[0];
 
   const profileMenu = (
     <ProfileMenu
@@ -108,7 +112,145 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <>
       <header className="relative z-30 shrink-0 bg-stone-950 border-b border-white/10 px-3 sm:px-6 lg:px-8 py-2 sm:py-2.5 shadow-2xl w-full header-safe-top">
-        <div className="w-full flex flex-col gap-2">
+        {/* Mobile View: Progressive Disclosure */}
+        {mobileSearchOpen ? (
+          <div className="flex sm:hidden items-center gap-2 w-full py-0.5 animate-in fade-in duration-150">
+            <div className="relative flex-1">
+              <Search className="w-4 h-4 text-amber-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <input
+                type="text"
+                autoFocus
+                value={searchQuery}
+                onChange={(e) => onSearchChange(e.target.value)}
+                placeholder="Search maker, grape, village..."
+                className="w-full bg-stone-900 border border-amber-400/50 text-stone-100 text-xs rounded-xl pl-9 pr-8 py-2 focus:outline-none focus:ring-1 focus:ring-amber-400/30 min-h-[44px]"
+              />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => onSearchChange('')}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-stone-400 hover:text-white cursor-pointer"
+                  aria-label="Clear search query"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              )}
+            </div>
+            <button
+              type="button"
+              onClick={() => { setMobileSearchOpen(false); }}
+              className="px-3 py-2 text-xs font-semibold text-stone-300 hover:text-white rounded-xl bg-stone-900 border border-white/10 min-h-[44px] shrink-0 cursor-pointer"
+            >
+              Cancel
+            </button>
+          </div>
+        ) : (
+          <div className="flex sm:hidden items-center justify-between gap-1.5 w-full py-0.5">
+            <button
+              type="button"
+              onClick={() => window.location.reload()}
+              className="flex items-center gap-2 min-w-0 text-left bg-transparent border-none p-0 cursor-pointer group focus:outline-none select-none shrink-0"
+              title="Refresh TerroirTrail"
+            >
+              <div className="w-8 h-8 shrink-0 flex items-center justify-center">
+                <img
+                  src="/logo.png"
+                  alt="TerroirTrail Emblem"
+                  className="w-full h-full object-contain drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]"
+                />
+              </div>
+              <h1 className="font-serif-title text-sm font-bold tracking-tight text-white flex items-center gap-0.5 shrink-0">
+                Terroir<span className="text-amber-400 font-sans font-light">Trail</span>
+              </h1>
+            </button>
+
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setDestMenuOpen((prev) => !prev)}
+                className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-stone-900 border border-white/10 text-stone-200 text-xs font-semibold hover:border-amber-400/40 min-h-[44px] cursor-pointer"
+                aria-label="Select destination"
+                aria-expanded={destMenuOpen}
+              >
+                <span className="text-xs shrink-0">{activeDestObj.flag}</span>
+                <span className="font-bold text-amber-300 max-w-[80px] truncate">{activeDestObj.label}</span>
+                <ChevronDown className="w-3.5 h-3.5 text-stone-400 shrink-0" />
+              </button>
+              {destMenuOpen && (
+                <>
+                  <div className="fixed inset-0 z-40 bg-black/40 backdrop-blur-xs" onClick={() => setDestMenuOpen(false)} />
+                  <div className="absolute left-0 top-full mt-1.5 z-50 bg-stone-950 border border-white/15 rounded-2xl p-1.5 shadow-2xl flex flex-col gap-1 min-w-[200px] backdrop-blur-xl">
+                    {destinations.map((d) => (
+                      <button
+                        key={d.id}
+                        type="button"
+                        onClick={() => {
+                          onSelectDestination(d.id);
+                          setDestMenuOpen(false);
+                        }}
+                        className={`flex items-center gap-2.5 px-3 py-2.5 text-xs font-semibold rounded-xl text-left min-h-[44px] cursor-pointer transition ${
+                          selectedDestination === d.id
+                            ? 'bg-amber-500 text-stone-950 font-bold shadow-md'
+                            : 'text-stone-300 hover:text-white hover:bg-white/10'
+                        }`}
+                      >
+                        <span className="text-sm">{d.flag}</span>
+                        <span>{d.label}</span>
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
+
+            <div className="flex items-center gap-1 shrink-0">
+              <button
+                type="button"
+                onClick={() => setMobileSearchOpen(true)}
+                className={`w-11 h-11 flex items-center justify-center rounded-xl border transition cursor-pointer min-h-[44px] min-w-[44px] ${
+                  searchQuery
+                    ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
+                    : 'bg-stone-900 text-stone-300 border-white/10 hover:text-white'
+                }`}
+                title="Search"
+                aria-label="Search"
+              >
+                <Search className="w-4 h-4 text-amber-400" />
+              </button>
+
+              <button
+                type="button"
+                onClick={onToggleFavoritesOnly}
+                className={`flex items-center justify-center gap-1 px-2.5 h-11 rounded-xl border transition shrink-0 cursor-pointer min-h-[44px] min-w-[44px] ${
+                  favoritesOnly
+                    ? 'bg-rose-500 text-white border-rose-400 shadow-md'
+                    : 'bg-stone-900 text-stone-300 border-white/10'
+                }`}
+                aria-label="Saved places"
+              >
+                <Heart
+                  className={`w-4 h-4 shrink-0 ${
+                    favoritesOnly || savedCount > 0 ? 'fill-rose-400 text-rose-400' : 'text-stone-400'
+                  }`}
+                />
+                {savedCount > 0 && <span className="text-[10px] font-mono text-rose-300">{savedCount}</span>}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setMenuOpen(true)}
+                className="flex items-center justify-center w-11 h-11 rounded-xl bg-stone-900 border border-white/10 text-stone-300 hover:text-white hover:border-amber-400/40 transition cursor-pointer min-h-[44px] min-w-[44px]"
+                title="Menu"
+                aria-label="Open menu"
+              >
+                <Menu className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Desktop View (sm: and above) */}
+        <div className="hidden sm:flex flex-col gap-2 w-full">
           <div className="flex items-center justify-between gap-2">
             <button type="button" onClick={() => window.location.reload()} className="flex items-center gap-2.5 sm:gap-3 min-w-0 text-left bg-transparent border-none p-0 cursor-pointer group focus:outline-none select-none" title="Refresh TerroirTrail">
               <div className="w-9 h-9 sm:w-10 sm:h-10 shrink-0 flex items-center justify-center"><img src="/logo.png" alt="TerroirTrail Emblem" className="w-full h-full object-contain drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)] transition-transform group-hover:scale-105 duration-200" /></div>
@@ -118,7 +260,7 @@ export const Header: React.FC<HeaderProps> = ({
               </div>
             </button>
 
-            <div className="hidden sm:flex items-center gap-1.5 sm:gap-2 shrink-0">
+            <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
               <button onClick={onToggleFavoritesOnly} className={`flex items-center gap-1 px-2 sm:px-2.5 py-1.5 text-xs font-bold rounded-xl border transition shrink-0 cursor-pointer ${favoritesOnly ? 'bg-rose-500 text-white border-rose-400 shadow-md' : 'bg-stone-900 hover:bg-stone-850 text-stone-300 border-white/10'}`} title="Saved spots">
                 <Heart className={`w-3.5 h-3.5 shrink-0 ${favoritesOnly || savedCount > 0 ? 'fill-rose-400 text-rose-400' : 'text-stone-400'}`} /><span className="hidden sm:inline">Saved</span>{savedCount > 0 && <span className="px-1.5 py-0.2 rounded-full bg-rose-500/20 text-rose-300 text-[10px] font-mono">{savedCount}</span>}
               </button>
@@ -134,12 +276,6 @@ export const Header: React.FC<HeaderProps> = ({
               )}
 
               {profileMenu}
-            </div>
-
-            <div className="flex sm:hidden items-center gap-1.5 shrink-0">
-              {profileMenu}
-              <button onClick={onToggleFavoritesOnly} className={`flex items-center gap-1 px-2 py-1.5 text-xs font-bold rounded-xl border transition shrink-0 cursor-pointer ${favoritesOnly ? 'bg-rose-500 text-white border-rose-400 shadow-md' : 'bg-stone-900 text-stone-300 border-white/10'}`}><Heart className={`w-3.5 h-3.5 shrink-0 ${favoritesOnly || savedCount > 0 ? 'fill-rose-400 text-rose-400' : 'text-stone-400'}`} />{savedCount > 0 && <span className="text-[10px] font-mono text-rose-300">{savedCount}</span>}</button>
-              <button onClick={() => setMenuOpen(true)} className="flex items-center justify-center w-9 h-9 rounded-xl bg-stone-900 border border-white/10 text-stone-300 hover:text-white hover:border-amber-400/40 transition cursor-pointer" title="Menu"><Menu className="w-4.5 h-4.5" /></button>
             </div>
           </div>
 

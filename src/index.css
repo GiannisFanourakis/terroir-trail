@@ -26,7 +26,6 @@
 .leaflet-tile {
   transform: translateZ(0);
   -webkit-transform: translateZ(0);
-  will-change: transform;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
 }
@@ -34,7 +33,6 @@
 .leaflet-map-pane {
   transform: translateZ(0);
   -webkit-transform: translateZ(0);
-  will-change: transform;
 }
 
 .leaflet-marker-pane,
@@ -249,6 +247,37 @@
   opacity: 1;
   pointer-events: auto;
   transform: scale(1);
+}
+
+/* Coarse pointer / mobile touch default: compact circular pins to eliminate text overlap */
+@media (hover: none) and (pointer: coarse) {
+  .modern-map-pin:not(.active-pin) {
+    padding: 3px;
+    gap: 0;
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    max-width: 36px;
+    border-radius: 9999px;
+    justify-content: center;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.18);
+  }
+
+  .modern-map-pin:not(.active-pin) .pin-text-container {
+    max-width: 0;
+    opacity: 0;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    pointer-events: none;
+    transform: scale(0.85);
+  }
+
+  .modern-map-pin:not(.active-pin) .pin-icon-circle {
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
+  }
 }
 
 /* Custom Popup Style */

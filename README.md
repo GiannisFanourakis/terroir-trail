@@ -3,11 +3,11 @@
 TerroirTrail is a discovery-first agritourism, craft beverage, and artisan food guide for independent culinary travelers, road-trippers, and slow travelers across Greece and Italy.
 
 The platform provides researched, evidence-backed discovery for independent producers across 5 destinations:
-- **Crete** (30 audited producers across Chania, Heraklion, Rethymno, and Lasithi)
-- **Santorini** (9 audited wineries and craft breweries)
-- **Peloponnese** (11 audited wineries and estates)
-- **Macedonia, Greece** (11 audited wineries and distilleries)
-- **Tuscany** (1 audited flagship estate)
+- **Crete** — 30 audited producers
+- **Santorini** — 9 audited producers
+- **Peloponnese** — 11 audited producers
+- **Macedonia, Greece** — 11 audited producers
+- **Tuscany** — 1 audited producer
 
 Production: https://terroir-trail.web.app/
 
@@ -30,7 +30,7 @@ The canonical implementation state and milestone history are maintained in [`ROA
 
 ## Current Public Product
 
-- **Interactive Terroir Map:** High-performance Leaflet map featuring administrative terroir region boundaries sourced from geoBoundaries (CC BY 4.0) and custom tile providers.
+- **Interactive Terroir Map:** High-performance Leaflet map featuring administrative terroir region boundaries sourced from geoBoundaries and Eurostat / GISCO (CC BY 4.0) and custom tile providers.
 - **Multi-Category Producer Directory (62 Audited Producers):** Wineries, craft breweries, artisan cheese dairies, olive mills, apiaries, farms, and traditional distilleries across Greece and Italy.
 - **Curated Regional Discovery Guides (10 Guides):** Verified slow-travel discovery loops across Crete (4), Santorini (3), Peloponnese (1), Macedonia, Greece (1), and Tuscany (1).
 - **Evidence-Backed Auditing:** Independent verification badges for location precision, visitability status, and road-access suitability.
@@ -60,7 +60,7 @@ TerroirTrail is currently **discovery-first**, not an online travel agency (OTA)
   - **Peloponnese:** 11 (wineries)
   - **Macedonia, Greece:** 11 (wineries)
   - **Tuscany:** 1 (winery)
-- **Categories Represented:** Winery, Brewery, Cheese Dairy, Olive Mill, Apiary, Farm, Traditional Kazani, Olive Oil Producer.
+- **Categories Represented:** Winery (34), Brewery (9), Cheese Dairy (9), Olive Mill (4), Apiary (3), Farm (1), Traditional Kazani (1), Olive Oil Producer (1).
 - **Discovery Guides:** 10 curated regional loops.
 
 ---
@@ -68,7 +68,7 @@ TerroirTrail is currently **discovery-first**, not an online travel agency (OTA)
 ## Technology Stack
 
 - **Frontend:** React 19, TypeScript, Vite, Tailwind CSS v4, Lucide Icons
-- **Mapping & Geospatial:** Leaflet, React-Leaflet, geoBoundaries gbOpen (ADM2 Crete, ADM1 Greece/Italy)
+- **Mapping & Geospatial:** Leaflet 1.9.x, sourced regional geometries, geoBoundaries, Eurostat/GISCO
 - **Data & Backend:** Supabase (PostgreSQL / PostGIS) for producer catalogue, Firebase Authentication + Cloud Firestore for traveler accounts & private passport notes
 - **Hosting & Infrastructure:** Firebase Hosting (production web), Google Cloud Platform
 - **Mobile Packaging:** Capacitor (iOS & Android native wrappers)
@@ -133,4 +133,4 @@ npm run mobile:preflight -- all
 
 TerroirTrail software, design assets, and proprietary database schemas are **Proprietary Works** owned exclusively by TerroirTrail. All rights reserved. See [`LICENSE.md`](LICENSE.md).
 
-Third-party dependencies and open-source packages remain subject to their respective licenses. Regional boundary geometries are sourced from geoBoundaries (CC BY 4.0) and Eurostat GISCO NUTS. Map base tiles are provided by OpenStreetMap contributors (ODbL), CARTO, and Esri.
+Third-party dependencies and open-source packages remain subject to their respective licenses. Regional boundary geometries are sourced from geoBoundaries (ADM2 for Crete, Tuscany, Agion Oros) and Eurostat / GISCO (LAU 2021 Thira, NUTS 2021 NUTS 3 for Peloponnese and Macedonia), licensed under CC BY 4.0. Map base tiles are provided by OpenStreetMap contributors (ODbL), CARTO, and Esri.

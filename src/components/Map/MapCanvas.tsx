@@ -68,6 +68,15 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
 
   type MapTheme = 'topo' | 'voyager' | 'dark' | 'satellite';
   const [mapTheme, setMapTheme] = useState<MapTheme>('topo');
+  const [isThemeMenuOpen, setIsThemeMenuOpen] = useState<boolean>(false);
+
+  const onSelectProducerRef = useRef(onSelectProducer);
+  useEffect(() => {
+    onSelectProducerRef.current = onSelectProducer;
+  });
+
+  const selectedProducerIdRef = useRef<string | null>(selectedProducer?.id ?? null);
+  const producersMapRef = useRef<Map<string, Producer>>(new Map());
 
   type PinDisplayMode = 'adaptive' | 'compact' | 'expanded';
   const [pinDisplayMode, setPinDisplayMode] = useState<PinDisplayMode>('adaptive');
@@ -195,6 +204,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       maxZoom: 18,
       zoomControl: false,
       attributionControl: true,
+      preferCanvas: true,
     });
 
     tileLayerRef.current = L.tileLayer(TILE_CONFIGS[mapTheme].url, {
@@ -206,7 +216,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     map.on('click', (e) => {
       const target = e.originalEvent.target as HTMLElement;
       if (target.classList.contains('leaflet-container')) {
-        onSelectProducer(null);
+        onSelectProducerRef.current(null);
         setActiveRegionId(null);
       }
     });
@@ -214,27 +224,31 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     mapInstanceRef.current = map;
     setMapZoom(map.getZoom());
 
+    let resizeRaf: number | null = null;
+    const scheduleInvalidate = () => {
+      if (resizeRaf) cancelAnimationFrame(resizeRaf);
+      resizeRaf = requestAnimationFrame(() => {
+        mapInstanceRef.current?.invalidateSize();
+        resizeRaf = null;
+      });
+    };
+
     let ro: ResizeObserver | null = null;
     if (typeof ResizeObserver !== 'undefined' && mapContainerRef.current) {
-      ro = new ResizeObserver(() => {
-        map.invalidateSize();
-      });
+      ro = new ResizeObserver(scheduleInvalidate);
       ro.observe(mapContainerRef.current);
     }
 
-    const handleWindowResize = () => {
-      map.invalidateSize();
-    };
-    window.addEventListener('resize', handleWindowResize);
-
+    window.addEventListener('resize', scheduleInvalidate);
     const t1 = setTimeout(() => map.invalidateSize(), 150);
-    const t2 = setTimeout(() => map.invalidateSize(), 400);
 
     return () => {
       clearTimeout(t1);
-      clearTimeout(t2);
+      if (resizeRaf) cancelAnimationFrame(resizeRaf);
       if (ro) ro.disconnect();
-      window.removeEventListener('resize', handleWindowResize);
+      window.removeEventListener('resize', scheduleInvalidate);
+      Object.values(markersRef.current).forEach((m) => m.remove());
+      markersRef.current = {};
       map.remove();
       mapInstanceRef.current = null;
     };
@@ -243,8 +257,8 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
   useEffect(() => {
     if (viewMode === 'map' && mapInstanceRef.current) {
       const map = mapInstanceRef.current;
-      setTimeout(() => map.invalidateSize(), 50);
-      setTimeout(() => map.invalidateSize(), 200);
+      const t = setTimeout(() => map.invalidateSize(), 50);
+      return () => clearTimeout(t);
     }
   }, [viewMode]);
 
@@ -286,11 +300,9 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     };
 
     applyPinMode();
-    map.on('zoom', applyPinMode);
     map.on('zoomend', applyPinMode);
 
     return () => {
-      map.off('zoom', applyPinMode);
       map.off('zoomend', applyPinMode);
     };
   }, [pinDisplayMode]);
@@ -402,21 +414,33 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     }
   }, [activeRegionId, mapZoom, activeDestinationRegion]);
 
+  // Effect 1: Marker collection diffing - depends ONLY on [producers]
   useEffect(() => {
     const map = mapInstanceRef.current;
     if (!map) return;
 
-    Object.values(markersRef.current).forEach((m) => m.remove());
-    markersRef.current = {};
+    producersMapRef.current = new Map(producers.map((p) => [p.id, p]));
 
-    if (producers.length === 0) return;
+    const validProducers = producers.filter((p) => p.locationStatus !== 'unresolved');
+    const validIds = new Set(validProducers.map((p) => p.id));
 
-    const bounds = L.latLngBounds([]);
+    // Remove markers that no longer match filters/destination
+    Object.keys(markersRef.current).forEach((id) => {
+      if (!validIds.has(id)) {
+        markersRef.current[id].remove();
+        delete markersRef.current[id];
+      }
+    });
 
-    producers
-      .filter((p) => p.locationStatus !== 'unresolved')
-      .forEach((producer) => {
-      const isSelected = selectedProducer?.id === producer.id;
+    if (validProducers.length === 0) return;
+
+    // Add only new markers that don't already exist on map
+    validProducers.forEach((producer) => {
+      if (markersRef.current[producer.id]) {
+        return;
+      }
+
+      const isSelected = selectedProducerIdRef.current === producer.id;
 
       const customIcon = L.divIcon({
         html: getMarkerHtml(producer, isSelected),
@@ -428,20 +452,60 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       const marker = L.marker(producer.coordinates, {
         icon: customIcon,
         riseOnHover: true,
+        zIndexOffset: isSelected ? 1000 : 0,
       });
 
       marker.on('click', (e) => {
         L.DomEvent.stopPropagation(e);
         setActiveRegionId(null);
-        onSelectProducer(producer);
+        onSelectProducerRef.current(producer);
       });
 
       marker.addTo(map);
       markersRef.current[producer.id] = marker;
-      bounds.extend(producer.coordinates);
     });
-  }, [producers, selectedProducer]);
+  }, [producers]);
 
+  // Effect 2: Marker selection isolation - depends ONLY on [selectedProducer]
+  // Zero marker recreation when selecting or deselecting a producer
+  useEffect(() => {
+    const prevId = selectedProducerIdRef.current;
+    const newId = selectedProducer?.id ?? null;
+    selectedProducerIdRef.current = newId;
+
+    if (prevId && prevId !== newId) {
+      const prevMarker = markersRef.current[prevId];
+      const prevProducer = producersMapRef.current.get(prevId);
+      if (prevMarker && prevProducer) {
+        prevMarker.setIcon(
+          L.divIcon({
+            html: getMarkerHtml(prevProducer, false),
+            className: 'custom-leaflet-pin-wrapper',
+            iconSize: [180, 42],
+            iconAnchor: [90, 21],
+          })
+        );
+        prevMarker.setZIndexOffset(0);
+      }
+    }
+
+    if (newId) {
+      const nextMarker = markersRef.current[newId];
+      if (nextMarker && selectedProducer) {
+        nextMarker.setIcon(
+          L.divIcon({
+            html: getMarkerHtml(selectedProducer, true),
+            className: 'custom-leaflet-pin-wrapper',
+            iconSize: [180, 42],
+            iconAnchor: [90, 21],
+          })
+        );
+        nextMarker.setZIndexOffset(1000);
+      }
+    }
+  }, [selectedProducer]);
+
+  // Effect 3: Camera flyTo on selection - optimized for mobile responsiveness
   useEffect(() => {
     const map = mapInstanceRef.current;
     if (!map || !selectedProducer || selectedProducer.locationStatus === 'unresolved') return;
@@ -451,9 +515,14 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
     const targetLat = window.innerWidth < 768 ? lat - 0.015 : lat;
 
+    const prefersReducedMotion =
+      typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const duration = prefersReducedMotion ? 0 : window.innerWidth < 768 ? 0.5 : 0.8;
+
     map.flyTo([targetLat, lng], 13, {
-      duration: 1.1,
-      easeLinearity: 0.2,
+      duration,
+      easeLinearity: 0.25,
     });
   }, [selectedProducer]);
 
@@ -567,7 +636,8 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
           </div>
         )}
 
-        <div className="glass-panel p-1 rounded-2xl flex items-center shadow-2xl">
+        {/* Desktop theme selector */}
+        <div className="hidden sm:flex glass-panel p-1 rounded-2xl items-center shadow-2xl">
           <button
             onClick={() => setMapTheme('topo')}
             aria-pressed={mapTheme === 'topo'}
@@ -622,46 +692,100 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
           </button>
         </div>
 
+        {/* Mobile collapsible theme selector */}
+        <div className="relative sm:hidden">
+          <button
+            type="button"
+            onClick={() => setIsThemeMenuOpen((prev) => !prev)}
+            aria-expanded={isThemeMenuOpen}
+            aria-label="Select map style"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-2xl glass-panel text-stone-200 text-xs font-semibold shadow-2xl min-h-[44px] cursor-pointer"
+          >
+            <Layers className="w-4 h-4 text-amber-400 shrink-0" />
+            <span className="capitalize">
+              {mapTheme === 'topo'
+                ? 'Terroir'
+                : mapTheme === 'voyager'
+                ? (CARTO_API_KEY ? 'Voyager' : 'Streets')
+                : mapTheme === 'dark'
+                ? 'Night'
+                : 'Satellite'}
+            </span>
+          </button>
+          {isThemeMenuOpen && (
+            <div className="absolute right-0 top-full mt-1.5 glass-panel p-1.5 rounded-2xl shadow-2xl flex flex-col gap-1 z-30 min-w-[130px] border border-white/10 bg-stone-950/95 backdrop-blur-xl">
+              <button
+                type="button"
+                onClick={() => { setMapTheme('topo'); setIsThemeMenuOpen(false); }}
+                className={`px-3 py-2 text-xs font-semibold rounded-xl text-left transition min-h-[44px] flex items-center ${mapTheme === 'topo' ? 'bg-amber-500 text-stone-950 font-bold' : 'text-stone-300 hover:text-white hover:bg-white/10'}`}
+              >
+                Terroir
+              </button>
+              <button
+                type="button"
+                onClick={() => { setMapTheme('voyager'); setIsThemeMenuOpen(false); }}
+                className={`px-3 py-2 text-xs font-semibold rounded-xl text-left transition min-h-[44px] flex items-center ${mapTheme === 'voyager' ? 'bg-amber-500 text-stone-950 font-bold' : 'text-stone-300 hover:text-white hover:bg-white/10'}`}
+              >
+                {CARTO_API_KEY ? 'Voyager' : 'Streets'}
+              </button>
+              <button
+                type="button"
+                onClick={() => { setMapTheme('dark'); setIsThemeMenuOpen(false); }}
+                className={`px-3 py-2 text-xs font-semibold rounded-xl text-left transition min-h-[44px] flex items-center ${mapTheme === 'dark' ? 'bg-amber-500 text-stone-950 font-bold' : 'text-stone-300 hover:text-white hover:bg-white/10'}`}
+              >
+                Night
+              </button>
+              <button
+                type="button"
+                onClick={() => { setMapTheme('satellite'); setIsThemeMenuOpen(false); }}
+                className={`px-3 py-2 text-xs font-semibold rounded-xl text-left transition min-h-[44px] flex items-center ${mapTheme === 'satellite' ? 'bg-amber-500 text-stone-950 font-bold' : 'text-stone-300 hover:text-white hover:bg-white/10'}`}
+              >
+                Satellite
+              </button>
+            </div>
+          )}
+        </div>
+
         <div className="flex flex-col gap-1 glass-panel p-1 rounded-2xl shadow-2xl">
           <button
             onClick={handleZoomIn}
-            className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center text-stone-200 hover:text-white hover:bg-white/10 transition"
+            className="hidden sm:flex w-9 h-9 rounded-xl items-center justify-center text-stone-200 hover:text-white hover:bg-white/10 transition cursor-pointer"
             title="Zoom In"
             aria-label="Zoom in"
           >
-            <Plus className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+            <Plus className="w-4 h-4" />
           </button>
 
           <button
             onClick={handleZoomOut}
-            className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center text-stone-200 hover:text-white hover:bg-white/10 transition"
+            className="hidden sm:flex w-9 h-9 rounded-xl items-center justify-center text-stone-200 hover:text-white hover:bg-white/10 transition cursor-pointer"
             title="Zoom Out"
             aria-label="Zoom out"
           >
-            <Minus className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+            <Minus className="w-4 h-4" />
           </button>
 
-          <div className="h-[1px] bg-white/10 my-0.5" />
+          <div className="hidden sm:block h-[1px] bg-white/10 my-0.5" />
 
           <button
             onClick={handleResetView}
-            className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center text-stone-200 hover:text-amber-400 hover:bg-white/10 transition group"
+            className="w-11 h-11 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center text-stone-200 hover:text-amber-400 hover:bg-white/10 transition group cursor-pointer"
             title="Reset Destination View"
             aria-label="Reset destination view"
           >
-            <Maximize2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover:scale-110 transition-transform" />
+            <Maximize2 className="w-4 h-4 group-hover:scale-110 transition-transform" />
           </button>
 
           <button
             onClick={handleLocateMe}
             disabled={isLocating}
-            className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center text-stone-200 hover:text-sky-400 hover:bg-white/10 transition group ${
+            className={`w-11 h-11 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center text-stone-200 hover:text-sky-400 hover:bg-white/10 transition group cursor-pointer ${
               isLocating ? 'animate-pulse text-sky-400 bg-white/10' : ''
             }`}
             title={isLocating ? 'Locating...' : 'My Location'}
             aria-label={isLocating ? 'Locating your position' : 'Locate me'}
           >
-            <Navigation className={`w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover:scale-110 transition-transform ${isLocating ? 'animate-spin' : ''}`} />
+            <Navigation className={`w-4 h-4 group-hover:scale-110 transition-transform ${isLocating ? 'animate-spin' : ''}`} />
           </button>
 
           <div className="h-[1px] bg-white/10 my-0.5" />
@@ -672,7 +796,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
                 prev === 'adaptive' ? 'compact' : prev === 'compact' ? 'expanded' : 'adaptive'
               );
             }}
-            className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center transition group relative ${
+            className={`w-11 h-11 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center transition group relative cursor-pointer ${
               pinDisplayMode !== 'adaptive'
                 ? 'bg-amber-500/20 text-amber-400 border border-amber-500/40'
                 : 'text-stone-200 hover:text-amber-400 hover:bg-white/10'
@@ -686,9 +810,9 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
                 : 'Full Bounding Boxes (Always show name & rating)'
             }`}
           >
-            <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover:scale-110 transition-transform" />
+            <MapPin className="w-4 h-4 group-hover:scale-110 transition-transform" />
             {pinDisplayMode !== 'adaptive' && (
-              <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-amber-400 ring-2 ring-stone-900" />
+              <span className="absolute top-1 right-1 sm:-top-0.5 sm:-right-0.5 w-2 h-2 rounded-full bg-amber-400 ring-2 ring-stone-900" />
             )}
           </button>
         </div>

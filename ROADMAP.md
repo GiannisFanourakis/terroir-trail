@@ -5,7 +5,7 @@
 > Completion convention: change `- [ ] Step` to `- [x] ~~Step~~` when finished. Do not mark a step complete until it has been implemented, tested, pushed, deployed where applicable, and verified.
 
 **Last updated:** 2026-09-17
-**Current focus:** Final pre-deployment documentation, legal notices, and public metadata synchronization pass across all 5 destinations and 62 audited producers; repository preflight prior to deployment.
+**Current focus:** Pre-deployment intermediate hotfix: mobile UX decluttering, progressive disclosure, Leaflet marker diffing and responsiveness, documentation alignment, and preflight verification prior to deployment.
 
 ---
 
@@ -458,6 +458,22 @@ This phase adds a geographic discovery layer above individual producer pins so t
 - [x] ~~Run the full automated quality gate, deploy, and complete a production smoke pass before marking Phase 13 complete.~~
 
 **Definition of done:** the map communicates regional terroir and place identity as well as individual producer locations, with Crete, Santorini, Peloponnese, Macedonia, Greece, and Tuscany serving as the verified regional implementation.
+
+---
+
+## Pre-Deployment Intermediate Hotfix — Mobile UX & Map Performance
+
+**Status:** Completed — mobile UI decluttering, progressive disclosure, Leaflet marker diffing and selection isolation, documentation corrections, and preflight verification completed.
+
+> **Deployment Gate:** Production deployment remains gated on verification of this hotfix AND separate resolution of the Supabase PostGIS security issue around `public.spatial_ref_sys` (ticket SU-475614). DO NOT DEPLOY until both gates pass.
+
+- [x] ~~Correct README documentation inaccuracies (clean destination counts, category statistics, Leaflet 1.9.x stack, boundary licensing consistency).~~
+- [x] ~~Reduce mobile UI crowding with progressive disclosure (compact Header destination picker, expandable search, progressive FilterBar drawer/sheet, collapsed map controls).~~
+- [x] ~~Isolate Leaflet marker diffing from selection in `MapCanvas.tsx` to eliminate marker recreation on select.~~
+- [x] ~~Optimize Leaflet CSS by removing blanket `will-change: transform` and providing compact touch pin styling on coarse pointers.~~
+- [x] ~~Debounce remote search queries (250ms) to reduce redundant network/filter cycles.~~
+- [x] ~~Ensure all touch targets meet or exceed 44×44px on coarse pointers.~~
+- [x] ~~Verify automated test suites (`npm run check`, `npm run test:python`, `npm run mobile:preflight -- all`).~~
 
 ---
 

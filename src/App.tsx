@@ -376,7 +376,7 @@ export const App: React.FC = () => {
             viewMode === 'map' ? 'block' : 'hidden lg:block'
           }`}
         >
-          <div className="absolute top-2.5 left-0 right-0 z-20 pointer-events-none flex justify-center px-3">
+          <div className={`absolute top-2.5 left-0 right-0 z-20 pointer-events-none justify-center px-3 ${selectedProducer ? 'hidden sm:flex' : 'flex'}`}>
             <div className="pointer-events-auto w-full max-w-2xl">
               <SponsorBanner hasExplorerPass={hasAdFreeTravelerPass} />
             </div>

@@ -90,7 +90,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                 <button
                   key={cat.id}
                   onClick={() => onFilterChange('category', cat.id)}
-                  className={`flex items-center gap-1.5 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full text-[11px] sm:text-xs font-semibold transition-all duration-200 whitespace-nowrap shadow-sm shrink-0 cursor-pointer ${
+                  className={`flex items-center gap-1.5 px-3 py-2 sm:px-3.5 sm:py-1.5 rounded-full text-[11px] sm:text-xs font-semibold transition-all duration-200 whitespace-nowrap shadow-sm shrink-0 cursor-pointer min-h-[44px] sm:min-h-[32px] ${
                     isSelected
                       ? `${cat.activeColor} shadow-lg scale-105 ring-2 ring-white/20 font-bold`
                       : 'bg-stone-800/80 text-stone-300 hover:text-white hover:bg-stone-700/80 border border-white/5'
@@ -112,7 +112,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
               <button
                 type="button"
                 onClick={onOpenLoops}
-                className="flex items-center gap-1.5 text-[11px] sm:text-xs px-2.5 py-1 rounded-full font-bold border border-amber-500/40 bg-gradient-to-r from-amber-500/20 via-amber-500/10 to-transparent hover:border-amber-400 text-amber-300 hover:text-white transition shrink-0 cursor-pointer shadow-sm active:scale-95"
+                className="flex items-center gap-1.5 text-[11px] sm:text-xs px-3 py-2 sm:px-2.5 sm:py-1 rounded-full font-bold border border-amber-500/40 bg-gradient-to-r from-amber-500/20 via-amber-500/10 to-transparent hover:border-amber-400 text-amber-300 hover:text-white transition shrink-0 cursor-pointer shadow-sm active:scale-95 min-h-[44px] sm:min-h-[32px]"
                 title="Discovery Guides are published only after stop verification; multi-stop navigation stays withheld until road access is verified"
               >
                 <Compass className="w-3.5 h-3.5 text-amber-400 shrink-0" />
@@ -122,7 +122,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
 
             <button
               onClick={() => setIsMoreFiltersOpen((prev) => !prev)}
-              className={`flex items-center gap-1 text-[11px] sm:text-xs px-2.5 py-1 rounded-full font-medium border transition shrink-0 cursor-pointer ${
+              className={`flex items-center gap-1 text-[11px] sm:text-xs px-3 py-2 sm:px-2.5 sm:py-1 rounded-full font-medium border transition shrink-0 cursor-pointer min-h-[44px] sm:min-h-[32px] ${
                 isMoreFiltersOpen || activeSecondaryCount > 0
                   ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
                   : 'bg-stone-800 text-stone-400 hover:text-white border-white/10'
@@ -141,7 +141,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
             {isFiltered && (
               <button
                 onClick={onResetFilters}
-                className="flex items-center gap-1 text-[11px] sm:text-xs text-rose-400 hover:text-rose-300 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 px-2.5 py-1 rounded-full font-medium transition shrink-0 cursor-pointer"
+                className="flex items-center gap-1 text-[11px] sm:text-xs text-rose-400 hover:text-rose-300 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 px-3 py-2 sm:px-2.5 sm:py-1 rounded-full font-medium transition shrink-0 cursor-pointer min-h-[44px] sm:min-h-[32px]"
                 title="Reset all filters"
               >
                 <RotateCcw className="w-3 h-3 shrink-0" />
@@ -156,7 +156,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
             <select
               value={filters.roadAccess}
               onChange={(e) => onFilterChange('roadAccess', e.target.value as RoadAccess | 'all')}
-              className="bg-stone-800 border border-white/10 text-stone-200 text-xs rounded-xl px-3 py-1 focus:outline-none focus:border-amber-400 cursor-pointer"
+              className="bg-stone-800 border border-white/10 text-stone-200 text-xs rounded-xl px-3 py-2 sm:py-1 min-h-[44px] sm:min-h-[32px] focus:outline-none focus:border-amber-400 cursor-pointer"
             >
               {roadAccessOptions.map((opt) => (
                 <option key={opt.id} value={opt.id} className="bg-stone-900 text-white">{opt.label}</option>
@@ -166,7 +166,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
             <select
               value={filters.ethos}
               onChange={(e) => onFilterChange('ethos', e.target.value as Ethos | 'all')}
-              className="bg-stone-800 border border-white/10 text-stone-200 text-xs rounded-xl px-3 py-1 focus:outline-none focus:border-amber-400 cursor-pointer"
+              className="bg-stone-800 border border-white/10 text-stone-200 text-xs rounded-xl px-3 py-2 sm:py-1 min-h-[44px] sm:min-h-[32px] focus:outline-none focus:border-amber-400 cursor-pointer"
             >
               {ethosOptions.map((opt) => (
                 <option key={opt.id} value={opt.id} className="bg-stone-900 text-white">{opt.label}</option>
@@ -176,47 +176,47 @@ export const FilterBar: React.FC<FilterBarProps> = ({
             <select
               value={filters.foodOption}
               onChange={(e) => onFilterChange('foodOption', e.target.value as FoodOption | 'all')}
-              className="bg-stone-800 border border-white/10 text-stone-200 text-xs rounded-xl px-3 py-1 focus:outline-none focus:border-amber-400 cursor-pointer"
+              className="bg-stone-800 border border-white/10 text-stone-200 text-xs rounded-xl px-3 py-2 sm:py-1 min-h-[44px] sm:min-h-[32px] focus:outline-none focus:border-amber-400 cursor-pointer"
             >
               {foodOptions.map((opt) => (
                 <option key={opt.id} value={opt.id} className="bg-stone-900 text-white">{opt.label}</option>
               ))}
             </select>
 
-            <div className="hidden sm:flex items-center gap-1.5 border-l border-white/10 pl-2">
+            <div className="flex flex-wrap sm:flex-nowrap items-center gap-1.5 sm:border-l border-white/10 sm:pl-2 pt-1 sm:pt-0">
               <button
                 onClick={() => onFilterChange('dogFriendlyOnly', !filters.dogFriendlyOnly)}
-                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-xl border transition text-xs shrink-0 cursor-pointer ${
+                className={`flex items-center gap-1.5 px-3 py-2 sm:px-2.5 sm:py-1 rounded-xl border transition text-xs shrink-0 cursor-pointer min-h-[44px] sm:min-h-[32px] ${
                   filters.dogFriendlyOnly
                     ? 'bg-amber-500 text-stone-950 border-amber-400 font-bold'
                     : 'bg-stone-800 text-stone-400 border-white/10 hover:text-white'
                 }`}
               >
-                <Dog className="w-3 h-3 shrink-0" />
+                <Dog className="w-3.5 h-3.5 sm:w-3 sm:h-3 shrink-0" />
                 <span>Dog Friendly</span>
               </button>
 
               <button
                 onClick={() => onFilterChange('walkInOnly', !filters.walkInOnly)}
-                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-xl border transition text-xs shrink-0 cursor-pointer ${
+                className={`flex items-center gap-1.5 px-3 py-2 sm:px-2.5 sm:py-1 rounded-xl border transition text-xs shrink-0 cursor-pointer min-h-[44px] sm:min-h-[32px] ${
                   filters.walkInOnly
                     ? 'bg-amber-500 text-stone-950 border-amber-400 font-bold'
                     : 'bg-stone-800 text-stone-400 border-white/10 hover:text-white'
                 }`}
               >
-                <Footprints className="w-3 h-3 shrink-0" />
+                <Footprints className="w-3.5 h-3.5 sm:w-3 sm:h-3 shrink-0" />
                 <span>Walk-in</span>
               </button>
 
               <button
                 onClick={() => onFilterChange('campervanOnly', !filters.campervanOnly)}
-                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-xl border transition text-xs shrink-0 cursor-pointer ${
+                className={`flex items-center gap-1.5 px-3 py-2 sm:px-2.5 sm:py-1 rounded-xl border transition text-xs shrink-0 cursor-pointer min-h-[44px] sm:min-h-[32px] ${
                   filters.campervanOnly
                     ? 'bg-amber-500 text-stone-950 border-amber-400 font-bold'
                     : 'bg-stone-800 text-stone-400 border-white/10 hover:text-white'
                 }`}
               >
-                <Caravan className="w-3 h-3 shrink-0" />
+                <Caravan className="w-3.5 h-3.5 sm:w-3 sm:h-3 shrink-0" />
                 <span>Campervan</span>
               </button>
             </div>

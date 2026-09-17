@@ -13,6 +13,14 @@ export function useProducers(options: UseProducersOptions = {}) {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [isLive, setIsLive] = useState<boolean>(() => producerService.getCacheProvenance() === 'live');
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState(options.searchQuery);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearchQuery(options.searchQuery);
+    }, 250);
+    return () => clearTimeout(handler);
+  }, [options.searchQuery]);
 
   const refresh = useCallback(
     async (bounds?: ViewportBounds) => {
@@ -22,7 +30,7 @@ export function useProducers(options: UseProducersOptions = {}) {
         const data = await producerService.getProducers({
           destination: options.destination,
           category: options.category,
-          searchQuery: options.searchQuery,
+          searchQuery: debouncedSearchQuery,
           bounds,
         });
         const live = producerService.getCacheProvenance() === 'live';
@@ -39,7 +47,7 @@ export function useProducers(options: UseProducersOptions = {}) {
         setLoading(false);
       }
     },
-    [options.destination, options.category, options.searchQuery]
+    [options.destination, options.category, debouncedSearchQuery]
   );
 
   useEffect(() => {
