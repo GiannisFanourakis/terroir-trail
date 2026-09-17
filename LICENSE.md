@@ -38,3 +38,5 @@ TerroirTrail is proudly built using modern open-source libraries and public map 
 * **OpenStreetMap (OSM):** Map data (c) [OpenStreetMap contributors](https://www.openstreetmap.org/copyright), licensed under the Open Database License (ODbL).
 * **CARTO Basemaps:** Map tiles (c) [CARTO](https://carto.com/attributions).
 * **Esri World Topographic Map:** Tiles (c) Esri, DeLorme, NAVTEQ, TomTom, USGS.
+* **geoBoundaries (gbOpen):** Administrative boundary data for Greece (ADM2 Crete) from [geoBoundaries](https://www.geoboundaries.org/) / William & Mary geoLab (source: EuroGeoGraphics / Regional IM Working Group - Europe), licensed under [Creative Commons Attribution 4.0 International (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/).
+

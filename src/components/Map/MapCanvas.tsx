@@ -335,6 +335,8 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     };
 
     const regionLayer = L.geoJSON(CRETE_REGION_FEATURE as any, {
+      attribution:
+        'Administrative boundaries: <a href="https://www.geoboundaries.org" target="_blank" rel="noopener noreferrer">geoBoundaries</a> (<a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a>)',
       style: () => getCreteRegionStyle(false, map.getZoom()),
       onEachFeature: (_feature, featureLayer) => {
         featureLayer.on({
