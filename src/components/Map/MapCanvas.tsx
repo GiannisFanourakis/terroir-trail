@@ -489,10 +489,16 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
                   onSelectProducerRef.current(null);
                   setActiveRegionId(null);
 
+                  const hasDistantArchipelago = country === 'PT' || country === 'NO' || country === 'ES';
                   const bounds = (featureLayer as L.Polygon).getBounds();
-                  if (bounds.isValid()) {
+                  if (!hasDistantArchipelago && bounds.isValid()) {
                     fitBoundsWithMotion(map, bounds, {
                       maxZoom: countryConfig.zoom,
+                      mobileDuration: 0.5,
+                      desktopDuration: 0.8,
+                    });
+                  } else {
+                    flyOrSetView(map, countryConfig.center, countryConfig.zoom, {
                       mobileDuration: 0.5,
                       desktopDuration: 0.8,
                     });

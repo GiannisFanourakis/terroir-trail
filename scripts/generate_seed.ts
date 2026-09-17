@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { CRETAN_PRODUCERS } from '../src/data/producers';
+import { DESTINATION_GEOGRAPHY } from '../src/config/geography';
 
 function sqlStr(val: string | undefined | null): string {
   if (val === undefined || val === null) return 'NULL';
@@ -60,8 +61,8 @@ const producerValues = CRETAN_PRODUCERS.map((p) => {
   ${sqlStr(p.greekName)},
   ${sqlStr(p.category)},
   ${sqlStr(p.destination)},
-  ${sqlStr(p.country || (p.destination === 'tuscany' ? 'Italy' : 'Greece'))},
-  ${sqlStr(p.countryCode || (p.destination === 'tuscany' ? 'IT' : 'GR'))},
+  ${sqlStr(p.country || DESTINATION_GEOGRAPHY[p.destination]?.country || 'Greece')},
+  ${sqlStr(p.countryCode || DESTINATION_GEOGRAPHY[p.destination]?.countryCode || 'GR')},
   ${sqlStr(p.region)},
   ${sqlStr(p.village)},
   ${sqlNum(lat)},

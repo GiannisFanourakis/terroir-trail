@@ -1,4 +1,5 @@
 import type { Category, Producer } from '../types/terroir';
+import { getDestinationCountry } from '../config/geography';
 
 export interface RegionCoverageRow {
   region: string;
@@ -22,10 +23,11 @@ export interface AdminCatalogueMetrics {
 const verifiedLocationStates = new Set(['verified_location', 'verified_entrance']);
 const confirmedVisitStates = new Set(['public_visits', 'seasonal_public', 'appointment_only']);
 
-const isGreekProducer = (producer: Producer) =>
-  producer.countryCode === 'GR' ||
-  producer.country === 'Greece' ||
-  (producer.destination !== 'tuscany' && producer.destination !== 'piedmont');
+const isGreekProducer = (producer: Producer) => {
+  if (producer.countryCode) return producer.countryCode.toUpperCase() === 'GR';
+  if (producer.country) return producer.country.toLowerCase() === 'greece';
+  return getDestinationCountry(producer.destination) === 'GR';
+};
 
 export function buildAdminCatalogueMetrics(producers: Producer[]): AdminCatalogueMetrics {
   const locationNeedsReview = producers.filter(

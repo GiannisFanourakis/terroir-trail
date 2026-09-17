@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import type { Producer } from '../src/types/terroir';
+import { DESTINATION_GEOGRAPHY } from '../src/config/geography';
 import { SEO_PRODUCERS } from './seoCatalogue';
 
 const CANONICAL_HOST = 'https://terroir-trail.web.app';
@@ -125,7 +126,7 @@ const buildDescription = (producer: Producer): string => {
 
 const buildJsonLd = (producer: Producer, canonicalUrl: string, pageTitle: string, description: string): string => {
   const locality = producer.locality || producer.village;
-  const country = producer.country || (producer.countryCode === 'IT' ? 'Italy' : 'Greece');
+  const country = producer.country || DESTINATION_GEOGRAPHY[producer.destination]?.country || 'Greece';
   const location: Record<string, unknown> = {
     '@type': 'Place',
     name: `${producer.name} location`,

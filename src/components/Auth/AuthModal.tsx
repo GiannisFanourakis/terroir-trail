@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { ProducerTaxDetails } from '../../types/auth';
 import { Producer } from '../../types/terroir';
+import { getDestinationCountry, isSupportedCountryCode } from '../../config/geography';
 import { validateVatNumber, getFiscalLabels } from '../../utils/vatValidator';
 import { formatAuthError } from '../../utils/authErrors';
 
@@ -50,10 +51,22 @@ type TravelerMode = 'login' | 'signup' | 'forgot';
 type ProducerMode = 'login' | 'claim' | 'forgot';
 
 const countryCodeForProducer = (producer?: Producer): string => {
-  const country = producer?.country?.trim().toLowerCase();
-  if (country === 'italy' || producer?.destination === 'tuscany' || producer?.destination === 'piedmont') return 'IT';
+  if (!producer) return 'GR';
+  const explicitCode = producer.countryCode?.trim().toUpperCase();
+  if (explicitCode && isSupportedCountryCode(explicitCode)) {
+    return explicitCode;
+  }
+  if (producer.destination) {
+    return getDestinationCountry(producer.destination);
+  }
+  const country = producer.country?.trim().toLowerCase();
+  if (country === 'italy') return 'IT';
   if (country === 'france') return 'FR';
   if (country === 'spain') return 'ES';
+  if (country === 'portugal') return 'PT';
+  if (country === 'croatia') return 'HR';
+  if (country === 'slovenia') return 'SI';
+  if (country === 'norway') return 'NO';
   return 'GR';
 };
 

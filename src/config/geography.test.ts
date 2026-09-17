@@ -1,11 +1,21 @@
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { Producer } from '../types/terroir';
 import { filterProducers } from '../utils/filterProducers';
 import {
+  COUNTRY_LAYERS,
   DESTINATION_GEOGRAPHY,
+  getActiveCountryScope,
+  getCountryConfig,
+  getCountryLayer,
+  getCountryName,
   getDestinationCountry,
+  isSupportedCountryCode,
   producerMatchesCountry,
+  readCountryFromUrl,
   setActiveCountryScope,
+  SUPPORTED_COUNTRIES,
+  SUPPORTED_COUNTRY_CODES,
+  type SupportedCountryScope,
 } from './geography';
 
 const baseProducer = (overrides: Partial<Producer>): Producer => ({
@@ -47,6 +57,148 @@ afterEach(() => {
 });
 
 describe('country and NUTS geography', () => {
+  it('supports exactly the 8 defined European countries', () => {
+    expect(SUPPORTED_COUNTRY_CODES).toHaveLength(8);
+    expect(SUPPORTED_COUNTRY_CODES).toEqual([
+      'GR',
+      'IT',
+      'FR',
+      'ES',
+      'PT',
+      'HR',
+      'SI',
+      'NO',
+    ]);
+  });
+
+  it('defines comprehensive CountryConfig for each supported country', () => {
+    for (const code of SUPPORTED_COUNTRY_CODES) {
+      const config = SUPPORTED_COUNTRIES[code];
+      expect(config).toBeDefined();
+      expect(config.code).toBe(code);
+      expect(typeof config.name).toBe('string');
+      expect(config.name.length).toBeGreaterThan(0);
+      expect(typeof config.nativeName).toBe('string');
+      expect(config.nativeName.length).toBeGreaterThan(0);
+      expect(typeof config.flag).toBe('string');
+      expect(config.nutsVersion).toBe('2024');
+      expect(config.nutsLevel).toBe(0);
+      expect(config.sourceUrl).toContain(
+        'NUTS_RG_10M_2024_4326_LEVL_0.geojson'
+      );
+      expect(config.boundaryAttribution).toContain('Eurostat / GISCO');
+      expect(Array.isArray(config.center)).toBe(true);
+      expect(config.center).toHaveLength(2);
+      expect(Number.isFinite(config.center[0])).toBe(true);
+      expect(Number.isFinite(config.center[1])).toBe(true);
+      expect(config.zoom).toBeGreaterThanOrEqual(4);
+      expect(config.zoom).toBeLessThanOrEqual(10);
+    }
+
+    // Greece uses Eurostat NUTS Level 0 code 'EL'
+    expect(SUPPORTED_COUNTRIES.GR.giscoId).toBe('EL');
+
+    // All other 7 countries use their ISO-2 code as giscoId
+    const otherCodes: SupportedCountryScope[] = [
+      'IT',
+      'FR',
+      'ES',
+      'PT',
+      'HR',
+      'SI',
+      'NO',
+    ];
+    for (const code of otherCodes) {
+      expect(SUPPORTED_COUNTRIES[code].giscoId).toBe(code);
+    }
+  });
+
+  it('generates COUNTRY_LAYERS starting with Europe and including all 8 countries', () => {
+    expect(COUNTRY_LAYERS).toHaveLength(9);
+    expect(COUNTRY_LAYERS[0]).toEqual({
+      id: 'all',
+      label: 'Europe',
+      flag: '🌍',
+      center: [47.0, 10.0],
+      zoom: 4,
+    });
+
+    for (const code of SUPPORTED_COUNTRY_CODES) {
+      const config = SUPPORTED_COUNTRIES[code];
+      const layer = COUNTRY_LAYERS.find((l) => l.id === code);
+      expect(layer).toBeDefined();
+      expect(layer?.label).toBe(config.name);
+      expect(layer?.flag).toBe(config.flag);
+      expect(layer?.center).toEqual(config.center);
+      expect(layer?.zoom).toBe(config.zoom);
+    }
+  });
+
+  it('validates country codes with isSupportedCountryCode helper', () => {
+    for (const code of SUPPORTED_COUNTRY_CODES) {
+      expect(isSupportedCountryCode(code)).toBe(true);
+    }
+    expect(isSupportedCountryCode('DE')).toBe(false);
+    expect(isSupportedCountryCode('US')).toBe(false);
+    expect(isSupportedCountryCode('all')).toBe(false);
+    expect(isSupportedCountryCode('')).toBe(false);
+  });
+
+  it('provides getCountryConfig and getCountryName helpers', () => {
+    expect(getCountryConfig('FR').name).toBe('France');
+    expect(getCountryConfig('ES').name).toBe('Spain');
+    expect(getCountryConfig('PT').name).toBe('Portugal');
+    expect(getCountryConfig('HR').name).toBe('Croatia');
+    expect(getCountryConfig('SI').name).toBe('Slovenia');
+    expect(getCountryConfig('NO').name).toBe('Norway');
+    expect(getCountryConfig('GR').name).toBe('Greece');
+    expect(getCountryConfig('IT').name).toBe('Italy');
+
+    expect(getCountryName('FR')).toBe('France');
+    expect(getCountryName('NO')).toBe('Norway');
+  });
+
+  it('retrieves country layers correctly with fallback', () => {
+    expect(getCountryLayer('FR').id).toBe('FR');
+    expect(getCountryLayer('NO').id).toBe('NO');
+    expect(getCountryLayer('all').id).toBe('all');
+    // Unknown scope falls back to Europe
+    expect(getCountryLayer('UNKNOWN' as any).id).toBe('all');
+  });
+
+  it('reads country scope from URL parameters and sets active scope', () => {
+    const mockWindow = {
+      location: {
+        href: 'https://terroir-trail.web.app/',
+        search: '',
+      },
+      history: {
+        state: null,
+        replaceState: (_state: unknown, _title: string, url: string) => {
+          mockWindow.location.href = `https://terroir-trail.web.app${url}`;
+          mockWindow.location.search = url.includes('?')
+            ? url.slice(url.indexOf('?'))
+            : '';
+        },
+      },
+    };
+    vi.stubGlobal('window', mockWindow);
+
+    try {
+      for (const code of SUPPORTED_COUNTRY_CODES) {
+        setActiveCountryScope(code);
+        expect(readCountryFromUrl()).toBe(code);
+        expect(getActiveCountryScope()).toBe(code);
+      }
+
+      setActiveCountryScope('all');
+      expect(readCountryFromUrl()).toBe(null);
+      expect(getActiveCountryScope()).toBe('all');
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
   it('maps current destinations to their parent countries', () => {
     expect(getDestinationCountry('crete')).toBe('GR');
     expect(getDestinationCountry('santorini')).toBe('GR');
@@ -86,32 +238,46 @@ describe('country and NUTS geography', () => {
     expect(producerMatchesCountry(greekProducer, 'IT')).toBe(false);
     expect(producerMatchesCountry(italianProducer, 'IT')).toBe(true);
     expect(producerMatchesCountry(italianFallback, 'IT')).toBe(true);
+
+    // Matches explicit countryCode for each of the new 6 countries
+    const newCountryCodes: SupportedCountryScope[] = [
+      'FR',
+      'ES',
+      'PT',
+      'HR',
+      'SI',
+      'NO',
+    ];
+    for (const code of newCountryCodes) {
+      const p = baseProducer({
+        destination: 'crete', // existing destination dummy
+        countryCode: code,
+      });
+      expect(producerMatchesCountry(p, code)).toBe(true);
+      expect(producerMatchesCountry(p, 'GR')).toBe(false);
+      expect(producerMatchesCountry(p, 'all')).toBe(true);
+    }
   });
 
-  it('filters the all-destinations catalogue by the active country scope', () => {
-    const greekProducer = baseProducer({
-      id: 'gr',
-      destination: 'crete',
-      countryCode: 'GR',
-    });
-    const italianProducer = baseProducer({
-      id: 'it',
-      destination: 'tuscany',
-      countryCode: 'IT',
-    });
+  it('filters the all-destinations catalogue by the active country scope across all 8 countries', () => {
+    const producers = SUPPORTED_COUNTRY_CODES.map((code, index) =>
+      baseProducer({
+        id: `producer-${code.toLowerCase()}`,
+        destination: index % 2 === 0 ? 'crete' : 'tuscany',
+        countryCode: code,
+      })
+    );
 
-    setActiveCountryScope('IT');
-    expect(
-      filterProducers([greekProducer, italianProducer], baseFilters).map(
-        (p) => p.id
-      )
-    ).toEqual(['it']);
+    // When scope is 'all', all 8 are included
+    setActiveCountryScope('all');
+    expect(filterProducers(producers, baseFilters)).toHaveLength(8);
 
-    setActiveCountryScope('GR');
-    expect(
-      filterProducers([greekProducer, italianProducer], baseFilters).map(
-        (p) => p.id
-      )
-    ).toEqual(['gr']);
+    // Filter by each supported country
+    for (const code of SUPPORTED_COUNTRY_CODES) {
+      setActiveCountryScope(code);
+      const filtered = filterProducers(producers, baseFilters);
+      expect(filtered).toHaveLength(1);
+      expect(filtered[0].id).toBe(`producer-${code.toLowerCase()}`);
+    }
   });
 });

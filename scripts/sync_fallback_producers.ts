@@ -3,12 +3,14 @@ import path from 'path';
 import dotenv from 'dotenv';
 import { createClient } from '@supabase/supabase-js';
 import { Producer, Category, Destination, Ethos, FoodOption, RoadAccess } from '../src/types/terroir';
+import { DESTINATION_GEOGRAPHY } from '../src/config/geography';
 
 dotenv.config();
 
 function mapRowToProducer(row: any): Producer {
-  const country = row.country || (row.destination === 'tuscany' ? 'Italy' : 'Greece');
-  const countryCode = row.country_code || (row.destination === 'tuscany' ? 'IT' : 'GR');
+  const destGeo = DESTINATION_GEOGRAPHY[row.destination as Destination];
+  const country = row.country || destGeo?.country || 'Greece';
+  const countryCode = row.country_code || destGeo?.countryCode || 'GR';
   const locality = row.locality || row.village;
 
   const isUnresolvedLocation = row.location_status === 'unresolved';
