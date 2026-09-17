@@ -9,7 +9,7 @@ import { MapCanvas } from './components/Map/MapCanvas';
 import { ProducerList } from './components/Sidebar/ProducerList';
 import { ProducerDetailDrawerWithReviews as ProducerDetailDrawer } from './components/Drawer/ProducerDetailDrawerWithReviews';
 import { TerroirRegionDrawer } from './components/Regions/TerroirRegionDrawer';
-import { TERROIR_REGIONS } from './data/terroirRegions';
+import { TERROIR_REGIONS } from './data/terroirRegionCatalogue';
 import { withTerroirRegionStory } from './data/terroirRegionStories';
 import { useFavorites } from './hooks/useFavorites';
 import { useAuth } from './hooks/useAuth';

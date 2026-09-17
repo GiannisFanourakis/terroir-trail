@@ -1,5 +1,6 @@
 import type { Destination } from '../types/terroir';
 import type { TerroirRegion, TerroirRegionSection } from './terroirRegions';
+import { THESSALY_TERROIR_REGION } from './thessalyRegion';
 
 export interface TerroirRegionStory {
   eyebrow: string;
@@ -173,6 +174,13 @@ export const TERROIR_REGION_STORIES: Record<Destination, TerroirRegionStory> = {
         highlights: ['Regional road-trip loops', 'Small producers across categories', 'Entrance and road-access checks'],
       },
     ],
+  },
+
+  thessaly: {
+    eyebrow: THESSALY_TERROIR_REGION.eyebrow,
+    summary: THESSALY_TERROIR_REGION.summary,
+    highlights: THESSALY_TERROIR_REGION.highlights,
+    sections: THESSALY_TERROIR_REGION.sections,
   },
 
   northern_greece: {

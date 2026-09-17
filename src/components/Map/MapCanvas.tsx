@@ -12,7 +12,7 @@ import { getUserCoordinates } from '../../services/geolocation';
 import { GooglePlacePhotoCarousel } from '../GooglePlaces/GooglePlacePhotoCarousel';
 import { isGooglePlacesEligible } from '../../config/googlePlacesAllowlist';
 import { runtimeConfig } from '../../config/runtimeConfig';
-import { TERROIR_REGIONS, TerroirRegion } from '../../data/terroirRegions';
+import { TERROIR_REGIONS, type TerroirRegion } from '../../data/terroirRegionCatalogue';
 import {
   COUNTRY_LAYERS,
   getActiveCountryScope,
@@ -221,6 +221,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     crete: { coords: [35.2401, 24.8093], zoom: 9 },
     santorini: { coords: [36.3932, 25.4615], zoom: 12 },
     peloponnese: { coords: [37.8280, 22.6580], zoom: 10 },
+    thessaly: { coords: [39.592714, 22.056567], zoom: 9 },
     northern_greece: { coords: [40.6650, 22.0450], zoom: 10 },
     tuscany: { coords: [43.4671, 11.3447], zoom: 10 },
   };
@@ -462,7 +463,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
         .then((feature) => {
           if (cancelled || !feature || !mapInstanceRef.current) return;
 
-          const isSelected = countryScope === country && countryScope !== 'all';
+          const isSelected = countryScope === country;
           const isRegionLevel = isSelected && selectedDestination !== 'all';
           const countryConfig = getCountryLayer(country);
 
@@ -505,7 +506,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
           }).addTo(map);
 
           countryLayer.eachLayer((featureLayer) => {
-            const element = (featureLayer as L.Path).getElement?.();
+            const element = (featureLayer as L.Path).getElement?.() as HTMLElement | SVGElement | null;
             if (element) element.style.cursor = 'pointer';
           });
 

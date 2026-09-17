@@ -85,6 +85,7 @@ export const Header: React.FC<HeaderProps> = ({
     { id: 'crete', label: 'Crete', flag: '🌿' },
     { id: 'santorini', label: 'Santorini', flag: '🌋' },
     { id: 'peloponnese', label: 'Peloponnese', flag: '🏛️' },
+    { id: 'thessaly', label: 'Thessaly', flag: '🌾' },
     { id: 'northern_greece', label: 'Macedonia, Greece', flag: '🏔️' },
     { id: 'tuscany', label: 'Tuscany', flag: '🍷' },
   ];
