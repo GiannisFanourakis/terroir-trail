@@ -14,14 +14,17 @@ import { isGooglePlacesEligible } from '../../config/googlePlacesAllowlist';
 import { runtimeConfig } from '../../config/runtimeConfig';
 import { TERROIR_REGIONS, TerroirRegion } from '../../data/terroirRegions';
 import {
+  COUNTRY_LAYERS,
   getActiveCountryScope,
   getCountryLayer,
   getDestinationCountry,
 } from '../../config/geography';
+import type { CountryScope } from '../../config/geography';
 import {
   COUNTRY_BOUNDARY_ATTRIBUTION,
   loadCountryBoundary,
 } from '../../data/countryBoundaries';
+import type { SupportedCountryScope } from '../../data/countryBoundaries';
 
 interface MapCanvasProps {
   producers: Producer[];
@@ -31,6 +34,7 @@ interface MapCanvasProps {
   selectedDestination: Destination | 'all';
   isFavorite: (id: string) => boolean;
   onToggleFavorite: (id: string) => void;
+  onExploreCountry?: (country: Exclude<CountryScope, 'all'>) => void;
   onExploreRegion?: (destination: Destination) => void;
   viewMode?: 'map' | 'list';
 }
@@ -53,6 +57,41 @@ const getRegionStyle = (isActive: boolean, zoom: number): L.PathOptions => {
     fillColor: '#f59e0b',
     fillOpacity: isActive ? 0.16 : closeZoom ? 0.01 : 0.055,
     dashArray: isActive ? undefined : '6 6',
+  };
+};
+
+const getCountryStyle = (
+  isSelected: boolean,
+  isHovered: boolean,
+  isRegionLevel: boolean
+): L.PathOptions => {
+  if (isHovered) {
+    return {
+      color: '#f59e0b',
+      weight: 3,
+      opacity: 1,
+      fillColor: '#f59e0b',
+      fillOpacity: 0.16,
+    };
+  }
+
+  if (isSelected) {
+    return {
+      color: '#f59e0b',
+      weight: isRegionLevel ? 1.75 : 3,
+      opacity: isRegionLevel ? 0.5 : 0.95,
+      fillColor: '#f59e0b',
+      fillOpacity: isRegionLevel ? 0.02 : 0.12,
+    };
+  }
+
+  return {
+    color: '#f59e0b',
+    weight: 1.5,
+    opacity: 0.5,
+    fillColor: '#f59e0b',
+    fillOpacity: 0.025,
+    dashArray: '5 6',
   };
 };
 
@@ -139,6 +178,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
   selectedDestination,
   isFavorite,
   onToggleFavorite,
+  onExploreCountry,
   onExploreRegion,
   viewMode,
 }) => {
@@ -147,7 +187,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
   const markersRef = useRef<{ [id: string]: L.Marker }>({});
   const markerSignaturesRef = useRef<{ [id: string]: string }>({});
   const tileLayerRef = useRef<L.TileLayer | null>(null);
-  const countryBoundaryLayerRef = useRef<L.GeoJSON | null>(null);
+  const countryBoundaryLayersRef = useRef<Map<SupportedCountryScope, L.GeoJSON>>(new Map());
   const regionLayersRef = useRef<Map<string, L.GeoJSON>>(new Map());
   const regionLabelsRef = useRef<Map<string, L.Marker>>(new Map());
   const activeRegionRef = useRef<string | null>(null);
@@ -159,6 +199,11 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
   const onSelectProducerRef = useRef(onSelectProducer);
   useEffect(() => {
     onSelectProducerRef.current = onSelectProducer;
+  });
+
+  const onExploreCountryRef = useRef(onExploreCountry);
+  useEffect(() => {
+    onExploreCountryRef.current = onExploreCountry;
   });
 
   const selectedProducerIdRef = useRef<string | null>(selectedProducer?.id ?? null);
@@ -309,7 +354,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
 
     const countryBoundaryPane = map.createPane('country-boundary-pane');
     countryBoundaryPane.style.zIndex = '350';
-    countryBoundaryPane.style.pointerEvents = 'none';
+    countryBoundaryPane.style.pointerEvents = 'auto';
 
     tileLayerRef.current = L.tileLayer(TILE_CONFIGS[mapTheme].url, {
       attribution: TILE_CONFIGS[mapTheme].attribution,
@@ -354,7 +399,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       Object.values(markersRef.current).forEach((m) => m.remove());
       markersRef.current = {};
       markerSignaturesRef.current = {};
-      countryBoundaryLayerRef.current = null;
+      countryBoundaryLayersRef.current.clear();
       regionLayersRef.current.clear();
       regionLabelsRef.current.clear();
       map.remove();
@@ -396,51 +441,89 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     const map = mapInstanceRef.current;
     if (!map) return;
 
-    if (countryBoundaryLayerRef.current) {
-      if (map.hasLayer(countryBoundaryLayerRef.current)) {
-        map.removeLayer(countryBoundaryLayerRef.current);
-      }
-      countryBoundaryLayerRef.current = null;
-    }
+    countryBoundaryLayersRef.current.forEach((layer) => {
+      if (map.hasLayer(layer)) map.removeLayer(layer);
+    });
+    countryBoundaryLayersRef.current.clear();
 
-    if (countryScope === 'all') return;
+    const visibleCountries: SupportedCountryScope[] = countryScope === 'all'
+      ? COUNTRY_LAYERS
+          .filter((country) => country.id !== 'all')
+          .map((country) => country.id as SupportedCountryScope)
+      : [countryScope as SupportedCountryScope];
+
+    if (visibleCountries.length === 0) return;
 
     let cancelled = false;
-    const isCountryLevel = selectedDestination === 'all';
+    map.attributionControl.addAttribution(COUNTRY_BOUNDARY_ATTRIBUTION);
 
-    loadCountryBoundary(countryScope)
-      .then((feature) => {
-        if (cancelled || !feature || !mapInstanceRef.current) return;
+    visibleCountries.forEach((country) => {
+      loadCountryBoundary(country)
+        .then((feature) => {
+          if (cancelled || !feature || !mapInstanceRef.current) return;
 
-        const countryLayer = L.geoJSON(feature as any, {
-          pane: 'country-boundary-pane',
-          interactive: false,
-          style: {
-            color: '#f59e0b',
-            weight: isCountryLevel ? 3 : 1.5,
-            opacity: isCountryLevel ? 0.95 : 0.45,
-            fillColor: '#f59e0b',
-            fillOpacity: isCountryLevel ? 0.12 : 0.025,
-          },
-        }).addTo(map);
+          const isSelected = countryScope === country && countryScope !== 'all';
+          const isRegionLevel = isSelected && selectedDestination !== 'all';
+          const countryConfig = getCountryLayer(country);
 
-        countryBoundaryLayerRef.current = countryLayer;
-        map.attributionControl.addAttribution(COUNTRY_BOUNDARY_ATTRIBUTION);
-      })
-      .catch((error) => {
-        if (import.meta.env.DEV && !cancelled) {
-          console.warn('[MapCanvas] Unable to render NUTS 0 country boundary', error);
-        }
-      });
+          const countryLayer = L.geoJSON(feature as any, {
+            pane: 'country-boundary-pane',
+            interactive: true,
+            style: () => getCountryStyle(isSelected, false, isRegionLevel),
+            onEachFeature: (_feature, featureLayer) => {
+              featureLayer.on({
+                mouseover: () => {
+                  (featureLayer as L.Path).setStyle(
+                    getCountryStyle(isSelected, true, isRegionLevel)
+                  );
+                },
+                mouseout: () => {
+                  (featureLayer as L.Path).setStyle(
+                    getCountryStyle(isSelected, false, isRegionLevel)
+                  );
+                },
+                click: (event: L.LeafletMouseEvent) => {
+                  L.DomEvent.stopPropagation(event.originalEvent);
+                  onSelectProducerRef.current(null);
+                  setActiveRegionId(null);
+
+                  const bounds = (featureLayer as L.Polygon).getBounds();
+                  if (bounds.isValid()) {
+                    fitBoundsWithMotion(map, bounds, {
+                      maxZoom: countryConfig.zoom,
+                      mobileDuration: 0.5,
+                      desktopDuration: 0.8,
+                    });
+                  }
+
+                  if (countryScope !== country || selectedDestination !== 'all') {
+                    onExploreCountryRef.current?.(country);
+                  }
+                },
+              });
+            },
+          }).addTo(map);
+
+          countryLayer.eachLayer((featureLayer) => {
+            const element = (featureLayer as L.Path).getElement?.();
+            if (element) element.style.cursor = 'pointer';
+          });
+
+          countryBoundaryLayersRef.current.set(country, countryLayer);
+        })
+        .catch((error) => {
+          if (import.meta.env.DEV && !cancelled) {
+            console.warn(`[MapCanvas] Unable to render NUTS 0 boundary for ${country}`, error);
+          }
+        });
+    });
 
     return () => {
       cancelled = true;
-      if (countryBoundaryLayerRef.current) {
-        if (map.hasLayer(countryBoundaryLayerRef.current)) {
-          map.removeLayer(countryBoundaryLayerRef.current);
-        }
-        countryBoundaryLayerRef.current = null;
-      }
+      countryBoundaryLayersRef.current.forEach((layer) => {
+        if (map.hasLayer(layer)) map.removeLayer(layer);
+      });
+      countryBoundaryLayersRef.current.clear();
       map.attributionControl.removeAttribution(COUNTRY_BOUNDARY_ATTRIBUTION);
     };
   }, [countryScope, selectedDestination]);
@@ -497,7 +580,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     const visibleRegions =
       selectedDestination === 'all'
         ? countryScope === 'all'
-          ? TERROIR_REGIONS
+          ? []
           : TERROIR_REGIONS.filter((region) => getDestinationCountry(region.destination) === countryScope)
         : selectedDestinationRegion
         ? [selectedDestinationRegion]
