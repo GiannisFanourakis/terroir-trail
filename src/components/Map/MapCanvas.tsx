@@ -161,8 +161,10 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
   const [activeRegionId, setActiveRegionId] = useState<string | null>(null);
   const [mapZoom, setMapZoom] = useState<number>(9);
 
+  // "All destinations" currently represents the European catalogue. As the
+  // catalogue expands, this can become a continent/country scope selector.
   const DESTINATION_CENTERS: Record<Destination | 'all', { coords: [number, number]; zoom: number }> = {
-    all: { coords: [37.9838, 24.2272], zoom: 7 },
+    all: { coords: [47.0, 10.0], zoom: 4 },
     crete: { coords: [35.2401, 24.8093], zoom: 9 },
     santorini: { coords: [36.3932, 25.4615], zoom: 12 },
     peloponnese: { coords: [37.8280, 22.6580], zoom: 10 },
@@ -279,7 +281,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     const map = L.map(mapContainerRef.current, {
       center: initial.coords,
       zoom: initial.zoom,
-      minZoom: 6,
+      minZoom: 4,
       maxZoom: 18,
       zoomControl: false,
       attributionControl: true,
