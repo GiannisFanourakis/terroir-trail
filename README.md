@@ -36,7 +36,7 @@ The canonical implementation state and milestone history are maintained in [`ROA
 - **Evidence-Backed Auditing:** Independent verification badges for location precision, visitability status, and road-access suitability.
 - **Traveler Accounts & Passport:** Private accounts (Firebase Auth), visited-place passport stamps, and private tasting notes.
 - **Favorites / Saved Places:** Account-partitioned saved producers in device local storage.
-- **Travel Affiliate Links (Travelpayouts):** Curated, non-intrusive outbound affiliate links for car hire, transfers, and ferries. No personal profile data or tracking cookies are transmitted; active Explorer Pass holders enjoy an ad-free experience.
+- **Travel Affiliate Links (Travelpayouts):** Curated, non-intrusive outbound affiliate links for car hire, transfers, experiences, and travel eSIMs. No personal profile data or tracking cookies are transmitted; active Explorer Pass holders enjoy an ad-free experience.
 - **Fail-Closed Route Safety:** Automated safety gates suppress turn-by-turn routing whenever road classification is unconfirmed or hazardous.
 - **Resilient Fallback Data:** Offline/static catalogue fallback ensures full usability even if remote services are unavailable.
 
@@ -48,18 +48,18 @@ TerroirTrail is currently **discovery-first**, not an online travel agency (OTA)
 
 - **Experiences:** All prototype commercial experiences in the database remain inactive (`is_active = FALSE`). Public experiences require explicit, negotiated agreements with individual hosts.
 - **Dormant Commercial Infrastructure:** Payment workflows (Stripe checkout) and display advertising (Google AdSense) are architecturally integrated but **disabled/dormant (pilot safety active)** in this production release.
-- **Affiliate Disclosure:** Outbound links to external travel providers (e.g. car rental or ferry tickets) may earn TerroirTrail a referral commission at no additional cost to the user.
+- **Affiliate Disclosure:** Outbound links to external travel providers (e.g. car rental, transfers, activities/experiences, or travel eSIMs) may earn TerroirTrail a referral commission at no additional cost to the user.
 
 ---
 
 ## Catalogue Statistics & Structure
 
 - **Total Audited Producers:** 62
-  - **Crete:** 30 (wineries, breweries, olive mills, dairies, apiaries, kazani)
-  - **Santorini:** 9 (wineries, breweries)
-  - **Peloponnese:** 11 (wineries)
-  - **Macedonia, Greece:** 11 (wineries)
-  - **Tuscany:** 1 (winery)
+  - **Crete:** 30
+  - **Santorini:** 9
+  - **Peloponnese:** 11
+  - **Macedonia, Greece:** 11
+  - **Tuscany:** 1
 - **Categories Represented:** Winery (34), Brewery (9), Cheese Dairy (9), Olive Mill (4), Apiary (3), Farm (1), Traditional Kazani (1), Olive Oil Producer (1).
 - **Discovery Guides:** 10 curated regional loops.
 
