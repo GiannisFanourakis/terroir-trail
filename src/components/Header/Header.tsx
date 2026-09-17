@@ -88,6 +88,7 @@ export const Header: React.FC<HeaderProps> = ({
     { id: 'thessaly', label: 'Thessaly', flag: '🌾' },
     { id: 'northern_greece', label: 'Macedonia, Greece', flag: '🏔️' },
     { id: 'tuscany', label: 'Tuscany', flag: '🍷' },
+    { id: 'piedmont', label: 'Piedmont', flag: '🍇' },
   ];
 
   const countryScope: CountryScope = selectedDestination === 'all'

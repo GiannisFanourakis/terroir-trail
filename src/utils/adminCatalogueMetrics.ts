@@ -25,7 +25,7 @@ const confirmedVisitStates = new Set(['public_visits', 'seasonal_public', 'appoi
 const isGreekProducer = (producer: Producer) =>
   producer.countryCode === 'GR' ||
   producer.country === 'Greece' ||
-  producer.destination !== 'tuscany';
+  (producer.destination !== 'tuscany' && producer.destination !== 'piedmont');
 
 export function buildAdminCatalogueMetrics(producers: Producer[]): AdminCatalogueMetrics {
   const locationNeedsReview = producers.filter(

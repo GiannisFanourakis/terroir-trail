@@ -1,6 +1,7 @@
 import type { Destination } from '../types/terroir';
 import type { TerroirRegion, TerroirRegionSection } from './terroirRegions';
 import { THESSALY_TERROIR_REGION } from './thessalyRegion';
+import { PIEDMONT_TERROIR_REGION } from './piedmontRegion';
 
 export interface TerroirRegionStory {
   eyebrow: string;
@@ -287,6 +288,13 @@ export const TERROIR_REGION_STORIES: Record<Destination, TerroirRegionStory> = {
         highlights: ['Independent fattorie and estates', 'Country-road discovery', 'Verified entrances and visitability'],
       },
     ],
+  },
+
+  piedmont: {
+    eyebrow: PIEDMONT_TERROIR_REGION.eyebrow,
+    summary: PIEDMONT_TERROIR_REGION.summary,
+    highlights: PIEDMONT_TERROIR_REGION.highlights,
+    sections: PIEDMONT_TERROIR_REGION.sections,
   },
 };
 

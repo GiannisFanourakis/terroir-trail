@@ -1,5 +1,6 @@
 import { TERROIR_REGIONS as BASE_TERROIR_REGIONS } from './terroirRegions';
 import { THESSALY_TERROIR_REGION } from './thessalyRegion';
+import { PIEDMONT_TERROIR_REGION } from './piedmontRegion';
 
 export type {
   TerroirRegion,
@@ -14,4 +15,5 @@ export type {
 export const TERROIR_REGIONS = [
   ...BASE_TERROIR_REGIONS,
   THESSALY_TERROIR_REGION,
+  PIEDMONT_TERROIR_REGION,
 ];

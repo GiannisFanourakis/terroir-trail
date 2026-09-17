@@ -16,7 +16,8 @@ export type Destination =
   | 'peloponnese' 
   | 'thessaly'
   | 'northern_greece'
-  | 'tuscany';
+  | 'tuscany'
+  | 'piedmont';
 
 export type RoadAccess = 
   | 'paved'

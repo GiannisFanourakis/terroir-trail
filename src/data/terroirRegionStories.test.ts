@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { Destination } from '../types/terroir';
-import { TERROIR_REGIONS } from './terroirRegions';
+import { TERROIR_REGIONS } from './terroirRegionCatalogue';
 import { TERROIR_REGION_STORIES, withTerroirRegionStory } from './terroirRegionStories';
 
 const destinations: Destination[] = [
@@ -8,7 +8,9 @@ const destinations: Destination[] = [
   'santorini',
   'peloponnese',
   'northern_greece',
+  'thessaly',
   'tuscany',
+  'piedmont',
 ];
 
 const sectionOrder = ['landscape', 'history', 'culture', 'food', 'explore'];

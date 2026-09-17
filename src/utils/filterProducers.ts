@@ -1,6 +1,9 @@
 import { Producer, FilterState } from '../types/terroir';
 import { getEffectiveProducerCategory } from './producerCategory';
-import { getActiveCountryScope, producerMatchesCountry } from '../config/geography';
+import {
+  getActiveCountryScope,
+  producerMatchesCountry,
+} from '../config/geography';
 
 /**
  * Pure function to filter a list of producers based on user filter criteria,

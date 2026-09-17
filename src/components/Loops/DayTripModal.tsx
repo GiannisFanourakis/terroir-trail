@@ -183,6 +183,8 @@ export const DayTripModal: React.FC<DayTripModalProps> = ({
       case 'peloponnese': return '🏛️';
       case 'northern_greece': return '🏔️';
       case 'tuscany': return '🇮🇹';
+      case 'thessaly': return '🌾';
+      case 'piedmont': return '🍇';
       default: return '🍇';
     }
   };

@@ -52,22 +52,35 @@ describe('country and NUTS geography', () => {
     expect(getDestinationCountry('santorini')).toBe('GR');
     expect(getDestinationCountry('peloponnese')).toBe('GR');
     expect(getDestinationCountry('northern_greece')).toBe('GR');
+    expect(getDestinationCountry('thessaly')).toBe('GR');
     expect(getDestinationCountry('tuscany')).toBe('IT');
+    expect(getDestinationCountry('piedmont')).toBe('IT');
   });
 
   it('keeps the current NUTS identifiers explicit', () => {
     expect(DESTINATION_GEOGRAPHY.crete.nutsCodes).toEqual(['EL43']);
     expect(DESTINATION_GEOGRAPHY.santorini.nutsCodes).toEqual(['EL422']);
     expect(DESTINATION_GEOGRAPHY.peloponnese.nutsCodes).toEqual(['EL65']);
+    expect(DESTINATION_GEOGRAPHY.thessaly.nutsCodes).toEqual(['EL61']);
     expect(DESTINATION_GEOGRAPHY.tuscany.nutsCodes).toEqual(['ITI1']);
+    expect(DESTINATION_GEOGRAPHY.piedmont.nutsCodes).toEqual(['ITC1']);
     expect(DESTINATION_GEOGRAPHY.northern_greece.nutsCodes).toContain('EL521');
     expect(DESTINATION_GEOGRAPHY.northern_greece.nutsCodes).toContain('EL533');
   });
 
   it('matches producer country from explicit countryCode or destination fallback', () => {
-    const greekProducer = baseProducer({ destination: 'crete', countryCode: 'GR' });
-    const italianProducer = baseProducer({ destination: 'tuscany', countryCode: 'IT' });
-    const italianFallback = baseProducer({ destination: 'tuscany', countryCode: undefined });
+    const greekProducer = baseProducer({
+      destination: 'crete',
+      countryCode: 'GR',
+    });
+    const italianProducer = baseProducer({
+      destination: 'tuscany',
+      countryCode: 'IT',
+    });
+    const italianFallback = baseProducer({
+      destination: 'tuscany',
+      countryCode: undefined,
+    });
 
     expect(producerMatchesCountry(greekProducer, 'GR')).toBe(true);
     expect(producerMatchesCountry(greekProducer, 'IT')).toBe(false);
@@ -76,13 +89,29 @@ describe('country and NUTS geography', () => {
   });
 
   it('filters the all-destinations catalogue by the active country scope', () => {
-    const greekProducer = baseProducer({ id: 'gr', destination: 'crete', countryCode: 'GR' });
-    const italianProducer = baseProducer({ id: 'it', destination: 'tuscany', countryCode: 'IT' });
+    const greekProducer = baseProducer({
+      id: 'gr',
+      destination: 'crete',
+      countryCode: 'GR',
+    });
+    const italianProducer = baseProducer({
+      id: 'it',
+      destination: 'tuscany',
+      countryCode: 'IT',
+    });
 
     setActiveCountryScope('IT');
-    expect(filterProducers([greekProducer, italianProducer], baseFilters).map((p) => p.id)).toEqual(['it']);
+    expect(
+      filterProducers([greekProducer, italianProducer], baseFilters).map(
+        (p) => p.id
+      )
+    ).toEqual(['it']);
 
     setActiveCountryScope('GR');
-    expect(filterProducers([greekProducer, italianProducer], baseFilters).map((p) => p.id)).toEqual(['gr']);
+    expect(
+      filterProducers([greekProducer, italianProducer], baseFilters).map(
+        (p) => p.id
+      )
+    ).toEqual(['gr']);
   });
 });

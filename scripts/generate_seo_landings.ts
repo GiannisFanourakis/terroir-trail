@@ -42,7 +42,9 @@ const destinationConfig: Record<Producer['destination'], DestinationConfig> = {
   santorini: { label: 'Santorini', slug: 'santorini', countryLabel: 'Greece', countrySlug: 'greece' },
   peloponnese: { label: 'Peloponnese', slug: 'peloponnese', countryLabel: 'Greece', countrySlug: 'greece' },
   northern_greece: { label: 'Macedonia, Greece', slug: 'northern-greece', countryLabel: 'Greece', countrySlug: 'greece' },
+  thessaly: { label: 'Thessaly', slug: 'thessaly', countryLabel: 'Greece', countrySlug: 'greece' },
   tuscany: { label: 'Tuscany', slug: 'tuscany', countryLabel: 'Italy', countrySlug: 'italy' },
+  piedmont: { label: 'Piedmont', slug: 'piedmont', countryLabel: 'Italy', countrySlug: 'italy' },
 };
 
 const escapeHtml = (value: string): string =>

@@ -51,7 +51,7 @@ type ProducerMode = 'login' | 'claim' | 'forgot';
 
 const countryCodeForProducer = (producer?: Producer): string => {
   const country = producer?.country?.trim().toLowerCase();
-  if (country === 'italy' || producer?.destination === 'tuscany') return 'IT';
+  if (country === 'italy' || producer?.destination === 'tuscany' || producer?.destination === 'piedmont') return 'IT';
   if (country === 'france') return 'FR';
   if (country === 'spain') return 'ES';
   return 'GR';

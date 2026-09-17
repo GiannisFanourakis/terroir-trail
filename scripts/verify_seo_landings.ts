@@ -32,7 +32,9 @@ const destinationConfig: Record<Producer['destination'], { slug: string; country
   santorini: { slug: 'santorini', countrySlug: 'greece', label: 'Santorini' },
   peloponnese: { slug: 'peloponnese', countrySlug: 'greece', label: 'Peloponnese' },
   northern_greece: { slug: 'northern-greece', countrySlug: 'greece', label: 'Macedonia, Greece' },
+  thessaly: { slug: 'thessaly', countrySlug: 'greece', label: 'Thessaly' },
   tuscany: { slug: 'tuscany', countrySlug: 'italy', label: 'Tuscany' },
+  piedmont: { slug: 'piedmont', countrySlug: 'italy', label: 'Piedmont' },
 };
 
 const fail = (message: string): never => {

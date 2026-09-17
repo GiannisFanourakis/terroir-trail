@@ -10,7 +10,9 @@ const destinationPages: Record<Destination, { label: string; path: string }> = {
   santorini: { label: 'Santorini', path: '/greece/santorini/' },
   peloponnese: { label: 'Peloponnese', path: '/greece/peloponnese/' },
   northern_greece: { label: 'Macedonia, Greece', path: '/greece/northern-greece/' },
+  thessaly: { label: 'Thessaly', path: '/greece/thessaly/' },
   tuscany: { label: 'Tuscany', path: '/italy/tuscany/' },
+  piedmont: { label: 'Piedmont', path: '/italy/piedmont/' },
 };
 
 const escapeHtml = (value: string): string =>
@@ -48,8 +50,8 @@ for (const [destination, config] of Object.entries(destinationPages) as Array<
 >) {
   const filePath = fileForUrlPath(config.path);
   if (!fs.existsSync(filePath)) {
-    console.error(`[SEO Destination Story Enrichment Failed] Missing generated page: ${filePath}`);
-    process.exit(1);
+    // Destination has no published producers yet, so no landing page was generated. Skip cleanly.
+    continue;
   }
 
   let html = fs.readFileSync(filePath, 'utf-8');

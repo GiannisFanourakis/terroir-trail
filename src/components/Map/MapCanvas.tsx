@@ -224,6 +224,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     thessaly: { coords: [39.592714, 22.056567], zoom: 9 },
     northern_greece: { coords: [40.6650, 22.0450], zoom: 10 },
     tuscany: { coords: [43.4671, 11.3447], zoom: 10 },
+    piedmont: { coords: [45.0500, 7.9000], zoom: 9 },
   };
 
   // Country scope is stored separately from Destination so the navigation can

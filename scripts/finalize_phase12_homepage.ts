@@ -10,7 +10,9 @@ const destinationCounts = {
   santorini: SEO_PRODUCERS.filter((producer) => producer.destination === 'santorini').length,
   peloponnese: SEO_PRODUCERS.filter((producer) => producer.destination === 'peloponnese').length,
   northernGreece: SEO_PRODUCERS.filter((producer) => producer.destination === 'northern_greece').length,
+  thessaly: SEO_PRODUCERS.filter((producer) => producer.destination === 'thessaly').length,
   tuscany: SEO_PRODUCERS.filter((producer) => producer.destination === 'tuscany').length,
+  piedmont: SEO_PRODUCERS.filter((producer) => producer.destination === 'piedmont').length,
 };
 
 const pageTitle = 'TerroirTrail — Independent Agritourism & Producer Guide';
