@@ -5,11 +5,49 @@ import { ProducerDetailDrawer } from './ProducerDetailDrawer';
 
 type ProducerDetailDrawerProps = React.ComponentProps<typeof ProducerDetailDrawer>;
 
+const replaceProducerUrl = (producerId?: string) => {
+  if (typeof window === 'undefined') return;
+
+  const url = new URL(window.location.href);
+  if (producerId) {
+    url.searchParams.set('producer', producerId);
+  } else {
+    url.searchParams.delete('producer');
+  }
+
+  window.history.replaceState(
+    window.history.state,
+    '',
+    `${url.pathname}${url.search}${url.hash}`
+  );
+};
+
 export const ProducerDetailDrawerWithReviews: React.FC<ProducerDetailDrawerProps> = (props) => {
   const [reviewsOpen, setReviewsOpen] = useState(false);
 
   useEffect(() => {
     setReviewsOpen(false);
+  }, [props.producer?.id]);
+
+  // Keep the browser URL in sync with the open estate. The inner drawer's
+  // Share action copies window.location.href, so this also makes every shared
+  // link a stable producer deep link that App.tsx can already reopen.
+  useEffect(() => {
+    const producerId = props.producer?.id;
+    if (!producerId || typeof window === 'undefined') return;
+
+    const currentUrl = new URL(window.location.href);
+    if (currentUrl.searchParams.get('producer') !== producerId) {
+      replaceProducerUrl(producerId);
+    }
+
+    return () => {
+      if (typeof window === 'undefined') return;
+      const urlAtCleanup = new URL(window.location.href);
+      if (urlAtCleanup.searchParams.get('producer') === producerId) {
+        replaceProducerUrl();
+      }
+    };
   }, [props.producer?.id]);
 
   return (
