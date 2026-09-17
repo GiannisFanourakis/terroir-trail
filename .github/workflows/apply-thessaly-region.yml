@@ -47,6 +47,18 @@ jobs:
               "    peloponnese: { coords: [37.8280, 22.6580], zoom: 10 },\n    thessaly: { coords: [39.592714, 22.056567], zoom: 9 },\n    northern_greece:",
           )
 
+          # Clean two strict-typing issues exposed by a full build.
+          replace_once(
+              'src/components/Map/MapCanvas.tsx',
+              "          const isSelected = countryScope === country && countryScope !== 'all';",
+              "          const isSelected = countryScope === country;",
+          )
+          replace_once(
+              'src/components/Map/MapCanvas.tsx',
+              "            const element = (featureLayer as L.Path).getElement?.();\n            if (element) element.style.cursor = 'pointer';",
+              "            const element = (featureLayer as L.Path).getElement?.() as HTMLElement | SVGElement | null;\n            if (element) element.style.cursor = 'pointer';",
+          )
+
           # Region navigation menu.
           replace_once(
               'src/components/Header/Header.tsx',
@@ -54,17 +66,17 @@ jobs:
               "    { id: 'peloponnese', label: 'Peloponnese', flag: '🏛️' },\n    { id: 'thessaly', label: 'Thessaly', flag: '🌾' },\n    { id: 'northern_greece'",
           )
 
-          # Thessaly carries its initial story inside thessalyRegion.ts. Existing
-          # curated story overrides remain authoritative for older regions.
+          # Keep the story registry exhaustive so existing tests stay strict,
+          # while sourcing Thessaly's story from its region definition.
           replace_once(
               'src/data/terroirRegionStories.ts',
-              'export const TERROIR_REGION_STORIES: Record<Destination, TerroirRegionStory> = {',
-              'export const TERROIR_REGION_STORIES: Partial<Record<Destination, TerroirRegionStory>> = {',
+              "import type { TerroirRegion, TerroirRegionSection } from './terroirRegions';",
+              "import type { TerroirRegion, TerroirRegionSection } from './terroirRegions';\nimport { THESSALY_TERROIR_REGION } from './thessalyRegion';",
           )
           replace_once(
               'src/data/terroirRegionStories.ts',
-              "  const story = TERROIR_REGION_STORIES[region.destination];\n  return {\n    ...region,\n    ...story,\n  };",
-              "  const story = TERROIR_REGION_STORIES[region.destination];\n  if (!story) return region;\n  return {\n    ...region,\n    ...story,\n  };",
+              "\n  northern_greece: {",
+              "\n  thessaly: {\n    eyebrow: THESSALY_TERROIR_REGION.eyebrow,\n    summary: THESSALY_TERROIR_REGION.summary,\n    highlights: THESSALY_TERROIR_REGION.highlights,\n    sections: THESSALY_TERROIR_REGION.sections,\n  },\n\n  northern_greece: {",
           )
 
           # The one-shot workflow deletes itself after applying the patch.
