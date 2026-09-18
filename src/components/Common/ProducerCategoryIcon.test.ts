@@ -30,7 +30,7 @@ describe('ProducerCategoryIcon', () => {
 
       expect(markup).toContain('<svg');
       expect(markup).toContain('stroke="currentColor"');
-      expect(markup).not.toMatch(/[🍇🍺🥃🍎🫒🌻🧀🍯🍫🌿🍄🌱]/u);
+      expect(markup).not.toMatch(/[\p{Emoji_Presentation}\p{Regional_Indicator}]/u);
     });
   });
 
