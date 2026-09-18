@@ -178,32 +178,20 @@ export const GooglePlacePhotoCarousel: React.FC<
           'places'
         )) as google.maps.PlacesLibrary;
 
-        let resolvedPlaceId = googlePlaceId;
-        let place = new placesLibrary.Place({ id: resolvedPlaceId });
+        const place = new placesLibrary.Place({ id: googlePlaceId });
         await place.fetchFields({
-          fields: ['displayName', 'photos', 'businessStatus', 'movedPlaceId'],
+          fields: ['displayName', 'photos'],
         });
-
-        if (cancelled) return;
-
-        // Google may retain an obsolete ID after a business moves or its place
-        // record is replaced. Follow the current place before giving up on media.
-        const movedPlaceId = place.movedPlaceId?.trim();
-        if (movedPlaceId && movedPlaceId !== resolvedPlaceId) {
-          resolvedPlaceId = movedPlaceId;
-          place = new placesLibrary.Place({ id: resolvedPlaceId });
-          await place.fetchFields({ fields: ['displayName', 'photos'] });
-        }
 
         if (cancelled) return;
 
         let freshPhotos = mapModernPhotos(place.photos, maxPhotos);
 
-        // Some older/legacy-backed business records still expose photos through
+        // Some legacy-backed business records still expose photos through
         // PlacesService even when the modern Place.photos result is empty.
         if (freshPhotos.length === 0) {
           freshPhotos = await fetchLegacyPhotos(
-            resolvedPlaceId,
+            googlePlaceId,
             maxPhotos,
             producer?.googleMapsUrl
           );
