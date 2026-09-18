@@ -5,7 +5,7 @@
 > Completion convention: change `- [ ] Step` to `- [x] ~~Step~~` when finished. Do not mark a step complete until it has been implemented, tested, pushed, deployed where applicable, and verified.
 
 **Last updated:** 2026-09-18
-**Current focus:** Mobile UX refinement and catalogue-state alignment. Live Supabase currently contains 148 producer/project records across 22 destinations in 8 countries; the deterministic SEO/offline bundle remains a 62-record snapshot pending full synchronization.
+**Current focus:** Mobile UX refinement and synchronized catalogue/search coverage. Live Supabase and the deterministic SEO/AEO catalogue are aligned at 148 producer/project records across 22 destinations in 8 countries, with 235 canonical sitemap URLs.
 
 ---
 
@@ -586,6 +586,8 @@ Greece remains the priority. Once the Greek catalogue has meaningful breadth bey
 **Status:** Deferred until the planned discovery-expansion programme is complete enough to support formal producer relationships safely. The Phase 11 account/authority prerequisite is already complete.
 
 Independent researched listings and direct links to producer-controlled public channels may continue without implying a partnership.
+
+Inbound producer listing enquiries may be accepted at `terroirtrail@gmail.com` before formal partnerships are launched. An enquiry is a request for editorial review only and does not imply listing acceptance, verification, commercial partnership, booking permission, or Host access.
 
 - [ ] Define producer partnership onboarding.
 - [ ] Verify producer identity and authorized representative.
