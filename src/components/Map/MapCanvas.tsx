@@ -393,7 +393,11 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     },
   };
 
-  const getMarkerHtml = (producer: Producer, isSelected: boolean) => {
+  const getMarkerHtml = (
+    producer: Producer,
+    isSelected: boolean,
+    renderMode: ProducerMarkerRenderMode = 'detailed'
+  ) => {
     let icon = '🍇';
     let iconBg = 'bg-rose-500/25 text-rose-200 border-rose-500/50';
 
@@ -453,6 +457,16 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       ? producer.village.split('(')[0].split(',')[0].trim()
       : producer.region;
 
+    if (renderMode === 'compact' && !isSelected) {
+      return `
+        <div class="modern-map-pin" title="${producer.name}">
+          <div class="pin-icon-circle ${iconBg} border">
+            ${icon}
+          </div>
+        </div>
+      `;
+    }
+
     return `
       <div class="modern-map-pin ${isSelected ? 'active-pin' : ''}">
         <div class="pin-icon-circle ${iconBg} border">
@@ -483,14 +497,8 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     const useCompactIcon = renderMode === 'compact' && !isSelected;
 
     if (useCompactIcon) {
-      const categoryHtml = getMarkerHtml(producer, false);
-      const parser = document.createElement('div');
-      parser.innerHTML = categoryHtml;
-      const iconNode = parser.querySelector('.pin-icon-circle');
-      const iconHtml = iconNode?.outerHTML || '';
-
       return L.divIcon({
-        html: `<div class="modern-map-pin" title="${producer.name}">${iconHtml}</div>`,
+        html: getMarkerHtml(producer, false, 'compact'),
         className: 'custom-leaflet-pin-wrapper',
         iconSize: [36, 36],
         iconAnchor: [18, 18],
