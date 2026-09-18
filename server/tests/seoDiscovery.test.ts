@@ -15,7 +15,7 @@ test('SEO/AEO manifests publish live scope and canonical snapshot distinctly', (
   assert.match(llms, /22 destinations in 8 countries/);
   assert.match(
     llms,
-    /Deterministic canonical\/offline producer snapshot — 62 records pending synchronization with the full live catalogue\./
+    /Deterministic canonical SEO\/AEO producer snapshot — 148 records, synchronized with the live catalogue\./
   );
   assert.match(llms, /## Search and answer-engine discovery/);
   assert.match(llms, /## Answer-engine interpretation rules/);
