@@ -180,11 +180,11 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
 
   const categories: Array<{ id: 'all' | FaqCategory; label: string }> = [
     { id: 'all', label: 'All Questions' },
-    { id: 'about', label: '🌍 About & Curation' },
-    { id: 'visiting', label: '🍷 Visiting Producers' },
-    { id: 'passport', label: '🎖️ Traveler Passport' },
-    { id: 'routes', label: '🧭 Discovery Guides & Access' },
-    { id: 'producers', label: '🏛️ For Producers' },
+    { id: 'about', label: 'About & Curation' },
+    { id: 'visiting', label: 'Visiting Producers' },
+    { id: 'passport', label: 'Traveler Passport' },
+    { id: 'routes', label: 'Discovery Guides & Access' },
+    { id: 'producers', label: 'For Producers' },
   ];
 
   const filteredFaqs = useMemo(() => {
