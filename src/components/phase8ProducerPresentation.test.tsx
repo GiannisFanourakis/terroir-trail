@@ -184,8 +184,8 @@ describe('Phase 8 Producer Card + Detail Hierarchy', () => {
         },
         {
           cat: 'cheese_dairy',
-          whatTheyMake: 'Artisanal Mountain Cheeses &amp; Dairy',
-          specialties: 'Cheeses &amp; Milk Traditions',
+          whatTheyMake: 'Cheeses &amp; Dairy Products',
+          specialties: 'Products &amp; Specialties',
           visiting: 'Dairy &amp; Visiting',
           callAction: 'Call Dairy',
         },

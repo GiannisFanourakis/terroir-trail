@@ -11,6 +11,7 @@ import {
 import { useProducerPhotos } from '../../services/googlePlacesPhotos';
 import { getCategoryFallbackImage } from '../../utils/imageFallbacks';
 import { getEffectiveProducerCategory } from '../../utils/producerCategory';
+import { getProducerDisplaySpecialties } from '../../utils/producerSpecialties';
 import { getProducerRoadAccessWarning } from '../../utils/routeSafety';
 import { resolveProducerCover, resolveProducerGallery } from '../../utils/producerMediaResolver';
 import { GooglePlaceMedia } from '../GooglePlaces/GooglePlaceMedia';
@@ -280,25 +281,25 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
         };
       case 'cheese_dairy':
         return {
-          makerTitle: 'master cheesemaker or shepherd',
-          venueName: 'mitato & dairy',
-          productPlural: 'cheese wheel & purchase',
-          whatTheyMakeTitle: 'Artisanal Mountain Cheeses & Dairy',
-          specialtiesLabel: 'Cheeses & Milk Traditions',
-          highlightsLabel: 'Dairy & Mitato Highlights',
-          storeLabel: 'Direct Dairy Store',
-          storeSub: `Order artisanal mountain cheeses directly from ${name}`,
-          discountLabel: 'Dairy Discount',
-          tastingNotePlaceholder: 'Record your thoughts on their graviera, mizithra, or mountain milk traditions...',
+          makerTitle: 'cheesemaker or producer',
+          venueName: 'dairy',
+          productPlural: 'cheese & dairy product',
+          whatTheyMakeTitle: 'Cheeses & Dairy Products',
+          specialtiesLabel: 'Products & Specialties',
+          highlightsLabel: 'Dairy Highlights',
+          storeLabel: 'Direct Producer Shop',
+          storeSub: `Shop directly with ${name}`,
+          discountLabel: 'Producer Discount',
+          tastingNotePlaceholder: 'Record your thoughts on their cheeses, dairy products, or your visit...',
           visitingTitle: 'Dairy & Visiting',
           callAction: 'Call Dairy',
           callShortLabel: 'Call Dairy',
-          hasDeliveryBoxes: true,
-          deliveryCategory: 'cheese' as const,
+          hasDeliveryBoxes: false,
+          deliveryCategory: undefined,
           deliveryIcon: '🧀',
-          deliveryBoxTitle: 'Cave-Aged Cheese & Pantry Delivery',
-          deliveryBadge: 'Vacuum Sealed',
-          deliveryBoxDesc: 'Certified vacuum-packed cave-cured graviera & shepherd pantry pairings shipped with cold-packs.',
+          deliveryBoxTitle: '',
+          deliveryBadge: '',
+          deliveryBoxDesc: '',
         };
       case 'apiary':
         return {
@@ -547,6 +548,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
     getEffectiveProducerCategory(producer),
     producer.name
   );
+  const displaySpecialties = getProducerDisplaySpecialties(producer);
   const visitDetails = getVisitStatusDetails(producer.visitStatus, producer);
   const effectiveOpeningHours =
     producerOverride?.customHours !== undefined
@@ -1051,35 +1053,39 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
               </h3>
             </div>
 
-            <div>
-              <h4 className="text-xs font-bold uppercase tracking-wider text-stone-400 mb-2.5">
-                {term.specialtiesLabel}
-              </h4>
-              <div className="flex flex-wrap gap-2">
-                {producer.indigenousVarieties.map((v, i) => (
-                  <span
-                    key={i}
-                    className="px-3 py-1.5 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-300 font-semibold text-xs"
-                  >
-                    {v}
-                  </span>
-                ))}
+            {displaySpecialties.length > 0 && (
+              <div>
+                <h4 className="text-xs font-bold uppercase tracking-wider text-stone-400 mb-2.5">
+                  {term.specialtiesLabel}
+                </h4>
+                <div className="flex flex-wrap gap-2">
+                  {displaySpecialties.map((v, i) => (
+                    <span
+                      key={i}
+                      className="px-3 py-1.5 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-300 font-semibold text-xs"
+                    >
+                      {v}
+                    </span>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
-            <div>
-              <h4 className="text-xs font-bold uppercase tracking-wider text-stone-400 mb-2">
-                {term.highlightsLabel}
-              </h4>
-              <div className="space-y-2">
-                {producer.tastingHighlights.map((highlight, idx) => (
-                  <div key={idx} className="flex items-start gap-2.5 p-2.5 rounded-xl bg-stone-900 border border-white/5 text-xs text-stone-200">
-                    <span className="text-amber-400 font-bold text-sm">✦</span>
-                    <span className="leading-relaxed">{highlight}</span>
-                  </div>
-                ))}
+            {producer.tastingHighlights.length > 0 && (
+              <div>
+                <h4 className="text-xs font-bold uppercase tracking-wider text-stone-400 mb-2">
+                  {term.highlightsLabel}
+                </h4>
+                <div className="space-y-2">
+                  {producer.tastingHighlights.map((highlight, idx) => (
+                    <div key={idx} className="flex items-start gap-2.5 p-2.5 rounded-xl bg-stone-900 border border-white/5 text-xs text-stone-200">
+                      <span className="text-amber-400 font-bold text-sm">✦</span>
+                      <span className="leading-relaxed">{highlight}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
             {directBottleShopUrl && (
               <a
