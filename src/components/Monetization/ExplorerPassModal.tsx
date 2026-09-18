@@ -32,34 +32,30 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
 
   const perks = [
     {
-      icon: '🎫',
       title: 'Digital Explorer Pass Entitlement',
       desc: '14-day holiday pass or 365-day annual pass entitlement linked to your verified account.',
     },
     {
-      icon: '🛡️',
       title: 'Server-Verified QR Code',
       desc: 'Opaque Pass ID and server-verified QR code for check-in at partner cellar doors.',
     },
     {
-      icon: '📱',
       title: 'Cross-Device Account Sync',
       desc: 'Access your active digital pass and saved records across mobile and desktop devices.',
     },
     {
-      icon: '🍇',
       title: 'Agritourism Pilot Partner Privileges',
       desc: 'Partner privileges where available during partner pilots.',
     },
   ];
 
   const comparisonRows = [
-    { feature: 'Interactive Artisanal Map & Directory', free: '✅ Included', pass: '✅ Included' },
+    { feature: 'Interactive Artisanal Map & Directory', free: 'Included', pass: 'Included' },
     { feature: 'Direct Producer Reservation Inquiries', free: '✅ Included', pass: '✅ Included' },
-    { feature: 'Digital Explorer Pass & Unique ID', free: '❌ None', pass: '⭐ 14-Day or 365-Day' },
-    { feature: 'Cellar Door QR Verification', free: '❌ None', pass: '⭐ Server-Verified' },
-    { feature: 'Cross-Device Pass Sync', free: 'Account Only', pass: '⭐ Full Pass Sync' },
-    { feature: 'Pilot Partner Benefits', free: '❌ None', pass: '⭐ Where available during partner pilots' },
+    { feature: 'Digital Explorer Pass & Unique ID', free: 'None', pass: '14-Day or 365-Day' },
+    { feature: 'Cellar Door QR Verification', free: 'None', pass: 'Server-Verified' },
+    { feature: 'Cross-Device Pass Sync', free: 'Account Only', pass: 'Full Pass Sync' },
+    { feature: 'Pilot Partner Benefits', free: 'None', pass: 'Where available during partner pilots' },
   ];
 
   const handlePurchase = async () => {
@@ -90,9 +86,7 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
         <div className="relative px-6 py-5 bg-gradient-to-br from-amber-950/80 via-stone-900 to-stone-950 border-b border-amber-500/30 shrink-0">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-500 to-amber-700 text-stone-950 flex items-center justify-center text-xl font-bold shadow-lg shadow-amber-500/30 ring-2 ring-amber-400/40">
-                👑
-              </div>
+              <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-500 to-amber-700 text-stone-950 flex items-center justify-center text-xl font-bold shadow-lg shadow-amber-500/30 ring-2 ring-amber-400/40"></div>
               <div>
                 <div className="flex items-center gap-1.5">
                   <h2 className="font-serif-title text-lg sm:text-xl font-bold text-white leading-tight">
@@ -130,7 +124,7 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
                   : 'border-transparent text-stone-400 hover:text-white'
               }`}
             >
-              👑 Pass Overview
+              Pass Overview
             </button>
             <button
               onClick={() => setActiveTab('compare')}
@@ -140,7 +134,7 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
                   : 'border-transparent text-stone-400 hover:text-white'
               }`}
             >
-              ⚖️ Free vs Pass Comparison
+              Free vs Pass Comparison
             </button>
           </div>
         )}
@@ -168,7 +162,7 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
               <div className="p-5 rounded-3xl bg-gradient-to-tr from-amber-600/30 via-stone-900 to-amber-900/40 border-2 border-amber-400/50 shadow-2xl max-w-sm mx-auto text-left relative overflow-hidden">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-1.5">
-                    <span className="text-sm">👑</span>
+                    <span className="text-sm"></span>
                     <span className="font-serif-title font-bold text-white text-xs tracking-wider uppercase">
                       Terroir Explorer
                     </span>
@@ -330,7 +324,7 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
                       key={idx}
                       className="p-3 rounded-2xl bg-stone-900/90 border border-white/5 flex items-start gap-3"
                     >
-                      <span className="text-lg shrink-0">{p.icon}</span>
+                      <Award className="w-4 h-4 text-amber-400 shrink-0" aria-hidden="true" />
                       <div>
                         <span className="font-bold text-white text-xs block leading-tight">
                           {p.title}
