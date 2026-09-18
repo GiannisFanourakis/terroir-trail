@@ -255,6 +255,8 @@ export const clusterProducersByGrid = (
   });
 };
 
+export type ProducerMarkerRenderMode = 'compact' | 'detailed';
+
 const isMobileMapViewport = () =>
   typeof window !== 'undefined' && window.innerWidth < 768;
 
@@ -274,6 +276,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
   const mapInstanceRef = useRef<L.Map | null>(null);
   const markersRef = useRef<{ [id: string]: L.Marker }>({});
   const markerSignaturesRef = useRef<{ [id: string]: string }>({});
+  const markerRenderModesRef = useRef<{ [id: string]: ProducerMarkerRenderMode }>({});
   const clusterMarkersRef = useRef<{ [id: string]: L.Marker }>({});
   const tileLayerRef = useRef<L.TileLayer | null>(null);
   const countryBoundaryLayersRef = useRef<Map<SupportedCountryScope, L.GeoJSON>>(new Map());
@@ -463,6 +466,45 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     `;
   };
 
+  const resolveProducerMarkerRenderMode = (zoom: number): ProducerMarkerRenderMode =>
+    pinDisplayMode === 'compact'
+      ? 'compact'
+      : pinDisplayMode === 'expanded'
+      ? 'detailed'
+      : zoom < 12
+      ? 'compact'
+      : 'detailed';
+
+  const getProducerMarkerIcon = (
+    producer: Producer,
+    isSelected: boolean,
+    renderMode: ProducerMarkerRenderMode
+  ) => {
+    const useCompactIcon = renderMode === 'compact' && !isSelected;
+
+    if (useCompactIcon) {
+      const categoryHtml = getMarkerHtml(producer, false);
+      const parser = document.createElement('div');
+      parser.innerHTML = categoryHtml;
+      const iconNode = parser.querySelector('.pin-icon-circle');
+      const iconHtml = iconNode?.outerHTML || '';
+
+      return L.divIcon({
+        html: `<div class="modern-map-pin" title="${producer.name}">${iconHtml}</div>`,
+        className: 'custom-leaflet-pin-wrapper',
+        iconSize: [36, 36],
+        iconAnchor: [18, 18],
+      });
+    }
+
+    return L.divIcon({
+      html: getMarkerHtml(producer, isSelected),
+      className: 'custom-leaflet-pin-wrapper',
+      iconSize: [180, 42],
+      iconAnchor: [90, 21],
+    });
+  };
+
   useEffect(() => {
     if (!mapContainerRef.current || mapInstanceRef.current) return;
 
@@ -540,6 +582,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       Object.values(clusterMarkersRef.current).forEach((m) => m.remove());
       markersRef.current = {};
       markerSignaturesRef.current = {};
+      markerRenderModesRef.current = {};
       clusterMarkersRef.current = {};
       countryBoundaryLayersRef.current.clear();
       regionLayersRef.current.clear();
@@ -847,6 +890,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
         markersRef.current[id].remove();
         delete markersRef.current[id];
         delete markerSignaturesRef.current[id];
+        delete markerRenderModesRef.current[id];
       }
     });
 
@@ -855,43 +899,40 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       clusterMarkersRef.current = {};
     };
 
-    const ensureProducerMarker = (producer: Producer) => {
+    const ensureProducerMarker = (
+      producer: Producer,
+      requestedRenderMode: ProducerMarkerRenderMode
+    ) => {
       const newSignature = getProducerMarkerSignature(producer);
       const existingMarker = markersRef.current[producer.id];
+      const isSelected = selectedProducerIdRef.current === producer.id;
+      const renderMode: ProducerMarkerRenderMode = isSelected
+        ? 'detailed'
+        : requestedRenderMode;
 
       if (existingMarker) {
         const oldSignature = markerSignaturesRef.current[producer.id];
-        if (oldSignature !== newSignature) {
+        const oldRenderMode = markerRenderModesRef.current[producer.id];
+        if (oldSignature !== newSignature || oldRenderMode !== renderMode) {
           const currentLatLng = existingMarker.getLatLng();
           const [newLat, newLng] = producer.coordinates;
           if (currentLatLng.lat !== newLat || currentLatLng.lng !== newLng) {
             existingMarker.setLatLng(producer.coordinates);
           }
 
-          const isSelected = selectedProducerIdRef.current === producer.id;
           existingMarker.setIcon(
-            L.divIcon({
-              html: getMarkerHtml(producer, isSelected),
-              className: 'custom-leaflet-pin-wrapper',
-              iconSize: [180, 42],
-              iconAnchor: [90, 21],
-            })
+            getProducerMarkerIcon(producer, isSelected, renderMode)
           );
           markerSignaturesRef.current[producer.id] = newSignature;
+          markerRenderModesRef.current[producer.id] = renderMode;
         }
 
         if (!map.hasLayer(existingMarker)) existingMarker.addTo(map);
         return existingMarker;
       }
 
-      const isSelected = selectedProducerIdRef.current === producer.id;
       const marker = L.marker(producer.coordinates, {
-        icon: L.divIcon({
-          html: getMarkerHtml(producer, isSelected),
-          className: 'custom-leaflet-pin-wrapper',
-          iconSize: [180, 42],
-          iconAnchor: [90, 21],
-        }),
+        icon: getProducerMarkerIcon(producer, isSelected, renderMode),
         riseOnHover: true,
         zIndexOffset: isSelected ? 1000 : 0,
       });
@@ -906,6 +947,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       marker.addTo(map);
       markersRef.current[producer.id] = marker;
       markerSignaturesRef.current[producer.id] = newSignature;
+      markerRenderModesRef.current[producer.id] = renderMode;
       return marker;
     };
 
@@ -941,9 +983,13 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
           strategy
         );
 
+        const markerRenderMode = resolveProducerMarkerRenderMode(zoom);
+
         if (!shouldCluster) {
           clearClusters();
-          visibleProducers.forEach(ensureProducerMarker);
+          visibleProducers.forEach((producer) =>
+            ensureProducerMarker(producer, markerRenderMode)
+          );
           return;
         }
 
@@ -960,7 +1006,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
 
         clusters.forEach((cluster) => {
           if (cluster.producers.length === 1) {
-            ensureProducerMarker(cluster.producers[0]);
+            ensureProducerMarker(cluster.producers[0], markerRenderMode);
             return;
           }
 
@@ -1011,7 +1057,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       map.off('resize', scheduleRender);
       clearClusters();
     };
-  }, [producers]);
+  }, [producers, pinDisplayMode]);
 
   // Effect 2: Marker selection isolation - depends ONLY on [selectedProducer]
   // Zero marker recreation when selecting or deselecting a producer
@@ -1024,14 +1070,13 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       const prevMarker = markersRef.current[prevId];
       const prevProducer = producersMapRef.current.get(prevId);
       if (prevMarker && prevProducer) {
-        prevMarker.setIcon(
-          L.divIcon({
-            html: getMarkerHtml(prevProducer, false),
-            className: 'custom-leaflet-pin-wrapper',
-            iconSize: [180, 42],
-            iconAnchor: [90, 21],
-          })
+        const previousRenderMode = resolveProducerMarkerRenderMode(
+          mapInstanceRef.current?.getZoom() ?? 12
         );
+        prevMarker.setIcon(
+          getProducerMarkerIcon(prevProducer, false, previousRenderMode)
+        );
+        markerRenderModesRef.current[prevId] = previousRenderMode;
         prevMarker.setZIndexOffset(0);
       }
     }
@@ -1040,17 +1085,13 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       const nextMarker = markersRef.current[newId];
       if (nextMarker && selectedProducer) {
         nextMarker.setIcon(
-          L.divIcon({
-            html: getMarkerHtml(selectedProducer, true),
-            className: 'custom-leaflet-pin-wrapper',
-            iconSize: [180, 42],
-            iconAnchor: [90, 21],
-          })
+          getProducerMarkerIcon(selectedProducer, true, 'detailed')
         );
+        markerRenderModesRef.current[newId] = 'detailed';
         nextMarker.setZIndexOffset(1000);
       }
     }
-  }, [selectedProducer]);
+  }, [selectedProducer, pinDisplayMode]);
 
   // Effect 3: Camera flyTo on selection - optimized for mobile responsiveness & reduced motion
   useEffect(() => {
