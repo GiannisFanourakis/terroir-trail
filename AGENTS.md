@@ -8,26 +8,33 @@ Producer research and onboarding must be handled in batches of exactly **two pro
 
 ### Mandatory acceptance gate
 
-A producer candidate may enter the accepted/import queue only when all three of the following are independently verified:
+A producer candidate may enter the accepted/import queue only when all four of the following are independently verified:
 
 1. **Official website**
    - The website must be controlled by the producer/business itself.
    - Social-media-only presence is not sufficient.
    - A reseller, distributor, tourism directory, marketplace, or unrelated hospitality site does not count as the producer's official website.
 
-2. **Verified Google Place ID**
+2. **Exact Google Maps place URL**
+   - A direct Google Maps `/maps/place/...` URL for the intended producer point is mandatory.
+   - Prefer the exact full place URL as supplied or discovered, preserving the embedded place identity and pin coordinates.
+   - Do not replace it with a generic Google Maps search URL, shortened redirect, municipality link, or a URL for another branch.
+   - Store the verified direct place URL in `google_maps_url`.
+
+3. **Verified Google Place ID**
    - A valid Google Place ID is mandatory.
    - It must identify the exact producer location that TerroirTrail intends to represent.
    - Do not substitute a Place ID belonging to a reseller, city office, unrelated shop, restaurant, accommodation property, or different branch.
 
-3. **Exact latitude and longitude**
+4. **Exact latitude and longitude**
    - Exact coordinates are mandatory.
+   - When reading a Google Maps URL, use the actual place pin encoded by `!3d<lat>!4d<lng>`, not the viewport coordinates after `@`.
    - Approximate village/town centroids, postcode centroids, municipality centroids, manually estimated pins, or inferred coordinates are not acceptable.
-   - The coordinates must correspond to the same physical location represented by the verified Google Place ID.
+   - The coordinates must correspond to the same physical location represented by the verified Google Place ID and direct Google Maps place URL.
 
 ### Same-point identity rule
 
-The official website, Google Place ID, and exact coordinates must resolve to the same real-world producer/public point.
+The official website, exact Google Maps place URL, Google Place ID, and exact coordinates must resolve to the same real-world producer/public point.
 
 A producer-owned shop may be represented only when that shop is deliberately the public point TerroirTrail intends to list. Never combine:
 - a Place ID for a shop with coordinates for a farm, winery, mill, dairy, or estate;
@@ -41,6 +48,7 @@ When the intended point is ambiguous, reject the candidate until the conflict is
 A candidate goes to the **rejection list** when any mandatory acceptance-gate field cannot be established:
 
 - official website missing or not confidently attributable to the producer;
+- exact direct Google Maps place URL missing or not confidently attributable to the intended producer point;
 - Google Place ID missing or not confidently attributable to the intended producer point;
 - exact latitude/longitude missing;
 - Place ID and coordinates resolve to different physical locations;
@@ -59,7 +67,7 @@ A rejected candidate may be reconsidered later only if new evidence resolves eve
 
 ### Verification after the hard gate
 
-Only after website + Place ID + exact coordinates pass should the remaining producer audit proceed.
+Only after official website + exact Google Maps place URL + Place ID + exact coordinates pass should the remaining producer audit proceed.
 
 Verify these fields independently and do not infer one from another:
 
@@ -68,7 +76,6 @@ Verify these fields independently and do not infer one from another:
 - whether the point is a production site, estate, producer shop, visitor centre, or another verified producer point;
 - official phone/contact channels;
 - public visitability and visit status;
-- Google Maps URL;
 - road-access classification, evidence, and notes;
 - image provenance/eligibility;
 - grounded story/tagline and factual producer description.
@@ -94,6 +101,7 @@ Keep road access fail-closed unless there is independent evidence supporting the
 - Listing does not imply partnership.
 - Public visitability does not imply TerroirTrail booking authority.
 - Distinguish production sites from shops and sales offices.
+- Google Maps place URLs must be direct URLs for the verified producer point; preserve the exact verified URL rather than synthesizing one from an address.
 - Google Place IDs must be independently verified; leave them blank for existing legacy records if they are not verified rather than guessing.
 - Quality takes priority over producer count.
 
