@@ -3,6 +3,7 @@ import QRCode from 'qrcode';
 import { 
   X, Crown, Sparkles, ShieldCheck, Download, Copy, Check, 
   Clock, Maximize2, Minimize2, Share2, Smartphone
+  Ticket, ShieldCheck, Smartphone, Award,
 } from 'lucide-react';
 import { UserProfile } from '../../types/auth';
 import { logger } from '../../services/logger';
@@ -350,7 +351,7 @@ export const DigitalPassModal: React.FC<DigitalPassModalProps> = ({
             </span>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 text-[11px]">
               <div className="p-2 rounded-xl bg-stone-850/80 border border-white/5 flex items-start gap-2">
-                <span className="text-sm">🎫</span>
+                <Ticket className="w-4 h-4 text-amber-400 shrink-0" aria-hidden="true" />
                 <div>
                   <strong className="text-white block">Digital Pass Entitlement</strong>
                   <span className="text-stone-400 text-[10px]">{isAnnual ? '365-day annual pass' : '14-day holiday pass'}</span>
@@ -358,7 +359,7 @@ export const DigitalPassModal: React.FC<DigitalPassModalProps> = ({
               </div>
 
               <div className="p-2 rounded-xl bg-stone-850/80 border border-white/5 flex items-start gap-2">
-                <span className="text-sm">🛡️</span>
+                <ShieldCheck className="w-4 h-4 text-amber-400 shrink-0" aria-hidden="true" />
                 <div>
                   <strong className="text-white block">Server-Verified QR</strong>
                   <span className="text-stone-400 text-[10px]">Secure check-in at cellar doors</span>
@@ -366,7 +367,7 @@ export const DigitalPassModal: React.FC<DigitalPassModalProps> = ({
               </div>
 
               <div className="p-2 rounded-xl bg-stone-850/80 border border-white/5 flex items-start gap-2">
-                <span className="text-sm">📱</span>
+                <Smartphone className="w-4 h-4 text-amber-400 shrink-0" aria-hidden="true" />
                 <div>
                   <strong className="text-white block">Cross-Device Sync</strong>
                   <span className="text-stone-400 text-[10px]">Linked to your verified account</span>
@@ -374,7 +375,7 @@ export const DigitalPassModal: React.FC<DigitalPassModalProps> = ({
               </div>
 
               <div className="p-2 rounded-xl bg-stone-850/80 border border-white/5 flex items-start gap-2">
-                <span className="text-sm">🍇</span>
+                <Award className="w-4 h-4 text-amber-400 shrink-0" aria-hidden="true" />
                 <div>
                   <strong className="text-white block">Pilot Partner Benefits</strong>
                   <span className="text-stone-400 text-[10px]">Where available during partner pilots</span>
