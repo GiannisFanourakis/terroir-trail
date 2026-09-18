@@ -8,11 +8,16 @@ type CategoryPlaceholder = {
 const PLACEHOLDER_META: Record<Producer['category'], CategoryPlaceholder> = {
   winery: { label: 'Winery', accent: '#be123c' },
   brewery: { label: 'Brewery', accent: '#d97706' },
-  kazani: { label: 'Rakokazano', accent: '#b45309' },
+  distillery: { label: 'Distillery', accent: '#b45309' },
+  cidery: { label: 'Cidery', accent: '#65a30d' },
   olive_mill: { label: 'Olive Mill', accent: '#15803d' },
   olive_oil_producer: { label: 'Olive Oil Producer', accent: '#15803d' },
+  oil_mill: { label: 'Oil Mill', accent: '#ca8a04' },
   cheese_dairy: { label: 'Dairy', accent: '#a16207' },
   apiary: { label: 'Apiary / Honey', accent: '#c2410c' },
+  confectionery: { label: 'Confectionery Producer', accent: '#92400e' },
+  herb_farm: { label: 'Herb Farm', accent: '#16a34a' },
+  mushroom_farm: { label: 'Mushroom Farm', accent: '#57534e' },
   farm: { label: 'Farm', accent: '#047857' },
 };
 
