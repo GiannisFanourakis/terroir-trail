@@ -43,8 +43,8 @@ const createTestProducer = (category: Category, overrides: Partial<Producer> = {
 
 describe('Phase 8 Producer Card + Detail Hierarchy', () => {
   describe('ProducerCard Primary Hierarchy & Simplification', () => {
-    it('renders all 7 categories with distinct category badges and icons', () => {
-      const categories: { cat: Category; label: string; icon: string }[] = [
+    it('renders all 7 categories with category badges and SVG icons', () => {
+      const categories: { cat: Category; label: string }[] = [
         { cat: 'winery', label: 'Winery' },
         { cat: 'brewery', label: 'Brewery' },
         { cat: 'olive_mill', label: 'Olive Mill' },
@@ -54,7 +54,7 @@ describe('Phase 8 Producer Card + Detail Hierarchy', () => {
         { cat: 'farm', label: 'Farm' },
       ];
 
-      for (const { cat, label, icon } of categories) {
+      for (const { cat, label } of categories) {
         const p = createTestProducer(cat);
         const html = renderToString(
           React.createElement(ProducerCard, {
@@ -67,7 +67,7 @@ describe('Phase 8 Producer Card + Detail Hierarchy', () => {
         );
 
         expect(html).toContain(label);
-        expect(html).toContain(icon);
+        expect(html).toContain('<svg');
         expect(html).toContain(p.name);
         expect(html).toContain(p.village);
       }
