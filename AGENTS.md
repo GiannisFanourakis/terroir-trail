@@ -40,7 +40,7 @@ A producer is rejected for Maps reasons only after the interactive Maps extracti
 
 ## Producer verification and import policy
 
-Producer research and onboarding must be handled in batches of exactly **two producers at a time**.
+Producer Stage-1 research should be handled in batches of **20 producers at a time** unless the user explicitly requests a different batch size. Stage-2 Maps extraction may be handled separately.
 
 ### Mandatory acceptance gate
 
