@@ -13,7 +13,7 @@ The live Supabase catalogue contains **148 researched producer/project records a
 - **Slovenia — 5:** Pomurska 1, Southeast Slovenia 1, Central Slovenia 1, Goriška 2
 - **Norway — 8:** Trøndelag 1, Møre og Romsdal 1, Buskerud 1, Vestland 5
 
-The deterministic SEO/offline bundle is currently a smaller **62-record canonical snapshot** and is tracked separately from the live runtime catalogue.
+The deterministic SEO/AEO snapshot is synchronized to the live catalogue at **148 canonical producer records**.
 
 Production: https://terroir-trail.web.app/
 
@@ -61,7 +61,7 @@ TerroirTrail is currently **discovery-first**, not an online travel agency (OTA)
 ## Catalogue Statistics & Structure
 
 - **Live Supabase catalogue:** 148 producer/project records across 22 destinations and 8 countries.
-- **Bundled deterministic SEO/offline snapshot:** 62 canonical producer records; this smaller snapshot is not the live catalogue total.
+- **Bundled deterministic SEO/AEO snapshot:** 148 canonical producer records, synchronized with the live catalogue.
 - **Live categories represented:** Winery (63), Cheese Dairy (21), Olive Mill (19), Brewery (9), Farm (9), Apiary (7), Cidery (5), Distillery (4), Olive Oil Producer (4), Confectionery (3), Herb Farm (2), Mushroom Farm (1), Other Oil Mill (1).
 - **Discovery Guides:** 10 curated regional loops.
 
