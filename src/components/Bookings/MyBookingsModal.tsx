@@ -32,8 +32,8 @@ export const MyBookingsModal: React.FC<MyBookingsModalProps> = ({
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 bg-stone-900 border-b border-white/10 shrink-0">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center text-lg font-bold">
-              🗓️
+            <div className="w-9 h-9 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center">
+              <Calendar className="w-4 h-4" aria-hidden="true" />
             </div>
             <div>
               <div className="flex items-center gap-1.5">
