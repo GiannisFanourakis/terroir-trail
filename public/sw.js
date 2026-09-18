@@ -1,3 +1,4 @@
+/* global self, URL, fetch */
 /* TerroirTrail installability service worker.
  *
  * Network-only by design: production deploys remain immediately authoritative
