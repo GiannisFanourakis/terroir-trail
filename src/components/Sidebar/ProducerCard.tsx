@@ -7,6 +7,7 @@ import { resolveProducerCover } from '../../utils/producerMediaResolver';
 import { GooglePlacePhotoCarousel } from '../GooglePlaces/GooglePlacePhotoCarousel';
 import { isGooglePlacesEligible } from '../../config/googlePlacesAllowlist';
 import { runtimeConfig } from '../../config/runtimeConfig';
+import { ProducerCategoryIcon } from '../Common/ProducerCategoryIcon';
 
 interface ProducerCardProps {
   producer: Producer;
@@ -88,85 +89,71 @@ export const ProducerCard: React.FC<ProducerCardProps> = ({
       case 'winery':
         return {
           label: 'Winery',
-          icon: '🍇',
           bg: 'bg-rose-500/20 text-rose-300 border-rose-500/30',
         };
       case 'brewery':
         return {
           label: 'Brewery',
-          icon: '🍺',
           bg: 'bg-amber-400/25 text-amber-300 border-amber-400/40',
         };
       case 'distillery':
         return {
           label: 'Distillery',
-          icon: '🥃',
           bg: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
         };
       case 'cidery':
         return {
           label: 'Cidery',
-          icon: '🍎',
           bg: 'bg-lime-500/20 text-lime-300 border-lime-500/30',
         };
       case 'confectionery':
         return {
           label: 'Confectionery Producer',
-          icon: '🍫',
           bg: 'bg-amber-700/20 text-amber-200 border-amber-700/30',
         };
       case 'oil_mill':
         return {
           label: 'Oil Mill',
-          icon: '🌻',
           bg: 'bg-yellow-600/20 text-yellow-300 border-yellow-600/30',
         };
       case 'herb_farm':
         return {
           label: 'Herb Farm',
-          icon: '🌿',
           bg: 'bg-green-600/20 text-green-300 border-green-600/30',
         };
       case 'mushroom_farm':
         return {
           label: 'Mushroom Farm',
-          icon: '🍄',
           bg: 'bg-stone-600/20 text-stone-300 border-stone-600/30',
         };
       case 'olive_mill':
         return {
           label: 'Olive Mill',
-          icon: '🫒',
           bg: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
         };
       case 'olive_oil_producer':
         return {
           label: 'Olive Oil Producer',
-          icon: '🫒',
           bg: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
         };
       case 'cheese_dairy':
         return {
           label: 'Dairy',
-          icon: '🧀',
           bg: 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30',
         };
       case 'apiary':
         return {
           label: 'Apiary / Honey',
-          icon: '🍯',
           bg: 'bg-orange-500/20 text-orange-300 border-orange-500/30',
         };
       case 'farm':
         return {
           label: 'Farm',
-          icon: '🌿',
           bg: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
         };
       default:
         return {
           label: 'Producer',
-          icon: '🌿',
           bg: 'bg-stone-500/20 text-stone-300 border-white/10',
         };
     }
@@ -293,7 +280,10 @@ export const ProducerCard: React.FC<ProducerCardProps> = ({
           <span
             className={`flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-full font-bold border backdrop-blur-md ${badge.bg}`}
           >
-            <span aria-hidden="true">{badge.icon}</span>
+            <ProducerCategoryIcon
+              category={getEffectiveProducerCategory(producer)}
+              className="w-3.5 h-3.5"
+            />
             <span>{badge.label}</span>
           </span>
           {producer.publicPointType === 'producer_shop' && (
