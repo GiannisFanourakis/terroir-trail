@@ -21,7 +21,6 @@ export interface CountryConfig {
 export interface CountryLayer {
   id: CountryScope;
   label: string;
-  flag: string;
   center: [number, number];
   zoom: number;
 }
