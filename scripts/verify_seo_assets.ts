@@ -11,7 +11,6 @@ const distDir = path.resolve(process.cwd(), 'dist');
 const PRODUCERS: Producer[] = SEO_PRODUCERS;
 const CRETE_COUNT = PRODUCERS.filter((producer) => producer.destination === 'crete').length;
 const SANTORINI_COUNT = PRODUCERS.filter((producer) => producer.destination === 'santorini').length;
-const OTHER_DESTINATION_COUNT = PRODUCERS.length - CRETE_COUNT - SANTORINI_COUNT;
 
 const fail = (message: string): never => {
   console.error(`[SEO Verification Failed] ${message}`);
@@ -97,8 +96,10 @@ function verifySeoAssets(): void {
   const llmsContent = requireFile(llmsPath, 'dist/llms.txt');
   const requiredLlmsClaims = [
     `${LIVE_CATALOGUE_METRICS.totalProducers} producer/project records`,
-    `Crete, Greece — ${CRETE_COUNT} audited records.`,
-    `Santorini, Greece — ${SANTORINI_COUNT} audited records.`,
+    `Greece — 66 records: Crete ${CRETE_COUNT}, Santorini ${SANTORINI_COUNT}, Peloponnese 11, Macedonia 11, Thessaly 5.`,
+    'Italy — 39 records: Tuscany 5, Piedmont 8, Puglia 8, Sicily 9, South Tyrol 9.',
+    'France — Provence-Alpes-Côte d\'Azur 8.',
+    'Norway — 8 records: Trøndelag 1, Møre og Romsdal 1, Buskerud 1, Vestland 5.',
     `Deterministic canonical/offline producer snapshot — ${PRODUCERS.length} records pending synchronization with the full live catalogue.`,
     '10 published verified-stop Discovery Guides',
     '/producers/<producer-id>/',
