@@ -9,7 +9,7 @@ Robots policy: https://terroir-trail.web.app/robots.txt
 
 TerroirTrail is an independent, discovery-first agritourism and producer guide. Its live Supabase catalogue currently spans 22 destinations in 8 European countries: Greece, Italy, France, Spain, Portugal, Croatia, Slovenia, and Norway. The same evidence-first rules apply across the catalogue: unknown facts stay unknown, public visitability is separate from partnership status, and location confidence is separate from road-access confidence.
 
-The live Supabase catalogue contains 148 producer/project records (verified 18 September 2026). The deterministic crawlable/offline bundle currently contains 62 canonical producer records and must not be mistaken for the live catalogue total. Current first-class categories include wineries, craft breweries, olive mills, olive-oil producers, dairies/cheesemakers, apiaries/honey producers, cideries, confectioneries, herb farms, mushroom farms, other oil mills, distilleries, and farms.
+The live Supabase catalogue contains 148 producer/project records (verified 18 September 2026). The deterministic crawlable SEO/AEO snapshot is synchronized to the same 148 records, so every current live producer has a canonical producer entity page in the deploy-time catalogue. Current first-class categories include wineries, craft breweries, olive mills, olive-oil producers, dairies/cheesemakers, apiaries/honey producers, cideries, confectioneries, herb farms, mushroom farms, other oil mills, distilleries, and farms.
 
 Greek cheese and dairy expansion is now included in the audited catalogue. The implementation workstream retains 7 new dairy/cheese producer records in the bundled discovery and search catalogue alongside the two previously published dairy records, for 9 dairy records in total. Listings that could not meet the agreed exact persistent Google business-identity standard were removed rather than guessed. All 9 retained dairy records now carry persistent audited Google Place IDs. Exact location, visitability and road access remain independent trust dimensions; factory existence does not imply public tours or safe rental-car access.
 
@@ -40,7 +40,7 @@ Preferred discovery order for machine consumers:
 4. Use `sitemap.xml` for the current crawlable canonical URL set.
 5. Treat the interactive `?producer=<id>` state as application navigation, not as the canonical entity URL.
 
-The live runtime catalogue and deterministic canonical SEO snapshot are intentionally distinguished. A live catalogue count must not be inferred from the number of canonical producer pages until synchronization is complete.
+The live runtime catalogue and deterministic canonical SEO snapshot are synchronized at 148 records as of 18 September 2026. Future catalogue changes should update both together before deployment.
 
 ## Canonical producer discovery
 
@@ -113,9 +113,9 @@ Current live public catalogue (Supabase, verified 18 September 2026):
 - Croatia — Istria 8.
 - Slovenia — 5 records: Pomurska 1, Southeast Slovenia 1, Central Slovenia 1, Goriška 2.
 - Norway — 8 records: Trøndelag 1, Møre og Romsdal 1, Buskerud 1, Vestland 5.
-- Deterministic canonical/offline producer snapshot — 62 records pending synchronization with the full live catalogue.
+- Deterministic canonical SEO/AEO producer snapshot — 148 records, synchronized with the live catalogue.
 
-The SEO, AEO and entity-discovery foundation includes the retained dairy expansion. New category and regional additions should follow the same evidence-first publication rules and be synchronized into both the live catalogue and deterministic deploy-time entity catalogue.
+The SEO, AEO and entity-discovery foundation includes all 148 current live producer records. New category and regional additions should follow the same evidence-first publication rules and be synchronized into both the live catalogue and deterministic deploy-time entity catalogue before deployment.
 
 ## Contact
 
