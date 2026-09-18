@@ -4,9 +4,9 @@ Canonical URL: https://terroir-trail.web.app/
 
 ## Current product state
 
-TerroirTrail is an independent, discovery-first agritourism and producer guide. Its current audited catalogue spans Crete, Santorini, the Peloponnese, Macedonia, Greece, and a Tuscany / Italy foothold. The same evidence-first rules apply across the catalogue: unknown facts stay unknown, public visitability is separate from partnership status, and location confidence is separate from road-access confidence.
+TerroirTrail is an independent, discovery-first agritourism and producer guide. Its live Supabase catalogue currently spans 22 destinations in 8 European countries: Greece, Italy, France, Spain, Portugal, Croatia, Slovenia, and Norway. The same evidence-first rules apply across the catalogue: unknown facts stay unknown, public visitability is separate from partnership status, and location confidence is separate from road-access confidence.
 
-The current audited bundled catalogue contains 62 producer/project records: 30 in Crete, 9 in Santorini, and 23 across the Peloponnese, Macedonia, Greece and Tuscany / Italy. Current first-class producer categories include wineries, craft breweries, olive mills, olive-oil producers, dairies/cheesemakers, apiaries/honey producers, traditional distilleries/rakokazana, and farms.
+The live Supabase catalogue contains 148 producer/project records (verified 18 September 2026). The deterministic crawlable/offline bundle currently contains 62 canonical producer records and must not be mistaken for the live catalogue total. Current first-class categories include wineries, craft breweries, olive mills, olive-oil producers, dairies/cheesemakers, apiaries/honey producers, cideries, confectioneries, herb farms, mushroom farms, other oil mills, distilleries, and farms.
 
 Greek cheese and dairy expansion is now included in the audited catalogue. The implementation workstream retains 7 new dairy/cheese producer records in the bundled discovery and search catalogue alongside the two previously published dairy records, for 9 dairy records in total. Listings that could not meet the agreed exact persistent Google business-identity standard were removed rather than guessed. All 9 retained dairy records now carry persistent audited Google Place IDs. Exact location, visitability and road access remain independent trust dimensions; factory existence does not imply public tours or safe rental-car access.
 
@@ -75,14 +75,18 @@ Third-party travel links, advertisements or affiliate links are separate from pr
 
 ## Geographic scope
 
-Current audited public catalogue:
+Current live public catalogue (Supabase, verified 18 September 2026):
 
-- Crete, Greece — 30 audited records.
-- Santorini, Greece — 9 audited records.
-- Peloponnese, Macedonia, Greece and Tuscany / Italy — 23 audited records combined.
-  - Peloponnese, Greece — 11 audited records.
-  - Macedonia, Greece — 11 audited records.
-  - Tuscany, Italy — 1 audited record.
+- 148 producer/project records across 22 destinations in 8 countries.
+- Greece — 66 records: Crete 30, Santorini 9, Peloponnese 11, Macedonia 11, Thessaly 5.
+- Italy — 39 records: Tuscany 5, Piedmont 8, Puglia 8, Sicily 9, South Tyrol 9.
+- France — Provence-Alpes-Côte d'Azur 8.
+- Spain — Catalonia 6.
+- Portugal — Alentejo 8.
+- Croatia — Istria 8.
+- Slovenia — 5 records: Pomurska 1, Southeast Slovenia 1, Central Slovenia 1, Goriška 2.
+- Norway — 8 records: Trøndelag 1, Møre og Romsdal 1, Buskerud 1, Vestland 5.
+- Deterministic canonical/offline producer snapshot — 62 records pending synchronization with the full live catalogue.
 
 The SEO, AEO and entity-discovery foundation includes the retained dairy expansion. New category and regional additions should follow the same evidence-first publication rules and be synchronized into both the live catalogue and deterministic deploy-time entity catalogue.
 
