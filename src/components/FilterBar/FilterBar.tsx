@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
-import { Category, RoadAccess, Ethos, FoodOption, FilterState } from '../../types/terroir';
-import { RotateCcw, Dog, Footprints, Caravan, SlidersHorizontal, Compass } from 'lucide-react';
+import { Category, RoadAccess, FilterState } from '../../types/terroir';
+import { RotateCcw, SlidersHorizontal, Compass } from 'lucide-react';
 
 interface FilterBarProps {
   filters: FilterState;
@@ -75,32 +75,9 @@ export const FilterBar: React.FC<FilterBarProps> = ({
     { id: '4x4_required', label: '🛻 4x4 Required' },
   ];
 
-  const ethosOptions: { id: Ethos | 'all'; label: string }[] = [
-    { id: 'all', label: 'All Ethos' },
-    { id: 'unpasteurized', label: '🍺 Unpasteurized Craft Beer' },
-    { id: 'organic', label: '🌿 Certified Organic' },
-    { id: 'indigenous_only', label: '🧬 Indigenous Varieties' },
-    { id: 'amphora', label: '🏺 Amphora Fermentation' },
-    { id: 'wood_fired', label: '🪵 Wood-Fired Still' },
-    { id: 'ancient_groves', label: '🌳 Ancient Groves' },
-    { id: 'raw_milk', label: '🥛 Raw-Milk Tradition' },
-  ];
-
-  const foodOptions: { id: FoodOption | 'all'; label: string }[] = [
-    { id: 'all', label: 'Any Dining' },
-    { id: 'brewery_taproom', label: '🍻 Brewery Taproom & Meze' },
-    { id: 'full_taverna', label: '🍽️ Full Taverna On-Site' },
-    { id: 'tasting_board', label: '🧀 Tasting Board' },
-    { id: 'dakos_snacks', label: '🥖 Dakos & Bread' },
-  ];
 
   const activeSecondaryCount = [
     filters.roadAccess !== 'all',
-    filters.ethos !== 'all',
-    filters.foodOption !== 'all',
-    filters.dogFriendlyOnly,
-    filters.walkInOnly,
-    filters.campervanOnly,
   ].filter(Boolean).length;
 
   const activeCategory = categories.find((cat) => cat.id === filters.category) || categories[0];
@@ -213,7 +190,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
             {/* Secondary filters */}
             <div className="flex flex-col gap-2 pt-2 border-t border-white/5">
               <span className="text-[11px] font-bold uppercase tracking-wider text-stone-400 px-0.5">
-                Filters &amp; Amenities
+                Access Filter
               </span>
 
               <div className="grid grid-cols-1 gap-2">
@@ -228,71 +205,6 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                     </option>
                   ))}
                 </select>
-
-                <select
-                  value={filters.ethos}
-                  onChange={(e) => { onFilterChange('ethos', e.target.value as Ethos | 'all'); setIsMobilePanelOpen(false); }}
-                  className="bg-stone-800 border border-white/10 text-stone-200 text-xs rounded-xl px-3 py-2 min-h-[44px] focus:outline-none focus:border-amber-400 cursor-pointer w-full"
-                >
-                  {ethosOptions.map((opt) => (
-                    <option key={opt.id} value={opt.id} className="bg-stone-900 text-white">
-                      {opt.label}
-                    </option>
-                  ))}
-                </select>
-
-                <select
-                  value={filters.foodOption}
-                  onChange={(e) => { onFilterChange('foodOption', e.target.value as FoodOption | 'all'); setIsMobilePanelOpen(false); }}
-                  className="bg-stone-800 border border-white/10 text-stone-200 text-xs rounded-xl px-3 py-2 min-h-[44px] focus:outline-none focus:border-amber-400 cursor-pointer w-full"
-                >
-                  {foodOptions.map((opt) => (
-                    <option key={opt.id} value={opt.id} className="bg-stone-900 text-white">
-                      {opt.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="flex flex-wrap items-center gap-1.5 pt-1">
-                <button
-                  type="button"
-                  onClick={() => { onFilterChange('dogFriendlyOnly', !filters.dogFriendlyOnly); setIsMobilePanelOpen(false); }}
-                  className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl border transition text-xs shrink-0 cursor-pointer min-h-[44px] ${
-                    filters.dogFriendlyOnly
-                      ? 'bg-amber-500 text-stone-950 border-amber-400 font-bold'
-                      : 'bg-stone-800 text-stone-400 border-white/10 hover:text-white'
-                  }`}
-                >
-                  <Dog className="w-4 h-4 shrink-0" />
-                  <span>Dog Friendly</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => { onFilterChange('walkInOnly', !filters.walkInOnly); setIsMobilePanelOpen(false); }}
-                  className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl border transition text-xs shrink-0 cursor-pointer min-h-[44px] ${
-                    filters.walkInOnly
-                      ? 'bg-amber-500 text-stone-950 border-amber-400 font-bold'
-                      : 'bg-stone-800 text-stone-400 border-white/10 hover:text-white'
-                  }`}
-                >
-                  <Footprints className="w-4 h-4 shrink-0" />
-                  <span>Walk-in</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => { onFilterChange('campervanOnly', !filters.campervanOnly); setIsMobilePanelOpen(false); }}
-                  className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl border transition text-xs shrink-0 cursor-pointer min-h-[44px] ${
-                    filters.campervanOnly
-                      ? 'bg-amber-500 text-stone-950 border-amber-400 font-bold'
-                      : 'bg-stone-800 text-stone-400 border-white/10 hover:text-white'
-                  }`}
-                >
-                  <Caravan className="w-4 h-4 shrink-0" />
-                  <span>Campervan</span>
-                </button>
               </div>
 
               <div className="flex items-center justify-end gap-2 pt-1 border-t border-white/5">
@@ -390,64 +302,6 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                 <option key={opt.id} value={opt.id} className="bg-stone-900 text-white">{opt.label}</option>
               ))}
             </select>
-
-            <select
-              value={filters.ethos}
-              onChange={(e) => onFilterChange('ethos', e.target.value as Ethos | 'all')}
-              className="bg-stone-800 border border-white/10 text-stone-200 text-xs rounded-xl px-3 py-2 sm:py-1 min-h-[44px] sm:min-h-[32px] focus:outline-none focus:border-amber-400 cursor-pointer"
-            >
-              {ethosOptions.map((opt) => (
-                <option key={opt.id} value={opt.id} className="bg-stone-900 text-white">{opt.label}</option>
-              ))}
-            </select>
-
-            <select
-              value={filters.foodOption}
-              onChange={(e) => onFilterChange('foodOption', e.target.value as FoodOption | 'all')}
-              className="bg-stone-800 border border-white/10 text-stone-200 text-xs rounded-xl px-3 py-2 sm:py-1 min-h-[44px] sm:min-h-[32px] focus:outline-none focus:border-amber-400 cursor-pointer"
-            >
-              {foodOptions.map((opt) => (
-                <option key={opt.id} value={opt.id} className="bg-stone-900 text-white">{opt.label}</option>
-              ))}
-            </select>
-
-            <div className="flex flex-wrap sm:flex-nowrap items-center gap-1.5 sm:border-l border-white/10 sm:pl-2 pt-1 sm:pt-0">
-              <button
-                onClick={() => onFilterChange('dogFriendlyOnly', !filters.dogFriendlyOnly)}
-                className={`flex items-center gap-1.5 px-3 py-2 sm:px-2.5 sm:py-1 rounded-xl border transition text-xs shrink-0 cursor-pointer min-h-[44px] sm:min-h-[32px] ${
-                  filters.dogFriendlyOnly
-                    ? 'bg-amber-500 text-stone-950 border-amber-400 font-bold'
-                    : 'bg-stone-800 text-stone-400 border-white/10 hover:text-white'
-                }`}
-              >
-                <Dog className="w-3.5 h-3.5 sm:w-3 sm:h-3 shrink-0" />
-                <span>Dog Friendly</span>
-              </button>
-
-              <button
-                onClick={() => onFilterChange('walkInOnly', !filters.walkInOnly)}
-                className={`flex items-center gap-1.5 px-3 py-2 sm:px-2.5 sm:py-1 rounded-xl border transition text-xs shrink-0 cursor-pointer min-h-[44px] sm:min-h-[32px] ${
-                  filters.walkInOnly
-                    ? 'bg-amber-500 text-stone-950 border-amber-400 font-bold'
-                    : 'bg-stone-800 text-stone-400 border-white/10 hover:text-white'
-                }`}
-              >
-                <Footprints className="w-3.5 h-3.5 sm:w-3 sm:h-3 shrink-0" />
-                <span>Walk-in</span>
-              </button>
-
-              <button
-                onClick={() => onFilterChange('campervanOnly', !filters.campervanOnly)}
-                className={`flex items-center gap-1.5 px-3 py-2 sm:px-2.5 sm:py-1 rounded-xl border transition text-xs shrink-0 cursor-pointer min-h-[44px] sm:min-h-[32px] ${
-                  filters.campervanOnly
-                    ? 'bg-amber-500 text-stone-950 border-amber-400 font-bold'
-                    : 'bg-stone-800 text-stone-400 border-white/10 hover:text-white'
-                }`}
-              >
-                <Caravan className="w-3.5 h-3.5 sm:w-3 sm:h-3 shrink-0" />
-                <span>Campervan</span>
-              </button>
-            </div>
           </div>
 
           <div className="text-[11px] text-stone-400 hidden md:block">
