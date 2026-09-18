@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import QRCode from 'qrcode';
-import { 
-  X, Crown, Sparkles, ShieldCheck, Download, Copy, Check, 
-  Clock, Maximize2, Minimize2, Share2, Smartphone
-  Ticket, ShieldCheck, Smartphone, Award,
+import {
+  X, Crown, Sparkles, ShieldCheck, Download, Copy, Check,
+  Clock, Maximize2, Minimize2, Share2, Smartphone, Ticket, Award,
 } from 'lucide-react';
 import { UserProfile } from '../../types/auth';
 import { logger } from '../../services/logger';
@@ -176,10 +175,10 @@ export const DigitalPassModal: React.FC<DigitalPassModalProps> = ({
           ctx.fillText('EXPLORER PASS PRIVILEGES', 60, 900);
 
           const perksText = [
-            '✓ Server-verified digital pass QR',
-            '✓ Account-linked pass entitlement',
-            '✓ Cellar door check-in verification',
-            '✓ Eligible for pilot partner benefits'
+            'Server-verified digital pass QR',
+            'Account-linked pass entitlement',
+            'Cellar door check-in verification',
+            'Eligible for pilot partner benefits'
           ];
           ctx.font = '24px sans-serif';
           ctx.fillStyle = '#e7e5e4';
