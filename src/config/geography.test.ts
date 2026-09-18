@@ -80,7 +80,6 @@ describe('country and NUTS geography', () => {
       expect(config.name.length).toBeGreaterThan(0);
       expect(typeof config.nativeName).toBe('string');
       expect(config.nativeName.length).toBeGreaterThan(0);
-      expect(typeof config.flag).toBe('string');
       expect(config.nutsVersion).toBe('2024');
       expect(config.nutsLevel).toBe(0);
       expect(config.sourceUrl).toContain(
@@ -118,7 +117,6 @@ describe('country and NUTS geography', () => {
     expect(COUNTRY_LAYERS[0]).toEqual({
       id: 'all',
       label: 'Europe',
-      flag: '🌍',
       center: [47.0, 10.0],
       zoom: 4,
     });
@@ -128,7 +126,6 @@ describe('country and NUTS geography', () => {
       const layer = COUNTRY_LAYERS.find((l) => l.id === code);
       expect(layer).toBeDefined();
       expect(layer?.label).toBe(config.name);
-      expect(layer?.flag).toBe(config.flag);
       expect(layer?.center).toEqual(config.center);
       expect(layer?.zoom).toBe(config.zoom);
     }
