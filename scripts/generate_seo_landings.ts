@@ -387,9 +387,15 @@ const updateProducerDirectory = (): void => {
 const updateHomepage = (): void => {
   const homePath = path.join(distDir, 'index.html');
   let html = fs.readFileSync(homePath, 'utf-8');
-  const marker = '<a href="/producers/">Browse the full audited producer directory.</a></p>';
-  const addition = `${marker}\n        <p>Explore the catalogue by <a href="/destinations/">destination</a>, <a href="/categories/">producer category</a>, <a href="/greece/">Greece</a>, or <a href="/italy/">Italy</a>.</p>`;
-  html = replaceRequired(html, marker, addition, 'Homepage');
+
+  // Use a structural marker rather than catalogue copy so live-count wording
+  // changes cannot break landing generation. Keep the insertion idempotent.
+  const navigationMarker = 'data-seo-landing-nav="true"';
+  if (html.includes(navigationMarker)) return;
+
+  const marker = '<h2>Audited Producer Directory — Homepage Excerpt</h2>';
+  const navigation = '<p data-seo-landing-nav="true">Explore canonical catalogue pages by <a href="/destinations/">destination</a>, <a href="/categories/">producer category</a>, <a href="/greece/">Greece</a>, or <a href="/italy/">Italy</a>.</p>';
+  html = replaceRequired(html, marker, `${navigation}\n        ${marker}`, 'Homepage structural');
   fs.writeFileSync(homePath, html, 'utf-8');
 };
 
