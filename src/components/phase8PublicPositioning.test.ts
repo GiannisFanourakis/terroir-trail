@@ -67,9 +67,13 @@ describe('Phase 8 Public Positioning & SEO Synchronization', () => {
       );
 
       expect(llmsTxt).toContain('# TerroirTrail — Independent Producer & Agritourism Guide');
-      expect(llmsTxt).toContain('62 producer/project records');
-      expect(llmsTxt).toContain('Crete, Santorini, the Peloponnese, Macedonia, Greece');
-      expect(llmsTxt).toContain('Tuscany / Italy');
+      expect(llmsTxt).toContain('148 producer/project records');
+      expect(llmsTxt).toContain('22 destinations in 8 countries');
+      expect(llmsTxt).toContain(
+        'Deterministic canonical/offline producer snapshot — 62 records pending synchronization with the full live catalogue.'
+      );
+      expect(llmsTxt).toContain('Greece — 66 records');
+      expect(llmsTxt).toContain('Italy — 39 records');
       expect(llmsTxt).toContain('/producers/<producer-id>/');
       expect(llmsTxt).toContain('SEO, AEO and entity-discovery foundation');
       expect(llmsTxt).toContain(
