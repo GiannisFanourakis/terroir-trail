@@ -1142,73 +1142,19 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
           </div>
         )}
 
-        {/* Desktop theme selector */}
-        <div className="hidden sm:flex glass-panel p-1 rounded-2xl items-center shadow-2xl">
-          <button
-            onClick={() => setMapTheme('topo')}
-            aria-pressed={mapTheme === 'topo'}
-            aria-label="Use topographic map"
-            className={`px-2.5 py-1 sm:px-3 sm:py-1.5 text-[11px] sm:text-xs font-semibold rounded-xl transition-all whitespace-nowrap ${
-              mapTheme === 'topo'
-                ? 'bg-amber-500 text-stone-950 shadow-md font-bold'
-                : 'text-stone-300 hover:text-white hover:bg-white/5'
-            }`}
-            title="Topographic terrain & vineyard elevation contours (Free, no API key required)"
-          >
-            Terroir
-          </button>
-          <button
-            onClick={() => setMapTheme('voyager')}
-            aria-pressed={mapTheme === 'voyager'}
-            aria-label="Use street map"
-            className={`px-2.5 py-1 sm:px-3 sm:py-1.5 text-[11px] sm:text-xs font-semibold rounded-xl transition-all whitespace-nowrap ${
-              mapTheme === 'voyager'
-                ? 'bg-amber-500 text-stone-950 shadow-md font-bold'
-                : 'text-stone-300 hover:text-white hover:bg-white/5'
-            }`}
-            title={CARTO_API_KEY ? "CARTO Voyager Basemap" : "OpenStreetMap Standard (Free, no API key required)"}
-          >
-            {CARTO_API_KEY ? 'Voyager' : 'Streets'}
-          </button>
-          <button
-            onClick={() => setMapTheme('dark')}
-            aria-pressed={mapTheme === 'dark'}
-            aria-label="Use dark map"
-            className={`px-2.5 py-1 sm:px-3 sm:py-1.5 text-[11px] sm:text-xs font-semibold rounded-xl transition-all whitespace-nowrap ${
-              mapTheme === 'dark'
-                ? 'bg-amber-500 text-stone-950 shadow-md font-bold'
-                : 'text-stone-300 hover:text-white hover:bg-white/5'
-            }`}
-            title={CARTO_API_KEY ? "CARTO Dark Matter" : "Esri Dark Canvas (Free, no API key required)"}
-          >
-            Night
-          </button>
-          <button
-            onClick={() => setMapTheme('satellite')}
-            aria-pressed={mapTheme === 'satellite'}
-            aria-label="Use satellite map"
-            className={`px-2.5 py-1 sm:px-3 sm:py-1.5 text-[11px] sm:text-xs font-semibold rounded-xl transition-all whitespace-nowrap ${
-              mapTheme === 'satellite'
-                ? 'bg-amber-500 text-stone-950 shadow-md font-bold'
-                : 'text-stone-300 hover:text-white hover:bg-white/5'
-            }`}
-            title="High-resolution aerial satellite imagery"
-          >
-            Satellite
-          </button>
-        </div>
-
-        {/* Mobile collapsible theme selector */}
-        <div className="relative sm:hidden">
+        {/* Compact map-style control: one button, then a stacked menu. */}
+        <div className="relative">
           <button
             type="button"
             onClick={() => setIsThemeMenuOpen((prev) => !prev)}
             aria-expanded={isThemeMenuOpen}
+            aria-haspopup="menu"
             aria-label="Select map style"
-            className="flex items-center gap-1.5 px-3 py-2 rounded-2xl glass-panel text-stone-200 text-xs font-semibold shadow-2xl min-h-[44px] cursor-pointer"
+            title="Map style"
+            className={`flex items-center justify-center gap-1.5 rounded-2xl glass-panel text-stone-200 font-semibold shadow-2xl cursor-pointer transition hover:text-white hover:bg-stone-900/95 w-11 h-11 sm:w-10 sm:h-10 ${isThemeMenuOpen ? 'ring-1 ring-amber-500/50 bg-stone-950/95' : ''}`}
           >
             <Layers className="w-4 h-4 text-amber-400 shrink-0" />
-            <span className="capitalize">
+            <span className="sr-only">
               {mapTheme === 'topo'
                 ? 'Terroir'
                 : mapTheme === 'voyager'
@@ -1218,36 +1164,58 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
                 : 'Satellite'}
             </span>
           </button>
+
           {isThemeMenuOpen && (
-            <div className="absolute right-0 top-full mt-1.5 glass-panel p-1.5 rounded-2xl shadow-2xl flex flex-col gap-1 z-30 min-w-[130px] border border-white/10 bg-stone-950/95 backdrop-blur-xl">
-              <button
-                type="button"
-                onClick={() => { setMapTheme('topo'); setIsThemeMenuOpen(false); }}
-                className={`px-3 py-2 text-xs font-semibold rounded-xl text-left transition min-h-[44px] flex items-center ${mapTheme === 'topo' ? 'bg-amber-500 text-stone-950 font-bold' : 'text-stone-300 hover:text-white hover:bg-white/10'}`}
-              >
-                Terroir
-              </button>
-              <button
-                type="button"
-                onClick={() => { setMapTheme('voyager'); setIsThemeMenuOpen(false); }}
-                className={`px-3 py-2 text-xs font-semibold rounded-xl text-left transition min-h-[44px] flex items-center ${mapTheme === 'voyager' ? 'bg-amber-500 text-stone-950 font-bold' : 'text-stone-300 hover:text-white hover:bg-white/10'}`}
-              >
-                {CARTO_API_KEY ? 'Voyager' : 'Streets'}
-              </button>
-              <button
-                type="button"
-                onClick={() => { setMapTheme('dark'); setIsThemeMenuOpen(false); }}
-                className={`px-3 py-2 text-xs font-semibold rounded-xl text-left transition min-h-[44px] flex items-center ${mapTheme === 'dark' ? 'bg-amber-500 text-stone-950 font-bold' : 'text-stone-300 hover:text-white hover:bg-white/10'}`}
-              >
-                Night
-              </button>
-              <button
-                type="button"
-                onClick={() => { setMapTheme('satellite'); setIsThemeMenuOpen(false); }}
-                className={`px-3 py-2 text-xs font-semibold rounded-xl text-left transition min-h-[44px] flex items-center ${mapTheme === 'satellite' ? 'bg-amber-500 text-stone-950 font-bold' : 'text-stone-300 hover:text-white hover:bg-white/10'}`}
-              >
-                Satellite
-              </button>
+            <div
+              role="menu"
+              aria-label="Map style"
+              className="absolute right-0 top-full mt-2 sm:right-full sm:top-0 sm:mt-0 sm:mr-2 glass-panel p-2 rounded-2xl shadow-2xl z-30 min-w-[154px] border border-white/10 bg-stone-950/95 backdrop-blur-xl"
+            >
+              <div className="px-2 pb-1.5 text-[10px] uppercase tracking-wider font-bold text-stone-500">
+                Map style
+              </div>
+              <div className="flex flex-col gap-1">
+                <button
+                  type="button"
+                  role="menuitemradio"
+                  aria-checked={mapTheme === 'topo'}
+                  onClick={() => { setMapTheme('topo'); setIsThemeMenuOpen(false); }}
+                  className={`px-3 py-2 text-xs font-semibold rounded-xl text-left transition min-h-[40px] ${mapTheme === 'topo' ? 'bg-amber-500 text-stone-950 font-bold' : 'text-stone-300 hover:text-white hover:bg-white/10'}`}
+                  title="Topographic terrain and elevation context"
+                >
+                  Terroir
+                </button>
+                <button
+                  type="button"
+                  role="menuitemradio"
+                  aria-checked={mapTheme === 'voyager'}
+                  onClick={() => { setMapTheme('voyager'); setIsThemeMenuOpen(false); }}
+                  className={`px-3 py-2 text-xs font-semibold rounded-xl text-left transition min-h-[40px] ${mapTheme === 'voyager' ? 'bg-amber-500 text-stone-950 font-bold' : 'text-stone-300 hover:text-white hover:bg-white/10'}`}
+                  title={CARTO_API_KEY ? 'CARTO Voyager basemap' : 'OpenStreetMap streets'}
+                >
+                  {CARTO_API_KEY ? 'Voyager' : 'Streets'}
+                </button>
+                <button
+                  type="button"
+                  role="menuitemradio"
+                  aria-checked={mapTheme === 'dark'}
+                  onClick={() => { setMapTheme('dark'); setIsThemeMenuOpen(false); }}
+                  className={`px-3 py-2 text-xs font-semibold rounded-xl text-left transition min-h-[40px] ${mapTheme === 'dark' ? 'bg-amber-500 text-stone-950 font-bold' : 'text-stone-300 hover:text-white hover:bg-white/10'}`}
+                  title={CARTO_API_KEY ? 'CARTO Dark Matter' : 'Esri Dark Canvas'}
+                >
+                  Night
+                </button>
+                <button
+                  type="button"
+                  role="menuitemradio"
+                  aria-checked={mapTheme === 'satellite'}
+                  onClick={() => { setMapTheme('satellite'); setIsThemeMenuOpen(false); }}
+                  className={`px-3 py-2 text-xs font-semibold rounded-xl text-left transition min-h-[40px] ${mapTheme === 'satellite' ? 'bg-amber-500 text-stone-950 font-bold' : 'text-stone-300 hover:text-white hover:bg-white/10'}`}
+                  title="High-resolution aerial satellite imagery"
+                >
+                  Satellite
+                </button>
+              </div>
             </div>
           )}
         </div>
