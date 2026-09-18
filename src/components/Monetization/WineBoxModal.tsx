@@ -4,7 +4,7 @@ import { CuratedWineBox, WineBoxOrder } from '../../types/monetization';
 import { CURATED_WINE_BOXES, SHIPPING_RATES } from '../../data/wineBoxes';
 import { 
   X, Wine, Plane, ShieldCheck, CheckCircle2, 
-  ArrowRight, Package, Truck, Sparkles, MapPin, Mail, User, Beer 
+  ArrowRight, Package, Truck, Sparkles, MapPin, Mail, User, Beer, Award 
 } from 'lucide-react';
 
 interface WineBoxModalProps {
@@ -108,9 +108,7 @@ export const WineBoxModal: React.FC<WineBoxModalProps> = ({
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 bg-stone-900 border-b border-white/10 shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center text-xl font-bold">
-              ✈️
-            </div>
+            <div className="w-10 h-10 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center text-xl font-bold"><Plane className="w-5 h-5 text-amber-400" aria-hidden="true" /></div>
             <div>
               <div className="flex items-center gap-1.5">
                 <h2 className="font-serif-title text-base sm:text-lg font-bold text-white leading-tight">
@@ -215,7 +213,7 @@ export const WineBoxModal: React.FC<WineBoxModalProps> = ({
                           : 'text-stone-400 hover:text-white'
                       }`}
                     >
-                      🍷 Wine
+                      Wine
                     </button>
                     <button
                       type="button"
@@ -230,7 +228,7 @@ export const WineBoxModal: React.FC<WineBoxModalProps> = ({
                           : 'text-stone-400 hover:text-white'
                       }`}
                     >
-                      🍺 Craft Beer
+                      Craft Beer
                     </button>
                     <button
                       type="button"
@@ -245,7 +243,7 @@ export const WineBoxModal: React.FC<WineBoxModalProps> = ({
                           : 'text-stone-400 hover:text-white'
                       }`}
                     >
-                      🫒 EVOO
+                      EVOO
                     </button>
                     <button
                       type="button"
@@ -260,7 +258,7 @@ export const WineBoxModal: React.FC<WineBoxModalProps> = ({
                           : 'text-stone-400 hover:text-white'
                       }`}
                     >
-                      🍯 Honey
+                      Honey
                     </button>
                     <button
                       type="button"
@@ -275,7 +273,7 @@ export const WineBoxModal: React.FC<WineBoxModalProps> = ({
                           : 'text-stone-400 hover:text-white'
                       }`}
                     >
-                      🧀 Cheese & Pantry
+                      Cheese & Pantry
                     </button>
                   </div>
                 </div>
@@ -432,12 +430,12 @@ export const WineBoxModal: React.FC<WineBoxModalProps> = ({
                 </div>
                 {isVip ? (
                   <div className="flex items-center justify-between text-amber-300 font-bold pt-1.5 border-t border-white/5">
-                    <span>👑 VIP Passholder Voucher:</span>
+                    <span className="inline-flex items-center gap-1.5"><Award className="w-3.5 h-3.5" aria-hidden="true" /> VIP Passholder Voucher:</span>
                     <span>-€15.00</span>
                   </div>
                 ) : (
                   <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-[11px] flex items-center justify-between text-amber-200">
-                    <span>💡 VIP Pass members save €15 on this order</span>
+                    <span className="inline-flex items-center gap-1.5"><Sparkles className="w-3.5 h-3.5" aria-hidden="true" /> VIP Pass members save €15 on this order</span>
                     <button
                       type="button"
                       onClick={onOpenAuth}
