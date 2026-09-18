@@ -251,6 +251,17 @@
 
 /* Coarse pointer / mobile touch default: compact circular pins to eliminate text overlap */
 @media (hover: none) and (pointer: coarse) {
+  .modern-map-pin {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    transition: none;
+  }
+
+  .leaflet-control-attribution {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
   .modern-map-pin:not(.active-pin) {
     padding: 3px;
     gap: 0;
@@ -260,7 +271,7 @@
     max-width: 36px;
     border-radius: 9999px;
     justify-content: center;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.18);
+    box-shadow: 0 2px 7px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.14);
   }
 
   .modern-map-pin:not(.active-pin) .pin-text-container {
