@@ -68,12 +68,12 @@ export const FilterBar: React.FC<FilterBarProps> = ({
 
   const roadAccessOptions: { id: RoadAccess | 'all'; label: string }[] = [
     { id: 'all', label: 'All Verified Road Types' },
-    { id: 'paved', label: '🚗 Standard Paved' },
-    { id: 'narrow_paved', label: '🚘 Narrow Paved' },
-    { id: 'gravel_ok', label: '🚙 Passable Gravel' },
-    { id: 'unpaved_passable', label: '🟤 Passable Unpaved / Dirt' },
-    { id: 'high_clearance_recommended', label: '⛰️ High Clearance Recommended' },
-    { id: '4x4_required', label: '🛻 4x4 Required' },
+    { id: 'paved', label: 'Standard Paved' },
+    { id: 'narrow_paved', label: 'Narrow Paved' },
+    { id: 'gravel_ok', label: 'Passable Gravel' },
+    { id: 'unpaved_passable', label: 'Passable Unpaved / Dirt' },
+    { id: 'high_clearance_recommended', label: 'High Clearance Recommended' },
+    { id: '4x4_required', label: '4x4 Required' },
   ];
 
 
