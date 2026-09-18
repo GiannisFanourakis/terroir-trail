@@ -464,7 +464,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
         </div>
         <div class="pin-text-container">
           <span class="pin-text-label" title="${producer.name}">${producer.name}</span>
-          <span class="pin-text-sub">${producer.rating != null ? `★ ${producer.rating} · ` : ''}${shortVillage}</span>
+          <span class="pin-text-sub">${producer.rating != null ? `Rating ${producer.rating} · ` : ''}${shortVillage}</span>
         </div>
       </div>
     `;
