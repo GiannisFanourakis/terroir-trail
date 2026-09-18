@@ -116,7 +116,6 @@ export function validateItalianPartitaIva(input: string): { isValid: boolean; fo
 export interface FiscalLabelConfig {
   countryCode: string;
   countryName: string;
-  countryFlag: string;
   shortVatLabel: string;
   fullVatLabel: string;
   companyNameLabel: string;
@@ -133,7 +132,6 @@ export const SUPPORTED_FISCAL_COUNTRIES: Record<string, FiscalLabelConfig> = {
   GR: {
     countryCode: 'GR',
     countryName: 'Greece',
-    countryFlag: '🇬🇷',
     shortVatLabel: 'VAT / Tax ID (ΑΦΜ)',
     fullVatLabel: 'Tax Identification Number (VAT ID / ΑΦΜ)',
     companyNameLabel: 'Official Registered Business Name',
@@ -148,7 +146,6 @@ export const SUPPORTED_FISCAL_COUNTRIES: Record<string, FiscalLabelConfig> = {
   IT: {
     countryCode: 'IT',
     countryName: 'Italy',
-    countryFlag: '🇮🇹',
     shortVatLabel: 'Partita IVA (VAT)',
     fullVatLabel: 'Tax Identification Number (Partita IVA / VAT)',
     companyNameLabel: 'Official Registered Business Name',
@@ -163,7 +160,6 @@ export const SUPPORTED_FISCAL_COUNTRIES: Record<string, FiscalLabelConfig> = {
   FR: {
     countryCode: 'FR',
     countryName: 'France',
-    countryFlag: '🇫🇷',
     shortVatLabel: 'TVA Intracommunautaire',
     fullVatLabel: 'EU VAT Identification Number (Numéro TVA)',
     companyNameLabel: 'Official Registered Business Name',
@@ -178,7 +174,6 @@ export const SUPPORTED_FISCAL_COUNTRIES: Record<string, FiscalLabelConfig> = {
   ES: {
     countryCode: 'ES',
     countryName: 'Spain',
-    countryFlag: '🇪🇸',
     shortVatLabel: 'Tax ID (NIF / CIF)',
     fullVatLabel: 'Tax Identification Number (NIF / CIF)',
     companyNameLabel: 'Official Registered Business Name',
@@ -193,7 +188,6 @@ export const SUPPORTED_FISCAL_COUNTRIES: Record<string, FiscalLabelConfig> = {
   DE: {
     countryCode: 'DE',
     countryName: 'Germany',
-    countryFlag: '🇩🇪',
     shortVatLabel: 'USt-IdNr (VAT ID)',
     fullVatLabel: 'Umsatzsteuer-Identifikationsnummer (USt-IdNr)',
     companyNameLabel: 'Official Registered Business Name',
@@ -208,7 +202,6 @@ export const SUPPORTED_FISCAL_COUNTRIES: Record<string, FiscalLabelConfig> = {
   US: {
     countryCode: 'US',
     countryName: 'United States',
-    countryFlag: '🇺🇸',
     shortVatLabel: 'Federal Tax ID (EIN)',
     fullVatLabel: 'Federal Employer Identification Number (EIN / Tax ID)',
     companyNameLabel: 'Legal Registered Entity / Corporation Name',
@@ -223,7 +216,6 @@ export const SUPPORTED_FISCAL_COUNTRIES: Record<string, FiscalLabelConfig> = {
   GB: {
     countryCode: 'GB',
     countryName: 'United Kingdom',
-    countryFlag: '🇬🇧',
     shortVatLabel: 'UK VAT / Tax ID',
     fullVatLabel: 'UK VAT Registration Number (or CRN)',
     companyNameLabel: 'Official Registered Company Name',
@@ -238,7 +230,6 @@ export const SUPPORTED_FISCAL_COUNTRIES: Record<string, FiscalLabelConfig> = {
   CH: {
     countryCode: 'CH',
     countryName: 'Switzerland',
-    countryFlag: '🇨🇭',
     shortVatLabel: 'UID / MWST Number',
     fullVatLabel: 'Business Identification Number (UID / MWST / TVA)',
     companyNameLabel: 'Official Registered Business Name',
@@ -253,7 +244,6 @@ export const SUPPORTED_FISCAL_COUNTRIES: Record<string, FiscalLabelConfig> = {
   CA: {
     countryCode: 'CA',
     countryName: 'Canada',
-    countryFlag: '🇨🇦',
     shortVatLabel: 'CRA Business Number (BN)',
     fullVatLabel: 'CRA Business Number (BN / GST/HST Account)',
     companyNameLabel: 'Legal Registered Corporation Name',
@@ -268,7 +258,6 @@ export const SUPPORTED_FISCAL_COUNTRIES: Record<string, FiscalLabelConfig> = {
   AU: {
     countryCode: 'AU',
     countryName: 'Australia',
-    countryFlag: '🇦🇺',
     shortVatLabel: 'ABN (Australian Business Number)',
     fullVatLabel: 'Australian Business Number (ABN / ACN)',
     companyNameLabel: 'Registered Entity / Trading Name',
@@ -283,7 +272,6 @@ export const SUPPORTED_FISCAL_COUNTRIES: Record<string, FiscalLabelConfig> = {
   OTHER: {
     countryCode: 'OTHER',
     countryName: 'Worldwide (Third Country)',
-    countryFlag: '🌐',
     shortVatLabel: 'National Tax ID',
     fullVatLabel: 'National Tax Identification / Business Registration Number',
     companyNameLabel: 'Official Registered Business Name',
@@ -309,7 +297,6 @@ export function getFiscalLabels(countryCode: string = 'GR'): FiscalLabelConfig {
   return {
     countryCode: code,
     countryName: isEu ? 'European Union' : 'International Partner',
-    countryFlag: isEu ? '🇪🇺' : '🌐',
     shortVatLabel: isEu ? 'EU VAT ID' : 'National Tax ID',
     fullVatLabel: isEu ? 'EU VAT Identification Number (VAT ID)' : 'National Tax Identification Number',
     companyNameLabel: 'Official Registered Business Name',
