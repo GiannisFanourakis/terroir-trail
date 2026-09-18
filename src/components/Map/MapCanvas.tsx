@@ -170,6 +170,19 @@ export const getProducerMarkerSignature = (producer: Producer): string => {
   return `${producer.id}|${lat},${lng}|${producer.name}|${producer.village || ''}|${producer.region}|${effectiveCat}|${producer.rating ?? ''}`;
 };
 
+export const canUseGooglePlacesMedia = (
+  producer: Producer | null,
+  hasTrustedLocalPhoto: boolean,
+  featureEnabled: boolean
+): boolean =>
+  Boolean(
+    producer &&
+      !hasTrustedLocalPhoto &&
+      featureEnabled &&
+      producer.googlePlaceId?.trim() &&
+      isGooglePlacesEligible(producer)
+  );
+
 export interface ProducerMapCluster {
   key: string;
   producers: Producer[];
@@ -1105,12 +1118,10 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
   const selectedHasTrustedLocalPhoto =
     selectedResolvedCover?.source === 'host_upload' ||
     selectedResolvedCover?.source === 'curated_estate';
-  const selectedCanUseGoogleMedia = Boolean(
-    selectedProducer &&
-      !selectedHasTrustedLocalPhoto &&
-      runtimeConfig.googlePlacesMedia.enabled &&
-      selectedProducer.googlePlaceId?.trim() &&
-      isGooglePlacesEligible(selectedProducer)
+  const selectedCanUseGoogleMedia = canUseGooglePlacesMedia(
+    selectedProducer,
+    selectedHasTrustedLocalPhoto,
+    runtimeConfig.googlePlacesMedia.enabled
   );
 
   const currentRegionMatchingProducers = activeTerroirRegion
