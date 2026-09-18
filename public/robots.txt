@@ -1,28 +1,31 @@
+# TerroirTrail crawler policy
+# Canonical site: https://terroir-trail.web.app/
+# Updated: 2026-09-18
+
 User-agent: *
 Allow: /
 
-# Explicit AI Search Engine Crawlers & LLM Indexers
-User-agent: GPTBot
-Allow: /
-
-User-agent: OAI-SearchBot
-Allow: /
-
-User-agent: ChatGPT-User
-Allow: /
-
-User-agent: Google-Extended
-Allow: /
-
+# Search engines
 User-agent: Googlebot
 Allow: /
 
 User-agent: GoogleOther
 Allow: /
 
-User-agent: Google-InspectionTool
+User-agent: Bingbot
 Allow: /
 
+# OpenAI search, browsing and training crawlers
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: GPTBot
+Allow: /
+
+# Other answer-engine / AI discovery crawlers
 User-agent: PerplexityBot
 Allow: /
 
@@ -32,6 +35,11 @@ Allow: /
 User-agent: Applebot-Extended
 Allow: /
 
-# Sitemaps & LLM Manifests
+User-agent: Google-Extended
+Allow: /
+
+# Discovery resources
 Sitemap: https://terroir-trail.web.app/sitemap.xml
-# LLM Manifest: https://terroir-trail.web.app/llms.txt
+
+# Machine-readable product context for answer engines:
+# https://terroir-trail.web.app/llms.txt
