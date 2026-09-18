@@ -1386,8 +1386,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
 
       {selectedProducer && (
         <div
-          className="absolute left-1/2 -translate-x-1/2 z-30 w-[95%] sm:w-[480px] max-w-lg animate-in slide-in-from-bottom-6 duration-300"
-          style={{ bottom: 'max(1rem, env(safe-area-inset-bottom, 1rem))' }}
+          className="absolute left-1/2 -translate-x-1/2 z-30 w-[95%] sm:w-[480px] max-w-lg animate-in slide-in-from-bottom-6 duration-300 bottom-[calc(3rem+env(safe-area-inset-bottom,0px))] sm:bottom-4"
         >
           <div className="glass-panel p-2.5 sm:p-3.5 rounded-2xl sm:rounded-3xl shadow-2xl border border-white/15 text-stone-100 flex gap-2.5 sm:gap-3.5 items-center relative overflow-hidden">
             <div className="absolute -right-10 -bottom-10 w-36 h-36 bg-amber-500/20 rounded-full blur-3xl pointer-events-none" />
