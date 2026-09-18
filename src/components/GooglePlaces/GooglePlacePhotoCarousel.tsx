@@ -17,6 +17,86 @@ interface GoogleCarouselPhoto {
   authorAttributions: GooglePhotoAttribution[];
 }
 
+const mapModernPhotos = (
+  photos: readonly google.maps.places.Photo[] | undefined,
+  maxPhotos: number
+): GoogleCarouselPhoto[] =>
+  (photos ?? [])
+    .slice(0, Math.max(1, maxPhotos))
+    .map((photo) => ({
+      uri: photo.getURI({ maxWidth: 1600, maxHeight: 1000 }),
+      googleMapsURI: photo.googleMapsURI ?? undefined,
+      authorAttributions: (photo.authorAttributions ?? []).map((author) => ({
+        displayName: author.displayName,
+        uri: author.uri ?? undefined,
+        photoURI: author.photoURI ?? undefined,
+      })),
+    }))
+    .filter((photo) => Boolean(photo.uri));
+
+const parseLegacyAttribution = (
+  htmlAttributions: readonly string[] | undefined
+): GooglePhotoAttribution[] => {
+  if (!htmlAttributions?.length || typeof document === 'undefined') return [];
+
+  return htmlAttributions
+    .map((html) => {
+      const wrapper = document.createElement('div');
+      wrapper.innerHTML = html;
+      const anchor = wrapper.querySelector('a');
+      const displayName = (anchor?.textContent || wrapper.textContent || '').trim();
+      if (!displayName) return null;
+      return {
+        displayName,
+        uri: anchor?.href || undefined,
+      } satisfies GooglePhotoAttribution;
+    })
+    .filter((value): value is GooglePhotoAttribution => Boolean(value));
+};
+
+const fetchLegacyPhotos = async (
+  placeId: string,
+  maxPhotos: number,
+  googleMapsURI?: string
+): Promise<GoogleCarouselPhoto[]> =>
+  new Promise((resolve) => {
+    try {
+      const service = new google.maps.places.PlacesService(
+        document.createElement('div')
+      );
+      service.getDetails(
+        {
+          placeId,
+          fields: ['photos'],
+        },
+        (result, status) => {
+          if (
+            status !== google.maps.places.PlacesServiceStatus.OK ||
+            !result?.photos?.length
+          ) {
+            resolve([]);
+            return;
+          }
+
+          resolve(
+            result.photos
+              .slice(0, Math.max(1, maxPhotos))
+              .map((photo) => ({
+                uri: photo.getUrl({ maxWidth: 1600, maxHeight: 1000 }),
+                googleMapsURI,
+                authorAttributions: parseLegacyAttribution(
+                  photo.html_attributions
+                ),
+              }))
+              .filter((photo) => Boolean(photo.uri))
+          );
+        }
+      );
+    } catch {
+      resolve([]);
+    }
+  });
+
 interface GooglePlacePhotoCarouselProps {
   producer: Producer | null;
   className?: string;
@@ -98,25 +178,38 @@ export const GooglePlacePhotoCarousel: React.FC<
           'places'
         )) as google.maps.PlacesLibrary;
 
-        const place = new placesLibrary.Place({ id: googlePlaceId });
-        await place.fetchFields({ fields: ['photos'] });
+        let resolvedPlaceId = googlePlaceId;
+        let place = new placesLibrary.Place({ id: resolvedPlaceId });
+        await place.fetchFields({
+          fields: ['displayName', 'photos', 'businessStatus', 'movedPlaceId'],
+        });
 
         if (cancelled) return;
 
-        const freshPhotos: GoogleCarouselPhoto[] = (place.photos ?? [])
-          .slice(0, Math.max(1, maxPhotos))
-          .map((photo) => ({
-            uri: photo.getURI({ maxWidth: 1600, maxHeight: 1000 }),
-            googleMapsURI: photo.googleMapsURI ?? undefined,
-            authorAttributions: (photo.authorAttributions ?? []).map(
-              (author) => ({
-                displayName: author.displayName,
-                uri: author.uri ?? undefined,
-                photoURI: author.photoURI ?? undefined,
-              })
-            ),
-          }))
-          .filter((photo) => Boolean(photo.uri));
+        // Google may retain an obsolete ID after a business moves or its place
+        // record is replaced. Follow the current place before giving up on media.
+        const movedPlaceId = place.movedPlaceId?.trim();
+        if (movedPlaceId && movedPlaceId !== resolvedPlaceId) {
+          resolvedPlaceId = movedPlaceId;
+          place = new placesLibrary.Place({ id: resolvedPlaceId });
+          await place.fetchFields({ fields: ['displayName', 'photos'] });
+        }
+
+        if (cancelled) return;
+
+        let freshPhotos = mapModernPhotos(place.photos, maxPhotos);
+
+        // Some older/legacy-backed business records still expose photos through
+        // PlacesService even when the modern Place.photos result is empty.
+        if (freshPhotos.length === 0) {
+          freshPhotos = await fetchLegacyPhotos(
+            resolvedPlaceId,
+            maxPhotos,
+            producer?.googleMapsUrl
+          );
+        }
+
+        if (cancelled) return;
 
         setPhotos(freshPhotos);
         setLoadFailed(false);
@@ -124,6 +217,26 @@ export const GooglePlacePhotoCarousel: React.FC<
         onAvailabilityChange?.(freshPhotos.length > 0);
       } catch (error) {
         if (cancelled) return;
+
+        // A modern Place request can fail for a stale/legacy record while the
+        // legacy details service can still resolve its photos. Try that path
+        // before falling back to category imagery.
+        const legacyPhotos = await fetchLegacyPhotos(
+          googlePlaceId,
+          maxPhotos,
+          producer?.googleMapsUrl
+        );
+
+        if (cancelled) return;
+
+        if (legacyPhotos.length > 0) {
+          setPhotos(legacyPhotos);
+          setLoadFailed(false);
+          setHasCompletedPhotoFetch(true);
+          onAvailabilityChange?.(true);
+          return;
+        }
+
         console.warn('[GooglePlacePhotoCarousel] Photo fetch failed:', error);
         setPhotos([]);
         setLoadFailed(true);
@@ -137,7 +250,7 @@ export const GooglePlacePhotoCarousel: React.FC<
     return () => {
       cancelled = true;
     };
-  }, [googlePlaceId, isReady, maxPhotos, onAvailabilityChange, shouldLoad]);
+  }, [googlePlaceId, isReady, maxPhotos, onAvailabilityChange, producer?.googleMapsUrl, shouldLoad]);
 
   useEffect(() => {
     if (!autoPlay || isPaused || photos.length <= 1) return;
