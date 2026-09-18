@@ -465,8 +465,7 @@ export const App: React.FC = () => {
 
         {(!selectedProducer || viewMode === 'list') && !isRegionGuideOpen && (
           <div 
-            className="lg:hidden absolute left-1/2 -translate-x-1/2 z-30 pointer-events-auto transition-all animate-in fade-in duration-200"
-            style={{ bottom: 'max(1.25rem, calc(1.25rem + env(safe-area-inset-bottom, 0px)))' }}
+            className="lg:hidden absolute left-1/2 -translate-x-1/2 z-30 pointer-events-auto transition-all animate-in fade-in duration-200 bottom-[calc(3rem+env(safe-area-inset-bottom,0px))]"
           >
             <button
               onClick={() => setViewMode((prev) => (prev === 'map' ? 'list' : 'map'))}
