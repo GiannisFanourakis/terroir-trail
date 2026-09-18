@@ -119,37 +119,37 @@ export const Header: React.FC<HeaderProps> = ({
   };
   const isHost = Boolean(user?.producerIds?.length || user?.isProducer);
 
-  const destinations: { id: Destination; label: string; flag: string }[] = [
+  const destinations: { id: Destination; label: string }[] = [
     // Greece
-    { id: 'crete', label: 'Crete', flag: '🌿' },
-    { id: 'santorini', label: 'Santorini', flag: '🌋' },
-    { id: 'peloponnese', label: 'Peloponnese', flag: '🏛️' },
-    { id: 'thessaly', label: 'Thessaly', flag: '🌾' },
-    { id: 'northern_greece', label: 'Macedonia, Greece', flag: '🏔️' },
+    { id: 'crete', label: 'Crete' },
+    { id: 'santorini', label: 'Santorini' },
+    { id: 'peloponnese', label: 'Peloponnese' },
+    { id: 'thessaly', label: 'Thessaly' },
+    { id: 'northern_greece', label: 'Macedonia, Greece' },
     // Italy
-    { id: 'tuscany', label: 'Tuscany', flag: '🍷' },
-    { id: 'piedmont', label: 'Piedmont', flag: '🍇' },
-    { id: 'puglia', label: 'Puglia', flag: '🫒' },
-    { id: 'sicily', label: 'Sicily', flag: '🍊' },
-    { id: 'south_tyrol', label: 'South Tyrol', flag: '🏔️' },
+    { id: 'tuscany', label: 'Tuscany' },
+    { id: 'piedmont', label: 'Piedmont' },
+    { id: 'puglia', label: 'Puglia' },
+    { id: 'sicily', label: 'Sicily' },
+    { id: 'south_tyrol', label: 'South Tyrol' },
     // France
-    { id: 'provence', label: "Provence-Alpes-Côte d'Azur", flag: '🪻' },
+    { id: 'provence', label: "Provence-Alpes-Côte d'Azur" },
     // Spain
-    { id: 'catalonia', label: 'Catalonia', flag: '🏰' },
+    { id: 'catalonia', label: 'Catalonia' },
     // Portugal
-    { id: 'alentejo', label: 'Alentejo', flag: '🌳' },
+    { id: 'alentejo', label: 'Alentejo' },
     // Croatia
-    { id: 'istria', label: 'Istria', flag: '🫒' },
+    { id: 'istria', label: 'Istria' },
     // Slovenia
-    { id: 'pomurska', label: 'Pomurska', flag: '🌻' },
-    { id: 'southeast_slovenia', label: 'Southeast Slovenia', flag: '🌲' },
-    { id: 'central_slovenia', label: 'Central Slovenia', flag: '🐝' },
-    { id: 'goriska', label: 'Goriška', flag: '🍒' },
+    { id: 'pomurska', label: 'Pomurska' },
+    { id: 'southeast_slovenia', label: 'Southeast Slovenia' },
+    { id: 'central_slovenia', label: 'Central Slovenia' },
+    { id: 'goriska', label: 'Goriška' },
     // Norway
-    { id: 'trondelag', label: 'Trøndelag', flag: '🧀' },
-    { id: 'more_og_romsdal', label: 'Møre og Romsdal', flag: '🌊' },
-    { id: 'buskerud', label: 'Buskerud', flag: '⛰️' },
-    { id: 'vestland', label: 'Vestland', flag: '🍏' },
+    { id: 'trondelag', label: 'Trøndelag' },
+    { id: 'more_og_romsdal', label: 'Møre og Romsdal' },
+    { id: 'buskerud', label: 'Buskerud' },
+    { id: 'vestland', label: 'Vestland' },
   ];
 
   const countryScope: CountryScope = selectedDestination === 'all'
@@ -261,9 +261,7 @@ export const Header: React.FC<HeaderProps> = ({
                 className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-stone-900 border border-white/10 text-stone-200 text-xs font-semibold hover:border-amber-400/40 min-h-[44px] cursor-pointer"
                 aria-label="Select geography"
                 aria-expanded={destMenuOpen}
-              >
-                <span className="text-xs shrink-0">{activeDestObj.flag}</span>
-                <span className="font-bold text-amber-300 max-w-[92px] truncate">{activeDestObj.label}</span>
+              >                <span className="font-bold text-amber-300 max-w-[92px] truncate">{activeDestObj.label}</span>
                 <ChevronDown className="w-3.5 h-3.5 text-stone-400 shrink-0" />
               </button>
               {destMenuOpen && (
@@ -284,9 +282,7 @@ export const Header: React.FC<HeaderProps> = ({
                             ? 'bg-amber-500 text-stone-950 font-bold shadow-md'
                             : 'text-stone-300 hover:text-white hover:bg-white/10'
                         }`}
-                      >
-                        <span className="text-sm">{country.flag}</span>
-                        <span>{country.label}</span>
+                      >                        <span>{country.label}</span>
                       </button>
                     ))}
 
@@ -307,9 +303,7 @@ export const Header: React.FC<HeaderProps> = ({
                                 ? 'bg-amber-500 text-stone-950 font-bold shadow-md'
                                 : 'text-stone-300 hover:text-white hover:bg-white/10'
                             }`}
-                          >
-                            <span className="text-sm">{destination.flag}</span>
-                            <span>{destination.label}</span>
+                          >                            <span>{destination.label}</span>
                           </button>
                         ))}
                       </>
@@ -404,9 +398,7 @@ export const Header: React.FC<HeaderProps> = ({
                     key={country.id}
                     onClick={() => selectCountry(country.id)}
                     className={`flex items-center gap-1 px-2 sm:px-3 py-1 rounded-lg text-[11px] sm:text-xs font-semibold whitespace-nowrap transition-all duration-200 shrink-0 cursor-pointer ${isActive ? 'bg-amber-500 text-stone-950 shadow-md font-bold' : 'text-stone-400 hover:text-white hover:bg-white/5'}`}
-                  >
-                    <span className="text-xs shrink-0">{country.flag}</span>
-                    <span>{country.label}</span>
+                  >                    <span>{country.label}</span>
                   </button>
                 );
               })}
@@ -420,9 +412,7 @@ export const Header: React.FC<HeaderProps> = ({
                     key={destination.id}
                     onClick={() => selectDestination(destination.id)}
                     className={`flex items-center gap-1 px-2 sm:px-3 py-1 rounded-lg text-[11px] sm:text-xs font-semibold whitespace-nowrap transition-all duration-200 shrink-0 cursor-pointer ${isActive ? 'bg-amber-500 text-stone-950 shadow-md font-bold' : 'text-stone-400 hover:text-white hover:bg-white/5'}`}
-                  >
-                    <span className="text-xs shrink-0">{destination.flag}</span>
-                    <span>{destination.label}</span>
+                  >                    <span>{destination.label}</span>
                   </button>
                 );
               })}
