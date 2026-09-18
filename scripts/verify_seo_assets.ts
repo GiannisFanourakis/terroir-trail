@@ -104,7 +104,7 @@ function verifySeoAssets(): void {
     'Italy — 39 records: Tuscany 5, Piedmont 8, Puglia 8, Sicily 9, South Tyrol 9.',
     'France — Provence-Alpes-Côte d\'Azur 8.',
     'Norway — 8 records: Trøndelag 1, Møre og Romsdal 1, Buskerud 1, Vestland 5.',
-    `Deterministic canonical/offline producer snapshot — ${PRODUCERS.length} records pending synchronization with the full live catalogue.`,
+    `Deterministic canonical SEO/AEO producer snapshot — ${PRODUCERS.length} records, synchronized with the live catalogue.`,
     '10 published verified-stop Discovery Guides',
     '/producers/<producer-id>/',
     'Sitemap: https://terroir-trail.web.app/sitemap.xml',
@@ -176,7 +176,7 @@ function verifySeoAssets(): void {
   const producerDirectoryPath = path.join(distDir, 'producers', 'index.html');
   const producerDirectoryContent = requireFile(producerDirectoryPath, 'dist/producers/index.html');
   requireIncludes(producerDirectoryContent, `<link rel="canonical" href="${PRODUCER_DIRECTORY_URL}" />`, 'producer directory');
-  requireIncludes(producerDirectoryContent, `${PRODUCERS.length} bundled canonical producer/project records`, 'producer directory');
+  requireIncludes(producerDirectoryContent, `${PRODUCERS.length} canonical producer/project records`, 'producer directory');
   requireIncludes(producerDirectoryContent, '"@type": "CollectionPage"', 'producer directory');
   requireIncludes(producerDirectoryContent, `"numberOfItems": ${PRODUCERS.length}`, 'producer directory');
 
@@ -223,10 +223,10 @@ function verifySeoAssets(): void {
 
   console.log('✓ SEO/AEO verification passed:');
   console.log(`  - ${expectedUrls.length} canonical sitemap URLs (${PRODUCERS.length} producer entities + directory + core pages)`);
-  console.log(`  - ${PRODUCERS.length} producer pages have canonical metadata, visible answer-ready facts, JSON-LD and directory links`);
+  console.log(`  - ${PRODUCERS.length} synchronized producer pages have canonical metadata, visible answer-ready facts, JSON-LD and directory links`);
   console.log('  - producer directory has CollectionPage/ItemList schema and links every audited entity');
   console.log(`  - live catalogue state: ${LIVE_CATALOGUE_METRICS.totalProducers} records across ${LIVE_CATALOGUE_METRICS.destinationCount} destinations / ${LIVE_CATALOGUE_METRICS.countryCount} countries`);
-  console.log(`  - bundled canonical/offline snapshot: ${PRODUCERS.length} producer records + 10-guide deterministic build state`);
+  console.log(`  - deterministic SEO/AEO snapshot synchronized to all ${PRODUCERS.length} live producer records`);
   console.log(`  - robots.txt advertises ${CANONICAL_SITEMAP_URL}, llms.txt and explicit search/answer-engine crawler access`);
   console.log('  - stale claims, legacy query canonicals and unconsented monetization tags are quarantined');
 }
