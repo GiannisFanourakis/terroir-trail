@@ -91,6 +91,10 @@ function verifySeoAssets(): void {
   if (!sitemapDirectivePattern.test(robotsContent)) {
     fail(`dist/robots.txt does not advertise Sitemap: ${CANONICAL_SITEMAP_URL}`);
   }
+  for (const crawler of ['Googlebot', 'Bingbot', 'OAI-SearchBot', 'ChatGPT-User', 'GPTBot', 'PerplexityBot', 'ClaudeBot', 'Applebot-Extended', 'Google-Extended']) {
+    requireIncludes(robotsContent, `User-agent: ${crawler}`, 'dist/robots.txt');
+  }
+  requireIncludes(robotsContent, 'https://terroir-trail.web.app/llms.txt', 'dist/robots.txt');
 
   const llmsPath = path.join(distDir, 'llms.txt');
   const llmsContent = requireFile(llmsPath, 'dist/llms.txt');
@@ -103,6 +107,11 @@ function verifySeoAssets(): void {
     `Deterministic canonical/offline producer snapshot — ${PRODUCERS.length} records pending synchronization with the full live catalogue.`,
     '10 published verified-stop Discovery Guides',
     '/producers/<producer-id>/',
+    'Sitemap: https://terroir-trail.web.app/sitemap.xml',
+    'Producer directory: https://terroir-trail.web.app/producers/',
+    'Robots policy: https://terroir-trail.web.app/robots.txt',
+    '## Search and answer-engine discovery',
+    '## Answer-engine interpretation rules',
     'does not represent Santorini as a UNESCO Global Geopark',
     'Greek cheese and dairy expansion is now included in the audited catalogue',
   ];
@@ -218,7 +227,7 @@ function verifySeoAssets(): void {
   console.log('  - producer directory has CollectionPage/ItemList schema and links every audited entity');
   console.log(`  - live catalogue state: ${LIVE_CATALOGUE_METRICS.totalProducers} records across ${LIVE_CATALOGUE_METRICS.destinationCount} destinations / ${LIVE_CATALOGUE_METRICS.countryCount} countries`);
   console.log(`  - bundled canonical/offline snapshot: ${PRODUCERS.length} producer records + 10-guide deterministic build state`);
-  console.log(`  - robots.txt advertises ${CANONICAL_SITEMAP_URL}`);
+  console.log(`  - robots.txt advertises ${CANONICAL_SITEMAP_URL}, llms.txt and explicit search/answer-engine crawler access`);
   console.log('  - stale claims, legacy query canonicals and unconsented monetization tags are quarantined');
 }
 
