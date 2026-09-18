@@ -147,7 +147,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
 
         {/* Mobile Expandable Panel */}
         {isMobilePanelOpen && (
-          <div className="flex sm:hidden flex-col gap-3 pt-2.5 pb-1 border-t border-white/10 text-xs animate-in fade-in slide-in-from-top-2 duration-200">
+          <div className="flex sm:hidden flex-col gap-3 max-h-[calc(100dvh-10rem)] min-h-0 overflow-y-auto overscroll-contain touch-pan-y mobile-scroll pt-2.5 pb-2 pr-1 border-t border-white/10 text-xs animate-in fade-in slide-in-from-top-2 duration-200">
             {/* Category choices */}
             <div>
               <div className="flex items-center justify-between mb-1.5 px-0.5">
