@@ -7,7 +7,6 @@ import { Header } from './components/Header/Header';
 import { FilterBar } from './components/FilterBar/FilterBar';
 import { MapCanvas } from './components/Map/MapCanvas';
 import { ProducerList } from './components/Sidebar/ProducerList';
-import { ProducerDetailDrawerWithReviews as ProducerDetailDrawer } from './components/Drawer/ProducerDetailDrawerWithReviews';
 import { TerroirRegionDrawer } from './components/Regions/TerroirRegionDrawer';
 import { TERROIR_REGIONS } from './data/terroirRegionCatalogue';
 import { withTerroirRegionStory } from './data/terroirRegionStories';
@@ -27,6 +26,11 @@ import { CountryScope, setActiveCountryScope } from './config/geography';
 import { List, MapPin } from 'lucide-react';
 
 // Performance optimization: lazy-load modals on demand to shrink initial bundle
+const ProducerDetailDrawer = lazy(() =>
+  import('./components/Drawer/ProducerDetailDrawerWithReviews').then(m => ({
+    default: m.ProducerDetailDrawerWithReviews,
+  }))
+);
 const DayTripModal = lazy(() => import('./components/Loops/DayTripModal').then(m => ({ default: m.DayTripModal })));
 const AuthModal = lazy(() => import('./components/Auth/AuthModal').then(m => ({ default: m.AuthModal })));
 const PassportModal = lazy(() => import('./components/Auth/PassportModal').then(m => ({ default: m.PassportModal })));
@@ -468,22 +472,24 @@ export const App: React.FC = () => {
         )}
 
         {isDrawerOpen && (
-          <ProducerDetailDrawer
-            producer={publicSelectedProducer}
-            onClose={() => setIsDrawerOpen(false)}
-            user={user}
-            onOpenProducerPortal={() => handleOpenProducerPortal(selectedProducer)}
-            isFavorite={selectedProducer ? isFavorite(selectedProducer.id) : false}
-            onToggleFavorite={toggleFavorite}
-            isVisited={selectedProducer ? isVisited(selectedProducer.id) : false}
-            onToggleVisited={toggleVisited}
-            tastingNote={selectedProducer ? getTastingNote(selectedProducer.id) : ''}
-            onSaveTastingNote={saveTastingNote}
-            isAuthenticated={isAuthenticated}
-            onOpenAuth={(role) => setActiveModal({ type: 'auth', initialRole: role || 'traveler' })}
-            customNotice={selectedProducer ? getOverride(selectedProducer.id)?.customNotice : undefined}
-            producerOverride={selectedProducer ? getOverride(selectedProducer.id) : undefined}
-          />
+          <Suspense fallback={null}>
+            <ProducerDetailDrawer
+              producer={publicSelectedProducer}
+              onClose={() => setIsDrawerOpen(false)}
+              user={user}
+              onOpenProducerPortal={() => handleOpenProducerPortal(selectedProducer)}
+              isFavorite={selectedProducer ? isFavorite(selectedProducer.id) : false}
+              onToggleFavorite={toggleFavorite}
+              isVisited={selectedProducer ? isVisited(selectedProducer.id) : false}
+              onToggleVisited={toggleVisited}
+              tastingNote={selectedProducer ? getTastingNote(selectedProducer.id) : ''}
+              onSaveTastingNote={saveTastingNote}
+              isAuthenticated={isAuthenticated}
+              onOpenAuth={(role) => setActiveModal({ type: 'auth', initialRole: role || 'traveler' })}
+              customNotice={selectedProducer ? getOverride(selectedProducer.id)?.customNotice : undefined}
+              producerOverride={selectedProducer ? getOverride(selectedProducer.id) : undefined}
+            />
+          </Suspense>
         )}
       </main>
 

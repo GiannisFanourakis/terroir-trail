@@ -434,7 +434,8 @@ export const saveProducerOverride = async (override: ProducerOverride): Promise<
       if (mediaChanged) {
         await replaceProducerMedia(
           persistedOverride.producerId,
-          persistedOverride.uploadedImages || []
+          persistedOverride.uploadedImages || [],
+          await auth.currentUser.getIdToken()
         );
       }
     } catch (error) {
