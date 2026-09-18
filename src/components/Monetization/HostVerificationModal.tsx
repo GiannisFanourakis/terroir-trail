@@ -81,7 +81,7 @@ export const HostVerificationModal: React.FC<HostVerificationModalProps> = ({
 
             <div className="space-y-1.5 text-stone-300">
               <div className="p-2.5 rounded-xl bg-stone-900/80 border border-white/5 flex items-center gap-2.5">
-                <span className="text-base">🍷</span>
+                <Wine className="w-4 h-4 text-amber-400" aria-hidden="true" />
                 <div>
                   <strong className="text-white block">Welcome Tasting Pour</strong>
                   <span className="text-stone-400 text-[10px]">Complimentary reserve vintage sample</span>
@@ -89,7 +89,7 @@ export const HostVerificationModal: React.FC<HostVerificationModalProps> = ({
               </div>
 
               <div className="p-2.5 rounded-xl bg-stone-900/80 border border-white/5 flex items-center gap-2.5">
-                <span className="text-base">🧀</span>
+                <Award className="w-4 h-4 text-amber-400" aria-hidden="true" />
                 <div>
                   <strong className="text-white block">Artisanal Meze Platter</strong>
                   <span className="text-stone-400 text-[10px]">Complimentary graviera cheese & olives with tasting</span>
@@ -97,7 +97,7 @@ export const HostVerificationModal: React.FC<HostVerificationModalProps> = ({
               </div>
 
               <div className="p-2.5 rounded-xl bg-stone-900/80 border border-white/5 flex items-center gap-2.5">
-                <span className="text-base">🏷️</span>
+                <Award className="w-4 h-4 text-amber-400" aria-hidden="true" />
                 <div>
                   <strong className="text-white block">10% Bottle Discount</strong>
                   <span className="text-stone-400 text-[10px]">Apply to direct cellar door bottle sales</span>
@@ -105,7 +105,7 @@ export const HostVerificationModal: React.FC<HostVerificationModalProps> = ({
               </div>
 
               <div className="p-2.5 rounded-xl bg-stone-900/80 border border-white/5 flex items-center gap-2.5">
-                <span className="text-base">🛂</span>
+                <CheckCircle2 className="w-4 h-4 text-amber-400" aria-hidden="true" />
                 <div>
                   <strong className="text-white block">Terroir Digital Stamp</strong>
                   <span className="text-stone-400 text-[10px]">Guest is collecting their passport stamp</span>
@@ -116,7 +116,7 @@ export const HostVerificationModal: React.FC<HostVerificationModalProps> = ({
 
           {/* Host Note */}
           <div className="p-3 rounded-xl bg-stone-900/50 border border-white/5 text-[10px] text-stone-400 leading-relaxed">
-            💡 <em>Host Notice:</em> TerroirTrail charges 0% commission on direct reservation inquiries.
+            <Sparkles className="w-4 h-4 text-amber-400 shrink-0" aria-hidden="true" /> <em>Host Notice:</em> TerroirTrail charges 0% commission on direct reservation inquiries.
           </div>
 
           <button
