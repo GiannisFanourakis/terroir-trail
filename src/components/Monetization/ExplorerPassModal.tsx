@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { UserProfile } from '../../types/auth';
 import { startPassCheckout, isExplorerPassPurchasesEnabled } from '../../services/explorerPass';
-import { 
-  X, Award, CheckCircle2, Sparkles, ShieldCheck, 
-  Wine, Gift, Compass, CreditCard, Apple, ArrowRight, Star, Lock, QrCode
+import {
+  X, Award, CheckCircle2, ShieldCheck, ArrowRight, Lock, QrCode,
 } from 'lucide-react';
 
 interface ExplorerPassModalProps {
@@ -51,7 +50,7 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
 
   const comparisonRows = [
     { feature: 'Interactive Artisanal Map & Directory', free: 'Included', pass: 'Included' },
-    { feature: 'Direct Producer Reservation Inquiries', free: '✅ Included', pass: '✅ Included' },
+    { feature: 'Direct Producer Reservation Inquiries', free: 'Included', pass: 'Included' },
     { feature: 'Digital Explorer Pass & Unique ID', free: 'None', pass: '14-Day or 365-Day' },
     { feature: 'Cellar Door QR Verification', free: 'None', pass: 'Server-Verified' },
     { feature: 'Cross-Device Pass Sync', free: 'Account Only', pass: 'Full Pass Sync' },
@@ -278,7 +277,7 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
                     Perfect for your vacation. <strong>No subscription</strong>, no auto-renew.
                   </p>
                   <span className="mt-2 inline-block text-[10px] text-emerald-400 font-semibold">
-                    ✓ 14 days active duration
+                    14 days active duration
                   </span>
                 </button>
 
@@ -308,7 +307,7 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
                     For local residents, sommeliers & passionate travelers exploring authentic terroirs.
                   </p>
                   <span className="mt-2 inline-block text-[10px] text-amber-300 font-semibold">
-                    ✓ 365 days active duration
+                    365 days active duration
                   </span>
                 </button>
               </div>
