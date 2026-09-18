@@ -388,56 +388,66 @@ const renderSitemap = (): string => {
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${entries}\n</urlset>\n`;
 };
 
-const replaceRequired = (html: string, from: string, to: string): string => {
-  if (!html.includes(from)) {
-    console.error(`[SEO Generation Failed] Expected homepage text not found: ${from.slice(0, 100)}`);
-    process.exit(1);
-  }
-  return html.replaceAll(from, to);
-};
-
 const refreshHomepageSeoState = (sourceHtml: string): string => {
   let html = sourceHtml;
-  const oldDescription = 'Independent producer and agritourism discovery guide. Explore audited producers across Crete and Santorini with clearly labeled visiting, location, imagery, and road-access status.';
-  const newDescription = `Independent producer and agritourism discovery guide. Explore ${LIVE_CATALOGUE_METRICS.totalProducers} live producer/project records across ${LIVE_CATALOGUE_METRICS.destinationCount} destinations in ${LIVE_CATALOGUE_METRICS.countryCount} European countries, with clearly labeled visiting, location, imagery, and road-access status.`;
-  html = replaceRequired(html, oldDescription, newDescription);
 
-  html = replaceRequired(
-    html,
-    'Independent producer and agritourism discovery guide connecting travelers directly with audited wineries, craft breweries, artisanal olive mills, traditional dairies, apiaries, traditional distilleries, and farms across Crete and Santorini, with clearly labeled visiting, location, imagery, and road-access status.',
-    `Independent producer and agritourism discovery guide connecting travelers directly with ${LIVE_CATALOGUE_METRICS.totalProducers} live producer/project records across ${LIVE_CATALOGUE_METRICS.destinationCount} destinations in ${LIVE_CATALOGUE_METRICS.countryCount} European countries, with clearly labeled visiting, location, imagery, and road-access status.`
-  );
-  html = replaceRequired(
-    html,
-    'Interactive agritourism discovery map and directory with audited reference catalogues in Crete and Santorini. Discovery Guides are built from verified stops; multi-stop driving navigation remains withheld wherever road-access evidence is incomplete.',
-    `Interactive agritourism discovery map and directory with ${LIVE_CATALOGUE_METRICS.totalProducers} live producer/project records across ${LIVE_CATALOGUE_METRICS.destinationCount} destinations in ${LIVE_CATALOGUE_METRICS.countryCount} European countries. Discovery Guides are built from verified stops; multi-stop driving navigation remains withheld wherever road-access evidence is incomplete.`
-  );
-  html = replaceRequired(
-    html,
-    'TerroirTrail is an independent producer and agritourism discovery guide. It connects slow travelers and road-trippers directly with independent wineries, craft breweries, artisanal olive mills, traditional dairies, apiaries, traditional distilleries, and farms, with audited reference catalogues in Crete and Santorini and further regional expansion in progress.',
-    `TerroirTrail is an independent producer and agritourism discovery guide with ${LIVE_CATALOGUE_METRICS.totalProducers} live producer/project records across ${LIVE_CATALOGUE_METRICS.destinationCount} destinations in ${LIVE_CATALOGUE_METRICS.countryCount} European countries. It connects travelers with source-backed producer identity, visiting, location and access information while keeping unknown facts unknown.`
-  );
-  html = replaceRequired(html, 'Which regions are currently audited to reference quality?', 'Which regions are currently represented in the audited catalogue?');
-  html = replaceRequired(
-    html,
-    'Crete and Santorini are the current reference-quality regions. Crete has 27 audited producer/project records and Santorini has 9 audited producer records.',
-    `The live catalogue currently contains ${LIVE_CATALOGUE_METRICS.totalProducers} producer/project records across ${LIVE_CATALOGUE_METRICS.destinationCount} destinations in ${LIVE_CATALOGUE_METRICS.countryCount} European countries.`
-  );
-  html = replaceRequired(
-    html,
-    'Crete and Santorini are the current reference-quality regions, with clearly labeled visiting, location, imagery, and road-access status and no commission markups.',
-    `The live catalogue spans ${LIVE_CATALOGUE_METRICS.destinationCount} destinations in ${LIVE_CATALOGUE_METRICS.countryCount} European countries, with clearly labeled visiting, location, imagery, and road-access status and no commission markups.`
-  );
-  html = replaceRequired(
-    html,
-    'TerroirTrail publishes Discovery Guides from verified producer stops. Six guides are currently published across Crete and Santorini. They are discovery stop collections, not road-safety guarantees.',
-    'TerroirTrail publishes Discovery Guides from verified producer stops. Ten verified-stop guides are currently published across Crete, Santorini, the Peloponnese, Macedonia, Greece and Tuscany. They are discovery stop collections, not road-safety guarantees.'
-  );
-  html = replaceRequired(
-    html,
-    '<h2>Verified Crete &amp; Santorini Producer Directory</h2>',
-    `<p>The live catalogue and deterministic SEO/AEO snapshot are synchronized at ${PRODUCERS.length} producer/project records. <a href="/producers/">Browse the canonical producer directory.</a></p>\n        <h2>Audited Producer Directory — Homepage Excerpt</h2>`
-  );
+  // Legacy source templates may still contain older regional copy. Normalize it
+  // when present, but never fail a build merely because the source template has
+  // already been updated to the current catalogue state.
+  const legacyReplacements: Array<[string, string]> = [
+    [
+      'Independent producer and agritourism discovery guide. Explore audited producers across Crete and Santorini with clearly labeled visiting, location, imagery, and road-access status.',
+      `Independent producer and agritourism discovery guide. Explore ${LIVE_CATALOGUE_METRICS.totalProducers} live producer/project records across ${LIVE_CATALOGUE_METRICS.destinationCount} destinations in ${LIVE_CATALOGUE_METRICS.countryCount} European countries, with clearly labeled visiting, location, imagery, and road-access status.`,
+    ],
+    [
+      'Independent producer and agritourism discovery guide connecting travelers directly with audited wineries, craft breweries, artisanal olive mills, traditional dairies, apiaries, traditional distilleries, and farms across Crete and Santorini, with clearly labeled visiting, location, imagery, and road-access status.',
+      `Independent producer and agritourism discovery guide connecting travelers directly with ${LIVE_CATALOGUE_METRICS.totalProducers} live producer/project records across ${LIVE_CATALOGUE_METRICS.destinationCount} destinations in ${LIVE_CATALOGUE_METRICS.countryCount} European countries, with clearly labeled visiting, location, imagery, and road-access status.`,
+    ],
+    [
+      'Interactive agritourism discovery map and directory with audited reference catalogues in Crete and Santorini. Discovery Guides are built from verified stops; multi-stop driving navigation remains withheld wherever road-access evidence is incomplete.',
+      `Interactive agritourism discovery map and directory with ${LIVE_CATALOGUE_METRICS.totalProducers} live producer/project records across ${LIVE_CATALOGUE_METRICS.destinationCount} destinations in ${LIVE_CATALOGUE_METRICS.countryCount} European countries. Discovery Guides are built from verified stops; multi-stop driving navigation remains withheld wherever road-access evidence is incomplete.`,
+    ],
+    [
+      'TerroirTrail is an independent producer and agritourism discovery guide. It connects slow travelers and road-trippers directly with independent wineries, craft breweries, artisanal olive mills, traditional dairies, apiaries, traditional distilleries, and farms, with audited reference catalogues in Crete and Santorini and further regional expansion in progress.',
+      `TerroirTrail is an independent producer and agritourism discovery guide with ${LIVE_CATALOGUE_METRICS.totalProducers} live producer/project records across ${LIVE_CATALOGUE_METRICS.destinationCount} destinations in ${LIVE_CATALOGUE_METRICS.countryCount} European countries. It connects travelers with source-backed producer identity, visiting, location and access information while keeping unknown facts unknown.`,
+    ],
+    [
+      'Which regions are currently audited to reference quality?',
+      'Which regions are currently represented in the audited catalogue?',
+    ],
+    [
+      'Crete and Santorini are the current reference-quality regions. Crete has 27 audited producer/project records and Santorini has 9 audited producer records.',
+      `The live catalogue currently contains ${LIVE_CATALOGUE_METRICS.totalProducers} producer/project records across ${LIVE_CATALOGUE_METRICS.destinationCount} destinations in ${LIVE_CATALOGUE_METRICS.countryCount} European countries.`,
+    ],
+    [
+      'Crete and Santorini are the current reference-quality regions, with clearly labeled visiting, location, imagery, and road-access status and no commission markups.',
+      `The live catalogue spans ${LIVE_CATALOGUE_METRICS.destinationCount} destinations in ${LIVE_CATALOGUE_METRICS.countryCount} European countries, with clearly labeled visiting, location, imagery, and road-access status and no commission markups.`,
+    ],
+    [
+      'TerroirTrail publishes Discovery Guides from verified producer stops. Six guides are currently published across Crete and Santorini. They are discovery stop collections, not road-safety guarantees.',
+      'TerroirTrail publishes Discovery Guides from verified producer stops. Ten verified-stop guides are currently published. They are discovery stop collections, not road-safety guarantees.',
+    ],
+  ];
+
+  for (const [legacy, current] of legacyReplacements) {
+    html = html.replaceAll(legacy, current);
+  }
+
+  const sourceHeading = '<h2>Producer Directory — Selected Catalogue Excerpt</h2>';
+  const generatedHeading = '<h2>Audited Producer Directory — Homepage Excerpt</h2>';
+  const catalogueSummary = `<p>The live catalogue and deterministic SEO/AEO snapshot are synchronized at ${PRODUCERS.length} producer/project records. <a href="/producers/">Browse the canonical producer directory.</a></p>`;
+
+  if (html.includes(sourceHeading)) {
+    html = html.replace(sourceHeading, `${catalogueSummary}\n        ${generatedHeading}`);
+  } else if (html.includes(generatedHeading)) {
+    if (!html.includes(catalogueSummary)) {
+      html = html.replace(generatedHeading, `${catalogueSummary}\n        ${generatedHeading}`);
+    }
+  } else {
+    console.error('[SEO Generation Failed] Homepage producer-directory heading was not found.');
+    process.exit(1);
+  }
+
   return html;
 };
 
