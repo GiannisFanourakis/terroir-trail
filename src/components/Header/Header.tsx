@@ -231,7 +231,7 @@ export const Header: React.FC<HeaderProps> = ({
               {destMenuOpen && (
                 <>
                   <div className="fixed inset-0 z-40 bg-black/40 backdrop-blur-xs" onClick={() => setDestMenuOpen(false)} />
-                  <div className="absolute left-0 top-full mt-1.5 z-50 bg-stone-950 border border-white/15 rounded-2xl p-1.5 shadow-2xl flex flex-col gap-1 min-w-[220px] backdrop-blur-xl">
+                  <div className="absolute left-0 top-full mt-1.5 z-50 bg-stone-950 border border-white/15 rounded-2xl p-1.5 shadow-2xl flex flex-col gap-1 min-w-[220px] max-h-[calc(100dvh-5.5rem)] overflow-y-auto overscroll-contain touch-pan-y mobile-scroll backdrop-blur-xl">
                     <div className="px-2 pt-1 pb-0.5 text-[9px] uppercase tracking-[0.18em] font-bold text-stone-500">Country</div>
                     {COUNTRY_LAYERS.map((country) => (
                       <button
@@ -404,7 +404,7 @@ export const Header: React.FC<HeaderProps> = ({
           <div className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm sm:hidden" onClick={closeMenu} />
           <div className="fixed top-0 right-0 bottom-0 z-50 w-72 bg-stone-950 border-l border-white/10 shadow-2xl flex flex-col sm:hidden" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
             <div className="flex items-center justify-between px-4 py-3 border-b border-white/10"><span className="text-sm font-bold text-white">Menu</span><button onClick={closeMenu} className="w-8 h-8 flex items-center justify-center rounded-lg bg-stone-900 border border-white/10 text-stone-400 hover:text-white cursor-pointer"><X className="w-4 h-4" /></button></div>
-            <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-2">
+            <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain touch-pan-y mobile-scroll p-4 pb-[max(1rem,env(safe-area-inset-bottom))] flex flex-col gap-2">
               {onOpenAbout && <button onClick={() => { onOpenAbout(); closeMenu(); }} className="flex items-center gap-3 w-full px-3 py-3 text-sm font-semibold text-stone-200 hover:text-white bg-stone-900 rounded-xl border border-white/10 cursor-pointer"><BookOpen className="w-4 h-4 text-amber-400" />About & FAQ</button>}
 
               {isHost ? (
