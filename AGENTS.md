@@ -44,6 +44,8 @@ For every producer candidate, perform the Google Maps check in this order:
    - the coordinates after `@` are the map camera/viewport and are **not** authoritative for the producer point;
    - when present, `!3d<lat>!4d<lng>` are the actual Google place pin and must be used for `lat` / `lng`.
 6. Resolve the Google Place ID for that same Maps listing.
+   - When the direct Google Maps URL contains a feature pair in the form `!1s0x<hex_a>:0x<hex_b>`, use that exact pair to resolve the canonical `ChIJ...` Google Place ID for the same listing.
+   - Prefer this URL-derived identity over unrelated search-result IDs, because it is tied to the exact Maps entity whose pin is being stored.
 7. Cross-check the Maps listing against the official producer website using name plus at least one strong matching identifier such as street address, phone number, locality, or producer-owned directions link.
 8. Confirm that the website, Maps URL, Place ID, and exact pin all describe the same intended physical producer/public point.
 9. Record the exact direct Maps URL in `google_maps_url`; do not synthesize or shorten it.
