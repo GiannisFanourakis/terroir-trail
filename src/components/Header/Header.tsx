@@ -3,7 +3,7 @@ import { Destination } from '../../types/terroir';
 import { UserProfile } from '../../types/auth';
 import { ProfileMenu } from '../Auth/ProfileMenu';
 import { UserAvatar } from '../Common/UserAvatar';
-import { Compass, Search, X, Heart, Building2, Calendar, Sparkles, BookOpen, Menu, Award, LogOut, User, ChevronDown } from 'lucide-react';
+import { Compass, Search, X, Heart, Building2, Calendar, Sparkles, BookOpen, Menu, Award, LogOut, User, ChevronDown, Download, Share2, Plus, Smartphone } from 'lucide-react';
 import {
   COUNTRY_LAYERS,
   CountryScope,
@@ -11,6 +11,7 @@ import {
   getDestinationCountry,
   setActiveCountryScope,
 } from '../../config/geography';
+import { usePwaInstall } from '../../hooks/usePwaInstall';
 
 interface HeaderProps {
   selectedDestination: Destination | 'all';
@@ -78,8 +79,24 @@ export const Header: React.FC<HeaderProps> = ({
   const [menuOpen, setMenuOpen] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [destMenuOpen, setDestMenuOpen] = useState(false);
+  const [installHelpOpen, setInstallHelpOpen] = useState(false);
+  const {
+    canInstall,
+    isIos,
+    isIosSafari,
+    requestInstall,
+  } = usePwaInstall();
   const menuSwipeStart = useRef<{ x: number; y: number } | null>(null);
   const closeMenu = () => setMenuOpen(false);
+
+  const handleInstallApp = async () => {
+    closeMenu();
+    const result = await requestInstall();
+
+    if (result === 'ios-instructions') {
+      setInstallHelpOpen(true);
+    }
+  };
 
   const handleMenuTouchStart = (event: React.TouchEvent<HTMLDivElement>) => {
     const touch = event.touches[0];
@@ -443,6 +460,25 @@ export const Header: React.FC<HeaderProps> = ({
               <button onClick={() => { onOpenLoops(); closeMenu(); }} className="flex items-center gap-3 w-full px-3 py-3 text-sm font-semibold text-stone-200 bg-stone-900 rounded-xl border border-white/10 cursor-pointer"><Compass className="w-4 h-4 text-amber-400" />Discovery Guides</button>
               {onOpenExperiences && <button onClick={() => { onOpenExperiences(); closeMenu(); }} className="flex items-center gap-3 w-full px-3 py-3 text-sm font-semibold text-stone-200 bg-stone-900 rounded-xl border border-white/10 cursor-pointer"><Sparkles className="w-4 h-4 text-amber-400" />Curated Experiences</button>}
 
+              {canInstall && (
+                <button
+                  onClick={() => { void handleInstallApp(); }}
+                  className="flex items-center gap-3 w-full px-3 py-3 text-left bg-amber-500/12 hover:bg-amber-500/18 rounded-xl border border-amber-500/30 cursor-pointer transition"
+                >
+                  <span className="w-9 h-9 rounded-xl bg-amber-500/15 border border-amber-500/25 flex items-center justify-center shrink-0">
+                    <Download className="w-4 h-4 text-amber-400" />
+                  </span>
+                  <span className="min-w-0">
+                    <span className="block text-sm font-bold text-amber-200">
+                      Install TerroirTrail
+                    </span>
+                    <span className="block mt-0.5 text-[10px] leading-4 text-stone-400">
+                      Add it to your Home Screen · no app store required
+                    </span>
+                  </span>
+                </button>
+              )}
+
               {user ? (
                 <div className="mt-2 p-3.5 rounded-2xl bg-stone-900/90 border border-white/10 flex flex-col gap-3">
                   <div className="flex items-center gap-3"><UserAvatar user={user} size="md" className="ring-2 ring-amber-500/50" /><div className="min-w-0 flex-1"><div className="font-bold text-white text-sm truncate">{user.name}</div><div className="text-[11px] text-stone-400 truncate">{user.email}</div></div></div>
@@ -455,6 +491,86 @@ export const Header: React.FC<HeaderProps> = ({
               )}
             </div>
           </div>
+        </>
+      )}
+
+      {installHelpOpen && (
+        <>
+          <button
+            type="button"
+            className="fixed inset-0 z-[70] bg-black/70 backdrop-blur-sm sm:hidden"
+            aria-label="Close install instructions"
+            onClick={() => setInstallHelpOpen(false)}
+          />
+          <section
+            className="fixed inset-x-0 bottom-0 z-[71] sm:hidden rounded-t-3xl border-t border-white/10 bg-stone-950 px-5 pt-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] text-stone-100 shadow-2xl"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="install-terroirtrail-title"
+          >
+            <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-stone-700" />
+            <div className="flex items-start gap-3">
+              <span className="w-11 h-11 rounded-2xl bg-amber-500/15 border border-amber-500/25 flex items-center justify-center shrink-0">
+                <Smartphone className="w-5 h-5 text-amber-400" />
+              </span>
+              <div className="min-w-0 flex-1">
+                <h2 id="install-terroirtrail-title" className="text-base font-bold text-white">
+                  Add TerroirTrail to your Home Screen
+                </h2>
+                <p className="mt-1 text-xs leading-5 text-stone-400">
+                  Keep the guide one tap away while travelling. It opens like an app and stays connected to the latest web version.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setInstallHelpOpen(false)}
+                className="w-8 h-8 rounded-xl bg-stone-900 border border-white/10 text-stone-400 hover:text-white flex items-center justify-center"
+                aria-label="Close install instructions"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {isIos && !isIosSafari && (
+              <div className="mt-4 rounded-2xl border border-sky-400/20 bg-sky-500/10 px-3.5 py-3 text-xs leading-5 text-sky-100">
+                Open TerroirTrail in Safari first, then follow the steps below.
+              </div>
+            )}
+
+            <div className="mt-5 space-y-3">
+              <div className="flex items-center gap-3 rounded-2xl bg-stone-900/90 border border-white/10 px-3.5 py-3">
+                <span className="w-9 h-9 rounded-xl bg-stone-950 border border-white/10 flex items-center justify-center shrink-0">
+                  <Share2 className="w-4 h-4 text-amber-400" />
+                </span>
+                <div>
+                  <div className="text-xs font-bold text-white">1. Tap Share</div>
+                  <div className="mt-0.5 text-[11px] text-stone-400">
+                    Use Safari's Share button at the bottom of the screen.
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 rounded-2xl bg-stone-900/90 border border-white/10 px-3.5 py-3">
+                <span className="w-9 h-9 rounded-xl bg-stone-950 border border-white/10 flex items-center justify-center shrink-0">
+                  <Plus className="w-4 h-4 text-amber-400" />
+                </span>
+                <div>
+                  <div className="text-xs font-bold text-white">2. Add to Home Screen</div>
+                  <div className="mt-0.5 text-[11px] text-stone-400">
+                    Choose “Add to Home Screen”, then tap Add.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setInstallHelpOpen(false)}
+              className="mt-5 w-full rounded-2xl bg-amber-500 hover:bg-amber-400 px-4 py-3 text-sm font-bold text-stone-950 transition"
+            >
+              Got it
+            </button>
+          </section>
         </>
       )}
     </>
