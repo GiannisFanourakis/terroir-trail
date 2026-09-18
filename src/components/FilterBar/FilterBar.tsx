@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { Category, RoadAccess, FilterState } from '../../types/terroir';
 import { RotateCcw, SlidersHorizontal, Compass } from 'lucide-react';
+import { ProducerCategoryIcon } from '../Common/ProducerCategoryIcon';
 
 interface FilterBarProps {
   filters: FilterState;
@@ -48,21 +49,21 @@ export const FilterBar: React.FC<FilterBarProps> = ({
     }
   };
 
-  const categories: { id: Category | 'all'; label: string; icon: string; activeColor: string }[] = [
-    { id: 'all', label: 'All Terroir', icon: '🏛️', activeColor: 'bg-amber-500 text-stone-950 shadow-amber-500/20' },
-    { id: 'winery', label: 'Wineries', icon: '🍇', activeColor: 'bg-rose-500 text-white shadow-rose-500/30' },
-    { id: 'brewery', label: 'Microbreweries', icon: '🍺', activeColor: 'bg-amber-400 text-stone-950 shadow-amber-400/30' },
-    { id: 'distillery', label: 'Distilleries', icon: '🥃', activeColor: 'bg-amber-600 text-white shadow-amber-600/30' },
-    { id: 'cidery', label: 'Cideries', icon: '🍎', activeColor: 'bg-lime-600 text-white shadow-lime-600/30' },
-    { id: 'olive_mill', label: 'Olive Mills', icon: '🫒', activeColor: 'bg-emerald-600 text-white shadow-emerald-600/30' },
-    { id: 'olive_oil_producer', label: 'Olive Oil Producers', icon: '🫒', activeColor: 'bg-emerald-500 text-stone-950 shadow-emerald-500/30' },
-    { id: 'oil_mill', label: 'Other Oil Mills', icon: '🌻', activeColor: 'bg-yellow-600 text-white shadow-yellow-600/30' },
-    { id: 'cheese_dairy', label: 'Shepherd Dairies', icon: '🧀', activeColor: 'bg-yellow-500 text-stone-950 shadow-yellow-500/30' },
-    { id: 'apiary', label: 'Apiaries & Honey', icon: '🍯', activeColor: 'bg-orange-500 text-white shadow-orange-500/30' },
-    { id: 'confectionery', label: 'Confectioners', icon: '🍫', activeColor: 'bg-amber-700 text-white shadow-amber-700/30' },
-    { id: 'herb_farm', label: 'Herb Farms', icon: '🌿', activeColor: 'bg-green-600 text-white shadow-green-600/30' },
-    { id: 'mushroom_farm', label: 'Mushroom Farms', icon: '🍄', activeColor: 'bg-stone-600 text-white shadow-stone-600/30' },
-    { id: 'farm', label: 'Farms', icon: '🌱', activeColor: 'bg-emerald-500 text-stone-950 shadow-emerald-500/30' },
+  const categories: { id: Category | 'all'; label: string; activeColor: string }[] = [
+    { id: 'all', label: 'All Terroir', activeColor: 'bg-amber-500 text-stone-950 shadow-amber-500/20' },
+    { id: 'winery', label: 'Wineries', activeColor: 'bg-rose-500 text-white shadow-rose-500/30' },
+    { id: 'brewery', label: 'Microbreweries', activeColor: 'bg-amber-400 text-stone-950 shadow-amber-400/30' },
+    { id: 'distillery', label: 'Distilleries', activeColor: 'bg-amber-600 text-white shadow-amber-600/30' },
+    { id: 'cidery', label: 'Cideries', activeColor: 'bg-lime-600 text-white shadow-lime-600/30' },
+    { id: 'olive_mill', label: 'Olive Mills', activeColor: 'bg-emerald-600 text-white shadow-emerald-600/30' },
+    { id: 'olive_oil_producer', label: 'Olive Oil Producers', activeColor: 'bg-emerald-500 text-stone-950 shadow-emerald-500/30' },
+    { id: 'oil_mill', label: 'Other Oil Mills', activeColor: 'bg-yellow-600 text-white shadow-yellow-600/30' },
+    { id: 'cheese_dairy', label: 'Shepherd Dairies', activeColor: 'bg-yellow-500 text-stone-950 shadow-yellow-500/30' },
+    { id: 'apiary', label: 'Apiaries & Honey', activeColor: 'bg-orange-500 text-white shadow-orange-500/30' },
+    { id: 'confectionery', label: 'Confectioners', activeColor: 'bg-amber-700 text-white shadow-amber-700/30' },
+    { id: 'herb_farm', label: 'Herb Farms', activeColor: 'bg-green-600 text-white shadow-green-600/30' },
+    { id: 'mushroom_farm', label: 'Mushroom Farms', activeColor: 'bg-stone-600 text-white shadow-stone-600/30' },
+    { id: 'farm', label: 'Farms', activeColor: 'bg-emerald-500 text-stone-950 shadow-emerald-500/30' },
   ];
 
   const roadAccessOptions: { id: RoadAccess | 'all'; label: string }[] = [
@@ -107,7 +108,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
             }`}
             title="Open categories and filters"
           >
-            <span className="text-sm shrink-0">{activeCategory.icon}</span>
+            <ProducerCategoryIcon category={activeCategory.id} className="w-4 h-4" />
             <span className="truncate font-medium">
               {filters.category !== 'all' ? activeCategory.label : 'Categories & Filters'}
             </span>
@@ -179,7 +180,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                           : 'bg-stone-800/80 text-stone-300 hover:bg-stone-700/80 border border-white/5'
                       }`}
                     >
-                      <span className="text-base shrink-0">{cat.icon}</span>
+                      <ProducerCategoryIcon category={cat.id} className="w-4 h-4" />
                       <span className="truncate">{cat.label}</span>
                     </button>
                   );
@@ -235,7 +236,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                       : 'bg-stone-800/80 text-stone-300 hover:text-white hover:bg-stone-700/80 border border-white/5'
                   }`}
                 >
-                  <span className="text-xs sm:text-sm leading-none shrink-0">{cat.icon}</span>
+                  <ProducerCategoryIcon category={cat.id} className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                   <span>{cat.label}</span>
                 </button>
               );
