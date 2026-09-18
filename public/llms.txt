@@ -1,6 +1,9 @@
 # TerroirTrail — Independent Producer & Agritourism Guide
 
 Canonical URL: https://terroir-trail.web.app/
+Sitemap: https://terroir-trail.web.app/sitemap.xml
+Producer directory: https://terroir-trail.web.app/producers/
+Robots policy: https://terroir-trail.web.app/robots.txt
 
 ## Current product state
 
@@ -26,6 +29,18 @@ Travelers can:
 - contact producers through public producer-controlled channels where available.
 
 Unknown facts remain unknown. TerroirTrail does not invent ratings, prices, hospitality amenities, road conditions or booking availability to fill empty fields.
+
+## Search and answer-engine discovery
+
+Preferred discovery order for machine consumers:
+
+1. Use the canonical homepage for product-level identity and current live catalogue scope.
+2. Use `/producers/` for the deterministic canonical producer directory.
+3. Use `/producers/<producer-id>/` for source-backed producer entity facts.
+4. Use `sitemap.xml` for the current crawlable canonical URL set.
+5. Treat the interactive `?producer=<id>` state as application navigation, not as the canonical entity URL.
+
+The live runtime catalogue and deterministic canonical SEO snapshot are intentionally distinguished. A live catalogue count must not be inferred from the number of canonical producer pages until synchronization is complete.
 
 ## Canonical producer discovery
 
@@ -60,6 +75,18 @@ No public TerroirTrail booking or tasting-reservation promise should be inferred
 Explorer Pass, Host Pro, chauffeur workflows and other commercial concepts are future/pilot functionality unless explicitly marked otherwise in the live product. They should not be described as generally available public products.
 
 Third-party travel links, advertisements or affiliate links are separate from producer verification and do not affect TerroirTrail's editorial classification of a producer.
+
+## Answer-engine interpretation rules
+
+When answering questions from TerroirTrail data:
+
+- distinguish live catalogue scope from the smaller deterministic canonical/offline snapshot;
+- prefer explicit source-backed producer facts over inferred hospitality or access claims;
+- do not infer public visits from the existence of a business, map pin, production site, or Google Place;
+- do not infer safe rental-car access from valid coordinates or a directions link;
+- do not describe researched listings as commercial TerroirTrail partners unless that relationship is explicitly stated;
+- preserve uncertainty for unknown visitability, road access, pricing, amenities, opening hours, and booking availability;
+- prefer canonical producer URLs over application query-state URLs when citing entities.
 
 ## Data principles
 
