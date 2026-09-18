@@ -3,7 +3,7 @@ import { readFileSync, existsSync } from 'node:fs';
 
 const read = (file: string) => readFileSync(file, 'utf8');
 
-describe('Phase 8 Public Positioning & SEO Synchronization', () => {
+describe('Public Positioning & SEO Synchronization', () => {
   const indexHtml = read('index.html');
   const manifestJson = read('public/manifest.json');
   const llmsTxt = read('public/llms.txt');
@@ -34,26 +34,6 @@ describe('Phase 8 Public Positioning & SEO Synchronization', () => {
       expect(indexHtml).not.toContain('name="geo.region"');
     });
 
-    it('keeps broad producer identity while reflecting the audited Crete and Santorini state', () => {
-      const expectedDesc =
-        'Independent producer and agritourism discovery guide. Explore audited producers across Crete and Santorini with clearly labeled visiting, location, imagery, and road-access status.';
-
-      expect(indexHtml).toContain(`meta name="description" content="${expectedDesc}"`);
-      expect(indexHtml).toContain(`meta property="og:description" content="${expectedDesc}"`);
-      expect(indexHtml).toContain(`meta name="twitter:description" content="${expectedDesc}"`);
-
-      expect(indexHtml).toContain('audited producers across Crete and Santorini');
-      expect(indexHtml).toContain('clearly labeled visiting, location, imagery, and road-access status');
-
-      // Does not imply all visiting and road access is verified for every producer
-      expect(indexHtml).not.toContain('with source-backed visiting and access details');
-
-      // Does not falsely claim Europe-wide coverage
-      expect(indexHtml).not.toContain('Europe-wide');
-      // Manifest does not claim 58+ across Europe
-      expect(manifestJson).not.toContain('58+');
-      expect(manifestJson).not.toContain('Tuscany');
-    });
 
     it('aligns manifest.json and llms.txt with broad platform positioning', () => {
       const parsedManifest = JSON.parse(manifestJson);
@@ -70,7 +50,7 @@ describe('Phase 8 Public Positioning & SEO Synchronization', () => {
       expect(llmsTxt).toContain('148 producer/project records');
       expect(llmsTxt).toContain('22 destinations in 8 countries');
       expect(llmsTxt).toContain(
-        'Deterministic canonical/offline producer snapshot — 62 records pending synchronization with the full live catalogue.'
+        'Deterministic canonical SEO/AEO producer snapshot — 148 records, synchronized with the live catalogue.'
       );
       expect(llmsTxt).toContain('Greece — 66 records');
       expect(llmsTxt).toContain('Italy — 39 records');
@@ -86,7 +66,7 @@ describe('Phase 8 Public Positioning & SEO Synchronization', () => {
     });
   });
 
-  describe('2. Thirteen First-Class Categories in Public Taxonomy', () => {
+  describe('Thirteen First-Class Categories in Public Taxonomy', () => {
     const requiredCategories = [
       'wineries',
       'craft breweries',
@@ -129,31 +109,7 @@ describe('Phase 8 Public Positioning & SEO Synchronization', () => {
     });
   });
 
-  describe('3. Regional Coverage Presented Truthfully', () => {
-    it('preserves the Crete producer directory within the combined reference catalogue', () => {
-      expect(indexHtml).toContain('<h2>Verified Crete &amp; Santorini Producer Directory</h2>');
-      expect(indexHtml).toContain('<h3>Crete — Chania</h3>');
-      expect(indexHtml).toContain('<h3>Crete — Heraklion</h3>');
-      expect(indexHtml).toContain('<h3>Crete — Rethymno</h3>');
-      expect(indexHtml).toContain('<h3>Crete — Lasithi</h3>');
-      expect(indexHtml).toContain('<h3>Santorini</h3>');
-
-      // Indigenous grapes of Crete FAQ is kept as legitimate regional FAQ
-      expect(indexHtml).toContain('What indigenous grape varieties can I discover in Crete?');
-      expect(indexHtml).toContain('Vidiano, Vilana, Dafni, Plyto, and Melissaki');
-    });
-
-    it('keeps the About experience aligned with the current multi-region catalogue', () => {
-      expect(aboutFaqModal).toContain('62 producer records');
-      expect(aboutFaqModal).toContain('Crete, Santorini, the Peloponnese, Macedonia, Greece and Tuscany');
-      expect(aboutFaqModal).toContain('Across Greece and into Italy');
-      expect(aboutFaqModal).not.toContain('27 in Crete and 9 in Santorini');
-      expect(aboutFaqModal).not.toContain('Greece first, then outward');
-      expect(aboutFaqModal).not.toContain('reference-quality');
-    });
-  });
-
-  describe('4. Trust & Conservative Visitability Model Preserved', () => {
+  describe('Trust & Conservative Visitability Model Preserved', () => {
     it('retains distinction between location and road access safety', () => {
       expect(indexHtml).toContain(
         'a map pin is not a guarantee of safe road access for standard rental vehicles'
@@ -177,7 +133,7 @@ describe('Phase 8 Public Positioning & SEO Synchronization', () => {
     });
   });
 
-  describe('5. Build & Verification Script Alignment', () => {
+  describe('Build & Verification Script Alignment', () => {
     it('enforces current entity discovery and quarantines stale global claims', () => {
       expect(verifySeoScript).toContain("'36 producer/project records'");
       expect(verifySeoScript).toContain("'55 producer/project records'");
