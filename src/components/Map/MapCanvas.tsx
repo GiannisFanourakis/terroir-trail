@@ -25,6 +25,7 @@ import {
   loadCountryBoundary,
 } from '../../data/countryBoundaries';
 import type { SupportedCountryScope } from '../../data/countryBoundaries';
+import { getProducerCategoryIconMarkup } from '../Common/ProducerCategoryIcon';
 
 interface MapCanvasProps {
   producers: Producer[];
@@ -398,58 +399,47 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     isSelected: boolean,
     renderMode: ProducerMarkerRenderMode = 'detailed'
   ) => {
-    let icon = '🍇';
-    let iconBg = 'bg-rose-500/25 text-rose-200 border-rose-500/50';
+    const effectiveCategory = getEffectiveProducerCategory(producer);
+    const icon = getProducerCategoryIconMarkup(effectiveCategory);
+    let iconBg = 'bg-stone-500/20 text-stone-200 border-white/20';
 
-    switch (getEffectiveProducerCategory(producer)) {
+    switch (effectiveCategory) {
       case 'winery':
-        icon = '🍇';
-        iconBg = 'bg-rose-500/25 text-rose-200 border-rose-500/50';
+        iconBg = 'bg-rose-500/20 text-rose-200 border-rose-500/45';
         break;
       case 'brewery':
-        icon = '🍺';
-        iconBg = 'bg-amber-400/30 text-amber-300 border-amber-400/60';
+        iconBg = 'bg-amber-400/20 text-amber-200 border-amber-400/50';
         break;
       case 'distillery':
-        icon = '🥃';
-        iconBg = 'bg-amber-600/25 text-amber-200 border-amber-600/50';
+        iconBg = 'bg-amber-600/20 text-amber-200 border-amber-600/45';
         break;
       case 'cidery':
-        icon = '🍎';
-        iconBg = 'bg-lime-600/25 text-lime-200 border-lime-600/50';
+        iconBg = 'bg-lime-600/20 text-lime-200 border-lime-600/45';
         break;
       case 'confectionery':
-        icon = '🍫';
-        iconBg = 'bg-amber-700/25 text-amber-200 border-amber-700/50';
+        iconBg = 'bg-amber-700/20 text-amber-200 border-amber-700/45';
         break;
       case 'oil_mill':
-        icon = '🌻';
-        iconBg = 'bg-yellow-600/25 text-yellow-200 border-yellow-600/50';
+        iconBg = 'bg-yellow-600/20 text-yellow-200 border-yellow-600/45';
         break;
       case 'herb_farm':
-        icon = '🌿';
-        iconBg = 'bg-green-600/25 text-green-200 border-green-600/50';
+        iconBg = 'bg-green-600/20 text-green-200 border-green-600/45';
         break;
       case 'mushroom_farm':
-        icon = '🍄';
-        iconBg = 'bg-stone-600/25 text-stone-200 border-stone-600/50';
+        iconBg = 'bg-stone-600/20 text-stone-200 border-stone-500/45';
         break;
       case 'olive_mill':
       case 'olive_oil_producer':
-        icon = '🫒';
-        iconBg = 'bg-emerald-500/25 text-emerald-200 border-emerald-500/50';
+        iconBg = 'bg-emerald-500/20 text-emerald-200 border-emerald-500/45';
         break;
       case 'cheese_dairy':
-        icon = '🧀';
-        iconBg = 'bg-yellow-500/25 text-yellow-200 border-yellow-500/50';
+        iconBg = 'bg-yellow-500/20 text-yellow-200 border-yellow-500/45';
         break;
       case 'apiary':
-        icon = '🍯';
-        iconBg = 'bg-orange-500/25 text-orange-200 border-orange-500/50';
+        iconBg = 'bg-orange-500/20 text-orange-200 border-orange-500/45';
         break;
       case 'farm':
-        icon = '🌿';
-        iconBg = 'bg-emerald-500/25 text-emerald-200 border-emerald-500/50';
+        iconBg = 'bg-emerald-500/20 text-emerald-200 border-emerald-500/45';
         break;
     }
 
