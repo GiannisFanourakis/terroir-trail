@@ -32,6 +32,14 @@ const banIncludes = (content: string, value: string, label: string): void => {
 
 const producerUrl = (producer: Producer): string => `${CANONICAL_HOST}/producers/${producer.id}/`;
 
+const escapeHtml = (value: string): string =>
+  value
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
+
 const parseJsonLd = (html: string, label: string): Record<string, unknown> => {
   const match = html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/);
   if (!match) fail(`${label} has no JSON-LD block.`);
@@ -191,7 +199,7 @@ function verifySeoAssets(): void {
     const pageContent = requireFile(pagePath, `Producer page ${producer.id}`);
 
     requireIncludes(pageContent, `<link rel="canonical" href="${canonicalUrl}" />`, `Producer page ${producer.id}`);
-    requireIncludes(pageContent, `<h1>${producer.name.replaceAll('&', '&amp;')}</h1>`, `Producer page ${producer.id}`);
+    requireIncludes(pageContent, `<h1>${escapeHtml(producer.name)}</h1>`, `Producer page ${producer.id}`);
     requireIncludes(pageContent, '<meta name="description" content="', `Producer page ${producer.id}`);
     requireIncludes(pageContent, '<meta name="robots" content="index, follow', `Producer page ${producer.id}`);
     requireIncludes(pageContent, 'What is it?', `Producer page ${producer.id}`);
