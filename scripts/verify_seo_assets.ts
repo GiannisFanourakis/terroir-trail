@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import type { Producer } from '../src/types/terroir';
-import { SEO_PRODUCERS } from './seoCatalogue';
+import { LIVE_CATALOGUE_METRICS, SEO_PRODUCERS } from './seoCatalogue';
 
 const CANONICAL_HOST = 'https://terroir-trail.web.app';
 const CANONICAL_SITEMAP_URL = `${CANONICAL_HOST}/sitemap.xml`;
@@ -96,10 +96,10 @@ function verifySeoAssets(): void {
   const llmsPath = path.join(distDir, 'llms.txt');
   const llmsContent = requireFile(llmsPath, 'dist/llms.txt');
   const requiredLlmsClaims = [
-    `${PRODUCERS.length} producer/project records`,
+    `${LIVE_CATALOGUE_METRICS.totalProducers} producer/project records`,
     `Crete, Greece — ${CRETE_COUNT} audited records.`,
     `Santorini, Greece — ${SANTORINI_COUNT} audited records.`,
-    `Peloponnese, Macedonia, Greece and Tuscany / Italy — ${OTHER_DESTINATION_COUNT} audited records combined.`,
+    `Deterministic canonical/offline producer snapshot — ${PRODUCERS.length} records pending synchronization with the full live catalogue.`,
     '10 published verified-stop Discovery Guides',
     '/producers/<producer-id>/',
     'does not represent Santorini as a UNESCO Global Geopark',
@@ -124,9 +124,9 @@ function verifySeoAssets(): void {
   const indexContent = requireFile(indexPath, 'dist/index.html');
   requireIncludes(indexContent, `<link rel="canonical" href="${CANONICAL_HOST}/" />`, 'dist/index.html');
   requireIncludes(indexContent, 'TerroirTrail — Independent Producer &amp; Agritourism Guide', 'dist/index.html');
-  requireIncludes(indexContent, `${PRODUCERS.length} audited producer/project records`, 'dist/index.html');
+  requireIncludes(indexContent, `${LIVE_CATALOGUE_METRICS.totalProducers} live producer/project records`, 'dist/index.html');
   requireIncludes(indexContent, 'Ten verified-stop guides are currently published', 'dist/index.html');
-  requireIncludes(indexContent, 'Crete, Santorini, the Peloponnese, Macedonia, Greece and Tuscany', 'dist/index.html');
+  requireIncludes(indexContent, `${LIVE_CATALOGUE_METRICS.destinationCount} destinations in ${LIVE_CATALOGUE_METRICS.countryCount} European countries`, 'dist/index.html');
   requireIncludes(indexContent, 'href="/producers/"', 'dist/index.html');
   requireIncludes(indexContent, 'Discovery Guides &amp; Navigation Safety', 'dist/index.html');
   requireIncludes(indexContent, 'Santorini Brewing Company', 'dist/index.html');
@@ -166,7 +166,7 @@ function verifySeoAssets(): void {
   const producerDirectoryPath = path.join(distDir, 'producers', 'index.html');
   const producerDirectoryContent = requireFile(producerDirectoryPath, 'dist/producers/index.html');
   requireIncludes(producerDirectoryContent, `<link rel="canonical" href="${PRODUCER_DIRECTORY_URL}" />`, 'producer directory');
-  requireIncludes(producerDirectoryContent, `${PRODUCERS.length} audited producer/project records`, 'producer directory');
+  requireIncludes(producerDirectoryContent, `${PRODUCERS.length} bundled canonical producer/project records`, 'producer directory');
   requireIncludes(producerDirectoryContent, '"@type": "CollectionPage"', 'producer directory');
   requireIncludes(producerDirectoryContent, `"numberOfItems": ${PRODUCERS.length}`, 'producer directory');
 
@@ -215,7 +215,8 @@ function verifySeoAssets(): void {
   console.log(`  - ${expectedUrls.length} canonical sitemap URLs (${PRODUCERS.length} producer entities + directory + core pages)`);
   console.log(`  - ${PRODUCERS.length} producer pages have canonical metadata, visible answer-ready facts, JSON-LD and directory links`);
   console.log('  - producer directory has CollectionPage/ItemList schema and links every audited entity');
-  console.log(`  - llms.txt and homepage reflect the current ${PRODUCERS.length}-record / 10-guide product state`);
+  console.log(`  - live catalogue state: ${LIVE_CATALOGUE_METRICS.totalProducers} records across ${LIVE_CATALOGUE_METRICS.destinationCount} destinations / ${LIVE_CATALOGUE_METRICS.countryCount} countries`);
+  console.log(`  - bundled canonical/offline snapshot: ${PRODUCERS.length} producer records + 10-guide deterministic build state`);
   console.log(`  - robots.txt advertises ${CANONICAL_SITEMAP_URL}`);
   console.log('  - stale claims, legacy query canonicals and unconsented monetization tags are quarantined');
 }
