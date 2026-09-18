@@ -195,7 +195,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                     <button
                       key={cat.id}
                       type="button"
-                      onClick={() => onFilterChange('category', cat.id)}
+                      onClick={() => { onFilterChange('category', cat.id); setIsMobilePanelOpen(false); }}
                       className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold transition cursor-pointer min-h-[44px] text-left ${
                         isSelected
                           ? `${cat.activeColor} ring-2 ring-white/20 font-bold shadow-md`
@@ -219,7 +219,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
               <div className="grid grid-cols-1 gap-2">
                 <select
                   value={filters.roadAccess}
-                  onChange={(e) => onFilterChange('roadAccess', e.target.value as RoadAccess | 'all')}
+                  onChange={(e) => { onFilterChange('roadAccess', e.target.value as RoadAccess | 'all'); setIsMobilePanelOpen(false); }}
                   className="bg-stone-800 border border-white/10 text-stone-200 text-xs rounded-xl px-3 py-2 min-h-[44px] focus:outline-none focus:border-amber-400 cursor-pointer w-full"
                 >
                   {roadAccessOptions.map((opt) => (
@@ -231,7 +231,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
 
                 <select
                   value={filters.ethos}
-                  onChange={(e) => onFilterChange('ethos', e.target.value as Ethos | 'all')}
+                  onChange={(e) => { onFilterChange('ethos', e.target.value as Ethos | 'all'); setIsMobilePanelOpen(false); }}
                   className="bg-stone-800 border border-white/10 text-stone-200 text-xs rounded-xl px-3 py-2 min-h-[44px] focus:outline-none focus:border-amber-400 cursor-pointer w-full"
                 >
                   {ethosOptions.map((opt) => (
@@ -243,7 +243,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
 
                 <select
                   value={filters.foodOption}
-                  onChange={(e) => onFilterChange('foodOption', e.target.value as FoodOption | 'all')}
+                  onChange={(e) => { onFilterChange('foodOption', e.target.value as FoodOption | 'all'); setIsMobilePanelOpen(false); }}
                   className="bg-stone-800 border border-white/10 text-stone-200 text-xs rounded-xl px-3 py-2 min-h-[44px] focus:outline-none focus:border-amber-400 cursor-pointer w-full"
                 >
                   {foodOptions.map((opt) => (
@@ -257,7 +257,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
               <div className="flex flex-wrap items-center gap-1.5 pt-1">
                 <button
                   type="button"
-                  onClick={() => onFilterChange('dogFriendlyOnly', !filters.dogFriendlyOnly)}
+                  onClick={() => { onFilterChange('dogFriendlyOnly', !filters.dogFriendlyOnly); setIsMobilePanelOpen(false); }}
                   className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl border transition text-xs shrink-0 cursor-pointer min-h-[44px] ${
                     filters.dogFriendlyOnly
                       ? 'bg-amber-500 text-stone-950 border-amber-400 font-bold'
@@ -270,7 +270,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
 
                 <button
                   type="button"
-                  onClick={() => onFilterChange('walkInOnly', !filters.walkInOnly)}
+                  onClick={() => { onFilterChange('walkInOnly', !filters.walkInOnly); setIsMobilePanelOpen(false); }}
                   className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl border transition text-xs shrink-0 cursor-pointer min-h-[44px] ${
                     filters.walkInOnly
                       ? 'bg-amber-500 text-stone-950 border-amber-400 font-bold'
@@ -283,7 +283,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
 
                 <button
                   type="button"
-                  onClick={() => onFilterChange('campervanOnly', !filters.campervanOnly)}
+                  onClick={() => { onFilterChange('campervanOnly', !filters.campervanOnly); setIsMobilePanelOpen(false); }}
                   className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl border transition text-xs shrink-0 cursor-pointer min-h-[44px] ${
                     filters.campervanOnly
                       ? 'bg-amber-500 text-stone-950 border-amber-400 font-bold'
