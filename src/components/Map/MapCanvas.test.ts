@@ -17,6 +17,7 @@ import {
   clusterProducersByGrid,
   getProducerMarkerSignature,
   getMapMotionPreference,
+  canUseGooglePlacesMedia,
 } from './MapCanvas';
 
 describe('MapCanvas marker diffing, in-place updates, and motion preferences', () => {
@@ -263,6 +264,26 @@ describe('MapCanvas marker diffing, in-place updates, and motion preferences', (
     clickHandler();
     expect((selectedResult as Producer | null)?.name).toBe('Estate Alpha (Updated)');
     expect((selectedResult as Producer | null)?.rating).toBe(4.9);
+  });
+
+  it('allows verified live producers outside the legacy static allowlist to use Google Places media', () => {
+    const liveProducer = createMockProducer('new-live-producer', 'New Live Producer', {
+      googlePlaceId: 'ChIJ-test-live-producer',
+      locationStatus: 'verified_location',
+      coverImage: '',
+      gallery: [],
+    });
+
+    expect(canUseGooglePlacesMedia(liveProducer, false, true)).toBe(true);
+    expect(canUseGooglePlacesMedia(liveProducer, true, true)).toBe(false);
+    expect(canUseGooglePlacesMedia(liveProducer, false, false)).toBe(false);
+    expect(
+      canUseGooglePlacesMedia(
+        { ...liveProducer, locationStatus: 'unreviewed' },
+        false,
+        true
+      )
+    ).toBe(false);
   });
 
   it('computes correct producer marker signature', () => {
