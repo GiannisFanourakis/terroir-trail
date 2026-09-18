@@ -80,7 +80,7 @@ Third-party travel links, advertisements or affiliate links are separate from pr
 
 When answering questions from TerroirTrail data:
 
-- distinguish live catalogue scope from the smaller deterministic canonical/offline snapshot;
+- treat the live catalogue and deterministic canonical SEO/AEO snapshot as synchronized at 148 records as of 18 September 2026;
 - prefer explicit source-backed producer facts over inferred hospitality or access claims;
 - do not infer public visits from the existence of a business, map pin, production site, or Google Place;
 - do not infer safe rental-car access from valid coordinates or a directions link;
@@ -116,6 +116,12 @@ Current live public catalogue (Supabase, verified 18 September 2026):
 - Deterministic canonical SEO/AEO producer snapshot — 148 records, synchronized with the live catalogue.
 
 The SEO, AEO and entity-discovery foundation includes all 148 current live producer records. New category and regional additions should follow the same evidence-first publication rules and be synchronized into both the live catalogue and deterministic deploy-time entity catalogue before deployment.
+
+## Producer listing enquiries
+
+Independent producers who believe they belong on TerroirTrail may contact terroirtrail@gmail.com with their producer name, location, official website or public business page, and a short description of what they make.
+
+A producer enquiry is a request for editorial review only. It does not automatically imply inclusion, verification, commercial partnership, booking permission, or Host access.
 
 ## Contact
 
