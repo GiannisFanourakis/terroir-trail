@@ -18,6 +18,8 @@ import {
   getProducerMarkerSignature,
   getMapMotionPreference,
   canUseGooglePlacesMedia,
+  getAdaptiveMapRenderStrategy,
+  shouldClusterProducerMarkers,
 } from './MapCanvas';
 
 describe('MapCanvas marker diffing, in-place updates, and motion preferences', () => {
@@ -301,7 +303,7 @@ describe('MapCanvas marker diffing, in-place updates, and motion preferences', (
     expect(sig2).not.toBe(sig1);
   });
 
-  it('groups nearby producers into stable grid clusters for mobile rendering', () => {
+  it('groups nearby producers into stable grid clusters for adaptive rendering', () => {
     const p1 = createMockProducer('p1', 'Estate One', { coordinates: [35.2, 25.1] });
     const p2 = createMockProducer('p2', 'Estate Two', { coordinates: [35.21, 25.11] });
     const p3 = createMockProducer('p3', 'Estate Three', { coordinates: [36.4, 25.4] });
@@ -331,6 +333,44 @@ describe('MapCanvas marker diffing, in-place updates, and motion preferences', (
     const sharedCluster = clusters.find((cluster) => cluster.producers.length === 2);
     expect(sharedCluster?.center[0]).toBeCloseTo((35.2 + 35.21) / 2);
     expect(sharedCluster?.center[1]).toBeCloseTo((25.1 + 25.11) / 2);
+  });
+
+  it('uses adaptive clustering and viewport limits on both mobile and desktop', () => {
+    const mobile = getAdaptiveMapRenderStrategy(390);
+    const desktop = getAdaptiveMapRenderStrategy(1440);
+
+    expect(mobile.clusterMaxZoom).toBe(10);
+    expect(mobile.maxIndividualMarkers).toBe(120);
+    expect(mobile.viewportPadding).toBeGreaterThan(0);
+
+    expect(desktop.clusterMaxZoom).toBe(11);
+    expect(desktop.maxIndividualMarkers).toBe(220);
+    expect(desktop.viewportPadding).toBeGreaterThan(0);
+
+    expect(shouldClusterProducerMarkers(9, 20, mobile)).toBe(true);
+    expect(shouldClusterProducerMarkers(12, 20, mobile)).toBe(false);
+
+    expect(shouldClusterProducerMarkers(10, 30, desktop)).toBe(true);
+    expect(shouldClusterProducerMarkers(12, 30, desktop)).toBe(false);
+  });
+
+  it('keeps clustering unusually dense close-zoom views instead of mounting hundreds of DOM pins', () => {
+    const mobile = getAdaptiveMapRenderStrategy(390);
+    const desktop = getAdaptiveMapRenderStrategy(1440);
+
+    expect(
+      shouldClusterProducerMarkers(14, mobile.maxIndividualMarkers + 1, mobile)
+    ).toBe(true);
+    expect(
+      shouldClusterProducerMarkers(14, desktop.maxIndividualMarkers + 1, desktop)
+    ).toBe(true);
+
+    expect(
+      shouldClusterProducerMarkers(14, mobile.maxIndividualMarkers, mobile)
+    ).toBe(false);
+    expect(
+      shouldClusterProducerMarkers(14, desktop.maxIndividualMarkers, desktop)
+    ).toBe(false);
   });
 
   it('getMapMotionPreference respects prefers-reduced-motion and adjusts mobile duration', () => {
