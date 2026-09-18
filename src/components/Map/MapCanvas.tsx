@@ -215,6 +215,14 @@ export const getAdaptiveMapRenderStrategy = (
 ): AdaptiveMapRenderStrategy =>
   viewportWidth < 768 ? MOBILE_MAP_RENDER_STRATEGY : DESKTOP_MAP_RENDER_STRATEGY;
 
+export const shouldClusterProducerMarkers = (
+  zoom: number,
+  visibleProducerCount: number,
+  strategy: AdaptiveMapRenderStrategy
+): boolean =>
+  zoom <= strategy.clusterMaxZoom ||
+  visibleProducerCount > strategy.maxIndividualMarkers;
+
 export const clusterProducersByGrid = (
   producers: Producer[],
   project: (coordinates: [number, number]) => { x: number; y: number },
@@ -927,9 +935,11 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
           }
         });
 
-        const shouldCluster =
-          zoom <= strategy.clusterMaxZoom ||
-          visibleProducers.length > strategy.maxIndividualMarkers;
+        const shouldCluster = shouldClusterProducerMarkers(
+          zoom,
+          visibleProducers.length,
+          strategy
+        );
 
         if (!shouldCluster) {
           clearClusters();
