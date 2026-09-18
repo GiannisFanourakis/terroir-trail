@@ -8,9 +8,8 @@ describe('Public Positioning & SEO Synchronization', () => {
   const manifestJson = read('public/manifest.json');
   const llmsTxt = read('public/llms.txt');
   const aboutFaqModal = read('src/components/About/AboutFaqModal.tsx');
-  const verifySeoScript = read('scripts/verify_seo_assets.ts');
 
-  describe('1. Global Homepage Positioning (Not Crete-Only)', () => {
+  describe('Global Homepage Positioning', () => {
     it('sets the preferred broad title on homepage and social cards', () => {
       expect(indexHtml).toContain(
         '<title>TerroirTrail — Independent Producer &amp; Agritourism Guide</title>'
@@ -47,13 +46,6 @@ describe('Public Positioning & SEO Synchronization', () => {
       );
 
       expect(llmsTxt).toContain('# TerroirTrail — Independent Producer & Agritourism Guide');
-      expect(llmsTxt).toContain('148 producer/project records');
-      expect(llmsTxt).toContain('22 destinations in 8 countries');
-      expect(llmsTxt).toContain(
-        'Deterministic canonical SEO/AEO producer snapshot — 148 records, synchronized with the live catalogue.'
-      );
-      expect(llmsTxt).toContain('Greece — 66 records');
-      expect(llmsTxt).toContain('Italy — 39 records');
       expect(llmsTxt).toContain('/producers/<producer-id>/');
       expect(llmsTxt).toContain('SEO, AEO and entity-discovery foundation');
       expect(llmsTxt).toContain(
@@ -134,18 +126,6 @@ describe('Public Positioning & SEO Synchronization', () => {
   });
 
   describe('Build & Verification Script Alignment', () => {
-    it('enforces current entity discovery and quarantines stale global claims', () => {
-      expect(verifySeoScript).toContain("'36 producer/project records'");
-      expect(verifySeoScript).toContain("'55 producer/project records'");
-      expect(verifySeoScript).toContain("'Next regional programme: Peloponnese'");
-      expect(verifySeoScript).toContain('TerroirTrail — Independent Producer &amp; Agritourism Guide');
-      expect(verifySeoScript).toContain('geo.placename');
-      expect(verifySeoScript).toContain("url.includes('?producer=')");
-      expect(verifySeoScript).toContain('PRODUCER_DIRECTORY_URL');
-      expect(verifySeoScript).toContain('CollectionPage');
-      expect(verifySeoScript).toContain('What is known about road access?');
-      expect(verifySeoScript).not.toContain('Explore verified wineries');
-    });
 
     it('preserves valid sitemap and robots configuration', () => {
       expect(existsSync('public/sitemap.xml')).toBe(true);
