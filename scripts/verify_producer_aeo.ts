@@ -119,9 +119,9 @@ function verifyProducerAeo(): void {
   }
 
   console.log('✓ Producer AEO verification passed:');
-  console.log(`  - ${SEO_PRODUCERS.length} producer pages expose answer-first quick facts before narrative content`);
-  console.log(`  - ${SEO_PRODUCERS.length} producer pages use entity-specific traveler questions rather than ambiguous pronouns`);
-  console.log(`  - ${SEO_PRODUCERS.length} producer pages connect WebPage → mainEntity and BreadcrumbList in JSON-LD`);
+  console.log(`  - ${SEO_PRODUCERS.length} bundled canonical producer pages expose answer-first quick facts before narrative content`);
+  console.log(`  - ${SEO_PRODUCERS.length} bundled canonical producer pages use entity-specific traveler questions rather than ambiguous pronouns`);
+  console.log(`  - ${SEO_PRODUCERS.length} bundled canonical producer pages connect WebPage → mainEntity and BreadcrumbList in JSON-LD`);
   console.log(`  - ${evidencePages} producer pages expose published evidence/direct-source context`);
   console.log('  - no producer page relies on FAQPage schema for answer-engine optimization');
 }
