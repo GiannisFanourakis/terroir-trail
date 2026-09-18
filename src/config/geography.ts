@@ -9,7 +9,6 @@ export interface CountryConfig {
   code: SupportedCountryScope;
   name: string;
   nativeName: string;
-  flag: string;
   giscoId: string;
   center: [number, number];
   zoom: number;
@@ -58,7 +57,6 @@ export const SUPPORTED_COUNTRIES: Record<SupportedCountryScope, CountryConfig> =
       code: 'GR',
       name: 'Greece',
       nativeName: 'Ελλάδα',
-      flag: '🇬🇷',
       giscoId: 'EL',
       center: [39.1, 22.4],
       zoom: 6,
@@ -73,7 +71,6 @@ export const SUPPORTED_COUNTRIES: Record<SupportedCountryScope, CountryConfig> =
       code: 'IT',
       name: 'Italy',
       nativeName: 'Italia',
-      flag: '🇮🇹',
       giscoId: 'IT',
       center: [42.8, 12.5],
       zoom: 6,
@@ -88,7 +85,6 @@ export const SUPPORTED_COUNTRIES: Record<SupportedCountryScope, CountryConfig> =
       code: 'FR',
       name: 'France',
       nativeName: 'France',
-      flag: '🇫🇷',
       giscoId: 'FR',
       center: [46.6, 2.4],
       zoom: 6,
@@ -103,7 +99,6 @@ export const SUPPORTED_COUNTRIES: Record<SupportedCountryScope, CountryConfig> =
       code: 'ES',
       name: 'Spain',
       nativeName: 'España',
-      flag: '🇪🇸',
       giscoId: 'ES',
       center: [39.5, -3.5],
       zoom: 6,
@@ -118,7 +113,6 @@ export const SUPPORTED_COUNTRIES: Record<SupportedCountryScope, CountryConfig> =
       code: 'PT',
       name: 'Portugal',
       nativeName: 'Portugal',
-      flag: '🇵🇹',
       giscoId: 'PT',
       center: [39.6, -8.0],
       zoom: 7,
@@ -133,7 +127,6 @@ export const SUPPORTED_COUNTRIES: Record<SupportedCountryScope, CountryConfig> =
       code: 'HR',
       name: 'Croatia',
       nativeName: 'Hrvatska',
-      flag: '🇭🇷',
       giscoId: 'HR',
       center: [44.8, 16.0],
       zoom: 7,
@@ -148,7 +141,6 @@ export const SUPPORTED_COUNTRIES: Record<SupportedCountryScope, CountryConfig> =
       code: 'SI',
       name: 'Slovenia',
       nativeName: 'Slovenija',
-      flag: '🇸🇮',
       giscoId: 'SI',
       center: [46.15, 15.0],
       zoom: 8,
@@ -163,7 +155,6 @@ export const SUPPORTED_COUNTRIES: Record<SupportedCountryScope, CountryConfig> =
       code: 'NO',
       name: 'Norway',
       nativeName: 'Norge',
-      flag: '🇳🇴',
       giscoId: 'NO',
       center: [64.5, 13.0],
       zoom: 5,
@@ -193,13 +184,12 @@ export const getCountryName = (code: SupportedCountryScope): string =>
  * through Europe -> country -> NUTS-backed terroir region -> producer.
  */
 export const COUNTRY_LAYERS: CountryLayer[] = [
-  { id: 'all', label: 'Europe', flag: '🌍', center: [47.0, 10.0], zoom: 4 },
+  { id: 'all', label: 'Europe', center: [47.0, 10.0], zoom: 4 },
   ...SUPPORTED_COUNTRY_CODES.map((code) => {
     const config = SUPPORTED_COUNTRIES[code];
     return {
       id: config.code,
       label: config.name,
-      flag: config.flag,
       center: config.center,
       zoom: config.zoom,
     };
