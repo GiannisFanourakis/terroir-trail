@@ -326,7 +326,7 @@ export const ProducerCard: React.FC<ProducerCardProps> = ({
               aria-hidden="true"
             />
             <span className="truncate">
-              {producer.countryCode === 'IT' ? '🇮🇹 ' : ''}
+              
               {producer.village}, {producer.region.toUpperCase()}
             </span>
           </div>
