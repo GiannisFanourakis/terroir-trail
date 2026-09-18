@@ -74,6 +74,7 @@ export const GooglePlacePhotoCarousel: React.FC<
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [loadFailed, setLoadFailed] = useState(false);
+  const [hasCompletedPhotoFetch, setHasCompletedPhotoFetch] = useState(false);
   const touchStartXRef = useRef<number | null>(null);
 
   useEffect(() => {
@@ -82,6 +83,7 @@ export const GooglePlacePhotoCarousel: React.FC<
     setPhotos([]);
     setActiveIndex(0);
     setLoadFailed(false);
+    setHasCompletedPhotoFetch(false);
     onAvailabilityChange?.(false);
 
     if (!shouldLoad || !isReady || !googlePlaceId) {
@@ -118,12 +120,14 @@ export const GooglePlacePhotoCarousel: React.FC<
 
         setPhotos(freshPhotos);
         setLoadFailed(false);
+        setHasCompletedPhotoFetch(true);
         onAvailabilityChange?.(freshPhotos.length > 0);
       } catch (error) {
         if (cancelled) return;
         console.warn('[GooglePlacePhotoCarousel] Photo fetch failed:', error);
         setPhotos([]);
         setLoadFailed(true);
+        setHasCompletedPhotoFetch(true);
         onAvailabilityChange?.(false);
       }
     };
@@ -191,7 +195,33 @@ export const GooglePlacePhotoCarousel: React.FC<
     return fallback;
   }
 
-  if (!activePhoto) {
+  // Do not flash the neutral category placeholder while an eligible producer's
+  // live Google Places media is still loading. On slower mobile connections the
+  // previous behavior made the placeholder look like the final producer image.
+  if (
+    status === 'loading' ||
+    (shouldLoad && isReady && !hasCompletedPhotoFetch)
+  ) {
+    return (
+      <div
+        className={`relative overflow-hidden bg-stone-900 ${className}`}
+        data-testid="google-place-photo-carousel-loading"
+        role="status"
+        aria-live="polite"
+        aria-label={`Loading Google Maps photos for ${producer.name}`}
+      >
+        <div className="absolute inset-0 bg-gradient-to-br from-stone-900 via-stone-800 to-stone-950" />
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="flex items-center gap-2 rounded-full border border-white/10 bg-black/45 px-3 py-1.5 text-[10px] font-semibold text-stone-200 backdrop-blur-sm">
+            <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-amber-400/35 border-t-amber-400" />
+            <span>Loading Google Maps photos…</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!activePhoto && hasCompletedPhotoFetch) {
     return fallback;
   }
 
