@@ -111,12 +111,12 @@ describe('Phase 8 Public Positioning & SEO Synchronization', () => {
 
       // Noscript FAQ category question
       expect(indexHtml).toContain(
-        '<p>TerroirTrail supports 13 first-class producer categories: Wineries, Breweries, Olive Mills, Dairies / Cheesemakers, Apiaries / Honey Producers, Rakokazana / Traditional Distilleries, and Farms.</p>'
+        '<p>TerroirTrail supports 13 first-class producer categories: Wineries, Breweries, Distilleries, Cideries, Olive Mills, Olive Oil Producers, Other Oil Mills, Dairies / Cheesemakers, Apiaries / Honey Producers, Confectionery Producers, Herb Farms, Mushroom Farms, and Farms.</p>'
       );
     });
 
     it('represents all 13 categories in AboutFaqModal and metric counts', () => {
-      expect(aboutFaqModal).toContain('TerroirTrail curates seven first-class producer categories');
+      expect(aboutFaqModal).toContain('TerroirTrail supports 13 first-class producer categories');
       expect(aboutFaqModal).toContain(
         'Wineries, Breweries, Distilleries, Cideries, Olive Mills, Olive Oil Producers, Other Oil Mills, Dairies / Cheesemakers, Apiaries / Honey, Confectionery Producers, Herb Farms, Mushroom Farms, and Farms'
       );
