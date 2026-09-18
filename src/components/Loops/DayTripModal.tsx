@@ -176,19 +176,6 @@ export const DayTripModal: React.FC<DayTripModalProps> = ({
     }
   };
 
-  const getDestinationFlag = (dest: string) => {
-    switch (dest) {
-      case 'crete': return '🌿';
-      case 'santorini': return '🌋';
-      case 'peloponnese': return '🏛️';
-      case 'northern_greece': return '🏔️';
-      case 'tuscany': return '🇮🇹';
-      case 'thessaly': return '🌾';
-      case 'piedmont': return '🍇';
-      default: return '🍇';
-    }
-  };
-
   const neutralDrivingDistance = currentLoop.drivingDistance.replace(/\s*\([^)]*\)\s*$/, '');
 
   return (
@@ -239,7 +226,6 @@ export const DayTripModal: React.FC<DayTripModalProps> = ({
                       : 'text-stone-400 hover:text-white hover:bg-white/5 border border-transparent'
                   }`}
                 >
-                  <span>{getDestinationFlag(loop.destination)}</span>
                   <span>{loop.region}</span>
                 </button>
               );
