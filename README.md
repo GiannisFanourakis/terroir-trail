@@ -122,6 +122,7 @@ npm run mobile:preflight -- all
 - [`PRIVACY_POLICY.md`](PRIVACY_POLICY.md) — Comprehensive privacy policy and GDPR disclosure
 - [`TERMS_OF_SERVICE.md`](TERMS_OF_SERVICE.md) — Terms of service and commercial disclosures
 - [`ROADMAP.md`](ROADMAP.md) — Canonical product roadmap and feature statuses
+- [`AGENTS.md`](AGENTS.md) — Repository-level operating rules, including the mandatory producer verification/import gate
 - [`src/data/terroirRegions.ts`](src/data/terroirRegions.ts) — Sourced regional terroir polygon boundaries
 - [`src/data/loops.ts`](src/data/loops.ts) — Curated discovery loops and guide definitions
 - [`src/utils/routeSafety.ts`](src/utils/routeSafety.ts) — Fail-closed navigation and road-safety rules
