@@ -472,7 +472,17 @@ export const App: React.FC = () => {
         )}
 
         {isDrawerOpen && (
-          <Suspense fallback={null}>
+          <Suspense
+            fallback={(
+              <div
+                role="status"
+                aria-live="polite"
+                className="fixed inset-x-3 bottom-4 z-[65] rounded-2xl border border-white/10 bg-stone-900/95 px-4 py-3 text-center text-xs font-semibold text-stone-200 shadow-2xl sm:left-auto sm:right-5 sm:w-72"
+              >
+                Loading producer…
+              </div>
+            )}
+          >
             <ProducerDetailDrawer
               producer={publicSelectedProducer}
               onClose={() => setIsDrawerOpen(false)}
