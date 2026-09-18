@@ -14,6 +14,7 @@ vi.mock('leaflet', () => ({
 }));
 
 import {
+  clusterProducersByGrid,
   getProducerMarkerSignature,
   getMapMotionPreference,
 } from './MapCanvas';
@@ -277,6 +278,38 @@ describe('MapCanvas marker diffing, in-place updates, and motion preferences', (
     const p1ChangedRating = { ...p1, rating: 4.9 };
     const sig2 = getProducerMarkerSignature(p1ChangedRating);
     expect(sig2).not.toBe(sig1);
+  });
+
+  it('groups nearby producers into stable grid clusters for mobile rendering', () => {
+    const p1 = createMockProducer('p1', 'Estate One', { coordinates: [35.2, 25.1] });
+    const p2 = createMockProducer('p2', 'Estate Two', { coordinates: [35.21, 25.11] });
+    const p3 = createMockProducer('p3', 'Estate Three', { coordinates: [36.4, 25.4] });
+
+    const projected: Record<string, { x: number; y: number }> = {
+      p1: { x: 100, y: 100 },
+      p2: { x: 130, y: 115 },
+      p3: { x: 400, y: 400 },
+    };
+
+    const clusters = clusterProducersByGrid(
+      [p1, p2, p3],
+      (coordinates) => {
+        const producer = [p1, p2, p3].find((candidate) =>
+          candidate.coordinates[0] === coordinates[0] &&
+          candidate.coordinates[1] === coordinates[1]
+        );
+        return projected[producer?.id || 'p1'];
+      },
+      72
+    );
+
+    expect(clusters).toHaveLength(2);
+    expect(clusters.map((cluster) => cluster.producers.map((producer) => producer.id))).toContainEqual(['p1', 'p2']);
+    expect(clusters.map((cluster) => cluster.producers.map((producer) => producer.id))).toContainEqual(['p3']);
+
+    const sharedCluster = clusters.find((cluster) => cluster.producers.length === 2);
+    expect(sharedCluster?.center[0]).toBeCloseTo((35.2 + 35.21) / 2);
+    expect(sharedCluster?.center[1]).toBeCloseTo((25.1 + 25.11) / 2);
   });
 
   it('getMapMotionPreference respects prefers-reduced-motion and adjusts mobile duration', () => {

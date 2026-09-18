@@ -170,6 +170,51 @@ export const getProducerMarkerSignature = (producer: Producer): string => {
   return `${producer.id}|${lat},${lng}|${producer.name}|${producer.village || ''}|${producer.region}|${effectiveCat}|${producer.rating ?? ''}`;
 };
 
+export interface ProducerMapCluster {
+  key: string;
+  producers: Producer[];
+  center: [number, number];
+}
+
+export const MOBILE_CLUSTER_MAX_ZOOM = 10;
+export const MOBILE_CLUSTER_CELL_SIZE = 72;
+export const MOBILE_VIEWPORT_PADDING = 0.2;
+
+export const clusterProducersByGrid = (
+  producers: Producer[],
+  project: (coordinates: [number, number]) => { x: number; y: number },
+  cellSize = MOBILE_CLUSTER_CELL_SIZE
+): ProducerMapCluster[] => {
+  const buckets = new Map<string, Producer[]>();
+
+  producers.forEach((producer) => {
+    const point = project(producer.coordinates);
+    const key = `${Math.floor(point.x / cellSize)}:${Math.floor(point.y / cellSize)}`;
+    const bucket = buckets.get(key);
+    if (bucket) bucket.push(producer);
+    else buckets.set(key, [producer]);
+  });
+
+  return Array.from(buckets.entries()).map(([key, bucket]) => {
+    const center = bucket.reduce(
+      (acc, producer) => {
+        acc[0] += producer.coordinates[0];
+        acc[1] += producer.coordinates[1];
+        return acc;
+      },
+      [0, 0] as [number, number]
+    );
+
+    center[0] /= bucket.length;
+    center[1] /= bucket.length;
+
+    return { key, producers: bucket, center };
+  });
+};
+
+const isMobileMapViewport = () =>
+  typeof window !== 'undefined' && window.innerWidth < 768;
+
 export const MapCanvas: React.FC<MapCanvasProps> = ({
   producers,
   selectedProducer,
@@ -186,6 +231,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
   const mapInstanceRef = useRef<L.Map | null>(null);
   const markersRef = useRef<{ [id: string]: L.Marker }>({});
   const markerSignaturesRef = useRef<{ [id: string]: string }>({});
+  const clusterMarkersRef = useRef<{ [id: string]: L.Marker }>({});
   const tileLayerRef = useRef<L.TileLayer | null>(null);
   const countryBoundaryLayersRef = useRef<Map<SupportedCountryScope, L.GeoJSON>>(new Map());
   const regionLayersRef = useRef<Map<string, L.GeoJSON>>(new Map());
@@ -379,6 +425,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
 
     const initial = currentMapTarget;
 
+    const mobileMap = isMobileMapViewport();
     const map = L.map(mapContainerRef.current, {
       center: initial.coords,
       zoom: initial.zoom,
@@ -387,6 +434,9 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       zoomControl: false,
       attributionControl: true,
       preferCanvas: true,
+      zoomAnimation: !mobileMap,
+      fadeAnimation: !mobileMap,
+      markerZoomAnimation: !mobileMap,
     });
 
     const countryBoundaryPane = map.createPane('country-boundary-pane');
@@ -397,6 +447,9 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       attribution: TILE_CONFIGS[mapTheme].attribution,
       maxZoom: TILE_CONFIGS[mapTheme].maxZoom,
       subdomains: TILE_CONFIGS[mapTheme].subdomains || 'abc',
+      updateWhenIdle: mobileMap,
+      updateWhenZooming: !mobileMap,
+      keepBuffer: mobileMap ? 1 : 2,
     }).addTo(map);
 
     map.on('click', (e) => {
@@ -434,8 +487,10 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       if (ro) ro.disconnect();
       window.removeEventListener('resize', scheduleInvalidate);
       Object.values(markersRef.current).forEach((m) => m.remove());
+      Object.values(clusterMarkersRef.current).forEach((m) => m.remove());
       markersRef.current = {};
       markerSignaturesRef.current = {};
+      clusterMarkersRef.current = {};
       countryBoundaryLayersRef.current.clear();
       regionLayersRef.current.clear();
       regionLabelsRef.current.clear();
@@ -456,10 +511,14 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     if (!mapInstanceRef.current || !tileLayerRef.current) return;
     mapInstanceRef.current.removeLayer(tileLayerRef.current);
 
+    const mobileMap = isMobileMapViewport();
     tileLayerRef.current = L.tileLayer(TILE_CONFIGS[mapTheme].url, {
       attribution: TILE_CONFIGS[mapTheme].attribution,
       maxZoom: TILE_CONFIGS[mapTheme].maxZoom,
       subdomains: TILE_CONFIGS[mapTheme].subdomains || 'abc',
+      updateWhenIdle: mobileMap,
+      updateWhenZooming: !mobileMap,
+      keepBuffer: mobileMap ? 1 : 2,
     }).addTo(mapInstanceRef.current);
   }, [mapTheme]);
 
@@ -719,7 +778,9 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     });
   }, [activeRegionId, mapZoom]);
 
-  // Effect 1: Marker collection diffing & in-place update - depends ONLY on [producers]
+  // Effect 1: Producer marker diffing + mobile render virtualization.
+  // Mobile keeps low-zoom marker counts small with native Leaflet grid clusters,
+  // then mounts only markers near the visible viewport once the user zooms in.
   useEffect(() => {
     const map = mapInstanceRef.current;
     if (!map) return;
@@ -729,7 +790,6 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     const validProducers = producers.filter((p) => p.locationStatus !== 'unresolved');
     const validIds = new Set(validProducers.map((p) => p.id));
 
-    // Remove markers that no longer match filters/destination
     Object.keys(markersRef.current).forEach((id) => {
       if (!validIds.has(id)) {
         markersRef.current[id].remove();
@@ -738,24 +798,24 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       }
     });
 
-    if (validProducers.length === 0) return;
+    const clearClusters = () => {
+      Object.values(clusterMarkersRef.current).forEach((marker) => marker.remove());
+      clusterMarkersRef.current = {};
+    };
 
-    // Add new markers or update existing markers if marker-significant data changed
-    validProducers.forEach((producer) => {
+    const ensureProducerMarker = (producer: Producer) => {
       const newSignature = getProducerMarkerSignature(producer);
       const existingMarker = markersRef.current[producer.id];
 
       if (existingMarker) {
         const oldSignature = markerSignaturesRef.current[producer.id];
         if (oldSignature !== newSignature) {
-          // Update LatLng if coordinates changed
           const currentLatLng = existingMarker.getLatLng();
           const [newLat, newLng] = producer.coordinates;
           if (currentLatLng.lat !== newLat || currentLatLng.lng !== newLng) {
             existingMarker.setLatLng(producer.coordinates);
           }
 
-          // Update icon HTML if display data changed, preserving current selection state
           const isSelected = selectedProducerIdRef.current === producer.id;
           existingMarker.setIcon(
             L.divIcon({
@@ -765,24 +825,21 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
               iconAnchor: [90, 21],
             })
           );
-
           markerSignaturesRef.current[producer.id] = newSignature;
         }
-        return;
+
+        if (!map.hasLayer(existingMarker)) existingMarker.addTo(map);
+        return existingMarker;
       }
 
-      // Create new marker
       const isSelected = selectedProducerIdRef.current === producer.id;
-
-      const customIcon = L.divIcon({
-        html: getMarkerHtml(producer, isSelected),
-        className: 'custom-leaflet-pin-wrapper',
-        iconSize: [180, 42],
-        iconAnchor: [90, 21],
-      });
-
       const marker = L.marker(producer.coordinates, {
-        icon: customIcon,
+        icon: L.divIcon({
+          html: getMarkerHtml(producer, isSelected),
+          className: 'custom-leaflet-pin-wrapper',
+          iconSize: [180, 42],
+          iconAnchor: [90, 21],
+        }),
         riseOnHover: true,
         zIndexOffset: isSelected ? 1000 : 0,
       });
@@ -790,7 +847,6 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       marker.on('click', (e) => {
         L.DomEvent.stopPropagation(e);
         setActiveRegionId(null);
-        // Resolve current producer object by ID from producersMapRef at click time
         const currentProducer = producersMapRef.current.get(producer.id) || producer;
         onSelectProducerRef.current(currentProducer);
       });
@@ -798,7 +854,106 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       marker.addTo(map);
       markersRef.current[producer.id] = marker;
       markerSignaturesRef.current[producer.id] = newSignature;
-    });
+      return marker;
+    };
+
+    let renderRaf: number | null = null;
+
+    const renderMarkers = () => {
+      if (renderRaf != null) cancelAnimationFrame(renderRaf);
+      renderRaf = requestAnimationFrame(() => {
+        renderRaf = null;
+        if (!mapInstanceRef.current) return;
+
+        const mobile = isMobileMapViewport();
+        const zoom = map.getZoom();
+
+        if (!mobile) {
+          clearClusters();
+          validProducers.forEach(ensureProducerMarker);
+          return;
+        }
+
+        const visibleBounds = map.getBounds().pad(MOBILE_VIEWPORT_PADDING);
+        const visibleProducers = validProducers.filter((producer) =>
+          visibleBounds.contains(producer.coordinates)
+        );
+
+        const visibleIds = new Set(visibleProducers.map((producer) => producer.id));
+        Object.entries(markersRef.current).forEach(([id, marker]) => {
+          if (!visibleIds.has(id) && map.hasLayer(marker)) {
+            map.removeLayer(marker);
+          }
+        });
+
+        if (zoom > MOBILE_CLUSTER_MAX_ZOOM) {
+          clearClusters();
+          visibleProducers.forEach(ensureProducerMarker);
+          return;
+        }
+
+        clearClusters();
+        Object.values(markersRef.current).forEach((marker) => {
+          if (map.hasLayer(marker)) map.removeLayer(marker);
+        });
+
+        const clusters = clusterProducersByGrid(
+          visibleProducers,
+          (coordinates) => map.project(coordinates, zoom)
+        );
+
+        clusters.forEach((cluster) => {
+          if (cluster.producers.length === 1) {
+            ensureProducerMarker(cluster.producers[0]);
+            return;
+          }
+
+          const clusterMarker = L.marker(cluster.center, {
+            icon: L.divIcon({
+              html: `
+                <div style="
+                  width:42px;height:42px;border-radius:9999px;
+                  display:flex;align-items:center;justify-content:center;
+                  background:rgba(245,158,11,.94);color:#1c1917;
+                  border:2px solid rgba(255,255,255,.88);
+                  box-shadow:0 4px 14px rgba(0,0,0,.30);
+                  font-weight:800;font-size:13px;
+                ">${cluster.producers.length}</div>
+              `,
+              className: 'terroir-mobile-cluster',
+              iconSize: [42, 42],
+              iconAnchor: [21, 21],
+            }),
+            keyboard: false,
+            riseOnHover: false,
+          });
+
+          clusterMarker.on('click', (event) => {
+            L.DomEvent.stopPropagation(event);
+            const nextZoom = Math.min(12, zoom + 2);
+            map.setView(cluster.center, nextZoom, { animate: false });
+          });
+
+          clusterMarker.addTo(map);
+          clusterMarkersRef.current[cluster.key] = clusterMarker;
+        });
+      });
+    };
+
+    const scheduleRender = () => renderMarkers();
+
+    renderMarkers();
+    map.on('moveend', scheduleRender);
+    map.on('zoomend', scheduleRender);
+    map.on('resize', scheduleRender);
+
+    return () => {
+      if (renderRaf != null) cancelAnimationFrame(renderRaf);
+      map.off('moveend', scheduleRender);
+      map.off('zoomend', scheduleRender);
+      map.off('resize', scheduleRender);
+      clearClusters();
+    };
   }, [producers]);
 
   // Effect 2: Marker selection isolation - depends ONLY on [selectedProducer]
