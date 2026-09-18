@@ -61,7 +61,7 @@ const FAQ_DATA: FaqItem[] = [
     question: 'What categories of producers are included?',
     answer:
       'TerroirTrail supports 13 first-class producer categories: Wineries, Breweries, Distilleries, Cideries, Olive Mills, Olive Oil Producers, Other Oil Mills, Dairies / Cheesemakers, Apiaries / Honey, Confectionery Producers, Herb Farms, Mushroom Farms, and Farms.',
-    highlight: 'Seven producer categories are presented under the same research standard.',
+    highlight: 'Thirteen producer categories are presented under the same research standard.',
   },
   {
     id: 'how-producers-selected',
@@ -77,7 +77,7 @@ const FAQ_DATA: FaqItem[] = [
     categoryLabel: 'About & Curation',
     question: 'Which regions are currently covered?',
     answer:
-      'TerroirTrail currently includes 62 producer records across Crete, Santorini, the Peloponnese, Macedonia, Greece and Tuscany. Coverage will expand across Greece, Italy and other European regions as new records meet the same research and presentation standard.',
+      'TerroirTrail currently includes 148 producer/project records across 22 destinations in 8 European countries. Coverage continues to expand as new records meet the same research, verification and presentation standard.',
     highlight: 'The catalogue already reaches beyond Greece while keeping a consistent research standard.',
   },
   {
@@ -133,6 +133,15 @@ const FAQ_DATA: FaqItem[] = [
     question: 'How does TerroirTrail handle rural road access?',
     answer:
       'TerroirTrail treats location and road access as separate facts. When useful access information is available, it is shown on the listing; when it is not, the site does not invent a road condition.',
+  },
+  {
+    id: 'producer-join',
+    category: 'producers',
+    categoryLabel: 'For Producers',
+    question: 'I am a producer and I am not listed yet. Can I be considered for TerroirTrail?',
+    answer:
+      'Yes. If you run an independent, place-based producer that fits the TerroirTrail catalogue, email terroirtrail@gmail.com with your producer name, location, official website or public business page, and a short note about what you make. Every enquiry is reviewed independently; contacting us does not automatically guarantee inclusion, verification, partnership, booking permission or Host access.',
+    highlight: 'Producer listing enquiries: terroirtrail@gmail.com',
   },
   {
     id: 'producer-claim',
@@ -253,7 +262,7 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
                 </p>
 
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-5 border-t border-white/10">
-                  <Metric value="62" label="Producer records" />
+                  <Metric value="148" label="Producer records" />
                   <Metric value="13" label="Producer categories" />
                   <Metric value="Direct" label="Maker contact" />
                   <Metric value="Clear" label="Visit & access notes" />
@@ -484,6 +493,19 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
                         <div className="mt-1 text-[11px] text-stone-400">Follow the project and message us on Instagram.</div>
                       </div>
                     </div>
+                  </a>
+
+                  <a
+                    href={`mailto:${CONTACT_EMAIL}?subject=Producer%20listing%20enquiry%20%E2%80%94%20TerroirTrail`}
+                    className="group block p-5 rounded-2xl bg-gradient-to-br from-amber-500/10 to-stone-900 border border-amber-500/25 hover:border-amber-400/50 transition"
+                  >
+                    <div className="text-[10px] uppercase tracking-wider text-amber-400 font-bold">For producers</div>
+                    <div className="mt-1 text-base font-bold text-white group-hover:text-amber-300 transition">Are you a producer who belongs on TerroirTrail?</div>
+                    <p className="mt-2 text-[11px] leading-relaxed text-stone-400">
+                      Tell us who you are, where you are based and what you make. We review every listing independently.
+                    </p>
+                    <div className="mt-3 text-xs font-bold text-amber-300">{CONTACT_EMAIL}</div>
+                    <div className="mt-1 text-[10px] text-stone-500">An enquiry does not automatically imply inclusion or a commercial partnership.</div>
                   </a>
 
                   {(onOpenProducerPortal || onOpenAuth) && (
