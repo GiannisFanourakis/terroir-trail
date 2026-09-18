@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import type { Producer } from '../src/types/terroir';
 import { DESTINATION_GEOGRAPHY } from '../src/config/geography';
-import { SEO_PRODUCERS } from './seoCatalogue';
+import { LIVE_CATALOGUE_METRICS, SEO_PRODUCERS } from './seoCatalogue';
 
 const CANONICAL_HOST = 'https://terroir-trail.web.app';
 const distDir = path.resolve(process.cwd(), 'dist');
@@ -312,7 +312,7 @@ const renderProducerPage = (producer: Producer): string => {
 const renderProducerDirectory = (): string => {
   const canonicalUrl = `${CANONICAL_HOST}/producers/`;
   const title = 'Audited Producer Directory | TerroirTrail';
-  const description = `Browse ${PRODUCERS.length} audited producer/project records across Crete, Santorini, the Peloponnese, Macedonia, Greece and Tuscany.`;
+  const description = `Browse ${PRODUCERS.length} bundled canonical producer/project records. The live TerroirTrail catalogue currently contains ${LIVE_CATALOGUE_METRICS.totalProducers} records across ${LIVE_CATALOGUE_METRICS.destinationCount} destinations in ${LIVE_CATALOGUE_METRICS.countryCount} countries.`;
   const grouped = Object.keys(destinationLabels).map((destinationKey) => {
     const destination = destinationKey as Producer['destination'];
     const producers = PRODUCERS
@@ -399,34 +399,34 @@ const replaceRequired = (html: string, from: string, to: string): string => {
 const refreshHomepageSeoState = (sourceHtml: string): string => {
   let html = sourceHtml;
   const oldDescription = 'Independent producer and agritourism discovery guide. Explore audited producers across Crete and Santorini with clearly labeled visiting, location, imagery, and road-access status.';
-  const newDescription = `Independent producer and agritourism discovery guide. Explore ${PRODUCERS.length} audited producer/project records across Greece and Tuscany with clearly labeled visiting, location, imagery, and road-access status.`;
+  const newDescription = `Independent producer and agritourism discovery guide. Explore ${LIVE_CATALOGUE_METRICS.totalProducers} live producer/project records across ${LIVE_CATALOGUE_METRICS.destinationCount} destinations in ${LIVE_CATALOGUE_METRICS.countryCount} European countries, with clearly labeled visiting, location, imagery, and road-access status.`;
   html = replaceRequired(html, oldDescription, newDescription);
 
   html = replaceRequired(
     html,
     'Independent producer and agritourism discovery guide connecting travelers directly with audited wineries, craft breweries, artisanal olive mills, traditional dairies, apiaries, traditional distilleries, and farms across Crete and Santorini, with clearly labeled visiting, location, imagery, and road-access status.',
-    `Independent producer and agritourism discovery guide connecting travelers directly with ${PRODUCERS.length} audited producer/project records across Crete, Santorini, the Peloponnese, Macedonia, Greece and Tuscany, with clearly labeled visiting, location, imagery, and road-access status.`
+    `Independent producer and agritourism discovery guide connecting travelers directly with ${LIVE_CATALOGUE_METRICS.totalProducers} live producer/project records across ${LIVE_CATALOGUE_METRICS.destinationCount} destinations in ${LIVE_CATALOGUE_METRICS.countryCount} European countries, with clearly labeled visiting, location, imagery, and road-access status.`
   );
   html = replaceRequired(
     html,
     'Interactive agritourism discovery map and directory with audited reference catalogues in Crete and Santorini. Discovery Guides are built from verified stops; multi-stop driving navigation remains withheld wherever road-access evidence is incomplete.',
-    `Interactive agritourism discovery map and directory with ${PRODUCERS.length} audited producer/project records across Crete, Santorini, the Peloponnese, Macedonia, Greece and Tuscany. Discovery Guides are built from verified stops; multi-stop driving navigation remains withheld wherever road-access evidence is incomplete.`
+    `Interactive agritourism discovery map and directory with ${LIVE_CATALOGUE_METRICS.totalProducers} live producer/project records across ${LIVE_CATALOGUE_METRICS.destinationCount} destinations in ${LIVE_CATALOGUE_METRICS.countryCount} European countries. Discovery Guides are built from verified stops; multi-stop driving navigation remains withheld wherever road-access evidence is incomplete.`
   );
   html = replaceRequired(
     html,
     'TerroirTrail is an independent producer and agritourism discovery guide. It connects slow travelers and road-trippers directly with independent wineries, craft breweries, artisanal olive mills, traditional dairies, apiaries, traditional distilleries, and farms, with audited reference catalogues in Crete and Santorini and further regional expansion in progress.',
-    `TerroirTrail is an independent producer and agritourism discovery guide with ${PRODUCERS.length} audited producer/project records across Crete, Santorini, the Peloponnese, Macedonia, Greece and Tuscany. It connects travelers with source-backed producer identity, visiting, location and access information while keeping unknown facts unknown.`
+    `TerroirTrail is an independent producer and agritourism discovery guide with ${LIVE_CATALOGUE_METRICS.totalProducers} live producer/project records across ${LIVE_CATALOGUE_METRICS.destinationCount} destinations in ${LIVE_CATALOGUE_METRICS.countryCount} European countries. It connects travelers with source-backed producer identity, visiting, location and access information while keeping unknown facts unknown.`
   );
   html = replaceRequired(html, 'Which regions are currently audited to reference quality?', 'Which regions are currently represented in the audited catalogue?');
   html = replaceRequired(
     html,
     'Crete and Santorini are the current reference-quality regions. Crete has 27 audited producer/project records and Santorini has 9 audited producer records.',
-    `The audited catalogue currently covers Crete, Santorini, the Peloponnese, Macedonia, Greece and a Tuscany / Italy foothold: ${PRODUCERS.length} producer/project records in total.`
+    `The live catalogue currently contains ${LIVE_CATALOGUE_METRICS.totalProducers} producer/project records across ${LIVE_CATALOGUE_METRICS.destinationCount} destinations in ${LIVE_CATALOGUE_METRICS.countryCount} European countries.`
   );
   html = replaceRequired(
     html,
     'Crete and Santorini are the current reference-quality regions, with clearly labeled visiting, location, imagery, and road-access status and no commission markups.',
-    'The current audited catalogue spans Crete, Santorini, the Peloponnese, Macedonia, Greece and Tuscany, with clearly labeled visiting, location, imagery, and road-access status and no commission markups.'
+    `The live catalogue spans ${LIVE_CATALOGUE_METRICS.destinationCount} destinations in ${LIVE_CATALOGUE_METRICS.countryCount} European countries, with clearly labeled visiting, location, imagery, and road-access status and no commission markups.`
   );
   html = replaceRequired(
     html,
@@ -436,7 +436,7 @@ const refreshHomepageSeoState = (sourceHtml: string): string => {
   html = replaceRequired(
     html,
     '<h2>Verified Crete &amp; Santorini Producer Directory</h2>',
-    `<p>The full audited catalogue contains ${PRODUCERS.length} producer/project records, each published as a canonical producer entity page for search and answer-engine discovery. <a href="/producers/">Browse the full audited producer directory.</a></p>\n        <h2>Audited Producer Directory — Homepage Excerpt</h2>`
+    `<p>The live catalogue contains ${LIVE_CATALOGUE_METRICS.totalProducers} producer/project records. ${PRODUCERS.length} records are currently mirrored into the deterministic canonical SEO/offline snapshot. <a href="/producers/">Browse the canonical producer directory.</a></p>\n        <h2>Audited Producer Directory — Homepage Excerpt</h2>`
   );
   return html;
 };
@@ -475,7 +475,7 @@ function generateSeoPages(): void {
   }
 
   fs.writeFileSync(path.join(distDir, 'sitemap.xml'), renderSitemap(), 'utf-8');
-  console.log(`✓ SEO generation complete: homepage refreshed + producer directory + ${PRODUCERS.length} canonical producer pages + sitemap.`);
+  console.log(`✓ SEO generation complete: ${LIVE_CATALOGUE_METRICS.totalProducers} live records / ${PRODUCERS.length} bundled canonical producer pages + sitemap.`);
 }
 
 generateSeoPages();
