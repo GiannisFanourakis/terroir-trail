@@ -189,14 +189,36 @@ export interface ProducerMapCluster {
   center: [number, number];
 }
 
-export const MOBILE_CLUSTER_MAX_ZOOM = 10;
-export const MOBILE_CLUSTER_CELL_SIZE = 72;
-export const MOBILE_VIEWPORT_PADDING = 0.2;
+export interface AdaptiveMapRenderStrategy {
+  clusterMaxZoom: number;
+  clusterCellSize: number;
+  viewportPadding: number;
+  maxIndividualMarkers: number;
+}
+
+export const MOBILE_MAP_RENDER_STRATEGY: AdaptiveMapRenderStrategy = {
+  clusterMaxZoom: 10,
+  clusterCellSize: 72,
+  viewportPadding: 0.2,
+  maxIndividualMarkers: 120,
+};
+
+export const DESKTOP_MAP_RENDER_STRATEGY: AdaptiveMapRenderStrategy = {
+  clusterMaxZoom: 11,
+  clusterCellSize: 88,
+  viewportPadding: 0.14,
+  maxIndividualMarkers: 220,
+};
+
+export const getAdaptiveMapRenderStrategy = (
+  viewportWidth: number
+): AdaptiveMapRenderStrategy =>
+  viewportWidth < 768 ? MOBILE_MAP_RENDER_STRATEGY : DESKTOP_MAP_RENDER_STRATEGY;
 
 export const clusterProducersByGrid = (
   producers: Producer[],
   project: (coordinates: [number, number]) => { x: number; y: number },
-  cellSize = MOBILE_CLUSTER_CELL_SIZE
+  cellSize = MOBILE_MAP_RENDER_STRATEGY.clusterCellSize
 ): ProducerMapCluster[] => {
   const buckets = new Map<string, Producer[]>();
 
@@ -465,8 +487,8 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       attribution: TILE_CONFIGS[mapTheme].attribution,
       maxZoom: TILE_CONFIGS[mapTheme].maxZoom,
       subdomains: TILE_CONFIGS[mapTheme].subdomains || 'abc',
-      // Marker virtualization handles the expensive mobile work. Keep tile
-      // updates responsive during zoom so the base map never blanks/refills.
+      // Marker virtualization handles the expensive producer layer work.
+      // Keep tile updates responsive during zoom so the base map never blanks/refills.
       updateWhenIdle: false,
       updateWhenZooming: true,
       keepBuffer: 2,
@@ -536,8 +558,8 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       attribution: TILE_CONFIGS[mapTheme].attribution,
       maxZoom: TILE_CONFIGS[mapTheme].maxZoom,
       subdomains: TILE_CONFIGS[mapTheme].subdomains || 'abc',
-      // Marker virtualization handles the expensive mobile work. Keep tile
-      // updates responsive during zoom so the base map never blanks/refills.
+      // Marker virtualization handles the expensive producer layer work.
+      // Keep tile updates responsive during zoom so the base map never blanks/refills.
       updateWhenIdle: false,
       updateWhenZooming: true,
       keepBuffer: 2,
@@ -800,9 +822,9 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     });
   }, [activeRegionId, mapZoom]);
 
-  // Effect 1: Producer marker diffing + mobile render virtualization.
-  // Mobile keeps low-zoom marker counts small with native Leaflet grid clusters,
-  // then mounts only markers near the visible viewport once the user zooms in.
+  // Effect 1: Producer marker diffing + adaptive render virtualization.
+  // Desktop and mobile both render only markers near the current viewport.
+  // Low zooms and unusually dense views collapse into lightweight grid clusters.
   useEffect(() => {
     const map = mapInstanceRef.current;
     if (!map) return;
@@ -887,16 +909,13 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
         renderRaf = null;
         if (!mapInstanceRef.current) return;
 
-        const mobile = isMobileMapViewport();
         const zoom = map.getZoom();
+        const viewportWidth =
+          mapContainerRef.current?.clientWidth ||
+          (typeof window !== 'undefined' ? window.innerWidth : 1024);
+        const strategy = getAdaptiveMapRenderStrategy(viewportWidth);
 
-        if (!mobile) {
-          clearClusters();
-          validProducers.forEach(ensureProducerMarker);
-          return;
-        }
-
-        const visibleBounds = map.getBounds().pad(MOBILE_VIEWPORT_PADDING);
+        const visibleBounds = map.getBounds().pad(strategy.viewportPadding);
         const visibleProducers = validProducers.filter((producer) =>
           visibleBounds.contains(producer.coordinates)
         );
@@ -908,7 +927,11 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
           }
         });
 
-        if (zoom > MOBILE_CLUSTER_MAX_ZOOM) {
+        const shouldCluster =
+          zoom <= strategy.clusterMaxZoom ||
+          visibleProducers.length > strategy.maxIndividualMarkers;
+
+        if (!shouldCluster) {
           clearClusters();
           visibleProducers.forEach(ensureProducerMarker);
           return;
@@ -921,7 +944,8 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
 
         const clusters = clusterProducersByGrid(
           visibleProducers,
-          (coordinates) => map.project(coordinates, zoom)
+          (coordinates) => map.project(coordinates, zoom),
+          strategy.clusterCellSize
         );
 
         clusters.forEach((cluster) => {
@@ -942,17 +966,18 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
                   font-weight:800;font-size:13px;
                 ">${cluster.producers.length}</div>
               `,
-              className: 'terroir-mobile-cluster',
+              className: 'terroir-map-cluster',
               iconSize: [42, 42],
               iconAnchor: [21, 21],
             }),
             keyboard: false,
             riseOnHover: false,
+            title: `${cluster.producers.length} producers`,
           });
 
           clusterMarker.on('click', (event) => {
             L.DomEvent.stopPropagation(event);
-            const nextZoom = Math.min(12, zoom + 2);
+            const nextZoom = Math.min(18, Math.max(strategy.clusterMaxZoom + 1, zoom + 2));
             map.setView(cluster.center, nextZoom, { animate: false });
           });
 
