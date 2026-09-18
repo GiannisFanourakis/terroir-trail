@@ -39,19 +39,20 @@ const parseLegacyAttribution = (
 ): GooglePhotoAttribution[] => {
   if (!htmlAttributions?.length || typeof document === 'undefined') return [];
 
-  return htmlAttributions
-    .map((html) => {
-      const wrapper = document.createElement('div');
-      wrapper.innerHTML = html;
-      const anchor = wrapper.querySelector('a');
-      const displayName = (anchor?.textContent || wrapper.textContent || '').trim();
-      if (!displayName) return null;
-      return {
-        displayName,
-        uri: anchor?.href || undefined,
-      } satisfies GooglePhotoAttribution;
-    })
-    .filter((value): value is GooglePhotoAttribution => Boolean(value));
+  return htmlAttributions.reduce<GooglePhotoAttribution[]>((items, html) => {
+    const wrapper = document.createElement('div');
+    wrapper.innerHTML = html;
+    const anchor = wrapper.querySelector('a');
+    const displayName = (anchor?.textContent || wrapper.textContent || '').trim();
+
+    if (!displayName) return items;
+
+    items.push({
+      displayName,
+      ...(anchor?.href ? { uri: anchor.href } : {}),
+    });
+    return items;
+  }, []);
 };
 
 const fetchLegacyPhotos = async (
