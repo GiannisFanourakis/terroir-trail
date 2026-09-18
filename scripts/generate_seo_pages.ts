@@ -312,7 +312,7 @@ const renderProducerPage = (producer: Producer): string => {
 const renderProducerDirectory = (): string => {
   const canonicalUrl = `${CANONICAL_HOST}/producers/`;
   const title = 'Audited Producer Directory | TerroirTrail';
-  const description = `Browse ${PRODUCERS.length} bundled canonical producer/project records. The live TerroirTrail catalogue currently contains ${LIVE_CATALOGUE_METRICS.totalProducers} records across ${LIVE_CATALOGUE_METRICS.destinationCount} destinations in ${LIVE_CATALOGUE_METRICS.countryCount} countries.`;
+  const description = `Browse ${PRODUCERS.length} canonical producer/project records across ${LIVE_CATALOGUE_METRICS.destinationCount} destinations in ${LIVE_CATALOGUE_METRICS.countryCount} countries.`;
   const grouped = Object.keys(destinationLabels).map((destinationKey) => {
     const destination = destinationKey as Producer['destination'];
     const producers = PRODUCERS
@@ -436,7 +436,7 @@ const refreshHomepageSeoState = (sourceHtml: string): string => {
   html = replaceRequired(
     html,
     '<h2>Verified Crete &amp; Santorini Producer Directory</h2>',
-    `<p>The live catalogue contains ${LIVE_CATALOGUE_METRICS.totalProducers} producer/project records. ${PRODUCERS.length} records are currently mirrored into the deterministic canonical SEO/offline snapshot. <a href="/producers/">Browse the canonical producer directory.</a></p>\n        <h2>Audited Producer Directory — Homepage Excerpt</h2>`
+    `<p>The live catalogue and deterministic SEO/AEO snapshot are synchronized at ${PRODUCERS.length} producer/project records. <a href="/producers/">Browse the canonical producer directory.</a></p>\n        <h2>Audited Producer Directory — Homepage Excerpt</h2>`
   );
   return html;
 };
@@ -475,7 +475,7 @@ function generateSeoPages(): void {
   }
 
   fs.writeFileSync(path.join(distDir, 'sitemap.xml'), renderSitemap(), 'utf-8');
-  console.log(`✓ SEO generation complete: ${LIVE_CATALOGUE_METRICS.totalProducers} live records / ${PRODUCERS.length} bundled canonical producer pages + sitemap.`);
+  console.log(`✓ SEO generation complete: ${PRODUCERS.length} synchronized canonical producer pages across ${LIVE_CATALOGUE_METRICS.destinationCount} destinations / ${LIVE_CATALOGUE_METRICS.countryCount} countries + sitemap.`);
 }
 
 generateSeoPages();
