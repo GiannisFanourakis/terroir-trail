@@ -1110,7 +1110,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       !selectedHasTrustedLocalPhoto &&
       runtimeConfig.googlePlacesMedia.enabled &&
       selectedProducer.googlePlaceId?.trim() &&
-      isGooglePlacesEligible(selectedProducer.id)
+      isGooglePlacesEligible(selectedProducer)
   );
 
   const currentRegionMatchingProducers = activeTerroirRegion
