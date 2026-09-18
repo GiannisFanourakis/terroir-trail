@@ -17,6 +17,7 @@ import { GooglePlaceMedia } from '../GooglePlaces/GooglePlaceMedia';
 import { GooglePlacePhotoCarousel } from '../GooglePlaces/GooglePlacePhotoCarousel';
 import { isGooglePlacesEligible } from '../../config/googlePlacesAllowlist';
 import { runtimeConfig } from '../../config/runtimeConfig';
+import { ProducerCategoryIcon } from '../Common/ProducerCategoryIcon';
 
 interface ProducerDetailDrawerProps {
   producer: Producer | null;
@@ -134,20 +135,20 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
 
   const getCategoryDetails = (p: Producer) => {
     switch (getEffectiveProducerCategory(p)) {
-      case 'winery': return { label: 'Winery', icon: '🍇', color: 'text-rose-400 bg-rose-500/10 border-rose-500/20' };
-      case 'brewery': return { label: 'Brewery', icon: '🍺', color: 'text-amber-300 bg-amber-400/15 border-amber-400/30' };
-      case 'distillery': return { label: 'Distillery', icon: '🥃', color: 'text-amber-400 bg-amber-500/10 border-amber-500/20' };
-      case 'cidery': return { label: 'Cidery', icon: '🍎', color: 'text-lime-400 bg-lime-500/10 border-lime-500/20' };
-      case 'confectionery': return { label: 'Confectionery Producer', icon: '🍫', color: 'text-amber-300 bg-amber-700/10 border-amber-700/20' };
-      case 'oil_mill': return { label: 'Oil Mill', icon: '🌻', color: 'text-yellow-400 bg-yellow-600/10 border-yellow-600/20' };
-      case 'herb_farm': return { label: 'Herb Farm', icon: '🌿', color: 'text-green-400 bg-green-500/10 border-green-500/20' };
-      case 'mushroom_farm': return { label: 'Mushroom Farm', icon: '🍄', color: 'text-stone-300 bg-stone-500/10 border-stone-500/20' };
-      case 'olive_mill': return { label: 'Olive Mill', icon: '🫒', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' };
-      case 'olive_oil_producer': return { label: 'Olive Oil Producer', icon: '🫒', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' };
-      case 'cheese_dairy': return { label: 'Dairy', icon: '🧀', color: 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20' };
-      case 'apiary': return { label: 'Apiary / Honey', icon: '🍯', color: 'text-orange-400 bg-orange-500/10 border-orange-500/20' };
-      case 'farm': return { label: 'Farm', icon: '🌿', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' };
-      default: return { label: 'Producer', icon: '🌿', color: 'text-stone-300 bg-stone-500/10 border-white/10' };
+      case 'winery': return { label: 'Winery', color: 'text-rose-400 bg-rose-500/10 border-rose-500/20' };
+      case 'brewery': return { label: 'Brewery', color: 'text-amber-300 bg-amber-400/15 border-amber-400/30' };
+      case 'distillery': return { label: 'Distillery', color: 'text-amber-400 bg-amber-500/10 border-amber-500/20' };
+      case 'cidery': return { label: 'Cidery', color: 'text-lime-400 bg-lime-500/10 border-lime-500/20' };
+      case 'confectionery': return { label: 'Confectionery Producer', color: 'text-amber-300 bg-amber-700/10 border-amber-700/20' };
+      case 'oil_mill': return { label: 'Oil Mill', color: 'text-yellow-400 bg-yellow-600/10 border-yellow-600/20' };
+      case 'herb_farm': return { label: 'Herb Farm', color: 'text-green-400 bg-green-500/10 border-green-500/20' };
+      case 'mushroom_farm': return { label: 'Mushroom Farm', color: 'text-stone-300 bg-stone-500/10 border-stone-500/20' };
+      case 'olive_mill': return { label: 'Olive Mill', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' };
+      case 'olive_oil_producer': return { label: 'Olive Oil Producer', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' };
+      case 'cheese_dairy': return { label: 'Dairy', color: 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20' };
+      case 'apiary': return { label: 'Apiary / Honey', color: 'text-orange-400 bg-orange-500/10 border-orange-500/20' };
+      case 'farm': return { label: 'Farm', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' };
+      default: return { label: 'Producer', color: 'text-stone-300 bg-stone-500/10 border-white/10' };
     }
   };
 
@@ -531,6 +532,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
     }
   };
 
+  const effectiveCategory = getEffectiveProducerCategory(producer);
   const cat = getCategoryDetails(producer);
   const road = getRoadAccessDetails(producer);
   const roadWarning = getProducerRoadAccessWarning(producer);
@@ -677,7 +679,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
           <div className="absolute top-4 left-4 z-20 flex flex-col items-start gap-1.5 max-w-[calc(100%-130px)]">
             <div className="flex items-center gap-2 flex-wrap">
               <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border backdrop-blur-md ${cat.color}`}>
-                <span>{cat.icon}</span>
+                <ProducerCategoryIcon category={effectiveCategory} className="w-3.5 h-3.5" />
                 <span>{cat.label}</span>
               </span>
               {producer.publicPointType === 'producer_shop' && (
@@ -1045,7 +1047,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
         {activeTab === 'tastings' && (
           <div className="space-y-5 animate-in fade-in duration-200">
             <div className="flex items-center gap-2 pb-1 border-b border-white/5">
-              <span className="text-base" aria-hidden="true">{cat.icon}</span>
+              <ProducerCategoryIcon category={effectiveCategory} className="w-4 h-4 text-amber-400" />
               <h3 className="font-serif-title font-bold text-sm text-white">
                 {term.whatTheyMakeTitle}
               </h3>
@@ -1124,7 +1126,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <h3 className="text-xs font-bold uppercase tracking-wider text-white flex items-center gap-1.5">
-                  <span className="text-sm shrink-0" aria-hidden="true">{cat.icon}</span>
+                  <ProducerCategoryIcon category={effectiveCategory} className="w-4 h-4 text-amber-400" />
                   <span>{term.visitingTitle || 'Visiting & Contact'}</span>
                 </h3>
                 <span className={`text-[10px] px-2.5 py-0.5 rounded-full font-bold border ${visitDetails.badgeClass}`}>
