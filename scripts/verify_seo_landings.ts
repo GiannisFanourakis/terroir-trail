@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import type { Producer } from '../src/types/terroir';
-import { SEO_PRODUCERS } from './seoCatalogue';
+import { LIVE_CATALOGUE_METRICS, SEO_PRODUCERS } from './seoCatalogue';
 
 const CANONICAL_HOST = 'https://terroir-trail.web.app';
 const CANONICAL_SITEMAP_URL = `${CANONICAL_HOST}/sitemap.xml`;
@@ -14,7 +14,6 @@ const MIN_DESTINATION_CATEGORY_RECORDS = 3;
 const PRODUCERS: Producer[] = SEO_PRODUCERS;
 const CRETE_COUNT = PRODUCERS.filter((producer) => producer.destination === 'crete').length;
 const SANTORINI_COUNT = PRODUCERS.filter((producer) => producer.destination === 'santorini').length;
-const OTHER_DESTINATION_COUNT = PRODUCERS.length - CRETE_COUNT - SANTORINI_COUNT;
 
 const categorySlugs: Record<Producer['category'], string> = {
   winery: 'wineries',
@@ -200,15 +199,23 @@ function verifySeo(): void {
   const robotsContent = requireFile(path.join(distDir, 'robots.txt'), 'dist/robots.txt');
   const sitemapDirectivePattern = new RegExp(`^Sitemap:\\s*${CANONICAL_SITEMAP_URL.replace(/\./g, '\\.')}\\s*$`, 'm');
   if (!sitemapDirectivePattern.test(robotsContent)) fail(`dist/robots.txt does not advertise Sitemap: ${CANONICAL_SITEMAP_URL}`);
+  for (const crawler of ['Googlebot', 'Bingbot', 'OAI-SearchBot', 'ChatGPT-User', 'GPTBot', 'PerplexityBot', 'ClaudeBot', 'Applebot-Extended', 'Google-Extended']) {
+    requireIncludes(robotsContent, `User-agent: ${crawler}`, 'dist/robots.txt');
+  }
+  requireIncludes(robotsContent, 'https://terroir-trail.web.app/llms.txt', 'dist/robots.txt');
 
   const llmsContent = requireFile(path.join(distDir, 'llms.txt'), 'dist/llms.txt');
   const requiredLlmsClaims = [
-    `${PRODUCERS.length} producer/project records`,
-    `Crete, Greece — ${CRETE_COUNT} audited records.`,
-    `Santorini, Greece — ${SANTORINI_COUNT} audited records.`,
-    `Peloponnese, Macedonia, Greece and Tuscany / Italy — ${OTHER_DESTINATION_COUNT} audited records combined.`,
+    `${LIVE_CATALOGUE_METRICS.totalProducers} producer/project records`,
+    `Greece — 66 records: Crete ${CRETE_COUNT}, Santorini ${SANTORINI_COUNT}, Peloponnese 11, Macedonia 11, Thessaly 5.`,
+    'Italy — 39 records: Tuscany 5, Piedmont 8, Puglia 8, Sicily 9, South Tyrol 9.',
+    `Deterministic canonical/offline producer snapshot — ${PRODUCERS.length} records pending synchronization with the full live catalogue.`,
     '10 published verified-stop Discovery Guides',
     '/producers/<producer-id>/',
+    'Sitemap: https://terroir-trail.web.app/sitemap.xml',
+    'Producer directory: https://terroir-trail.web.app/producers/',
+    '## Search and answer-engine discovery',
+    '## Answer-engine interpretation rules',
     'does not represent Santorini as a UNESCO Global Geopark',
     'Greek cheese and dairy expansion is now included in the audited catalogue',
   ];
@@ -229,10 +236,11 @@ function verifySeo(): void {
   const indexContent = requireFile(path.join(distDir, 'index.html'), 'dist/index.html');
   requireIncludes(indexContent, `<link rel="canonical" href="${CANONICAL_HOST}/" />`, 'dist/index.html');
   requireIncludes(indexContent, 'TerroirTrail — Independent Producer &amp; Agritourism Guide', 'dist/index.html');
-  requireIncludes(indexContent, `${PRODUCERS.length} audited producer/project records`, 'dist/index.html');
+  requireIncludes(indexContent, `${LIVE_CATALOGUE_METRICS.totalProducers} live producer/project records`, 'dist/index.html');
   requireIncludes(indexContent, 'Ten verified-stop guides are currently published', 'dist/index.html');
-  requireIncludes(indexContent, 'Crete, Santorini, the Peloponnese, Macedonia, Greece and Tuscany', 'dist/index.html');
+  requireIncludes(indexContent, `${LIVE_CATALOGUE_METRICS.destinationCount} destinations in ${LIVE_CATALOGUE_METRICS.countryCount} European countries`, 'dist/index.html');
   requireIncludes(indexContent, 'href="/producers/"', 'dist/index.html');
+  requireIncludes(indexContent, 'data-seo-landing-nav="true"', 'dist/index.html');
   requireIncludes(indexContent, 'href="/destinations/"', 'dist/index.html');
   requireIncludes(indexContent, 'href="/categories/"', 'dist/index.html');
   requireIncludes(indexContent, 'Discovery Guides &amp; Navigation Safety', 'dist/index.html');
@@ -258,7 +266,7 @@ function verifySeo(): void {
 
   const producerDirectoryContent = requireFile(path.join(distDir, 'producers', 'index.html'), 'Producer directory');
   requireIncludes(producerDirectoryContent, `<link rel="canonical" href="${PRODUCER_DIRECTORY_URL}" />`, 'Producer directory');
-  requireIncludes(producerDirectoryContent, `${PRODUCERS.length} audited producer/project records`, 'Producer directory');
+  requireIncludes(producerDirectoryContent, `${PRODUCERS.length} bundled canonical producer/project records`, 'Producer directory');
   requireIncludes(producerDirectoryContent, '"@type": "CollectionPage"', 'Producer directory');
   requireIncludes(producerDirectoryContent, `"numberOfItems": ${PRODUCERS.length}`, 'Producer directory');
   requireIncludes(producerDirectoryContent, 'href="/destinations/"', 'Producer directory');
@@ -311,7 +319,7 @@ function verifySeo(): void {
   console.log(`  - thin destination/category combinations remain withheld below ${MIN_DESTINATION_CATEGORY_RECORDS} records`);
   console.log('  - all producer pages link into applicable destination/category/region entities');
   console.log(`  - final sitemap contains exactly ${expectedSitemapUrls.length} canonical URLs with no duplicates or legacy producer-query URLs`);
-  console.log(`  - robots.txt advertises ${CANONICAL_SITEMAP_URL}`);
+  console.log(`  - robots.txt advertises ${CANONICAL_SITEMAP_URL}, llms.txt and explicit search/answer-engine crawler access`);
   console.log('  - homepage/llms state, stale-claim bans and monetization quarantine remain enforced');
 }
 
