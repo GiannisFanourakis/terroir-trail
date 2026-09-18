@@ -7,8 +7,6 @@ import { Header } from './components/Header/Header';
 import { FilterBar } from './components/FilterBar/FilterBar';
 import { MapCanvas } from './components/Map/MapCanvas';
 import { ProducerList } from './components/Sidebar/ProducerList';
-import { ProducerDetailDrawerWithReviews as ProducerDetailDrawer } from './components/Drawer/ProducerDetailDrawerWithReviews';
-import { TerroirRegionDrawer } from './components/Regions/TerroirRegionDrawer';
 import { TERROIR_REGIONS } from './data/terroirRegionCatalogue';
 import { withTerroirRegionStory } from './data/terroirRegionStories';
 import { useFavorites } from './hooks/useFavorites';
@@ -27,6 +25,16 @@ import { CountryScope, setActiveCountryScope } from './config/geography';
 import { List, MapPin } from 'lucide-react';
 
 // Performance optimization: lazy-load modals on demand to shrink initial bundle
+const ProducerDetailDrawer = lazy(() =>
+  import('./components/Drawer/ProducerDetailDrawerWithReviews').then(m => ({
+    default: m.ProducerDetailDrawerWithReviews,
+  }))
+);
+const TerroirRegionDrawer = lazy(() =>
+  import('./components/Regions/TerroirRegionDrawer').then(m => ({
+    default: m.TerroirRegionDrawer,
+  }))
+);
 const DayTripModal = lazy(() => import('./components/Loops/DayTripModal').then(m => ({ default: m.DayTripModal })));
 const AuthModal = lazy(() => import('./components/Auth/AuthModal').then(m => ({ default: m.AuthModal })));
 const PassportModal = lazy(() => import('./components/Auth/PassportModal').then(m => ({ default: m.PassportModal })));
@@ -432,14 +440,26 @@ export const App: React.FC = () => {
           />
 
           {selectedTerroirRegion && (
-            <TerroirRegionDrawer
-              region={selectedTerroirRegion}
-              producerCount={regionGuideProducers.length}
-              categoryCount={regionGuideCategoryCount}
-              isOpen={isRegionGuideOpen}
-              onClose={() => setIsRegionGuideOpen(false)}
-              onShowProducers={() => setIsRegionGuideOpen(false)}
-            />
+            <Suspense
+              fallback={(
+                <div
+                  role="status"
+                  aria-live="polite"
+                  className="absolute right-3 top-16 z-20 rounded-xl border border-white/10 bg-stone-900/95 px-3 py-2 text-[11px] font-semibold text-stone-300 shadow-xl"
+                >
+                  Loading region guide…
+                </div>
+              )}
+            >
+              <TerroirRegionDrawer
+                region={selectedTerroirRegion}
+                producerCount={regionGuideProducers.length}
+                categoryCount={regionGuideCategoryCount}
+                isOpen={isRegionGuideOpen}
+                onClose={() => setIsRegionGuideOpen(false)}
+                onShowProducers={() => setIsRegionGuideOpen(false)}
+              />
+            </Suspense>
           )}
         </div>
 
@@ -468,22 +488,34 @@ export const App: React.FC = () => {
         )}
 
         {isDrawerOpen && (
-          <ProducerDetailDrawer
-            producer={publicSelectedProducer}
-            onClose={() => setIsDrawerOpen(false)}
-            user={user}
-            onOpenProducerPortal={() => handleOpenProducerPortal(selectedProducer)}
-            isFavorite={selectedProducer ? isFavorite(selectedProducer.id) : false}
-            onToggleFavorite={toggleFavorite}
-            isVisited={selectedProducer ? isVisited(selectedProducer.id) : false}
-            onToggleVisited={toggleVisited}
-            tastingNote={selectedProducer ? getTastingNote(selectedProducer.id) : ''}
-            onSaveTastingNote={saveTastingNote}
-            isAuthenticated={isAuthenticated}
-            onOpenAuth={(role) => setActiveModal({ type: 'auth', initialRole: role || 'traveler' })}
-            customNotice={selectedProducer ? getOverride(selectedProducer.id)?.customNotice : undefined}
-            producerOverride={selectedProducer ? getOverride(selectedProducer.id) : undefined}
-          />
+          <Suspense
+            fallback={(
+              <div
+                role="status"
+                aria-live="polite"
+                className="fixed inset-x-3 bottom-4 z-[65] rounded-2xl border border-white/10 bg-stone-900/95 px-4 py-3 text-center text-xs font-semibold text-stone-200 shadow-2xl sm:left-auto sm:right-5 sm:w-72"
+              >
+                Loading producer…
+              </div>
+            )}
+          >
+            <ProducerDetailDrawer
+              producer={publicSelectedProducer}
+              onClose={() => setIsDrawerOpen(false)}
+              user={user}
+              onOpenProducerPortal={() => handleOpenProducerPortal(selectedProducer)}
+              isFavorite={selectedProducer ? isFavorite(selectedProducer.id) : false}
+              onToggleFavorite={toggleFavorite}
+              isVisited={selectedProducer ? isVisited(selectedProducer.id) : false}
+              onToggleVisited={toggleVisited}
+              tastingNote={selectedProducer ? getTastingNote(selectedProducer.id) : ''}
+              onSaveTastingNote={saveTastingNote}
+              isAuthenticated={isAuthenticated}
+              onOpenAuth={(role) => setActiveModal({ type: 'auth', initialRole: role || 'traveler' })}
+              customNotice={selectedProducer ? getOverride(selectedProducer.id)?.customNotice : undefined}
+              producerOverride={selectedProducer ? getOverride(selectedProducer.id) : undefined}
+            />
+          </Suspense>
         )}
       </main>
 

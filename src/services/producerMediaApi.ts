@@ -3,13 +3,10 @@ import { resolveApiBaseUrl } from './apiOrigin';
 
 export async function replaceProducerMedia(
   producerId: string,
-  images: ProducerUploadedImage[]
+  images: ProducerUploadedImage[],
+  idToken: string
 ): Promise<void> {
-  // Resolve Firebase lazily so firebase.ts can call this API without creating a
-  // static circular module dependency during application initialization.
-  const { auth } = await import('./firebase');
-  await auth?.authStateReady();
-  if (!auth?.currentUser) {
+  if (!idToken) {
     throw new Error('Sign in with an approved producer account to manage photos.');
   }
 
@@ -18,7 +15,7 @@ export async function replaceProducerMedia(
     {
       method: 'PUT',
       headers: {
-        Authorization: `Bearer ${await auth.currentUser.getIdToken()}`,
+        Authorization: `Bearer ${idToken}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ images }),
