@@ -10,6 +10,18 @@ import './index.css';
 initGlobalErrorHandlers();
 installAccountCachePrivacyGuard();
 
+if (
+  import.meta.env.PROD &&
+  'serviceWorker' in navigator &&
+  !['localhost', '127.0.0.1'].includes(window.location.hostname)
+) {
+  window.addEventListener('load', () => {
+    void navigator.serviceWorker.register('/sw.js').catch((error) => {
+      console.warn('[PWA] Service worker registration failed:', error);
+    });
+  });
+}
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <AppErrorBoundary>
