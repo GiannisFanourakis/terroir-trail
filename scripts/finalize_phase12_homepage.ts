@@ -201,4 +201,4 @@ for (const required of [
 }
 
 fs.writeFileSync(indexPath, html, 'utf-8');
-console.log(`✓ Homepage Google SEO finalized (${LIVE_CATALOGUE_METRICS.totalProducers} live records; ${SEO_PRODUCERS.length} bundled canonical records; current schema).`);
+console.log(`Homepage Google SEO finalized (${LIVE_CATALOGUE_METRICS.totalProducers} live records; ${SEO_PRODUCERS.length} bundled canonical records; current schema).`);

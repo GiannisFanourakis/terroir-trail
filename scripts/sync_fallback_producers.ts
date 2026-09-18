@@ -189,7 +189,7 @@ async function syncFallbackCatalogue() {
 
   const targetPath = path.resolve(process.cwd(), 'src/data/producers.ts');
   fs.writeFileSync(targetPath, code, 'utf-8');
-  console.log(`✓ Synchronized ${producers.length} audited records to ${targetPath}`);
+  console.log(`Synchronized ${producers.length} audited records to ${targetPath}`);
 }
 
 syncFallbackCatalogue();

@@ -229,7 +229,7 @@ function verifySeoAssets(): void {
     requireIncludes(producerDirectoryContent, `href="/producers/${producer.id}/"`, `Producer directory link for ${producer.id}`);
   }
 
-  console.log('✓ SEO/AEO verification passed:');
+  console.log('SEO/AEO verification passed:');
   console.log(`  - ${expectedUrls.length} canonical sitemap URLs (${PRODUCERS.length} producer entities + directory + core pages)`);
   console.log(`  - ${PRODUCERS.length} synchronized producer pages have canonical metadata, visible answer-ready facts, JSON-LD and directory links`);
   console.log('  - producer directory has CollectionPage/ItemList schema and links every audited entity');

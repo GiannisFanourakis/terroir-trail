@@ -313,7 +313,7 @@ function verifySeo(): void {
   verifyIndexPage('/categories/', eligibleCategories.length, eligibleCategories.map(([category]) => categoryPath(category)), 'Categories index');
   for (const [urlPath, count] of expectedLandingPaths) verifyLandingPage(urlPath, count, `Landing page ${urlPath}`);
 
-  console.log('✓ SEO/AEO landing verification passed:');
+  console.log('SEO/AEO landing verification passed:');
   console.log(`  - ${PRODUCERS.length} canonical producer entities retain metadata, factual answers and JSON-LD`);
   console.log(`  - ${expectedLandingPaths.size + 2} country/destination/region/category/index pages verified`);
   console.log(`  - thin destination/category combinations remain withheld below ${MIN_DESTINATION_CATEGORY_RECORDS} records`);

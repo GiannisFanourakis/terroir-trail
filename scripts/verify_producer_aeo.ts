@@ -118,7 +118,7 @@ function verifyProducerAeo(): void {
     }
   }
 
-  console.log('✓ Producer AEO verification passed:');
+  console.log('Producer AEO verification passed:');
   console.log(`  - ${SEO_PRODUCERS.length} bundled canonical producer pages expose answer-first quick facts before narrative content`);
   console.log(`  - ${SEO_PRODUCERS.length} bundled canonical producer pages use entity-specific traveler questions rather than ambiguous pronouns`);
   console.log(`  - ${SEO_PRODUCERS.length} bundled canonical producer pages connect WebPage → mainEntity and BreadcrumbList in JSON-LD`);

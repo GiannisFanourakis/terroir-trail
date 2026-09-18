@@ -95,7 +95,7 @@ mediaTest = mediaTest.replace(
 );
 fs.writeFileSync(mediaTestPath, mediaTest, 'utf8');
 
-console.log('✓ Patched Phase 10B Google Place fallback parity for 5 producers.');
-console.log('✓ Updated Phase 10B taxonomy Place ID expectations.');
-console.log('✓ Updated Google media eligibility count from 14 to 19.');
+console.log('Patched Phase 10B Google Place fallback parity for 5 producers.');
+console.log('Updated Phase 10B taxonomy Place ID expectations.');
+console.log('Updated Google media eligibility count from 14 to 19.');
 console.log('Run npm run check before committing.');

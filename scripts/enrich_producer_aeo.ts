@@ -251,7 +251,7 @@ function enrichProducerAeo(): void {
     process.exit(1);
   }
 
-  console.log(`✓ Producer AEO enrichment complete: ${enriched} pages now expose quick facts, named direct answers, evidence context and breadcrumb/main-entity schema.`);
+  console.log(`Producer AEO enrichment complete: ${enriched} pages now expose quick facts, named direct answers, evidence context and breadcrumb/main-entity schema.`);
 }
 
 enrichProducerAeo();

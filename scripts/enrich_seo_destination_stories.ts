@@ -98,4 +98,4 @@ for (const [destination, config] of Object.entries(destinationPages) as Array<
   enrichedDestinationCount += 1;
 }
 
-console.log(`✓ SEO destination pages enriched with human-written territory stories for ${enrichedDestinationCount} destinations.`);
+console.log(`SEO destination pages enriched with human-written territory stories for ${enrichedDestinationCount} destinations.`);

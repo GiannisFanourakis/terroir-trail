@@ -441,7 +441,7 @@ function generateSeoLandings(): void {
   const categoryCount = pages.filter((page) => page.eyebrow === 'Producer category').length;
   const destinationCount = pages.filter((page) => page.eyebrow.endsWith(' destination')).length;
   const countryCount = pages.filter((page) => page.eyebrow === 'Country catalogue').length;
-  console.log(`✓ SEO/AEO landing generation complete (${PRODUCERS.length} audited producer/project records):`);
+  console.log(`SEO/AEO landing generation complete (${PRODUCERS.length} audited producer/project records):`);
   console.log(`  - ${countryCount} country pages`);
   console.log(`  - ${destinationCount} destination pages`);
   console.log(`  - ${regionCount} region pages (minimum ${MIN_REGION_RECORDS} records)`);
