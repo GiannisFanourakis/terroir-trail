@@ -434,7 +434,12 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       zoomControl: false,
       attributionControl: true,
       preferCanvas: true,
-      zoomAnimation: !mobileMap,
+      // Keep Leaflet's zoom transform on mobile so existing tiles scale smoothly
+      // while the next zoom level loads. Disabling it exposed the dark map
+      // background between tile redraws.
+      zoomAnimation: true,
+      // Avoid opacity cross-fades on mobile; they can make the map appear to
+      // darken briefly during zoom even when tiles are already available.
       fadeAnimation: !mobileMap,
       markerZoomAnimation: !mobileMap,
     });
@@ -447,9 +452,11 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       attribution: TILE_CONFIGS[mapTheme].attribution,
       maxZoom: TILE_CONFIGS[mapTheme].maxZoom,
       subdomains: TILE_CONFIGS[mapTheme].subdomains || 'abc',
-      updateWhenIdle: mobileMap,
-      updateWhenZooming: !mobileMap,
-      keepBuffer: mobileMap ? 1 : 2,
+      // Marker virtualization handles the expensive mobile work. Keep tile
+      // updates responsive during zoom so the base map never blanks/refills.
+      updateWhenIdle: false,
+      updateWhenZooming: true,
+      keepBuffer: 2,
     }).addTo(map);
 
     map.on('click', (e) => {
@@ -516,9 +523,11 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       attribution: TILE_CONFIGS[mapTheme].attribution,
       maxZoom: TILE_CONFIGS[mapTheme].maxZoom,
       subdomains: TILE_CONFIGS[mapTheme].subdomains || 'abc',
-      updateWhenIdle: mobileMap,
-      updateWhenZooming: !mobileMap,
-      keepBuffer: mobileMap ? 1 : 2,
+      // Marker virtualization handles the expensive mobile work. Keep tile
+      // updates responsive during zoom so the base map never blanks/refills.
+      updateWhenIdle: false,
+      updateWhenZooming: true,
+      keepBuffer: 2,
     }).addTo(mapInstanceRef.current);
   }, [mapTheme]);
 
