@@ -4,8 +4,8 @@
 >
 > Completion convention: change `- [ ] Step` to `- [x] ~~Step~~` when finished. Do not mark a step complete until it has been implemented, tested, pushed, deployed where applicable, and verified.
 
-**Last updated:** 2026-09-17
-**Current focus:** Pre-deployment intermediate hotfix: mobile UX decluttering, progressive disclosure, Leaflet marker diffing and responsiveness, documentation alignment, and preflight verification prior to deployment.
+**Last updated:** 2026-09-18
+**Current focus:** Mobile UX refinement and catalogue-state alignment. Live Supabase currently contains 148 producer/project records across 22 destinations in 8 countries; the deterministic SEO/offline bundle remains a 62-record snapshot pending full synchronization.
 
 ---
 
@@ -406,7 +406,7 @@ Every new Greek producer, project, category, regional context layer, or later in
 
 ## Phase 12 — Greek Cheese & Dairy Expansion
 
-**Status:** Completed — Greek Cheese & Dairy Expansion verified. 9 retained audited dairy producers with persistent audited Google Place IDs; 5 unresolved candidates removed; 62 audited producers across the catalogue.
+**Status:** Completed — Greek Cheese & Dairy Expansion verified. 9 retained audited dairy producers with persistent audited Google Place IDs; 5 unresolved candidates removed; 62 audited producers across the catalogue at that Phase 13 closeout snapshot.
 
 > Implementation/reporting during this workstream used the label “Phase 13 dairy”. The canonical roadmap keeps Greek Cheese & Dairy as Phase 12 and records that work here rather than renumbering subsequent phases.
 
@@ -426,7 +426,7 @@ Phase 12 dairy rollout notes:
 - Five originally imported candidates were removed on 2026-09-16 because their exact persistent Google business identity could not meet the final publication standard: **GYPAS / Gyparaki Bros, Iliakis Dairy / Meraki Iliaki, Agricultural Dairy Cooperative of Kalavryta, Katsouli Cheese Factory, and Tsatsoulis Cheese**.
 - The five removed listings had **0 bookings, 0 reviews and 0 Experience rows** at removal time.
 - The removal is recorded in Supabase migration `20260916171211_remove_unresolved_phase13_dairies` and mirrored in the repository migration of the same name.
-- The live catalogue after removal contains **62 producer/project records**: **30 Crete, 9 Santorini, and 23 across Peloponnese + Macedonia, Greece (`northern_greece`) + Tuscany / Italy**.
+- Historical Phase 13 closeout snapshot: **62 producer/project records** (**30 Crete, 9 Santorini, and 23 across Peloponnese + Macedonia, Greece (`northern_greece`) + Tuscany / Italy**). The catalogue has since expanded; current Supabase state is **148 records across 22 destinations in 8 countries** as of 2026-09-18.
 - Google Place IDs are never inferred from coordinates or third-party directory IDs.
 - Local `cover_image` / gallery fields remain empty for the retained new dairy records unless appropriately sourced, credited, or producer-provided media is obtained.
 - Live producer media eligibility uses the Supabase producer trust state (`google_place_id` plus `verified_location` / `verified_entrance`) rather than requiring records to exist in the legacy static compatibility allowlist.
