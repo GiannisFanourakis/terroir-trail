@@ -5,7 +5,7 @@ import { DayTripLoop, Producer } from '../../types/terroir';
 import { producerService } from '../../services/producerService';
 import { 
   X, ShieldCheck, Navigation, ExternalLink, 
-  Copy, Check, Compass
+  Copy, Check, Compass, CarFront, Star
 } from 'lucide-react';
 
 interface ChauffeurBookingModalProps {
@@ -70,8 +70,8 @@ export const ChauffeurBookingModal: React.FC<ChauffeurBookingModalProps> = ({
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 bg-stone-900 border-b border-white/10 shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center text-xl font-bold">
-              🚐
+            <div className="w-10 h-10 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center">
+              <CarFront className="w-5 h-5" aria-hidden="true" />
             </div>
             <div>
               <div className="flex items-center gap-2 flex-wrap">
@@ -183,8 +183,8 @@ export const ChauffeurBookingModal: React.FC<ChauffeurBookingModalProps> = ({
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center font-bold">
-                      ⭐
+                    <div className="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center">
+                      <Star className="w-4 h-4" aria-hidden="true" />
                     </div>
                     <div>
                       <h3 className="font-bold text-white text-sm">Welcome Pickups</h3>
@@ -243,8 +243,8 @@ export const ChauffeurBookingModal: React.FC<ChauffeurBookingModalProps> = ({
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center font-bold">
-                      🚐
+                    <div className="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center">
+                      <CarFront className="w-4 h-4" aria-hidden="true" />
                     </div>
                     <div>
                       <h3 className="font-bold text-white text-sm">GetTransfer</h3>
