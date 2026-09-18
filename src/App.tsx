@@ -7,7 +7,6 @@ import { Header } from './components/Header/Header';
 import { FilterBar } from './components/FilterBar/FilterBar';
 import { MapCanvas } from './components/Map/MapCanvas';
 import { ProducerList } from './components/Sidebar/ProducerList';
-import { TerroirRegionDrawer } from './components/Regions/TerroirRegionDrawer';
 import { TERROIR_REGIONS } from './data/terroirRegionCatalogue';
 import { withTerroirRegionStory } from './data/terroirRegionStories';
 import { useFavorites } from './hooks/useFavorites';
@@ -29,6 +28,11 @@ import { List, MapPin } from 'lucide-react';
 const ProducerDetailDrawer = lazy(() =>
   import('./components/Drawer/ProducerDetailDrawerWithReviews').then(m => ({
     default: m.ProducerDetailDrawerWithReviews,
+  }))
+);
+const TerroirRegionDrawer = lazy(() =>
+  import('./components/Regions/TerroirRegionDrawer').then(m => ({
+    default: m.TerroirRegionDrawer,
   }))
 );
 const DayTripModal = lazy(() => import('./components/Loops/DayTripModal').then(m => ({ default: m.DayTripModal })));
@@ -436,14 +440,26 @@ export const App: React.FC = () => {
           />
 
           {selectedTerroirRegion && (
-            <TerroirRegionDrawer
-              region={selectedTerroirRegion}
-              producerCount={regionGuideProducers.length}
-              categoryCount={regionGuideCategoryCount}
-              isOpen={isRegionGuideOpen}
-              onClose={() => setIsRegionGuideOpen(false)}
-              onShowProducers={() => setIsRegionGuideOpen(false)}
-            />
+            <Suspense
+              fallback={(
+                <div
+                  role="status"
+                  aria-live="polite"
+                  className="absolute right-3 top-16 z-20 rounded-xl border border-white/10 bg-stone-900/95 px-3 py-2 text-[11px] font-semibold text-stone-300 shadow-xl"
+                >
+                  Loading region guide…
+                </div>
+              )}
+            >
+              <TerroirRegionDrawer
+                region={selectedTerroirRegion}
+                producerCount={regionGuideProducers.length}
+                categoryCount={regionGuideCategoryCount}
+                isOpen={isRegionGuideOpen}
+                onClose={() => setIsRegionGuideOpen(false)}
+                onShowProducers={() => setIsRegionGuideOpen(false)}
+              />
+            </Suspense>
           )}
         </div>
 
