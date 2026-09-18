@@ -38,14 +38,15 @@ For every producer candidate, perform the Google Maps check in this order:
 
 1. Search Google Maps using the exact producer/business name. If necessary, add the verified locality or street address from the official website.
 2. Open the specific Maps business/place result. Do not stop at autocomplete, a search-results page, Google Travel, an embedded map, or a generic coordinate/search URL.
-3. Capture and preserve the full direct Google Maps `/maps/place/...` URL for that exact listing.
-4. Read the producer pin from the URL:
+3. When a clickable Google Maps / Directions / Location link is available on the producer's official website, a verified tourism/business page, or a Google result, **follow the link and resolve all redirects** until the final canonical Google Maps `/maps/place/...` URL is reached. Do not require the canonical URL to be visible in the source page itself.
+4. Capture and preserve that resolved full direct Google Maps `/maps/place/...` URL for the exact listing.
+5. Read the producer pin from the URL:
    - the coordinates after `@` are the map camera/viewport and are **not** authoritative for the producer point;
    - when present, `!3d<lat>!4d<lng>` are the actual Google place pin and must be used for `lat` / `lng`.
-5. Resolve the Google Place ID for that same Maps listing.
-6. Cross-check the Maps listing against the official producer website using name plus at least one strong matching identifier such as street address, phone number, locality, or producer-owned directions link.
-7. Confirm that the website, Maps URL, Place ID, and exact pin all describe the same intended physical producer/public point.
-8. Record the exact direct Maps URL in `google_maps_url`; do not synthesize or shorten it.
+6. Resolve the Google Place ID for that same Maps listing.
+7. Cross-check the Maps listing against the official producer website using name plus at least one strong matching identifier such as street address, phone number, locality, or producer-owned directions link.
+8. Confirm that the website, Maps URL, Place ID, and exact pin all describe the same intended physical producer/public point.
+9. Record the exact direct Maps URL in `google_maps_url`; do not synthesize or shorten it.
 
 A candidate does not pass merely because an address can be geocoded or because coordinates are published elsewhere. The actual Google Maps business/place identity must be established.
 
