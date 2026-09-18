@@ -62,6 +62,8 @@ TerroirTrail is currently **discovery-first**, not an online travel agency (OTA)
 
 - **Live Supabase catalogue:** 148 producer/project records across 22 destinations and 8 countries.
 - **Bundled deterministic SEO/AEO snapshot:** 148 canonical producer records, synchronized with the live catalogue.
+- **Canonical sitemap footprint:** 235 unique canonical URLs, covering producer entities, country pages, destination pages, eligible region/category landing pages, and core index pages.
+- **SEO/AEO deployment contract:** build-time generation and verification require the live catalogue snapshot, canonical producer pages, landing-page entity graph, robots.txt, llms.txt, and sitemap to remain synchronized.
 - **Live categories represented:** Winery (63), Cheese Dairy (21), Olive Mill (19), Brewery (9), Farm (9), Apiary (7), Cidery (5), Distillery (4), Olive Oil Producer (4), Confectionery (3), Herb Farm (2), Mushroom Farm (1), Other Oil Mill (1).
 - **Discovery Guides:** 10 curated regional loops.
 
@@ -104,7 +106,7 @@ The check gate runs:
 4. Vitest frontend component & logic test suites
 5. Node / Vitest server test suites
 6. Firestore Security Rules unit tests (Firestore emulator)
-7. Production Vite build & static SEO/metadata generation
+7. Production Vite build & synchronized SEO/AEO generation and verification (148 producer pages / 235 canonical sitemap URLs)
 
 ### Additional Tests
 
