@@ -58,3 +58,18 @@ test('SEO landing generation uses a structural idempotent homepage marker', () =
     /Browse the full audited producer directory\.<\/a><\/p>/
   );
 });
+
+
+test('checked-in sitemap covers the synchronized canonical catalogue', () => {
+  const sitemap = read('public/sitemap.xml');
+  const urls = [...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map((match) => match[1]);
+
+  assert.equal(urls.length, 235);
+  assert.equal(new Set(urls).size, 235);
+  assert.ok(urls.includes('https://terroir-trail.web.app/producers/adega-de-borba-alentejo/'));
+  assert.ok(urls.includes('https://terroir-trail.web.app/producers/tingvollost-more-og-romsdal/'));
+  assert.ok(urls.includes('https://terroir-trail.web.app/france/provence/'));
+  assert.ok(urls.includes('https://terroir-trail.web.app/norway/vestland/'));
+  assert.ok(urls.includes('https://terroir-trail.web.app/slovenia/goriska/'));
+  assert.ok(urls.includes('https://terroir-trail.web.app/producers/wineries/'));
+});
