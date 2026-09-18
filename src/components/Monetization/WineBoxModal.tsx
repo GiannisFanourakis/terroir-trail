@@ -4,7 +4,7 @@ import { CuratedWineBox, WineBoxOrder } from '../../types/monetization';
 import { CURATED_WINE_BOXES, SHIPPING_RATES } from '../../data/wineBoxes';
 import { 
   X, Wine, Plane, ShieldCheck, CheckCircle2, 
-  ArrowRight, Package, Truck, Sparkles, MapPin, Mail, User, Beer, Award 
+  ArrowRight, Package, Truck, Sparkles, MapPin, Mail, User, Beer, Award, Check 
 } from 'lucide-react';
 
 interface WineBoxModalProps {
@@ -108,7 +108,7 @@ export const WineBoxModal: React.FC<WineBoxModalProps> = ({
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 bg-stone-900 border-b border-white/10 shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center text-xl font-bold"><Plane className="w-5 h-5 text-amber-400" aria-hidden="true" /></div>
+            <div className="w-10 h-10 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center shrink-0"><Plane className="w-5 h-5 text-amber-400" aria-hidden="true" /></div>
             <div>
               <div className="flex items-center gap-1.5">
                 <h2 className="font-serif-title text-base sm:text-lg font-bold text-white leading-tight">
@@ -318,8 +318,9 @@ export const WineBoxModal: React.FC<WineBoxModalProps> = ({
                         </p>
                         <div className="flex flex-wrap gap-1 mt-0.5">
                           {box.includes.map((inc, i) => (
-                            <span key={i} className="text-[9px] px-1.5 py-0.5 rounded bg-stone-800/80 text-stone-300">
-                              ✓ {inc}
+                            <span key={i} className="text-[9px] px-1.5 py-0.5 rounded bg-stone-800/80 text-stone-300 inline-flex items-center gap-1">
+                              <Check className="w-2.5 h-2.5 text-emerald-400 shrink-0" />
+                              <span>{inc}</span>
                             </span>
                           ))}
                         </div>

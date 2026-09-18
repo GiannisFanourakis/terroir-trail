@@ -5,7 +5,7 @@ import { TastingBooking, TastingExperience } from '../../types/booking';
 import { getExperiencesForProducer } from '../../data/experiences';
 import { 
   X, Calendar, Clock, Users, CheckCircle2, Sparkles, Navigation, 
-  Wine, ShieldCheck, ArrowRight, Phone, Mail, User, AlertCircle 
+  Wine, ShieldCheck, ArrowRight, Phone, Mail, User, AlertCircle, Check
 } from 'lucide-react';
 
 interface BookingModalProps {
@@ -327,8 +327,9 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                       </p>
                       <div className="flex flex-wrap gap-1 mt-1">
                         {exp.includes.map((inc, i) => (
-                          <span key={i} className="text-[9px] px-1.5 py-0.5 rounded-md bg-stone-800/80 text-stone-300">
-                            ✓ {inc}
+                          <span key={i} className="text-[9px] px-1.5 py-0.5 rounded-md bg-stone-800/80 text-stone-300 inline-flex items-center gap-1">
+                            <Check className="w-2.5 h-2.5 text-emerald-400 shrink-0" />
+                            <span>{inc}</span>
                           </span>
                         ))}
                       </div>
@@ -364,8 +365,9 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                         <div className="font-bold text-white text-xs mb-0.5">{opt.title}</div>
                         <p className="text-[10px] text-stone-400 leading-snug">{opt.desc}</p>
                       </div>
-                      <span className="text-[9px] text-amber-400/90 font-medium mt-2 block">
-                        ✓ Tasting fees direct at cellar door
+                      <span className="text-[9px] text-amber-400/90 font-medium mt-2 flex items-center gap-1">
+                        <Check className="w-2.5 h-2.5 text-amber-400 shrink-0" />
+                        <span>Tasting fees direct at cellar door</span>
                       </span>
                     </button>
                   ))}

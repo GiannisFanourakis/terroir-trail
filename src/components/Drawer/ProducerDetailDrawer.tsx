@@ -875,7 +875,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                 {isVisited ? (
                   <>
                     <CheckCircle2 className="w-3.5 h-3.5" />
-                    <span>Stamped ✓</span>
+                    <span>Stamped</span>
                   </>
                 ) : (
                   <>
@@ -967,7 +967,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                     <span className="text-[10px] text-stone-400 normal-case font-normal">({photos.length} photos)</span>
                   </h4>
                   <span className="text-[10px] font-semibold text-emerald-400/90 flex items-center gap-1">
-                    <span>✓</span>
+                    <Check className="w-3 h-3" />
                     <span>{hasHostMedia ? 'Host-verified media' : 'Source-listed media'}</span>
                   </span>
                 </div>
@@ -1063,7 +1063,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
               <div className="space-y-2">
                 {producer.tastingHighlights.map((highlight, idx) => (
                   <div key={idx} className="flex items-start gap-2.5 p-2.5 rounded-xl bg-stone-900 border border-white/5 text-xs text-stone-200">
-                    <span className="text-amber-400 font-bold text-sm">✦</span>
+                    <Sparkles className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
                     <span className="leading-relaxed">{highlight}</span>
                   </div>
                 ))}

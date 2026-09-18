@@ -115,8 +115,9 @@ export const HostVerificationModal: React.FC<HostVerificationModalProps> = ({
           </div>
 
           {/* Host Note */}
-          <div className="p-3 rounded-xl bg-stone-900/50 border border-white/5 text-[10px] text-stone-400 leading-relaxed">
-            <Sparkles className="w-4 h-4 text-amber-400 shrink-0" aria-hidden="true" /> <em>Host Notice:</em> TerroirTrail charges 0% commission on direct reservation inquiries.
+          <div className="p-3 rounded-xl bg-stone-900/50 border border-white/5 text-[10px] text-stone-400 leading-relaxed flex items-start gap-2">
+            <Sparkles className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" aria-hidden="true" />
+            <div><em>Host Notice:</em> TerroirTrail charges 0% commission on direct reservation inquiries.</div>
           </div>
 
           <button

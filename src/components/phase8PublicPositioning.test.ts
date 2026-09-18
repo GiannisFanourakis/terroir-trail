@@ -39,10 +39,10 @@ describe('Public Positioning & SEO Synchronization', () => {
       expect(parsedManifest.name).toBe('TerroirTrail — Independent Producer & Agritourism Guide');
       expect(parsedManifest.short_name).toBe('TerroirTrail');
       expect(parsedManifest.description).toContain(
-        'verified independent wineries, craft breweries, olive mills, dairies, apiaries, traditional distilleries, and farms'
+        'independent wineries, breweries, cideries, distilleries, olive and other oil producers, dairies, apiaries, farms'
       );
       expect(parsedManifest.description).toContain(
-        'clearly labeled visiting, location, and road-access status'
+        'clearly labeled visiting, location and road-access status'
       );
 
       expect(llmsTxt).toContain('# TerroirTrail — Independent Producer & Agritourism Guide');
