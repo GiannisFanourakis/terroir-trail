@@ -2,6 +2,42 @@
 
 These rules are repository-level operating constraints for any AI agent, coding assistant, researcher, or maintainer working on TerroirTrail.
 
+## Two-stage producer verification workflow
+
+Producer verification is intentionally split into two stages so expensive interactive-browser work is used only where it adds unique value.
+
+### Stage 1 — Research verification in normal chat/web
+
+Complete all non-browser research first. For every candidate, verify as much as possible from normal web/search/business sources:
+
+- official producer website and canonical producer identity;
+- category and actual products;
+- country, destination, region, locality, and street address where available;
+- official phone/contact details;
+- whether the point is a production site, estate, producer shop, visitor centre, or another producer-controlled public point;
+- public visitability and visit status;
+- producer-owned or authoritative directions/location links;
+- any Google business identity or Place ID surfaced by structured business results;
+- any exact coordinates published by the producer or an authoritative source;
+- road-access evidence, kept separate and fail-closed;
+- duplicate checks against the existing catalogue.
+
+A candidate that passes this research stage but still lacks the final canonical Google Maps URL/pin must be marked **MAPS EXTRACTION PENDING**, not rejected.
+
+### Stage 2 — Interactive Maps extraction
+
+Use an interactive browser workflow only for the remaining Maps-specific evidence that normal web tools cannot reliably expose:
+
+- open the actual Google Maps business listing;
+- capture the final long `/maps/place/...` URL;
+- extract the exact `!3d<lat>!4d<lng>` Google place pin;
+- derive/verify the Place ID from that same listing/feature pair;
+- confirm that the Maps entity matches the Stage 1 official producer identity.
+
+Only after Stage 2 is complete may the producer enter the accepted/import queue.
+
+A producer is rejected for Maps reasons only after the interactive Maps extraction step has been attempted and the required Google place identity cannot be established or conflicts with the verified producer identity.
+
 ## Producer verification and import policy
 
 Producer research and onboarding must be handled in batches of exactly **two producers at a time**.
@@ -76,7 +112,7 @@ A candidate goes to the **rejection list** when any mandatory acceptance-gate fi
 - Place ID and coordinates resolve to different physical locations;
 - producer identity cannot be confidently reconciled across the evidence.
 
-Do not keep candidates in a temporary hold merely because one of these mandatory fields is missing.
+Do not reject a Stage 1-verified candidate merely because the canonical long Google Maps URL or Google pin is not exposed by normal web tools. Mark it **MAPS EXTRACTION PENDING** until Stage 2 interactive Maps extraction is attempted.
 
 Do not insert rejected candidates into:
 - Supabase producer tables;
