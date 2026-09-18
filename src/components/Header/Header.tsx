@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Destination } from '../../types/terroir';
 import { UserProfile } from '../../types/auth';
 import { ProfileMenu } from '../Auth/ProfileMenu';
@@ -78,7 +78,28 @@ export const Header: React.FC<HeaderProps> = ({
   const [menuOpen, setMenuOpen] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [destMenuOpen, setDestMenuOpen] = useState(false);
+  const menuSwipeStart = useRef<{ x: number; y: number } | null>(null);
   const closeMenu = () => setMenuOpen(false);
+
+  const handleMenuTouchStart = (event: React.TouchEvent<HTMLDivElement>) => {
+    const touch = event.touches[0];
+    if (!touch) return;
+    menuSwipeStart.current = { x: touch.clientX, y: touch.clientY };
+  };
+
+  const handleMenuTouchEnd = (event: React.TouchEvent<HTMLDivElement>) => {
+    const start = menuSwipeStart.current;
+    const touch = event.changedTouches[0];
+    menuSwipeStart.current = null;
+    if (!start || !touch) return;
+
+    const deltaX = touch.clientX - start.x;
+    const deltaY = touch.clientY - start.y;
+
+    if (deltaX > 72 && Math.abs(deltaX) > Math.abs(deltaY) * 1.25) {
+      closeMenu();
+    }
+  };
   const isHost = Boolean(user?.producerIds?.length || user?.isProducer);
 
   const destinations: { id: Destination; label: string; flag: string }[] = [
@@ -402,7 +423,12 @@ export const Header: React.FC<HeaderProps> = ({
       {menuOpen && (
         <>
           <div className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm sm:hidden" onClick={closeMenu} />
-          <div className="fixed top-0 right-0 bottom-0 z-50 w-72 bg-stone-950 border-l border-white/10 shadow-2xl flex flex-col sm:hidden" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
+          <div
+            className="fixed top-0 right-0 bottom-0 z-50 w-72 bg-stone-950 border-l border-white/10 shadow-2xl flex flex-col sm:hidden"
+            style={{ paddingTop: 'env(safe-area-inset-top)' }}
+            onTouchStart={handleMenuTouchStart}
+            onTouchEnd={handleMenuTouchEnd}
+          >
             <div className="flex items-center justify-between px-4 py-3 border-b border-white/10"><span className="text-sm font-bold text-white">Menu</span><button onClick={closeMenu} className="w-8 h-8 flex items-center justify-center rounded-lg bg-stone-900 border border-white/10 text-stone-400 hover:text-white cursor-pointer"><X className="w-4 h-4" /></button></div>
             <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain touch-pan-y mobile-scroll p-4 pb-[max(1rem,env(safe-area-inset-bottom))] flex flex-col gap-2">
               {onOpenAbout && <button onClick={() => { onOpenAbout(); closeMenu(); }} className="flex items-center gap-3 w-full px-3 py-3 text-sm font-semibold text-stone-200 hover:text-white bg-stone-900 rounded-xl border border-white/10 cursor-pointer"><BookOpen className="w-4 h-4 text-amber-400" />About & FAQ</button>}
