@@ -32,6 +32,25 @@ A producer candidate may enter the accepted/import queue only when all four of t
    - Approximate village/town centroids, postcode centroids, municipality centroids, manually estimated pins, or inferred coordinates are not acceptable.
    - The coordinates must correspond to the same physical location represented by the verified Google Place ID and direct Google Maps place URL.
 
+### Required Google Maps verification procedure
+
+For every producer candidate, perform the Google Maps check in this order:
+
+1. Search Google Maps using the exact producer/business name. If necessary, add the verified locality or street address from the official website.
+2. Open the specific Maps business/place result. Do not stop at autocomplete, a search-results page, Google Travel, an embedded map, or a generic coordinate/search URL.
+3. Capture and preserve the full direct Google Maps `/maps/place/...` URL for that exact listing.
+4. Read the producer pin from the URL:
+   - the coordinates after `@` are the map camera/viewport and are **not** authoritative for the producer point;
+   - when present, `!3d<lat>!4d<lng>` are the actual Google place pin and must be used for `lat` / `lng`.
+5. Resolve the Google Place ID for that same Maps listing.
+6. Cross-check the Maps listing against the official producer website using name plus at least one strong matching identifier such as street address, phone number, locality, or producer-owned directions link.
+7. Confirm that the website, Maps URL, Place ID, and exact pin all describe the same intended physical producer/public point.
+8. Record the exact direct Maps URL in `google_maps_url`; do not synthesize or shorten it.
+
+A candidate does not pass merely because an address can be geocoded or because coordinates are published elsewhere. The actual Google Maps business/place identity must be established.
+
+If a user supplies an exact Google Maps place URL, treat it as primary Maps evidence and extract the pin and identity from that URL, then still cross-check it against the producer's official website.
+
 ### Same-point identity rule
 
 The official website, exact Google Maps place URL, Google Place ID, and exact coordinates must resolve to the same real-world producer/public point.
