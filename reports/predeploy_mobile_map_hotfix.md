@@ -40,7 +40,7 @@ This hotfix addresses the intermediate pre-deployment objectives identified foll
 ### D. Mobile Header & Viewport Height Reclamation
 - **Diagnosis:** On mobile viewports (<640px), the header previously rendered two stacked rows permanently: Row 1 contained the brand logo, profile, saved button, and hamburger menu; Row 2 contained a 62%-width horizontal destination scroll strip alongside a cramped 38%-width search bar. Together with safe-area padding and the FilterBar, this consumed ~140px of vertical space, leaving insufficient visible map area on phones.
 - **Fix:** Replaced the stacked mobile header with progressive disclosure:
-  - **Single Compact Header Row:** Logo, destination dropdown button (e.g. `[ 🌿 Crete ▾ ]` showing the active destination with 44px tap target), search icon button, saved places button, and menu hamburger button.
+  - **Single Compact Header Row:** Logo, destination dropdown button (e.g. `[ Crete ▾ ]` showing the active destination with a 44px tap target), search icon button, saved places button, and menu hamburger button.
   - **Expandable Search Mode:** Tapping the search icon smoothly expands a full-width search input with auto-focus and clear/cancel controls, eliminating cramped text fields.
   - **Height Savings:** Reclaims ~44px of vertical viewport height for the interactive map.
 
