@@ -475,35 +475,35 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
     switch (status) {
       case 'public_visits':
         return {
-          badgeLabel: '🟢 Visitors Welcome',
+          badgeLabel: 'Visitors Welcome',
           badgeClass: 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30',
           description: `${p.name} publicly welcomes visitors. Verified opening information is listed below, or contact the producer directly.`,
           visitingStyle: p.walkInFriendly === true ? 'Walk-ins welcome' : 'Public visits welcome',
         };
       case 'seasonal_public':
         return {
-          badgeLabel: '🟡 Seasonal Public Visits',
+          badgeLabel: 'Seasonal Public Visits',
           badgeClass: 'bg-amber-500/15 text-amber-300 border-amber-500/30',
           description: `Public visits to ${p.name} are seasonal. Please check verified seasonal opening information or contact the estate before travelling.`,
           visitingStyle: p.bestSeason ? `Seasonal (${p.bestSeason})` : 'Seasonal opening hours',
         };
       case 'appointment_only':
         return {
-          badgeLabel: '🟡 Visits by Appointment',
+          badgeLabel: 'Visits by Appointment',
           badgeClass: 'bg-amber-500/15 text-amber-300 border-amber-500/30',
           description: `Visits to ${p.name} are by appointment only. Please contact the producer in advance to arrange your visit.`,
           visitingStyle: 'Advance appointment required',
         };
       case 'not_publicly_confirmed':
         return {
-          badgeLabel: '⚪ Public Visits Not Confirmed',
+          badgeLabel: 'Public Visits Not Confirmed',
           badgeClass: 'bg-stone-500/15 text-stone-300 border-stone-500/30',
           description: 'Public visits not currently confirmed — contact the producer directly for information.',
           visitingStyle: undefined,
         };
       case 'current_access_uncertain':
         return {
-          badgeLabel: '🟠 Access Uncertain',
+          badgeLabel: 'Access Uncertain',
           badgeClass: 'bg-orange-500/15 text-orange-300 border-orange-500/30',
           description: 'Current visitor access should be confirmed directly with the producer before travelling.',
           visitingStyle: undefined,
@@ -511,7 +511,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
       case 'unreviewed':
       default:
         return {
-          badgeLabel: '⚪ Visit Status Unreviewed',
+          badgeLabel: 'Visit Status Unreviewed',
           badgeClass: 'bg-stone-500/15 text-stone-300 border-stone-500/30',
           description: 'Visitor access details have not been independently confirmed. Please contact the producer directly before travelling.',
           visitingStyle: undefined,
@@ -677,7 +677,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
               )}
               {isProTier && (
                 <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-amber-400 to-amber-500 text-stone-950 shadow-lg shadow-amber-500/20 border border-amber-300">
-                  <span>👑</span>
+                  <Award className="w-3.5 h-3.5" aria-hidden="true" />
                   <span>Host Pro</span>
                 </span>
               )}
@@ -734,7 +734,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
           <div className="flex items-center gap-1.5 text-amber-400 text-xs font-bold uppercase tracking-wider mb-1">
             <MapPin className="w-3.5 h-3.5" />
             <span>
-              {producer.countryCode === 'IT' ? '🇮🇹 ' : ''}
+              
               {producer.village} · {producer.region.toUpperCase()}
               {producer.country ? ` · ${producer.country.toUpperCase()}` : ''}
             </span>
@@ -754,7 +754,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
       {user?.isProducer && user.claimedProducerId === producer.id && (
         <div className="mx-4 mt-3 p-3 rounded-2xl bg-amber-500/15 border border-amber-500/40 flex items-center justify-between gap-3 shadow-inner">
           <div className="flex items-center gap-2.5 min-w-0">
-            <span className="text-xl">🏛️</span>
+            <Building2 className="w-5 h-5 text-amber-400 shrink-0" aria-hidden="true" />
             <div className="min-w-0">
               <div className="font-bold text-white text-xs truncate">You are the verified host of this producer profile</div>
               <div className="text-[10px] text-amber-300/90 truncate">Manage visitor notices and reviewed profile access</div>
@@ -848,7 +848,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
         <div className="p-3.5 rounded-2xl bg-gradient-to-r from-amber-950/30 to-stone-900 border border-amber-500/20 flex flex-col gap-2.5">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="text-lg">🏛️</span>
+              <Award className="w-4 h-4 text-amber-400 shrink-0" aria-hidden="true" />
               <div>
                 <div className="text-xs font-bold text-white">Terroir Passport Check-In</div>
                 <div className="text-[10px] text-stone-400">
