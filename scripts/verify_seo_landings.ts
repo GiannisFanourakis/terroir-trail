@@ -209,7 +209,7 @@ function verifySeo(): void {
     `${LIVE_CATALOGUE_METRICS.totalProducers} producer/project records`,
     `Greece — 66 records: Crete ${CRETE_COUNT}, Santorini ${SANTORINI_COUNT}, Peloponnese 11, Macedonia 11, Thessaly 5.`,
     'Italy — 39 records: Tuscany 5, Piedmont 8, Puglia 8, Sicily 9, South Tyrol 9.',
-    `Deterministic canonical/offline producer snapshot — ${PRODUCERS.length} records pending synchronization with the full live catalogue.`,
+    `Deterministic canonical SEO/AEO producer snapshot — ${PRODUCERS.length} records, synchronized with the live catalogue.`,
     '10 published verified-stop Discovery Guides',
     '/producers/<producer-id>/',
     'Sitemap: https://terroir-trail.web.app/sitemap.xml',
@@ -266,7 +266,7 @@ function verifySeo(): void {
 
   const producerDirectoryContent = requireFile(path.join(distDir, 'producers', 'index.html'), 'Producer directory');
   requireIncludes(producerDirectoryContent, `<link rel="canonical" href="${PRODUCER_DIRECTORY_URL}" />`, 'Producer directory');
-  requireIncludes(producerDirectoryContent, `${PRODUCERS.length} bundled canonical producer/project records`, 'Producer directory');
+  requireIncludes(producerDirectoryContent, `${PRODUCERS.length} canonical producer/project records`, 'Producer directory');
   requireIncludes(producerDirectoryContent, '"@type": "CollectionPage"', 'Producer directory');
   requireIncludes(producerDirectoryContent, `"numberOfItems": ${PRODUCERS.length}`, 'Producer directory');
   requireIncludes(producerDirectoryContent, 'href="/destinations/"', 'Producer directory');
