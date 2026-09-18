@@ -60,7 +60,7 @@ const FAQ_DATA: FaqItem[] = [
     categoryLabel: 'About & Curation',
     question: 'What categories of producers are included?',
     answer:
-      'TerroirTrail curates seven first-class producer categories: Wineries, Breweries, Olive Mills, Dairies / Cheesemakers, Apiaries / Honey, Rakokazana / Traditional Distilleries, and Farms.',
+      'TerroirTrail supports 13 first-class producer categories: Wineries, Breweries, Distilleries, Cideries, Olive Mills, Olive Oil Producers, Other Oil Mills, Dairies / Cheesemakers, Apiaries / Honey, Confectionery Producers, Herb Farms, Mushroom Farms, and Farms.',
     highlight: 'Seven producer categories are presented under the same research standard.',
   },
   {
@@ -249,12 +249,12 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
                   Discover independent makers and the places behind what they make.
                 </h1>
                 <p className="text-xs sm:text-sm text-stone-300 leading-relaxed max-w-3xl">
-                  TerroirTrail helps culinary travelers find wineries, breweries, olive mills, dairies, apiaries, traditional distilleries and farms — with direct producer contact, clear visiting information and practical access notes.
+                  TerroirTrail helps culinary travelers find wineries, breweries, distilleries, cideries, olive and other oil mills, dairies, apiaries, confectionery makers, herb and mushroom farms, and other farms — with direct producer contact, clear visiting information and practical access notes.
                 </p>
 
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-5 border-t border-white/10">
                   <Metric value="62" label="Producer records" />
-                  <Metric value="7" label="Producer categories" />
+                  <Metric value="13" label="Producer categories" />
                   <Metric value="Direct" label="Maker contact" />
                   <Metric value="Clear" label="Visit & access notes" />
                 </div>

@@ -26,12 +26,17 @@ export const FilterBar: React.FC<FilterBarProps> = ({
     { id: 'all', label: 'All Terroir', icon: '🏛️', activeColor: 'bg-amber-500 text-stone-950 shadow-amber-500/20' },
     { id: 'winery', label: 'Wineries', icon: '🍇', activeColor: 'bg-rose-500 text-white shadow-rose-500/30' },
     { id: 'brewery', label: 'Microbreweries', icon: '🍺', activeColor: 'bg-amber-400 text-stone-950 shadow-amber-400/30' },
-    { id: 'kazani', label: 'Rakokazana', icon: '🏺', activeColor: 'bg-amber-600 text-white shadow-amber-600/30' },
+    { id: 'distillery', label: 'Distilleries', icon: '🥃', activeColor: 'bg-amber-600 text-white shadow-amber-600/30' },
+    { id: 'cidery', label: 'Cideries', icon: '🍎', activeColor: 'bg-lime-600 text-white shadow-lime-600/30' },
     { id: 'olive_mill', label: 'Olive Mills', icon: '🫒', activeColor: 'bg-emerald-600 text-white shadow-emerald-600/30' },
     { id: 'olive_oil_producer', label: 'Olive Oil Producers', icon: '🫒', activeColor: 'bg-emerald-500 text-stone-950 shadow-emerald-500/30' },
+    { id: 'oil_mill', label: 'Other Oil Mills', icon: '🌻', activeColor: 'bg-yellow-600 text-white shadow-yellow-600/30' },
     { id: 'cheese_dairy', label: 'Shepherd Dairies', icon: '🧀', activeColor: 'bg-yellow-500 text-stone-950 shadow-yellow-500/30' },
-    { id: 'apiary', label: 'Honey & Herbs', icon: '🍯', activeColor: 'bg-orange-500 text-white shadow-orange-500/30' },
-    { id: 'farm', label: 'Farms', icon: '🌿', activeColor: 'bg-emerald-500 text-stone-950 shadow-emerald-500/30' },
+    { id: 'apiary', label: 'Apiaries & Honey', icon: '🍯', activeColor: 'bg-orange-500 text-white shadow-orange-500/30' },
+    { id: 'confectionery', label: 'Confectioners', icon: '🍫', activeColor: 'bg-amber-700 text-white shadow-amber-700/30' },
+    { id: 'herb_farm', label: 'Herb Farms', icon: '🌿', activeColor: 'bg-green-600 text-white shadow-green-600/30' },
+    { id: 'mushroom_farm', label: 'Mushroom Farms', icon: '🍄', activeColor: 'bg-stone-600 text-white shadow-stone-600/30' },
+    { id: 'farm', label: 'Farms', icon: '🌱', activeColor: 'bg-emerald-500 text-stone-950 shadow-emerald-500/30' },
   ];
 
   const roadAccessOptions: { id: RoadAccess | 'all'; label: string }[] = [

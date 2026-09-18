@@ -314,9 +314,29 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
         icon = '🍺';
         iconBg = 'bg-amber-400/30 text-amber-300 border-amber-400/60';
         break;
-      case 'kazani':
-        icon = '🏺';
+      case 'distillery':
+        icon = '🥃';
         iconBg = 'bg-amber-600/25 text-amber-200 border-amber-600/50';
+        break;
+      case 'cidery':
+        icon = '🍎';
+        iconBg = 'bg-lime-600/25 text-lime-200 border-lime-600/50';
+        break;
+      case 'confectionery':
+        icon = '🍫';
+        iconBg = 'bg-amber-700/25 text-amber-200 border-amber-700/50';
+        break;
+      case 'oil_mill':
+        icon = '🌻';
+        iconBg = 'bg-yellow-600/25 text-yellow-200 border-yellow-600/50';
+        break;
+      case 'herb_farm':
+        icon = '🌿';
+        iconBg = 'bg-green-600/25 text-green-200 border-green-600/50';
+        break;
+      case 'mushroom_farm':
+        icon = '🍄';
+        iconBg = 'bg-stone-600/25 text-stone-200 border-stone-600/50';
         break;
       case 'olive_mill':
       case 'olive_oil_producer':
@@ -900,7 +920,12 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     switch (getEffectiveProducerCategory(producer)) {
       case 'winery': return 'Winery';
       case 'brewery': return 'Brewery';
-      case 'kazani': return 'Rakokazano';
+      case 'distillery': return 'Distillery';
+      case 'cidery': return 'Cidery';
+      case 'confectionery': return 'Confectionery Producer';
+      case 'oil_mill': return 'Oil Mill';
+      case 'herb_farm': return 'Herb Farm';
+      case 'mushroom_farm': return 'Mushroom Farm';
       case 'olive_mill': return 'Olive Mill';
       case 'olive_oil_producer': return 'Olive Oil Producer';
       case 'cheese_dairy': return 'Dairy';
@@ -1356,7 +1381,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
           </div>
           <div className="flex items-center gap-1.5">
             <span className="w-2.5 h-2.5 rounded-full bg-amber-600"></span>
-            <span>Rakokazano</span>
+            <span>Distillery</span>
           </div>
           <div className="flex items-center gap-1.5">
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>

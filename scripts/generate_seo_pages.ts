@@ -13,11 +13,16 @@ const PRODUCERS: Producer[] = SEO_PRODUCERS;
 const categoryLabels: Record<Producer['category'], string> = {
   winery: 'Winery',
   brewery: 'Brewery',
-  kazani: 'Traditional distillery / rakokazano',
+  distillery: 'Distillery',
+  cidery: 'Cidery',
   olive_mill: 'Olive mill',
   olive_oil_producer: 'Olive oil producer',
+  oil_mill: 'Oil mill',
   cheese_dairy: 'Dairy / cheesemaker',
   apiary: 'Apiary / honey producer',
+  confectionery: 'Confectionery producer',
+  herb_farm: 'Herb farm',
+  mushroom_farm: 'Mushroom farm',
   farm: 'Farm',
 };
 

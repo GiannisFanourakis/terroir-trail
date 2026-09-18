@@ -1,11 +1,16 @@
-export type Category = 
-  | 'winery' 
-  | 'kazani' 
-  | 'olive_mill' 
-  | 'olive_oil_producer'
-  | 'cheese_dairy' 
-  | 'apiary'
+export type Category =
+  | 'winery'
+  | 'distillery'
+  | 'cidery'
   | 'brewery'
+  | 'olive_mill'
+  | 'olive_oil_producer'
+  | 'oil_mill'
+  | 'cheese_dairy'
+  | 'apiary'
+  | 'confectionery'
+  | 'herb_farm'
+  | 'mushroom_farm'
   | 'farm';
 
 export type ProducerCategory = Category;

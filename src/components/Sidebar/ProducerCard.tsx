@@ -97,11 +97,41 @@ export const ProducerCard: React.FC<ProducerCardProps> = ({
           icon: '🍺',
           bg: 'bg-amber-400/25 text-amber-300 border-amber-400/40',
         };
-      case 'kazani':
+      case 'distillery':
         return {
-          label: 'Rakokazano',
-          icon: '🏺',
+          label: 'Distillery',
+          icon: '🥃',
           bg: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
+        };
+      case 'cidery':
+        return {
+          label: 'Cidery',
+          icon: '🍎',
+          bg: 'bg-lime-500/20 text-lime-300 border-lime-500/30',
+        };
+      case 'confectionery':
+        return {
+          label: 'Confectionery Producer',
+          icon: '🍫',
+          bg: 'bg-amber-700/20 text-amber-200 border-amber-700/30',
+        };
+      case 'oil_mill':
+        return {
+          label: 'Oil Mill',
+          icon: '🌻',
+          bg: 'bg-yellow-600/20 text-yellow-300 border-yellow-600/30',
+        };
+      case 'herb_farm':
+        return {
+          label: 'Herb Farm',
+          icon: '🌿',
+          bg: 'bg-green-600/20 text-green-300 border-green-600/30',
+        };
+      case 'mushroom_farm':
+        return {
+          label: 'Mushroom Farm',
+          icon: '🍄',
+          bg: 'bg-stone-600/20 text-stone-300 border-stone-600/30',
         };
       case 'olive_mill':
         return {

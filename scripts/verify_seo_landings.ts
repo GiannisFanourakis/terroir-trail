@@ -19,11 +19,16 @@ const OTHER_DESTINATION_COUNT = PRODUCERS.length - CRETE_COUNT - SANTORINI_COUNT
 const categorySlugs: Record<Producer['category'], string> = {
   winery: 'wineries',
   brewery: 'breweries',
-  kazani: 'distilleries-rakokazana',
+  distillery: 'distilleries',
+  cidery: 'cideries',
   olive_mill: 'olive-mills',
   olive_oil_producer: 'olive-oil-producers',
+  oil_mill: 'oil-mills',
   cheese_dairy: 'dairies-cheesemakers',
   apiary: 'apiaries-honey-producers',
+  confectionery: 'confectionery-producers',
+  herb_farm: 'herb-farms',
+  mushroom_farm: 'mushroom-farms',
   farm: 'farms',
 };
 

@@ -132,7 +132,7 @@ describe('Producer Verification and Visitability UI Integrity', () => {
     it('renders Access Uncertain badge and neutral cautionary language', () => {
       const producer: Producer = {
         ...baseTestProducer,
-        category: 'kazani',
+        category: 'distillery',
         visitStatus: 'current_access_uncertain',
         visitNotes: 'Distillery undergoing renovation; contact maker before traveling',
         phone: '+30 2810 777777',

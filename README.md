@@ -60,7 +60,8 @@ TerroirTrail is currently **discovery-first**, not an online travel agency (OTA)
   - **Peloponnese:** 11
   - **Macedonia, Greece:** 11
   - **Tuscany:** 1
-- **Categories Represented:** Winery (34), Brewery (9), Cheese Dairy (9), Olive Mill (4), Apiary (3), Farm (1), Traditional Kazani (1), Olive Oil Producer (1).
+- **Categories Represented:** Winery (34), Brewery (9), Cheese Dairy (9), Olive Mill (4), Apiary (3), Farm (1), Distillery (1), Olive Oil Producer (1).
+- **Taxonomy Ready for Expansion:** Cidery, Confectionery, Other Oil Mill, Herb Farm, and Mushroom Farm are first-class categories for the verified expansion batch.
 - **Discovery Guides:** 10 curated regional loops.
 
 ---

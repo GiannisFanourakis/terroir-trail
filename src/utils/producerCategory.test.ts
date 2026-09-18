@@ -11,22 +11,28 @@ describe('producerCategory taxonomy helper', () => {
     expect(getEffectiveProducerCategory(farmProducer)).toBe('farm');
   });
 
-  it('preserves genuine rakokazana as kazani', () => {
-    const kazaniProducer: Pick<Producer, 'category'> = {
-      category: 'kazani',
+  it('preserves genuine distilleries as distillery', () => {
+    const distilleryProducer: Pick<Producer, 'category'> = {
+      category: 'distillery',
     };
 
-    expect(getEffectiveProducerCategory(kazaniProducer)).toBe('kazani');
+    expect(getEffectiveProducerCategory(distilleryProducer)).toBe('distillery');
   });
 
   it('preserves producer categories without coercing their entity type', () => {
     const categories: Category[] = [
       'winery',
       'brewery',
+      'distillery',
+      'cidery',
       'olive_mill',
       'olive_oil_producer',
+      'oil_mill',
       'cheese_dairy',
       'apiary',
+      'confectionery',
+      'herb_farm',
+      'mushroom_farm',
       'farm',
     ];
 

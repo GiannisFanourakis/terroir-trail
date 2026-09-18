@@ -696,7 +696,7 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "producerId": "kazani-stilianou",
     "producerName": "Kazani Stilianou & Organic Estate",
     "producerGreekName": "Καζάνι Στυλιανού",
-    "category": "kazani",
+    "category": "distillery",
     "destination": "crete",
     "location": "Heraklion, Kounavoi",
     "badge": "Kazani & Wine (€15)"
@@ -716,7 +716,7 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "producerId": "kazani-stilianou",
     "producerName": "Kazani Stilianou & Organic Estate",
     "producerGreekName": "Καζάνι Στυλιανού",
-    "category": "kazani",
+    "category": "distillery",
     "destination": "crete",
     "location": "Heraklion, Kounavoi",
     "badge": "Distillation Feast"
@@ -1681,7 +1681,7 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "producerId": "kazani-kokolakis",
     "producerName": "Rakokazano Zargianaki",
     "producerGreekName": "Παραδοσιακό Ρακοκάζανο Ζαργιανάκη",
-    "category": "kazani",
+    "category": "distillery",
     "destination": "crete",
     "location": "Heraklion, Prinias (Malevizi)"
   },
@@ -1700,7 +1700,7 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "producerId": "kazani-kokolakis",
     "producerName": "Rakokazano Zargianaki",
     "producerGreekName": "Παραδοσιακό Ρακοκάζανο Ζαργιανάκη",
-    "category": "kazani",
+    "category": "distillery",
     "destination": "crete",
     "location": "Heraklion, Prinias (Malevizi)"
   },
@@ -1758,7 +1758,7 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "producerId": "canava-santorini-distillery",
     "producerName": "Canava Santorini Distillery",
     "producerGreekName": "Αποσταγματοποιία Canava Σαντορίνη",
-    "category": "kazani",
+    "category": "distillery",
     "destination": "santorini",
     "location": "Santorini, Messaria (Santorini)",
     "badge": "Distillery Tour"
@@ -1777,7 +1777,7 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "producerId": "canava-santorini-distillery",
     "producerName": "Canava Santorini Distillery",
     "producerGreekName": "Αποσταγματοποιία Canava Σαντορίνη",
-    "category": "kazani",
+    "category": "distillery",
     "destination": "santorini",
     "location": "Santorini, Messaria (Santorini)",
     "badge": "Master Distiller"

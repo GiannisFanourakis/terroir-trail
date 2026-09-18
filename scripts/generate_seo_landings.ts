@@ -29,11 +29,16 @@ const MIN_DESTINATION_CATEGORY_RECORDS = 3;
 const categoryConfig: Record<Producer['category'], CategoryConfig> = {
   winery: { slug: 'wineries', singular: 'Winery', plural: 'Wineries' },
   brewery: { slug: 'breweries', singular: 'Brewery', plural: 'Breweries' },
-  kazani: { slug: 'distilleries-rakokazana', singular: 'Traditional distillery / rakokazano', plural: 'Traditional distilleries / rakokazana' },
+  distillery: { slug: 'distilleries', singular: 'Distillery', plural: 'Distilleries' },
+  cidery: { slug: 'cideries', singular: 'Cidery', plural: 'Cideries' },
   olive_mill: { slug: 'olive-mills', singular: 'Olive mill', plural: 'Olive mills' },
   olive_oil_producer: { slug: 'olive-oil-producers', singular: 'Olive oil producer', plural: 'Olive oil producers' },
+  oil_mill: { slug: 'oil-mills', singular: 'Oil mill', plural: 'Oil mills' },
   cheese_dairy: { slug: 'dairies-cheesemakers', singular: 'Dairy / cheesemaker', plural: 'Dairies / cheesemakers' },
   apiary: { slug: 'apiaries-honey-producers', singular: 'Apiary / honey producer', plural: 'Apiaries / honey producers' },
+  confectionery: { slug: 'confectionery-producers', singular: 'Confectionery producer', plural: 'Confectionery producers' },
+  herb_farm: { slug: 'herb-farms', singular: 'Herb farm', plural: 'Herb farms' },
+  mushroom_farm: { slug: 'mushroom-farms', singular: 'Mushroom farm', plural: 'Mushroom farms' },
   farm: { slug: 'farms', singular: 'Farm', plural: 'Farms' },
 };
 

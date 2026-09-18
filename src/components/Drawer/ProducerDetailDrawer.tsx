@@ -136,7 +136,12 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
     switch (getEffectiveProducerCategory(p)) {
       case 'winery': return { label: 'Winery', icon: '🍇', color: 'text-rose-400 bg-rose-500/10 border-rose-500/20' };
       case 'brewery': return { label: 'Brewery', icon: '🍺', color: 'text-amber-300 bg-amber-400/15 border-amber-400/30' };
-      case 'kazani': return { label: 'Rakokazano', icon: '🏺', color: 'text-amber-400 bg-amber-500/10 border-amber-500/20' };
+      case 'distillery': return { label: 'Distillery', icon: '🥃', color: 'text-amber-400 bg-amber-500/10 border-amber-500/20' };
+      case 'cidery': return { label: 'Cidery', icon: '🍎', color: 'text-lime-400 bg-lime-500/10 border-lime-500/20' };
+      case 'confectionery': return { label: 'Confectionery Producer', icon: '🍫', color: 'text-amber-300 bg-amber-700/10 border-amber-700/20' };
+      case 'oil_mill': return { label: 'Oil Mill', icon: '🌻', color: 'text-yellow-400 bg-yellow-600/10 border-yellow-600/20' };
+      case 'herb_farm': return { label: 'Herb Farm', icon: '🌿', color: 'text-green-400 bg-green-500/10 border-green-500/20' };
+      case 'mushroom_farm': return { label: 'Mushroom Farm', icon: '🍄', color: 'text-stone-300 bg-stone-500/10 border-stone-500/20' };
       case 'olive_mill': return { label: 'Olive Mill', icon: '🫒', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' };
       case 'olive_oil_producer': return { label: 'Olive Oil Producer', icon: '🫒', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' };
       case 'cheese_dairy': return { label: 'Dairy', icon: '🧀', color: 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20' };
@@ -251,9 +256,9 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
           deliveryBadge: 'Producer Direct',
           deliveryBoxDesc: 'Olive-oil products offered directly by the producer, subject to its current delivery terms.',
         };
-      case 'kazani':
+      case 'distillery':
         return {
-          makerTitle: 'master distiller or kazaniarhs',
+          makerTitle: 'master distiller or producer',
           venueName: 'distillery',
           productPlural: 'bottle',
           whatTheyMakeTitle: 'Distillates & Traditional Spirits',
@@ -316,6 +321,116 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
           deliveryBoxTitle: 'Raw Mountain Honey & Herb Delivery',
           deliveryBadge: 'Harvest Jars',
           deliveryBoxDesc: 'Pure raw thyme honey & wild foraged herbs shipped direct to your door.',
+        };
+      case 'cidery':
+        return {
+          makerTitle: 'cider maker or orchardist',
+          venueName: 'cidery',
+          productPlural: 'bottle',
+          whatTheyMakeTitle: 'Ciders, Juices & Orchard Ferments',
+          specialtiesLabel: 'Cider Styles & Orchard Fruit',
+          highlightsLabel: 'Cidery & Orchard Highlights',
+          storeLabel: 'Direct Cidery Store',
+          storeSub: `Order cider directly from ${name}`,
+          discountLabel: 'Cidery Discount',
+          tastingNotePlaceholder: 'Record your thoughts on their cider, orchard fruit, fermentation, or visit...',
+          visitingTitle: 'Cidery & Visiting',
+          callAction: 'Call Cidery',
+          callShortLabel: 'Call Cidery',
+          hasDeliveryBoxes: false,
+          deliveryCategory: undefined,
+          deliveryIcon: '🍎',
+          deliveryBoxTitle: '',
+          deliveryBadge: '',
+          deliveryBoxDesc: '',
+        };
+      case 'confectionery':
+        return {
+          makerTitle: 'confectioner or producer',
+          venueName: 'workshop',
+          productPlural: 'product',
+          whatTheyMakeTitle: 'Artisan Confectionery & Local Sweets',
+          specialtiesLabel: 'Confections & Ingredients',
+          highlightsLabel: 'Workshop & Producer Highlights',
+          storeLabel: 'Direct Producer Store',
+          storeSub: `Order artisan confectionery directly from ${name}`,
+          discountLabel: 'Producer Discount',
+          tastingNotePlaceholder: 'Record your thoughts on their chocolate, nougat, ingredients, or visit...',
+          visitingTitle: 'Workshop & Visiting',
+          callAction: 'Call Producer',
+          callShortLabel: 'Call Producer',
+          hasDeliveryBoxes: false,
+          deliveryCategory: undefined,
+          deliveryIcon: '🍫',
+          deliveryBoxTitle: '',
+          deliveryBadge: '',
+          deliveryBoxDesc: '',
+        };
+      case 'oil_mill':
+        return {
+          makerTitle: 'miller or seed-oil producer',
+          venueName: 'oil mill',
+          productPlural: 'bottle',
+          whatTheyMakeTitle: 'Pressed Oils & Seed Specialties',
+          specialtiesLabel: 'Seeds, Oils & Pressings',
+          highlightsLabel: 'Mill & Producer Highlights',
+          storeLabel: 'Direct Mill Store',
+          storeSub: `Order pressed oils directly from ${name}`,
+          discountLabel: 'Mill Discount',
+          tastingNotePlaceholder: 'Record your thoughts on their oils, seeds, pressing method, or visit...',
+          visitingTitle: 'Oil Mill & Visiting',
+          callAction: 'Call Oil Mill',
+          callShortLabel: 'Call Mill',
+          hasDeliveryBoxes: false,
+          deliveryCategory: undefined,
+          deliveryIcon: '🌻',
+          deliveryBoxTitle: '',
+          deliveryBadge: '',
+          deliveryBoxDesc: '',
+        };
+      case 'herb_farm':
+        return {
+          makerTitle: 'herb grower or producer',
+          venueName: 'herb farm',
+          productPlural: 'herb product',
+          whatTheyMakeTitle: 'Herbs, Teas & Botanical Products',
+          specialtiesLabel: 'Herbs & Botanicals',
+          highlightsLabel: 'Farm & Botanical Highlights',
+          storeLabel: 'Direct Farm Store',
+          storeSub: `Order botanical products directly from ${name}`,
+          discountLabel: 'Farm Discount',
+          tastingNotePlaceholder: 'Record your thoughts on their herbs, teas, botanicals, or visit...',
+          visitingTitle: 'Herb Farm & Visiting',
+          callAction: 'Call Farm',
+          callShortLabel: 'Call Farm',
+          hasDeliveryBoxes: false,
+          deliveryCategory: undefined,
+          deliveryIcon: '🌿',
+          deliveryBoxTitle: '',
+          deliveryBadge: '',
+          deliveryBoxDesc: '',
+        };
+      case 'mushroom_farm':
+        return {
+          makerTitle: 'mushroom grower or producer',
+          venueName: 'mushroom farm',
+          productPlural: 'mushroom product',
+          whatTheyMakeTitle: 'Cultivated Mushrooms & Farm Products',
+          specialtiesLabel: 'Mushroom Varieties & Cultivation',
+          highlightsLabel: 'Farm & Cultivation Highlights',
+          storeLabel: 'Direct Farm Store',
+          storeSub: `Order mushroom products directly from ${name}`,
+          discountLabel: 'Farm Discount',
+          tastingNotePlaceholder: 'Record your thoughts on their mushrooms, cultivation, products, or visit...',
+          visitingTitle: 'Mushroom Farm & Visiting',
+          callAction: 'Call Farm',
+          callShortLabel: 'Call Farm',
+          hasDeliveryBoxes: false,
+          deliveryCategory: undefined,
+          deliveryIcon: '🍄',
+          deliveryBoxTitle: '',
+          deliveryBadge: '',
+          deliveryBoxDesc: '',
         };
       case 'farm':
         return {

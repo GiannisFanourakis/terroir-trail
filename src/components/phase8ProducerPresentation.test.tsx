@@ -50,7 +50,7 @@ describe('Phase 8 Producer Card + Detail Hierarchy', () => {
         { cat: 'olive_mill', label: 'Olive Mill', icon: '🫒' },
         { cat: 'cheese_dairy', label: 'Dairy', icon: '🧀' },
         { cat: 'apiary', label: 'Apiary / Honey', icon: '🍯' },
-        { cat: 'kazani', label: 'Rakokazano', icon: '🏺' },
+        { cat: 'distillery', label: 'Distillery', icon: '🥃' },
         { cat: 'farm', label: 'Farm', icon: '🌿' },
       ];
 
@@ -131,7 +131,7 @@ describe('Phase 8 Producer Card + Detail Hierarchy', () => {
     });
 
     it('preserves honest unknown road access state without positive fabrication', () => {
-      const p = createTestProducer('kazani', {
+      const p = createTestProducer('distillery', {
         roadAccessStatus: 'unreviewed',
         roadAccess: undefined,
       });
@@ -197,7 +197,7 @@ describe('Phase 8 Producer Card + Detail Hierarchy', () => {
           callAction: 'Call Apiary',
         },
         {
-          cat: 'kazani',
+          cat: 'distillery',
           whatTheyMake: 'Distillates &amp; Traditional Spirits',
           specialties: 'Spirits &amp; Alembic Distillations',
           visiting: 'Distillery &amp; Visiting',

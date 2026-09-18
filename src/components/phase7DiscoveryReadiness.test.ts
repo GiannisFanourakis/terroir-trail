@@ -11,7 +11,7 @@ describe('Phase 7 discovery readiness boundaries', () => {
     expect(list).toContain('a.name.localeCompare(b.name)');
   });
 
-  it('keeps Peskesi taxonomy aligned with farm rather than rakokazano', () => {
+  it('keeps Peskesi taxonomy aligned with farm rather than distillery', () => {
     const helper = read('src/utils/producerCategory.ts');
     expect(helper).toContain('getEffectiveProducerCategory');
 

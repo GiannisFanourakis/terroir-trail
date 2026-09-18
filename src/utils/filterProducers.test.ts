@@ -120,7 +120,7 @@ describe('filterProducers pure utility', () => {
     expect(result).toEqual([p2]);
   });
 
-  it('filters Peskesi Organic Farm as a farm, never matching Rakokazana', () => {
+  it('filters Peskesi Organic Farm as a farm, never matching Distilleries', () => {
     const peskesi = createMockProducer({
       id: 'peskesi-farm-kazani',
       name: 'Peskesi Organic Farm',
@@ -132,7 +132,7 @@ describe('filterProducers pure utility', () => {
     expect(
       filterProducers([peskesi], {
         ...defaultFilters,
-        category: 'kazani',
+        category: 'distillery',
       })
     ).toEqual([]);
     expect(

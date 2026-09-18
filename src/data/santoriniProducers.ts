@@ -13,7 +13,7 @@ export const SANTORINI_PRODUCERS: Producer[] = [
     id: 'canava-santorini-distillery',
     name: 'Canava Santorini Distillery',
     greekName: 'Αποσταγματοποιία Canava Σαντορίνη',
-    category: 'kazani',
+    category: 'distillery',
     destination: 'santorini',
     country: 'Greece',
     countryCode: 'GR',

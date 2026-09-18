@@ -36,9 +36,20 @@ const mapProducerCategoryToRegistration = (
 ): ProducerRegistrationRecord['producerCategory'] => {
   if (!producer) return 'other';
   const category = getEffectiveProducerCategory(producer);
-  if (category === 'kazani') return 'distillery';
   if (category === 'olive_mill' || category === 'olive_oil_producer') return 'olive_oil';
-  if (category === 'winery' || category === 'brewery' || category === 'cheese_dairy' || category === 'apiary' || category === 'farm') {
+  if (
+    category === 'winery' ||
+    category === 'brewery' ||
+    category === 'distillery' ||
+    category === 'cidery' ||
+    category === 'confectionery' ||
+    category === 'cheese_dairy' ||
+    category === 'apiary' ||
+    category === 'oil_mill' ||
+    category === 'herb_farm' ||
+    category === 'mushroom_farm' ||
+    category === 'farm'
+  ) {
     return category;
   }
   return 'other';

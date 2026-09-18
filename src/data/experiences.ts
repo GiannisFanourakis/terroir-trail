@@ -130,7 +130,7 @@ export const DEFAULT_EXPERIENCES_BY_CATEGORY: Record<ProducerCategory, TastingEx
     },
   ],
 
-  kazani: [
+  distillery: [
     {
       id: 'raki_tasting',
       title: 'Copper Alembic Still & Artisanal Tsikoudia Flight',
@@ -301,6 +301,11 @@ export const DEFAULT_EXPERIENCES_BY_CATEGORY: Record<ProducerCategory, TastingEx
       ],
     },
   ],
+  cidery: [],
+  confectionery: [],
+  oil_mill: [],
+  herb_farm: [],
+  mushroom_farm: [],
   farm: [
     {
       id: 'farm_agroecology_walk',

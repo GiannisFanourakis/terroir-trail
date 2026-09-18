@@ -72,7 +72,20 @@ export interface ProducerRegistrationRecord {
   producerId: string;
   userId?: string;
   tradeBrandName: string;
-  producerCategory?: 'winery' | 'brewery' | 'distillery' | 'cheese_dairy' | 'apiary' | 'olive_oil' | 'farm' | 'other';
+  producerCategory?:
+    | 'winery'
+    | 'brewery'
+    | 'distillery'
+    | 'cidery'
+    | 'confectionery'
+    | 'cheese_dairy'
+    | 'apiary'
+    | 'olive_oil'
+    | 'oil_mill'
+    | 'herb_farm'
+    | 'mushroom_farm'
+    | 'farm'
+    | 'other';
 
   // Fiscal & legal evidence supplied by the claimant.
   legalBusinessName?: string;

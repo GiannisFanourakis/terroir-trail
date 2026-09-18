@@ -28,11 +28,16 @@ const CATEGORY_CONFIG: Record<
   all: { label: 'All Experiences', icon: Sparkles, color: 'text-amber-400 bg-amber-500/10 border-amber-500/30' },
   winery: { label: 'Wineries', icon: Wine, color: 'text-rose-400 bg-rose-500/10 border-rose-500/30' },
   brewery: { label: 'Breweries', icon: Beer, color: 'text-amber-400 bg-amber-500/10 border-amber-500/30' },
+  distillery: { label: 'Distilleries', icon: Flame, color: 'text-orange-400 bg-orange-500/10 border-orange-500/30' },
+  cidery: { label: 'Cideries', icon: Sprout, color: 'text-lime-400 bg-lime-500/10 border-lime-500/30' },
   olive_mill: { label: 'Olive Mills', icon: Disc, color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30' },
   olive_oil_producer: { label: 'Olive Oil Producers', icon: Disc, color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30' },
+  oil_mill: { label: 'Other Oil Mills', icon: Disc, color: 'text-yellow-400 bg-yellow-500/10 border-yellow-500/30' },
   cheese_dairy: { label: 'Cheese Dairies', icon: Disc, color: 'text-yellow-400 bg-yellow-500/10 border-yellow-500/30' },
-  kazani: { label: 'Distilleries', icon: Flame, color: 'text-orange-400 bg-orange-500/10 border-orange-500/30' },
   apiary: { label: 'Apiaries', icon: Flower2, color: 'text-amber-300 bg-amber-400/10 border-amber-400/30' },
+  confectionery: { label: 'Confectioners', icon: Tag, color: 'text-amber-300 bg-amber-700/10 border-amber-700/30' },
+  herb_farm: { label: 'Herb Farms', icon: Flower2, color: 'text-green-400 bg-green-500/10 border-green-500/30' },
+  mushroom_farm: { label: 'Mushroom Farms', icon: Sprout, color: 'text-stone-300 bg-stone-500/10 border-stone-500/30' },
   farm: { label: 'Farms', icon: Sprout, color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30' },
 };
 
