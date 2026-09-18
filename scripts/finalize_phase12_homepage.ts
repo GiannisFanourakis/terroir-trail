@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { SEO_PRODUCERS } from './seoCatalogue';
+import { LIVE_CATALOGUE_METRICS, SEO_PRODUCERS } from './seoCatalogue';
 
 const CANONICAL_HOST = 'https://terroir-trail.web.app';
 const indexPath = path.resolve(process.cwd(), 'dist', 'index.html');
@@ -17,9 +17,9 @@ const destinationCounts = {
 
 const pageTitle = 'TerroirTrail — Independent Agritourism & Producer Guide';
 const pageDescription =
-  `Independent agritourism guide to ${SEO_PRODUCERS.length} audited producers across Crete, Santorini, the Peloponnese, Macedonia and Tuscany, with visit and road-access context.`;
+  `Independent agritourism guide to ${LIVE_CATALOGUE_METRICS.totalProducers} live producer/project records across ${LIVE_CATALOGUE_METRICS.destinationCount} destinations in ${LIVE_CATALOGUE_METRICS.countryCount} European countries, with visit and road-access context.`;
 const homepageSummary =
-  `TerroirTrail is an independent producer and agritourism discovery guide with ${SEO_PRODUCERS.length} audited producer/project records across Crete, Santorini, the Peloponnese, Macedonia, Greece and Tuscany.`;
+  `TerroirTrail is an independent producer and agritourism discovery guide with ${LIVE_CATALOGUE_METRICS.totalProducers} live producer/project records across ${LIVE_CATALOGUE_METRICS.destinationCount} destinations in ${LIVE_CATALOGUE_METRICS.countryCount} European countries.`;
 
 const replaceRequired = (html: string, pattern: RegExp, replacement: string, label: string): string => {
   if (!pattern.test(html)) {
@@ -139,7 +139,7 @@ const legacyReplacements: Array<[string, string]> = [
   ],
   [
     'Crete and Santorini are the current reference-quality regions, with clearly labeled visiting, location, imagery, and road-access status and no commission markups.',
-    `${SEO_PRODUCERS.length} audited producer/project records are published across Crete, Santorini, the Peloponnese, Macedonia, Greece and Tuscany, with visiting, location and road-access status kept explicit.`,
+    `${LIVE_CATALOGUE_METRICS.totalProducers} live producer/project records are published across ${LIVE_CATALOGUE_METRICS.destinationCount} destinations in ${LIVE_CATALOGUE_METRICS.countryCount} European countries, with visiting, location and road-access status kept explicit.`,
   ],
   [
     'Six guides are currently published across Crete and Santorini.',
@@ -185,7 +185,7 @@ for (const stale of staleClaims) {
 }
 
 for (const required of [
-  `${SEO_PRODUCERS.length} audited producer/project records`,
+  `${LIVE_CATALOGUE_METRICS.totalProducers} live producer/project records`,
   '/greece/crete/',
   '/greece/santorini/',
   '/greece/peloponnese/',
@@ -201,4 +201,4 @@ for (const required of [
 }
 
 fs.writeFileSync(indexPath, html, 'utf-8');
-console.log(`✓ Homepage Google SEO finalized (${SEO_PRODUCERS.length} audited records, five destination links, current schema).`);
+console.log(`✓ Homepage Google SEO finalized (${LIVE_CATALOGUE_METRICS.totalProducers} live records; ${SEO_PRODUCERS.length} bundled canonical records; current schema).`);
