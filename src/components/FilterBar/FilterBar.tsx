@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Category, RoadAccess, Ethos, FoodOption, FilterState } from '../../types/terroir';
 import { RotateCcw, Dog, Footprints, Caravan, SlidersHorizontal, Compass } from 'lucide-react';
 
@@ -21,6 +21,32 @@ export const FilterBar: React.FC<FilterBarProps> = ({
 }) => {
   const [isMoreFiltersOpen, setIsMoreFiltersOpen] = useState<boolean>(false);
   const [isMobilePanelOpen, setIsMobilePanelOpen] = useState<boolean>(false);
+  const mobilePanelSwipeStart = useRef<{ x: number; y: number; canDismiss: boolean } | null>(null);
+
+  const handleMobilePanelTouchStart = (event: React.TouchEvent<HTMLDivElement>) => {
+    const touch = event.touches[0];
+    if (!touch) return;
+
+    mobilePanelSwipeStart.current = {
+      x: touch.clientX,
+      y: touch.clientY,
+      canDismiss: event.currentTarget.scrollTop <= 0,
+    };
+  };
+
+  const handleMobilePanelTouchEnd = (event: React.TouchEvent<HTMLDivElement>) => {
+    const start = mobilePanelSwipeStart.current;
+    const touch = event.changedTouches[0];
+    mobilePanelSwipeStart.current = null;
+    if (!start?.canDismiss || !touch) return;
+
+    const deltaX = touch.clientX - start.x;
+    const deltaY = touch.clientY - start.y;
+
+    if (deltaY > 72 && Math.abs(deltaY) > Math.abs(deltaX) * 1.25) {
+      setIsMobilePanelOpen(false);
+    }
+  };
 
   const categories: { id: Category | 'all'; label: string; icon: string; activeColor: string }[] = [
     { id: 'all', label: 'All Terroir', icon: '🏛️', activeColor: 'bg-amber-500 text-stone-950 shadow-amber-500/20' },
@@ -147,7 +173,11 @@ export const FilterBar: React.FC<FilterBarProps> = ({
 
         {/* Mobile Expandable Panel */}
         {isMobilePanelOpen && (
-          <div className="flex sm:hidden flex-col gap-3 max-h-[calc(100dvh-10rem)] min-h-0 overflow-y-auto overscroll-contain touch-pan-y mobile-scroll pt-2.5 pb-2 pr-1 border-t border-white/10 text-xs animate-in fade-in slide-in-from-top-2 duration-200">
+          <div
+            className="flex sm:hidden flex-col gap-3 max-h-[calc(100dvh-10rem)] min-h-0 overflow-y-auto overscroll-contain touch-pan-y mobile-scroll pt-2.5 pb-2 pr-1 border-t border-white/10 text-xs animate-in fade-in slide-in-from-top-2 duration-200"
+            onTouchStart={handleMobilePanelTouchStart}
+            onTouchEnd={handleMobilePanelTouchEnd}
+          >
             {/* Category choices */}
             <div>
               <div className="flex items-center justify-between mb-1.5 px-0.5">
