@@ -1,13 +1,19 @@
 # TerroirTrail
 
-TerroirTrail is a discovery-first agritourism, craft beverage, and artisan food guide for independent culinary travelers, road-trippers, and slow travelers across Greece and Italy.
+TerroirTrail is a discovery-first agritourism, craft beverage, and artisan food guide for independent culinary travelers, road-trippers, and slow travelers across Europe. The live catalogue currently spans 8 countries and 22 destinations.
 
-The platform provides researched, evidence-backed discovery for independent producers across 5 destinations:
-- **Crete** — 30 audited producers
-- **Santorini** — 9 audited producers
-- **Peloponnese** — 11 audited producers
-- **Macedonia, Greece** — 11 audited producers
-- **Tuscany** — 1 audited producer
+The live Supabase catalogue contains **148 researched producer/project records across 22 destinations in 8 countries** (verified 18 September 2026):
+
+- **Greece — 66:** Crete 30, Santorini 9, Peloponnese 11, Macedonia 11, Thessaly 5
+- **Italy — 39:** Tuscany 5, Piedmont 8, Puglia 8, Sicily 9, South Tyrol 9
+- **France — 8:** Provence-Alpes-Côte d'Azur 8
+- **Spain — 6:** Catalonia 6
+- **Portugal — 8:** Alentejo 8
+- **Croatia — 8:** Istria 8
+- **Slovenia — 5:** Pomurska 1, Southeast Slovenia 1, Central Slovenia 1, Goriška 2
+- **Norway — 8:** Trøndelag 1, Møre og Romsdal 1, Buskerud 1, Vestland 5
+
+The deterministic SEO/offline bundle is currently a smaller **62-record canonical snapshot** and is tracked separately from the live runtime catalogue.
 
 Production: https://terroir-trail.web.app/
 
@@ -31,7 +37,7 @@ The canonical implementation state and milestone history are maintained in [`ROA
 ## Current Public Product
 
 - **Interactive Terroir Map:** High-performance Leaflet map featuring administrative terroir region boundaries sourced from geoBoundaries and Eurostat / GISCO (CC BY 4.0) and custom tile providers.
-- **Multi-Category Producer Directory (62 Audited Producers):** Wineries, craft breweries, artisan cheese dairies, olive mills, apiaries, farms, and traditional distilleries across Greece and Italy.
+- **Multi-Category Producer Directory (148 Live Records):** Wineries, craft breweries, artisan cheese dairies, olive mills and olive-oil producers, apiaries, farms, cideries, confectioneries, herb farms, mushroom farms, oil mills, and distilleries across 8 European countries.
 - **Curated Regional Discovery Guides (10 Guides):** Verified slow-travel discovery loops across Crete (4), Santorini (3), Peloponnese (1), Macedonia, Greece (1), and Tuscany (1).
 - **Evidence-Backed Auditing:** Independent verification badges for location precision, visitability status, and road-access suitability.
 - **Traveler Accounts & Passport:** Private accounts (Firebase Auth), visited-place passport stamps, and private tasting notes.
@@ -54,14 +60,9 @@ TerroirTrail is currently **discovery-first**, not an online travel agency (OTA)
 
 ## Catalogue Statistics & Structure
 
-- **Total Audited Producers:** 62
-  - **Crete:** 30
-  - **Santorini:** 9
-  - **Peloponnese:** 11
-  - **Macedonia, Greece:** 11
-  - **Tuscany:** 1
-- **Categories Represented:** Winery (34), Brewery (9), Cheese Dairy (9), Olive Mill (4), Apiary (3), Farm (1), Distillery (1), Olive Oil Producer (1).
-- **Taxonomy Ready for Expansion:** Cidery, Confectionery, Other Oil Mill, Herb Farm, and Mushroom Farm are first-class categories for the verified expansion batch.
+- **Live Supabase catalogue:** 148 producer/project records across 22 destinations and 8 countries.
+- **Bundled deterministic SEO/offline snapshot:** 62 canonical producer records; this smaller snapshot is not the live catalogue total.
+- **Live categories represented:** Winery (63), Cheese Dairy (21), Olive Mill (19), Brewery (9), Farm (9), Apiary (7), Cidery (5), Distillery (4), Olive Oil Producer (4), Confectionery (3), Herb Farm (2), Mushroom Farm (1), Other Oil Mill (1).
 - **Discovery Guides:** 10 curated regional loops.
 
 ---
