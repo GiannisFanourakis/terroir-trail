@@ -60,6 +60,8 @@ const renderStorySection = (destination: Destination, label: string): string => 
       </section>`;
 };
 
+let enrichedDestinationCount = 0;
+
 for (const [destination, config] of Object.entries(destinationPages) as Array<
   [Destination, { label: string; path: string }]
 >) {
@@ -93,6 +95,7 @@ for (const [destination, config] of Object.entries(destinationPages) as Array<
   }
 
   fs.writeFileSync(filePath, html, 'utf-8');
+  enrichedDestinationCount += 1;
 }
 
-console.log('✓ SEO destination pages enriched with human-written territory stories for all five destinations.');
+console.log(`✓ SEO destination pages enriched with human-written territory stories for ${enrichedDestinationCount} destinations.`);
