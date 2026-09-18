@@ -79,6 +79,16 @@ TerroirTrail is currently **discovery-first**, not an online travel agency (OTA)
 
 ---
 
+## For Producers
+
+### Are you a producer who belongs on TerroirTrail?
+
+If you run an independent winery, brewery, cidery, distillery, olive or other oil producer, dairy/cheesemaker, apiary, farm, confectionery, herb farm, mushroom farm, or another place-based producer that fits the TerroirTrail catalogue, we would like to hear from you.
+
+Contact **[terroirtrail@gmail.com](mailto:terroirtrail@gmail.com)** with your producer name, location, official website or public business page, and a short note about what you make.
+
+TerroirTrail reviews producer identity, location, visitability and access independently. An enquiry does not automatically guarantee inclusion, verification, a commercial partnership, or a booking relationship.
+
 ## Development & Verification
 
 ### Install Dependencies
