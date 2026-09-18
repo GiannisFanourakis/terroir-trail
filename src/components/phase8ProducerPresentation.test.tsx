@@ -45,13 +45,13 @@ describe('Phase 8 Producer Card + Detail Hierarchy', () => {
   describe('ProducerCard Primary Hierarchy & Simplification', () => {
     it('renders all 7 categories with distinct category badges and icons', () => {
       const categories: { cat: Category; label: string; icon: string }[] = [
-        { cat: 'winery', label: 'Winery', icon: '🍇' },
-        { cat: 'brewery', label: 'Brewery', icon: '🍺' },
-        { cat: 'olive_mill', label: 'Olive Mill', icon: '🫒' },
-        { cat: 'cheese_dairy', label: 'Dairy', icon: '🧀' },
-        { cat: 'apiary', label: 'Apiary / Honey', icon: '🍯' },
-        { cat: 'distillery', label: 'Distillery', icon: '🥃' },
-        { cat: 'farm', label: 'Farm', icon: '🌿' },
+        { cat: 'winery', label: 'Winery' },
+        { cat: 'brewery', label: 'Brewery' },
+        { cat: 'olive_mill', label: 'Olive Mill' },
+        { cat: 'cheese_dairy', label: 'Dairy' },
+        { cat: 'apiary', label: 'Apiary / Honey' },
+        { cat: 'distillery', label: 'Distillery' },
+        { cat: 'farm', label: 'Farm' },
       ];
 
       for (const { cat, label, icon } of categories) {
@@ -95,7 +95,7 @@ describe('Phase 8 Producer Card + Detail Hierarchy', () => {
       expect(html).toContain(p.name);
       // 2. Category
       expect(html).toContain('Farm');
-      expect(html).toContain('🌿');
+      expect(html).toContain('<svg');
       // 3. Location
       expect(html).toContain('Archanes');
       expect(html).toContain('HERAKLION');
