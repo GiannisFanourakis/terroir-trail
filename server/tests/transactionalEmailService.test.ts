@@ -85,8 +85,10 @@ test('traveler welcome email is sent once for a newly created account', async ()
     }),
   };
   let sendCount = 0;
-  const sender: EmailSender = async () => {
+  const sent: any[] = [];
+  const sender: EmailSender = async (email) => {
     sendCount += 1;
+    sent.push(email);
     return { messageId: `welcome-${sendCount}` };
   };
 
@@ -106,6 +108,12 @@ test('traveler welcome email is sent once for a newly created account', async ()
   assert.equal(first.status, 'sent');
   assert.equal(second.status, 'already_sent');
   assert.equal(sendCount, 1);
+  assert.equal(sent.length, 1);
+  assert.match(sent[0].text, /Discover independent producers/);
+  assert.match(sent[0].text, /visit status, access notes/);
+  assert.match(sent[0].html, /Explore TerroirTrail/);
+  assert.doesNotMatch(sent[0].text, /Discovery Guides/);
+  assert.doesNotMatch(sent[0].html, /Discovery Guides/);
   assert.equal(getCollection('email_notifications').get('traveler-uid__traveler_welcome')?.status, 'sent');
 });
 

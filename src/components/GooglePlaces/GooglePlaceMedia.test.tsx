@@ -54,9 +54,10 @@ describe('GooglePlaceMedia', () => {
     );
 
     expect(html).toContain('google-place-media-frame');
-    expect(html).toContain('gmp-place-details');
+    expect(html).toContain('gmp-place-details-compact');
     expect(html).toContain('gmp-place-media');
     expect(html).toContain('lightbox-preferred');
+    expect(html).toContain('preferred-size="large"');
     expect(html).toContain('gmp-place-attribution');
     expect(html).toContain(producer.googlePlaceId);
     expect(html).not.toContain('Photos from Google Maps');

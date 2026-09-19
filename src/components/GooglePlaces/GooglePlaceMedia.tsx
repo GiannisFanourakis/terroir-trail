@@ -99,12 +99,15 @@ export const GooglePlaceMedia: React.FC<GooglePlaceMediaProps> = ({
           className="absolute inset-0 bg-stone-900"
           data-testid="google-places-ui-kit-host"
         >
-          <gmp-place-details
+          <gmp-place-details-compact
+            orientation="vertical"
+            truncation-preferred
             style={{
               width: '100%',
               height: '100%',
               maxWidth: 'none',
               margin: 0,
+              padding: 0,
               border: 0,
               backgroundColor: 'transparent',
               colorScheme: 'dark',
@@ -112,13 +115,16 @@ export const GooglePlaceMedia: React.FC<GooglePlaceMediaProps> = ({
           >
             <gmp-place-details-place-request place={googlePlaceId} />
             <gmp-place-content-config>
-              <gmp-place-media lightbox-preferred />
+              <gmp-place-media
+                lightbox-preferred
+                preferred-size="large"
+              />
               <gmp-place-attribution
                 light-scheme-color="gray"
                 dark-scheme-color="white"
               />
             </gmp-place-content-config>
-          </gmp-place-details>
+          </gmp-place-details-compact>
         </div>
       )}
     </div>

@@ -143,7 +143,7 @@ describe('Google Places integration for audited regional producers', () => {
       'src/components/GooglePlaces/GooglePlaceMedia.tsx',
       'utf8'
     );
-    expect(source).toContain('<gmp-place-details');
+    expect(source).toContain('<gmp-place-details-compact');
     expect(source).toContain('<gmp-place-details-place-request');
     expect(source).toContain('place={googlePlaceId}');
     expect(source).not.toContain('fetchFields(');
