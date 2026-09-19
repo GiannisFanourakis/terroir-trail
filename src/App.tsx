@@ -4,6 +4,7 @@ import { Producer, FilterState, Destination } from './types/terroir';
 import type { UserProfile } from './types/auth';
 import type { ProducerOverride } from './types/booking';
 import { Header } from './components/Header/Header';
+import { FirstRunWelcome } from './components/Onboarding/FirstRunWelcome';
 import { FilterBar } from './components/FilterBar/FilterBar';
 import { MapCanvas } from './components/Map/MapCanvas';
 import { TERROIR_REGIONS } from './data/terroirRegionCatalogue';
@@ -21,6 +22,7 @@ import { saveUserProfileToCloud } from './services/firebase';
 import { filterProducers } from './utils/filterProducers';
 import { producerService } from './services/producerService';
 import { CountryScope, setActiveCountryScope } from './config/geography';
+import { usePwaInstall } from './hooks/usePwaInstall';
 
 // Performance optimization: lazy-load modals on demand to shrink initial bundle
 const ProducerDetailDrawer = lazy(() =>
@@ -89,10 +91,24 @@ export const App: React.FC = () => {
   const [isRegionGuideOpen, setIsRegionGuideOpen] = useState<boolean>(false);
   const [activeModal, setActiveModal] = useState<ActiveModal>(null);
   const [adminPortalPreviewProducerId, setAdminPortalPreviewProducerId] = useState<string | null>(null);
+  const [showFirstRunWelcome, setShowFirstRunWelcome] = useState<boolean>(() =>
+    !readStorage<boolean>(STORAGE_KEYS.FIRST_RUN_WELCOME, false, {
+      scope: 'Onboarding',
+      validator: (value) => typeof value === 'boolean',
+    })
+  );
+  const pwaInstall = usePwaInstall();
 
   const closeModal = () => {
     setActiveModal(null);
     setAdminPortalPreviewProducerId(null);
+  };
+
+  const completeFirstRunWelcome = () => {
+    writeStorage(STORAGE_KEYS.FIRST_RUN_WELCOME, true, {
+      scope: 'Onboarding',
+    });
+    setShowFirstRunWelcome(false);
   };
 
   const {
@@ -329,6 +345,7 @@ export const App: React.FC = () => {
         onOpenAbout={() => setActiveModal({ type: 'about_faq', initialTab: 'about' })}
         onOpenFaq={() => setActiveModal({ type: 'about_faq', initialTab: 'faq' })}
         onOpenLegal={(tab) => setActiveModal({ type: 'legal', initialTab: tab || 'privacy' })}
+        pwaInstall={pwaInstall}
       />
 
       <FilterBar
@@ -621,6 +638,12 @@ export const App: React.FC = () => {
           />
         )}
       </Suspense>
+      {showFirstRunWelcome && (
+        <FirstRunWelcome
+          pwaInstall={pwaInstall}
+          onComplete={completeFirstRunWelcome}
+        />
+      )}
     </div>
   );
 };

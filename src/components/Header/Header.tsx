@@ -11,7 +11,7 @@ import {
   getDestinationCountry,
   setActiveCountryScope,
 } from '../../config/geography';
-import { usePwaInstall } from '../../hooks/usePwaInstall';
+import type { PwaInstallController } from '../../hooks/usePwaInstall';
 
 interface HeaderProps {
   selectedDestination: Destination | 'all';
@@ -40,6 +40,7 @@ interface HeaderProps {
   isAdmin?: boolean;
   isPlatformOwner?: boolean;
   onOpenAdmin?: () => void;
+  pwaInstall: PwaInstallController;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -69,6 +70,7 @@ export const Header: React.FC<HeaderProps> = ({
   isAdmin = false,
   isPlatformOwner = false,
   onOpenAdmin,
+  pwaInstall,
 }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
@@ -79,7 +81,7 @@ export const Header: React.FC<HeaderProps> = ({
     isIos,
     isIosSafari,
     requestInstall,
-  } = usePwaInstall();
+  } = pwaInstall;
   const menuSwipeStart = useRef<{ x: number; y: number } | null>(null);
   const closeMenu = () => setMenuOpen(false);
 

@@ -16,6 +16,7 @@ export const STORAGE_KEYS = {
   TASTING_BOOKINGS: 'terroir_trail_bookings',
   PRODUCER_OVERRIDES: 'terroir_trail_producer_overrides',
   PRODUCER_REGISTRATIONS: 'terroir_trail_producer_registrations',
+  FIRST_RUN_WELCOME: 'terroir_trail_first_run_welcome_v1',
 } as const;
 
 export interface StorageOptions {

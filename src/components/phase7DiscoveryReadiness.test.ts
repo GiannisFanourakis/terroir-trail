@@ -4,21 +4,24 @@ import { readFileSync } from 'node:fs';
 const read = (file: string) => readFileSync(file, 'utf8');
 
 describe('Phase 7 discovery readiness boundaries', () => {
-  it('does not rank audited producers by unsupported ratings or review counts', () => {
-    const list = read('src/components/Sidebar/ProducerList.tsx');
-    expect(list).not.toContain('Top Rated');
-    expect(list).not.toContain('Most Reviewed');
-    expect(list).toContain('a.name.localeCompare(b.name)');
+  it('does not rank map discovery by unsupported ratings or review counts', () => {
+    const app = read('src/App.tsx');
+    const map = read('src/components/Map/MapCanvas.tsx');
+    for (const source of [app, map]) {
+      expect(source).not.toContain('Top Rated');
+      expect(source).not.toContain('Most Reviewed');
+      expect(source).not.toContain('.sort((a, b) => b.rating');
+      expect(source).not.toContain('.sort((a, b) => b.reviewCount');
+    }
   });
 
   it('keeps Peskesi taxonomy aligned with farm rather than distillery', () => {
     const helper = read('src/utils/producerCategory.ts');
     expect(helper).toContain('getEffectiveProducerCategory');
 
-    const card = read('src/components/Sidebar/ProducerCard.tsx');
     const map = read('src/components/Map/MapCanvas.tsx');
     const drawer = read('src/components/Drawer/ProducerDetailDrawer.tsx');
-    for (const source of [card, map, drawer]) {
+    for (const source of [map, drawer]) {
       expect(source).toContain('getEffectiveProducerCategory');
       expect(source).toContain("'farm'");
     }
@@ -26,12 +29,12 @@ describe('Phase 7 discovery readiness boundaries', () => {
     expect(drawer).toContain('Call Farm');
   });
 
-  it('only exposes source-backed road classifications on producer cards', () => {
-    const card = read('src/components/Sidebar/ProducerCard.tsx');
-    expect(card).toContain("p.roadAccessStatus !== 'verified'");
-    expect(card).toContain("case 'narrow_paved'");
-    expect(card).toContain("case 'unpaved_passable'");
-    expect(card).toContain("case 'high_clearance_recommended'");
+  it('only exposes source-backed road classifications in producer details', () => {
+    const drawer = read('src/components/Drawer/ProducerDetailDrawer.tsx');
+    expect(drawer).toContain("p.roadAccessStatus !== 'verified'");
+    expect(drawer).toContain("narrow_paved:");
+    expect(drawer).toContain("unpaved_passable:");
+    expect(drawer).toContain("high_clearance_recommended:");
   });
 
   it('does not fly the map to unresolved producer coordinates', () => {

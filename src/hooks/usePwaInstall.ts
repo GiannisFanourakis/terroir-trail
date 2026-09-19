@@ -20,6 +20,14 @@ export type PwaInstallResult =
   | 'ios-instructions'
   | 'unavailable';
 
+export interface PwaInstallController {
+  isInstalled: boolean;
+  isIos: boolean;
+  isIosSafari: boolean;
+  canInstall: boolean;
+  requestInstall: () => Promise<PwaInstallResult>;
+}
+
 export function isPwaStandalone(): boolean {
   if (typeof window === 'undefined' || typeof navigator === 'undefined') {
     return false;
@@ -49,7 +57,7 @@ export function isIosSafariBrowser(): boolean {
   return /Safari/i.test(userAgent) && !/(CriOS|FxiOS|EdgiOS|OPiOS)/i.test(userAgent);
 }
 
-export function usePwaInstall() {
+export function usePwaInstall(): PwaInstallController {
   const [deferredPrompt, setDeferredPrompt] =
     useState<BeforeInstallPromptEvent | null>(null);
   const [isInstalled, setIsInstalled] = useState(() => isPwaStandalone());
