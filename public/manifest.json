@@ -8,21 +8,32 @@
   "display": "standalone",
   "background_color": "#0c0a09",
   "theme_color": "#0c0a09",
-  "orientation": "portrait",
-  "categories": ["travel", "food", "navigation", "lifestyle"],
+  "orientation": "any",
+  "categories": [
+    "travel",
+    "food",
+    "navigation",
+    "lifestyle"
+  ],
   "lang": "en",
   "icons": [
     {
       "src": "/favicon.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
       "src": "/logo.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "maskable"
     }
-  ]
+  ],
+  "display_override": [
+    "window-controls-overlay",
+    "standalone",
+    "minimal-ui"
+  ],
+  "prefer_related_applications": false
 }
