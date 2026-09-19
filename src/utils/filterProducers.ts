@@ -5,9 +5,18 @@ import {
   producerMatchesCountry,
 } from '../config/geography';
 
+const normalizeSearchText = (value: unknown): string =>
+  String(value ?? '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLocaleLowerCase()
+    .trim();
+
 /**
  * Pure function to filter a list of producers based on user filter criteria,
  * search term, and favorite status.
+ * Search stays client-side so maker, locality, variety, and specialty fields
+ * behave consistently for live and fallback catalogue data.
  * Preserves existing catalogue ordering and filter rules exactly.
  */
 export function filterProducers(
@@ -88,25 +97,24 @@ export function filterProducers(
       return false;
     }
 
-    // Search Query filter (matches name, greek name, region, village, varieties, tagline)
+    // Search Query filter. Keep this null-safe because live catalogue rows can
+    // legitimately omit optional locality/marketing fields.
     if (filters.searchQuery && filters.searchQuery.trim() !== '') {
-      const q = filters.searchQuery.toLowerCase().trim();
-      const matchesName = producer.name.toLowerCase().includes(q);
-      const matchesGreekName = producer.greekName.toLowerCase().includes(q);
-      const matchesRegion = producer.region.toLowerCase().includes(q);
-      const matchesVillage = producer.village.toLowerCase().includes(q);
-      const matchesVarieties = producer.indigenousVarieties.some((v) =>
-        v.toLowerCase().includes(q)
-      );
-      const matchesTagline = producer.tagLine.toLowerCase().includes(q);
+      const q = normalizeSearchText(filters.searchQuery);
+      const searchableValues: unknown[] = [
+        producer.name,
+        producer.greekName,
+        producer.region,
+        producer.village,
+        producer.locality,
+        producer.country,
+        producer.tagLine,
+        ...(producer.indigenousVarieties || []),
+        ...(producer.productSpecialties || []),
+      ];
 
-      return (
-        matchesName ||
-        matchesGreekName ||
-        matchesRegion ||
-        matchesVillage ||
-        matchesVarieties ||
-        matchesTagline
+      return searchableValues.some((value) =>
+        normalizeSearchText(value).includes(q)
       );
     }
 

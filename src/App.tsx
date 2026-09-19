@@ -189,7 +189,6 @@ export const App: React.FC = () => {
   } = useProducers({
     destination: filters.destination,
     category: filters.category,
-    searchQuery: filters.searchQuery,
   });
 
   const publicProducers = useMemo(

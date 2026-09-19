@@ -298,6 +298,47 @@ describe('filterProducers pure utility', () => {
       expect(result).toEqual([p3]);
     });
 
+    it('matches by product specialty', () => {
+      const specialtyProducer = createMockProducer({
+        id: 'specialty-producer',
+        name: 'Mountain Maker',
+        productSpecialties: ['Graviera', 'Thyme Honey'],
+      });
+      const result = filterProducers([specialtyProducer], {
+        ...defaultFilters,
+        searchQuery: 'graviera',
+      });
+      expect(result).toEqual([specialtyProducer]);
+    });
+
+    it('matches text without requiring accents to be typed', () => {
+      const accentedProducer = createMockProducer({
+        id: 'accented-producer',
+        name: 'Domaine Élan',
+        village: 'Málaga',
+      });
+      const result = filterProducers([accentedProducer], {
+        ...defaultFilters,
+        searchQuery: 'malaga',
+      });
+      expect(result).toEqual([accentedProducer]);
+    });
+
+    it('does not crash when optional live-search fields are missing', () => {
+      const sparseProducer = createMockProducer({
+        id: 'sparse-search-producer',
+        name: 'Sparse Maker',
+        village: undefined as unknown as string,
+        tagLine: undefined as unknown as string,
+        indigenousVarieties: undefined as unknown as string[],
+      });
+      const result = filterProducers([sparseProducer], {
+        ...defaultFilters,
+        searchQuery: 'sparse',
+      });
+      expect(result).toEqual([sparseProducer]);
+    });
+
     it('ignores leading/trailing whitespace in search query', () => {
       const result = filterProducers(sampleProducers, {
         ...defaultFilters,
