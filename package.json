@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && tsc -p tsconfig.server.json && vite build && tsx scripts/generate_seo_pages.ts && tsx scripts/finalize_phase12_homepage.ts && tsx scripts/verify_seo_assets.ts && tsx scripts/enrich_producer_aeo.ts && tsx scripts/generate_seo_landings.ts && tsx scripts/enrich_seo_destination_stories.ts && tsx scripts/finalize_seo_landing_indexes.ts && tsx scripts/verify_seo_landings.ts && tsx scripts/verify_producer_aeo.ts",
+    "build": "tsc && tsc -p tsconfig.server.json && vite build && tsx scripts/generate_seo_pages.ts && tsx scripts/finalize_phase12_homepage.ts && tsx scripts/verify_seo_assets.ts && tsx scripts/enrich_producer_aeo.ts && tsx scripts/generate_seo_landings.ts && tsx scripts/enrich_seo_destination_stories.ts && tsx scripts/finalize_seo_landing_indexes.ts && tsx scripts/verify_seo_landings.ts && tsx scripts/verify_producer_aeo.ts && npm run check:budget",
     "generate:seo": "tsx scripts/generate_seo_pages.ts && tsx scripts/finalize_phase12_homepage.ts && tsx scripts/enrich_producer_aeo.ts && tsx scripts/generate_seo_landings.ts && tsx scripts/enrich_seo_destination_stories.ts && tsx scripts/finalize_seo_landing_indexes.ts",
     "verify:seo": "tsx scripts/verify_seo_landings.ts && tsx scripts/verify_producer_aeo.ts",
     "verify:aeo": "tsx scripts/verify_producer_aeo.ts",
@@ -19,7 +19,7 @@
     "test:server": "tsx --test server/tests/*.test.ts && vitest run server/tests/passService.spec.ts server/tests/approveProducerRegistration.spec.ts",
     "test:rules": "tsx scripts/run_rules_tests.ts",
     "preview": "vite preview",
-    "deploy": "npm run build && npx -y firebase-tools deploy --only hosting",
+    "deploy": "npm run build && npx -y firebase-tools deploy --only hosting && npm run smoke:public",
     "deploy:firestore": "npx -y firebase-tools deploy --only firestore:rules,firestore:indexes",
     "mobile:preflight": "tsx scripts/mobile_preflight.ts",
     "sync:android": "npm run mobile:preflight -- android && npm run build && npx cap sync android",
@@ -33,7 +33,11 @@
     "typecheck": "tsc --noEmit && tsc -p tsconfig.server.json --noEmit",
     "lint": "eslint .",
     "format:check": "prettier --check eslint.config.js \"src/config/**/*.{ts,tsx}\" \"src/utils/filterProducers*\" \"src/components/demoCleanup.test.tsx\"",
-    "check": "npm run typecheck && npm run lint && npm run format:check && npm test && npm run build"
+    "check": "npm run typecheck && npm run lint && npm run format:check && npm run audit:catalogue && npm test && npm run build",
+    "audit:catalogue": "tsx scripts/audit_catalogue_quality.ts",
+    "check:budget": "tsx scripts/check_build_budget.ts",
+    "test:browser": "tsx scripts/browser_e2e_smoke.ts",
+    "smoke:public": "tsx scripts/run_public_smoke.ts"
   },
   "devDependencies": {
     "@capacitor/cli": "^8.5.1",
