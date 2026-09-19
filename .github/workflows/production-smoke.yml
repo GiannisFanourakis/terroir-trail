@@ -36,6 +36,5 @@ jobs:
 
       - name: Verify production in a real browser
         env:
-          E2E_BASE_URL: https://terroir-trail.web.app
           CHROME_BIN: /usr/bin/google-chrome
-        run: npm run test:browser
+        run: npm run smoke:production-ui
