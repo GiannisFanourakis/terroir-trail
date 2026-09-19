@@ -5,6 +5,7 @@ import type { UserProfile } from './types/auth';
 import type { ProducerOverride } from './types/booking';
 import { Header } from './components/Header/Header';
 import { FirstRunWelcome } from './components/Onboarding/FirstRunWelcome';
+import { OfflineStatus } from './components/System/OfflineStatus';
 import { FilterBar } from './components/FilterBar/FilterBar';
 import { MapCanvas } from './components/Map/MapCanvas';
 import { TERROIR_REGIONS } from './data/terroirRegionCatalogue';
@@ -323,6 +324,7 @@ export const App: React.FC = () => {
 
   return (
     <div className="flex flex-col h-[100dvh] w-full overflow-hidden bg-stone-950 font-sans text-stone-100">
+      <OfflineStatus />
       <Header
         selectedDestination={filters.destination}
         onSelectDestination={(dest: Destination | 'all') => handleFilterChange('destination', dest)}
