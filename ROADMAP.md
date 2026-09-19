@@ -239,7 +239,7 @@ Phase 8 reconciliation notes:
 
 ## Phase 9 — Crete as the First Finished Region
 
-**Status:** Completed — Crete is production-verified as the first reference-quality TerroirTrail region, including the audited catalogue, trust/location/media model, mobile discovery journey, Discovery Guides, automated QA, deployment, and final production smoke.
+**Status:** Completed — Crete is production-verified as the first reference-quality TerroirTrail region, including the audited catalogue, trust/location/media model, mobile discovery journey, automated QA, deployment, and final production smoke.
 
 Crete is the reference implementation for subsequent geographic and category expansion.
 
@@ -250,7 +250,7 @@ Crete is the reference implementation for subsequent geographic and category exp
 - [x] ~~Finish real producer stories.~~
 - [x] ~~Finish direct producer contact flows.~~
 - [x] ~~Finish polished producer pages.~~
-- [x] ~~Finish useful self-guided routes/day trips using verified pins only.~~
+- [x] ~~Finish useful self-guided producer discovery using verified pins only.~~
 - [x] ~~Finish mobile UX for the complete Crete journey.~~
 - [x] ~~Perform final Crete regional QA.~~
 
@@ -398,7 +398,7 @@ Every new Greek producer, project, category, regional context layer, or later in
 - [ ] Apply the same media hierarchy and attribution rules used for Crete.
 - [ ] Keep stories, taglines, products, origin claims, regional descriptions, and local context source-backed and human.
 - [ ] Bring search, filters, map/list browsing, detail pages, deep links, and mobile presentation to reference-quality parity.
-- [ ] Build Discovery Guides only from verified stops and never present them as road-safety guarantees without route evidence.
+- [ ] Separate location verification from road-access classification and keep road-access warnings fail-closed.
 - [ ] Synchronize bundled fallback/offline data so stale defaults cannot reappear.
 - [ ] Run the full automated quality gate and a production smoke pass before marking an expansion phase complete.
 

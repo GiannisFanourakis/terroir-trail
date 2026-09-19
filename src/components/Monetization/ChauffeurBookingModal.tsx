@@ -1,18 +1,16 @@
 import React, { useState } from 'react';
 import { UserProfile } from '../../types/auth';
 import { ChauffeurBooking } from '../../types/monetization';
-import { DayTripLoop, Producer } from '../../types/terroir';
-import { producerService } from '../../services/producerService';
+import { Producer } from '../../types/terroir';
 import { 
   X, ShieldCheck, Navigation, ExternalLink, 
-  Copy, Check, Compass, CarFront, Star
+  Copy, Check, CarFront, Star
 } from 'lucide-react';
 
 interface ChauffeurBookingModalProps {
   isOpen: boolean;
   onClose: () => void;
   user?: UserProfile | null;
-  initialCircuit?: DayTripLoop | null;
   initialProducer?: Producer | null;
   onBookChauffeur?: (booking: ChauffeurBooking) => Promise<void> | void;
   onOpenAuth?: () => void;
@@ -21,38 +19,19 @@ interface ChauffeurBookingModalProps {
 export const ChauffeurBookingModal: React.FC<ChauffeurBookingModalProps> = ({
   isOpen,
   onClose,
-  initialCircuit,
   initialProducer,
 }) => {
   if (!isOpen) return null;
 
   const [copiedItinerary, setCopiedItinerary] = useState<boolean>(false);
 
-  // Compile stops for the active itinerary if provided
-  const circuitStops = initialCircuit?.stops.map((stop, idx) => {
-    const p = producerService.getCachedProducer(stop.producerId);
-    return {
-      index: idx + 1,
-      name: p?.name || stop.producerId,
-      region: p?.region || initialCircuit.region,
-      village: p?.village || '',
-      activity: stop.activity,
-      time: stop.suggestedTime,
-    };
-  }) || [];
-
   const handleCopyItinerary = async () => {
     try {
       let text = '';
-      if (initialCircuit) {
-        const stopsList = circuitStops
-          .map((s) => `${s.index}. ${s.name} (${s.village ? `${s.village}, ` : ''}${s.region}) — ${s.activity} [${s.time}]`)
-          .join('\n');
-        text = `Terroir Trail Private Day Tour: ${initialCircuit.title}\nRegion: ${initialCircuit.region}\nEstimated Distance: ${initialCircuit.drivingDistance} (${initialCircuit.totalDuration})\n\nItinerary Stops:\n${stopsList}\n\nNotes for driver: Multi-stop artisan tasting route with luggage room for wine cases.`;
-      } else if (initialProducer) {
+      if (initialProducer) {
         text = `Terroir Trail Private Transfer\nDestination: ${initialProducer.name}\nLocation: ${initialProducer.village ? `${initialProducer.village}, ` : ''}${initialProducer.region}\nCategory: ${initialProducer.category}\n\nNotes for driver: Private door-to-door transfer with flexible waiting time.`;
       } else {
-        text = `Terroir Trail Private Chauffeur & Vineyard Tour\nRegion: Crete / Greece Wine Country\nRequested: Dedicated driver for winery, olive mill & artisan tasting stops.`;
+        text = `Terroir Trail Private Chauffeur & Vineyard Tour\nRegion: Wine Country\nRequested: Dedicated driver for winery, olive mill & artisan tasting stops.`;
       }
 
       await navigator.clipboard.writeText(text);
@@ -101,23 +80,21 @@ export const ChauffeurBookingModal: React.FC<ChauffeurBookingModalProps> = ({
         <div className="p-5 sm:p-6 overflow-y-auto flex-1 min-h-0 space-y-4 text-xs">
           
           {/* Active Itinerary Banner */}
-          {(initialCircuit || initialProducer) && (
+          {initialProducer && (
             <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/25 space-y-2.5">
               <div className="flex items-start justify-between gap-2">
                 <div className="flex items-start gap-2.5">
                   <Navigation className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
                   <div>
                     <span className="text-stone-400 text-[10px] uppercase font-bold tracking-wider block">
-                      Target Itinerary for Your Driver
+                      Target Destination for Your Driver
                     </span>
                     <span className="font-bold text-white text-sm">
-                      {initialCircuit?.title || (initialProducer ? `${initialProducer.name} Estate Visit` : 'Crete Terroir Circuit')}
+                      {initialProducer.name} Estate Visit
                     </span>
-                    {initialCircuit && (
-                      <p className="text-[11px] text-stone-400 mt-0.5">
-                        {initialCircuit.region} • {initialCircuit.drivingDistance} • ~{initialCircuit.totalDuration} total trip
-                      </p>
-                    )}
+                    <p className="text-[11px] text-stone-400 mt-0.5">
+                      {initialProducer.village ? `${initialProducer.village}, ` : ''}{initialProducer.region}
+                    </p>
                   </div>
                 </div>
 
@@ -129,7 +106,7 @@ export const ChauffeurBookingModal: React.FC<ChauffeurBookingModalProps> = ({
                       ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
                       : 'bg-stone-900/90 text-amber-300 border-amber-500/30 hover:bg-stone-800'
                   }`}
-                  title="Copy itinerary stops to paste into driver notes on booking"
+                  title="Copy destination details to paste into driver notes on booking"
                 >
                   {copiedItinerary ? (
                     <>
@@ -139,26 +116,11 @@ export const ChauffeurBookingModal: React.FC<ChauffeurBookingModalProps> = ({
                   ) : (
                     <>
                       <Copy className="w-3.5 h-3.5 text-amber-400" />
-                      <span>Copy Stops for Notes</span>
+                      <span>Copy for Notes</span>
                     </>
                   )}
                 </button>
               </div>
-
-              {/* Stops Pills */}
-              {circuitStops.length > 0 && (
-                <div className="pt-2 border-t border-amber-500/20 flex flex-wrap gap-1.5">
-                  {circuitStops.map((stop) => (
-                    <span
-                      key={stop.index}
-                      className="px-2 py-1 rounded-lg bg-stone-900/80 border border-white/10 text-[10px] text-stone-300 flex items-center gap-1"
-                    >
-                      <span className="font-bold text-amber-400">{stop.index}.</span>
-                      <span className="truncate max-w-[140px] sm:max-w-[180px]">{stop.name}</span>
-                    </span>
-                  ))}
-                </div>
-              )}
             </div>
           )}
 
@@ -303,9 +265,9 @@ export const ChauffeurBookingModal: React.FC<ChauffeurBookingModalProps> = ({
           {/* Self-Guided Free Reminder */}
           <div className="p-3 rounded-2xl bg-stone-900/50 border border-white/10 flex items-center justify-between gap-3 text-stone-400 text-[11px]">
             <div className="flex items-center gap-2">
-              <Compass className="w-4 h-4 text-stone-400 shrink-0" />
+              <Navigation className="w-4 h-4 text-stone-400 shrink-0" />
               <span>
-                Prefer to drive yourself? All curated trails are free to explore with one-click Google Maps navigation. Please designate a sober driver if tasting.
+                Prefer to drive yourself? Independent producer visits can be explored directly with one-click Google Maps navigation. Please designate a sober driver if tasting.
               </span>
             </div>
             <button
@@ -313,7 +275,7 @@ export const ChauffeurBookingModal: React.FC<ChauffeurBookingModalProps> = ({
               onClick={onClose}
               className="px-2.5 py-1 rounded-lg bg-stone-800 hover:bg-stone-700 text-stone-300 font-medium whitespace-nowrap transition cursor-pointer shrink-0"
             >
-              Back to Route
+              Back to Map
             </button>
           </div>
 

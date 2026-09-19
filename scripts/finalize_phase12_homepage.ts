@@ -141,10 +141,6 @@ const legacyReplacements: Array<[string, string]> = [
     'Crete and Santorini are the current reference-quality regions, with clearly labeled visiting, location, imagery, and road-access status and no commission markups.',
     `${LIVE_CATALOGUE_METRICS.totalProducers} live producer/project records are published across ${LIVE_CATALOGUE_METRICS.destinationCount} destinations in ${LIVE_CATALOGUE_METRICS.countryCount} European countries, with visiting, location and road-access status kept explicit.`,
   ],
-  [
-    'Six guides are currently published across Crete and Santorini.',
-    'Ten verified-stop Discovery Guides are currently published across the catalogue.',
-  ],
   ['Verified Crete &amp; Santorini Producer Directory', 'Audited Producer Directory'],
 ];
 
@@ -175,6 +171,7 @@ if (!html.includes('aria-label="Explore TerroirTrail destinations"')) {
 const staleClaims = [
   'Crete and Santorini are the current reference-quality regions',
   'Six guides are currently published across Crete and Santorini',
+  'Ten verified-stop Discovery Guides',
   '"@type": "FAQPage"',
 ];
 for (const stale of staleClaims) {

@@ -48,17 +48,9 @@ TerroirTrail publishes canonical, crawlable producer entity pages at `/producers
 
 Legacy `?producer=<id>` URLs are application deep links and should not be treated as the canonical producer entity URLs.
 
-## Discovery Guides and navigation safety
+## Navigation safety and road access
 
-TerroirTrail publishes Discovery Guides as verified-stop collections, not as road-safety guarantees.
-
-The current audited guide set contains 10 published verified-stop Discovery Guides:
-
-- Crete: four guides covering Heraklion wine country, Heraklion west, Western Chania, and a single-stop Rethymno olive-oil discovery guide.
-- Santorini: three guides covering northern Santorini, the central/eastern producer cluster, and Megalochori/Pyrgos/caldera wine discovery.
-- Phase 10B: three guides covering Nemea, a Macedonia, Greece winery planner, and a single verified Monteraponi discovery stop in Tuscany.
-
-Location confidence and road-access confidence are separate. Multi-stop driving navigation remains fail-closed wherever independent road-access evidence is incomplete. An individual map/location link identifies a place; it is not a guarantee that the approach road is suitable for a standard rental car.
+Location confidence and road-access confidence are separate. An individual map/location link identifies a verified producer point; it is not a guarantee that the approach road is suitable for a standard rental car. Road-access status is independently verified and clearly labeled per producer.
 
 ## Santorini geological context
 

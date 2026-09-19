@@ -34,7 +34,6 @@ interface ProfileMenuProps {
   onOpenAbout?: () => void;
   onOpenFaq?: () => void;
   onOpenLegal?: (tab?: 'privacy' | 'terms' | 'licenses') => void;
-  onOpenLoops?: () => void;
   isAdmin?: boolean;
   isPlatformOwner?: boolean;
   onOpenAdmin?: () => void;
@@ -56,7 +55,6 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
   onOpenAbout,
   onOpenFaq,
   onOpenLegal,
-  onOpenLoops,
   isAdmin = false,
   isPlatformOwner = false,
   onOpenAdmin,
@@ -136,8 +134,6 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
           <div className="space-y-1">
             <button type="button" onClick={() => runAndClose(onOpenWishlist)} className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-stone-300 hover:text-white hover:bg-white/5 transition cursor-pointer"><Heart className="w-3.5 h-3.5 text-rose-400" />My saved producers</button>
             <button type="button" onClick={() => runAndClose(onOpenPassport)} className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-stone-300 hover:text-white hover:bg-white/5 transition cursor-pointer"><Compass className="w-3.5 h-3.5 text-amber-400" />Passport stamps & notes</button>
-
-            {onOpenLoops && <button type="button" onClick={() => runAndClose(onOpenLoops)} className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-stone-300 hover:text-amber-300 hover:bg-amber-500/10 transition cursor-pointer"><Compass className="w-3.5 h-3.5 text-amber-400" />Discovery Guides</button>}
 
             {onOpenMyBookings && (
               <button type="button" onClick={() => runAndClose(onOpenMyBookings)} className="w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-stone-300 hover:text-white hover:bg-white/5 transition cursor-pointer">

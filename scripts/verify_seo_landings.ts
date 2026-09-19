@@ -210,7 +210,7 @@ function verifySeo(): void {
     `Greece — 66 records: Crete ${CRETE_COUNT}, Santorini ${SANTORINI_COUNT}, Peloponnese 11, Macedonia 11, Thessaly 5.`,
     'Italy — 39 records: Tuscany 5, Piedmont 8, Puglia 8, Sicily 9, South Tyrol 9.',
     `Deterministic canonical SEO/AEO producer snapshot — ${PRODUCERS.length} records, synchronized with the live catalogue.`,
-    '10 published verified-stop Discovery Guides',
+    '## Navigation safety and road access',
     '/producers/<producer-id>/',
     'Sitemap: https://terroir-trail.web.app/sitemap.xml',
     'Producer directory: https://terroir-trail.web.app/producers/',
@@ -230,6 +230,10 @@ function verifySeo(): void {
     '6 turn-by-turn',
     'Santorini Complete Volcanic Caldera & Donkey Beer Trail',
     'Greek cheese and dairy is the next planned catalogue expansion',
+    '10 published verified-stop Discovery Guides',
+    'Discovery Guides as verified-stop collections',
+    'Ten verified-stop',
+    'Discovery Guides',
   ];
   for (const claim of staleLlmsClaims) banIncludes(llmsContent, claim, 'dist/llms.txt');
 
@@ -237,13 +241,12 @@ function verifySeo(): void {
   requireIncludes(indexContent, `<link rel="canonical" href="${CANONICAL_HOST}/" />`, 'dist/index.html');
   requireIncludes(indexContent, 'TerroirTrail — Independent Producer &amp; Agritourism Guide', 'dist/index.html');
   requireIncludes(indexContent, `${LIVE_CATALOGUE_METRICS.totalProducers} live producer/project records`, 'dist/index.html');
-  requireIncludes(indexContent, 'Ten verified-stop guides are currently published', 'dist/index.html');
   requireIncludes(indexContent, `${LIVE_CATALOGUE_METRICS.destinationCount} destinations in ${LIVE_CATALOGUE_METRICS.countryCount} European countries`, 'dist/index.html');
   requireIncludes(indexContent, 'href="/producers/"', 'dist/index.html');
   requireIncludes(indexContent, 'data-seo-landing-nav="true"', 'dist/index.html');
   requireIncludes(indexContent, 'href="/destinations/"', 'dist/index.html');
   requireIncludes(indexContent, 'href="/categories/"', 'dist/index.html');
-  requireIncludes(indexContent, 'Discovery Guides &amp; Navigation Safety', 'dist/index.html');
+  requireIncludes(indexContent, 'Navigation Safety &amp; Road Access', 'dist/index.html');
   requireIncludes(indexContent, 'Santorini Brewing Company', 'dist/index.html');
   const staleIndexClaims = [
     '36 producer/project records',
@@ -260,6 +263,10 @@ function verifySeo(): void {
     'Curated Rural Routes Under Verification',
     'Starting in Greece with our inaugural audited Crete dataset',
     'Verified Crete Producer Directory',
+    'Ten verified-stop guides are currently published',
+    'Discovery Guides &amp; Navigation Safety',
+    'Discovery Guides are built from verified stops',
+    'Discovery Guides',
   ];
   for (const claim of staleIndexClaims) banIncludes(indexContent, claim, 'dist/index.html');
   for (const tag of ['geo.placename', '35.3387;25.1442', '35.3387, 25.1442', 'pagead2.googlesyndication.com', 'emrld.ltd', 'ca-pub-1608902378435149']) banIncludes(indexContent, tag, 'dist/index.html');

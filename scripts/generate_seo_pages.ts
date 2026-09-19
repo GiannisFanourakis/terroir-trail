@@ -405,7 +405,7 @@ const refreshHomepageSeoState = (sourceHtml: string): string => {
     ],
     [
       'Interactive agritourism discovery map and directory with audited reference catalogues in Crete and Santorini. Discovery Guides are built from verified stops; multi-stop driving navigation remains withheld wherever road-access evidence is incomplete.',
-      `Interactive agritourism discovery map and directory with ${LIVE_CATALOGUE_METRICS.totalProducers} live producer/project records across ${LIVE_CATALOGUE_METRICS.destinationCount} destinations in ${LIVE_CATALOGUE_METRICS.countryCount} European countries. Discovery Guides are built from verified stops; multi-stop driving navigation remains withheld wherever road-access evidence is incomplete.`,
+      `Interactive agritourism discovery map and directory with ${LIVE_CATALOGUE_METRICS.totalProducers} live producer/project records across ${LIVE_CATALOGUE_METRICS.destinationCount} destinations in ${LIVE_CATALOGUE_METRICS.countryCount} European countries, with clearly labeled visiting, location, and road-access status.`,
     ],
     [
       'TerroirTrail is an independent producer and agritourism discovery guide. It connects slow travelers and road-trippers directly with independent wineries, craft breweries, artisanal olive mills, traditional dairies, apiaries, traditional distilleries, and farms, with audited reference catalogues in Crete and Santorini and further regional expansion in progress.',
@@ -422,10 +422,6 @@ const refreshHomepageSeoState = (sourceHtml: string): string => {
     [
       'Crete and Santorini are the current reference-quality regions, with clearly labeled visiting, location, imagery, and road-access status and no commission markups.',
       `The live catalogue spans ${LIVE_CATALOGUE_METRICS.destinationCount} destinations in ${LIVE_CATALOGUE_METRICS.countryCount} European countries, with clearly labeled visiting, location, imagery, and road-access status and no commission markups.`,
-    ],
-    [
-      'TerroirTrail publishes Discovery Guides from verified producer stops. Six guides are currently published across Crete and Santorini. They are discovery stop collections, not road-safety guarantees.',
-      'TerroirTrail publishes Discovery Guides from verified producer stops. Ten verified-stop guides are currently published. They are discovery stop collections, not road-safety guarantees.',
     ],
   ];
 

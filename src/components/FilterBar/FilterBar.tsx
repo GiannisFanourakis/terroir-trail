@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { Category, RoadAccess, FilterState } from '../../types/terroir';
-import { RotateCcw, SlidersHorizontal, Compass } from 'lucide-react';
+import { RotateCcw, SlidersHorizontal } from 'lucide-react';
 import { ProducerCategoryIcon } from '../Common/ProducerCategoryIcon';
 
 interface FilterBarProps {
@@ -9,7 +9,6 @@ interface FilterBarProps {
   onResetFilters: () => void;
   totalFiltered: number;
   totalCount: number;
-  onOpenLoops?: () => void;
 }
 
 export const FilterBar: React.FC<FilterBarProps> = ({
@@ -18,7 +17,6 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   onResetFilters,
   totalFiltered,
   totalCount,
-  onOpenLoops,
 }) => {
   const [isMoreFiltersOpen, setIsMoreFiltersOpen] = useState<boolean>(false);
   const [isMobilePanelOpen, setIsMobilePanelOpen] = useState<boolean>(false);
@@ -123,18 +121,6 @@ export const FilterBar: React.FC<FilterBarProps> = ({
               }`}
             />
           </button>
-
-          {onOpenLoops && (
-            <button
-              type="button"
-              onClick={onOpenLoops}
-              className="flex items-center gap-1.5 text-xs px-3 py-2 rounded-xl font-bold border border-amber-500/40 bg-gradient-to-r from-amber-500/20 via-amber-500/10 to-transparent hover:border-amber-400 text-amber-300 transition shrink-0 cursor-pointer min-h-[44px]"
-              title="Discovery Guides"
-            >
-              <Compass className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-              <span>Guides</span>
-            </button>
-          )}
 
           {isFiltered && (
             <button
@@ -247,18 +233,6 @@ export const FilterBar: React.FC<FilterBarProps> = ({
             <span className="text-[11px] font-semibold text-stone-400 hidden xl:inline">
               <span className="text-amber-400 font-bold">{totalFiltered}</span> of {totalCount} makers
             </span>
-
-            {onOpenLoops && (
-              <button
-                type="button"
-                onClick={onOpenLoops}
-                className="flex items-center gap-1.5 text-[11px] sm:text-xs px-3 py-2 sm:px-2.5 sm:py-1 rounded-full font-bold border border-amber-500/40 bg-gradient-to-r from-amber-500/20 via-amber-500/10 to-transparent hover:border-amber-400 text-amber-300 hover:text-white transition shrink-0 cursor-pointer shadow-sm active:scale-95 min-h-[44px] sm:min-h-[32px]"
-                title="Discovery Guides are published only after stop verification; multi-stop navigation stays withheld until road access is verified"
-              >
-                <Compass className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                <span>Guides</span>
-              </button>
-            )}
 
             <button
               onClick={() => setIsMoreFiltersOpen((prev) => !prev)}

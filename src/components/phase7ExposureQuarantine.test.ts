@@ -4,17 +4,15 @@ import { existsSync, readFileSync } from 'node:fs';
 const read = (file: string) => readFileSync(file, 'utf8');
 
 describe('Phase 7 public prototype and direct-entry quarantine', () => {
-  it('keeps the Phase 9 public route entry point safety-gated', () => {
+  it('confirms Discovery Guides and route entry points are completely absent from App', () => {
     const app = read('src/App.tsx');
-    const routes = read('src/components/Loops/DayTripModal.tsx');
 
-    expect(app).toContain("onOpenLoops={() => setActiveModal({ type: 'loops' })}");
-    expect(app).toContain("activeModal?.type === 'loops'");
-
-    expect(routes).toContain("loop.verificationStatus === 'verified_stops'");
-    expect(routes).toContain("loop.verificationStatus === 'verified'");
-    expect(routes).toContain('evaluateRouteNavigation(currentLoop, producerCatalogue)');
-    expect(routes).toContain('Multi-stop driving navigation withheld');
+    expect(app).not.toContain('onOpenLoops');
+    expect(app).not.toContain("type: 'loops'");
+    expect(app).not.toContain('DayTripModal');
+    expect(existsSync('src/components/Loops/DayTripModal.tsx')).toBe(false);
+    expect(existsSync('src/components/Loops')).toBe(false);
+    expect(existsSync('src/data/loops.ts')).toBe(false);
   });
 
   it('removes commercial query parameters, pass auto-verification, and stripe banners from App', () => {
@@ -37,27 +35,6 @@ describe('Phase 7 public prototype and direct-entry quarantine', () => {
     expect(app).toContain('setIsDrawerOpen(true);');
   });
 
-  it('documents the Discovery Guide model without weakening navigation quarantine', () => {
-    const aboutFaq = read('src/components/About/AboutFaqModal.tsx');
-    const routes = read('src/components/Loops/DayTripModal.tsx');
-
-    expect(aboutFaq).toContain('Browse Discovery Guides');
-    expect(aboutFaq).toContain("actionType: 'loops'");
-    expect(aboutFaq).toContain(
-      'Discovery Guides group researched producers into useful themed or geographic collections.'
-    );
-    expect(aboutFaq).toContain(
-      'They are discovery tools rather than a guarantee that every rural road is suitable for every vehicle'
-    );
-    expect(aboutFaq).toContain(
-      'Use Discovery Guides for inspiration, then check each producer’s current visit and access information.'
-    );
-
-    // Public copy can be traveler-friendly while the actual route UI remains safety-gated.
-    expect(routes).toContain('Multi-stop driving navigation withheld');
-    expect(routes).toContain('evaluateRouteNavigation(currentLoop, producerCatalogue)');
-  });
-
   it('keeps producer pass scanning out of the launch host portal while preserving future infrastructure', () => {
     const producerPortal = read('src/components/Portal/ProducerPortalModal.tsx');
 
@@ -75,7 +52,6 @@ describe('Phase 7 public prototype and direct-entry quarantine', () => {
     const app = read('src/App.tsx');
 
     // Future components remain in tree
-    expect(existsSync('src/components/Loops/DayTripModal.tsx')).toBe(true);
     expect(existsSync('src/components/Bookings/BookingModal.tsx')).toBe(true);
     expect(existsSync('src/components/Bookings/MyBookingsModal.tsx')).toBe(true);
     expect(existsSync('src/components/Monetization/ExplorerPassModal.tsx')).toBe(true);
@@ -87,7 +63,6 @@ describe('Phase 7 public prototype and direct-entry quarantine', () => {
     expect(existsSync('src/hooks/useBookings.ts')).toBe(true);
 
     // Dormant modal branches exist in App for future activation
-    expect(app).toContain("activeModal?.type === 'loops'");
     expect(app).toContain("activeModal?.type === 'booking'");
     expect(app).toContain("activeModal?.type === 'pass'");
     expect(app).toContain("activeModal?.type === 'digital_pass'");

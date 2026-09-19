@@ -11,7 +11,7 @@ import {
 import { useProducerPhotos } from '../../services/googlePlacesPhotos';
 import { getCategoryFallbackImage } from '../../utils/imageFallbacks';
 import { getEffectiveProducerCategory } from '../../utils/producerCategory';
-import { getProducerRoadAccessWarning } from '../../utils/routeSafety';
+import { getProducerRoadAccessWarning } from '../../utils/producerAccess';
 import { resolveProducerCover, resolveProducerGallery } from '../../utils/producerMediaResolver';
 import { GooglePlaceMedia } from '../GooglePlaces/GooglePlaceMedia';
 import { GooglePlacePhotoCarousel } from '../GooglePlaces/GooglePlacePhotoCarousel';

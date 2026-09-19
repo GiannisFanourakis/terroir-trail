@@ -38,12 +38,11 @@ The canonical implementation state and milestone history are maintained in [`ROA
 
 - **Interactive Terroir Map:** High-performance Leaflet map featuring administrative terroir region boundaries sourced from geoBoundaries and Eurostat / GISCO (CC BY 4.0) and custom tile providers.
 - **Multi-Category Producer Directory (148 Live Records):** Wineries, craft breweries, artisan cheese dairies, olive mills and olive-oil producers, apiaries, farms, cideries, confectioneries, herb farms, mushroom farms, oil mills, and distilleries across 8 European countries.
-- **Curated Regional Discovery Guides (10 Guides):** Verified slow-travel discovery loops across Crete (4), Santorini (3), Peloponnese (1), Macedonia, Greece (1), and Tuscany (1).
 - **Evidence-Backed Auditing:** Independent verification badges for location precision, visitability status, and road-access suitability.
 - **Traveler Accounts & Passport:** Private accounts (Firebase Auth), visited-place passport stamps, and private tasting notes.
 - **Favorites / Saved Places:** Account-partitioned saved producers in device local storage.
 - **Travel Affiliate Links (Travelpayouts):** Curated, non-intrusive outbound affiliate links for car hire, transfers, experiences, and travel eSIMs. No personal profile data or tracking cookies are transmitted; active Explorer Pass holders enjoy an ad-free experience.
-- **Fail-Closed Route Safety:** Automated safety gates suppress turn-by-turn routing whenever road classification is unconfirmed or hazardous.
+- **Fail-Closed Road Access Warnings:** Location confidence and road-access confidence are strictly separated; clear road-access warnings and rental-car advisories are provided per producer.
 - **Resilient Fallback Data:** Offline/static catalogue fallback ensures full usability even if remote services are unavailable.
 
 ---
@@ -65,7 +64,6 @@ TerroirTrail is currently **discovery-first**, not an online travel agency (OTA)
 - **Canonical sitemap footprint:** 235 unique canonical URLs, covering producer entities, country pages, destination pages, eligible region/category landing pages, and core index pages.
 - **SEO/AEO deployment contract:** build-time generation and verification require the live catalogue snapshot, canonical producer pages, landing-page entity graph, robots.txt, llms.txt, and sitemap to remain synchronized.
 - **Live categories represented:** Winery (63), Cheese Dairy (21), Olive Mill (19), Brewery (9), Farm (9), Apiary (7), Cidery (5), Distillery (4), Olive Oil Producer (4), Confectionery (3), Herb Farm (2), Mushroom Farm (1), Other Oil Mill (1).
-- **Discovery Guides:** 10 curated regional loops.
 
 ---
 
@@ -138,8 +136,7 @@ npm run mobile:preflight -- all
 - [`ROADMAP.md`](ROADMAP.md) — Canonical product roadmap and feature statuses
 - [`AGENTS.md`](AGENTS.md) — Repository-level operating rules, including the mandatory producer verification/import gate
 - [`src/data/terroirRegions.ts`](src/data/terroirRegions.ts) — Sourced regional terroir polygon boundaries
-- [`src/data/loops.ts`](src/data/loops.ts) — Curated discovery loops and guide definitions
-- [`src/utils/routeSafety.ts`](src/utils/routeSafety.ts) — Fail-closed navigation and road-safety rules
+- [`src/utils/producerAccess.ts`](src/utils/producerAccess.ts) — Fail-closed producer road-access warnings and rental-car advisories
 - [`public/llms.txt`](public/llms.txt) — Authoritative machine-readable catalogue summary
 
 ---

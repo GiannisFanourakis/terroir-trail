@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect, Suspense, lazy } from 'react';
 import { useProducers } from './hooks/useProducers';
-import { Producer, FilterState, Destination, DayTripLoop } from './types/terroir';
+import { Producer, FilterState, Destination } from './types/terroir';
 import type { UserProfile } from './types/auth';
 import type { ProducerOverride } from './types/booking';
 import { Header } from './components/Header/Header';
@@ -35,7 +35,6 @@ const TerroirRegionDrawer = lazy(() =>
     default: m.TerroirRegionDrawer,
   }))
 );
-const DayTripModal = lazy(() => import('./components/Loops/DayTripModal').then(m => ({ default: m.DayTripModal })));
 const AuthModal = lazy(() => import('./components/Auth/AuthModal').then(m => ({ default: m.AuthModal })));
 const PassportModal = lazy(() => import('./components/Auth/PassportModal').then(m => ({ default: m.PassportModal })));
 const AccountSettingsModal = lazy(() => import('./components/Auth/AccountSettingsModal').then(m => ({ default: m.AccountSettingsModal })));
@@ -51,7 +50,6 @@ const AboutFaqModal = lazy(() => import('./components/About/AboutFaqModal').then
 const LegalModal = lazy(() => import('./components/Legal/LegalModal').then(m => ({ default: m.LegalModal })));
 
 export type ActiveModal =
-  | { type: 'loops' }
   | { type: 'auth'; initialRole?: 'traveler' | 'producer' }
   | { type: 'passport' }
   | { type: 'account_settings' }
@@ -62,7 +60,7 @@ export type ActiveModal =
   | { type: 'pass' }
   | { type: 'digital_pass' }
   | { type: 'host_verify'; guestInfo: VerifiedPassInfo }
-  | { type: 'chauffeur'; circuit?: DayTripLoop | null; producer?: Producer | null }
+  | { type: 'chauffeur'; producer?: Producer | null }
   | { type: 'about_faq'; initialTab?: 'about' | 'faq' }
   | { type: 'legal'; initialTab?: 'privacy' | 'terms' | 'producers' | 'licenses' }
   | null;
@@ -312,29 +310,6 @@ export const App: React.FC = () => {
     }
   }, [publicProducers]);
 
-  const handleSelectLoop = async (loop: DayTripLoop) => {
-    setFilters((prev) => ({
-      ...prev,
-      destination: loop.destination,
-      category: 'all',
-      roadAccess: 'all',
-      searchQuery: '',
-    }));
-
-    setViewMode('map');
-    setIsDrawerOpen(false);
-    setIsRegionGuideOpen(false);
-
-    const firstProducerId = loop.stops[0]?.producerId;
-    if (!firstProducerId) {
-      setSelectedProducer(null);
-      return;
-    }
-
-    const firstProducer = await producerService.getProducerById(firstProducerId);
-    setSelectedProducer(firstProducer);
-  };
-
   return (
     <div className="flex flex-col h-[100dvh] w-full overflow-hidden bg-stone-950 font-sans text-stone-100">
       <Header
@@ -348,7 +323,6 @@ export const App: React.FC = () => {
         savedCount={favorites.length}
         favoritesOnly={filters.favoritesOnly}
         onToggleFavoritesOnly={() => handleFilterChange('favoritesOnly', !filters.favoritesOnly)}
-        onOpenLoops={() => setActiveModal({ type: 'loops' })}
         user={user}
         onOpenAuth={(role) => setActiveModal({ type: 'auth', initialRole: role || 'traveler' })}
         onOpenPassport={() => setActiveModal({ type: 'passport' })}
@@ -523,21 +497,6 @@ export const App: React.FC = () => {
           <div className="rounded-2xl border border-white/10 bg-stone-900 px-4 py-3 text-xs font-semibold text-stone-200 shadow-2xl">Loading…</div>
         </div>
       )}>
-        {activeModal?.type === 'loops' && (
-          <DayTripModal
-            isOpen
-            onClose={closeModal}
-            onSelectLoop={handleSelectLoop}
-            onSelectProducer={(producer) => {
-              setSelectedProducer(producer);
-              setIsRegionGuideOpen(false);
-              setIsDrawerOpen(true);
-              closeModal();
-            }}
-            user={user}
-            producers={publicProducers}
-          />
-        )}
 
         {activeModal?.type === 'auth' && (
           <AuthModal
@@ -690,7 +649,6 @@ export const App: React.FC = () => {
           <ChauffeurBookingModal
             isOpen
             onClose={closeModal}
-            initialCircuit={activeModal.circuit}
             initialProducer={activeModal.producer}
             user={user}
             onOpenAuth={() => setActiveModal({ type: 'auth', initialRole: 'traveler' })}
@@ -705,7 +663,6 @@ export const App: React.FC = () => {
             initialTab={activeModal.initialTab || 'about'}
             onOpenAuth={(role) => setActiveModal({ type: 'auth', initialRole: role || 'traveler' })}
             onOpenProducerPortal={() => handleOpenProducerPortal()}
-            onOpenLoops={() => setActiveModal({ type: 'loops' })}
             onOpenLegal={(tab) => setActiveModal({ type: 'legal', initialTab: tab })}
           />
         )}

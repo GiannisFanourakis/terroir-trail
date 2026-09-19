@@ -3,7 +3,7 @@ import { Destination } from '../../types/terroir';
 import { UserProfile } from '../../types/auth';
 import { ProfileMenu } from '../Auth/ProfileMenu';
 import { UserAvatar } from '../Common/UserAvatar';
-import { Compass, Search, X, Heart, Building2, Calendar, Sparkles, BookOpen, Menu, Award, LogOut, User, ChevronDown, Download, Share2, Plus, Smartphone } from 'lucide-react';
+import { Search, X, Heart, Building2, Calendar, Sparkles, BookOpen, Menu, Award, LogOut, User, ChevronDown, Download, Share2, Plus, Smartphone } from 'lucide-react';
 import {
   COUNTRY_LAYERS,
   CountryScope,
@@ -18,7 +18,6 @@ interface HeaderProps {
   onSelectDestination: (dest: Destination | 'all') => void;
   searchQuery: string;
   onSearchChange: (query: string) => void;
-  onOpenLoops: () => void;
   onOpenExperiences?: () => void;
   totalFilteredCount: number;
   viewMode: 'map' | 'list';
@@ -50,7 +49,6 @@ export const Header: React.FC<HeaderProps> = ({
   onSelectDestination,
   searchQuery,
   onSearchChange,
-  onOpenLoops,
   onOpenExperiences,
   totalFilteredCount,
   viewMode,
@@ -192,7 +190,6 @@ export const Header: React.FC<HeaderProps> = ({
       onOpenAbout={onOpenAbout}
       onOpenFaq={onOpenFaq}
       onOpenLegal={onOpenLegal}
-      onOpenLoops={onOpenLoops}
       isAdmin={isAdmin}
       isPlatformOwner={isPlatformOwner}
       onOpenAdmin={onOpenAdmin}
@@ -375,8 +372,6 @@ export const Header: React.FC<HeaderProps> = ({
                 <Heart className={`w-3.5 h-3.5 shrink-0 ${favoritesOnly || savedCount > 0 ? 'fill-rose-400 text-rose-400' : 'text-stone-400'}`} /><span className="hidden sm:inline">Saved</span>{savedCount > 0 && <span className="px-1.5 py-0.2 rounded-full bg-rose-500/20 text-rose-300 text-[10px] font-mono">{savedCount}</span>}
               </button>
 
-              <button onClick={onOpenLoops} className="hidden md:flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-bold bg-stone-900 hover:bg-stone-850 text-stone-300 hover:text-amber-300 border border-white/10 hover:border-amber-400/40 rounded-xl transition shrink-0 cursor-pointer shadow-sm" title="Discovery guides use verified stops; driving access is checked separately"><Compass className="w-3.5 h-3.5 text-amber-400 shrink-0" /><span>Discovery Guides</span></button>
-
               {onOpenAbout && <button onClick={onOpenAbout} className="hidden md:flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-bold bg-stone-900 hover:bg-stone-850 text-stone-300 hover:text-white border border-white/10 hover:border-amber-400/40 rounded-xl transition shrink-0 cursor-pointer"><BookOpen className="w-3.5 h-3.5 text-amber-400 shrink-0" /><span>About & FAQ</span></button>}
 
               {isHost ? (
@@ -447,7 +442,6 @@ export const Header: React.FC<HeaderProps> = ({
               )}
 
               <button onClick={() => { onOpenPassport(); closeMenu(); }} className="flex items-center gap-3 w-full px-3 py-3 text-sm font-semibold text-stone-200 bg-stone-900 rounded-xl border border-white/10 cursor-pointer"><Award className="w-4 h-4 text-amber-400" />Terroir Passport</button>
-              <button onClick={() => { onOpenLoops(); closeMenu(); }} className="flex items-center gap-3 w-full px-3 py-3 text-sm font-semibold text-stone-200 bg-stone-900 rounded-xl border border-white/10 cursor-pointer"><Compass className="w-4 h-4 text-amber-400" />Discovery Guides</button>
               {onOpenExperiences && <button onClick={() => { onOpenExperiences(); closeMenu(); }} className="flex items-center gap-3 w-full px-3 py-3 text-sm font-semibold text-stone-200 bg-stone-900 rounded-xl border border-white/10 cursor-pointer"><Sparkles className="w-4 h-4 text-amber-400" />Curated Experiences</button>}
 
               {canInstall && (

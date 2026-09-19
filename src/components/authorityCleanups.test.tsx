@@ -5,7 +5,7 @@ import { ProducerRegistrationForm } from './Portal/ProducerRegistrationForm';
 import { ChauffeurBookingModal } from './Monetization/ChauffeurBookingModal';
 import { producerService } from '../services/producerService';
 import { CRETAN_PRODUCERS } from '../data/producers';
-import { DayTripLoop } from '../types/terroir';
+import { Producer } from '../types/terroir';
 
 // Mock Supabase module to control live DB state
 const { mockSupabaseState } = vi.hoisted(() => {
@@ -99,79 +99,31 @@ describe('Static-data Authority Leaks Cleanup', () => {
   });
 
   describe('ChauffeurBookingModal authority', () => {
-    it('missing live producer in chauffeur route does not resurrect static producer data', async () => {
-      // 1. Establish live provenance where only a single distinct producer exists (e.g. 'custom-estate')
-      mockSupabaseState.queryResults.set('producers', {
-        data: [
-          {
-            id: 'live-winery-1',
-            name: 'Live Verified Winery',
-            greek_name: 'Ζωντανό Οινοποιείο',
-            category: 'winery',
-            destination: 'crete',
-            region: 'Heraklion',
-            village: 'Peza',
-            description: 'Live test producer',
-            coordinates: [35.2, 25.2],
-            contact: {},
-            features: {},
-            tags: [],
-            indigenous_varieties: [],
-            price_tier: '€€',
-          },
-        ],
-        error: null,
-      });
-
-      await producerService.getProducers({ destination: 'all' });
-      expect(producerService.getCacheProvenance()).toBe('live');
-      // Verify that 'domaine-paterianakis' (a bundled static producer) is NOT in live cache
-      expect(producerService.getCachedProducer('domaine-paterianakis')).toBeUndefined();
-
-      // 2. Create a circuit referencing 'domaine-paterianakis' as a stop producerId
-      const testCircuit: DayTripLoop = {
-        id: 'test-circuit-1',
-        title: 'Peza & Archanes Route',
-        greekTitle: 'Διαδρομή Πεζών',
-        subtitle: 'Wine tasting day trip',
+    it('renders initialProducer destination accurately when passed', () => {
+      const testProducer = {
+        id: 'domaine-paterianakis',
+        name: 'Domaine Paterianakis',
         destination: 'crete',
         region: 'Heraklion',
-        totalDuration: '4 hours',
-        drivingDistance: '35 km',
-        stops: [
-          {
-            producerId: 'domaine-paterianakis',
-            suggestedTime: '10:00 AM',
-            activity: 'Estate Tasting',
-          },
-          {
-            producerId: 'unknown-stop-producer',
-            suggestedTime: '12:00 PM',
-            activity: 'Vineyard Walk',
-          },
-        ],
-        description: 'Circuit for testing live authority',
-        highlightPointers: ['Ancient vines'],
-      };
+        village: 'Melesses',
+        category: 'winery',
+        coordinates: [35.2, 25.1] as [number, number],
+        description: 'Test producer',
+      } as unknown as Producer;
 
-      // 3. Render ChauffeurBookingModal
       const html = renderToString(
         React.createElement(ChauffeurBookingModal, {
           isOpen: true,
           onClose: () => {},
-          initialCircuit: testCircuit,
+          initialProducer: testProducer,
         })
       );
 
-      // 4. Assert: missing live producer displays the stop's fallback identifier
-      expect(html).toContain('domaine-paterianakis');
-      expect(html).toContain('unknown-stop-producer');
-
-      // 5. Assert: static seed data for Domaine Paterianakis (e.g., specific Greek name, village 'Melesses')
-      // is NOT resurrected from CRETAN_PRODUCERS
-      const bundledPaterianakis = CRETAN_PRODUCERS.find((p) => p.id === 'domaine-paterianakis')!;
-      expect(html).not.toContain(bundledPaterianakis.name + ' (');
-      expect(html).not.toContain(bundledPaterianakis.village + ', Heraklion');
+      expect(html).toContain('Target Destination for Your Driver');
+      expect(html).toContain('Domaine Paterianakis');
+      expect(html).toContain('Estate Visit');
+      expect(html).toContain('Melesses');
+      expect(html).toContain('Heraklion');
     });
   });
 });

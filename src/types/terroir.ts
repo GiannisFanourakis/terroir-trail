@@ -171,34 +171,6 @@ export interface Producer {
   visitNotes?: string;
 }
 
-export interface DayTripLoop {
-  id: string;
-  title: string;
-  greekTitle: string;
-  subtitle: string;
-  destination: Destination;
-  region: string;
-  totalDuration: string;
-  drivingDistance: string;
-  stops: {
-    producerId: string;
-    suggestedTime: string;
-    activity: string;
-  }[];
-  description: string;
-  highlightPointers: string[];
-  isVipOnly?: boolean;
-  /**
-   * Route publication and driving verification are intentionally separate:
-   * - draft: not published as a usable guide
-   * - verified_stops: stop identities/locations are verified, but route driving is withheld
-   * - verified: stop locations and normal-road access have passed the driving audit
-   *
-   * Only fully verified routes may expose multi-stop turn-by-turn navigation.
-   */
-  verificationStatus?: 'draft' | 'verified_stops' | 'verified';
-}
-
 export interface FilterState {
   category: Category | 'all';
   destination: Destination | 'all';

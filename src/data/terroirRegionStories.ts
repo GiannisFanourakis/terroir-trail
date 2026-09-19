@@ -183,11 +183,11 @@ export const TERROIR_REGION_STORIES: Record<Destination, TerroirRegionStory> = {
       },
       {
         id: 'explore',
-        title: 'Plan by route, not by checklist',
+        title: 'Plan by region, not by checklist',
         eyebrow: 'On TerroirTrail',
         body:
           'The Peloponnese rewards a road-trip approach: choose a valley, wine zone or stretch of coast and give it time. TerroirTrail brings together wineries, olive producers, dairies and other small makers while keeping practical details — entrance points, visitor status and road access — separate from the story. That matters in a region where the most interesting stop may be one mountain turn beyond the obvious route.',
-        highlights: ['Regional road-trip loops', 'Small producers across categories', 'Entrance and road-access checks'],
+        highlights: ['Regional road trips', 'Small producers across categories', 'Entrance and road-access checks'],
       },
     ],
   },

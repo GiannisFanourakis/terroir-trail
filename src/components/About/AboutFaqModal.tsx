@@ -6,7 +6,6 @@ import {
   Building2,
   ChevronDown,
   ChevronUp,
-  Compass,
   HelpCircle,
   Mail,
   MapPin,
@@ -20,14 +19,13 @@ interface AboutFaqModalProps {
   isOpen: boolean;
   onClose: () => void;
   initialTab?: 'about' | 'faq' | 'contact';
-  onOpenLoops?: () => void;
   onOpenAuth?: (role?: 'traveler' | 'producer') => void;
   onOpenProducerPortal?: () => void;
   onOpenLegal?: (tab?: 'privacy' | 'terms' | 'licenses') => void;
 }
 
-type FaqCategory = 'about' | 'visiting' | 'passport' | 'routes' | 'producers';
-type FaqAction = 'loops' | 'producer_portal' | 'auth_traveler';
+type FaqCategory = 'about' | 'visiting' | 'passport' | 'producers';
+type FaqAction = 'producer_portal' | 'auth_traveler';
 type AboutTab = 'about' | 'faq' | 'contact';
 
 interface FaqItem {
@@ -116,20 +114,9 @@ const FAQ_DATA: FaqItem[] = [
     actionType: 'auth_traveler',
   },
   {
-    id: 'routes-status',
-    category: 'routes',
-    categoryLabel: 'Discovery Guides & Rural Access',
-    question: 'Are Discovery Guides available?',
-    answer:
-      'Yes. Discovery Guides group researched producers into useful themed or geographic collections. They are discovery tools rather than a guarantee that every rural road is suitable for every vehicle, so individual access notes still matter.',
-    highlight: 'Use Discovery Guides for inspiration, then check each producer’s current visit and access information.',
-    actionText: 'Browse Discovery Guides',
-    actionType: 'loops',
-  },
-  {
     id: 'road-access',
-    category: 'routes',
-    categoryLabel: 'Discovery Guides & Rural Access',
+    category: 'visiting',
+    categoryLabel: 'Visiting Producers',
     question: 'How does TerroirTrail handle rural road access?',
     answer:
       'TerroirTrail treats location and road access as separate facts. When useful access information is available, it is shown on the listing; when it is not, the site does not invent a road condition.',
@@ -168,7 +155,6 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
   isOpen,
   onClose,
   initialTab = 'about',
-  onOpenLoops,
   onOpenAuth,
   onOpenProducerPortal,
   onOpenLegal,
@@ -183,7 +169,6 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
     { id: 'about', label: 'About & Curation' },
     { id: 'visiting', label: 'Visiting Producers' },
     { id: 'passport', label: 'Traveler Passport' },
-    { id: 'routes', label: 'Discovery Guides & Access' },
     { id: 'producers', label: 'For Producers' },
   ];
 
@@ -206,7 +191,6 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
   const handleAction = (action?: FaqAction) => {
     if (!action) return;
     onClose();
-    if (action === 'loops') onOpenLoops?.();
     if (action === 'producer_portal') {
       if (onOpenProducerPortal) onOpenProducerPortal();
       else onOpenAuth?.('producer');
@@ -294,7 +278,7 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
 
               <div className="p-5 rounded-2xl bg-stone-900 border border-white/10 space-y-2">
                 <div className="flex items-center gap-2 text-amber-300 font-bold text-sm">
-                  <Compass className="w-4 h-4" />
+                  <MapPin className="w-4 h-4" />
                   <span>Across Greece and into Italy</span>
                 </div>
                 <p className="text-xs text-stone-300 leading-relaxed">
@@ -304,26 +288,16 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
 
               <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30">
                 <p className="text-xs text-stone-300 text-center sm:text-left">
-                  Discovery Guides turn researched producers into themed and regional collections for trip inspiration. Check each producer’s current visiting and access information before setting out.
+                  Have questions about visiting producers, road access, or the traveler passport?
                 </p>
                 <div className="flex items-center gap-2 shrink-0">
                   <button
                     type="button"
                     onClick={() => setActiveTab('faq')}
-                    className="px-3.5 py-1.5 rounded-xl bg-stone-900 hover:bg-stone-800 text-stone-200 border border-white/15 text-xs font-bold transition cursor-pointer"
+                    className="px-3.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 text-xs font-bold shadow-md transition active:scale-95 cursor-pointer"
                   >
                     Read FAQ
                   </button>
-                  {onOpenLoops && (
-                    <button
-                      type="button"
-                      onClick={() => handleAction('loops')}
-                      className="px-3.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 text-xs font-bold shadow-md transition active:scale-95 cursor-pointer flex items-center gap-1.5"
-                    >
-                      <Compass className="w-3.5 h-3.5" />
-                      <span>Discovery Guides</span>
-                    </button>
-                  )}
                 </div>
               </div>
             </div>
@@ -336,7 +310,7 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
                     type="text"
                     value={searchQuery}
                     onChange={(event) => setSearchQuery(event.target.value)}
-                    placeholder="Search visiting, guides, road access, passport, producer claims..."
+                    placeholder="Search visiting, road access, passport, producer claims..."
                     className="w-full pl-10 pr-4 py-2.5 rounded-2xl bg-stone-900 border border-white/15 text-white placeholder-stone-500 text-xs focus:outline-none focus:border-amber-400/80 transition"
                   />
                 </div>
