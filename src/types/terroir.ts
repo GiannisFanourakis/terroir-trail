@@ -114,6 +114,23 @@ export type VisitStatus =
   | 'current_access_uncertain' 
   | 'unreviewed';
 
+export type VisitBookingRequirement =
+  | 'required'
+  | 'recommended'
+  | 'not_required';
+
+export type WalkInStatus =
+  | 'accepted'
+  | 'not_accepted'
+  | 'subject_to_availability';
+
+export type ParkingStatus =
+  | 'available'
+  | 'limited'
+  | 'no_dedicated_parking';
+
+export type VisitorHours = Record<string, unknown> | unknown[];
+
 export interface Producer {
   id: string;
   name: string;
@@ -169,6 +186,16 @@ export interface Producer {
   visitStatus?: VisitStatus | string;
   visitSourceUrl?: string;
   visitNotes?: string;
+
+  // Visitability V1 — planner-ready operational facts. Missing means unknown.
+  visitBookingRequirement?: VisitBookingRequirement;
+  walkInStatus?: WalkInStatus;
+  parkingStatus?: ParkingStatus;
+  typicalVisitMinutes?: number;
+  visitorHours?: VisitorHours;
+  seasonalVisitNotes?: string;
+  visitorLanguages?: string[];
+  visitabilityReviewedAt?: string;
 }
 
 export interface FilterState {

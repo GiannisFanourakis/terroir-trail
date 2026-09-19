@@ -100,6 +100,18 @@ export function mapRowToProducer(row: any): Producer {
     visitStatus: row.visit_status || undefined,
     visitSourceUrl: row.visit_source_url || undefined,
     visitNotes: row.visit_notes || undefined,
+    visitBookingRequirement: row.visit_booking_requirement || undefined,
+    walkInStatus: row.walk_in_status || undefined,
+    parkingStatus: row.parking_status || undefined,
+    typicalVisitMinutes:
+      row.typical_visit_minutes != null ? Number(row.typical_visit_minutes) : undefined,
+    visitorHours: row.visitor_hours ?? undefined,
+    seasonalVisitNotes: row.seasonal_visit_notes || undefined,
+    visitorLanguages:
+      Array.isArray(row.visitor_languages) && row.visitor_languages.length > 0
+        ? row.visitor_languages
+        : undefined,
+    visitabilityReviewedAt: row.visitability_reviewed_at || undefined,
   };
 }
 

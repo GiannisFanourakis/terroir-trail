@@ -541,6 +541,44 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
       ? producerOverride.contactEmail.trim()
       : '';
 
+  const bookingRequirementLabel =
+    producer.visitBookingRequirement === 'required'
+      ? 'Required'
+      : producer.visitBookingRequirement === 'recommended'
+      ? 'Recommended'
+      : producer.visitBookingRequirement === 'not_required'
+      ? 'Not required'
+      : undefined;
+
+  const walkInStatusLabel =
+    producer.walkInStatus === 'accepted'
+      ? 'Accepted'
+      : producer.walkInStatus === 'not_accepted'
+      ? 'Not accepted'
+      : producer.walkInStatus === 'subject_to_availability'
+      ? 'Subject to availability'
+      : undefined;
+
+  const parkingStatusLabel =
+    producer.parkingStatus === 'available'
+      ? 'Available'
+      : producer.parkingStatus === 'limited'
+      ? 'Limited'
+      : producer.parkingStatus === 'no_dedicated_parking'
+      ? 'No dedicated parking'
+      : undefined;
+
+  const visitabilityReviewedLabel = (() => {
+    if (!producer.visitabilityReviewedAt) return undefined;
+    const reviewedAt = new Date(producer.visitabilityReviewedAt);
+    if (Number.isNaN(reviewedAt.getTime())) return undefined;
+    return new Intl.DateTimeFormat('en-GB', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+    }).format(reviewedAt);
+  })();
+
   return (
     <>
       <div
@@ -1082,7 +1120,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
               <div className="flex items-center justify-between">
                 <h3 className="text-xs font-bold uppercase tracking-wider text-white flex items-center gap-1.5">
                   <ProducerCategoryIcon category={effectiveCategory} className="w-4 h-4 text-amber-400" />
-                  <span>{term.visitingTitle || 'Visiting & Contact'}</span>
+                  <span>Know Before You Go</span>
                 </h3>
                 <span className={`text-[10px] px-2.5 py-0.5 rounded-full font-bold border ${visitDetails.badgeClass}`}>
                   {visitDetails.badgeLabel}
@@ -1108,8 +1146,16 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                   </div>
                 )}
 
-                {(visitDetails.visitingStyle || effectiveOpeningHours || producer.bestSeason) && (
-                  <div className="grid grid-cols-2 gap-2 text-[11px] pt-1 border-t border-white/5">
+                {(visitDetails.visitingStyle ||
+                  effectiveOpeningHours ||
+                  producer.bestSeason ||
+                  bookingRequirementLabel ||
+                  walkInStatusLabel ||
+                  parkingStatusLabel ||
+                  producer.typicalVisitMinutes != null ||
+                  producer.visitorLanguages?.length ||
+                  visitabilityReviewedLabel) && (
+                  <div className="grid grid-cols-2 gap-x-3 gap-y-2.5 text-[11px] pt-2 border-t border-white/5">
                     {visitDetails.visitingStyle && (
                       <div className="space-y-0.5">
                         <span className="text-[10px] text-stone-400 block font-medium">Visiting Style</span>
@@ -1118,11 +1164,59 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                         </span>
                       </div>
                     )}
-                    {effectiveOpeningHours && (
+                    {bookingRequirementLabel && (
                       <div className="space-y-0.5">
+                        <span className="text-[10px] text-stone-400 block font-medium">Booking</span>
+                        <span className="font-semibold text-stone-200">
+                          {bookingRequirementLabel}
+                        </span>
+                      </div>
+                    )}
+                    {walkInStatusLabel && (
+                      <div className="space-y-0.5">
+                        <span className="text-[10px] text-stone-400 block font-medium">Walk-ins</span>
+                        <span className="font-semibold text-stone-200">
+                          {walkInStatusLabel}
+                        </span>
+                      </div>
+                    )}
+                    {parkingStatusLabel && (
+                      <div className="space-y-0.5">
+                        <span className="text-[10px] text-stone-400 block font-medium">Parking</span>
+                        <span className="font-semibold text-stone-200">
+                          {parkingStatusLabel}
+                        </span>
+                      </div>
+                    )}
+                    {producer.typicalVisitMinutes != null && (
+                      <div className="space-y-0.5">
+                        <span className="text-[10px] text-stone-400 block font-medium">Typical Visit</span>
+                        <span className="font-semibold text-stone-200">
+                          {producer.typicalVisitMinutes} min
+                        </span>
+                      </div>
+                    )}
+                    {visitabilityReviewedLabel && (
+                      <div className="space-y-0.5">
+                        <span className="text-[10px] text-stone-400 block font-medium">Visit Info Checked</span>
+                        <span className="font-semibold text-stone-200">
+                          {visitabilityReviewedLabel}
+                        </span>
+                      </div>
+                    )}
+                    {effectiveOpeningHours && (
+                      <div className="space-y-0.5 col-span-2">
                         <span className="text-[10px] text-stone-400 block font-medium">Opening Hours</span>
                         <span className="font-semibold text-stone-200 block whitespace-pre-line">
                           {effectiveOpeningHours}
+                        </span>
+                      </div>
+                    )}
+                    {producer.visitorLanguages && producer.visitorLanguages.length > 0 && (
+                      <div className="space-y-0.5 col-span-2">
+                        <span className="text-[10px] text-stone-400 block font-medium">Visitor Languages</span>
+                        <span className="font-semibold text-stone-200">
+                          {producer.visitorLanguages.join(', ')}
                         </span>
                       </div>
                     )}
@@ -1134,6 +1228,15 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                         </span>
                       </div>
                     )}
+                  </div>
+                )}
+
+                {producer.seasonalVisitNotes && (
+                  <div className="p-2.5 rounded-xl bg-amber-500/8 border border-amber-400/15 text-[11px] text-stone-300 leading-relaxed">
+                    <span className="font-semibold text-amber-300/90 block text-[10px] uppercase tracking-wider mb-0.5">
+                      Seasonal Visit Note
+                    </span>
+                    {producer.seasonalVisitNotes}
                   </div>
                 )}
 

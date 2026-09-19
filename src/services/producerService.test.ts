@@ -268,6 +268,14 @@ describe('producerService — Supabase / Fallback Data Ownership', () => {
         visit_status: 'public_visits',
         visit_source_url: 'https://alpha-winery.gr/visiting',
         visit_notes: 'Tasting room open Mon-Sat 10:00-18:00',
+        visit_booking_requirement: 'recommended',
+        walk_in_status: 'subject_to_availability',
+        parking_status: 'available',
+        typical_visit_minutes: 75,
+        visitor_hours: { mon: [['10:00', '18:00']] },
+        seasonal_visit_notes: 'Summer hours vary during harvest.',
+        visitor_languages: ['en', 'el'],
+        visitability_reviewed_at: '2026-09-19T00:00:00+03:00',
         google_maps_url: 'https://maps.google.com/?cid=987654',
       };
 
@@ -281,6 +289,14 @@ describe('producerService — Supabase / Fallback Data Ownership', () => {
       expect(producer.visitStatus).toBe('public_visits');
       expect(producer.visitSourceUrl).toBe('https://alpha-winery.gr/visiting');
       expect(producer.visitNotes).toBe('Tasting room open Mon-Sat 10:00-18:00');
+      expect(producer.visitBookingRequirement).toBe('recommended');
+      expect(producer.walkInStatus).toBe('subject_to_availability');
+      expect(producer.parkingStatus).toBe('available');
+      expect(producer.typicalVisitMinutes).toBe(75);
+      expect(producer.visitorHours).toEqual({ mon: [['10:00', '18:00']] });
+      expect(producer.seasonalVisitNotes).toBe('Summer hours vary during harvest.');
+      expect(producer.visitorLanguages).toEqual(['en', 'el']);
+      expect(producer.visitabilityReviewedAt).toBe('2026-09-19T00:00:00+03:00');
       expect(producer.googleMapsUrl).toBe('https://maps.google.com/?cid=987654');
     });
 
@@ -303,6 +319,14 @@ describe('producerService — Supabase / Fallback Data Ownership', () => {
         kid_friendly: null,
         campervan_friendly: null,
         walk_in_friendly: null,
+        visit_booking_requirement: null,
+        walk_in_status: null,
+        parking_status: null,
+        typical_visit_minutes: null,
+        visitor_hours: null,
+        seasonal_visit_notes: null,
+        visitor_languages: null,
+        visitability_reviewed_at: null,
         location_status: 'verified_location',
         visit_status: 'appointment_only',
         google_maps_url: null,
@@ -322,6 +346,14 @@ describe('producerService — Supabase / Fallback Data Ownership', () => {
       expect(producer.kidFriendly).toBeUndefined();
       expect(producer.campervanFriendly).toBeUndefined();
       expect(producer.walkInFriendly).toBeUndefined();
+      expect(producer.visitBookingRequirement).toBeUndefined();
+      expect(producer.walkInStatus).toBeUndefined();
+      expect(producer.parkingStatus).toBeUndefined();
+      expect(producer.typicalVisitMinutes).toBeUndefined();
+      expect(producer.visitorHours).toBeUndefined();
+      expect(producer.seasonalVisitNotes).toBeUndefined();
+      expect(producer.visitorLanguages).toBeUndefined();
+      expect(producer.visitabilityReviewedAt).toBeUndefined();
 
       // Does NOT synthesize a Google Maps URL when google_maps_url is null
       expect(producer.googleMapsUrl).toBeUndefined();
