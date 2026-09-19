@@ -39,6 +39,7 @@ export interface AppUpdateOptions {
 export const RELOAD_GUARD_SESSION_KEY = 'terroirtrail:update:last_reload_target';
 export const DEFAULT_THROTTLE_INTERVAL_MS = 45_000; // 45 seconds between non-forced checks
 export const DEFAULT_PERIODIC_INTERVAL_MS = 300_000; // 5 minutes periodic check while visible
+export const RELOAD_GUARD_COOLDOWN_MS = 120_000; // Retry a failed CDN/update handoff after 2 minutes
 
 /**
  * Returns the compile-time build identifier baked into the running bundle.
@@ -53,22 +54,57 @@ export function getRunningBuildId(): string {
 /**
  * Safely reads the target build ID recorded before the most recent reload in this session.
  */
-export function getReloadGuardTarget(storage: Storage | null): string | null {
+export interface ReloadGuardRecord {
+  targetBuildId: string;
+  attemptedAt: number;
+}
+
+export function getReloadGuardRecord(storage: Storage | null): ReloadGuardRecord | null {
   if (!storage) return null;
   try {
-    return storage.getItem(RELOAD_GUARD_SESSION_KEY);
+    const raw = storage.getItem(RELOAD_GUARD_SESSION_KEY);
+    if (!raw) return null;
+    try {
+      const parsed = JSON.parse(raw) as Partial<ReloadGuardRecord>;
+      if (
+        typeof parsed.targetBuildId === 'string' &&
+        parsed.targetBuildId &&
+        typeof parsed.attemptedAt === 'number'
+      ) {
+        return {
+          targetBuildId: parsed.targetBuildId,
+          attemptedAt: parsed.attemptedAt,
+        };
+      }
+    } catch {
+      // Older builds stored only the target string. Treat that legacy guard as
+      // expired so it cannot suppress retries for an entire browser session.
+      return { targetBuildId: raw, attemptedAt: 0 };
+    }
+    return null;
   } catch {
     return null;
   }
 }
 
+export function getReloadGuardTarget(storage: Storage | null): string | null {
+  return getReloadGuardRecord(storage)?.targetBuildId ?? null;
+}
+
 /**
  * Safely records the target build ID before triggering an application reload.
  */
-export function setReloadGuardTarget(storage: Storage | null, targetBuildId: string): void {
+export function setReloadGuardTarget(
+  storage: Storage | null,
+  targetBuildId: string,
+  attemptedAt = Date.now()
+): void {
   if (!storage) return;
   try {
-    storage.setItem(RELOAD_GUARD_SESSION_KEY, targetBuildId);
+    storage.setItem(
+      RELOAD_GUARD_SESSION_KEY,
+      JSON.stringify({ targetBuildId, attemptedAt })
+    );
   } catch {
     // Quota or access error in strict environments — handled safely
   }
@@ -326,8 +362,11 @@ export function installAppUpdateManager(options?: AppUpdateOptions): () => void 
         }
 
         // Newer build detected: check loop protection guard
-        const attemptedTarget = getReloadGuardTarget(storageObj);
-        if (attemptedTarget === deployed.buildId) {
+        const attempted = getReloadGuardRecord(storageObj);
+        if (
+          attempted?.targetBuildId === deployed.buildId &&
+          Date.now() - attempted.attemptedAt < RELOAD_GUARD_COOLDOWN_MS
+        ) {
           logger.warn('AppUpdate', 'update_reload_loop_suppressed', {
             runningBuildId,
             targetBuildId: deployed.buildId,
