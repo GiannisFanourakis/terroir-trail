@@ -906,6 +906,8 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       const marker = L.marker(producer.coordinates, {
         icon: getProducerMarkerIcon(producer, isSelected, renderMode),
         riseOnHover: true,
+        keyboard: true,
+        title: `${producer.name} — ${producer.village}, ${producer.region}`,
         zIndexOffset: isSelected ? 1000 : 0,
       });
 
@@ -917,6 +919,28 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       });
 
       marker.addTo(map);
+      const markerElement = marker.getElement();
+      if (markerElement) {
+        markerElement.setAttribute('role', 'button');
+        markerElement.setAttribute(
+          'aria-label',
+          `Open ${producer.name}, ${producer.village}, ${producer.region}`
+        );
+        markerElement.setAttribute('aria-haspopup', 'dialog');
+
+        const handleMarkerKeyDown = (event: KeyboardEvent) => {
+          if (event.key !== 'Enter' && event.key !== ' ') return;
+          event.preventDefault();
+          setActiveRegionId(null);
+          const currentProducer =
+            producersMapRef.current.get(producer.id) || producer;
+          onSelectProducerRef.current(currentProducer);
+        };
+        markerElement.addEventListener('keydown', handleMarkerKeyDown);
+        marker.once('remove', () => {
+          markerElement.removeEventListener('keydown', handleMarkerKeyDown);
+        });
+      }
       markersRef.current[producer.id] = marker;
       markerSignaturesRef.current[producer.id] = newSignature;
       markerRenderModesRef.current[producer.id] = renderMode;
@@ -1173,6 +1197,9 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
   return (
     <div className="relative w-full h-full select-none overflow-hidden">
       <div ref={mapContainerRef} className="w-full h-full z-0" role="region" aria-label="Interactive producer, country and NUTS-backed terroir-region map" />
+      <div aria-live="polite" className="sr-only">
+        {producers.length} producer{producers.length === 1 ? '' : 's'} currently available on the interactive map. Use search and filters to narrow the map, then tab to a marker and press Enter to open its preview.
+      </div>
 
       <div className="absolute top-16 right-3 sm:top-4 sm:right-4 z-20 flex flex-col items-end gap-2">
         {locationError && (
