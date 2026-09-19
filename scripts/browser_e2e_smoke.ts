@@ -14,7 +14,7 @@ const viewports: Viewport[] = [
 ];
 
 const timeoutMs = Number(process.env.E2E_TIMEOUT_MS || 18_000);
-const externalOrigin = (process.env.E2E_BASE_URL || '').trim().replace(/\\/+$/, '');
+const externalOrigin = (process.env.E2E_BASE_URL || '').trim().replace(/\/+$/, '');
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 function findChrome(): string {
