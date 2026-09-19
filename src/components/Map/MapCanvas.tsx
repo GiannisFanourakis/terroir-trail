@@ -9,7 +9,7 @@ import { getCategoryFallbackImage } from '../../utils/imageFallbacks';
 import { getEffectiveProducerCategory } from '../../utils/producerCategory';
 import { resolveProducerCover } from '../../utils/producerMediaResolver';
 import { getUserCoordinates } from '../../services/geolocation';
-import { TERROIR_REGIONS, type TerroirRegion } from '../../data/terroirRegionCatalogue';
+import { TERROIR_REGIONS } from '../../data/terroirRegionCatalogue';
 import {
   getActiveCountryScope,
   getCountryLayer,
@@ -29,15 +29,6 @@ interface MapCanvasProps {
   onExploreCountry?: (country: Exclude<CountryScope, 'all'>) => void;
   onExploreRegion?: (destination: Destination) => void;
 }
-
-const getRegionFeature = (region: TerroirRegion) => ({
-  type: 'Feature',
-  properties: {
-    id: region.id,
-    name: region.name,
-  },
-  geometry: region.geometry,
-});
 
 export interface MapMotionOptions {
   desktopDuration?: number;
@@ -211,7 +202,6 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
   const markerRenderModesRef = useRef<{ [id: string]: ProducerMarkerRenderMode }>({});
   const clusterMarkersRef = useRef<{ [id: string]: L.Marker }>({});
   const tileLayerRef = useRef<L.TileLayer | null>(null);
-  const regionLabelsRef = useRef<Map<string, L.Marker>>(new Map());
 
   type MapTheme = 'topo' | 'voyager' | 'dark' | 'satellite';
   const [mapTheme, setMapTheme] = useState<MapTheme>('topo');
@@ -230,7 +220,6 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
   const [locationError, setLocationError] = useState<string | null>(null);
   const [isLocating, setIsLocating] = useState<boolean>(false);
   const [activeRegionId, setActiveRegionId] = useState<string | null>(null);
-  const [mapZoom, setMapZoom] = useState<number>(9);
 
   const DESTINATION_CENTERS: Record<Destination | 'all', { coords: [number, number]; zoom: number }> = {
     all: { coords: [47.0, 10.0], zoom: 4 },
@@ -470,7 +459,6 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     });
 
     mapInstanceRef.current = map;
-    setMapZoom(map.getZoom());
 
     let resizeRaf: number | null = null;
     const scheduleInvalidate = () => {
@@ -501,7 +489,6 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       markerSignaturesRef.current = {};
       markerRenderModesRef.current = {};
       clusterMarkersRef.current = {};
-      regionLabelsRef.current.clear();
       map.remove();
       mapInstanceRef.current = null;
     };
@@ -566,91 +553,10 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
   }, [pinDisplayMode]);
 
   useEffect(() => {
-    const map = mapInstanceRef.current;
-    if (!map) return;
-
-    const syncZoom = () => setMapZoom(map.getZoom());
-    syncZoom();
-    map.on('zoomend', syncZoom);
-    return () => {
-      map.off('zoomend', syncZoom);
-    };
-  }, []);
-
-  useEffect(() => {
-    const map = mapInstanceRef.current;
-    if (!map) return;
-
-    regionLabelsRef.current.forEach((label) => map.removeLayer(label));
-    regionLabelsRef.current.clear();
-    // Selecting a terroir region from the geography filter should surface its
-    // Explore overview immediately. The map label remains a secondary trigger.
+    // Geography filters are the sole trigger for the regional Explore overview.
+    // No auxiliary terroir-region marker or label is rendered on the map.
     setActiveRegionId(selectedDestinationRegion?.id ?? null);
-
-    const visibleRegions =
-      selectedDestination === 'all'
-        ? countryScope === 'all'
-          ? []
-          : TERROIR_REGIONS.filter((region) => getDestinationCountry(region.destination) === countryScope)
-        : selectedDestinationRegion
-        ? [selectedDestinationRegion]
-        : [];
-
-    const createdLabels: L.Marker[] = [];
-
-    visibleRegions.forEach((region) => {
-      const regionBounds = L.geoJSON(getRegionFeature(region) as any).getBounds();
-
-      const selectRegion = () => {
-        onSelectProducerRef.current(null);
-        setActiveRegionId(region.id);
-        if (regionBounds.isValid() && !map.getBounds().contains(regionBounds)) {
-          fitBoundsWithMotion(map, regionBounds, {
-            maxZoom: getAutomaticDestinationZoom(
-              Math.max(9, DESTINATION_CENTERS[region.destination].zoom)
-            ),
-            mobileDuration: 0.3,
-            desktopDuration: 0.45,
-          });
-        }
-      };
-
-      if (selectedDestination !== 'all' || countryScope !== 'all') {
-        const labelIcon = L.divIcon({
-          className: '',
-          iconSize: [0, 0],
-          html: `<div style="transform:translate(-50%,-50%);padding:5px 9px;border-radius:999px;border:1px solid rgba(245,158,11,.45);background:rgba(28,25,23,.82);box-shadow:0 8px 22px rgba(0,0,0,.28);backdrop-filter:blur(8px);color:#fbbf24;font-size:10px;font-weight:800;letter-spacing:.14em;white-space:nowrap;pointer-events:auto;">${region.name.toUpperCase()}</div>`,
-        });
-        const regionLabel = L.marker(region.center, {
-          icon: labelIcon,
-          interactive: true,
-          keyboard: true,
-          zIndexOffset: -100,
-          title: `Explore ${region.name} terroir region`,
-        }).addTo(map);
-        regionLabel.on('click', (event) => {
-          L.DomEvent.stopPropagation(event.originalEvent);
-          selectRegion();
-        });
-        regionLabelsRef.current.set(region.id, regionLabel);
-        createdLabels.push(regionLabel);
-      }
-    });
-
-    return () => {
-      createdLabels.forEach((label) => map.removeLayer(label));
-      createdLabels.forEach((label) => {
-        const entry = Array.from(regionLabelsRef.current.entries()).find(([, candidate]) => candidate === label);
-        if (entry) regionLabelsRef.current.delete(entry[0]);
-      });
-    };
-  }, [selectedDestination, selectedDestinationRegion, countryScope]);
-
-  useEffect(() => {
-    regionLabelsRef.current.forEach((regionLabel) => {
-      regionLabel.setOpacity(mapZoom >= 13 ? 0 : 1);
-    });
-  }, [mapZoom]);
+  }, [selectedDestinationRegion]);
 
   // Effect 1: Producer marker diffing + adaptive render virtualization.
   // Desktop and mobile both render only markers near the current viewport.

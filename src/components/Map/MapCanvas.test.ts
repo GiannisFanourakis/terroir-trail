@@ -409,6 +409,13 @@ describe('MapCanvas marker diffing, in-place updates, and motion preferences', (
     );
   });
 
+  it('does not render a separate terroir-region marker or label on the map', () => {
+    const source = readFileSync('src/components/Map/MapCanvas.tsx', 'utf8');
+
+    expect(source).not.toContain('regionLabelsRef');
+    expect(source).not.toContain('Explore ${region.name} terroir region');
+  });
+
   it('does not render category placeholder imagery in the map producer preview', () => {
     const source = readFileSync('src/components/Map/MapCanvas.tsx', 'utf8');
 
