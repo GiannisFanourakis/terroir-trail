@@ -1,3 +1,4 @@
+import fs from 'node:fs';
 import { SEO_PRODUCERS } from './seoCatalogue';
 import { getDestinationCountry } from '../src/config/geography';
 
@@ -139,6 +140,17 @@ for (const [coordinates, producerIds] of coordinateBuckets) {
       `Exact coordinates are shared by ${producerIds.length} records: ${producerIds.join(', ')} (${coordinates}). Confirm that these are intentionally the same public point.`
     );
   }
+}
+
+const sourceIndex = fs.readFileSync('index.html', 'utf8');
+if (
+  /\b\d+\s+(?:live\s+|researched\s+)?producer\/project records across \d+ destinations in \d+ European countries/i.test(
+    sourceIndex
+  )
+) {
+  error(
+    'Source index contains hard-coded catalogue totals. Build-time SEO generation must own changing record/destination/country counts.'
+  );
 }
 
 const errors = findings.filter((finding) => finding.level === 'error');
