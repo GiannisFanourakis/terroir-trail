@@ -267,12 +267,12 @@ async function runViewport(
 
   await waitFor(
     cdp,
-    "Boolean(document.querySelector('[role=\\"region\\"][aria-label*=\\"Interactive producer\\"]'))",
+    "Boolean(document.querySelector('[role=region][aria-label*=Interactive]'))",
     viewport.name + ' map render'
   );
   await waitFor(
     cdp,
-    "document.querySelectorAll('.leaflet-marker-icon[role=\\"button\\"]').length > 0",
+    "document.querySelectorAll('.leaflet-marker-icon[role=button]').length > 0",
     viewport.name + ' keyboard-accessible producer markers'
   );
 
@@ -283,7 +283,7 @@ async function runViewport(
     focusableMarkers: number;
   }>(
     cdp,
-    "(() => ({ crashed: document.body.innerText.includes('Something went wrong'), hasListToggle: document.body.innerText.includes('Show List') || document.body.innerText.includes('Show Map'), horizontalOverflow: document.documentElement.scrollWidth - window.innerWidth, focusableMarkers: document.querySelectorAll('.leaflet-marker-icon[role=\\"button\\"][tabindex=\\"0\\"]').length }))()"
+    "(() => ({ crashed: document.body.innerText.includes('Something went wrong'), hasListToggle: document.body.innerText.includes('Show List') || document.body.innerText.includes('Show Map'), horizontalOverflow: document.documentElement.scrollWidth - window.innerWidth, focusableMarkers: [...document.querySelectorAll('.leaflet-marker-icon[role=button]')].filter((element) => element.tabIndex === 0).length }))()"
   );
 
   if (state.crashed) throw new Error(viewport.name + ': app error boundary rendered.');
@@ -369,7 +369,7 @@ async function main(): Promise<void> {
     await navigate(cdp, origin + '/?producer=anoskeli-estate');
     await waitFor(
       cdp,
-      "Boolean(document.querySelector('[role=\\"dialog\\"][aria-label^=\\"Producer details:\\"]'))",
+      "Boolean([...document.querySelectorAll('[role=dialog]')].find((element) => element.getAttribute('aria-label')?.startsWith('Producer details:')))",
       'direct producer deep link',
       timeoutMs
     );
