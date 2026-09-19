@@ -15,6 +15,7 @@ import { getProducerRoadAccessWarning } from '../../utils/producerAccess';
 import { resolveProducerCover, resolveProducerGallery } from '../../utils/producerMediaResolver';
 import { GooglePlaceMedia } from '../GooglePlaces/GooglePlaceMedia';
 import { ProducerCategoryIcon } from '../Common/ProducerCategoryIcon';
+import { formatCatalogueReviewedAt } from '../../data/catalogueMetadata';
 
 interface ProducerDetailDrawerProps {
   producer: Producer | null;
@@ -1239,6 +1240,38 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
               <div className="p-3 rounded-xl bg-stone-900/60 border border-white/5 text-[10px] text-stone-400 leading-relaxed">
                 <span className="font-semibold text-stone-300 block text-[10px] uppercase tracking-wider mb-0.5">Route Safety Notice</span>
                 A verified map pin identifies the audited public point for this producer. It may be an estate, production site, visitor center, or producer-owned shop; it does not by itself establish road conditions or the location of every production asset. Always review road access information before travelling.
+              </div>
+
+              <div className="p-3 rounded-xl bg-stone-900/60 border border-white/5 text-[10px] text-stone-400 leading-relaxed">
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                  <span className="inline-flex items-center gap-1.5 font-semibold text-stone-300">
+                    <Clock className="w-3.5 h-3.5 text-amber-400" aria-hidden="true" />
+                    Catalogue review snapshot · {formatCatalogueReviewedAt()}
+                  </span>
+                  {producer.visitSourceUrl && (
+                    <a
+                      href={producer.visitSourceUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="underline underline-offset-2 hover:text-stone-200"
+                    >
+                      Visit source
+                    </a>
+                  )}
+                  {producer.locationSourceUrl && (
+                    <a
+                      href={producer.locationSourceUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="underline underline-offset-2 hover:text-stone-200"
+                    >
+                      Location source
+                    </a>
+                  )}
+                </div>
+                <p className="mt-1">
+                  The snapshot date describes the catalogue review cycle; individual visit and access claims retain their own source links where available.
+                </p>
               </div>
             </div>
 
