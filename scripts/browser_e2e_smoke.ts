@@ -25,6 +25,55 @@ const externalOrigin = (
   .replace(/\/+$/, '');
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
+async function stopChromeProcess(processHandle: ChildProcess | null): Promise<void> {
+  if (!processHandle || processHandle.exitCode !== null) return;
+
+  const exited = new Promise<void>((resolve) => {
+    processHandle.once('exit', () => resolve());
+    processHandle.once('close', () => resolve());
+  });
+
+  try {
+    processHandle.kill('SIGKILL');
+  } catch {
+    return;
+  }
+
+  await Promise.race([exited, delay(2_000)]);
+}
+
+async function cleanupChromeProfile(profilePath: string): Promise<void> {
+  // Chrome's Windows Crashpad process can hold CrashpadMetrics-active.pma for a
+  // brief moment after the browser has exited. Retry removal, then treat a
+  // lingering temp-profile lock as cleanup-only rather than a smoke-test failure.
+  for (let attempt = 1; attempt <= 8; attempt += 1) {
+    try {
+      fs.rmSync(profilePath, {
+        recursive: true,
+        force: true,
+        maxRetries: 2,
+        retryDelay: 100,
+      });
+      return;
+    } catch (error) {
+      const code =
+        error && typeof error === 'object' && 'code' in error
+          ? String((error as NodeJS.ErrnoException).code)
+          : '';
+
+      if (!['EBUSY', 'EPERM', 'ENOTEMPTY'].includes(code)) throw error;
+      if (attempt === 8) {
+        console.warn(
+          '[browser smoke] temporary Chrome profile is still locked; cleanup will be left to the OS:',
+          profilePath
+        );
+        return;
+      }
+      await delay(150 * attempt);
+    }
+  }
+}
+
 function findChrome(): string {
   const candidates = [
     (process.env.CHROME_BIN || '').trim(),
@@ -337,6 +386,8 @@ async function main(): Promise<void> {
         '--no-sandbox',
         '--disable-dev-shm-usage',
         '--disable-background-networking',
+        '--disable-crash-reporter',
+        '--disable-breakpad',
         '--disable-default-apps',
         '--disable-extensions',
         '--disable-sync',
@@ -398,9 +449,9 @@ async function main(): Promise<void> {
     } catch {
       // Ignore close errors during cleanup.
     }
-    if (chromeProcess && !chromeProcess.killed) chromeProcess.kill('SIGKILL');
+    await stopChromeProcess(chromeProcess);
     await local?.close();
-    fs.rmSync(profile, { recursive: true, force: true });
+    await cleanupChromeProfile(profile);
   }
 }
 
