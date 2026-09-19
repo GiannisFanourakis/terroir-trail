@@ -112,7 +112,7 @@ export const GooglePlaceMedia: React.FC<GooglePlaceMediaProps> = ({
           >
             <gmp-place-details-place-request place={googlePlaceId} />
             <gmp-place-content-config>
-              <gmp-place-media />
+              <gmp-place-media lightbox-preferred />
               <gmp-place-attribution
                 light-scheme-color="gray"
                 dark-scheme-color="white"
