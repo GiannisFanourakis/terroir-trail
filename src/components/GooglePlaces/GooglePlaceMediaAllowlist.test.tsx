@@ -135,9 +135,7 @@ describe('Google Places integration for audited regional producers', () => {
       React.createElement(GooglePlaceMedia, { producer })
     );
 
-    expect(html).toContain('Photos from Google Maps');
-    expect(html).toContain('Live Google Places');
-    expect(html).toContain('google-places-ui-kit-host');
+    expect(html).toContain('google-place-media-frame');
     expect(html).not.toContain('gmp-place-details-location-request');
     expect(html).not.toContain('location=');
 
@@ -145,15 +143,14 @@ describe('Google Places integration for audited regional producers', () => {
       'src/components/GooglePlaces/GooglePlaceMedia.tsx',
       'utf8'
     );
-    expect(source).toContain("document.createElement('gmp-place-details')");
-    expect(source).toContain(
-      "document.createElement('gmp-place-details-place-request')"
-    );
-    expect(source).toContain("request.setAttribute('place', googlePlaceId)");
+    expect(source).toContain('<gmp-place-details');
+    expect(source).toContain('<gmp-place-details-place-request');
+    expect(source).toContain('place={googlePlaceId}');
     expect(source).not.toContain('fetchFields(');
     expect(source).not.toContain('PlacesService');
     expect(source).not.toContain('getURI(');
     expect(source).not.toContain('getUrl(');
+    expect(source).not.toContain('Photos from Google Maps');
   });
 
 });

@@ -4,6 +4,7 @@ import { MapPin, ArrowUpRight, Car, Heart } from 'lucide-react';
 import { getCategoryFallbackImage } from '../../utils/imageFallbacks';
 import { getEffectiveProducerCategory } from '../../utils/producerCategory';
 import { resolveProducerCover } from '../../utils/producerMediaResolver';
+import { GooglePlaceMedia } from '../GooglePlaces/GooglePlaceMedia';
 import { ProducerCategoryIcon } from '../Common/ProducerCategoryIcon';
 
 interface ProducerCardProps {
@@ -201,14 +202,25 @@ export const ProducerCard: React.FC<ProducerCardProps> = ({
       <div
         className="relative h-40 w-full overflow-hidden bg-stone-950"
       >
-        <img
-          src={imgSrc}
-          alt={producer.name}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-          loading="lazy"
-          decoding="async"
-          onError={handleImageError}
-        />
+        {resolvedCover.source === 'category_fallback' ? (
+          <GooglePlaceMedia
+            producer={producer}
+            className="w-full h-full"
+            imageClassName="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            fallbackUrl={imgSrc}
+            fallbackAlt={producer.name}
+            deferUntilVisible
+          />
+        ) : (
+          <img
+            src={imgSrc}
+            alt={producer.name}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            loading="lazy"
+            decoding="async"
+            onError={handleImageError}
+          />
+        )}
         <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/30 to-transparent pointer-events-none" />
 
         <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5 flex-wrap">

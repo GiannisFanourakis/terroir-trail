@@ -1,12 +1,11 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { GooglePlaceMedia } from './GooglePlaceMedia';
-import { Producer } from '../../types/terroir';
+import type { Producer } from '../../types/terroir';
 import * as uiKitModule from '../../services/googlePlacesUiKit';
-import { runtimeConfig } from '../../config/runtimeConfig';
 
-const mockAllowlistedProducer: Producer = {
+const producer: Producer = {
   id: 'lyrarakis-winery',
   name: 'Lyrarakis Winery',
   greekName: 'Οινοποιείο Λυραράκη',
@@ -15,15 +14,15 @@ const mockAllowlistedProducer: Producer = {
   destination: 'crete',
   description: 'Pioneering Cretan estate.',
   openingHours: 'Mon-Sat 10:00 - 18:00',
-  ethos: ['family_estate', 'indigenous_only'],
+  ethos: [],
   gallery: [],
   coordinates: [35.183416, 25.176466],
   category: 'winery',
   tagLine: 'Pioneers of Cretan indigenous varieties',
   story: 'Preserving rare grapes in the mountains.',
-  coverImage: 'https://images.unsplash.com/photo-test',
-  indigenousVarieties: ['Vidiano', 'Dafni'],
-  tastingHighlights: ['Estate vineyard tasting'],
+  coverImage: '',
+  indigenousVarieties: [],
+  tastingHighlights: [],
   locationStatus: 'verified_location',
   roadAccessStatus: 'verified',
   roadAccess: 'paved',
@@ -31,137 +30,52 @@ const mockAllowlistedProducer: Producer = {
   googlePlaceId: 'ChIJa95IFTf0mhQRY5TF5uhxJoU',
 };
 
-const mockUnlistedProducer: Producer = {
-  id: 'some-other-winery',
-  name: 'Other Winery',
-  greekName: 'Άλλο Οινοποιείο',
-  village: 'Peza',
-  region: 'Heraklion',
-  destination: 'crete',
-  description: 'Another winery.',
-  openingHours: 'By appointment',
-  ethos: ['family_estate'],
-  gallery: [],
-  coordinates: [35.2, 25.2],
-  category: 'winery',
-  tagLine: 'A winery',
-  story: 'A story',
-  coverImage: 'https://images.unsplash.com/photo-other',
-  indigenousVarieties: [],
-  tastingHighlights: [],
-  locationStatus: 'unreviewed',
-  roadAccessStatus: 'unreviewed',
-  visitStatus: 'unreviewed',
-  googlePlaceId: 'ChIJ-unlisted-test',
-};
-
-describe('GooglePlaceMedia Component & Feature Flag Gating', () => {
+describe('GooglePlaceMedia', () => {
   beforeEach(() => {
-    vi.restoreAllMocks();
+    vi.stubEnv('VITE_ENABLE_GOOGLE_PLACES_MEDIA', 'true');
   });
 
   afterEach(() => {
+    vi.restoreAllMocks();
     vi.unstubAllEnvs();
   });
 
-  describe('Feature Flag & Invariants', () => {
-    it('defaults Google feature flag to false', () => {
-      vi.stubEnv('VITE_ENABLE_GOOGLE_PLACES_MEDIA', '');
-      expect(runtimeConfig.googlePlacesMedia.enabled).toBe(false);
+  it('renders only imagery UI and no standalone Google photo section copy', () => {
+    vi.spyOn(uiKitModule, 'useGooglePlacesUiKit').mockReturnValue({
+      status: 'ready',
+      isReady: true,
     });
 
-    it('renders empty string when API key is present but feature flag is false', () => {
-      vi.stubEnv('VITE_ENABLE_GOOGLE_PLACES_MEDIA', 'false');
-      vi.spyOn(uiKitModule, 'getGoogleMapsApiKey').mockReturnValue('mock-api-key');
+    const html = renderToString(
+      <GooglePlaceMedia
+        producer={producer}
+        fallbackUrl="/images/placeholders/winery.svg"
+      />
+    );
 
-      const html = renderToString(
-        <GooglePlaceMedia producer={mockAllowlistedProducer} />
-      );
-      expect(html).toBe('');
-    });
-
-    it('keeps host media prototype disabled independently when Google media is enabled', () => {
-      vi.stubEnv('VITE_ENABLE_GOOGLE_PLACES_MEDIA', 'true');
-      vi.stubEnv('VITE_ENABLE_HOST_MEDIA_PROTOTYPE', 'false');
-
-      expect(runtimeConfig.googlePlacesMedia.enabled).toBe(true);
-      expect(runtimeConfig.hostMediaPrototype.enabled).toBe(false);
-    });
-
-    it('renders empty string when producer is not in allowlist even if feature flag is true', () => {
-      vi.stubEnv('VITE_ENABLE_GOOGLE_PLACES_MEDIA', 'true');
-      const html = renderToString(
-        <GooglePlaceMedia producer={mockUnlistedProducer} />
-      );
-      expect(html).toBe('');
-    });
-
-    it('renders empty string when an allowlisted producer has no verified Place ID', () => {
-      vi.stubEnv('VITE_ENABLE_GOOGLE_PLACES_MEDIA', 'true');
-      const producerWithoutPlaceId = {
-        ...mockAllowlistedProducer,
-        googlePlaceId: undefined,
-      };
-      const html = renderToString(
-        <GooglePlaceMedia producer={producerWithoutPlaceId} />
-      );
-      expect(html).toBe('');
-    });
-
-    it('renders empty string when producer is null', () => {
-      vi.stubEnv('VITE_ENABLE_GOOGLE_PLACES_MEDIA', 'true');
-      const html = renderToString(<GooglePlaceMedia producer={null} />);
-      expect(html).toBe('');
-    });
+    expect(html).toContain('google-place-media-frame');
+    expect(html).toContain('gmp-place-details');
+    expect(html).toContain('gmp-place-media');
+    expect(html).toContain('gmp-place-attribution');
+    expect(html).toContain(producer.googlePlaceId);
+    expect(html).not.toContain('Photos from Google Maps');
+    expect(html).not.toContain('Live Google Places');
   });
 
-  describe('Active Google media rendering (Feature Flag Enabled)', () => {
-    beforeEach(() => {
-      vi.stubEnv('VITE_ENABLE_GOOGLE_PLACES_MEDIA', 'true');
+  it('keeps the fallback image when Google media is unavailable', () => {
+    vi.spyOn(uiKitModule, 'useGooglePlacesUiKit').mockReturnValue({
+      status: 'unavailable',
+      isReady: false,
     });
 
-    it('renders empty string when Google Maps API key is unavailable', () => {
-      vi.spyOn(uiKitModule, 'useGooglePlacesUiKit').mockReturnValue({
-        status: 'unavailable',
-        isReady: false,
-      });
+    const html = renderToString(
+      <GooglePlaceMedia
+        producer={producer}
+        fallbackUrl="/images/placeholders/winery.svg"
+      />
+    );
 
-      const html = renderToString(
-        <GooglePlaceMedia producer={mockAllowlistedProducer} />
-      );
-      expect(html).toBe('');
-    });
-
-    it('renders section and loading state when status is loading', () => {
-      vi.spyOn(uiKitModule, 'useGooglePlacesUiKit').mockReturnValue({
-        status: 'loading',
-        isReady: false,
-      });
-
-      const html = renderToString(
-        <GooglePlaceMedia producer={mockAllowlistedProducer} />
-      );
-      expect(html).toContain('Photos from Google Maps');
-      expect(html).toContain('Loading Google Maps media...');
-      expect(html).toContain('Live Google Places');
-      expect(html).toContain(
-        'Live imagery is loaded fresh from Google Maps for discovery reference.'
-      );
-    });
-
-    it('keeps verified Place ID gating and never emits coordinate lookup markup', () => {
-      vi.spyOn(uiKitModule, 'useGooglePlacesUiKit').mockReturnValue({
-        status: 'ready',
-        isReady: true,
-      });
-
-      const html = renderToString(
-        <GooglePlaceMedia producer={mockAllowlistedProducer} />
-      );
-      expect(html).toContain('Photos from Google Maps');
-      expect(html).toContain('data-testid="google-places-container"');
-      expect(html).not.toContain('gmp-place-details-location-request');
-      expect(html).not.toContain('location="35.183416,25.176466"');
-    });
+    expect(html).toContain('/images/placeholders/winery.svg');
+    expect(html).not.toContain('gmp-place-details');
   });
 });

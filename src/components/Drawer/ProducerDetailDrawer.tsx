@@ -79,6 +79,10 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
   const hasHostMedia = Boolean(
     resolvedCover?.isHostManaged || resolvedGallery.some((g) => g.isHostManaged)
   );
+  const hasTrustedLocalMedia = Boolean(
+    resolvedCover &&
+      (resolvedCover.source !== 'category_fallback' || resolvedGallery.length > 0)
+  );
   const [heroImgSrc, setHeroImgSrc] = useState<string>('');
 
   useEffect(() => {
@@ -551,20 +555,34 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
       >
 
         <div className="relative h-48 sm:h-60 lg:h-64 w-full shrink-0 bg-stone-900 overflow-hidden group">
-          <img
-            src={
-              heroImgSrc ||
-              activePhoto?.url ||
-              getCategoryFallbackImage(getEffectiveProducerCategory(producer))
-            }
-            alt={producer.name}
-            className="w-full h-full object-cover transition-all duration-300"
-            decoding="async"
-            onError={handleHeroImgError}
-          />
+          {!hasTrustedLocalMedia ? (
+            <GooglePlaceMedia
+              producer={producer}
+              className="w-full h-full"
+              imageClassName="w-full h-full object-cover"
+              fallbackUrl={
+                heroImgSrc ||
+                activePhoto?.url ||
+                getCategoryFallbackImage(getEffectiveProducerCategory(producer))
+              }
+              fallbackAlt={producer.name}
+            />
+          ) : (
+            <img
+              src={
+                heroImgSrc ||
+                activePhoto?.url ||
+                getCategoryFallbackImage(getEffectiveProducerCategory(producer))
+              }
+              alt={producer.name}
+              className="w-full h-full object-cover transition-all duration-300"
+              decoding="async"
+              onError={handleHeroImgError}
+            />
+          )}
           <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/40 to-black/30 pointer-events-none" />
 
-          {photos.length > 1 && (
+          {hasTrustedLocalMedia && photos.length > 1 && (
             <>
               <button
                 type="button"
@@ -898,8 +916,6 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
 
         {activeTab === 'story' && (
           <div className="space-y-5 animate-in fade-in duration-200">
-            <GooglePlaceMedia producer={producer} />
-
             <div className="border-l-2 border-amber-500 pl-3.5 py-1">
               <p className="text-sm font-serif-title italic text-stone-200 leading-relaxed">
                 "{producer.tagLine}"
