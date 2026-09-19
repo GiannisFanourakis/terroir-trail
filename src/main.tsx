@@ -5,6 +5,7 @@ import { AuthEmailDeliveryNotice } from './components/Auth/AuthEmailDeliveryNoti
 import { AppErrorBoundary } from './components/System/AppErrorBoundary';
 import { installAccountCachePrivacyGuard } from './services/accountCachePrivacy';
 import { initGlobalErrorHandlers } from './services/globalErrorHandlers';
+import { installAppUpdateManager } from './services/appUpdate';
 import './index.css';
 
 initGlobalErrorHandlers();
@@ -16,10 +17,21 @@ if (
   !['localhost', '127.0.0.1'].includes(window.location.hostname)
 ) {
   window.addEventListener('load', () => {
-    void navigator.serviceWorker.register('/sw.js').catch((error) => {
-      console.warn('[PWA] Service worker registration failed:', error);
-    });
+    void navigator.serviceWorker
+      .register('/sw.js', {
+        updateViaCache: 'none',
+      })
+      .catch((error) => {
+        console.warn('[PWA] Service worker registration failed:', error);
+      });
   });
+}
+
+if (
+  import.meta.env.PROD &&
+  !['localhost', '127.0.0.1'].includes(window.location.hostname)
+) {
+  installAppUpdateManager();
 }
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
