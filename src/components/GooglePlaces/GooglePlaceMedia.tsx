@@ -4,28 +4,26 @@ import { isGooglePlacesEligible } from '../../config/googlePlacesAllowlist';
 import { useGooglePlacesUiKit } from '../../services/googlePlacesUiKit';
 import { runtimeConfig } from '../../config/runtimeConfig';
 import { Camera, Info } from 'lucide-react';
-import { GooglePlacePhotoCarousel } from './GooglePlacePhotoCarousel';
 
 interface GooglePlaceMediaProps {
   producer: Producer | null;
   className?: string;
-  variant?: 'detail' | 'card';
 }
 
 /**
- * Google Places media component.
+ * Google Places media rendered exclusively through Places UI Kit.
  *
- * Compliance & Trust Invariants:
- * - Card media remains rendered by Google's compact Places UI Kit element.
- * - Detail/gallery media is fetched fresh from a Place object and never persisted or cached.
- * - Google Maps and photo-author attributions remain visible with gallery imagery.
- * - Editorial TerroirTrail data (visit status, road safety, reviews) remains completely separate.
- * - A manually audited Google Place ID plus verified TT location is required; coordinates are never used as a fallback lookup.
+ * Compliance & trust invariants:
+ * - Google media is rendered only by Places UI Kit, not custom photo fetch code.
+ * - Google renders the media and attribution inside its own UI Kit component.
+ * - TerroirTrail never persists, proxies, caches, or rehosts Google photo content.
+ * - Editorial TerroirTrail data (visit status, road safety, reviews) remains separate.
+ * - A manually audited Google Place ID plus verified TT location is required.
+ * - Coordinates are never used as a fallback lookup.
  */
 export const GooglePlaceMedia: React.FC<GooglePlaceMediaProps> = ({
   producer,
   className = '',
-  variant = 'detail',
 }) => {
   const googlePlaceId = producer?.googlePlaceId?.trim();
   const isEligible = Boolean(
@@ -35,86 +33,56 @@ export const GooglePlaceMedia: React.FC<GooglePlaceMediaProps> = ({
   const { isReady, status } = useGooglePlacesUiKit(
     isEligible && isFeatureEnabled
   );
-  const cardContainerRef = useRef<HTMLDivElement>(null);
-  const [cardRenderFailed, setCardRenderFailed] = useState(false);
+  const hostRef = useRef<HTMLDivElement>(null);
+  const [renderFailed, setRenderFailed] = useState(false);
 
   useEffect(() => {
-    if (
-      variant !== 'card' ||
-      !isReady ||
-      !googlePlaceId ||
-      !cardContainerRef.current
-    ) {
-      return;
-    }
+    if (!isReady || !googlePlaceId || !hostRef.current) return;
 
-    const host = cardContainerRef.current;
+    const host = hostRef.current;
     host.replaceChildren();
-    setCardRenderFailed(false);
+    setRenderFailed(false);
 
     try {
-      const compact = document.createElement('gmp-place-details-compact');
-
-      compact.setAttribute('orientation', 'vertical');
-      compact.setAttribute('truncation-preferred', '');
-      compact.style.width = '100%';
-      compact.style.margin = '0';
-      compact.style.padding = '0';
-      compact.style.border = '0';
-      compact.style.backgroundColor = 'transparent';
-      compact.style.colorScheme = 'dark';
+      const details = document.createElement('gmp-place-details');
+      details.style.width = '100%';
+      details.style.maxWidth = '400px';
+      details.style.margin = '0 auto';
+      details.style.border = '0';
+      details.style.backgroundColor = 'transparent';
+      details.style.colorScheme = 'dark';
 
       const request = document.createElement('gmp-place-details-place-request');
-      request.setAttribute('place', `places/${googlePlaceId}`);
+      request.setAttribute('place', googlePlaceId);
 
       const content = document.createElement('gmp-place-content-config');
       const media = document.createElement('gmp-place-media');
+      media.setAttribute('lightbox-preferred', '');
+
       const attribution = document.createElement('gmp-place-attribution');
       attribution.setAttribute('light-scheme-color', 'gray');
       attribution.setAttribute('dark-scheme-color', 'white');
 
       content.append(media, attribution);
-      compact.append(request, content);
-      host.append(compact);
+      details.append(request, content);
+      host.append(details);
     } catch (error) {
-      console.warn('[GooglePlaceMedia] Compact card media failed:', error);
+      console.warn('[GooglePlaceMedia] Places UI Kit render failed:', error);
       host.replaceChildren();
-      setCardRenderFailed(true);
+      setRenderFailed(true);
     }
 
     return () => {
       host.replaceChildren();
     };
-  }, [variant, isReady, googlePlaceId]);
+  }, [googlePlaceId, isReady]);
 
-  // Fail closed unless the producer carries both a verified location and a persistent Place ID.
   if (!producer || !googlePlaceId || !isFeatureEnabled || !isEligible) {
     return null;
   }
 
-  // If no API key is configured or loader failed, fail silently without breaking the drawer.
-  if (status === 'unavailable' || status === 'error') {
+  if (status === 'unavailable' || status === 'error' || renderFailed) {
     return null;
-  }
-
-  if (variant === 'card') {
-    if (cardRenderFailed) {
-      return null;
-    }
-
-    return (
-      <div
-        ref={cardContainerRef}
-        className={`w-full bg-stone-950 overflow-hidden ${className}`}
-        data-testid="google-place-media-card"
-      >
-        {!isReady && (
-          <div className="h-40 w-full flex items-center justify-center bg-stone-900">
-            <div className="w-5 h-5 border-2 border-amber-400/40 border-t-amber-400 rounded-full animate-spin" />
-          </div>
-        )}
-      </div>
-    );
   }
 
   return (
@@ -130,7 +98,7 @@ export const GooglePlaceMedia: React.FC<GooglePlaceMediaProps> = ({
             id="google-place-media-heading"
             className="text-sm font-bold text-white tracking-wide"
           >
-            Photos from Google Maps
+            Photo from Google Maps
           </h4>
         </div>
         <span className="text-[10px] font-medium text-stone-400 bg-stone-800/80 px-2 py-0.5 rounded-full border border-white/5 flex items-center gap-1">
@@ -140,29 +108,21 @@ export const GooglePlaceMedia: React.FC<GooglePlaceMediaProps> = ({
 
       <p className="text-xs text-stone-400 leading-relaxed">
         Live imagery is loaded fresh from Google Maps for discovery reference.
-        Photos remain attributed to their Google Maps contributors and do not
-        represent official TerroirTrail photography or verified access
-        guarantees.
+        Google renders the media and its attribution through Places UI Kit;
+        TerroirTrail does not store or rehost the image.
       </p>
 
       <div
-        className="w-full min-h-[220px] rounded-xl overflow-hidden bg-stone-950 border border-white/5 flex flex-col justify-center items-center"
+        className="relative w-full min-h-[220px] rounded-xl overflow-hidden bg-stone-950 border border-white/5 flex flex-col justify-center items-center"
         data-testid="google-places-container"
       >
-        {isReady ? (
-          <GooglePlacePhotoCarousel
-            producer={producer}
-            className="w-full h-72 sm:h-80"
-            imageClassName="w-full h-full object-cover"
-            maxPhotos={10}
-            autoPlay
-            intervalMs={5200}
-            showControls
-            showCounter
-            showAttribution
-          />
-        ) : (
-          <div className="py-8 flex flex-col items-center gap-2 text-stone-500">
+        <div
+          ref={hostRef}
+          className="w-full min-h-[220px] flex items-center justify-center"
+          data-testid="google-places-ui-kit-host"
+        />
+        {!isReady && (
+          <div className="absolute inset-0 py-8 flex flex-col items-center justify-center gap-2 text-stone-500">
             <div className="w-5 h-5 border-2 border-amber-400/40 border-t-amber-400 rounded-full animate-spin" />
             <span className="text-xs">Loading Google Maps media...</span>
           </div>

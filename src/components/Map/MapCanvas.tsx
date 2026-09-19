@@ -9,9 +9,6 @@ import { getCategoryFallbackImage } from '../../utils/imageFallbacks';
 import { getEffectiveProducerCategory } from '../../utils/producerCategory';
 import { resolveProducerCover } from '../../utils/producerMediaResolver';
 import { getUserCoordinates } from '../../services/geolocation';
-import { GooglePlacePhotoCarousel } from '../GooglePlaces/GooglePlacePhotoCarousel';
-import { isGooglePlacesEligible } from '../../config/googlePlacesAllowlist';
-import { runtimeConfig } from '../../config/runtimeConfig';
 import { TERROIR_REGIONS, type TerroirRegion } from '../../data/terroirRegionCatalogue';
 import {
   COUNTRY_LAYERS,
@@ -170,19 +167,6 @@ export const getProducerMarkerSignature = (producer: Producer): string => {
   const effectiveCat = getEffectiveProducerCategory(producer);
   return `${producer.id}|${lat},${lng}|${producer.name}|${producer.village || ''}|${producer.region}|${effectiveCat}|${producer.rating ?? ''}`;
 };
-
-export const canUseGooglePlacesMedia = (
-  producer: Producer | null,
-  hasTrustedLocalPhoto: boolean,
-  featureEnabled: boolean
-): boolean =>
-  Boolean(
-    producer &&
-      !hasTrustedLocalPhoto &&
-      featureEnabled &&
-      producer.googlePlaceId?.trim() &&
-      isGooglePlacesEligible(producer)
-  );
 
 export interface ProducerMapCluster {
   key: string;
@@ -1189,15 +1173,6 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
   const selectedResolvedCover = selectedProducer
     ? resolveProducerCover(selectedProducer)
     : null;
-  const selectedHasTrustedLocalPhoto =
-    selectedResolvedCover?.source === 'host_upload' ||
-    selectedResolvedCover?.source === 'curated_estate';
-  const selectedCanUseGoogleMedia = canUseGooglePlacesMedia(
-    selectedProducer,
-    selectedHasTrustedLocalPhoto,
-    runtimeConfig.googlePlacesMedia.enabled
-  );
-
   const currentRegionMatchingProducers = activeTerroirRegion
     ? producers.filter((producer) => producer.destination === activeTerroirRegion.destination)
     : [];
@@ -1466,44 +1441,26 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
             <div className="absolute -right-10 -bottom-10 w-36 h-36 bg-amber-500/20 rounded-full blur-3xl pointer-events-none" />
 
             <div className="relative h-20 w-22 sm:h-24 sm:w-32 rounded-xl sm:rounded-2xl overflow-hidden shrink-0 bg-stone-900 border border-white/10">
-              {selectedCanUseGoogleMedia ? (
-                <GooglePlacePhotoCarousel
-                  producer={selectedProducer}
-                  className="w-full h-full"
-                  imageClassName="w-full h-full object-cover"
-                  fallbackUrl={
-                    selectedResolvedCover?.url ||
-                    getCategoryFallbackImage(
-                      getEffectiveProducerCategory(selectedProducer)
-                    )
+              <img
+                src={
+                  selectedResolvedCover?.url ||
+                  getCategoryFallbackImage(
+                    getEffectiveProducerCategory(selectedProducer)
+                  )
+                }
+                alt={selectedProducer.name}
+                className="w-full h-full object-cover"
+                loading="lazy"
+                decoding="async"
+                onError={(e) => {
+                  const fallback = getCategoryFallbackImage(
+                    getEffectiveProducerCategory(selectedProducer)
+                  );
+                  if (e.currentTarget.src !== fallback) {
+                    e.currentTarget.src = fallback;
                   }
-                  fallbackAlt={selectedProducer.name}
-                  maxPhotos={5}
-                  autoPlay
-                  intervalMs={5200}
-                  showControls={false}
-                  showCounter={false}
-                  showDots={false}
-                  showAttribution
-                  pauseOnHover={false}
-                />
-              ) : (
-                <img
-                  src={selectedResolvedCover?.url}
-                  alt={selectedProducer.name}
-                  className="w-full h-full object-cover"
-                  loading="lazy"
-                  decoding="async"
-                  onError={(e) => {
-                    const fallback = getCategoryFallbackImage(
-                      getEffectiveProducerCategory(selectedProducer)
-                    );
-                    if (e.currentTarget.src !== fallback) {
-                      e.currentTarget.src = fallback;
-                    }
-                  }}
-                />
-              )}
+                }}
+              />
               {selectedProducer.rating != null && (
                 <span className="absolute top-1 left-1 bg-black/70 backdrop-blur-md text-amber-400 text-[9px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded flex items-center gap-0.5 z-20">
                   <Star className="w-2.5 h-2.5 sm:w-3 sm:h-3 fill-amber-400" aria-hidden="true" />

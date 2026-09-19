@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import React from 'react';
+import { readFileSync } from 'node:fs';
 import { renderToString } from 'react-dom/server';
 import { GooglePlaceMedia } from './GooglePlaceMedia';
 import { AUDITED_PRODUCERS } from '../../data/auditedProducers';
@@ -23,15 +24,6 @@ const PHASE13_GOOGLE_MEDIA_PRODUCERS = PHASE13_DAIRY_PRODUCERS.filter(
     (producer.locationStatus === 'verified_location' ||
       producer.locationStatus === 'verified_entrance')
 );
-
-vi.mock('./GooglePlacePhotoCarousel', () => ({
-  GooglePlacePhotoCarousel: ({ producer }: { producer: { googlePlaceId?: string } }) => (
-    <div
-      data-testid="google-place-photo-carousel-mock"
-      data-place-id={producer.googlePlaceId}
-    />
-  ),
-}));
 
 describe('Google Places integration for audited regional producers', () => {
   afterEach(() => {
@@ -128,7 +120,7 @@ describe('Google Places integration for audited regional producers', () => {
     ).toBe(false);
   });
 
-  it('routes all eligible regional producers into the live carousel by Place ID only', () => {
+  it('routes eligible producers through Places UI Kit by Place ID only', () => {
     vi.stubEnv('VITE_ENABLE_GOOGLE_PLACES_MEDIA', 'true');
 
     vi.spyOn(uiKitModule, 'useGooglePlacesUiKit').mockReturnValue({
@@ -136,20 +128,32 @@ describe('Google Places integration for audited regional producers', () => {
       isReady: true,
     });
 
-    for (const producer of AUDITED_GOOGLE_MEDIA_PRODUCERS) {
-      expect(producer.googlePlaceId).toBeTruthy();
-      if (!producer.googlePlaceId) continue;
+    const producer = AUDITED_GOOGLE_MEDIA_PRODUCERS[0];
+    expect(producer?.googlePlaceId).toBeTruthy();
 
-      const html = renderToString(
-        React.createElement(GooglePlaceMedia, { producer })
-      );
+    const html = renderToString(
+      React.createElement(GooglePlaceMedia, { producer })
+    );
 
-      expect(html).toContain('google-place-photo-carousel-mock');
-      expect(html).toContain(`data-place-id="${producer.googlePlaceId}"`);
-      expect(html).not.toContain('gmp-place-details-location-request');
-      expect(html).not.toContain('location=');
-      expect(html).toContain('Photos from Google Maps');
-      expect(html).toContain('Live Google Places');
-    }
+    expect(html).toContain('Photo from Google Maps');
+    expect(html).toContain('Live Google Places');
+    expect(html).toContain('google-places-ui-kit-host');
+    expect(html).not.toContain('gmp-place-details-location-request');
+    expect(html).not.toContain('location=');
+
+    const source = readFileSync(
+      'src/components/GooglePlaces/GooglePlaceMedia.tsx',
+      'utf8'
+    );
+    expect(source).toContain("document.createElement('gmp-place-details')");
+    expect(source).toContain(
+      "document.createElement('gmp-place-details-place-request')"
+    );
+    expect(source).toContain("request.setAttribute('place', googlePlaceId)");
+    expect(source).not.toContain('fetchFields(');
+    expect(source).not.toContain('PlacesService');
+    expect(source).not.toContain('getURI(');
+    expect(source).not.toContain('getUrl(');
   });
+
 });

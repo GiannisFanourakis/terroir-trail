@@ -1,12 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Producer } from '../../types/terroir';
 import { MapPin, ArrowUpRight, Car, Heart } from 'lucide-react';
 import { getCategoryFallbackImage } from '../../utils/imageFallbacks';
 import { getEffectiveProducerCategory } from '../../utils/producerCategory';
 import { resolveProducerCover } from '../../utils/producerMediaResolver';
-import { GooglePlacePhotoCarousel } from '../GooglePlaces/GooglePlacePhotoCarousel';
-import { isGooglePlacesEligible } from '../../config/googlePlacesAllowlist';
-import { runtimeConfig } from '../../config/runtimeConfig';
 import { ProducerCategoryIcon } from '../Common/ProducerCategoryIcon';
 
 interface ProducerCardProps {
@@ -26,54 +23,11 @@ export const ProducerCard: React.FC<ProducerCardProps> = ({
 }) => {
   const resolvedCover = resolveProducerCover(producer);
 
-  const hasTrustedLocalPhoto =
-    resolvedCover.source === 'host_upload' ||
-    resolvedCover.source === 'curated_estate';
-
-  const canUseGoogleMedia =
-    !hasTrustedLocalPhoto &&
-    runtimeConfig.googlePlacesMedia.enabled &&
-    Boolean(producer.googlePlaceId?.trim()) &&
-    isGooglePlacesEligible(producer);
-
   const [imgSrc, setImgSrc] = useState<string>(resolvedCover.url);
-  const mediaHostRef = useRef<HTMLDivElement>(null);
-  const [shouldLoadGoogleMedia, setShouldLoadGoogleMedia] = useState(false);
 
   useEffect(() => {
     setImgSrc(resolvedCover.url);
   }, [resolvedCover.url]);
-
-  useEffect(() => {
-    if (!canUseGoogleMedia) {
-      setShouldLoadGoogleMedia(false);
-      return;
-    }
-
-    const element = mediaHostRef.current;
-    if (!element) return;
-
-    if (typeof IntersectionObserver === 'undefined') {
-      setShouldLoadGoogleMedia(true);
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setShouldLoadGoogleMedia(true);
-          observer.disconnect();
-        }
-      },
-      {
-        rootMargin: '300px 0px',
-      }
-    );
-
-    observer.observe(element);
-
-    return () => observer.disconnect();
-  }, [canUseGoogleMedia, producer.id]);
 
   const handleImageError = () => {
     const fallback = getCategoryFallbackImage(
@@ -245,35 +199,16 @@ export const ProducerCard: React.FC<ProducerCardProps> = ({
       }`}
     >
       <div
-        ref={mediaHostRef}
         className="relative h-40 w-full overflow-hidden bg-stone-950"
       >
-        {canUseGoogleMedia && shouldLoadGoogleMedia ? (
-          <GooglePlacePhotoCarousel
-            producer={producer}
-            className="w-full h-full"
-            imageClassName="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            fallbackUrl={imgSrc}
-            fallbackAlt={producer.name}
-            maxPhotos={5}
-            autoPlay
-            intervalMs={6200}
-            showControls={false}
-            showCounter={false}
-            showDots={false}
-            showAttribution
-            pauseOnHover={false}
-          />
-        ) : (
-          <img
-            src={imgSrc}
-            alt={producer.name}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            loading="lazy"
-            decoding="async"
-            onError={handleImageError}
-          />
-        )}
+        <img
+          src={imgSrc}
+          alt={producer.name}
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          loading="lazy"
+          decoding="async"
+          onError={handleImageError}
+        />
         <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/30 to-transparent pointer-events-none" />
 
         <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5 flex-wrap">
