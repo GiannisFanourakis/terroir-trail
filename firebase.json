@@ -39,12 +39,24 @@
         "source": "**",
         "headers": [
           {
-            "key": "Access-Control-Allow-Origin",
-            "value": "*"
-          },
-          {
             "key": "X-Robots-Tag",
             "value": "all"
+          },
+          {
+            "key": "X-Content-Type-Options",
+            "value": "nosniff"
+          },
+          {
+            "key": "Referrer-Policy",
+            "value": "strict-origin-when-cross-origin"
+          },
+          {
+            "key": "Permissions-Policy",
+            "value": "geolocation=(self), camera=(self), microphone=()"
+          },
+          {
+            "key": "Content-Security-Policy-Report-Only",
+            "value": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; script-src 'self' 'unsafe-inline' https://maps.googleapis.com https://maps.gstatic.com https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; connect-src 'self' https: wss:; frame-src 'self' https://js.stripe.com https://*.google.com; worker-src 'self' blob:; form-action 'self' https://*.stripe.com"
           }
         ]
       },
@@ -54,10 +66,6 @@
           {
             "key": "Cache-Control",
             "value": "public, max-age=31536000, immutable"
-          },
-          {
-            "key": "Access-Control-Allow-Origin",
-            "value": "*"
           }
         ]
       },
@@ -67,10 +75,6 @@
           {
             "key": "Cache-Control",
             "value": "public, max-age=31536000, immutable"
-          },
-          {
-            "key": "Access-Control-Allow-Origin",
-            "value": "*"
           }
         ]
       },
@@ -84,10 +88,6 @@
           {
             "key": "Cache-Control",
             "value": "no-cache, no-store, must-revalidate"
-          },
-          {
-            "key": "Access-Control-Allow-Origin",
-            "value": "*"
           }
         ]
       },
@@ -101,10 +101,6 @@
           {
             "key": "Cache-Control",
             "value": "no-cache, no-store, must-revalidate"
-          },
-          {
-            "key": "Access-Control-Allow-Origin",
-            "value": "*"
           }
         ]
       },
@@ -118,10 +114,6 @@
           {
             "key": "Cache-Control",
             "value": "no-cache, no-store, must-revalidate"
-          },
-          {
-            "key": "Access-Control-Allow-Origin",
-            "value": "*"
           }
         ]
       },
@@ -131,10 +123,6 @@
           {
             "key": "Cache-Control",
             "value": "no-cache, no-store, must-revalidate"
-          },
-          {
-            "key": "Access-Control-Allow-Origin",
-            "value": "*"
           },
           {
             "key": "X-Robots-Tag",
@@ -150,10 +138,6 @@
             "value": "no-cache, no-store, must-revalidate"
           },
           {
-            "key": "Access-Control-Allow-Origin",
-            "value": "*"
-          },
-          {
             "key": "X-Robots-Tag",
             "value": "all"
           }
@@ -165,10 +149,6 @@
           {
             "key": "Content-Type",
             "value": "application/xml; charset=utf-8"
-          },
-          {
-            "key": "Access-Control-Allow-Origin",
-            "value": "*"
           },
           {
             "key": "Cache-Control",
@@ -188,10 +168,6 @@
             "value": "text/plain; charset=utf-8"
           },
           {
-            "key": "Access-Control-Allow-Origin",
-            "value": "*"
-          },
-          {
             "key": "Cache-Control",
             "value": "no-cache, no-store, must-revalidate"
           },
@@ -207,10 +183,6 @@
           {
             "key": "Content-Type",
             "value": "text/plain; charset=utf-8"
-          },
-          {
-            "key": "Access-Control-Allow-Origin",
-            "value": "*"
           },
           {
             "key": "Cache-Control",
