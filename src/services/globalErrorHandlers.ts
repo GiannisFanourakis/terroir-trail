@@ -1,4 +1,5 @@
 import { logger } from './logger';
+import { reportClientError } from './clientDiagnostics';
 
 let isInitialized = false;
 
@@ -13,19 +14,21 @@ export function initGlobalErrorHandlers(): void {
 
   window.addEventListener('error', (event: ErrorEvent) => {
     // We intentionally do not call event.preventDefault() so browser and dev tooling function normally
-    logger.error('Window', 'unhandled_error', event.error ?? event.message, {
+    const metadata = {
       message: event.message,
       filename: event.filename,
       lineno: event.lineno,
       colno: event.colno,
-    });
+    };
+    logger.error('Window', 'unhandled_error', event.error ?? event.message, metadata);
+    reportClientError('Window', 'unhandled_error', event.error ?? event.message, metadata);
   });
 
   window.addEventListener('unhandledrejection', (event: PromiseRejectionEvent) => {
     // We intentionally do not call event.preventDefault() so browser and dev tooling function normally
-    logger.error('Window', 'unhandled_promise_rejection', event.reason, {
-      type: event.type,
-    });
+    const metadata = { type: event.type };
+    logger.error('Window', 'unhandled_promise_rejection', event.reason, metadata);
+    reportClientError('Window', 'unhandled_promise_rejection', event.reason, metadata);
   });
 }
 
