@@ -67,7 +67,7 @@ async function startStaticServer(): Promise<{
 
   const server = http.createServer((req, res) => {
     const requestPath = decodeURIComponent((req.url || '/').split('?')[0]);
-    let filePath = path.join(root, requestPath.replace(/^\\/+/, ''));
+    let filePath = path.join(root, requestPath.replace(/^\/+/, ''));
     if (requestPath === '/') filePath = path.join(root, 'index.html');
 
     if (!fs.existsSync(filePath) || fs.statSync(filePath).isDirectory()) {
