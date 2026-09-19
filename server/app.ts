@@ -74,6 +74,98 @@ export function createApp(overrides: Partial<AppDependencies> = {}) {
   });
 
   app.use(express.json({ limit: '16kb' }));
+  const telemetryBuckets = new Map<string, { count: number; resetAt: number }>();
+  const TELEMETRY_WINDOW_MS = 60_000;
+  const TELEMETRY_MAX_PER_WINDOW = 20;
+  const sensitiveKey = /password|passwd|secret|token|credential|authorization|bearer|email|phone|telephone|mobile|tel|vat|note/i;
+  const redactText = (value: string) =>
+    value
+      .replace(/[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+/g, '[REDACTED_EMAIL]')
+      .replace(/Bearer\s+[a-zA-Z0-9._~+/-]+=*/gi, 'Bearer [REDACTED]')
+      .slice(0, 1000);
+  const sanitizeDiagnosticValue = (value: unknown, depth = 0): unknown => {
+    if (depth > 2) return '[TRUNCATED]';
+    if (
+      value === null ||
+      value === undefined ||
+      typeof value === 'boolean' ||
+      typeof value === 'number'
+    ) return value;
+    if (typeof value === 'string') return redactText(value);
+    if (Array.isArray(value)) {
+      return value
+        .slice(0, 10)
+        .map((item) => sanitizeDiagnosticValue(item, depth + 1));
+    }
+    if (typeof value === 'object') {
+      const result: Record<string, unknown> = {};
+      for (const [key, nested] of Object.entries(
+        value as Record<string, unknown>
+      ).slice(0, 30)) {
+        result[key] = sensitiveKey.test(key)
+          ? '[REDACTED]'
+          : sanitizeDiagnosticValue(nested, depth + 1);
+      }
+      return result;
+    }
+    return String(typeof value);
+  };
+
+  app.post('/api/client-errors', (req, res) => {
+    const key = req.ip || req.socket.remoteAddress || 'unknown';
+    const now = Date.now();
+    const bucket = telemetryBuckets.get(key);
+    if (!bucket || bucket.resetAt <= now) {
+      telemetryBuckets.set(key, {
+        count: 1,
+        resetAt: now + TELEMETRY_WINDOW_MS,
+      });
+    } else if (bucket.count >= TELEMETRY_MAX_PER_WINDOW) {
+      res.status(429).json({ accepted: false });
+      return;
+    } else {
+      bucket.count += 1;
+    }
+
+    const scope =
+      typeof req.body?.scope === 'string'
+        ? redactText(req.body.scope).slice(0, 80)
+        : 'Client';
+    const event =
+      typeof req.body?.event === 'string'
+        ? redactText(req.body.event).slice(0, 100)
+        : 'unknown_error';
+    const buildId =
+      typeof req.body?.buildId === 'string'
+        ? redactText(req.body.buildId).slice(0, 160)
+        : 'unknown';
+    const path =
+      typeof req.body?.path === 'string'
+        ? redactText(req.body.path).slice(0, 240)
+        : '/';
+
+    const diagnostic = {
+      scope,
+      event,
+      buildId,
+      path,
+      deviceClass: ['phone', 'tablet', 'desktop', 'unknown'].includes(
+        req.body?.deviceClass
+      )
+        ? req.body.deviceClass
+        : 'unknown',
+      standalone: Boolean(req.body?.standalone),
+      online:
+        typeof req.body?.online === 'boolean' ? req.body.online : undefined,
+      error: sanitizeDiagnosticValue(req.body?.error),
+      metadata: sanitizeDiagnosticValue(req.body?.metadata),
+      receivedAt: new Date().toISOString(),
+    };
+
+    console.error('[ClientDiagnostics]', JSON.stringify(diagnostic));
+    res.status(202).json({ accepted: true });
+  });
+
   const requireAuth = async (req: Request, res: Response, next: NextFunction) => {
     const bearer = req.get('authorization');
     if (!bearer?.startsWith('Bearer ')) {
