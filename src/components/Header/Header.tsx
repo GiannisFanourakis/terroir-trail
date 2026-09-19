@@ -20,8 +20,6 @@ interface HeaderProps {
   onSearchChange: (query: string) => void;
   onOpenExperiences?: () => void;
   totalFilteredCount: number;
-  viewMode: 'map' | 'list';
-  onToggleViewMode: () => void;
   savedCount: number;
   favoritesOnly: boolean;
   onToggleFavoritesOnly: () => void;
@@ -51,8 +49,6 @@ export const Header: React.FC<HeaderProps> = ({
   onSearchChange,
   onOpenExperiences,
   totalFilteredCount,
-  viewMode,
-  onToggleViewMode,
   savedCount,
   favoritesOnly,
   onToggleFavoritesOnly,

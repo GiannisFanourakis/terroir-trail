@@ -34,7 +34,6 @@ interface MapCanvasProps {
   onToggleFavorite: (id: string) => void;
   onExploreCountry?: (country: Exclude<CountryScope, 'all'>) => void;
   onExploreRegion?: (destination: Destination) => void;
-  viewMode?: 'map' | 'list';
 }
 
 const getRegionFeature = (region: TerroirRegion) => ({
@@ -255,7 +254,6 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
   onToggleFavorite,
   onExploreCountry,
   onExploreRegion,
-  viewMode,
 }) => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
@@ -573,14 +571,6 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       mapInstanceRef.current = null;
     };
   }, []);
-
-  useEffect(() => {
-    if (viewMode === 'map' && mapInstanceRef.current) {
-      const map = mapInstanceRef.current;
-      const t = setTimeout(() => map.invalidateSize(), 50);
-      return () => clearTimeout(t);
-    }
-  }, [viewMode]);
 
   useEffect(() => {
     if (!mapInstanceRef.current || !tileLayerRef.current) return;

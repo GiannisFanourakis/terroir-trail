@@ -22,7 +22,6 @@ import { saveUserProfileToCloud } from './services/firebase';
 import { filterProducers } from './utils/filterProducers';
 import { producerService } from './services/producerService';
 import { CountryScope, setActiveCountryScope } from './config/geography';
-import { List, MapPin } from 'lucide-react';
 
 // Performance optimization: lazy-load modals on demand to shrink initial bundle
 const ProducerDetailDrawer = lazy(() =>
@@ -89,7 +88,6 @@ export const App: React.FC = () => {
   const [selectedProducer, setSelectedProducer] = useState<Producer | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
   const [isRegionGuideOpen, setIsRegionGuideOpen] = useState<boolean>(false);
-  const [viewMode, setViewMode] = useState<'map' | 'list'>('map');
   const [activeModal, setActiveModal] = useState<ActiveModal>(null);
   const [adminPortalPreviewProducerId, setAdminPortalPreviewProducerId] = useState<string | null>(null);
 
@@ -265,7 +263,6 @@ export const App: React.FC = () => {
     setSelectedProducer(null);
     setIsDrawerOpen(false);
     setIsRegionGuideOpen(hasStory);
-    setViewMode('map');
   };
 
   const handleExploreCountry = (country: Exclude<CountryScope, 'all'>) => {
@@ -279,7 +276,6 @@ export const App: React.FC = () => {
     setSelectedProducer(null);
     setIsDrawerOpen(false);
     setIsRegionGuideOpen(false);
-    setViewMode('map');
   };
 
   const filteredProducers = useMemo(() => {
@@ -318,8 +314,6 @@ export const App: React.FC = () => {
         searchQuery={filters.searchQuery}
         onSearchChange={(query: string) => handleFilterChange('searchQuery', query)}
         totalFilteredCount={filteredProducers.length}
-        viewMode={viewMode}
-        onToggleViewMode={() => setViewMode((prev) => (prev === 'map' ? 'list' : 'map'))}
         savedCount={favorites.length}
         favoritesOnly={filters.favoritesOnly}
         onToggleFavoritesOnly={() => handleFilterChange('favoritesOnly', !filters.favoritesOnly)}
@@ -363,11 +357,7 @@ export const App: React.FC = () => {
       )}
 
       <main className="relative flex-1 flex overflow-hidden min-h-0">
-        <div
-          className={`${
-            viewMode === 'list' ? 'flex' : 'hidden'
-          } lg:flex h-full shrink-0 z-10 w-full lg:w-auto`}
-        >
+        <div className="hidden lg:flex h-full shrink-0 z-10">
           <ProducerList
             producers={filteredProducers}
             selectedProducer={publicSelectedProducer}
@@ -382,11 +372,7 @@ export const App: React.FC = () => {
           />
         </div>
 
-        <div
-          className={`flex-1 h-full w-full relative ${
-            viewMode === 'map' ? 'block' : 'hidden lg:block'
-          }`}
-        >
+        <div className="flex-1 h-full w-full relative">
           <div className={`absolute top-2.5 left-0 right-0 z-20 pointer-events-none justify-center px-3 ${selectedProducer ? 'hidden sm:flex' : 'flex'}`}>
             <div className="pointer-events-auto w-full max-w-2xl">
               <SponsorBanner hasExplorerPass={hasAdFreeTravelerPass} />
@@ -410,7 +396,6 @@ export const App: React.FC = () => {
             onToggleFavorite={toggleFavorite}
             onExploreCountry={handleExploreCountry}
             onExploreRegion={handleExploreRegion}
-            viewMode={viewMode}
           />
 
           {selectedTerroirRegion && (
@@ -436,29 +421,6 @@ export const App: React.FC = () => {
             </Suspense>
           )}
         </div>
-
-        {(!selectedProducer || viewMode === 'list') && !isRegionGuideOpen && (
-          <div 
-            className="lg:hidden absolute left-1/2 -translate-x-1/2 z-30 pointer-events-auto transition-all animate-in fade-in duration-200 bottom-[calc(3rem+env(safe-area-inset-bottom,0px))]"
-          >
-            <button
-              onClick={() => setViewMode((prev) => (prev === 'map' ? 'list' : 'map'))}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-stone-900/95 text-stone-100 border border-white/20 shadow-2xl backdrop-blur-xl font-bold text-xs hover:bg-stone-800 hover:text-white active:scale-95 transition-all cursor-pointer select-none"
-            >
-              {viewMode === 'map' ? (
-                <>
-                  <List className="w-4 h-4 text-amber-400" />
-                  <span>Show List ({filteredProducers.length})</span>
-                </>
-              ) : (
-                <>
-                  <MapPin className="w-4 h-4 text-amber-400" />
-                  <span>Show Map</span>
-                </>
-              )}
-            </button>
-          </div>
-        )}
 
         {isDrawerOpen && (
           <Suspense

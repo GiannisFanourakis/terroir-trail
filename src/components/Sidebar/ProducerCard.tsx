@@ -1,10 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Producer } from '../../types/terroir';
-import { MapPin, ArrowUpRight, Car, Heart } from 'lucide-react';
-import { getCategoryFallbackImage } from '../../utils/imageFallbacks';
+import { ArrowUpRight, Car, Heart, MapPin } from 'lucide-react';
 import { getEffectiveProducerCategory } from '../../utils/producerCategory';
-import { resolveProducerCover } from '../../utils/producerMediaResolver';
-import { GooglePlaceMedia } from '../GooglePlaces/GooglePlaceMedia';
 import { ProducerCategoryIcon } from '../Common/ProducerCategoryIcon';
 
 interface ProducerCardProps {
@@ -15,6 +12,81 @@ interface ProducerCardProps {
   onToggleFavorite: (id: string) => void;
 }
 
+const getCategoryLabel = (producer: Producer): string => {
+  switch (getEffectiveProducerCategory(producer)) {
+    case 'winery':
+      return 'Winery';
+    case 'brewery':
+      return 'Brewery';
+    case 'distillery':
+      return 'Distillery';
+    case 'cidery':
+      return 'Cidery';
+    case 'confectionery':
+      return 'Confectionery';
+    case 'oil_mill':
+      return 'Oil Mill';
+    case 'herb_farm':
+      return 'Herb Farm';
+    case 'mushroom_farm':
+      return 'Mushroom Farm';
+    case 'olive_mill':
+      return 'Olive Mill';
+    case 'olive_oil_producer':
+      return 'Olive Oil Producer';
+    case 'cheese_dairy':
+      return 'Dairy';
+    case 'apiary':
+      return 'Apiary / Honey';
+    case 'farm':
+      return 'Farm';
+    default:
+      return 'Producer';
+  }
+};
+
+const getVisitLabel = (producer: Producer): string => {
+  switch (producer.visitStatus) {
+    case 'public_visits':
+      return producer.walkInFriendly === true
+        ? 'Walk-ins welcome'
+        : 'Visitors welcome';
+    case 'seasonal_public':
+      return producer.bestSeason
+        ? `Seasonal · ${producer.bestSeason}`
+        : 'Seasonal visits';
+    case 'appointment_only':
+      return 'By appointment';
+    case 'current_access_uncertain':
+      return 'Access uncertain';
+    case 'not_publicly_confirmed':
+      return 'Visits unconfirmed';
+    default:
+      return 'Visit status unreviewed';
+  }
+};
+
+const getRoadLabel = (producer: Producer): string | null => {
+  if (producer.roadAccessStatus !== 'verified' || !producer.roadAccess) {
+    return null;
+  }
+
+  switch (producer.roadAccess) {
+    case 'paved':
+      return 'Paved';
+    case 'narrow_paved':
+      return 'Narrow paved';
+    case 'gravel_ok':
+      return 'Gravel';
+    case 'unpaved_passable':
+      return 'Unpaved';
+    case 'high_clearance_recommended':
+      return 'High-clearance';
+    case '4x4_required':
+      return '4x4 required';
+  }
+};
+
 export const ProducerCard: React.FC<ProducerCardProps> = ({
   producer,
   isSelected,
@@ -22,162 +94,9 @@ export const ProducerCard: React.FC<ProducerCardProps> = ({
   isFavorite,
   onToggleFavorite,
 }) => {
-  const resolvedCover = resolveProducerCover(producer);
-
-  const [imgSrc, setImgSrc] = useState<string>(resolvedCover.url);
-
-  useEffect(() => {
-    setImgSrc(resolvedCover.url);
-  }, [resolvedCover.url]);
-
-  const handleImageError = () => {
-    const fallback = getCategoryFallbackImage(
-      getEffectiveProducerCategory(producer)
-    );
-    if (imgSrc !== fallback) {
-      setImgSrc(fallback);
-    }
-  };
-
-  const getCategoryBadge = (p: Producer) => {
-    switch (getEffectiveProducerCategory(p)) {
-      case 'winery':
-        return {
-          label: 'Winery',
-          bg: 'bg-rose-500/20 text-rose-300 border-rose-500/30',
-        };
-      case 'brewery':
-        return {
-          label: 'Brewery',
-          bg: 'bg-amber-400/25 text-amber-300 border-amber-400/40',
-        };
-      case 'distillery':
-        return {
-          label: 'Distillery',
-          bg: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
-        };
-      case 'cidery':
-        return {
-          label: 'Cidery',
-          bg: 'bg-lime-500/20 text-lime-300 border-lime-500/30',
-        };
-      case 'confectionery':
-        return {
-          label: 'Confectionery Producer',
-          bg: 'bg-amber-700/20 text-amber-200 border-amber-700/30',
-        };
-      case 'oil_mill':
-        return {
-          label: 'Oil Mill',
-          bg: 'bg-yellow-600/20 text-yellow-300 border-yellow-600/30',
-        };
-      case 'herb_farm':
-        return {
-          label: 'Herb Farm',
-          bg: 'bg-green-600/20 text-green-300 border-green-600/30',
-        };
-      case 'mushroom_farm':
-        return {
-          label: 'Mushroom Farm',
-          bg: 'bg-stone-600/20 text-stone-300 border-stone-600/30',
-        };
-      case 'olive_mill':
-        return {
-          label: 'Olive Mill',
-          bg: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
-        };
-      case 'olive_oil_producer':
-        return {
-          label: 'Olive Oil Producer',
-          bg: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
-        };
-      case 'cheese_dairy':
-        return {
-          label: 'Dairy',
-          bg: 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30',
-        };
-      case 'apiary':
-        return {
-          label: 'Apiary / Honey',
-          bg: 'bg-orange-500/20 text-orange-300 border-orange-500/30',
-        };
-      case 'farm':
-        return {
-          label: 'Farm',
-          bg: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
-        };
-      default:
-        return {
-          label: 'Producer',
-          bg: 'bg-stone-500/20 text-stone-300 border-white/10',
-        };
-    }
-  };
-
-  const getVisitBadge = (p: Producer) => {
-    switch (p.visitStatus) {
-      case 'public_visits':
-        return {
-          label:
-            p.walkInFriendly === true ? 'Walk-ins welcome' : 'Visitors welcome',
-          className: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/25',
-        };
-      case 'seasonal_public':
-        return {
-          label: p.bestSeason
-            ? `Seasonal (${p.bestSeason})`
-            : 'Seasonal visits',
-          className: 'text-amber-300 bg-amber-500/10 border-amber-500/25',
-        };
-      case 'appointment_only':
-        return {
-          label: 'By appointment',
-          className: 'text-amber-300 bg-amber-500/10 border-amber-500/25',
-        };
-      case 'not_publicly_confirmed':
-        return {
-          label: 'Visits unconfirmed',
-          className: 'text-stone-400 bg-stone-500/10 border-white/10',
-        };
-      case 'current_access_uncertain':
-        return {
-          label: 'Access uncertain',
-          className: 'text-orange-400 bg-orange-500/10 border-orange-500/25',
-        };
-      case 'unreviewed':
-      default:
-        return {
-          label: 'Visit status unreviewed',
-          className: 'text-stone-400 bg-stone-500/10 border-white/10',
-        };
-    }
-  };
-
-  const getRoadBadge = (p: Producer) => {
-    if (p.roadAccessStatus !== 'verified' || !p.roadAccess) return null;
-
-    switch (p.roadAccess) {
-      case 'paved':
-        return { label: 'Paved road', className: 'text-stone-400' };
-      case 'narrow_paved':
-        return { label: 'Narrow paved road', className: 'text-amber-400' };
-      case 'gravel_ok':
-        return { label: 'Gravel access', className: 'text-amber-400' };
-      case 'unpaved_passable':
-        return { label: 'Unpaved access', className: 'text-amber-400' };
-      case 'high_clearance_recommended':
-        return {
-          label: 'High-clearance recommended',
-          className: 'text-orange-400',
-        };
-      case '4x4_required':
-        return { label: '4x4 required', className: 'text-rose-400' };
-    }
-  };
-
-  const badge = getCategoryBadge(producer);
-  const visitBadge = getVisitBadge(producer);
-  const roadBadge = getRoadBadge(producer);
+  const categoryLabel = getCategoryLabel(producer);
+  const visitLabel = getVisitLabel(producer);
+  const roadLabel = getRoadLabel(producer);
 
   const selectProducer = () => onSelect(producer);
 
@@ -193,135 +112,88 @@ export const ProducerCard: React.FC<ProducerCardProps> = ({
           selectProducer();
         }
       }}
-      className={`group relative flex flex-col bg-stone-900/90 rounded-2xl border transition-all duration-300 cursor-pointer overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 ${
+      className={`group rounded-xl border px-3 py-2.5 transition cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 ${
         isSelected
-          ? 'border-amber-500 ring-2 ring-amber-500/40 shadow-2xl translate-y-[-2px]'
-          : 'border-white/10 hover:border-amber-500/50 hover:shadow-xl hover:translate-y-[-1px]'
+          ? 'border-amber-500 bg-amber-500/10 shadow-lg shadow-amber-950/20'
+          : 'border-white/10 bg-stone-900/75 hover:border-amber-500/45 hover:bg-stone-900'
       }`}
     >
-      <div
-        className="relative h-40 w-full overflow-hidden bg-stone-950"
-      >
-        {resolvedCover.source === 'category_fallback' ? (
-          <GooglePlaceMedia
-            producer={producer}
-            className="w-full h-full"
-            imageClassName="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            fallbackUrl={imgSrc}
-            fallbackAlt={producer.name}
-            deferUntilVisible
+      <div className="flex items-start gap-2.5">
+        <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-stone-950/70 text-amber-400">
+          <ProducerCategoryIcon
+            category={getEffectiveProducerCategory(producer)}
+            className="h-4 w-4"
           />
-        ) : (
-          <img
-            src={imgSrc}
-            alt={producer.name}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            loading="lazy"
-            decoding="async"
-            onError={handleImageError}
-          />
-        )}
-        <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/30 to-transparent pointer-events-none" />
-
-        <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5 flex-wrap">
-          <span
-            className={`flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-full font-bold border backdrop-blur-md ${badge.bg}`}
-          >
-            <ProducerCategoryIcon
-              category={getEffectiveProducerCategory(producer)}
-              className="w-3.5 h-3.5"
-            />
-            <span>{badge.label}</span>
-          </span>
-          {producer.publicPointType === 'producer_shop' && (
-            <span className="text-[10px] px-2 py-1 rounded-full font-semibold border backdrop-blur-md bg-sky-500/15 text-sky-200 border-sky-400/30">
-              Public point: Producer Shop
-            </span>
-          )}
         </div>
 
-        <div className="absolute top-2.5 right-2.5 flex items-center gap-1.5">
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              onToggleFavorite(producer.id);
-            }}
-            className={`p-1.5 rounded-full backdrop-blur-md border transition ${
-              isFavorite
-                ? 'bg-rose-600 text-white border-rose-500 shadow-md scale-105'
-                : 'bg-black/60 text-stone-300 hover:text-white border-white/10'
-            }`}
-            title={isFavorite ? 'Remove from saved places' : 'Save place'}
-            aria-label={
-              isFavorite
-                ? `Remove ${producer.name} from saved places`
-                : `Save ${producer.name}`
-            }
-          >
-            <Heart
-              className={`w-3.5 h-3.5 ${isFavorite ? 'fill-white' : ''}`}
-              aria-hidden="true"
-            />
-          </button>
-        </div>
+        <div className="min-w-0 flex-1">
+          <div className="flex items-start justify-between gap-2">
+            <div className="min-w-0">
+              <div className="flex min-w-0 items-center gap-1.5 text-[9px] font-bold uppercase tracking-wider text-amber-400">
+                <span className="shrink-0">{categoryLabel}</span>
+                <span className="text-stone-600" aria-hidden="true">·</span>
+                <span className="truncate text-stone-500">
+                  {producer.village || producer.region}
+                </span>
+              </div>
+              <h3 className="mt-0.5 truncate font-serif-title text-sm font-bold text-white group-hover:text-amber-300">
+                {producer.name}
+              </h3>
+            </div>
 
-        <div className="absolute bottom-8 left-3 right-3 flex items-end justify-between pointer-events-none">
-          <div className="flex items-center gap-1.5 text-stone-300 text-xs font-medium min-w-0">
-            <MapPin
-              className="w-3.5 h-3.5 text-amber-400 shrink-0"
-              aria-hidden="true"
-            />
-            <span className="truncate">
-              
-              {producer.village}, {producer.region.toUpperCase()}
-            </span>
+            <button
+              type="button"
+              onClick={(event) => {
+                event.stopPropagation();
+                onToggleFavorite(producer.id);
+              }}
+              className={`shrink-0 rounded-full p-1.5 transition ${
+                isFavorite
+                  ? 'text-rose-400 bg-rose-500/10'
+                  : 'text-stone-500 hover:bg-white/5 hover:text-white'
+              }`}
+              title={isFavorite ? 'Remove from saved places' : 'Save place'}
+              aria-label={
+                isFavorite
+                  ? `Remove ${producer.name} from saved places`
+                  : `Save ${producer.name}`
+              }
+            >
+              <Heart
+                className={`h-3.5 w-3.5 ${isFavorite ? 'fill-current' : ''}`}
+                aria-hidden="true"
+              />
+            </button>
           </div>
-        </div>
-      </div>
 
-      <div className="p-4 flex flex-col gap-2.5">
-        <div>
-          <h3 className="font-serif-title font-bold text-base text-white group-hover:text-amber-400 transition-colors line-clamp-1">
-            {producer.name}
-          </h3>
-          {producer.greekName && producer.greekName !== producer.name && (
-            <p className="text-[11px] text-stone-400 font-medium line-clamp-1">
-              {producer.greekName}
+          {producer.tagLine && (
+            <p className="mt-1 line-clamp-1 text-[11px] leading-relaxed text-stone-400">
+              {producer.tagLine}
             </p>
           )}
-        </div>
 
-        {producer.tagLine && (
-          <p className="text-xs text-stone-300 line-clamp-2 leading-relaxed">
-            {producer.tagLine}
-          </p>
-        )}
-
-        <div className="flex items-center gap-1.5 pt-0.5">
-          <span
-            className={`text-[10px] px-2.5 py-0.5 rounded-md font-medium border ${visitBadge.className}`}
-          >
-            {visitBadge.label}
-          </span>
-        </div>
-
-        <div className="flex items-center justify-between pt-2.5 border-t border-white/5 text-[11px] gap-2">
-          {roadBadge ? (
-            <span
-              className={`flex items-center gap-1 min-w-0 ${roadBadge.className}`}
-            >
-              <Car className="w-3 h-3 shrink-0" aria-hidden="true" />
-              <span className="truncate">{roadBadge.label}</span>
+          <div className="mt-2 flex items-center gap-2 border-t border-white/5 pt-2 text-[10px]">
+            <span className="min-w-0 truncate font-medium text-emerald-400">
+              {visitLabel}
             </span>
-          ) : (
-            <span className="text-stone-500">Access not classified</span>
-          )}
 
-          <span className="text-amber-400 font-bold group-hover:translate-x-0.5 transition-transform flex items-center gap-0.5 shrink-0">
-            <span>View Story</span>
-            <ArrowUpRight className="w-3.5 h-3.5" aria-hidden="true" />
-          </span>
+            {roadLabel ? (
+              <span className="flex min-w-0 items-center gap-1 truncate text-stone-500">
+                <Car className="h-3 w-3 shrink-0" aria-hidden="true" />
+                <span className="truncate">{roadLabel}</span>
+              </span>
+            ) : (
+              <span className="flex min-w-0 items-center gap-1 truncate text-stone-600">
+                <MapPin className="h-3 w-3 shrink-0" aria-hidden="true" />
+                <span className="truncate">Access not classified</span>
+              </span>
+            )}
+
+            <span className="ml-auto flex shrink-0 items-center gap-0.5 font-bold text-amber-400">
+              <span>Story</span>
+              <ArrowUpRight className="h-3 w-3" aria-hidden="true" />
+            </span>
+          </div>
         </div>
       </div>
     </div>
