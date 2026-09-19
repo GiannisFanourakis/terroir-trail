@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { FirstRunWelcome } from './FirstRunWelcome';
-import type { PwaInstallController } from '../../hooks/usePwaInstall';
+import type { PwaInstallController, PwaInstallResult } from '../../hooks/usePwaInstall';
 
 const controller = (
   overrides: Partial<PwaInstallController> = {}
@@ -11,7 +11,7 @@ const controller = (
   isIos: false,
   isIosSafari: false,
   canInstall: true,
-  requestInstall: vi.fn(async () => 'accepted'),
+  requestInstall: vi.fn(async (): Promise<PwaInstallResult> => 'accepted'),
   ...overrides,
 });
 
