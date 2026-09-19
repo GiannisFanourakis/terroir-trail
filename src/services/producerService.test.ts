@@ -385,8 +385,8 @@ describe('producerService — Supabase / Fallback Data Ownership', () => {
   });
 
   describe('Phase 5 — Offline / Fallback Data Synchronization Integrity', () => {
-    it('bundled CRETAN_PRODUCERS contains exactly 27 audited Crete records with no synthetic material', () => {
-      expect(CRETAN_PRODUCERS).toHaveLength(27);
+    it('bundled CRETAN_PRODUCERS contains exactly 26 audited Crete records with no synthetic material', () => {
+      expect(CRETAN_PRODUCERS).toHaveLength(26);
 
       // Verify all are Crete
       expect(CRETAN_PRODUCERS.every((p) => p.destination === 'crete')).toBe(true);

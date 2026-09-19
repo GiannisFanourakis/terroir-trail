@@ -2,13 +2,13 @@ import { Producer } from '../types/terroir';
 
 /**
  * Authoritative bundled offline/fallback catalogue for Crete.
- * Synchronized directly from live Supabase (27 audited Crete records).
+ * Synchronized directly from live Supabase (26 audited Crete records).
  * All synthetic ratings, reviews, pricing, access defaults, and non-existent
  * tasting packages have been removed. Unknown fields are preserved as undefined.
  */
 export const CRETAN_PRODUCERS: Producer[] = [
   // ==========================================
-  // --- CHANIA (9 AUDITED RECORDS) ---
+  // --- CHANIA (8 AUDITED RECORDS) ---
   // ==========================================
   {
       "id": "anoskeli-estate",
@@ -255,44 +255,6 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "visitStatus": "appointment_only",
       "visitSourceUrl": "https://www.manousakiswinery.com/visit",
       "visitNotes": "Manousakis publishes seasonal visitor hours and requires bookings for visits."
-  },
-  {
-      "id": "monumental-olive-tree-vouves",
-      "name": "Olive Tree Museum of Vouves & Monumental Olive Tree",
-      "greekName": "Μουσείο Ελιάς Βουβών & Μνημειακή Ελιά",
-      "category": "olive_mill",
-      "destination": "crete",
-      "country": "Greece",
-      "countryCode": "GR",
-      "region": "Chania",
-      "village": "Ano Vouves",
-      "locality": "Ano Vouves",
-      "coordinates": [
-          35.48703,
-          23.78679
-      ],
-      "coverImage": "https://images.unsplash.com/photo-1508615039623-a25605d2b022?auto=format&fit=crop&w=1000&q=80",
-      "gallery": [
-          "https://images.unsplash.com/photo-1508615039623-a25605d2b022?auto=format&fit=crop&w=1000&q=80"
-      ],
-      "tagLine": "Olive heritage gathered around one of Crete's living monuments",
-      "description": "In Ano Vouves, the protected Monumental Olive Tree and the neighbouring Olive Tree Museum preserve the agricultural memory of western Crete. The museum occupies a traditional village building and presents tools connected with olive cultivation, harvesting, transport and olive-oil production.",
-      "story": "The Monumental Olive Tree was declared a protected natural monument in 1997. Beside it, the Olive Tree Museum opened in 2009 in a traditional building dating to around 1800, preserving the tools and everyday objects of the region's olive-growing culture. The site should be understood as rural heritage rather than as an olive-oil producer or commercial estate.",
-      "indigenousVarieties": [],
-      "tastingHighlights": [],
-      "openingHours": "Apr-Oct: daily 10:00-19:00; Nov-Mar by agreement",
-      "ethos": [],
-      "phone": "+30 28240 22279",
-      "googleMapsUrl": "https://maps.google.com/?q=35.48703,23.78679",
-      "googlePlaceId": "ChIJRTuqIBaLnBQRbiOsG6_Ozb8",
-      "roadAccessStatus": "not_publicly_confirmed",
-      "roadAccessNotes": "Phase 6 review (2026-09-13): no explicit source-backed road-surface, width, or vehicle-suitability classification was found in the reviewed public material. Road type remains unpublished.",
-      "locationStatus": "verified_location",
-      "locationSourceUrl": "https://visitchania.gr/en/places-to-visit/museum-of-olive-vouves/",
-      "locationNotes": "This is a heritage attraction/local project rather than a producer. Coordinates identify the museum/tree site, not a commercial olive mill.",
-      "visitStatus": "seasonal_public",
-      "visitSourceUrl": "https://www.cretetravel.com/en/activity/82/Olive_Tree_Museum_of_Vouves",
-      "visitNotes": "The museum and monumental tree are publicly visitable April-October; winter access is by prior agreement."
   },
   {
       "id": "stathakis-honey-park",

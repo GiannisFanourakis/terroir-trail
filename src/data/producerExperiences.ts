@@ -762,44 +762,6 @@ export const PRODUCER_EXPERIENCES: TastingExperience[] = [
     "badge": "Chef’s Pairing Menu"
   },
   {
-    "id": "exp_monumental-olive-tree-vouves_1",
-    "title": "Ancient Olive Tree of Vouves & Heritage Mill - High-Phenolic EVOO Degustation & Mill Tour",
-    "durationMinutes": 50,
-    "pricePerPerson": 15,
-    "badge": "EVOO Tasting",
-    "description": "Learn the sensory secrets of certified extra virgin olive oil at Ancient Olive Tree of Vouves & Heritage Mill, comparing early-harvest aromas and peppery polyphenol finishes.",
-    "includes": [
-      "Tour of the olive washing, crushing and cold-extraction facilities",
-      "Professional cobalt-glass sensory tasting of 3 monovarietal olive oils",
-      "Fresh warm sourdough bread, mountain sea salt & ripe tomato slices"
-    ],
-    "producerId": "monumental-olive-tree-vouves",
-    "producerName": "Ancient Olive Tree of Vouves & Heritage Mill",
-    "producerGreekName": "Μνημειακή Ελιά Βουβών & Ελαιοτριβείο",
-    "category": "olive_mill",
-    "destination": "crete",
-    "location": "Chania, Ano Vouves"
-  },
-  {
-    "id": "exp_monumental-olive-tree-vouves_2",
-    "title": "Ancient Olive Tree of Vouves & Heritage Mill - Monumental Grove Walk & Wood-Fired Bread Workshop",
-    "durationMinutes": 80,
-    "pricePerPerson": 32,
-    "badge": "Heritage & Hearth",
-    "description": "Walk among historic olive trees in Chania and bake traditional village bread in outdoor wood ovens to pair with freshly pressed oils.",
-    "includes": [
-      "Botanical walk among ancient olive trees with explanations of regenerative farming",
-      "Hands-on bread baking and warm olive oil degustation",
-      "Traditional Cretan salad with mizithra, wild oregano & olives"
-    ],
-    "producerId": "monumental-olive-tree-vouves",
-    "producerName": "Ancient Olive Tree of Vouves & Heritage Mill",
-    "producerGreekName": "Μνημειακή Ελιά Βουβών & Ελαιοτριβείο",
-    "category": "olive_mill",
-    "destination": "crete",
-    "location": "Chania, Ano Vouves"
-  },
-  {
     "id": "exp_mitato-halepa_1",
     "title": "Stone Shepherd Mitato of Halepa - Artisan Raw Milk Graviera & Fresh Cheese Flight",
     "durationMinutes": 50,
