@@ -43,7 +43,6 @@ interface GmpPlaceMediaProps extends React.DetailedHTMLProps<
   HTMLElement
 > {
   'lightbox-preferred'?: boolean | string;
-  'preferred-size'?: 'small' | 'medium' | 'large';
 }
 
 interface GmpPlaceAttributionProps extends React.DetailedHTMLProps<
@@ -59,7 +58,6 @@ declare global {
   namespace JSX {
     interface IntrinsicElements {
       'gmp-place-details': GmpPlaceDetailsProps;
-      'gmp-place-details-compact': GmpPlaceDetailsCompactProps;
       'gmp-place-details-location-request': GmpPlaceDetailsLocationRequestProps;
       'gmp-place-details-place-request': GmpPlaceDetailsPlaceRequestProps;
       'gmp-place-content-config': GmpPlaceContentConfigProps;
@@ -73,7 +71,6 @@ declare module 'react' {
   namespace JSX {
     interface IntrinsicElements {
       'gmp-place-details': GmpPlaceDetailsProps;
-      'gmp-place-details-compact': GmpPlaceDetailsCompactProps;
       'gmp-place-details-location-request': GmpPlaceDetailsLocationRequestProps;
       'gmp-place-details-place-request': GmpPlaceDetailsPlaceRequestProps;
       'gmp-place-content-config': GmpPlaceContentConfigProps;

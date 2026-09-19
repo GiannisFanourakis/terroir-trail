@@ -14,11 +14,12 @@ interface GooglePlaceMediaProps {
 }
 
 /**
- * Live producer imagery rendered exclusively through Places UI Kit.
+ * Live producer imagery rendered through Places UI Kit.
  *
- * The component is intentionally presentation-only: no Google headings,
- * explanatory copy, ratings, hours, reviews, or other Place fields are shown.
- * TerroirTrail never persists, proxies, caches, or rehosts the Google image.
+ * Google custom elements are created imperatively rather than through React JSX.
+ * This avoids React/custom-element property upgrade edge cases and keeps failures
+ * isolated to this media frame. If Google media cannot render, the fallback image
+ * remains visible and the rest of TerroirTrail continues normally.
  */
 export const GooglePlaceMedia: React.FC<GooglePlaceMediaProps> = ({
   producer,
@@ -29,12 +30,14 @@ export const GooglePlaceMedia: React.FC<GooglePlaceMediaProps> = ({
   deferUntilVisible = false,
 }) => {
   const frameRef = useRef<HTMLDivElement>(null);
+  const googleHostRef = useRef<HTMLDivElement>(null);
   const googlePlaceId = producer?.googlePlaceId?.trim();
   const isEligible = Boolean(
     producer && googlePlaceId && isGooglePlacesEligible(producer)
   );
   const isFeatureEnabled = runtimeConfig.googlePlacesMedia.enabled;
   const [shouldActivate, setShouldActivate] = useState(!deferUntilVisible);
+  const [renderFailed, setRenderFailed] = useState(false);
 
   useEffect(() => {
     if (!deferUntilVisible) {
@@ -75,8 +78,61 @@ export const GooglePlaceMedia: React.FC<GooglePlaceMediaProps> = ({
     shouldActivate;
 
   const { isReady, status } = useGooglePlacesUiKit(shouldLoad);
+
+  useEffect(() => {
+    const host = googleHostRef.current;
+    if (!host) return;
+
+    host.replaceChildren();
+    setRenderFailed(false);
+
+    if (!shouldLoad || !isReady || status !== 'ready' || !googlePlaceId) {
+      return;
+    }
+
+    try {
+      const details = document.createElement('gmp-place-details-compact');
+      details.setAttribute('orientation', 'vertical');
+      details.setAttribute('truncation-preferred', '');
+      details.style.width = '100%';
+      details.style.maxWidth = 'none';
+      details.style.margin = '0';
+      details.style.padding = '0';
+      details.style.border = '0';
+      details.style.backgroundColor = 'transparent';
+      details.style.colorScheme = 'dark';
+
+      const request = document.createElement('gmp-place-details-place-request');
+      request.setAttribute('place', googlePlaceId);
+
+      const content = document.createElement('gmp-place-content-config');
+      const placeMedia = document.createElement('gmp-place-media');
+      placeMedia.setAttribute('lightbox-preferred', '');
+
+      const attribution = document.createElement('gmp-place-attribution');
+      attribution.setAttribute('light-scheme-color', 'gray');
+      attribution.setAttribute('dark-scheme-color', 'white');
+
+      content.append(placeMedia, attribution);
+      details.append(request, content);
+      host.append(details);
+    } catch (error) {
+      console.warn('[GooglePlaceMedia] Places UI Kit render failed:', error);
+      host.replaceChildren();
+      setRenderFailed(true);
+    }
+
+    return () => {
+      host.replaceChildren();
+    };
+  }, [googlePlaceId, isReady, shouldLoad, status]);
+
   const showGoogle =
-    shouldLoad && isReady && status === 'ready' && Boolean(googlePlaceId);
+    shouldLoad &&
+    isReady &&
+    status === 'ready' &&
+    Boolean(googlePlaceId) &&
+    !renderFailed;
 
   return (
     <div
@@ -94,39 +150,12 @@ export const GooglePlaceMedia: React.FC<GooglePlaceMediaProps> = ({
         />
       )}
 
-      {showGoogle && googlePlaceId && (
-        <div
-          className="absolute inset-0 bg-stone-900"
-          data-testid="google-places-ui-kit-host"
-        >
-          <gmp-place-details-compact
-            orientation="vertical"
-            truncation-preferred
-            style={{
-              width: '100%',
-              height: '100%',
-              maxWidth: 'none',
-              margin: 0,
-              padding: 0,
-              border: 0,
-              backgroundColor: 'transparent',
-              colorScheme: 'dark',
-            }}
-          >
-            <gmp-place-details-place-request place={googlePlaceId} />
-            <gmp-place-content-config>
-              <gmp-place-media
-                lightbox-preferred
-                preferred-size="large"
-              />
-              <gmp-place-attribution
-                light-scheme-color="gray"
-                dark-scheme-color="white"
-              />
-            </gmp-place-content-config>
-          </gmp-place-details-compact>
-        </div>
-      )}
+      <div
+        ref={googleHostRef}
+        className={`absolute inset-0 bg-stone-900 ${showGoogle ? '' : 'pointer-events-none opacity-0'}`}
+        data-testid="google-places-ui-kit-host"
+        aria-hidden={showGoogle ? undefined : true}
+      />
     </div>
   );
 };
