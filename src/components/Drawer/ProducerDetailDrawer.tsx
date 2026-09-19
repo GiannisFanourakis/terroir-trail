@@ -548,13 +548,13 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
       />
 
       <div
-        className="fixed inset-y-0 right-0 z-50 w-full sm:w-[480px] lg:w-[540px] max-w-full bg-stone-950 text-stone-100 shadow-2xl flex flex-col border-l border-white/10 animate-in slide-in-from-right duration-300 select-none"
+        className="fixed inset-y-0 right-0 z-50 w-full sm:w-[520px] md:w-[560px] lg:w-[580px] xl:w-[620px] max-w-full bg-stone-950 text-stone-100 shadow-2xl flex flex-col border-l border-white/10 animate-in slide-in-from-right duration-300 select-none"
         role="dialog"
         aria-modal="true"
         aria-label={`Producer details: ${producer.name}`}
       >
 
-        <div className="relative h-48 sm:h-60 lg:h-64 w-full shrink-0 bg-stone-900 overflow-hidden group">
+        <div className="relative h-48 sm:h-60 md:h-64 lg:h-64 w-full shrink-0 bg-stone-900 overflow-hidden group">
           {!hasTrustedLocalMedia ? (
             <GooglePlaceMedia
               producer={producer}
@@ -631,7 +631,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
             )}
             <button
               onClick={handleShare}
-              className="w-9 h-9 rounded-full bg-black/60 hover:bg-black/80 text-white flex items-center justify-center backdrop-blur-md border border-white/10 transition"
+              className="w-11 h-11 sm:w-10 sm:h-10 rounded-full bg-black/60 hover:bg-black/80 text-white flex items-center justify-center backdrop-blur-md border border-white/10 transition"
               title="Copy Link"
               aria-label={copiedLink ? 'Producer link copied' : 'Copy producer link'}
             >
@@ -639,7 +639,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
             </button>
             <button
               onClick={onClose}
-              className="w-9 h-9 rounded-full bg-black/60 hover:bg-black/80 text-white flex items-center justify-center backdrop-blur-md border border-white/10 transition"
+              className="w-11 h-11 sm:w-10 sm:h-10 rounded-full bg-black/60 hover:bg-black/80 text-white flex items-center justify-center backdrop-blur-md border border-white/10 transition"
               aria-label="Close"
             >
               <X className="w-5 h-5" />

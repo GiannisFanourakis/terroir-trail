@@ -1,7 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import React from 'react';
 import { renderToString } from 'react-dom/server';
-import { ProducerCard } from './Sidebar/ProducerCard';
 import { ProducerDetailDrawer } from './Drawer/ProducerDetailDrawer';
 import { Producer, Category } from '../types/terroir';
 import { readFileSync } from 'node:fs';
@@ -42,116 +41,6 @@ const createTestProducer = (category: Category, overrides: Partial<Producer> = {
 });
 
 describe('Phase 8 Producer Card + Detail Hierarchy', () => {
-  describe('ProducerCard Primary Hierarchy & Simplification', () => {
-    it('renders all 7 categories with category badges and SVG icons', () => {
-      const categories: { cat: Category; label: string }[] = [
-        { cat: 'winery', label: 'Winery' },
-        { cat: 'brewery', label: 'Brewery' },
-        { cat: 'olive_mill', label: 'Olive Mill' },
-        { cat: 'cheese_dairy', label: 'Dairy' },
-        { cat: 'apiary', label: 'Apiary / Honey' },
-        { cat: 'distillery', label: 'Distillery' },
-        { cat: 'farm', label: 'Farm' },
-      ];
-
-      for (const { cat, label } of categories) {
-        const p = createTestProducer(cat);
-        const html = renderToString(
-          React.createElement(ProducerCard, {
-            producer: p,
-            isSelected: false,
-            isFavorite: false,
-            onSelect: () => {},
-            onToggleFavorite: () => {},
-          })
-        );
-
-        expect(html).toContain(label);
-        expect(html).toContain('<svg');
-        expect(html).toContain(p.name);
-        expect(html).toContain(p.village);
-      }
-    });
-
-    it('prioritizes primary hierarchy: name, category, location, visitability, road access', () => {
-      const p = createTestProducer('farm', {
-        visitStatus: 'public_visits',
-        walkInFriendly: true,
-        roadAccess: 'unpaved_passable',
-        roadAccessStatus: 'verified',
-      });
-
-      const html = renderToString(
-        React.createElement(ProducerCard, {
-          producer: p,
-          isSelected: false,
-          isFavorite: false,
-          onSelect: () => {},
-          onToggleFavorite: () => {},
-        })
-      );
-
-      // 1. Name
-      expect(html).toContain(p.name);
-      // 2. Category
-      expect(html).toContain('Farm');
-      expect(html).toContain('<svg');
-      // 3. Location
-      expect(html).toContain('Archanes');
-      expect(html).toContain('HERAKLION');
-      // 4. Visitability signal
-      expect(html).toContain('Walk-ins welcome');
-      // 5. Road/access signal
-      expect(html).toContain('Unpaved access');
-      // 6. View Story action
-      expect(html).toContain('View Story');
-    });
-
-    it('reduces visual clutter on the card by not displaying secondary variety or price tags', () => {
-      const p = createTestProducer('winery', {
-        indigenousVarieties: ['Vidiano', 'Liatiko'],
-        priceLevel: '€€',
-        rating: 4.9,
-      });
-
-      const html = renderToString(
-        React.createElement(ProducerCard, {
-          producer: p,
-          isSelected: false,
-          isFavorite: false,
-          onSelect: () => {},
-          onToggleFavorite: () => {},
-        })
-      );
-
-      // Clutter removed from card (deferred to detail drawer)
-      expect(html).not.toContain('Vidiano');
-      expect(html).not.toContain('Liatiko');
-      expect(html).not.toContain('€€');
-    });
-
-    it('preserves honest unknown road access state without positive fabrication', () => {
-      const p = createTestProducer('distillery', {
-        roadAccessStatus: 'unreviewed',
-        roadAccess: undefined,
-      });
-
-      const html = renderToString(
-        React.createElement(ProducerCard, {
-          producer: p,
-          isSelected: false,
-          isFavorite: false,
-          onSelect: () => {},
-          onToggleFavorite: () => {},
-        })
-      );
-
-      expect(html).toContain('Access not classified');
-      expect(html).not.toContain('Paved road');
-      expect(html).not.toContain('4x4 required');
-    });
-  });
-
   describe('ProducerDetailDrawer Standardized Hierarchy', () => {
     it('adapts "What They Make" and "Visiting" terminology across all 7 categories without forcing wine terms', () => {
       const expectations: {
@@ -302,20 +191,6 @@ describe('Phase 8 Producer Card + Detail Hierarchy', () => {
         walkInFriendly: true,
       });
 
-      const cardHtml = renderToString(
-        React.createElement(ProducerCard, {
-          producer: p,
-          isSelected: false,
-          isFavorite: false,
-          onSelect: () => {},
-          onToggleFavorite: () => {},
-        })
-      );
-
-      // Card must remain neutral and not claim walk-ins welcome
-      expect(cardHtml).toContain('Visit status unreviewed');
-      expect(cardHtml).not.toContain('Walk-ins welcome');
-
       const drawerHtml = renderToString(
         React.createElement(ProducerDetailDrawer, {
           producer: p,
@@ -335,18 +210,6 @@ describe('Phase 8 Producer Card + Detail Hierarchy', () => {
         visitStatus: 'public_visits',
         walkInFriendly: true,
       });
-
-      const cardHtml = renderToString(
-        React.createElement(ProducerCard, {
-          producer: p,
-          isSelected: false,
-          isFavorite: false,
-          onSelect: () => {},
-          onToggleFavorite: () => {},
-        })
-      );
-
-      expect(cardHtml).toContain('Walk-ins welcome');
 
       const drawerHtml = renderToString(
         React.createElement(ProducerDetailDrawer, {

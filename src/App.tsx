@@ -6,7 +6,6 @@ import type { ProducerOverride } from './types/booking';
 import { Header } from './components/Header/Header';
 import { FilterBar } from './components/FilterBar/FilterBar';
 import { MapCanvas } from './components/Map/MapCanvas';
-import { ProducerList } from './components/Sidebar/ProducerList';
 import { TERROIR_REGIONS } from './data/terroirRegionCatalogue';
 import { withTerroirRegionStory } from './data/terroirRegionStories';
 import { useFavorites } from './hooks/useFavorites';
@@ -357,21 +356,6 @@ export const App: React.FC = () => {
       )}
 
       <main className="relative flex-1 flex overflow-hidden min-h-0">
-        <div className="hidden lg:flex h-full shrink-0 z-10">
-          <ProducerList
-            producers={filteredProducers}
-            selectedProducer={publicSelectedProducer}
-            onSelectProducer={(p) => {
-              setSelectedProducer(p);
-              setIsRegionGuideOpen(false);
-              setIsDrawerOpen(true);
-            }}
-            onResetFilters={handleResetFilters}
-            isFavorite={isFavorite}
-            onToggleFavorite={toggleFavorite}
-          />
-        </div>
-
         <div className="flex-1 h-full w-full relative">
           <div className={`absolute top-2.5 left-0 right-0 z-20 pointer-events-none justify-center px-3 ${selectedProducer ? 'hidden sm:flex' : 'flex'}`}>
             <div className="pointer-events-auto w-full max-w-2xl">

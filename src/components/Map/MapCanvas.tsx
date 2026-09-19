@@ -1425,9 +1425,9 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
 
       {selectedProducer && (
         <div
-          className="absolute left-1/2 -translate-x-1/2 z-30 w-[95%] sm:w-[480px] max-w-lg animate-in slide-in-from-bottom-6 duration-300 bottom-[calc(3rem+env(safe-area-inset-bottom,0px))] sm:bottom-4"
+          className="absolute left-1/2 -translate-x-1/2 z-30 w-[95%] sm:w-[520px] md:w-[560px] max-w-[calc(100%-2rem)] animate-in slide-in-from-bottom-6 duration-300 bottom-[calc(3rem+env(safe-area-inset-bottom,0px))] sm:bottom-5 md:bottom-6"
         >
-          <div className="glass-panel p-2.5 sm:p-3.5 rounded-2xl sm:rounded-3xl shadow-2xl border border-white/15 text-stone-100 flex gap-2.5 sm:gap-3.5 items-center relative overflow-hidden">
+          <div className="glass-panel p-2.5 sm:p-3.5 md:p-4 rounded-2xl sm:rounded-3xl shadow-2xl border border-white/15 text-stone-100 flex gap-2.5 sm:gap-3.5 md:gap-4 items-center relative overflow-hidden">
             <div className="absolute -right-10 -bottom-10 w-36 h-36 bg-amber-500/20 rounded-full blur-3xl pointer-events-none" />
 
             {selectedResolvedCover &&
@@ -1468,7 +1468,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
                         e.stopPropagation();
                         onToggleFavorite(selectedProducer.id);
                       }}
-                      className={`p-1 rounded-full transition ${
+                      className={`w-10 h-10 sm:w-9 sm:h-9 rounded-full flex items-center justify-center transition ${
                         isFavorite(selectedProducer.id) ? 'text-rose-500 scale-110' : 'text-stone-400 hover:text-white'
                       }`}
                       title={isFavorite(selectedProducer.id) ? 'Remove from saved places' : 'Save place'}
@@ -1481,7 +1481,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
                         e.stopPropagation();
                         onSelectProducer(null);
                       }}
-                      className="text-stone-400 hover:text-white p-1"
+                      className="w-10 h-10 sm:w-9 sm:h-9 rounded-full flex items-center justify-center text-stone-400 hover:text-white hover:bg-white/5 transition"
                       aria-label="Close producer preview"
                     >
                       <X className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
@@ -1511,7 +1511,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
 
                 <button
                   onClick={() => onOpenDrawer(selectedProducer)}
-                  className="flex items-center gap-1 text-[11px] sm:text-xs font-bold bg-amber-500 hover:bg-amber-400 text-stone-950 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl shadow transition active:scale-95 shrink-0 ml-auto"
+                  className="flex min-h-[40px] md:min-h-[44px] items-center gap-1.5 text-[11px] sm:text-xs font-bold bg-amber-500 hover:bg-amber-400 text-stone-950 px-3 md:px-4 py-2 rounded-xl shadow transition active:scale-95 shrink-0 ml-auto"
                 >
                   <span>Explore Story</span>
                   <ChevronRight className="w-3 h-3 sm:w-3.5 sm:h-3.5" />

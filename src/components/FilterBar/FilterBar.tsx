@@ -216,7 +216,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                 <button
                   key={cat.id}
                   onClick={() => onFilterChange('category', cat.id)}
-                  className={`flex items-center gap-1.5 px-3 py-2 sm:px-3.5 sm:py-1.5 rounded-full text-[11px] sm:text-xs font-semibold transition-all duration-200 whitespace-nowrap shadow-sm shrink-0 cursor-pointer min-h-[44px] sm:min-h-[32px] ${
+                  className={`flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-semibold transition-all duration-200 whitespace-nowrap shadow-sm shrink-0 cursor-pointer min-h-[44px] lg:min-h-[32px] lg:py-1.5 ${
                     isSelected
                       ? `${cat.activeColor} shadow-lg scale-105 ring-2 ring-white/20 font-bold`
                       : 'bg-stone-800/80 text-stone-300 hover:text-white hover:bg-stone-700/80 border border-white/5'
@@ -236,7 +236,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
 
             <button
               onClick={() => setIsMoreFiltersOpen((prev) => !prev)}
-              className={`flex items-center gap-1 text-[11px] sm:text-xs px-3 py-2 sm:px-2.5 sm:py-1 rounded-full font-medium border transition shrink-0 cursor-pointer min-h-[44px] sm:min-h-[32px] ${
+              className={`flex items-center gap-1 text-[11px] sm:text-xs px-3 py-2 sm:px-2.5 sm:py-1 rounded-full font-medium border transition shrink-0 cursor-pointer min-h-[44px] lg:min-h-[32px] ${
                 isMoreFiltersOpen || activeSecondaryCount > 0
                   ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
                   : 'bg-stone-800 text-stone-400 hover:text-white border-white/10'
