@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
+import { readFileSync } from 'node:fs';
 import type { Producer } from '../../types/terroir';
 
 vi.mock('leaflet', () => ({
@@ -390,4 +391,16 @@ describe('MapCanvas marker diffing, in-place updates, and motion preferences', (
       (globalThis as any).window = originalWindow;
     }
   });
+
+  it('does not render category placeholder imagery in the map producer preview', () => {
+    const source = readFileSync('src/components/Map/MapCanvas.tsx', 'utf8');
+
+    expect(source).toContain(
+      "selectedResolvedCover.source !== 'category_fallback'"
+    );
+    expect(source).not.toContain(
+      'selectedResolvedCover?.url ||\n                  getCategoryFallbackImage'
+    );
+  });
+
 });

@@ -1440,34 +1440,24 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
           <div className="glass-panel p-2.5 sm:p-3.5 rounded-2xl sm:rounded-3xl shadow-2xl border border-white/15 text-stone-100 flex gap-2.5 sm:gap-3.5 items-center relative overflow-hidden">
             <div className="absolute -right-10 -bottom-10 w-36 h-36 bg-amber-500/20 rounded-full blur-3xl pointer-events-none" />
 
-            <div className="relative h-20 w-22 sm:h-24 sm:w-32 rounded-xl sm:rounded-2xl overflow-hidden shrink-0 bg-stone-900 border border-white/10">
-              <img
-                src={
-                  selectedResolvedCover?.url ||
-                  getCategoryFallbackImage(
-                    getEffectiveProducerCategory(selectedProducer)
-                  )
-                }
-                alt={selectedProducer.name}
-                className="w-full h-full object-cover"
-                loading="lazy"
-                decoding="async"
-                onError={(e) => {
-                  const fallback = getCategoryFallbackImage(
-                    getEffectiveProducerCategory(selectedProducer)
-                  );
-                  if (e.currentTarget.src !== fallback) {
-                    e.currentTarget.src = fallback;
-                  }
-                }}
-              />
-              {selectedProducer.rating != null && (
-                <span className="absolute top-1 left-1 bg-black/70 backdrop-blur-md text-amber-400 text-[9px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded flex items-center gap-0.5 z-20">
-                  <Star className="w-2.5 h-2.5 sm:w-3 sm:h-3 fill-amber-400" aria-hidden="true" />
-                  <span>{selectedProducer.rating}</span>
-                </span>
+            {selectedResolvedCover &&
+              selectedResolvedCover.source !== 'category_fallback' && (
+                <div className="relative h-20 w-22 sm:h-24 sm:w-32 rounded-xl sm:rounded-2xl overflow-hidden shrink-0 bg-stone-900 border border-white/10">
+                  <img
+                    src={selectedResolvedCover.url}
+                    alt={selectedProducer.name}
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  {selectedProducer.rating != null && (
+                    <span className="absolute top-1 left-1 bg-black/70 backdrop-blur-md text-amber-400 text-[9px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded flex items-center gap-0.5 z-20">
+                      <Star className="w-2.5 h-2.5 sm:w-3 sm:h-3 fill-amber-400" aria-hidden="true" />
+                      <span>{selectedProducer.rating}</span>
+                    </span>
+                  )}
+                </div>
               )}
-            </div>
 
             <div className="flex-1 min-w-0 flex flex-col justify-between py-0.5">
               <div>
