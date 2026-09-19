@@ -108,6 +108,9 @@ export const fitBoundsWithMotion = (
   });
 };
 
+export const getAutomaticDestinationZoom = (targetZoom: number): number =>
+  Math.min(targetZoom, 10);
+
 export const getProducerMarkerSignature = (producer: Producer): string => {
   const [lat, lng] = producer.coordinates;
   const effectiveCat = getEffectiveProducerCategory(producer);
@@ -529,7 +532,11 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     const target = selectedDestination === 'all'
       ? { coords: countryTarget.center, zoom: countryTarget.zoom }
       : DESTINATION_CENTERS[selectedDestination];
-    flyOrSetView(map, target.coords, target.zoom, { mobileDuration: 0.5, desktopDuration: 1.0 });
+    const targetZoom = getAutomaticDestinationZoom(target.zoom);
+    const motion = getMapMotionPreference({ mobileDuration: 0.3, desktopDuration: 0.45 });
+    map.setView(target.coords, targetZoom, {
+      animate: !motion.isReduced,
+    });
   }, [selectedDestination, countryScope]);
 
   useEffect(() => {
@@ -595,11 +602,13 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       const selectRegion = () => {
         onSelectProducerRef.current(null);
         setActiveRegionId(region.id);
-        if (regionBounds.isValid()) {
+        if (regionBounds.isValid() && !map.getBounds().contains(regionBounds)) {
           fitBoundsWithMotion(map, regionBounds, {
-            maxZoom: Math.max(9, DESTINATION_CENTERS[region.destination].zoom),
-            mobileDuration: 0.5,
-            desktopDuration: 0.8,
+            maxZoom: getAutomaticDestinationZoom(
+              Math.max(9, DESTINATION_CENTERS[region.destination].zoom)
+            ),
+            mobileDuration: 0.3,
+            desktopDuration: 0.45,
           });
         }
       };
@@ -825,8 +834,9 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
 
           clusterMarker.on('click', (event) => {
             L.DomEvent.stopPropagation(event);
-            const nextZoom = Math.min(18, Math.max(strategy.clusterMaxZoom + 1, zoom + 2));
-            map.setView(cluster.center, nextZoom, { animate: false });
+            const nextZoom = Math.min(18, Math.max(strategy.clusterMaxZoom + 1, zoom + 1));
+            const motion = getMapMotionPreference({ mobileDuration: 0.25, desktopDuration: 0.35 });
+            map.setView(cluster.center, nextZoom, { animate: !motion.isReduced });
           });
 
           clusterMarker.addTo(map);
@@ -885,7 +895,9 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     }
   }, [selectedProducer, pinDisplayMode]);
 
-  // Effect 3: Camera flyTo on selection - optimized for mobile responsiveness & reduced motion
+  // Keep producer selection spatially stable. A marker click should not yank the
+  // traveler into a fixed zoom; only pan when the producer sits outside a
+  // comfortable inner viewport, preserving the user's current zoom level.
   useEffect(() => {
     const map = mapInstanceRef.current;
     if (!map || !selectedProducer || selectedProducer.locationStatus === 'unresolved') return;
@@ -893,10 +905,16 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     setActiveRegionId(null);
     const [lat, lng] = selectedProducer.coordinates;
     if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
-    const isMobile = window.innerWidth < 768;
-    const targetLat = isMobile ? lat - 0.015 : lat;
 
-    flyOrSetView(map, [targetLat, lng], 13, { mobileDuration: 0.5, desktopDuration: 0.8 });
+    const comfortableBounds = map.getBounds().pad(-0.15);
+    if (comfortableBounds.contains([lat, lng])) return;
+
+    const motion = getMapMotionPreference({ mobileDuration: 0.3, desktopDuration: 0.4 });
+    map.panTo([lat, lng], {
+      animate: !motion.isReduced,
+      duration: motion.duration,
+      easeLinearity: 0.35,
+    });
   }, [selectedProducer]);
 
   const handleZoomIn = () => mapInstanceRef.current?.zoomIn();
@@ -918,15 +936,9 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     if (!activeTerroirRegion || !mapInstanceRef.current) return;
     onSelectProducer(null);
     setActiveRegionId(activeTerroirRegion.id);
+    // onExploreRegion changes the destination, whose map effect performs the
+    // single gentle recenter. Avoid a second fitBounds move here.
     onExploreRegion?.(activeTerroirRegion.destination);
-    const bounds = L.geoJSON(getRegionFeature(activeTerroirRegion) as any).getBounds();
-    if (bounds.isValid()) {
-      fitBoundsWithMotion(mapInstanceRef.current, bounds, {
-        maxZoom: Math.max(9, DESTINATION_CENTERS[activeTerroirRegion.destination].zoom),
-        mobileDuration: 0.5,
-        desktopDuration: 0.8,
-      });
-    }
   };
 
   const handleLocateMe = async () => {

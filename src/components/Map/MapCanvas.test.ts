@@ -20,6 +20,7 @@ import {
   getMapMotionPreference,
   getAdaptiveMapRenderStrategy,
   shouldClusterProducerMarkers,
+  getAutomaticDestinationZoom,
 } from './MapCanvas';
 
 describe('MapCanvas marker diffing, in-place updates, and motion preferences', () => {
@@ -351,6 +352,14 @@ describe('MapCanvas marker diffing, in-place updates, and motion preferences', (
     expect(
       shouldClusterProducerMarkers(14, desktop.maxIndividualMarkers, desktop)
     ).toBe(false);
+  });
+
+  it('caps automatic destination zoom so region changes stay contextual', () => {
+    expect(getAutomaticDestinationZoom(4)).toBe(4);
+    expect(getAutomaticDestinationZoom(9)).toBe(9);
+    expect(getAutomaticDestinationZoom(10)).toBe(10);
+    expect(getAutomaticDestinationZoom(12)).toBe(10);
+    expect(getAutomaticDestinationZoom(14)).toBe(10);
   });
 
   it('getMapMotionPreference respects prefers-reduced-motion and adjusts mobile duration', () => {
