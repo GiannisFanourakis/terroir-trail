@@ -11,17 +11,11 @@ import { resolveProducerCover } from '../../utils/producerMediaResolver';
 import { getUserCoordinates } from '../../services/geolocation';
 import { TERROIR_REGIONS, type TerroirRegion } from '../../data/terroirRegionCatalogue';
 import {
-  COUNTRY_LAYERS,
   getActiveCountryScope,
   getCountryLayer,
   getDestinationCountry,
 } from '../../config/geography';
 import type { CountryScope } from '../../config/geography';
-import {
-  COUNTRY_BOUNDARY_ATTRIBUTION,
-  loadCountryBoundary,
-} from '../../data/countryBoundaries';
-import type { SupportedCountryScope } from '../../data/countryBoundaries';
 import { getProducerCategoryIconMarkup } from '../Common/ProducerCategoryIcon';
 
 interface MapCanvasProps {
@@ -44,53 +38,6 @@ const getRegionFeature = (region: TerroirRegion) => ({
   },
   geometry: region.geometry,
 });
-
-const getRegionStyle = (isActive: boolean, zoom: number): L.PathOptions => {
-  const closeZoom = zoom >= 13;
-  return {
-    color: '#f59e0b',
-    weight: isActive ? 3 : 1.5,
-    opacity: isActive ? 0.95 : closeZoom ? 0.22 : 0.68,
-    fillColor: '#f59e0b',
-    fillOpacity: isActive ? 0.16 : closeZoom ? 0.01 : 0.055,
-    dashArray: isActive ? undefined : '6 6',
-  };
-};
-
-const getCountryStyle = (
-  isSelected: boolean,
-  isHovered: boolean,
-  isRegionLevel: boolean
-): L.PathOptions => {
-  if (isHovered) {
-    return {
-      color: '#f59e0b',
-      weight: 3,
-      opacity: 1,
-      fillColor: '#f59e0b',
-      fillOpacity: 0.16,
-    };
-  }
-
-  if (isSelected) {
-    return {
-      color: '#f59e0b',
-      weight: isRegionLevel ? 1.75 : 3,
-      opacity: isRegionLevel ? 0.5 : 0.95,
-      fillColor: '#f59e0b',
-      fillOpacity: isRegionLevel ? 0.02 : 0.12,
-    };
-  }
-
-  return {
-    color: '#f59e0b',
-    weight: 1.5,
-    opacity: 0.5,
-    fillColor: '#f59e0b',
-    fillOpacity: 0.025,
-    dashArray: '5 6',
-  };
-};
 
 export interface MapMotionOptions {
   desktopDuration?: number;
@@ -252,7 +199,6 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
   selectedDestination,
   isFavorite,
   onToggleFavorite,
-  onExploreCountry,
   onExploreRegion,
 }) => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
@@ -262,10 +208,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
   const markerRenderModesRef = useRef<{ [id: string]: ProducerMarkerRenderMode }>({});
   const clusterMarkersRef = useRef<{ [id: string]: L.Marker }>({});
   const tileLayerRef = useRef<L.TileLayer | null>(null);
-  const countryBoundaryLayersRef = useRef<Map<SupportedCountryScope, L.GeoJSON>>(new Map());
-  const regionLayersRef = useRef<Map<string, L.GeoJSON>>(new Map());
   const regionLabelsRef = useRef<Map<string, L.Marker>>(new Map());
-  const activeRegionRef = useRef<string | null>(null);
 
   type MapTheme = 'topo' | 'voyager' | 'dark' | 'satellite';
   const [mapTheme, setMapTheme] = useState<MapTheme>('topo');
@@ -274,11 +217,6 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
   const onSelectProducerRef = useRef(onSelectProducer);
   useEffect(() => {
     onSelectProducerRef.current = onSelectProducer;
-  });
-
-  const onExploreCountryRef = useRef(onExploreCountry);
-  useEffect(() => {
-    onExploreCountryRef.current = onExploreCountry;
   });
 
   const selectedProducerIdRef = useRef<string | null>(selectedProducer?.id ?? null);
@@ -509,10 +447,6 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       markerZoomAnimation: !mobileMap,
     });
 
-    const countryBoundaryPane = map.createPane('country-boundary-pane');
-    countryBoundaryPane.style.zIndex = '350';
-    countryBoundaryPane.style.pointerEvents = 'auto';
-
     tileLayerRef.current = L.tileLayer(TILE_CONFIGS[mapTheme].url, {
       attribution: TILE_CONFIGS[mapTheme].attribution,
       maxZoom: TILE_CONFIGS[mapTheme].maxZoom,
@@ -564,8 +498,6 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       markerSignaturesRef.current = {};
       markerRenderModesRef.current = {};
       clusterMarkersRef.current = {};
-      countryBoundaryLayersRef.current.clear();
-      regionLayersRef.current.clear();
       regionLabelsRef.current.clear();
       map.remove();
       mapInstanceRef.current = null;
@@ -599,103 +531,6 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       : DESTINATION_CENTERS[selectedDestination];
     flyOrSetView(map, target.coords, target.zoom, { mobileDuration: 0.5, desktopDuration: 1.0 });
   }, [selectedDestination, countryScope]);
-
-  useEffect(() => {
-    const map = mapInstanceRef.current;
-    if (!map) return;
-
-    countryBoundaryLayersRef.current.forEach((layer) => {
-      if (map.hasLayer(layer)) map.removeLayer(layer);
-    });
-    countryBoundaryLayersRef.current.clear();
-
-    const visibleCountries: SupportedCountryScope[] = countryScope === 'all'
-      ? COUNTRY_LAYERS
-          .filter((country) => country.id !== 'all')
-          .map((country) => country.id as SupportedCountryScope)
-      : [countryScope as SupportedCountryScope];
-
-    if (visibleCountries.length === 0) return;
-
-    let cancelled = false;
-    map.attributionControl.addAttribution(COUNTRY_BOUNDARY_ATTRIBUTION);
-
-    visibleCountries.forEach((country) => {
-      loadCountryBoundary(country)
-        .then((feature) => {
-          if (cancelled || !feature || !mapInstanceRef.current) return;
-
-          const isSelected = countryScope === country;
-          const isRegionLevel = isSelected && selectedDestination !== 'all';
-          const countryConfig = getCountryLayer(country);
-
-          const countryLayer = L.geoJSON(feature as any, {
-            pane: 'country-boundary-pane',
-            interactive: true,
-            style: () => getCountryStyle(isSelected, false, isRegionLevel),
-            onEachFeature: (_feature, featureLayer) => {
-              featureLayer.on({
-                mouseover: () => {
-                  (featureLayer as L.Path).setStyle(
-                    getCountryStyle(isSelected, true, isRegionLevel)
-                  );
-                },
-                mouseout: () => {
-                  (featureLayer as L.Path).setStyle(
-                    getCountryStyle(isSelected, false, isRegionLevel)
-                  );
-                },
-                click: (event: L.LeafletMouseEvent) => {
-                  L.DomEvent.stopPropagation(event.originalEvent);
-                  onSelectProducerRef.current(null);
-                  setActiveRegionId(null);
-
-                  const hasDistantArchipelago = country === 'PT' || country === 'NO' || country === 'ES';
-                  const bounds = (featureLayer as L.Polygon).getBounds();
-                  if (!hasDistantArchipelago && bounds.isValid()) {
-                    fitBoundsWithMotion(map, bounds, {
-                      maxZoom: countryConfig.zoom,
-                      mobileDuration: 0.5,
-                      desktopDuration: 0.8,
-                    });
-                  } else {
-                    flyOrSetView(map, countryConfig.center, countryConfig.zoom, {
-                      mobileDuration: 0.5,
-                      desktopDuration: 0.8,
-                    });
-                  }
-
-                  if (countryScope !== country || selectedDestination !== 'all') {
-                    onExploreCountryRef.current?.(country);
-                  }
-                },
-              });
-            },
-          }).addTo(map);
-
-          countryLayer.eachLayer((featureLayer) => {
-            const element = (featureLayer as L.Path).getElement?.() as HTMLElement | SVGElement | null;
-            if (element) element.style.cursor = 'pointer';
-          });
-
-          countryBoundaryLayersRef.current.set(country, countryLayer);
-        })
-        .catch((error) => {
-          if (import.meta.env.DEV && !cancelled) {
-            console.warn(`[MapCanvas] Unable to render NUTS 0 boundary for ${country}`, error);
-          }
-        });
-    });
-
-    return () => {
-      cancelled = true;
-      countryBoundaryLayersRef.current.forEach((layer) => {
-        if (map.hasLayer(layer)) map.removeLayer(layer);
-      });
-      countryBoundaryLayersRef.current.clear();
-      map.attributionControl.removeAttribution(COUNTRY_BOUNDARY_ATTRIBUTION);
-    };
-  }, [countryScope, selectedDestination]);
 
   useEffect(() => {
     const map = mapInstanceRef.current;
@@ -739,11 +574,8 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     const map = mapInstanceRef.current;
     if (!map) return;
 
-    regionLayersRef.current.forEach((layer) => map.removeLayer(layer));
-    regionLayersRef.current.clear();
     regionLabelsRef.current.forEach((label) => map.removeLayer(label));
     regionLabelsRef.current.clear();
-    activeRegionRef.current = null;
     setActiveRegionId(null);
 
     const visibleRegions =
@@ -755,49 +587,22 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
         ? [selectedDestinationRegion]
         : [];
 
-    const createdLayers: L.GeoJSON[] = [];
     const createdLabels: L.Marker[] = [];
 
     visibleRegions.forEach((region) => {
-      const selectRegion = (bounds?: L.LatLngBounds) => {
+      const regionBounds = L.geoJSON(getRegionFeature(region) as any).getBounds();
+
+      const selectRegion = () => {
         onSelectProducerRef.current(null);
-        activeRegionRef.current = region.id;
         setActiveRegionId(region.id);
-        const targetBounds = bounds || regionLayersRef.current.get(region.id)?.getBounds();
-        if (targetBounds?.isValid()) {
-          fitBoundsWithMotion(map, targetBounds, {
+        if (regionBounds.isValid()) {
+          fitBoundsWithMotion(map, regionBounds, {
             maxZoom: Math.max(9, DESTINATION_CENTERS[region.destination].zoom),
             mobileDuration: 0.5,
             desktopDuration: 0.8,
           });
         }
       };
-
-      const regionLayer = L.geoJSON(getRegionFeature(region) as any, {
-        attribution: region.boundaryAttribution,
-        style: () => getRegionStyle(false, map.getZoom()),
-        onEachFeature: (_feature, featureLayer) => {
-          featureLayer.on({
-            mouseover: () => {
-              (featureLayer as L.Path).setStyle(getRegionStyle(true, map.getZoom()));
-            },
-            mouseout: () => {
-              (featureLayer as L.Path).setStyle(
-                getRegionStyle(activeRegionRef.current === region.id, map.getZoom())
-              );
-            },
-            click: (event: L.LeafletMouseEvent) => {
-              L.DomEvent.stopPropagation(event.originalEvent);
-              const bounds = (featureLayer as L.Polygon).getBounds();
-              selectRegion(bounds);
-            },
-          });
-        },
-      }).addTo(map);
-
-      regionLayer.bringToBack();
-      regionLayersRef.current.set(region.id, regionLayer);
-      createdLayers.push(regionLayer);
 
       if (selectedDestination !== 'all' || countryScope !== 'all') {
         const labelIcon = L.divIcon({
@@ -814,7 +619,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
         }).addTo(map);
         regionLabel.on('click', (event) => {
           L.DomEvent.stopPropagation(event.originalEvent);
-          selectRegion(regionLayer.getBounds());
+          selectRegion();
         });
         regionLabelsRef.current.set(region.id, regionLabel);
         createdLabels.push(regionLabel);
@@ -822,12 +627,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     });
 
     return () => {
-      createdLayers.forEach((layer) => map.removeLayer(layer));
       createdLabels.forEach((label) => map.removeLayer(label));
-      createdLayers.forEach((layer) => {
-        const entry = Array.from(regionLayersRef.current.entries()).find(([, candidate]) => candidate === layer);
-        if (entry) regionLayersRef.current.delete(entry[0]);
-      });
       createdLabels.forEach((label) => {
         const entry = Array.from(regionLabelsRef.current.entries()).find(([, candidate]) => candidate === label);
         if (entry) regionLabelsRef.current.delete(entry[0]);
@@ -836,14 +636,10 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
   }, [selectedDestination, selectedDestinationRegion, countryScope]);
 
   useEffect(() => {
-    activeRegionRef.current = activeRegionId;
-    regionLayersRef.current.forEach((regionLayer, regionId) => {
-      regionLayer.setStyle(getRegionStyle(activeRegionId === regionId, mapZoom));
-    });
     regionLabelsRef.current.forEach((regionLabel) => {
       regionLabel.setOpacity(mapZoom >= 13 ? 0 : 1);
     });
-  }, [activeRegionId, mapZoom]);
+  }, [mapZoom]);
 
   // Effect 1: Producer marker diffing + adaptive render virtualization.
   // Desktop and mobile both render only markers near the current viewport.
@@ -1121,11 +917,10 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
   const handleExploreCurrentRegion = () => {
     if (!activeTerroirRegion || !mapInstanceRef.current) return;
     onSelectProducer(null);
-    activeRegionRef.current = activeTerroirRegion.id;
     setActiveRegionId(activeTerroirRegion.id);
     onExploreRegion?.(activeTerroirRegion.destination);
-    const bounds = regionLayersRef.current.get(activeTerroirRegion.id)?.getBounds();
-    if (bounds?.isValid()) {
+    const bounds = L.geoJSON(getRegionFeature(activeTerroirRegion) as any).getBounds();
+    if (bounds.isValid()) {
       fitBoundsWithMotion(mapInstanceRef.current, bounds, {
         maxZoom: Math.max(9, DESTINATION_CENTERS[activeTerroirRegion.destination].zoom),
         mobileDuration: 0.5,
@@ -1196,7 +991,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
 
   return (
     <div className="relative w-full h-full select-none overflow-hidden">
-      <div ref={mapContainerRef} className="w-full h-full z-0" role="region" aria-label="Interactive producer, country and NUTS-backed terroir-region map" />
+      <div ref={mapContainerRef} className="w-full h-full z-0" role="region" aria-label="Interactive producer map" />
       <div aria-live="polite" className="sr-only">
         {producers.length} producer{producers.length === 1 ? '' : 's'} currently available on the interactive map. Use search and filters to narrow the map, then tab to a marker and press Enter to open its preview.
       </div>
