@@ -383,35 +383,58 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
 
           <div className="flex items-center justify-between gap-2 pt-1 border-t border-white/5">
-            <div className="flex items-center bg-stone-900/90 p-0.5 sm:p-1 rounded-xl border border-white/10 overflow-x-auto scrollbar-none shrink-0 max-w-[70%] sm:max-w-none">
-              {COUNTRY_LAYERS.map((country) => {
-                const isActive = selectedDestination === 'all' && countryScope === country.id;
-                return (
-                  <button
-                    key={country.id}
-                    onClick={() => selectCountry(country.id)}
-                    className={`flex items-center gap-1 px-2 sm:px-3 py-1 rounded-lg text-[11px] sm:text-xs font-semibold whitespace-nowrap transition-all duration-200 shrink-0 cursor-pointer ${isActive ? 'bg-amber-500 text-stone-950 shadow-md font-bold' : 'text-stone-400 hover:text-white hover:bg-white/5'}`}
-                  >                    <span>{country.label}</span>
-                  </button>
-                );
-              })}
+            <div className="flex items-center gap-2 min-w-0 shrink-0">
+              <label className="relative min-w-[132px]">
+                <span className="sr-only">Country</span>
+                <select
+                  value={countryScope}
+                  onChange={(event) => selectCountry(event.target.value as CountryScope)}
+                  className="w-full appearance-none rounded-xl border border-white/10 bg-stone-900/90 py-1.5 pl-3 pr-8 text-xs font-semibold text-stone-200 outline-none transition hover:border-amber-400/40 focus:border-amber-400 focus:ring-1 focus:ring-amber-400/20 cursor-pointer"
+                  aria-label="Select country"
+                >
+                  {COUNTRY_LAYERS.map((country) => (
+                    <option key={country.id} value={country.id}>
+                      {country.label}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-stone-400" />
+              </label>
 
-              {visibleDestinations.length > 0 && <span className="h-4 w-px bg-white/15 mx-1 shrink-0" aria-hidden="true" />}
-
-              {visibleDestinations.map((destination) => {
-                const isActive = selectedDestination === destination.id;
-                return (
-                  <button
-                    key={destination.id}
-                    onClick={() => selectDestination(destination.id)}
-                    className={`flex items-center gap-1 px-2 sm:px-3 py-1 rounded-lg text-[11px] sm:text-xs font-semibold whitespace-nowrap transition-all duration-200 shrink-0 cursor-pointer ${isActive ? 'bg-amber-500 text-stone-950 shadow-md font-bold' : 'text-stone-400 hover:text-white hover:bg-white/5'}`}
-                  >                    <span>{destination.label}</span>
-                  </button>
-                );
-              })}
+              <label className="relative min-w-[168px]">
+                <span className="sr-only">Region</span>
+                <select
+                  value={countryScope === 'all' ? 'all' : selectedDestination}
+                  onChange={(event) => {
+                    const value = event.target.value as Destination | 'all';
+                    if (value === 'all') {
+                      onSelectDestination('all');
+                    } else {
+                      selectDestination(value);
+                    }
+                  }}
+                  disabled={countryScope === 'all' || visibleDestinations.length === 0}
+                  className="w-full appearance-none rounded-xl border border-white/10 bg-stone-900/90 py-1.5 pl-3 pr-8 text-xs font-semibold text-stone-200 outline-none transition hover:border-amber-400/40 focus:border-amber-400 focus:ring-1 focus:ring-amber-400/20 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45"
+                  aria-label="Select region"
+                >
+                  {countryScope === 'all' ? (
+                    <option value="all">Select country first</option>
+                  ) : (
+                    <>
+                      <option value="all">All regions</option>
+                      {visibleDestinations.map((destination) => (
+                        <option key={destination.id} value={destination.id}>
+                          {destination.label}
+                        </option>
+                      ))}
+                    </>
+                  )}
+                </select>
+                <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-stone-400" />
+              </label>
             </div>
 
-            <div className="relative flex-1 min-w-[120px] sm:min-w-[200px] max-w-sm sm:max-w-md shrink-0">
+            <div className="relative flex-1 min-w-[160px] max-w-sm sm:max-w-md">
               <Search className="w-3.5 h-3.5 text-stone-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none shrink-0" />
               <input type="text" value={searchQuery} onChange={event => onSearchChange(event.target.value)} placeholder="Search maker, grape..." className="w-full bg-stone-900/90 border border-white/10 text-stone-100 text-xs rounded-xl pl-8 pr-7 py-1.5 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400/20 placeholder:text-stone-500 transition" />
               {searchQuery && <button onClick={() => onSearchChange('')} className="absolute right-2 top-1/2 -translate-y-1/2 text-stone-400 hover:text-white cursor-pointer"><X className="w-3 h-3 shrink-0" /></button>}
