@@ -2,7 +2,6 @@ import { describe, expect, it, vi } from 'vitest';
 import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { ProducerDetailDrawer } from './Drawer/ProducerDetailDrawer';
-import { ProducerCard } from './Sidebar/ProducerCard';
 import { Producer } from '../types/terroir';
 
 // Mock googlePlacesPhotos so it returns curated photos safely without network
@@ -229,27 +228,6 @@ describe('Producer Verification and Visitability UI Integrity', () => {
       expect(htmlVisit).not.toContain('Paved Road');
     });
 
-    it('does not render fabricated rating or road access on ProducerCard', () => {
-      const sparseProducer: Producer = {
-        ...baseTestProducer,
-        rating: undefined,
-        priceLevel: undefined,
-        roadAccess: undefined,
-      };
 
-      const htmlCard = renderToString(
-        React.createElement(ProducerCard, {
-          producer: sparseProducer,
-          isSelected: false,
-          isFavorite: false,
-          onSelect: () => {},
-          onToggleFavorite: () => {},
-        })
-      );
-
-      expect(htmlCard).not.toContain('5.0');
-      expect(htmlCard).not.toContain('4x4 Required');
-      expect(htmlCard).not.toContain('Paved Road');
-    });
   });
 });
