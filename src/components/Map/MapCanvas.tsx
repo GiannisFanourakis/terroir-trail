@@ -583,7 +583,9 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
 
     regionLabelsRef.current.forEach((label) => map.removeLayer(label));
     regionLabelsRef.current.clear();
-    setActiveRegionId(null);
+    // Selecting a terroir region from the geography filter should surface its
+    // Explore overview immediately. The map label remains a secondary trigger.
+    setActiveRegionId(selectedDestinationRegion?.id ?? null);
 
     const visibleRegions =
       selectedDestination === 'all'

@@ -401,6 +401,14 @@ describe('MapCanvas marker diffing, in-place updates, and motion preferences', (
     }
   });
 
+  it('activates the regional Explore overview from the destination filter', () => {
+    const source = readFileSync('src/components/Map/MapCanvas.tsx', 'utf8');
+
+    expect(source).toContain(
+      'setActiveRegionId(selectedDestinationRegion?.id ?? null)'
+    );
+  });
+
   it('does not render category placeholder imagery in the map producer preview', () => {
     const source = readFileSync('src/components/Map/MapCanvas.tsx', 'utf8');
 
