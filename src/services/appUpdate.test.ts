@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import {
   getRunningBuildId,
   getReloadGuardTarget,
+  getReloadGuardRecord,
   setReloadGuardTarget,
   clearReloadGuard,
   isUserActivelyEditing,
@@ -9,6 +10,7 @@ import {
   performAppReload,
   installAppUpdateManager,
   RELOAD_GUARD_SESSION_KEY,
+  RELOAD_GUARD_COOLDOWN_MS,
   type AppBuildMetadata,
 } from './appUpdate';
 
@@ -53,7 +55,7 @@ describe('appUpdate Service', () => {
 
       setReloadGuardTarget(mockStorage, 'build-123');
       expect(getReloadGuardTarget(mockStorage)).toBe('build-123');
-      expect(mockStorage.setItem).toHaveBeenCalledWith(RELOAD_GUARD_SESSION_KEY, 'build-123');
+      expect(getReloadGuardRecord(mockStorage)).toEqual(expect.objectContaining({ targetBuildId: 'build-123' }));
 
       clearReloadGuard(mockStorage);
       expect(getReloadGuardTarget(mockStorage)).toBeNull();
@@ -208,7 +210,7 @@ describe('appUpdate Service', () => {
 
       performAppReload('build-999', mockWindow, mockStorage, mockReload);
 
-      expect(mockStorage.getItem(RELOAD_GUARD_SESSION_KEY)).toBe('build-999');
+      expect(getReloadGuardTarget(mockStorage)).toBe('build-999');
       expect(mockReload).toHaveBeenCalledWith('build-999');
       expect(mockWindow.location.reload).not.toHaveBeenCalled();
     });
@@ -337,13 +339,13 @@ describe('appUpdate Service', () => {
 
       expect(mockFetch).toHaveBeenCalled();
       expect(onReloadRequested).toHaveBeenCalledWith('build-B');
-      expect(mockStorage.setItem).toHaveBeenCalledWith(RELOAD_GUARD_SESSION_KEY, 'build-B');
+      expect(getReloadGuardTarget(mockStorage)).toBe('build-B');
       teardown();
     });
 
     it('suppresses reload if this session already attempted reloading for target build (loop guard)', async () => {
       // Simulate session storage already having attempted reload for 'build-B'
-      store[RELOAD_GUARD_SESSION_KEY] = 'build-B';
+      store[RELOAD_GUARD_SESSION_KEY] = JSON.stringify({ targetBuildId: 'build-B', attemptedAt: Date.now() });
 
       mockFetch = vi.fn().mockResolvedValue({
         ok: true,
@@ -371,9 +373,37 @@ describe('appUpdate Service', () => {
       teardown();
     });
 
+    it('retries the same target after the reload guard cooldown expires', async () => {
+      store[RELOAD_GUARD_SESSION_KEY] = JSON.stringify({
+        targetBuildId: 'build-B',
+        attemptedAt: Date.now() - RELOAD_GUARD_COOLDOWN_MS - 1,
+      });
+      mockFetch = vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({ buildId: 'build-B' }),
+      });
+      const onReloadRequested = vi.fn();
+
+      const teardown = installAppUpdateManager({
+        enabled: true,
+        currentBuildId: 'build-A',
+        fetchFn: mockFetch as any,
+        windowObj: mockWindow,
+        documentObj: mockDocument,
+        storageObj: mockStorage,
+        onReloadRequested,
+        throttleIntervalMs: 0,
+      });
+
+      const visCb = listeners['visibilitychange']?.[0];
+      await visCb();
+      expect(onReloadRequested).toHaveBeenCalledWith('build-B');
+      teardown();
+    });
+
     it('clears reload guard when the running build reaches the target build', () => {
       // User successfully reloaded and is now on build-B
-      store[RELOAD_GUARD_SESSION_KEY] = 'build-B';
+      store[RELOAD_GUARD_SESSION_KEY] = JSON.stringify({ targetBuildId: 'build-B', attemptedAt: Date.now() });
 
       const teardown = installAppUpdateManager({
         enabled: true,
