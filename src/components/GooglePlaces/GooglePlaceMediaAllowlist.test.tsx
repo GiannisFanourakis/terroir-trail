@@ -135,7 +135,7 @@ describe('Google Places integration for audited regional producers', () => {
       React.createElement(GooglePlaceMedia, { producer })
     );
 
-    expect(html).toContain('Photo from Google Maps');
+    expect(html).toContain('Photos from Google Maps');
     expect(html).toContain('Live Google Places');
     expect(html).toContain('google-places-ui-kit-host');
     expect(html).not.toContain('gmp-place-details-location-request');

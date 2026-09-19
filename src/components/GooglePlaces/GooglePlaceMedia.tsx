@@ -98,7 +98,7 @@ export const GooglePlaceMedia: React.FC<GooglePlaceMediaProps> = ({
             id="google-place-media-heading"
             className="text-sm font-bold text-white tracking-wide"
           >
-            Photo from Google Maps
+            Photos from Google Maps
           </h4>
         </div>
         <span className="text-[10px] font-medium text-stone-400 bg-stone-800/80 px-2 py-0.5 rounded-full border border-white/5 flex items-center gap-1">
