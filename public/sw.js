@@ -1,4 +1,4 @@
-/* global self, URL, fetch, caches */
+/* global self, URL, fetch, caches, Response */
 /* TerroirTrail service worker.
  *
  * HTML, version.json, live producer data, Google content and map tiles remain
