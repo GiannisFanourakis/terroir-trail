@@ -1,5 +1,6 @@
 import React, { Component, ErrorInfo, ReactNode } from 'react';
 import { logger } from '../../services/logger';
+import { reportClientError } from '../../services/clientDiagnostics';
 
 export interface AppErrorBoundaryProps {
   children: ReactNode;
@@ -20,9 +21,9 @@ export class AppErrorBoundary extends Component<AppErrorBoundaryProps, AppErrorB
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
-    logger.error('AppErrorBoundary', 'unhandled_react_render_error', error, {
-      componentStack: errorInfo?.componentStack,
-    });
+    const metadata = { componentStack: errorInfo?.componentStack };
+    logger.error('AppErrorBoundary', 'unhandled_react_render_error', error, metadata);
+    reportClientError('AppErrorBoundary', 'unhandled_react_render_error', error, metadata);
   }
 
   public handleReload = (): void => {
