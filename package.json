@@ -19,7 +19,7 @@
     "test:server": "tsx --test server/tests/*.test.ts && vitest run server/tests/passService.spec.ts server/tests/approveProducerRegistration.spec.ts",
     "test:rules": "tsx scripts/run_rules_tests.ts",
     "preview": "vite preview",
-    "deploy": "npm run build && npx -y firebase-tools deploy --only hosting && npm run smoke:public",
+    "deploy": "npm run build && npx -y firebase-tools deploy --only hosting && npm run smoke:public && npm run smoke:production-ui",
     "deploy:firestore": "npx -y firebase-tools deploy --only firestore:rules,firestore:indexes",
     "mobile:preflight": "tsx scripts/mobile_preflight.ts",
     "sync:android": "npm run mobile:preflight -- android && npm run build && npx cap sync android",
@@ -37,7 +37,8 @@
     "audit:catalogue": "tsx scripts/audit_catalogue_quality.ts",
     "check:budget": "tsx scripts/check_build_budget.ts",
     "test:browser": "tsx scripts/browser_e2e_smoke.ts",
-    "smoke:public": "tsx scripts/run_public_smoke.ts"
+    "smoke:public": "tsx scripts/run_public_smoke.ts",
+    "smoke:production-ui": "tsx scripts/browser_e2e_smoke.ts --production"
   },
   "devDependencies": {
     "@capacitor/cli": "^8.5.1",
