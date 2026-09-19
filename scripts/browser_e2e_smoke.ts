@@ -14,7 +14,15 @@ const viewports: Viewport[] = [
 ];
 
 const timeoutMs = Number(process.env.E2E_TIMEOUT_MS || 18_000);
-const externalOrigin = (process.env.E2E_BASE_URL || '').trim().replace(/\/+$/, '');
+const productionOrigin = process.argv.includes('--production')
+  ? 'https://terroir-trail.web.app'
+  : '';
+const externalOrigin = (
+  process.env.E2E_BASE_URL ||
+  productionOrigin
+)
+  .trim()
+  .replace(/\/+$/, '');
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 function findChrome(): string {
