@@ -1,0 +1,41 @@
+name: Production Smoke
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 */6 * * *'
+  workflow_run:
+    workflows: ['Deploy Production']
+    types: [completed]
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify production HTTP surface
+        env:
+          SMOKE_PUBLIC_ORIGIN: https://terroir-trail.web.app
+        run: npm run smoke:public
+
+      - name: Verify production in a real browser
+        env:
+          E2E_BASE_URL: https://terroir-trail.web.app
+          CHROME_BIN: /usr/bin/google-chrome
+        run: npm run test:browser
