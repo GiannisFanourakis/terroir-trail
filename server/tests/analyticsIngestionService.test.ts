@@ -51,7 +51,7 @@ test('ingestIntentEvent calls the deployed RPC with the exact Phase 14.2 paramet
     'p_session_key',
     'p_source_surface',
   ]);
-  const capturedArgs = rpcArgs as Record<string, unknown>;
+  const capturedArgs = rpcArgs as unknown as Record<string, unknown>;
   assert.equal(capturedArgs.p_client_event_id, '11111111-1111-4111-8111-111111111111');
   assert.equal(capturedArgs.p_event_name, 'producer_view');
   assert.equal(capturedArgs.p_destination, null);
