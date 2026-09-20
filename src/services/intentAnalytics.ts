@@ -63,28 +63,33 @@ export const SESSION_ID_STORAGE_KEY = 'terroir_analytics_session_id';
 
 const UUID_V4_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
-const SOURCE_SURFACE_RULES: Readonly<Record<IntentEventName, string>> = {
-  producer_view: 'producer_list_card|map_marker|map_quick_card|deep_link|favorites|passport|region_drawer|trip_workspace',
-  producer_share: 'producer_drawer|map_quick_card|trip_workspace',
-  region_open: 'map_canvas|header_region_picker',
-  region_producers_view: 'region_drawer',
-  producer_save: 'producer_drawer|producer_list_card|map_quick_card',
-  producer_unsave: 'producer_drawer|favorites|producer_list_card|map_quick_card',
-  producer_website_click: 'producer_drawer|trip_workspace',
-  producer_phone_click: 'producer_drawer|trip_workspace',
-  producer_email_click: 'producer_drawer|trip_workspace',
-  directions_click: 'producer_drawer|map_quick_card|trip_workspace',
-  passport_stamp_added: 'producer_drawer|passport',
-  passport_stamp_removed: 'producer_drawer|passport',
-  affiliate_impression: 'map_affiliate_banner|trip_preparation|region_planning',
-  affiliate_click: 'map_affiliate_banner|trip_preparation|region_planning',
-};
-
 export function isAllowedIntentSourceSurface(
   event: IntentEventName,
   sourceSurface: SourceSurface
 ): boolean {
-  return `|${SOURCE_SURFACE_RULES[event]}|`.includes(`|${sourceSurface}|`);
+  let allowed: string;
+  if (event === 'producer_view') {
+    allowed = 'producer_list_card|map_marker|map_quick_card|deep_link|favorites|passport|region_drawer|trip_workspace';
+  } else if (event === 'producer_share') {
+    allowed = 'producer_drawer|map_quick_card|trip_workspace';
+  } else if (event === 'region_open') {
+    allowed = 'map_canvas|header_region_picker';
+  } else if (event === 'region_producers_view') {
+    allowed = 'region_drawer';
+  } else if (event === 'producer_save') {
+    allowed = 'producer_drawer|producer_list_card|map_quick_card';
+  } else if (event === 'producer_unsave') {
+    allowed = 'producer_drawer|favorites|producer_list_card|map_quick_card';
+  } else if (event === 'directions_click') {
+    allowed = 'producer_drawer|map_quick_card|trip_workspace';
+  } else if (event.startsWith('passport_')) {
+    allowed = 'producer_drawer|passport';
+  } else if (event.startsWith('affiliate_')) {
+    allowed = 'map_affiliate_banner|trip_preparation|region_planning';
+  } else {
+    allowed = 'producer_drawer|trip_workspace';
+  }
+  return `|${allowed}|`.includes(`|${sourceSurface}|`);
 }
 
 export function generateUuidV4(): string {
