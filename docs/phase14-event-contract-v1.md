@@ -480,11 +480,11 @@ Current map-banner campaign IDs observed in the production source:
 
 Campaign configuration may change without changing the event-name schema, but every accepted campaign ID must exist in trusted server/application configuration.
 
-## 15. Proposed Supabase mapping for Phase 14.2 — not yet applied
+## 15. Implemented Supabase mapping for Phase 14.2
 
-Preferred location: a non-exposed schema such as analytics, not a browser-readable public table.
+Implemented in the non-exposed `analytics` schema. Browser roles have no schema usage and no raw-table privileges.
 
-Conceptual raw table:
+Implemented raw table:
 
 ~~~text
 analytics.intent_events
@@ -533,7 +533,7 @@ Raw rows must not be readable or writable by anon/authenticated browser roles. R
 
 ## 16. Initial aggregate/reporting plan
 
-Start with queryable daily aggregates; materialize only when volume requires it.
+Implemented as persistent non-identifying daily aggregate tables so 24-month aggregate retention can outlive the 180-day raw-event window.
 
 ### producer_intent_daily
 
@@ -602,7 +602,7 @@ No aggregate exposes actor_key, session_key, clientEventId, traveler identity or
 
 ## 17. Trusted endpoint contract for Gemini
 
-Implement later, after Phase 14.2 database verification passes:
+Phase 14.2 database verification has passed. Gemini should now implement the trusted application endpoint against the service-role-only database RPC `public.ingest_intent_event_v1`:
 
 - endpoint: POST /api/analytics/events;
 - accept only the v1 request envelope;
@@ -615,8 +615,8 @@ Implement later, after Phase 14.2 database verification passes:
 - derive actor_key via server-held HMAC;
 - derive session_key via server-held HMAC;
 - rotate browser sessionId on auth-state transition;
-- server-stamp occurred_at;
-- derive producer destination/country/category from trusted catalogue data;
+- do not send a client timestamp; the database applies the authoritative `occurred_at`;
+- send only producer/destination context permitted by the v1 contract; the database independently derives producer destination/country/category and validates region context;
 - never expose Supabase service credentials to the browser;
 - never allow browser direct inserts into the analytics warehouse;
 - return a simple success response without echoing stored identity keys;
@@ -683,3 +683,81 @@ Before production instrumentation:
 7. only then hand the frozen v1 contract to frontend/server implementation.
 
 My Trips is not built before the existing-product analytics baseline is verified.
+
+
+## 21. Phase 14.2 implementation record
+
+**Completed and verified:** 2026-09-20.
+
+Supabase migration history is authoritative for this operational database work. No duplicate routine migration files were added to Git.
+
+Applied migrations:
+
+- `20260920144220 phase14_analytics_foundation`
+- `20260920144249 phase14_analytics_maintenance_jobs`
+- `20260920144421 phase14_analytics_affiliate_fk_index`
+- `20260920144540 phase14_analytics_server_rpc_bridge`
+
+Implemented database objects:
+
+- private `analytics` schema;
+- `analytics.intent_events`;
+- `analytics.affiliate_campaigns`;
+- `analytics.producer_intent_daily`;
+- `analytics.region_intent_daily`;
+- `analytics.category_intent_daily`;
+- `analytics.affiliate_intent_daily`;
+- strict event/source/auth/context constraints;
+- catalogue-context derivation trigger;
+- actor-deletion function;
+- raw-event and aggregate-retention functions;
+- hourly daily-aggregate refresh;
+- daily retention maintenance;
+- service-role-only `public.ingest_intent_event_v1`;
+- service-role-only `public.delete_intent_actor_v1`;
+- service-role-only `public.export_intent_events_v1`.
+
+Security state:
+
+- `anon`: no `USAGE` on `analytics`; no raw-event SELECT/INSERT; no execution rights on the three public analytics RPCs.
+- `authenticated`: no `USAGE` on `analytics`; no raw-event SELECT/INSERT; no execution rights on the three public analytics RPCs.
+- `service_role`: server-only access required by the ingestion/export/deletion path.
+- RLS is enabled and forced on every analytics table.
+- No browser-facing RLS policies exist by design; lack of a policy is an additional deny boundary, not an omission.
+- The analytics schema is not exposed to browser Data API access.
+
+Automated lifecycle:
+
+- raw events: 180-day rolling retention;
+- non-identifying daily aggregate tables: 24-month rolling retention;
+- aggregate refresh cron: hourly at minute 17;
+- retention cron: daily at 03:43;
+- pg_cron scheduler verified active.
+
+Controlled verification passed:
+
+- valid producer context derivation;
+- valid authenticated save;
+- valid region event;
+- valid affiliate impression;
+- valid trip event;
+- invalid source-surface rejection;
+- auth-required event rejection when anonymous;
+- unknown producer rejection;
+- unknown destination rejection;
+- unknown affiliate campaign rejection;
+- inactive affiliate campaign rejection;
+- duplicate `client_event_id` idempotency;
+- malformed/raw actor-key rejection;
+- future timestamp rejection;
+- producer aggregate reconciliation;
+- affiliate aggregate reconciliation;
+- actor deletion;
+- 180-day raw purge;
+- RPC export behavior;
+- RPC delete behavior;
+- RPC retry/idempotency behavior.
+
+All synthetic raw events and test campaign rows were removed after verification. Current raw-event count remains zero, so **production behavioral tracking is still not enabled**.
+
+Supabase advisors were rerun after DDL. The Phase-14-specific unindexed affiliate foreign key was corrected. Remaining analytics notices are INFO-level unused-index/no-policy notices expected for a new zero-row private warehouse. Pre-existing managed/public extension findings such as `public.spatial_ref_sys`, PostGIS placement and `st_estimatedextent` remain outside Phase 14.2 and were not modified.
