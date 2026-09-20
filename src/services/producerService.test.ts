@@ -1,14 +1,10 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { producerService } from './producerService';
 import { CRETAN_PRODUCERS } from '../data/producers';
-import { SANTORINI_PRODUCERS } from '../data/santoriniProducers';
-import { PHASE10B_PRODUCERS } from '../data/phase10bProducers';
+import { LIVE_CATALOGUE_PRODUCERS } from '../data/liveCatalogue.generated';
 import { ALL_EXPERIENCES } from '../data/experiences';
 
-const EXPECTED_FALLBACK_COUNT =
-  CRETAN_PRODUCERS.length +
-  SANTORINI_PRODUCERS.length +
-  PHASE10B_PRODUCERS.length;
+const EXPECTED_FALLBACK_COUNT = LIVE_CATALOGUE_PRODUCERS.length;
 
 // Mock Supabase module
 const { mockSupabaseState } = vi.hoisted(() => {
@@ -134,7 +130,7 @@ describe('producerService — Supabase / Fallback Data Ownership', () => {
     const producers = await producerService.getProducers();
 
     expect(producers.length).toBe(EXPECTED_FALLBACK_COUNT);
-    expect(producers[0].id).toBe(CRETAN_PRODUCERS[0].id);
+    expect(producers[0].id).toBe(LIVE_CATALOGUE_PRODUCERS[0].id);
     expect(producerService.getCacheProvenance()).toBe('fallback');
   });
 

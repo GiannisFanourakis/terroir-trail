@@ -58,7 +58,7 @@ describe('Producer Verification and Visitability UI Integrity', () => {
       expect(html).toContain('Visitors Welcome');
       expect(html).toContain('publicly welcomes visitors');
       // Category adapted visiting title
-      expect(html).toContain('Mill &amp; Visiting');
+      expect(html).toContain('Know Before You Go');
       // Visit notes
       expect(html).toContain('Tasting terrace open daily from April to October');
       // Category adapted direct call action
@@ -122,7 +122,7 @@ describe('Producer Verification and Visitability UI Integrity', () => {
 
       expect(html).toContain('Public Visits Not Confirmed');
       expect(html).toContain('Public visits not currently confirmed');
-      expect(html).toContain('Dairy &amp; Visiting');
+      expect(html).toContain('Know Before You Go');
       expect(html).toContain('Call Dairy');
     });
   });
