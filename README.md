@@ -202,6 +202,6 @@ npm run mobile:preflight -- all
 
 ## License & Attribution
 
-TerroirTrail software, design assets, proprietary database schemas, and associated project materials are proprietary works of TerroirTrail. All rights reserved. See [LICENSE.md](LICENSE.md).
+TerroirTrail software, design assets, proprietary database schemas, and associated project materials are **Proprietary Works** owned exclusively by TerroirTrail. All rights reserved. See [LICENSE.md](LICENSE.md).
 
 Third-party libraries and data remain subject to their respective licenses. Map boundaries and base layers retain their required geoBoundaries, Eurostat / GISCO, OpenStreetMap, CARTO, Esri, and other applicable attributions.
