@@ -500,13 +500,19 @@ This phase adds a geographic discovery layer above individual producer pins so t
 
 **Supabase / data-side work**
 - event schema and aggregation model;
-- RLS, retention, deletion and export behavior;
-- trip persistence schema;
+- RLS, analytics retention/deletion and reporting behavior;
 - privacy-preserving internal reporting views;
 - producer/regional aggregate views;
 - database-side verification and integrity checks.
 
+**Firebase / Firestore traveler-state work**
+- account-owned My Trips persistence;
+- trip items referencing canonical producer IDs;
+- trip ownership, deletion and account-export behavior;
+- consistency with existing Firebase Auth / Firestore traveler state.
+
 **Application / codebase work**
+- trusted analytics ingestion endpoint and Firebase-token validation;
 - event instrumentation in React/TypeScript;
 - My Trips UI and account integration;
 - contextual affiliate placement;
