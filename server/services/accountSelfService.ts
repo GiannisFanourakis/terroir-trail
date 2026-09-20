@@ -2,6 +2,10 @@ import { FieldValue } from 'firebase-admin/firestore';
 import type { Auth } from 'firebase-admin/auth';
 import { adminAuth, adminDb } from '../firebaseAdmin';
 import { getTrustedAccountCapabilities } from './accountAuthorization';
+import {
+  deleteIntentEventsForFirebaseUid,
+  exportIntentEventsForFirebaseUid,
+} from './analyticsIngestionService';
 
 export class AccountSelfServiceError extends Error {
   constructor(
@@ -21,7 +25,8 @@ const mapDocs = (snapshot: any) => snapshot.docs.map((item: any) => ({
 export async function exportAccountData(
   uid: string,
   db = adminDb(),
-  authClient: Auth = adminAuth()
+  authClient: Auth = adminAuth(),
+  exportIntentEvents: (uid: string) => Promise<unknown[]> = exportIntentEventsForFirebaseUid
 ) {
   if (!uid) throw new AccountSelfServiceError('bad_request', 'Authenticated user ID is required.');
 
@@ -35,6 +40,7 @@ export async function exportAccountData(
     authoredReviews,
     reviewReports,
     hostReplyReviews,
+    intentAnalytics,
   ] = await Promise.all([
     authClient.getUser(uid),
     db.collection('users').doc(uid).get(),
@@ -45,6 +51,7 @@ export async function exportAccountData(
     db.collection('producer_reviews').where('travelerUid', '==', uid).get(),
     db.collection('review_reports').where('reporterUid', '==', uid).get(),
     db.collection('producer_reviews').where('hostReply.hostUid', '==', uid).get(),
+    exportIntentEvents(uid),
   ]);
 
   return {
@@ -70,6 +77,7 @@ export async function exportAccountData(
       producerId: item.data()?.producerId,
       hostReply: item.data()?.hostReply,
     })),
+    intentAnalytics,
   };
 }
 
@@ -145,7 +153,8 @@ async function anonymizeAuditEvents(uid: string, db: any) {
 export async function deleteOwnAccount(
   uid: string,
   db = adminDb(),
-  authClient: Auth = adminAuth()
+  authClient: Auth = adminAuth(),
+  deleteIntentEvents: (uid: string) => Promise<number> = deleteIntentEventsForFirebaseUid
 ) {
   if (!uid) throw new AccountSelfServiceError('bad_request', 'Authenticated user ID is required.');
 
@@ -158,6 +167,10 @@ export async function deleteOwnAccount(
         : 'Admin access must be revoked by the Platform Owner before this account can be deleted.'
     );
   }
+
+  // Remove retained account-linked raw intent telemetry before destructive account
+  // deletion begins. Non-identifying daily aggregates intentionally remain.
+  const deletedIntentEvents = await deleteIntentEvents(uid);
 
   const [bookings, ownerships, registrations, passes, authoredReviews, reviewReports] = await Promise.all([
     db.collection('bookings').where('userId', '==', uid).get(),
@@ -208,6 +221,7 @@ export async function deleteOwnAccount(
     deletedReviewReports,
     removedHostReplies,
     anonymizedAudits,
+    deletedIntentEvents,
     occurredAt: new Date().toISOString(),
     source: 'self_service',
   });
@@ -217,5 +231,6 @@ export async function deleteOwnAccount(
   return {
     deleted: true,
     producerIdsUnassigned: producerIds,
+    deletedIntentEvents,
   };
 }
