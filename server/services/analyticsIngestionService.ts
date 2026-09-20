@@ -319,19 +319,25 @@ export async function ingestIntentEvent(
   }
 
   try {
+    // Keep this payload exactly aligned with the database function signature:
+    // public.ingest_intent_event_v1(
+    //   p_schema_version, p_client_event_id, p_event_name, p_actor_scope,
+    //   p_actor_key, p_session_key, p_producer_id, p_destination,
+    //   p_source_surface, p_affiliate_campaign
+    // ).
+    // country/category are intentionally NOT sent: the database trigger derives
+    // trusted catalogue dimensions independently from producer/destination context.
     const { error } = await supabase.rpc('ingest_intent_event_v1', {
-      client_event_id: params.clientEventId,
-      event_name: params.eventName,
-      actor_scope: params.actorScope,
-      actor_key: params.actorKey,
-      session_key: params.sessionKey,
-      producer_id: params.producerId,
-      destination: params.destination,
-      country_code: params.countryCode,
-      category: params.category,
-      source_surface: params.sourceSurface,
-      affiliate_campaign: params.affiliateCampaign,
-      schema_version: params.schemaVersion ?? 1,
+      p_schema_version: params.schemaVersion ?? 1,
+      p_client_event_id: params.clientEventId,
+      p_event_name: params.eventName,
+      p_actor_scope: params.actorScope,
+      p_actor_key: params.actorKey,
+      p_session_key: params.sessionKey,
+      p_producer_id: params.producerId,
+      p_destination: params.destination,
+      p_source_surface: params.sourceSurface,
+      p_affiliate_campaign: params.affiliateCampaign,
     });
 
     if (error) {
