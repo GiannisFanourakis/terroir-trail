@@ -2,10 +2,11 @@ import type { Producer } from '../src/types/terroir';
 
 /**
  * Deterministic SEO/AEO producer snapshot generated from the live Supabase
- * public.producers catalogue on 2026-09-18.
+ * public.producers catalogue.
  *
- * Runtime Supabase remains authoritative. Regenerate this snapshot whenever the
- * live catalogue changes so canonical producer and landing pages stay in sync.
+ * Runtime Supabase remains authoritative. This file is refreshed automatically
+ * before production SEO generation; do not hand-edit producer records here.
+ * Latest source row update: 2026-09-18 14:24:04.723436+00
  */
 export const SEO_LIVE_PRODUCERS = [
   {
@@ -41,7 +42,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Olive-oil tasting",
       "Wine shop"
     ],
-    "openingHours": "Winery visits and tastings: Monday-Saturday at published sessions, with advance booking required.",
+    "openingHours": "Wine shop: Mon-Sat 09:00-19:00. Guided winery visits: Mon-Sat 11:00 and 15:00 by prior booking.",
     "phone": "+351 268 891 673",
     "website": "https://adegaborba.pt",
     "googleMapsUrl": "https://www.google.com/maps/place/Adega+Cooperativa+de+Borba/@38.8068104,-7.4649305,17z/data=!4m10!1m2!2m1!1sAdega+de+Borba+Portugal!3m6!1s0xd176b1676386697:0xf028465e91c0c34!8m2!3d38.8066167!4d-7.4621811!15sChdBZGVnYSBkZSBCb3JiYSBQb3J0dWdhbJIBBndpbmVyeeABAA!16s%2Fg%2F1tk1_9c3?entry=ttu&g_ep=EgoyMDI2MDkxNS4wIKXMDSoASAFQAw%3D%3D",
@@ -53,9 +54,25 @@ export const SEO_LIVE_PRODUCERS = [
     "locationSourceUrl": "https://www.google.com/maps/place/Adega+Cooperativa+de+Borba/@38.8068104,-7.4649305,17z/data=!4m10!1m2!2m1!1sAdega+de+Borba+Portugal!3m6!1s0xd176b1676386697:0xf028465e91c0c34!8m2!3d38.8066167!4d-7.4621811!15sChdBZGVnYSBkZSBCb3JiYSBQb3J0dWdhbJIBBndpbmVyeeABAA!16s%2Fg%2F1tk1_9c3?entry=ttu&g_ep=EgoyMDI2MDkxNS4wIKXMDSoASAFQAw%3D%3D",
     "locationNotes": "Exact Google Maps producer point verified against the frozen 2026-09-18 expansion audit and current producer identity sources.",
     "publicPointType": "production_site",
-    "visitStatus": "appointment_only",
+    "visitStatus": "public_visits",
     "visitSourceUrl": "https://adegaborba.pt/en/wine-tourism/",
-    "visitNotes": "The official wine-tourism page publishes winery tours and tastings and explicitly requires prior booking."
+    "visitNotes": "Current first-party Adega de Borba wine-tourism page publishes a public wine shop Monday-Saturday 09:00-19:00. Guided winery visits with a three-wine tasting run Monday-Saturday at 11:00 and 15:00, last about 1 hour 45 minutes and are explicitly subject to prior booking. Public shop access and guided winery access therefore have different booking rules.",
+    "visitBookingRequirement": "not_required",
+    "walkInStatus": "accepted",
+    "visitorHours": {
+      "wine_shop": {
+        "monday_saturday": "09:00-19:00"
+      },
+      "guided_winery_visit": {
+        "booking": "required",
+        "monday_saturday": [
+          "11:00",
+          "15:00"
+        ]
+      }
+    },
+    "seasonalVisitNotes": "Guided winery visit duration is approximately 105 minutes and requires prior booking.",
+    "visitabilityReviewedAt": "2026-09-20 04:01:54.930917+00"
   },
   {
     "id": "adega-jose-de-sousa-alentejo",
@@ -91,7 +108,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Wine tasting",
       "Wine shop"
     ],
-    "openingHours": "Visits run daily on published seasonal time slots; advance reservation is recommended.",
+    "openingHours": "Visits daily: Apr-Oct 11:00, 15:00, 17:00; Nov-Mar 11:00, 15:00. Shop daily: Apr-Oct 10:00-19:00; Nov-Mar 10:00-17:30.",
     "phone": "+351 918 269 569",
     "website": "https://www.jmf.pt",
     "googleMapsUrl": "https://www.google.com/maps/place/Adega+Jos%C3%A9+de+Sousa/@38.4247898,-7.5297589,17z/data=!3m1!4b1!4m6!3m5!1s0xd174ca683472ceb:0xd419da80efda1e63!8m2!3d38.4247898!4d-7.5297589!16s%2Fg%2F11c3kjs2xq?entry=ttu&g_ep=EgoyMDI2MDkxNS4wIKXMDSoASAFQAw%3D%3D",
@@ -105,7 +122,27 @@ export const SEO_LIVE_PRODUCERS = [
     "publicPointType": "production_site",
     "visitStatus": "public_visits",
     "visitSourceUrl": "https://www.jmf.pt/index.php?id=96",
-    "visitNotes": "The official winery page publishes daily visit times throughout the year and recommends advance reservation."
+    "visitNotes": "Current first-party José Maria da Fonseca page publishes daily visits and a daily wine shop at Adega José de Sousa. April-October visits run at 11:00, 15:00 and 17:00; November-March at 11:00 and 15:00. The shop is open daily 10:00-19:00 April-October and 10:00-17:30 November-March. Prior reservation is explicitly recommended, not stated as mandatory.",
+    "visitBookingRequirement": "recommended",
+    "visitorHours": {
+      "shop": {
+        "april_october": "10:00-19:00",
+        "november_march": "10:00-17:30"
+      },
+      "visits": {
+        "april_october": [
+          "11:00",
+          "15:00",
+          "17:00"
+        ],
+        "november_march": [
+          "11:00",
+          "15:00"
+        ]
+      }
+    },
+    "seasonalVisitNotes": "Prior reservation is recommended.",
+    "visitabilityReviewedAt": "2026-09-20 04:01:59.562143+00"
   },
   {
     "id": "aerakis-dairy-anogeia",
@@ -131,7 +168,7 @@ export const SEO_LIVE_PRODUCERS = [
     "story": "Aerakis is a family-owned dairy in Sokaras with a long-standing tradition in Cretan cheesemaking. Its production uses sheep and goat milk collected from local farmers in the Asterousia region, combining traditional cheesemaking methods with modern food-safety, traceability and quality-control systems.",
     "indigenousVarieties": [],
     "tastingHighlights": [],
-    "openingHours": "Contact producer before visiting",
+    "openingHours": "",
     "phone": "+30 28930 31990",
     "website": "https://cretancheeseaerakis.com",
     "googleMapsUrl": "https://www.google.com/maps?ll=35.065803,25.106932&z=15&t=m&hl=en-US&gl=US&mapclient=embed&cid=8450329635840177008",
@@ -151,7 +188,8 @@ export const SEO_LIVE_PRODUCERS = [
     "locationNotes": "Current Aerakis Cheese Products location supplied from the Google Maps business listing. Treat as verified location; entrance-level precision has not been separately established.",
     "visitStatus": "not_publicly_confirmed",
     "visitSourceUrl": "https://cretancheeseaerakis.com/",
-    "visitNotes": "The producer verifies the working dairy in Sokaras but does not currently publish visitor instructions on its own site. Do not present the dairy as a walk-in attraction."
+    "visitNotes": "Current first-party site confirms the working dairy in Sokaras and presents the business as a production, quality-assurance and export operation. It does not publish a public visitor programme, tasting/tour procedure, shop opening hours, booking rule, or walk-in policy. Do not present the dairy as a public attraction; contact the producer directly if considering a visit.",
+    "visitabilityReviewedAt": "2026-09-19 16:20:00+00"
   },
   {
     "id": "aga-sideri-vestland",
@@ -186,7 +224,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Farm shop",
       "Cider and cheese pairing"
     ],
-    "openingHours": "Farm shop Monday-Saturday 10:00-15:00. Scheduled tastings run mainly June-August; group tastings are available on request.",
+    "openingHours": "Farm shop: Mon-Sat 10:00-15:00. Scheduled cider tastings: Mon-Sat in Jun-Aug; group tastings by request.",
     "phone": "+47 47 61 37 38",
     "website": "https://www.agasideri.no/",
     "googleMapsUrl": "https://www.google.com/maps/place/Aga+Sideri/@60.2985346,6.6029727,17z/data=!3m1!4b1!4m6!3m5!1s0x463e83aeca312b93:0xbf00038c6672e5c4!8m2!3d60.2985346!4d6.6029727!16s%2Fg%2F11h885p29r?entry=ttu&g_ep=EgoyMDI2MDkxNS4wIKXMDSoASAFQAw%3D%3D",
@@ -199,8 +237,20 @@ export const SEO_LIVE_PRODUCERS = [
     "locationNotes": "Exact Google Maps producer point verified against the frozen 2026-09-18 expansion audit and current producer identity sources.",
     "publicPointType": "estate",
     "visitStatus": "public_visits",
-    "visitSourceUrl": "https://www.agasideri.no/opplevingar",
-    "visitNotes": "The official site publishes a public farm shop and bookable 2026 cider tastings and production tours. Group tastings outside peak season require enquiry."
+    "visitSourceUrl": "https://www.agasideri.no/",
+    "visitNotes": "Current first-party Aga Sideri site publishes a public farm shop Monday-Saturday 10:00-15:00. The producer also runs cider tastings with production tours Monday-Saturday in June, July and August and offers group tastings on request. Reduced tasting capacity applies September-March. Public farm-shop access is distinct from bookable tasting experiences.",
+    "visitBookingRequirement": "not_required",
+    "walkInStatus": "accepted",
+    "visitorHours": {
+      "farm_shop": {
+        "monday_saturday": "10:00-15:00"
+      },
+      "scheduled_tastings": {
+        "june_august": "monday_saturday"
+      }
+    },
+    "seasonalVisitNotes": "Group tastings are available on request. September-March has reduced capacity for tastings.",
+    "visitabilityReviewedAt": "2026-09-20 03:41:20.218628+00"
   },
   {
     "id": "agricola-gian-piero-marrone-piedmont",
@@ -247,7 +297,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Winery restaurant",
       "Barolo and Langhe wine experiences"
     ],
-    "openingHours": "Winery/restaurant opening varies seasonally; winery visits are bookable.",
+    "openingHours": "Winery tours and tastings by advance booking; no universal winery-visit timetable published.",
     "phone": "+39 0173 509288",
     "website": "https://www.agricolamarrone.com/",
     "googleMapsUrl": "https://www.google.com/maps/place/?q=place_id:ChIJqRQ8JwOu0hIRFyWhc7ZodJM",
@@ -260,8 +310,11 @@ export const SEO_LIVE_PRODUCERS = [
     "locationNotes": "Exact producer identity, persistent Google Place ID and same-point coordinates were verified in the prior strict TerroirTrail Google Maps audit; current producer identity was refreshed before import.",
     "publicPointType": "estate",
     "visitStatus": "appointment_only",
-    "visitSourceUrl": "https://www.agricolamarrone.restaurant/contatti/",
-    "visitNotes": "The estate publishes current opening periods and a dedicated 'book winery visit' pathway; reserve the visit in advance."
+    "visitSourceUrl": "https://www.agricolamarrone.com/en/book-a-visit/",
+    "visitNotes": "Current first-party Agricola Gian Piero Marrone winery page explicitly instructs visitors to complete the booking form to book a winery tour and publishes winery tours, tastings, cooking classes, viticulture lessons and guided tastings. Separate restaurant opening hours are not treated as winery-visit hours. The current winery pages do not publish a universal tour timetable, standard duration, parking details or visitor languages.",
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "visitabilityReviewedAt": "2026-09-20 03:25:48.553005+00"
   },
   {
     "id": "agricola-piano-puglia",
@@ -304,7 +357,9 @@ export const SEO_LIVE_PRODUCERS = [
     "locationNotes": "Exact Google Maps producer point manually verified against the producer identity and official website during the 2026-09-18 expansion audit.",
     "publicPointType": "production_site",
     "visitStatus": "not_publicly_confirmed",
-    "visitNotes": "The producer and production identity are verified, but a current producer-controlled public farm visit programme was not confirmed during this import."
+    "visitSourceUrl": "https://www.agricolapiano.com/en/",
+    "visitNotes": "Current first-party Agricola Piano site verifies the Apricena family farm, direct supply chain, wheat, olive and EVOO production, but current navigation and indexed first-party pages do not publish a public farm visit, mill tour, tasting programme, visitor timetable, booking rule or walk-in policy. Product tasting gift sets and e-commerce references are not treated as evidence of on-site visitability.",
+    "visitabilityReviewedAt": "2026-09-20 03:16:49.488059+00"
   },
   {
     "id": "alpha-estate",
@@ -333,7 +388,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Syrah"
     ],
     "tastingHighlights": [],
-    "openingHours": "Visits upon request: daily and weekends 10:00-17:00.",
+    "openingHours": "Daily, including weekends, 10:00-17:00 upon request.",
     "phone": "+30 23860 20111",
     "website": "https://alpha-estate.com",
     "googleMapsUrl": "https://www.google.com/maps/place/?q=place_id:ChIJq_TNZHdzVxMRrY3Giv0bikM",
@@ -347,7 +402,14 @@ export const SEO_LIVE_PRODUCERS = [
     "locationNotes": "Producer-controlled contact page links directly to the Alpha Estate Google Maps destination at 2nd km Amyndeon-St. Panteleimon. Business location verified; entrance and road access remain unverified.",
     "visitStatus": "appointment_only",
     "visitSourceUrl": "https://alpha-estate.com/visit/",
-    "visitNotes": "Current first-party visit page publishes daily/weekend visits upon request. Reservation/contact required before travel."
+    "visitNotes": "Current first-party visit page, updated in August 2026, publishes visiting hours daily including weekends from 10:00-17:00 upon request and provides a reservation request flow. Visits include a guided winery tour covering the estate history and production process and conclude in the tasting area. Tailored hospitality packages may be arranged upon request. No standard visit duration, parking details or visitor languages are explicitly published.",
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "visitorHours": {
+      "booking": "upon_request",
+      "monday_sunday": "10:00-17:00"
+    },
+    "visitabilityReviewedAt": "2026-09-19 17:29:00+00"
   },
   {
     "id": "anoskeli-estate",
@@ -373,7 +435,7 @@ export const SEO_LIVE_PRODUCERS = [
     "story": "The Mamidakis family traces its roots in Anoskeli to Alexandros and Irene Mamidakis. During difficult wartime years Irene cared for seven children and cultivated the family land; decades later the family invested back in the village, founding Anoskeli S.A. in 1983 and opening the modern olive mill in 1985.",
     "indigenousVarieties": [],
     "tastingHighlights": [],
-    "openingHours": "Apr-20 Nov: Mon-Fri 10:00-18:00; booking strongly recommended; drop-ins subject to availability",
+    "openingHours": "Current 2026 visitor hours not yet confirmed; contact Anoskeli before travelling.",
     "phone": "+30 28240 83126",
     "website": "https://anoskeli.gr",
     "googleMapsUrl": "https://maps.google.com/?q=35.459833,23.775786",
@@ -388,7 +450,11 @@ export const SEO_LIVE_PRODUCERS = [
     "locationNotes": "Estate location in Anoskeli is verified by the producer; reservation number stored for visitor contact.",
     "visitStatus": "seasonal_public",
     "visitSourceUrl": "https://anoskeli.gr/experiences",
-    "visitNotes": "The estate explicitly welcomes visitors for tastings and tours. Advance booking is strongly recommended; drop-ins are accepted subject to availability. Visitor season is published as April to 20 November."
+    "visitNotes": "The live first-party Experiences page confirms guided olive-oil/wine tasting experiences, strongly recommends advance booking, and says drop-ins are welcomed subject to availability. However, the page still labels its active season and visiting hours as 2025. Current 2026 visitor evidence supports that the estate is still receiving guests, but TerroirTrail does not carry the stale 2025 timetable forward as current hours.",
+    "visitBookingRequirement": "recommended",
+    "walkInStatus": "subject_to_availability",
+    "seasonalVisitNotes": "Official visitor page currently still displays its 2025 season (April-20 November, Mon-Fri 10:00-18:00). Treat those hours as stale until the producer publishes a current schedule.",
+    "visitabilityReviewedAt": "2026-09-19 16:05:00+00"
   },
   {
     "id": "antichi-vinai-1877-sicily",
@@ -423,7 +489,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Winery and cellar experience",
       "Etna wine tasting"
     ],
-    "openingHours": "",
+    "openingHours": "Visitor experiences are published through the live booking platform; no universal visitor timetable is stated.",
     "phone": "+39 379 2355566",
     "website": "https://www.antichivinai.it",
     "googleMapsUrl": "https://www.google.com/maps/place/Antichi+Vinai+1877/@37.8715901,15.0394349,17z/data=!3m1!4b1!4m6!3m5!1s0x1316a61354b35a3f:0x5f76bd3809b23805!8m2!3d37.8715901!4d15.0394349!16s%2Fg%2F1hc12j7sp",
@@ -436,8 +502,9 @@ export const SEO_LIVE_PRODUCERS = [
     "locationNotes": "Exact Google Maps producer point manually verified against the producer identity and official website during the 2026-09-18 expansion audit.",
     "publicPointType": "production_site",
     "visitStatus": "public_visits",
-    "visitSourceUrl": "https://www.antichivinai.it/en/",
-    "visitNotes": "The official site actively offers winery experiences and tastings and invites visitors to the cellar. Contact the winery or tasting team before travelling to confirm the current schedule."
+    "visitSourceUrl": "https://www.antichivinai.it/en/experience-the-volcano/",
+    "visitNotes": "Current first-party Antichi Vinai pages explicitly welcome visitors for underground-cellar tours and Etna wine tastings, and the producer links to a live booking platform with multiple visitor experiences. A currently listed short winery-tour-and-tasting experience lasts 60 minutes. The current first-party pages do not explicitly state that all visits require advance booking, define a general walk-in policy, publish universal visitor hours, parking details, or visitor languages.",
+    "visitabilityReviewedAt": "2026-09-20 03:10:55.872668+00"
   },
   {
     "id": "apis-aurum-south-tyrol",
@@ -479,7 +546,8 @@ export const SEO_LIVE_PRODUCERS = [
     "publicPointType": "production_site",
     "visitStatus": "not_publicly_confirmed",
     "visitSourceUrl": "https://met.apisaurum.com/",
-    "visitNotes": "The official Apis Aurum site confirms the beekeeping and mead-production business but does not publish a routine public apiary or production-site visiting schedule for this mapped point."
+    "visitNotes": "Current first-party Apis Aurum / Imkerei Hafner pages confirm the beekeeping and mead/mead-vinegar production business and provide commercial enquiry contact, but do not publish a routine public apiary visit, production tour, tasting programme, visitor timetable, booking rule or walk-in policy for the mapped production site.",
+    "visitabilityReviewedAt": "2026-09-20 03:51:36.112567+00"
   },
   {
     "id": "argogal-koromichi-kefalari",
@@ -540,8 +608,9 @@ export const SEO_LIVE_PRODUCERS = [
     "locationNotes": "Producer-controlled ARGOGAL contact page links directly to the Google Maps business point for Andrea Koromichi Sons / ARGOGAL in Kefalari, Argos. The linked Google feature resolves to the persistent Place ID ChIJA4BioIz8nxQRZCVKZG8kO3I at 37.5904969, 22.7115766. This verifies the production-business location, not a specific visitor entrance.",
     "publicPointType": "production_site",
     "visitStatus": "not_publicly_confirmed",
-    "visitSourceUrl": "https://www.argogal.gr/en/contact",
-    "visitNotes": "The production facilities are confirmed, but no current first-party public visit, tour, tasting, or walk-in procedure was verified."
+    "visitSourceUrl": "https://www.argogal.gr/en/",
+    "visitNotes": "Current first-party site confirms ARGOGAL as an active dairy producer with modern production facilities in Kefalari, Argos, and publishes direct contact details. It does not publish a current public visitor programme, retail-shop opening hours, tour/tasting procedure, booking rule, or walk-in policy. Keep public access unconfirmed.",
+    "visitabilityReviewedAt": "2026-09-18 21:00:00+00"
   },
   {
     "id": "arvanitis-dairy-neochorouda",
@@ -607,7 +676,8 @@ export const SEO_LIVE_PRODUCERS = [
     "publicPointType": "production_site",
     "visitStatus": "not_publicly_confirmed",
     "visitSourceUrl": "https://arvanitis.gr/en/company/the-company/",
-    "visitNotes": "The Neochorouda factory is confirmed, but no current first-party public visit or tour procedure for the factory was verified. The central Thessaloniki Experience Store is a separate public point."
+    "visitNotes": "Current first-party Arvanitis pages confirm the active Neochorouda dairy production site and publish direct factory contact details, but they do not publish a current public factory visitor programme, tour/tasting procedure, visitor timetable, booking rule, or walk-in policy. Keep the Neochorouda production site not publicly confirmed. The separate Thessaloniki Experience Store is a different public point and is not used to classify factory access.",
+    "visitabilityReviewedAt": "2026-09-19 17:29:00+00"
   },
   {
     "id": "assuli-winery-sicily",
@@ -650,7 +720,7 @@ export const SEO_LIVE_PRODUCERS = [
       "EVOO tasting",
       "Technical masterclass"
     ],
-    "openingHours": "Winery visits by reservation.",
+    "openingHours": "Winery visits by reservation; no general public visitor timetable published.",
     "phone": "+39 0923 1987742",
     "website": "https://assuli.it",
     "googleMapsUrl": "https://www.google.com/maps/place/Assuli/@37.7872449,12.6361341,17z/data=!3m1!4b1!4m6!3m5!1s0x131961d5abbc6fd7:0x6b49404bd76fbd63!8m2!3d37.7872449!4d12.6361341!16s%2Fg%2F11fkyxw2cx",
@@ -664,7 +734,10 @@ export const SEO_LIVE_PRODUCERS = [
     "publicPointType": "estate",
     "visitStatus": "appointment_only",
     "visitSourceUrl": "https://assuli.it/pages/degustazioni-in-cantina",
-    "visitNotes": "The official site publishes bookable winery tours and several tasting formats. Visits are explicitly by reservation."
+    "visitNotes": "Current first-party Assuli wine-tourism page explicitly states that winery visits are by reservation (su prenotazione). The estate offers winery tastings and has an on-site wine shop. The current page does not publish a general visitor timetable beyond reservation-only access, a standard visit duration, parking details, or visitor languages.",
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "visitabilityReviewedAt": "2026-09-20 03:10:42.989135+00"
   },
   {
     "id": "baladinos-dairy-varipetro",
@@ -730,9 +803,12 @@ export const SEO_LIVE_PRODUCERS = [
     "locationSourceUrl": "https://www.balantinos.gr/en/contact/",
     "locationNotes": "Verified producer-owned central store at Skalidi 25, Chania. First-party sources place the production factory separately in Varypetro Kydonias; an exact persistent factory Place ID is not established, so this mapped public point is explicitly classified as producer_shop rather than production_site.",
     "publicPointType": "producer_shop",
-    "visitStatus": "not_publicly_confirmed",
+    "visitStatus": "public_visits",
     "visitSourceUrl": "https://www.balantinos.gr/en/contact/",
-    "visitNotes": "The factory location is confirmed, but no current first-party public factory visit, tour, tasting, or walk-in procedure was verified."
+    "visitNotes": "The mapped public point is the producer-owned Central Store in Chania, which the current first-party site lists separately from the Varipetro factory. Public retail access to the shop is supported; this does not establish public access, tours, or tastings at the factory.",
+    "visitBookingRequirement": "not_required",
+    "walkInStatus": "accepted",
+    "visitabilityReviewedAt": "2026-09-19 16:35:00+00"
   },
   {
     "id": "bastide-du-laval-provence",
@@ -772,7 +848,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Guided mill tour",
       "Olive-oil blending workshop"
     ],
-    "openingHours": "Mon-Sat 10:00-13:00 and 15:00-19:00 year-round, with additional seasonal Sunday opening. Closed between Christmas and New Year.",
+    "openingHours": "Mon-Sat 10:00-13:00 and 15:00-19:00 year-round. Mid-Jul to mid-Aug: Sun 10:00-13:00 and 15:00-18:00. Closed between Christmas and New Year.",
     "phone": "+33 4 90 08 95 80",
     "website": "https://www.bastidedulaval.com",
     "googleMapsUrl": "https://www.google.com/maps/place/Moulin+%C3%A0+huile+d'olive+%26+Domaine+Bastide+du+Laval/@43.7418367,5.3947324,17z/data=!3m1!4b1!4m6!3m5!1s0x12ca18aa81848fb9:0x5c1be8c02dbe1fa5!8m2!3d43.7418367!4d5.3947324!16s%2Fg%2F1tlz8jsm",
@@ -786,7 +862,23 @@ export const SEO_LIVE_PRODUCERS = [
     "publicPointType": "estate",
     "visitStatus": "public_visits",
     "visitSourceUrl": "https://www.bastidedulaval.com/en/pages/visits-tastings",
-    "visitNotes": "The official site confirms year-round self-guided mill and olive-grove visits and free tastings without reservation during opening hours. Private guided tours and workshops require booking."
+    "visitNotes": "Current first-party Bastide du Laval material confirms year-round self-guided visits to the mill and olive grove and free olive-oil tastings without reservation during public opening hours. Private guided tours and workshops are separately bookable. The producer also states that parking can accommodate buses.",
+    "visitBookingRequirement": "not_required",
+    "walkInStatus": "accepted",
+    "parkingStatus": "available",
+    "visitorHours": {
+      "monday_saturday": [
+        "10:00-13:00",
+        "15:00-19:00"
+      ],
+      "christmas_new_year": "closed",
+      "mid_july_mid_august_sunday": [
+        "10:00-13:00",
+        "15:00-18:00"
+      ]
+    },
+    "seasonalVisitNotes": "Additional Sunday opening applies from mid-July to mid-August. The estate closes between Christmas and New Year. Guided private tours/workshops require booking.",
+    "visitabilityReviewedAt": "2026-09-20 04:28:00.076289+00"
   },
   {
     "id": "beppino-occelli-valcasotto-piedmont",
@@ -822,7 +914,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Producer shop",
       "Mountain-cheese maturation"
     ],
-    "openingHours": "Public shop daily; cellar visits are bookable. Official seasonal hours are published by the producer.",
+    "openingHours": "Public village/shop: Mon-Sun 08:30-12:30 & 14:00-18:00. Bookable cellar visits: Mon-Fri 08:30-12:30 & 13:00-17:00; Sat-Sun 09:30-12:30 & 14:00-18:00.",
     "phone": "+39 0174 351135",
     "website": "https://occelli.it/",
     "googleMapsUrl": "https://www.google.com/maps/place/?q=place_id:ChIJh8zt6PeE0hIR72nbvyO-s20",
@@ -836,7 +928,29 @@ export const SEO_LIVE_PRODUCERS = [
     "publicPointType": "production_site",
     "visitStatus": "public_visits",
     "visitSourceUrl": "https://occelli.it/en/pages/stagionature-di-valcasotto",
-    "visitNotes": "The official site states that the cheese village is open to the public with a producer shop; dedicated maturation-cellar visits can be booked."
+    "visitNotes": "Current first-party Beppino Occelli page explicitly states that the Valcasotto Cheese Village is open to the public and has a producer shop. The same page separately offers a bookable maturation-cellar visit lasting about 30 minutes. General public/shop access and cellar-tour access therefore have different rules. The page publishes public village/shop hours and separate cellar-visit opening windows. Parking and visitor languages are not explicitly published.",
+    "visitBookingRequirement": "not_required",
+    "walkInStatus": "accepted",
+    "visitorHours": {
+      "public_village_shop": {
+        "monday_sunday": [
+          "08:30-12:30",
+          "14:00-18:00"
+        ]
+      },
+      "bookable_cellar_visit": {
+        "monday_friday": [
+          "08:30-12:30",
+          "13:00-17:00"
+        ],
+        "saturday_sunday": [
+          "09:30-12:30",
+          "14:00-18:00"
+        ]
+      }
+    },
+    "seasonalVisitNotes": "The maturation-cellar visit is approximately 30 minutes and should be booked separately; ordinary village/shop access is public.",
+    "visitabilityReviewedAt": "2026-09-20 03:29:16.696735+00"
   },
   {
     "id": "biohof-oberwerkstatt-south-tyrol",
@@ -872,7 +986,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Cheese-making demonstration",
       "Farm-product tasting"
     ],
-    "openingHours": "Farm shop products are available year-round. Cheese-making visits from March to September require advance registration.",
+    "openingHours": "Farm shop products available year-round; fixed shop hours not published. Farm/show-dairy tour runs once weekly Mar-Sep with advance registration.",
     "phone": "+39 327 2968969",
     "website": "https://www.biohof-oberwerkstatt.it",
     "googleMapsUrl": "https://www.google.com/maps/place/Biohof+Oberwerkstatt/@46.395149,11.5295891,17z/data=!3m1!4b1!4m6!3m5!1s0x47787b0a37c0b313:0x9c1f00b94a9f31e!8m2!3d46.395149!4d11.5295891!16s%2Fg%2F11jz9xz9yl",
@@ -886,7 +1000,16 @@ export const SEO_LIVE_PRODUCERS = [
     "publicPointType": "estate",
     "visitStatus": "public_visits",
     "visitSourceUrl": "https://www.biohof-oberwerkstatt.it/bio/",
-    "visitNotes": "The official farm site states that its products are available year-round in the farm shop. The goat-cheese show dairy operates from March to September with limited places and advance registration."
+    "visitNotes": "Current first-party Biohof Oberwerkstatt page confirms a year-round farm shop and a weekly farm/show-dairy experience from March through September. The guided farm activity includes the animals, the farm concept, cheese making in the show dairy and product tasting. Places are limited and advance registration is explicitly requested. Fixed farm-shop hours, parking, visitor languages and tour duration are not published.",
+    "visitorHours": {
+      "farm_shop": "year_round_hours_not_published",
+      "farm_show_dairy_tour": {
+        "march_september": "once_weekly",
+        "advance_registration": true
+      }
+    },
+    "seasonalVisitNotes": "Farm/show-dairy tours operate from March through September with limited capacity and advance registration.",
+    "visitabilityReviewedAt": "2026-09-20 03:51:40.36798+00"
   },
   {
     "id": "biolea-estate",
@@ -912,7 +1035,7 @@ export const SEO_LIVE_PRODUCERS = [
     "story": "Founder Yiorgos Dimitriadis spent decades researching how traditional olive-oil production could work in a modern estate. Today the fifth and sixth generations remain hands-on: Chloe Dimitriadis directs the harvest and mill, while she and her husband Michalis Papadakis continue the family business around olive oil, food and the Astrikas estate.",
     "indigenousVarieties": [],
     "tastingHighlights": [],
-    "openingHours": "Tours by appointment Mon-Sun 10:00-17:00; Restaurant/Kafeneion Tue-Sun 11:00-15:30",
+    "openingHours": "Guided tour: Mon-Sun 10:00-17:00 by appointment; classic tours Apr-Oct. Restaurant/Kafeneion: Tue-Sun 11:00-15:30.",
     "phone": "+30 28240 23281",
     "website": "https://biolea.gr",
     "googleMapsUrl": "https://maps.google.com/?q=35.463807,23.743427",
@@ -926,8 +1049,21 @@ export const SEO_LIVE_PRODUCERS = [
     "locationSourceUrl": "https://biolea.gr",
     "locationNotes": "Exact GPS coordinates published by Biolea match the database pin.",
     "visitStatus": "public_visits",
-    "visitSourceUrl": "https://biolea.gr/",
-    "visitNotes": "Biolea explicitly welcomes visitors to the Astrikas estate. Guided olive-oil tours are by appointment; the estate also operates its restaurant and Kafeneion on published hours. Producer-operated tours and dining are direct Biolea offerings, not TerroirTrail Experiences."
+    "visitSourceUrl": "https://biolea.gr/book-a-tour/",
+    "visitNotes": "Current first-party pages confirm a year-round visitor-oriented estate with several access modes. The standard olive-oil guided tour is available by appointment only, Monday-Sunday 10:00-17:00, with classic tours published for April-October. The Restaurant/Kafeneion is open Tuesday-Sunday 11:00-15:30, and the Kafeneion explicitly operates first-come-first-served. Because booking rules differ by activity, no single estate-wide booking or walk-in flag is stored.",
+    "visitorHours": {
+      "guided_tour": {
+        "booking": "required",
+        "monday_sunday": "10:00-17:00",
+        "classic_tour_season": "april_october"
+      },
+      "restaurant_kafeneion": {
+        "tuesday_sunday": "11:00-15:30",
+        "kafeneion_access": "first_come_first_served"
+      }
+    },
+    "seasonalVisitNotes": "Classic tours are published for April-October. The estate homepage also describes the olive mill as designed to accommodate visitors year-round; activity availability varies by product.",
+    "visitabilityReviewedAt": "2026-09-19 16:05:00+00"
   },
   {
     "id": "brist-olive-oil-istria",
@@ -964,7 +1100,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Guided EVOO tasting",
       "Seasonal sunset olive experience"
     ],
-    "openingHours": "The Vodnjan shop publishes year-round seasonal hours; low-season visitors are advised to call ahead.",
+    "openingHours": "Apr-Nov: Mon-Fri 10:00-16:00, Sat 10:00-14:00. Dec-Mar: Mon-Sat 10:00-14:00; low-season call-ahead advised.",
     "phone": "+385 95 562 4111",
     "website": "https://brist-olive.hr/",
     "googleMapsUrl": "https://www.google.com/maps/place/BRIST+Extra+Virgin+Olive+Oil+Shop/@44.982714,13.8400205,17z/data=!3m1!4b1!4m6!3m5!1s0x477ccc43b4fc21d3:0x88dfcfc857ef2b4f!8m2!3d44.982714!4d13.8400205!16s%2Fg%2F11cjhycpb1?entry=ttu&g_ep=EgoyMDI2MDkxNS4wIKXMDSoASAFQAw%3D%3D",
@@ -978,7 +1114,20 @@ export const SEO_LIVE_PRODUCERS = [
     "publicPointType": "producer_shop",
     "visitStatus": "public_visits",
     "visitSourceUrl": "https://brist-olive.hr/our-shop-in-vodnjan/",
-    "visitNotes": "The verified point is Brist's public Vodnjan shop, where the official site offers free guided tastings. Grove tours are separate bookable experiences."
+    "visitNotes": "Current first-party Brist page confirms a public Vodnjan shop with free guided olive-oil tastings. April-November opening is Monday-Friday 10:00-16:00 and Saturday 10:00-14:00; December-March is Monday-Saturday 10:00-14:00. Summer visitors are explicitly invited to drop in during regular hours. In the low season Brist advises calling ahead because the small family team may occasionally step away.",
+    "visitBookingRequirement": "not_required",
+    "walkInStatus": "subject_to_availability",
+    "visitorHours": {
+      "april_november": {
+        "saturday": "10:00-14:00",
+        "monday_friday": "10:00-16:00"
+      },
+      "december_march": {
+        "monday_saturday": "10:00-14:00"
+      }
+    },
+    "seasonalVisitNotes": "Summer drop-ins are explicitly welcomed. During the low season the producer advises calling ahead because staff may occasionally be away from the shop.",
+    "visitabilityReviewedAt": "2026-09-20 04:24:38.296327+00"
   },
   {
     "id": "campore-wine-sicily",
@@ -1016,7 +1165,7 @@ export const SEO_LIVE_PRODUCERS = [
     "tastingHighlights": [
       "Etna wine tasting"
     ],
-    "openingHours": "",
+    "openingHours": "Visitor experiences are bookable on published experience pages; no general visitor timetable is stated.",
     "phone": "+39 351 711 7298",
     "website": "https://camporewine.it",
     "googleMapsUrl": "https://www.google.com/maps/place/Campor%C3%A8+Wine/@37.8774822,14.9678525,17z/data=!4m9!3m8!1s0x1316a61579fb6815:0x42a4e9ed5e73aee1!5m2!4m1!1i2!8m2!3d37.8774822!4d14.9678525!16s%2Fg%2F11cst07mzg",
@@ -1028,9 +1177,11 @@ export const SEO_LIVE_PRODUCERS = [
     "locationSourceUrl": "https://www.google.com/maps/place/Campor%C3%A8+Wine/@37.8774822,14.9678525,17z/data=!4m9!3m8!1s0x1316a61579fb6815:0x42a4e9ed5e73aee1!5m2!4m1!1i2!8m2!3d37.8774822!4d14.9678525!16s%2Fg%2F11cst07mzg",
     "locationNotes": "Exact Google Maps producer point manually verified against the producer identity and official website during the 2026-09-18 expansion audit.",
     "publicPointType": "estate",
-    "visitStatus": "appointment_only",
-    "visitSourceUrl": "https://camporewine.it/en/booking/",
-    "visitNotes": "The official site advertises wine tastings with a Book Now flow. Arrange the visit in advance and confirm current availability directly with the estate."
+    "visitStatus": "public_visits",
+    "visitSourceUrl": "https://camporewine.it/en/tastings/",
+    "visitNotes": "Current first-party Camporè tasting page publishes multiple visitor experiences at the Randazzo estate, ranging from 60-minute tastings to approximately 4-hour food, wine and wellness experiences. Several experiences explicitly require reservations, while the two simplest tasting formats provide a Book Here flow without stating a universal reservation mandate. The current pages do not define a general walk-in policy, ordinary visitor hours, parking details, or visitor languages.",
+    "seasonalVisitNotes": "Some experiences are weather-dependent. Published programme durations range from 60 minutes to approximately 4 hours.",
+    "visitabilityReviewedAt": "2026-09-20 03:10:47.090178+00"
   },
   {
     "id": "canava-santorini-distillery",
@@ -1054,7 +1205,7 @@ export const SEO_LIVE_PRODUCERS = [
     "story": "Evangelos Lygnos founded the distillery in 1974 after learning the craft of ouzo making and working in Santorini wine. His son Loukas later continued the family operation and assembled historic tools, workshops and everyday objects into the museum beside the distillery.",
     "indigenousVarieties": [],
     "tastingHighlights": [],
-    "openingHours": "Contact the distillery before visiting; current visitor hours are not confirmed on a producer-controlled page",
+    "openingHours": "",
     "phone": "+30 22860 31573",
     "website": "https://www.canavasantorini.com",
     "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Canava%20Museum%20Santorini&query_place_id=ChIJ5YMrxW_OmRQRk0po0X3EDuM",
@@ -1067,9 +1218,10 @@ export const SEO_LIVE_PRODUCERS = [
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://www.google.com/maps/search/?api=1&query=Canava%20Museum%20Santorini&query_place_id=ChIJ5YMrxW_OmRQRk0po0X3EDuM",
     "locationNotes": "Phase 10A manual Google Places audit (2026-09-15): matched Canava Museum Santorini in Mesaria to the operating Canava Santorini distillery/museum identity. Stored pin updated to the Google business point; entrance-level precision is not separately established.",
-    "visitStatus": "not_publicly_confirmed",
-    "visitSourceUrl": "https://www.greekgastronomyguide.gr/en/item/canava-santorini-distillery/",
-    "visitNotes": "Current independent sources support the operating distillery/museum identity and public visitor use, but a current producer-controlled visitor page was not verified. Contact the distillery before making a special trip."
+    "visitStatus": "public_visits",
+    "visitSourceUrl": "https://www.canavasantorini.com/",
+    "visitNotes": "The live first-party Canava Santorini site states that its museum is open to guests and that visitors are welcomed for guided distillery tours, explanation of the distillation process, and spirit tasting. The official site does not publish current daily visitor hours, booking requirements, walk-in policy, parking, visit duration, or tour languages. Current 2026 public visitor reporting corroborates that the distillery remains a visitable site, but is not used to set operational details.",
+    "visitabilityReviewedAt": "2026-09-18 21:00:00+00"
   },
   {
     "id": "cantine-iuppa-sicily",
@@ -1105,7 +1257,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Metodo Classico sparkling wine"
     ],
     "tastingHighlights": [],
-    "openingHours": "",
+    "openingHours": "Visitor experiences are published; no general visitor timetable is stated.",
     "phone": "+39 375 516 0372",
     "website": "https://www.cantineiuppa.it",
     "googleMapsUrl": "https://www.google.com/maps/place/Cantine+IUPPA/@37.7226,15.1272054,17z/data=!3m1!4b1!4m6!3m5!1s0x13140747de19129b:0x7f8d141d68ffe00!8m2!3d37.7226!4d15.1272054!16s%2Fg%2F11j6r6n7n4",
@@ -1117,9 +1269,11 @@ export const SEO_LIVE_PRODUCERS = [
     "locationSourceUrl": "https://www.google.com/maps/place/Cantine+IUPPA/@37.7226,15.1272054,17z/data=!3m1!4b1!4m6!3m5!1s0x13140747de19129b:0x7f8d141d68ffe00!8m2!3d37.7226!4d15.1272054!16s%2Fg%2F11j6r6n7n4",
     "locationNotes": "Exact Google Maps producer point manually verified against the producer identity and official website during the 2026-09-18 expansion audit.",
     "publicPointType": "production_site",
-    "visitStatus": "not_publicly_confirmed",
-    "visitSourceUrl": "https://www.cantineiuppa.it/",
-    "visitNotes": "The official site provides a reservations contact and describes a tasting space under development, but ordinary public access to this exact mapped winery point was not confirmed for this import."
+    "visitStatus": "public_visits",
+    "visitSourceUrl": "https://cantineiuppa.it/en/visite-degustazioni",
+    "visitNotes": "Current first-party Cantine Iuppa visitor page publishes wine-tasting and lunch experiences at the Milo estate and provides an online request flow plus a reservations contact. Published tasting/lunch packages last 120 minutes. The current page does not explicitly state that advance booking is universally mandatory, define a general walk-in policy, publish visitor hours, parking details, or visitor languages.",
+    "typicalVisitMinutes": 120,
+    "visitabilityReviewedAt": "2026-09-20 03:06:39.307835+00"
   },
   {
     "id": "casa-julia-tuscany",
@@ -1158,7 +1312,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Simple estate tasting",
       "Olive-oil education"
     ],
-    "openingHours": "Oleotourism visits run from May to the end of October and are bookable in advance.",
+    "openingHours": "May-end Oct: standard oleotourism visit approximately 09:30-11:30; reservation required at least 24h in advance.",
     "phone": "+39 335 7252466",
     "website": "https://www.casajulia.info/",
     "googleMapsUrl": "https://www.google.com/maps/place/?q=place_id:ChIJfUvwIOyXKRMRrCFksYI2W4g",
@@ -1170,9 +1324,21 @@ export const SEO_LIVE_PRODUCERS = [
     "locationSourceUrl": "https://www.google.com/maps/place/?q=place_id:ChIJfUvwIOyXKRMRrCFksYI2W4g",
     "locationNotes": "Exact producer identity, persistent Google Place ID and same-point coordinates were verified in the prior strict TerroirTrail Google Maps audit; current producer identity was refreshed before import.",
     "publicPointType": "estate",
-    "visitStatus": "appointment_only",
+    "visitStatus": "seasonal_public",
     "visitSourceUrl": "https://www.casajulia.info/negozio/en/product/esperienza-di-oleoturismo-in-toscana-nelloliveto-di-casa-julia/",
-    "visitNotes": "The official site offers bookable olive-grove visits and EVOO tastings during the May-October visitor season."
+    "visitNotes": "Current first-party Casa Julia oleotourism page publishes a visitor season from May through the end of October. The standard experience runs approximately 09:30-11:30 and lasts about 2 hours. Reservations are mandatory at least 24 hours in advance. The full experience includes a guided olive-grove visit and comparative EVOO tasting; a simple bread-and-oil tasting is also offered. The page notes hilly terrain, recommends closed-toe shoes, and allows dogs on a leash. Parking and visitor languages are not explicitly published.",
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "typicalVisitMinutes": 120,
+    "visitorHours": {
+      "season": {
+        "end": "10-31",
+        "start": "05-01"
+      },
+      "standard_visit": "09:30-11:30"
+    },
+    "seasonalVisitNotes": "Best period: spring and early autumn. Hilly terrain; closed-toe shoes recommended; dogs allowed on leash.",
+    "visitabilityReviewedAt": "2026-09-19 18:03:11.473061+00"
   },
   {
     "id": "cascina-barroero-piedmont",
@@ -1214,7 +1380,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Hazelnut tasting",
       "Farm lunch option"
     ],
-    "openingHours": "Guided tours and tastings are bookable in advance at published arrival times.",
+    "openingHours": "Tour & Tasting arrival: 09:00 or 11:00. Tour & Lunch arrival: 11:00. Advance booking by email.",
     "phone": "+39 0173 821250",
     "website": "https://www.barroero.it/",
     "googleMapsUrl": "https://www.google.com/maps/place/?q=place_id:ChIJ-yHc5zbI0hIRT5kyYPTikVY",
@@ -1228,7 +1394,21 @@ export const SEO_LIVE_PRODUCERS = [
     "publicPointType": "estate",
     "visitStatus": "appointment_only",
     "visitSourceUrl": "https://www.barroero.it/en/guided-tours/",
-    "visitNotes": "The official farm site offers bookable guided tours from hazelnut fields through processing and pastry production, ending with tasting or lunch."
+    "visitNotes": "Current first-party Cascina Barroero page publishes guided hazelnut-farm tours through the fields, shelling room and pastry production, ending with either tasting or lunch. The page explicitly provides separate booking-by-email instructions for both formats. Tour & Tasting arrival times are 09:00 or 11:00; Tour & Lunch arrival time is 11:00. No standard duration, parking details, visitor languages or walk-in option are published.",
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "visitorHours": {
+      "tour_lunch": {
+        "arrival_time": "11:00"
+      },
+      "tour_tasting": {
+        "arrival_times": [
+          "09:00",
+          "11:00"
+        ]
+      }
+    },
+    "visitabilityReviewedAt": "2026-09-20 03:25:51.384223+00"
   },
   {
     "id": "cascina-fontane-piedmont",
@@ -1269,7 +1449,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Guided tasting",
       "Direct sales"
     ],
-    "openingHours": "Regional tourism listings publish visits, tastings and direct sales; contact the producer for the current visit time.",
+    "openingHours": "Visits/tastings listed Mon-Sun; contact the producer for the current time.",
     "phone": "+39 328 2168587",
     "website": "https://cascinafontaneshop.it/",
     "googleMapsUrl": "https://www.google.com/maps/place/?q=place_id:ChIJwTtO0Iuz0hIRLCVA0q97C_g",
@@ -1283,7 +1463,29 @@ export const SEO_LIVE_PRODUCERS = [
     "publicPointType": "production_site",
     "visitStatus": "public_visits",
     "visitSourceUrl": "https://www.visitlmr.it/en/aziende/cascina-fontane",
-    "visitNotes": "The current regional tourism authority lists guided hazelnut-grove and production-lab visits plus tastings and sales at this producer."
+    "visitNotes": "The current official Langhe Monferrato Roero tourism-authority listing identifies Cascina Fontane as open for visits, tastings and sales throughout the week. It publishes a 60-minute guided visit to the hazelnut groves and production laboratory plus a 30-minute guided tasting, with car and bus parking and accessible production/tasting areas. The producer shop site confirms the active Cascina Fontane business but does not currently expose equivalent visitor-operation details. Exact daily visit times and booking/walk-in rules are not stated.",
+    "parkingStatus": "available",
+    "typicalVisitMinutes": 60,
+    "visitorHours": {
+      "days": [
+        "monday",
+        "tuesday",
+        "wednesday",
+        "thursday",
+        "friday",
+        "saturday",
+        "sunday"
+      ]
+    },
+    "seasonalVisitNotes": "Tourism-authority listing gives 60 minutes for the guided visit and 30 minutes for the tasting.",
+    "visitorLanguages": [
+      "fr",
+      "en",
+      "ro",
+      "es",
+      "de"
+    ],
+    "visitabilityReviewedAt": "2026-09-20 03:29:23.118628+00"
   },
   {
     "id": "cebelarstvo-batistuta-goriska",
@@ -1323,7 +1525,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Bee-aerosol experience",
       "Olive-oil and local-product tasting"
     ],
-    "openingHours": "Visits and apitherapy experiences require advance booking.",
+    "openingHours": "Visits by advance booking; no fixed public timetable published.",
     "phone": "+386 41 985 605",
     "website": "https://cebelarstvo-batistuta.si/en/home/",
     "googleMapsUrl": "https://www.google.com/maps/place/%C4%8Cebelarstvo+Bati%C5%A1tuta/@45.9985124,13.5821071,17z/data=!3m1!4b1!4m6!3m5!1s0x477bab27459f6729:0x336344e54c03b88e!8m2!3d45.9985124!4d13.5821071!16s%2Fg%2F11h0b4zy6k?entry=ttu&g_ep=EgoyMDI2MDkxNS4wIKXMDSoASAFQAw%3D%3D",
@@ -1337,7 +1539,12 @@ export const SEO_LIVE_PRODUCERS = [
     "publicPointType": "estate",
     "visitStatus": "appointment_only",
     "visitSourceUrl": "https://cebelarstvo-batistuta.si/en/services/",
-    "visitNotes": "The official site offers honey tasting, apiary tours, bee-aerosol inhalation and other services and explicitly asks visitors to book in advance."
+    "visitNotes": "Current first-party Batištuta services page explicitly requires advance booking for the honey-tasting/apiary-tour experience and for bee-aerosol inhalation. The apiary tour includes beekeeping presentation, honey, dried persimmon and olive-oil tastings plus refreshments and lasts 60 minutes. Bee-aerosol therapy is seasonally suitable from March through September.",
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "typicalVisitMinutes": 60,
+    "seasonalVisitNotes": "Bee-aerosol therapy is published as suitable from March through September.",
+    "visitabilityReviewedAt": "2026-09-20 03:40:13.116238+00"
   },
   {
     "id": "ceretto-piedmont",
@@ -1379,7 +1586,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Barolo and Barbaresco cru tasting",
       "Wine shop"
     ],
-    "openingHours": "Daily 10:00-18:00; October-November Monday-Saturday. Visits and tastings by reservation.",
+    "openingHours": "Daily 10:00-18:00; Oct-Nov Mon-Sat 10:00-18:00. Visits/tastings by reservation.",
     "phone": "+39 0173 268033",
     "website": "https://www.ceretto.com/",
     "googleMapsUrl": "https://www.google.com/maps/place/?q=place_id:ChIJfSKPXkSy0hIRT8RTneN8TNw",
@@ -1393,7 +1600,20 @@ export const SEO_LIVE_PRODUCERS = [
     "publicPointType": "estate",
     "visitStatus": "appointment_only",
     "visitSourceUrl": "https://visit.ceretto.com/",
-    "visitNotes": "The official visitor site publishes current hours and requires reservations for winery visits and structured tastings."
+    "visitNotes": "Current first-party Ceretto visitor platform explicitly states that visits and structured tastings are available by reservation. Standard opening is daily 10:00-18:00; during October and November the estate is open Monday-Saturday 10:00-18:00. The shop follows the same hours and may offer wine tasting depending on staff availability. No standard visit duration, parking details or visitor languages are published on the main visitor page.",
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "visitorHours": {
+      "standard": {
+        "monday_sunday": "10:00-18:00"
+      },
+      "october_november": {
+        "sunday": "closed",
+        "monday_saturday": "10:00-18:00"
+      }
+    },
+    "seasonalVisitNotes": "October-November: open Monday-Saturday rather than daily. Shop tastings may be possible subject to staff availability.",
+    "visitabilityReviewedAt": "2026-09-20 03:25:57.322944+00"
   },
   {
     "id": "chateau-pesquie-provence",
@@ -1441,7 +1661,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Self-guided winegrowers' path",
       "Bookable winery tour and tasting"
     ],
-    "openingHours": "Winery generally open year-round Mon-Sat 10:00-12:00 and 14:00-18:00, with seasonal Sunday opening.",
+    "openingHours": "Generally Mon-Sat 10:00-12:00 and 14:00-18:00 year-round; seasonal Sunday opening in high season. Recheck current seasonal schedule before travel.",
     "phone": "+33 4 90 61 94 08",
     "website": "https://chateaupesquie.com",
     "googleMapsUrl": "https://www.google.com/maps/place/Ch%C3%A2teau+Pesqui%C3%A9,+Domaine+viticole+AOC+Ventoux/@44.0745865,5.1886371,17z/data=!3m1!4b1!4m6!3m5!1s0x12ca719f12a490cd:0x97a35438ddcaed08!8m2!3d44.0745865!4d5.1886371!16s%2Fg%2F1hc0yn9fv?entry=ttu",
@@ -1455,7 +1675,18 @@ export const SEO_LIVE_PRODUCERS = [
     "publicPointType": "estate",
     "visitStatus": "public_visits",
     "visitSourceUrl": "https://chateaupesquie.com/",
-    "visitNotes": "The estate welcomes visitors for wine tasting and a self-guided vineyard route; more structured cellar tours and other experiences are reservation-based. Check the current seasonal schedule before travel."
+    "visitNotes": "Current first-party Château Pesquié visitor material confirms free wine tasting and a self-guided vineyard route during public estate opening hours. More structured cellar visits and tasting experiences are reservation-based. General public tasting/self-guided access is therefore distinct from bookable guided experiences.",
+    "visitBookingRequirement": "not_required",
+    "walkInStatus": "accepted",
+    "visitorHours": {
+      "sunday": "seasonal_high_season",
+      "monday_saturday": [
+        "10:00-12:00",
+        "14:00-18:00"
+      ]
+    },
+    "seasonalVisitNotes": "Seasonal Sunday opening applies in high season. Guided cellar experiences are separately reservation-based.",
+    "visitabilityReviewedAt": "2026-09-20 04:27:45.3751+00"
   },
   {
     "id": "chiavalon-istria",
@@ -1489,7 +1720,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Guided EVOO tasting",
       "Istrian food pairing"
     ],
-    "openingHours": "Tasting experiences require a booking request; published shop/tasting hours vary seasonally.",
+    "openingHours": "Current published visitor hours: Mon-Fri 08:00-20:00; Sat 09:00-14:00; Sun and holidays closed.",
     "phone": "+385 52 655 050",
     "website": "https://chiavalon.hr",
     "googleMapsUrl": "https://www.google.com/maps/place/Chiavalon+Extra+Virgin+Olive+Oil/@44.975546,13.8423797,17z/data=!3m1!4b1!4m6!3m5!1s0x477ccc449225bfd1:0x1c76c525335b84a5!8m2!3d44.975546!4d13.8423797!16s%2Fg%2F11bycklk33?entry=ttu&g_ep=EgoyMDI2MDkxNS4wIKXMDSoASAFQAw%3D%3D",
@@ -1501,9 +1732,18 @@ export const SEO_LIVE_PRODUCERS = [
     "locationSourceUrl": "https://www.google.com/maps/place/Chiavalon+Extra+Virgin+Olive+Oil/@44.975546,13.8423797,17z/data=!3m1!4b1!4m6!3m5!1s0x477ccc449225bfd1:0x1c76c525335b84a5!8m2!3d44.975546!4d13.8423797!16s%2Fg%2F11bycklk33?entry=ttu&g_ep=EgoyMDI2MDkxNS4wIKXMDSoASAFQAw%3D%3D",
     "locationNotes": "Exact Google Maps producer point verified against the frozen 2026-09-18 expansion audit and current producer identity sources.",
     "publicPointType": "production_site",
-    "visitStatus": "appointment_only",
+    "visitStatus": "public_visits",
     "visitSourceUrl": "https://chiavalon.hr/en/tasting-experience/",
-    "visitNotes": "The official estate site publishes several olive-grove, mill and tasting programmes and requires booking requests for guided experiences."
+    "visitNotes": "Current first-party Chiavalon pages publish visitor opening hours and guided olive-oil tasting programmes. The FAQ states that advance booking for guided tastings is recommended to secure a time slot and guide, not universally mandatory. Same-day online booking is unavailable, so unreserved guided-tasting access remains subject to availability.",
+    "visitBookingRequirement": "recommended",
+    "walkInStatus": "subject_to_availability",
+    "visitorHours": {
+      "saturday": "09:00-14:00",
+      "monday_friday": "08:00-20:00",
+      "sunday_holidays": "closed"
+    },
+    "seasonalVisitNotes": "The official page labels these as the current-period hours; visitors should recheck before travel. Advance booking is recommended for guided tastings.",
+    "visitabilityReviewedAt": "2026-09-20 04:24:41.559874+00"
   },
   {
     "id": "christakis-patria-feta-proastio",
@@ -1573,7 +1813,8 @@ export const SEO_LIVE_PRODUCERS = [
     "publicPointType": "production_site",
     "visitStatus": "not_publicly_confirmed",
     "visitSourceUrl": "https://www.patriafeta.com/",
-    "visitNotes": "The factory location is confirmed, but no current first-party public visit, tour, tasting, or walk-in procedure was verified."
+    "visitNotes": "The Proastio production site remains the verified Patria Feta / Christakis factory point, but the current first-party domain was unreachable during the 2026-09-19 visitability review and no indexed first-party visitor programme, factory-shop timetable, tour/tasting procedure, booking rule, or walk-in policy could be verified. Keep public access unconfirmed rather than inferring visitability from the factory listing.",
+    "visitabilityReviewedAt": "2026-09-19 17:29:00+00"
   },
   {
     "id": "ciomod-modica-sicily",
@@ -1621,7 +1862,9 @@ export const SEO_LIVE_PRODUCERS = [
     "publicPointType": "production_site",
     "visitStatus": "not_publicly_confirmed",
     "visitSourceUrl": "https://www.ciomod.com/",
-    "visitNotes": "This verified map point is the producer's production-site identity. Ciomod also advertises a bookable chocolate workshop at Terrazza Ciomod in Modica Alta, but that separate visitor venue is not being substituted for this mapped production point."
+    "visitNotes": "Current first-party Ciomod pages confirm active visitor experiences, but those experiences are explicitly located at Terrazza Ciomod, Via Pizzo 23 in Modica Alta. The mapped TerroirTrail record represents the separate Ciomod production-site identity, and the current first-party site does not publish ordinary public access, tours, opening hours, booking terms, or walk-in access for that mapped production site. Keep production-site visitability unconfirmed.",
+    "seasonalVisitNotes": "Separate Terrazza Ciomod experiences are bookable, but they are not used to classify this mapped production-site record.",
+    "visitabilityReviewedAt": "2026-09-20 03:07:41.508359+00"
   },
   {
     "id": "colle-di-bordocheo-tuscany",
@@ -1660,7 +1903,7 @@ export const SEO_LIVE_PRODUCERS = [
       "EVOO tasting",
       "Food-and-wine tasting"
     ],
-    "openingHours": "Tastings are available by advance reservation; programmes vary by group size and experience.",
+    "openingHours": "Mon-Fri 09:00-18:00; reservation only.",
     "phone": "+39 0583 929821",
     "website": "https://www.colledibordocheo.com/en/",
     "googleMapsUrl": "https://www.google.com/maps/place/?q=place_id:ChIJgYjJbkKA1RIRS514e6AeH0s",
@@ -1673,8 +1916,21 @@ export const SEO_LIVE_PRODUCERS = [
     "locationNotes": "Exact producer identity, persistent Google Place ID and same-point coordinates were verified in the prior strict TerroirTrail Google Maps audit; current producer identity was refreshed before import.",
     "publicPointType": "estate",
     "visitStatus": "appointment_only",
-    "visitSourceUrl": "https://www.colledibordocheo.com/en/prenotazioni",
-    "visitNotes": "The official estate site publishes multiple tasting formats and asks visitors to reserve by phone/email."
+    "visitSourceUrl": "https://www.colledibordocheo.com/it/proposte",
+    "visitNotes": "Current first-party tasting page explicitly states that tastings are available Monday-Friday from 09:00 to 18:00 by reservation only, in Italian, English or Spanish. Published experiences vary substantially in duration: olive-oil tasting about 20 minutes, Bordocheo 5+1 about 90 minutes, Organic Walk & Wine Tasting about 2 hours, Lunch Tasting about 2 hours, and Gourmet Tasting over 2 hours. Parking is not explicitly published.",
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "visitorHours": {
+      "booking": "required",
+      "monday_friday": "09:00-18:00"
+    },
+    "seasonalVisitNotes": "Published tasting durations vary from about 20 minutes to over 2 hours depending on the selected experience.",
+    "visitorLanguages": [
+      "it",
+      "en",
+      "es"
+    ],
+    "visitabilityReviewedAt": "2026-09-19 18:04:48.877627+00"
   },
   {
     "id": "cretan-brewery-charma",
@@ -1701,7 +1957,7 @@ export const SEO_LIVE_PRODUCERS = [
     "story": "Mechanical engineer Ioannis Lionakis, born and raised in Chania, founded the brewery in 2007. His starting point was simple: he felt locals and visitors were missing the kind of fresh beer he had encountered elsewhere in Europe, so he set out to make it in western Crete.",
     "indigenousVarieties": [],
     "tastingHighlights": [],
-    "openingHours": "8 Apr-31 Oct: daily 11:00-20:00; no brewery tours Sundays/bank holidays",
+    "openingHours": "8 Apr-31 Oct: daily 11:00-20:00. Kitchen until 19:30. No brewery tours Sundays or bank holidays.",
     "phone": "+30 28240 31002",
     "website": "https://cretanbeer.gr",
     "googleMapsUrl": "https://maps.google.com/?q=35.486870,23.825860",
@@ -1716,7 +1972,27 @@ export const SEO_LIVE_PRODUCERS = [
     "locationNotes": "Current producer address verified as Zounaki, Platanias. Site coordinate retained as verified brewery location; entrance/access grading remains separate.",
     "visitStatus": "seasonal_public",
     "visitSourceUrl": "https://www.cretanbeer.gr/en/cretan-brewery/visit-us/",
-    "visitNotes": "Cretan Brewery publishes a visitor season from 8 April to 31 October, daily 11:00-20:00. Guided brewery tours are not offered Sundays or bank holidays."
+    "visitNotes": "Current first-party visitor page confirms a public visiting season from 8 April to 31 October, daily 11:00-20:00. Guided brewery tours are offered at published times except Sundays and bank holidays, and the site provides reservation links for tours and tasting packages. General walk-in policy, parking and tour languages are not explicitly published.",
+    "visitorHours": {
+      "daily": "11:00-20:00",
+      "season": {
+        "end": "10-31",
+        "start": "04-08"
+      },
+      "tour_times": [
+        "12:00",
+        "13:30",
+        "15:00",
+        "16:30"
+      ],
+      "kitchen_until": "19:30",
+      "tour_exceptions": [
+        "sunday",
+        "bank_holidays"
+      ]
+    },
+    "seasonalVisitNotes": "Guided tours run at 12:00, 13:30, 15:00 and 16:30 except Sundays and bank holidays. Cooking classes require at least 5 days advance contact.",
+    "visitabilityReviewedAt": "2026-09-19 16:05:00+00"
   },
   {
     "id": "cretan-olive-oil-farm",
@@ -1742,7 +2018,7 @@ export const SEO_LIVE_PRODUCERS = [
     "story": "The project grew unexpectedly from work on books about the Cretan diet in the 1990s, which led the family to reconnect with older recipes, ingredients and producers across the island. After years of welcoming visitors, they rebuilt their family's 1882 olive press inside the museum; in 2024 the farm took the Spiridi name to foreground the family legacy.",
     "indigenousVarieties": [],
     "tastingHighlights": [],
-    "openingHours": "Mon-Sat 09:30-19:00; Sun 10:00-16:00",
+    "openingHours": "Usually 1 Apr-31 Oct. Mon-Sat 09:30-18:30; Sun 10:00-16:00. Check the main page for seasonal timetable updates.",
     "phone": "+30 28410 24139",
     "website": "https://cretanoliveoilfarm.com",
     "googleMapsUrl": "https://maps.google.com/?q=35.211141,25.711611",
@@ -1755,9 +2031,29 @@ export const SEO_LIVE_PRODUCERS = [
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://cretanoliveoilfarm.com",
     "locationNotes": "Current Spiridi Olive Oil Farm identity and Agios Nikolaos-Elounda road location verified. Producer advises checking current timetable.",
-    "visitStatus": "public_visits",
-    "visitSourceUrl": "https://www.cretanoliveoilfarm.com/",
-    "visitNotes": "Spiridi explicitly operates as a visitor farm and museum and publishes daily opening hours and self-guided access."
+    "visitStatus": "seasonal_public",
+    "visitSourceUrl": "https://www.cretanoliveoilfarm.com/tours",
+    "visitNotes": "Current first-party pages confirm Spiridi as a seasonal public visitor farm and museum. A simple/e-guided visit requires no reservation and lasts about 60 minutes, including an olive-oil and Cretan-products tasting. The farm usually welcomes visitors from 1 April to 31 October. Separate hands-on activities require booking at least 12 hours ahead. The e-guided tablet content is available in English, French, German, Russian and Polish.",
+    "visitBookingRequirement": "not_required",
+    "walkInStatus": "accepted",
+    "typicalVisitMinutes": 60,
+    "visitorHours": {
+      "sunday": "10:00-16:00",
+      "usual_season": {
+        "end": "10-31",
+        "start": "04-01"
+      },
+      "monday_saturday": "09:30-18:30"
+    },
+    "seasonalVisitNotes": "The FAQ says the farm usually opens for visits from 1 April and closes 31 October, and that summer hours are updated on the official site. Hands-on activities require booking at least 12 hours ahead; simple visits do not.",
+    "visitorLanguages": [
+      "en",
+      "fr",
+      "de",
+      "ru",
+      "pl"
+    ],
+    "visitabilityReviewedAt": "2026-09-19 16:05:00+00"
   },
   {
     "id": "de-carlo-puglia",
@@ -1791,7 +2087,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Harvest-period mill visit",
       "Guided EVOO introduction"
     ],
-    "openingHours": "",
+    "openingHours": "Guided mill visits during the harvest period by advance availability request.",
     "website": "https://www.oliodecarlo.com",
     "googleMapsUrl": "https://www.google.com/maps/place/Frantoio+De+Carlo/@41.0361862,16.8315925,17z/data=!3m1!4b1!4m6!3m5!1s0x1347eb9b2c59f0f3:0xd14b061d42de6832!8m2!3d41.0361862!4d16.8315925!16s%2Fg%2F1tlwhts8?entry=ttu&g_ep=EgoyMDI2MDkxNS4wIKXMDSoASAFQAw%3D%3D",
     "googlePlaceId": "ChIJ8_BZLJvrRxMRMmjeQh0GS9E",
@@ -1804,7 +2100,15 @@ export const SEO_LIVE_PRODUCERS = [
     "publicPointType": "production_site",
     "visitStatus": "seasonal_public",
     "visitSourceUrl": "https://www.oliodecarlo.com/en/experiences/",
-    "visitNotes": "The official site offers bookable guided visits to the oil mill during the harvest period; availability must be requested in advance."
+    "visitNotes": "Current first-party De Carlo experience page publishes guided visits to the oil mill during the olive-harvest period. Visitors must request availability by email, specifying date, number of participants, age and language. Guided tours are explicitly offered only in Italian or English. The current page does not publish a standard duration, fixed daily visitor timetable, parking details, or ordinary walk-in access.",
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "seasonalVisitNotes": "Guided mill visits operate during the olive-harvest period; exact dates and availability must be requested in advance.",
+    "visitorLanguages": [
+      "it",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-09-20 03:20:03.494272+00"
   },
   {
     "id": "distillerie-chateau-du-barroux-provence",
@@ -1837,7 +2141,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Whisky tasting",
       "Self-guided château visit"
     ],
-    "openingHours": "Distillery tours run on bookable 2026 time slots; château visits do not require reservation.",
+    "openingHours": "Distillery tours operate on bookable 2026 time slots with confirmed reservation; château opening hours are separate and do not define distillery access.",
     "website": "https://www.chateaudubarroux.fr",
     "googleMapsUrl": "https://www.google.com/maps/place/Barroux+Castle/@44.1373869,5.0995842,17z/data=!3m1!4b1!4m6!3m5!1s0x12ca782b100feef7:0xf9d07a5b48a5ee6d!8m2!3d44.1373869!4d5.0995842!16s%2Fg%2F120mt4_6?entry=ttu",
     "googlePlaceId": "ChIJ9-4PECt4yhIRbe6lSFt60Pk",
@@ -1850,7 +2154,11 @@ export const SEO_LIVE_PRODUCERS = [
     "publicPointType": "other_verified_point",
     "visitStatus": "appointment_only",
     "visitSourceUrl": "https://www.chateaudubarroux.fr/nos-visites/",
-    "visitNotes": "The verified map point is Château du Barroux, which contains the distillery. Guided distillery visits and tastings require a confirmed reservation; ordinary château access follows a separate visitor arrangement."
+    "visitNotes": "Current first-party Château du Barroux material publishes guided distillery visits and tastings on bookable 2026 time slots and requires a confirmed reservation. Ordinary château visiting follows a separate access arrangement and must not be treated as proof of walk-in distillery access.",
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "seasonalVisitNotes": "Distillery availability follows the current bookable tour calendar; ordinary château entry is a separate visitor product.",
+    "visitabilityReviewedAt": "2026-09-20 04:27:51.204431+00"
   },
   {
     "id": "domaine-biblia-chora",
@@ -1880,7 +2188,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Merlot"
     ],
     "tastingHighlights": [],
-    "openingHours": "Visits upon request: Mon-Fri 10:00-14:00.",
+    "openingHours": "Mon-Fri 10:00-14:00 upon request.",
     "phone": "+30 25920 44974",
     "website": "https://bibliachora.gr",
     "googleMapsUrl": "https://www.google.com/maps/place/?q=place_id:ChIJh9l_wOcwqRQRtzn_AKprzo8",
@@ -1896,7 +2204,14 @@ export const SEO_LIVE_PRODUCERS = [
     "locationNotes": "Producer-controlled contact page links directly to the Ktima Biblia Chora Winery Google Maps point in Kokkinochori. Business location verified; entrance and road access remain unverified.",
     "visitStatus": "appointment_only",
     "visitSourceUrl": "https://bibliachora.gr/en/visit-the-estate/",
-    "visitNotes": "Current first-party visit page publishes estate visits Monday-Friday upon request."
+    "visitNotes": "Current first-party Visit the Estate page, updated in June 2026, publishes estate visits Monday-Friday 10:00-14:00 upon request. A typical visit includes a guided walk around the estate grounds, views of the vineyard, fermentation hall, bottling line, maturation rooms and underground cellars, ending with wine tasting. The estate explicitly states it is accessible to people with disabilities. No standard visit duration, parking details or visitor languages are published.",
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "visitorHours": {
+      "booking": "upon_request",
+      "monday_friday": "10:00-14:00"
+    },
+    "visitabilityReviewedAt": "2026-09-19 17:29:00+00"
   },
   {
     "id": "domaine-d-migas-thessaly",
@@ -1934,7 +2249,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Wine tasting",
       "Aging-cellar visit"
     ],
-    "openingHours": "Visits: Monday-Friday 10:00-16:00; Saturday 11:00-17:00; advance booking required.",
+    "openingHours": "Mon-Fri 10:00-16:00; Sat 11:00-17:00; Sun and official holidays closed. Advance booking required.",
     "phone": "+30 24920 25215",
     "website": "https://domaine-migas.gr/en/",
     "googleMapsUrl": "https://www.google.com/maps/place/?q=place_id:ChIJXw83YrVhWBMRJp9u5KWpMW4",
@@ -1948,7 +2263,17 @@ export const SEO_LIVE_PRODUCERS = [
     "publicPointType": "estate",
     "visitStatus": "appointment_only",
     "visitSourceUrl": "https://domaine-migas.gr/en/experiences/visit/",
-    "visitNotes": "The official visit page publishes current visiting hours and requires booking by phone or email."
+    "visitNotes": "Current first-party visit page explicitly requires advance booking. Guided visits include the vineyard, production, bottling and ageing areas and last approximately 45-60 minutes. Published visitor hours are Monday-Friday 10:00-16:00 and Saturday 11:00-17:00; Sunday and official holidays are closed. Parking and actual visitor languages are not explicitly published.",
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "visitorHours": {
+      "sunday": "closed",
+      "saturday": "11:00-17:00",
+      "monday_friday": "10:00-16:00",
+      "official_holidays": "closed"
+    },
+    "seasonalVisitNotes": "Guided visit duration is published as approximately 45-60 minutes.",
+    "visitabilityReviewedAt": "2026-09-19 17:29:00+00"
   },
   {
     "id": "domaine-karanika",
@@ -1976,7 +2301,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Limniona"
     ],
     "tastingHighlights": [],
-    "openingHours": "",
+    "openingHours": "Advance booking required; no general visitor timetable published.",
     "phone": "+30 23860 61400",
     "website": "https://karanika.com",
     "googleMapsUrl": "https://www.google.com/maps/place/?q=place_id:ChIJX9l0oa5xVxMRglPJ5KpuwkU",
@@ -1992,9 +2317,12 @@ export const SEO_LIVE_PRODUCERS = [
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://mapcarta.com/W446824784",
     "locationNotes": "Phase 10B exact-location audit: Karanika Winery building point independently matched in OpenStreetMap-backed mapping data; the mapping entity links karanika.com and the producer identity is corroborated by the official Domaine Karanika site. Road access remains unreviewed.",
-    "visitStatus": "not_publicly_confirmed",
-    "visitSourceUrl": "https://karanika.com/",
-    "visitNotes": "Current first-party site verifies the producer identity and Amyndeo operation, but the Phase 10B first pass found no current public visitor programme or booking terms."
+    "visitStatus": "appointment_only",
+    "visitSourceUrl": "https://karanika.com/contact/",
+    "visitNotes": "Current first-party contact page explicitly invites visitors for winery visits, organic-vineyard tours and wine tastings, and states that any visit requires advance booking. The current official site does not publish a general visitor timetable, standard duration, parking details or visitor languages.",
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "visitabilityReviewedAt": "2026-09-19 17:29:00+00"
   },
   {
     "id": "domaine-mercouri",
@@ -2020,7 +2348,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Refosco"
     ],
     "tastingHighlights": [],
-    "openingHours": "",
+    "openingHours": "Current 2026 visitor hours not confirmed; contact the estate before travelling.",
     "phone": "+30 26210 41601",
     "website": "https://mercouri.gr",
     "googleMapsUrl": "https://www.google.com/maps/place/?q=place_id:ChIJL4_ZhHa4YBMRhEDxMie9GGg",
@@ -2035,8 +2363,9 @@ export const SEO_LIVE_PRODUCERS = [
     "locationSourceUrl": "https://mapcarta.com/W131619859",
     "locationNotes": "Phase 10B exact-location audit: Mercouri Estate Winery point in Korakochori was independently matched in OpenStreetMap-backed mapping data and corroborated against the current estate address, telephone and producer identity. Road access remains unreviewed.",
     "visitStatus": "current_access_uncertain",
-    "visitSourceUrl": "https://www.mercouri.gr/brochure_en.pdf",
-    "visitNotes": "Official Mercouri visitor material documents estate visits, tours and tastings, but the accessible first-party schedule is old. Confirm current visitor access directly before planning travel."
+    "visitSourceUrl": "https://mercouri.gr/",
+    "visitNotes": "The live first-party Domaine Mercouri site still presents a visitor pathway and links an English estate brochure describing tours, tastings, vineyards, olive groves and a folklore museum. However, that brochure is dated 2018 and its Mon-Sat 09:00-15:00 timetable cannot be treated as current 2026 visitor hours. The old dedicated virtual-visit link is no longer valid. Contact the estate before travelling.",
+    "visitabilityReviewedAt": "2026-09-18 21:00:00+00"
   },
   {
     "id": "domaine-paterianakis",
@@ -2062,7 +2391,7 @@ export const SEO_LIVE_PRODUCERS = [
     "story": "The family vineyard predates the modern estate: Aristides Nikoloudakis established vines here, and Manolis Paterianakis moved toward organic cultivation in 1980. Giorgos Paterianakis created the present estate in 1988 and produced its first organic wine in 1997; today his daughters Emmanuela and Niki continue the work in wine production and sales.",
     "indigenousVarieties": [],
     "tastingHighlights": [],
-    "openingHours": "Apr-mid Nov: Mon-Fri 10:30-17:30, Sat-Sun 10:30-16:00; mid-Nov-Mar by appointment",
+    "openingHours": "Apr-mid Nov: Mon-Fri 10:30-17:30; Sat-Sun 10:30-16:00. Mid-Nov-Mar: open by appointment.",
     "phone": "+30 2810 226674",
     "website": "https://paterianakis.gr",
     "googleMapsUrl": "https://maps.google.com/?q=35.180894,25.196347",
@@ -2077,7 +2406,18 @@ export const SEO_LIVE_PRODUCERS = [
     "locationNotes": "Winery coordinates match Wines of Crete route data and the current producer location in Melesses.",
     "visitStatus": "seasonal_public",
     "visitSourceUrl": "https://paterianakis.gr/en/events/",
-    "visitNotes": "The estate welcomes visitors April to mid-November on published hours; from mid-November through March visits are by appointment."
+    "visitNotes": "Current first-party hospitality page welcomes visitors from April to mid-November on published hours and switches to appointment-only access from mid-November through March. Guided tours of the estate, vineyards, production, bottling and aging areas are published as lasting 30-45 minutes. The page also states that the visitor experience is wheelchair accessible. It does not explicitly state that reservations are mandatory during the main season or publish parking/tour-language details.",
+    "visitorHours": {
+      "april_to_mid_november": {
+        "monday_friday": "10:30-17:30",
+        "saturday_sunday": "10:30-16:00"
+      },
+      "mid_november_to_march": {
+        "access": "appointment_only"
+      }
+    },
+    "seasonalVisitNotes": "Guided estate tours are published as lasting 30-45 minutes. Winter access from mid-November through March is by appointment.",
+    "visitabilityReviewedAt": "2026-09-19 16:05:00+00"
   },
   {
     "id": "domaine-sigalas-santorini",
@@ -2107,7 +2447,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Mandilaria"
     ],
     "tastingHighlights": [],
-    "openingHours": "Advance booking required for every visit; check the current 2026 timetable on the official site",
+    "openingHours": "Advance booking required for every visit; current daily visitor hours are not published on the official visitor-facing page.",
     "phone": "+30 22860 71644",
     "website": "https://sigalas-wine.com",
     "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Domaine%20Sigalas&query_place_id=ChIJu7u3b4DLmRQRpxve6-VHUd0",
@@ -2122,7 +2462,10 @@ export const SEO_LIVE_PRODUCERS = [
     "locationNotes": "Phase 10A manual Google Places audit (2026-09-15): matched Domaine Sigalas in Baxes/Oia to the current producer identity and official locality. Stored pin updated to the Google business point; entrance-level precision is not separately established.",
     "visitStatus": "appointment_only",
     "visitSourceUrl": "https://sigalas-wine.com/",
-    "visitNotes": "Domaine Sigalas explicitly states that any visit requires advance booking. The official contact page publishes current seasonal tasting hours and a dedicated tasting-room contact."
+    "visitNotes": "The live first-party Domaine Sigalas homepage invites visitors for tutored wine tastings, food-and-wine pairings and vineyard tours, and explicitly states that any visit requires advance booking. The current official site does not publish a dependable 2026 daily visitor timetable, parking policy, visit duration or visitor languages on the main visitor-facing content.",
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "visitabilityReviewedAt": "2026-09-18 21:00:00+00"
   },
   {
     "id": "domaine-zafeirakis-thessaly",
@@ -2163,7 +2506,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Guided wine tasting",
       "Organic and biodynamic viticulture"
     ],
-    "openingHours": "Winery tours and tastings are bookable through the estate.",
+    "openingHours": "Mon-Sun 11:00-19:00 by appointment.",
     "phone": "+30 24920 25280",
     "website": "https://www.domainezafeirakis.com/",
     "googleMapsUrl": "https://www.google.com/maps/place/?q=place_id:ChIJTeXsjIGLWBMReBPizO-ZLqU",
@@ -2176,8 +2519,15 @@ export const SEO_LIVE_PRODUCERS = [
     "locationNotes": "Exact producer identity, persistent Google Place ID and same-point coordinates were verified in the prior strict TerroirTrail Google Maps audit; current producer identity was refreshed before import.",
     "publicPointType": "estate",
     "visitStatus": "appointment_only",
-    "visitSourceUrl": "https://www.domainezafeirakis.com/",
-    "visitNotes": "The official estate site actively offers exclusive winery tours and tastings; booking is required."
+    "visitSourceUrl": "https://www.domainezafeirakis.com/winetourism",
+    "visitNotes": "Current first-party wine-tourism pages offer guided vineyard and winery tours with wine tastings and explicitly state Monday-Sunday 11:00-19:00 by appointment. Two tasting formats are currently published: 5 wines and 8 wines. The current site does not publish a standard visit duration, parking details, or actual visitor languages.",
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "visitorHours": {
+      "booking": "appointment",
+      "monday_sunday": "11:00-19:00"
+    },
+    "visitabilityReviewedAt": "2026-09-19 17:29:00+00"
   },
   {
     "id": "douloufakis-winery",
@@ -2204,7 +2554,7 @@ export const SEO_LIVE_PRODUCERS = [
     "story": "Dimitris Douloufakis began professional winemaking in 1930, his son George took over in 1960, and grandson Nikos returned from oenology studies in Alba, Italy, to lead the winery in 1993. In 2000 Nikos turned his attention to the then little-known Vidiano grape and began planting and vinifying it seriously.",
     "indigenousVarieties": [],
     "tastingHighlights": [],
-    "openingHours": "Mon-Fri cellar 10:00-15:30; tours/tastings by advance booking; seasonal Saturday tastings Jun-Sep",
+    "openingHours": "Wine cellar: Mon-Fri 10:00-15:30. Tours/tastings: Mon-Fri 10:00, 12:00, 14:00 all year; Sat 12:00 and 14:00 in Jun-Sep. Advance booking required.",
     "phone": "+30 2810 792017",
     "website": "https://douloufakis.wine",
     "googleMapsUrl": "https://maps.google.com/?q=35.215109,25.049664",
@@ -2218,8 +2568,33 @@ export const SEO_LIVE_PRODUCERS = [
     "locationSourceUrl": "https://douloufakis.wine/en/contact-us/",
     "locationNotes": "Winery coordinates and Dafnes location are verified through producer and Wines of Crete sources.",
     "visitStatus": "appointment_only",
-    "visitSourceUrl": "https://douloufakis.wine/en/",
-    "visitNotes": "The winery offers visits and tastings, but advance booking is required for visitor programs. Public production-site existence does not imply walk-in access."
+    "visitSourceUrl": "https://douloufakis.wine/en/opening-hours/",
+    "visitNotes": "Current first-party pages require advance booking for wine and olive-oil tasting experiences. The winery publishes weekday and seasonal Saturday tasting slots and explicitly provides on-site parking. The current site conflicts on the standard YAMAS duration (80 vs about 90 minutes), so duration remains unset pending clarification. Experience pages explicitly list Greek and English, while the general visitor-information page lists Greek, English, German and French as languages spoken; visitor_languages remains unset until TerroirTrail defines whether this field means experience language or on-site spoken language.",
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "parkingStatus": "available",
+    "visitorHours": {
+      "monday_friday": {
+        "wine_cellar": "10:00-15:30",
+        "tour_tasting_starts": [
+          "10:00",
+          "12:00",
+          "14:00"
+        ]
+      },
+      "saturday_june_september": {
+        "tour_tasting_starts": [
+          "12:00",
+          "14:00"
+        ]
+      }
+    },
+    "seasonalVisitNotes": "Saturday tastings are published for June through September. Public-holiday closures apply; available slots may vary by season and availability.",
+    "visitorLanguages": [
+      "el",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-09-19 16:55:00+00"
   },
   {
     "id": "elatos-kapetanou-schinochori",
@@ -2277,7 +2652,8 @@ export const SEO_LIVE_PRODUCERS = [
     "publicPointType": "production_site",
     "visitStatus": "not_publicly_confirmed",
     "visitSourceUrl": "https://afoikapetanou.gr/",
-    "visitNotes": "The production site is documented, but no current first-party public visit, tour, tasting, or walk-in procedure was verified."
+    "visitNotes": "Current first-party site confirms ELATOS as an active third-generation cheese and dairy producer in Schinochori, Argos, with production facilities and direct contact details. It does not publish a current public visitor programme, producer-shop opening hours, tour/tasting procedure, booking rule, or walk-in policy. Keep public access unconfirmed.",
+    "visitabilityReviewedAt": "2026-09-18 21:00:00+00"
   },
   {
     "id": "epli-sideri-vestland",
@@ -2311,7 +2687,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Cider tasting for groups",
       "Direct farm sales"
     ],
-    "openingHours": "Farm shop hours are published seasonally; group cider tastings are by appointment.",
+    "openingHours": "Farm shop open to visitors; current fixed hours are not published. Group cider tastings by appointment.",
     "phone": "+47 41 29 40 10",
     "website": "https://eplisideri.no",
     "googleMapsUrl": "https://www.google.com/maps/place/Epli+Sideri/@60.2453488,6.6258825,17z/data=!3m1!4b1!4m6!3m5!1s0x463e8348801453bb:0x97d62e5a3a360092!8m2!3d60.2453488!4d6.6258825!16s%2Fg%2F11fl0y39jk?entry=ttu&g_ep=EgoyMDI2MDkxNS4wIKXMDSoASAFQAw%3D%3D",
@@ -2325,7 +2701,10 @@ export const SEO_LIVE_PRODUCERS = [
     "publicPointType": "estate",
     "visitStatus": "public_visits",
     "visitSourceUrl": "https://eplisideri.no/en/about-us/",
-    "visitNotes": "The official site welcomes visitors to the farm shop in the new cider house at Sekse and offers group cider tastings by appointment. Current Google business identity uses the same verified Place ID as the frozen audit."
+    "visitNotes": "Current first-party Epli Sideri page explicitly welcomes visitors to the farm shop in the new cider house at Sekse and states that parking is available directly outside the door. Group cider tastings are by appointment. The current page does not publish fixed farm-shop hours or define a general walk-in policy beyond welcoming visitors.",
+    "parkingStatus": "available",
+    "seasonalVisitNotes": "Group cider tastings require appointment.",
+    "visitabilityReviewedAt": "2026-09-20 03:41:23.877496+00"
   },
   {
     "id": "estate-argyros-santorini",
@@ -2351,7 +2730,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Assyrtiko"
     ],
     "tastingHighlights": [],
-    "openingHours": "Open year-round except national holidays; tour schedule varies and advance booking is recommended",
+    "openingHours": "Open year-round except national holidays; tour schedule varies daily/seasonally, so check current availability before travelling.",
     "phone": "+30 22860 31489",
     "website": "https://estateargyros.com",
     "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Estate%20Argyros&query_place_id=ChIJD8Ll3xfOmRQRDhaOcljaawQ",
@@ -2366,7 +2745,17 @@ export const SEO_LIVE_PRODUCERS = [
     "locationNotes": "Phase 10A manual Google Places audit (2026-09-15): matched Estate Argyros in Episkopi Gonias to the current producer identity and official locality. Stored pin updated to the Google business point; entrance-level precision is not separately established.",
     "visitStatus": "public_visits",
     "visitSourceUrl": "https://estateargyros.com/faq/",
-    "visitNotes": "The winery welcomes visitors and says reservations are recommended rather than mandatory. Tour schedules vary by day and season, so visitors should check current availability before travelling."
+    "visitNotes": "Current first-party FAQ confirms that Estate Argyros is open year-round except national holidays. Reservations are not required but are recommended because tour schedules vary daily and seasonally. The winery provides a free on-site parking area and states that the tasting room, patio, vineyards and production area are wheelchair accessible. Published tasting experiences last approximately 45 or 90 minutes depending on the selected option; the initial guided tour portion usually lasts 15-20 minutes.",
+    "visitBookingRequirement": "recommended",
+    "walkInStatus": "subject_to_availability",
+    "parkingStatus": "available",
+    "visitorHours": {
+      "year_round": true,
+      "tour_schedule": "varies_daily_seasonally",
+      "national_holidays": "closed"
+    },
+    "seasonalVisitNotes": "Published experiences currently include approximately 45-minute and 90-minute options. Tour schedules vary daily and seasonally.",
+    "visitabilityReviewedAt": "2026-09-18 21:00:00+00"
   },
   {
     "id": "familia-margaca-alentejo",
@@ -2420,7 +2809,9 @@ export const SEO_LIVE_PRODUCERS = [
     "locationNotes": "Exact Google Maps producer point verified against the frozen 2026-09-18 expansion audit and current producer identity sources.",
     "publicPointType": "production_site",
     "visitStatus": "not_publicly_confirmed",
-    "visitNotes": "The winery identity, history and product range are current on the official site, but a routine producer-controlled visitor programme for this exact mapped point was not confirmed."
+    "visitSourceUrl": "https://www.margaca.com",
+    "visitNotes": "Current producer-controlled material confirms Família Margaça as an active wine producer in Pias/Serpa, but no routine public winery visit, tasting programme, visitor timetable, booking rule or walk-in policy for the mapped production site was found during this review.",
+    "visitabilityReviewedAt": "2026-09-20 04:02:05.10034+00"
   },
   {
     "id": "fattoria-corzano-e-paterno-tuscany",
@@ -2458,7 +2849,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Sheep-cheese tasting",
       "Estate extra virgin olive oil"
     ],
-    "openingHours": "",
+    "openingHours": "Simple tasting: winter 10:00-12:00; summer 10:00-17:00. Tour/tasting start times include 11:00 and 16:00, with afternoon availability varying by season.",
     "phone": "+39 055 824 8179",
     "website": "https://www.corzanoepaterno.com",
     "googleMapsUrl": "https://www.google.com/maps/place/Fattoria+Corzano+and+Paterno/@43.6273008,11.1683641,17z/data=!3m1!4b1!4m9!3m8!1s0x132a4607823b88a7:0xef2297bdac790e95!5m2!4m1!1i2!8m2!3d43.6273008!4d11.1683641!16s%2Fg%2F1w60468g?entry=ttu&g_ep=EgoyMDI2MDkxNS4wIKXMDSoASAFQAw%3D%3D",
@@ -2471,8 +2862,24 @@ export const SEO_LIVE_PRODUCERS = [
     "locationNotes": "Exact Google Maps producer point manually verified against the producer identity and official website during the 2026-09-18 expansion audit.",
     "publicPointType": "estate",
     "visitStatus": "public_visits",
-    "visitSourceUrl": "https://www.corzanoepaterno.com/en/home-eng/",
-    "visitNotes": "The official site publishes wine-and-cheese tastings and cellar/dairy tours. Booking is highly recommended."
+    "visitSourceUrl": "https://www.corzanoepaterno.com/en/shop/",
+    "visitNotes": "Current first-party shop/visitor page publishes wine-and-cheese tastings and vineyard/cellar tours with dairy-production explanation. Booking is highly recommended but not stated as mandatory. The simple tasting lasts about 45 minutes and is available 10:00-12:00 in winter and 10:00-17:00 in summer. Tour-and-tasting formats last about 90 minutes, with published start times at 11:00 and 16:00; the afternoon slot is summer-only for the standard tour+tasting. Parking and visitor languages are not explicitly published, and the page does not explicitly define a general walk-in policy.",
+    "visitBookingRequirement": "recommended",
+    "visitorHours": {
+      "tour_tasting": {
+        "start_times": [
+          "11:00",
+          "16:00"
+        ],
+        "afternoon_standard_tour": "summer_only"
+      },
+      "simple_tasting": {
+        "summer": "10:00-17:00",
+        "winter": "10:00-12:00"
+      }
+    },
+    "seasonalVisitNotes": "Published experiences vary by format: simple tasting about 45 minutes; tour+tasting formats about 90 minutes. Booking is highly recommended.",
+    "visitabilityReviewedAt": "2026-09-19 18:06:40.309601+00"
   },
   {
     "id": "formatge-bauma-catalonia",
@@ -2514,7 +2921,9 @@ export const SEO_LIVE_PRODUCERS = [
     "locationNotes": "Exact Google Maps producer point verified against the frozen 2026-09-18 expansion audit and current producer identity sources.",
     "publicPointType": "production_site",
     "visitStatus": "not_publicly_confirmed",
-    "visitNotes": "The current dairy identity and Sant Miquel de Balenyà operating location are verified, but a producer-controlled public visit programme was not confirmed for this import."
+    "visitSourceUrl": "http://www.formatgebauma.com/",
+    "visitNotes": "Current producer identity and the Sant Miquel de Balenyà dairy are verifiable, but the producer site was unreachable during this review and current indexed first-party/authoritative traces do not publish a public dairy visit, tasting programme, visitor timetable, booking rule or walk-in policy. Keep public access unconfirmed.",
+    "visitabilityReviewedAt": "2026-09-20 03:39:11.27156+00"
   },
   {
     "id": "formatgeria-casa-mateu-catalonia",
@@ -2548,7 +2957,7 @@ export const SEO_LIVE_PRODUCERS = [
     "tastingHighlights": [
       "On-site cheese shop"
     ],
-    "openingHours": "The official site publishes on-site shop hours in Surp; hours vary seasonally.",
+    "openingHours": "On-site shop: Jul-Aug Mon-Sat 10:00-14:00 and 17:00-20:00. Other-season hours not currently published.",
     "phone": "+34 973 621 405",
     "website": "https://www.formatgeriacasamateu.com",
     "googleMapsUrl": "https://www.google.com/maps/place/Formatgeria+Casa+Mateu/@42.4535134,1.1276982,17z/data=!3m1!4b1!4m6!3m5!1s0x12a60410a539a38b:0x408b758c71fd1e68!8m2!3d42.4535134!4d1.1276982!16s%2Fg%2F1yf_9mh0b?entry=ttu&g_ep=EgoyMDI2MDkxNS4wIKXMDSoASAFQAw%3D%3D",
@@ -2561,8 +2970,22 @@ export const SEO_LIVE_PRODUCERS = [
     "locationNotes": "Exact Google Maps producer point verified against the frozen 2026-09-18 expansion audit and current producer identity sources.",
     "publicPointType": "production_site",
     "visitStatus": "public_visits",
-    "visitSourceUrl": "https://www.formatgeriacasamateu.com/",
-    "visitNotes": "The official site publishes an on-site shop in Surp. This confirms public access to the shop, not unrestricted access to production areas."
+    "visitSourceUrl": "https://www.formatgeriacasamateu.com/es/",
+    "visitNotes": "Current first-party Casa Mateu site confirms an on-site shop in Surp. The current Spanish page publishes July-August shop hours Monday-Saturday 10:00-14:00 and 17:00-20:00. This supports public shop access only; no public dairy-production tour, tasting programme or unrestricted production access is published. Hours outside July-August are not currently stated.",
+    "visitBookingRequirement": "not_required",
+    "walkInStatus": "accepted",
+    "visitorHours": {
+      "shop": {
+        "july_august": {
+          "monday_saturday": [
+            "10:00-14:00",
+            "17:00-20:00"
+          ]
+        }
+      }
+    },
+    "seasonalVisitNotes": "Public access confirmed for the on-site shop only; production-area visits are not published.",
+    "visitabilityReviewedAt": "2026-09-20 03:39:23.281324+00"
   },
   {
     "id": "frantoio-dorazio-puglia",
@@ -2595,7 +3018,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Simone EVOO"
     ],
     "tastingHighlights": [],
-    "openingHours": "",
+    "openingHours": "Mill visit season: Nov-Jan, Mon-Fri, morning and afternoon sessions.",
     "website": "https://www.frantoiodorazio.it",
     "googleMapsUrl": "https://www.google.com/maps/place/Frantoio+D%E2%80%99Orazio/@40.968506,17.114204,17z/data=!3m1!4b1!4m6!3m5!1s0x1347c87dda516061:0x97371393dea21e73!8m2!3d40.968506!4d17.114204!16s%2Fg%2F1hc7w5w39?entry=ttu&g_ep=EgoyMDI2MDkxNS4wIKXMDSoASAFQAw%3D%3D",
     "googlePlaceId": "ChIJYWBR2n3IRxMRcx6i3pMTN5c",
@@ -2606,8 +3029,26 @@ export const SEO_LIVE_PRODUCERS = [
     "locationSourceUrl": "https://www.google.com/maps/place/Frantoio+D%E2%80%99Orazio/@40.968506,17.114204,17z/data=!3m1!4b1!4m6!3m5!1s0x1347c87dda516061:0x97371393dea21e73!8m2!3d40.968506!4d17.114204!16s%2Fg%2F1hc7w5w39?entry=ttu&g_ep=EgoyMDI2MDkxNS4wIKXMDSoASAFQAw%3D%3D",
     "locationNotes": "Exact Google Maps producer point manually verified against the producer identity and official website during the 2026-09-18 expansion audit.",
     "publicPointType": "production_site",
-    "visitStatus": "not_publicly_confirmed",
-    "visitNotes": "The official site confirms the operating mill and production history, but a current public visitor programme was not confirmed during this import."
+    "visitStatus": "seasonal_public",
+    "visitSourceUrl": "https://www.frantoiodorazio.it/pages/esperienze",
+    "visitNotes": "Current first-party Frantoio D'Orazio experience page publishes an actual mill visit at the Via dell'Ulivo production site during the olive-oil campaign, November-January, Monday-Friday in morning and afternoon sessions. The visit includes live milling observation and tasting freshly pressed EVOO. The page lists Italian, English and French. It does not state a universal advance-booking requirement, exact daily start times, walk-in policy, parking details or standard duration. Separate year-round/seasonal experiences at the BI-SHOP and countryside locations are not used to redefine this mapped production-site record.",
+    "visitorHours": {
+      "season": {
+        "end": "01-31",
+        "start": "11-01"
+      },
+      "monday_friday": [
+        "morning",
+        "afternoon"
+      ]
+    },
+    "seasonalVisitNotes": "Production-site mill visit is tied to the olive-oil campaign, November through January.",
+    "visitorLanguages": [
+      "it",
+      "en",
+      "fr"
+    ],
+    "visitabilityReviewedAt": "2026-09-20 03:16:52.747524+00"
   },
   {
     "id": "frantoio-muraglia-puglia",
@@ -2637,7 +3078,7 @@ export const SEO_LIVE_PRODUCERS = [
       "IGP extra virgin olive oil"
     ],
     "tastingHighlights": [],
-    "openingHours": "",
+    "openingHours": "Bookable olive-oil experiences operate on selectable dates/times; no general visitor timetable published.",
     "website": "https://www.frantoiomuraglia.it",
     "googleMapsUrl": "https://www.google.com/maps/place/Frantoio+Muraglia/@41.2211835,16.2980271,17z/data=!3m1!4b1!4m6!3m5!1s0x13381080b1655169:0x830ead0a44423705!8m2!3d41.2211835!4d16.2980271!16s%2Fg%2F1tcynt58?entry=ttu&g_ep=EgoyMDI2MDkxNS4wIKXMDSoASAFQAw%3D%3D",
     "googlePlaceId": "ChIJaVFlsYAQOBMRBTdCRAqtDoM",
@@ -2648,8 +3089,14 @@ export const SEO_LIVE_PRODUCERS = [
     "locationSourceUrl": "https://www.google.com/maps/place/Frantoio+Muraglia/@41.2211835,16.2980271,17z/data=!3m1!4b1!4m6!3m5!1s0x13381080b1655169:0x830ead0a44423705!8m2!3d41.2211835!4d16.2980271!16s%2Fg%2F1tcynt58?entry=ttu&g_ep=EgoyMDI2MDkxNS4wIKXMDSoASAFQAw%3D%3D",
     "locationNotes": "Exact Google Maps producer point manually verified against the producer identity and official website during the 2026-09-18 expansion audit.",
     "publicPointType": "production_site",
-    "visitStatus": "not_publicly_confirmed",
-    "visitNotes": "The producer identity and mill are confirmed, but a current producer-controlled public visit programme was not confirmed during this import."
+    "visitStatus": "public_visits",
+    "visitSourceUrl": "https://www.frantoiomuraglia.it/en/oil-is-first-encountered-olive-oil-tourism-at-our-mill-in-andria/",
+    "visitNotes": "Current first-party Frantoio Muraglia oleotourism page explicitly opens the Andria mill to visitors with two experiences: a 30-minute guided tasting of four oils in the showroom and a 50-minute Journey in the Mill through the production departments followed by tasting. Both are offered in Italian and English. The site provides date/time booking flows but does not explicitly state that every visit requires advance booking or define general walk-in access. Parking details and general visitor hours are not published.",
+    "visitorLanguages": [
+      "it",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-09-20 03:16:55.780476+00"
   },
   {
     "id": "gaia-wines-nemea",
@@ -2675,7 +3122,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Agiorgitiko"
     ],
     "tastingHighlights": [],
-    "openingHours": "Wed-Sun 10:30-16:30; Mon-Tue closed.",
+    "openingHours": "Year-round: Wed-Sun 10:30-16:30; Mon-Tue closed.",
     "phone": "+30 27460 22057",
     "website": "https://gaiawines.gr",
     "googleMapsUrl": "https://www.google.com/maps/place/?q=place_id:ChIJ2a11wv8GoBQR1Nhkz3BBHp8",
@@ -2689,7 +3136,21 @@ export const SEO_LIVE_PRODUCERS = [
     "locationNotes": "Phase 10B exact-location audit: GAIA Winery point in Koutsi, Nemea was independently matched in OpenStreetMap-backed mapping data and corroborated by the current producer-published Koutsi winery address and telephone. Google Place ID remains unresolved and road access remains unreviewed.",
     "visitStatus": "public_visits",
     "visitSourceUrl": "https://gaiawines.gr/en/visit-nemea-en/",
-    "visitNotes": "Current first-party Nemea page publishes year-round visitor hours. Advance booking is recommended; walk-ins may be accommodated subject to availability."
+    "visitNotes": "Current first-party Nemea visitor page, updated in September 2026, states that the winery welcomes visitors all year Wednesday-Sunday 10:30-16:30, with Monday and Tuesday closed. Guided visits last approximately one hour. Advance online booking is recommended, especially on weekends, while walk-ins may be accommodated depending on availability. Guided visits are offered in Greek and English. A lower package blurb on the same page contains older conflicting weekend wording; the current top-level hours and FAQ are used.",
+    "visitBookingRequirement": "recommended",
+    "walkInStatus": "subject_to_availability",
+    "typicalVisitMinutes": 60,
+    "visitorHours": {
+      "monday": "closed",
+      "tuesday": "closed",
+      "year_round": true,
+      "wednesday_sunday": "10:30-16:30"
+    },
+    "visitorLanguages": [
+      "el",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-09-18 21:00:00+00"
   },
   {
     "id": "gaia-wines-santorini",
@@ -2715,7 +3176,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Assyrtiko"
     ],
     "tastingHighlights": [],
-    "openingHours": "29 Apr-31 Oct 2026: daily 12:00-20:00; advance online booking recommended",
+    "openingHours": "29 Apr-31 Oct: daily 12:00-20:00.",
     "phone": "+30 22860 34186",
     "website": "https://gaiawines.gr",
     "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Gaia%20Winery%20Santorini&query_place_id=ChIJxwtdmPDRmRQRvv2sLef21bU",
@@ -2730,7 +3191,23 @@ export const SEO_LIVE_PRODUCERS = [
     "locationNotes": "Phase 10A manual Google Places audit (2026-09-15): matched Gaia Winery Santorini at Vrachies/Exo Gonia to the current producer identity and official visitor locality. Stored pin updated to the Google business point; entrance-level precision is not separately established.",
     "visitStatus": "seasonal_public",
     "visitSourceUrl": "https://gaiawines.gr/en/visit-santorini-en/",
-    "visitNotes": "GAIA publishes a 2026 visitor season from 29 April to 31 October, daily 12:00-20:00. Advance online booking is recommended, especially in peak summer."
+    "visitNotes": "Current 2026 first-party visitor page publishes the Santorini season from 29 April to 31 October, daily 12:00-20:00. Guided tastings of 4-7 wines last approximately 1 hour. Advance online booking is recommended, especially in July-August, while walk-ins may be accommodated depending on availability. Guided visits are offered in Greek and English. Larger groups should contact the winery in advance.",
+    "visitBookingRequirement": "recommended",
+    "walkInStatus": "subject_to_availability",
+    "typicalVisitMinutes": 60,
+    "visitorHours": {
+      "daily": "12:00-20:00",
+      "season": {
+        "end": "10-31",
+        "start": "04-29"
+      }
+    },
+    "seasonalVisitNotes": "Advance online booking is recommended, especially during July-August. Larger groups should contact the winery in advance.",
+    "visitorLanguages": [
+      "el",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-09-18 21:00:00+00"
   },
   {
     "id": "gangstad-gardsysteri-trondelag",
@@ -2768,7 +3245,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Farm-made ice cream in summer",
       "Cheese tasting and local-food shopping"
     ],
-    "openingHours": "Farm shop: Monday-Friday 09:00-15:00; generally closed weekends and public holidays except announced special dates.",
+    "openingHours": "Farm shop: Mon-Fri 09:00-15:00; Sat-Sun and public holidays closed.",
     "phone": "+47 74 15 64 45",
     "website": "https://ysteri.no/",
     "googleMapsUrl": "https://www.google.com/maps/place/Gangstad+G%C3%A5rdsysteri/@63.95987,11.337862,17z/data=!3m1!4b1!4m6!3m5!1s0x46729c236118582f:0x5db999f94057800b!8m2!3d63.95987!4d11.337862!16s%2Fg%2F12mkqyt8r?entry=ttu&g_ep=EgoyMDI2MDkxNS4wIKXMDSoASAFQAw%3D%3D",
@@ -2782,7 +3259,17 @@ export const SEO_LIVE_PRODUCERS = [
     "publicPointType": "estate",
     "visitStatus": "public_visits",
     "visitSourceUrl": "https://ysteri.no/english-information/",
-    "visitNotes": "The official site welcomes visitors to the year-round farm shop during published weekday hours. Larger groups should arrange their visit in advance."
+    "visitNotes": "Current first-party Gangstad Gårdsysteri page explicitly welcomes visitors to drop by the year-round farm store. Published hours are Monday-Friday 09:00-15:00, with Saturday, Sunday and public holidays closed. In summer the farm serves its own ice cream and coffee in the yard. Larger/group visits can be arranged separately; ordinary farm-store access does not require booking.",
+    "visitBookingRequirement": "not_required",
+    "walkInStatus": "accepted",
+    "visitorHours": {
+      "farm_shop": {
+        "monday_friday": "09:00-15:00",
+        "saturday_sunday_public_holidays": "closed"
+      }
+    },
+    "seasonalVisitNotes": "Summer farm-yard service includes farm ice cream and coffee. Larger/group visits should be arranged separately.",
+    "visitabilityReviewedAt": "2026-09-20 03:41:46.196873+00"
   },
   {
     "id": "gavalas-crete-winery",
@@ -2823,7 +3310,8 @@ export const SEO_LIVE_PRODUCERS = [
     "locationNotes": "Crete winery identity and Vorias location verified. The former gavalaswines.gr link belonged to the unrelated Santorini Gavalas winery and has been replaced.",
     "visitStatus": "current_access_uncertain",
     "visitSourceUrl": "https://www.fragospitowinery.com/visit/",
-    "visitNotes": "Fragospito publishes a guided-tour/tasting page, but the site does not provide a clearly current visitor timetable. Contact the winery before travelling."
+    "visitNotes": "Current first-party visit page advertises a guided winery tour covering winemaking, bottling and cellar areas plus a tasting of selected labels. The winery does not publish a current visitor timetable, explicit booking requirement, or walk-in policy on that page. Contact the winery before travelling.",
+    "visitabilityReviewedAt": "2026-09-19 16:05:00+00"
   },
   {
     "id": "gavalas-winery-santorini",
@@ -2854,7 +3342,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Voudomato"
     ],
     "tastingHighlights": [],
-    "openingHours": "April-October: daily 11:00-19:00",
+    "openingHours": "Apr-Oct: daily 11:00-19:00.",
     "phone": "+30 22860 82552",
     "website": "https://www.gavalaswines.gr",
     "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Gavalas%20Winery&query_place_id=ChIJtTl4tVbOmRQR3jJOJZ5Hrac",
@@ -2869,7 +3357,14 @@ export const SEO_LIVE_PRODUCERS = [
     "locationNotes": "Phase 10A manual Google Places audit (2026-09-15): matched Gavalas Winery in Megalochori to the current producer identity and official locality. Stored pin updated to the Google business point; entrance-level precision is not separately established.",
     "visitStatus": "seasonal_public",
     "visitSourceUrl": "https://www.gavalaswines.gr/wine-tasting",
-    "visitNotes": "Gavalas publishes wine tastings and winery tours from April through October, 11:00-19:00. This is producer-operated visitor service and not a TerroirTrail Experience."
+    "visitNotes": "Current first-party wine-tasting page confirms April-October visitor hours of 11:00-19:00 and guided winery tastings/tours through the traditional and modern winemaking areas. Published tasting packages last either 60 or 75 minutes. An online booking flow is offered, but the current page does not explicitly state that advance booking is mandatory or define a general walk-in policy. Parking and visitor languages are not published.",
+    "visitorHours": {
+      "april_october": {
+        "daily": "11:00-19:00"
+      }
+    },
+    "seasonalVisitNotes": "Published tasting packages currently last 60 or 75 minutes depending on the selected option.",
+    "visitabilityReviewedAt": "2026-09-18 21:00:00+00"
   },
   {
     "id": "gd-vajra-piedmont",
@@ -2910,7 +3405,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Guided wine tasting",
       "Barolo-focused visits"
     ],
-    "openingHours": "By reservation Monday-Sunday, 10:00-13:00 and 15:00-18:00.",
+    "openingHours": "Mon-Sun 10:00-13:00 and 15:00-18:00 by reservation.",
     "phone": "+39 0173 56257",
     "website": "https://www.gdvajra.it/",
     "googleMapsUrl": "https://www.google.com/maps/place/?q=place_id:ChIJmdzKqqyv0hIRLua-hPEqc9Y",
@@ -2923,8 +3418,17 @@ export const SEO_LIVE_PRODUCERS = [
     "locationNotes": "Exact producer identity, persistent Google Place ID and same-point coordinates were verified in the prior strict TerroirTrail Google Maps audit; current producer identity was refreshed before import.",
     "publicPointType": "estate",
     "visitStatus": "appointment_only",
-    "visitSourceUrl": "https://www.gdvajra.it/it/visita-la-nostra-cantina",
-    "visitNotes": "The official winery site requires advance reservation and publishes current visiting windows."
+    "visitSourceUrl": "https://www.gdvajra.it/en/visit-our-winery",
+    "visitNotes": "Current first-party G.D. Vajra visit page explicitly states that the winery receives visitors on reservation Monday-Sunday, 10:00-13:00 and 15:00-18:00, and offers winery tours with guided wine tasting. The current page does not publish a standard visit duration, parking details or visitor languages.",
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "visitorHours": {
+      "monday_sunday": [
+        "10:00-13:00",
+        "15:00-18:00"
+      ]
+    },
+    "visitabilityReviewedAt": "2026-09-20 03:26:05.106399+00"
   },
   {
     "id": "grubic-olive-oil-istria",
@@ -2960,7 +3464,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Professional EVOO tasting",
       "Direct mill sales"
     ],
-    "openingHours": "May-September has published public hours; the rest of the year is by appointment.",
+    "openingHours": "May: Mon-Sat 09:00-16:00. Jun-Sep: Mon-Sat 09:00-19:00. Sun closed. Rest of year by appointment.",
     "website": "https://www.grubic.hr",
     "googleMapsUrl": "https://www.google.com/maps/place/Grubic+Olive+Oil/@45.0411298,13.7895088,17z/data=!3m1!4b1!4m6!3m5!1s0x477cc84473bc2af9:0xb0f4808d427fb7b1!8m2!3d45.0411298!4d13.7895088!16s%2Fg%2F11g8f7zvl7?entry=ttu&g_ep=EgoyMDI2MDkxNS4wIKXMDSoASAFQAw%3D%3D",
     "googlePlaceId": "ChIJ-Sq8c0TIfEcRsbd_Qo2A9LA",
@@ -2973,7 +3477,22 @@ export const SEO_LIVE_PRODUCERS = [
     "publicPointType": "production_site",
     "visitStatus": "seasonal_public",
     "visitSourceUrl": "https://www.grubic.hr/visit_us",
-    "visitNotes": "The official site publishes seasonal public mill hours and free tasting for direct customers; guided farm visits and specialist tastings can be arranged throughout the year."
+    "visitNotes": "Current first-party Grubić page publishes public showroom/museum working hours from May through September and states that the rest of the year is by appointment. More specialist tastings and educational visits can also be arranged and booked in advance.",
+    "visitBookingRequirement": "not_required",
+    "walkInStatus": "accepted",
+    "visitorHours": {
+      "may": {
+        "sunday": "closed",
+        "monday_saturday": "09:00-16:00"
+      },
+      "rest_of_year": "by_appointment",
+      "june_september": {
+        "sunday": "closed",
+        "monday_saturday": "09:00-19:00"
+      }
+    },
+    "seasonalVisitNotes": "Regular public showroom/museum access is published May-September; outside that period access is by appointment.",
+    "visitabilityReviewedAt": "2026-09-20 04:24:45.508567+00"
   },
   {
     "id": "hardanger-saft-siderfabrikk-vestland",
@@ -3015,7 +3534,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Fruit and Cider Route experience",
       "Farm restaurant by booking"
     ],
-    "openingHours": "Farm shop: Monday-Friday 09:00-17:00; Saturday 10:00-17:00; Sunday closed. Seasonal tasting/restaurant access varies.",
+    "openingHours": "Farm shop: Mon-Fri 09:00-17:00; Sat 10:00-17:00; Sun closed.",
     "phone": "+47 98 21 09 07",
     "website": "https://hardangersider.no/",
     "googleMapsUrl": "https://www.google.com/maps/place/Hardanger+Juice+and+Cider+Factory/@60.5742416,6.9563356,17z/data=!3m1!4b1!4m6!3m5!1s0x463e654d6d9bcf11:0xb29afeb3bafc35a3!8m2!3d60.5742416!4d6.9563356!16s%2Fg%2F1tfjzfsn?entry=ttu&g_ep=EgoyMDI2MDkxNS4wIKXMDSoASAFQAw%3D%3D",
@@ -3029,7 +3548,18 @@ export const SEO_LIVE_PRODUCERS = [
     "publicPointType": "estate",
     "visitStatus": "public_visits",
     "visitSourceUrl": "https://hardangersider.no/kontakt-oss/",
-    "visitNotes": "The official site publishes year-round farm-shop hours and seasonal cider/restaurant experiences. Some food and group experiences require advance booking."
+    "visitNotes": "Current first-party Hardanger Saft- og Siderfabrikk contact page publishes year-round farm-shop sales hours Monday-Friday 09:00-17:00 and Saturday 10:00-17:00, Sunday closed. The site also publishes cider tasting, restaurant and group experiences, but those have separate seasonal/booking conditions. Public shop access is not treated as unrestricted production access.",
+    "visitBookingRequirement": "not_required",
+    "walkInStatus": "accepted",
+    "visitorHours": {
+      "farm_shop": {
+        "sunday": "closed",
+        "saturday": "10:00-17:00",
+        "monday_friday": "09:00-17:00"
+      }
+    },
+    "seasonalVisitNotes": "Cider tasting, restaurant and group experiences have separate seasonal/booking conditions; check current experience pages.",
+    "visitabilityReviewedAt": "2026-09-20 03:41:26.96974+00"
   },
   {
     "id": "helleland-heldre-sider-vestland",
@@ -3065,7 +3595,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Bookable cider tasting with local food",
       "Historic Mosstova tasting"
     ],
-    "openingHours": "2026 seasonal farm-shop and drop-in tasting hours run from May through August; visits outside those windows can often be arranged by phone.",
+    "openingHours": "2026: May 2-Jun 20 Fri-Sat 16:00-18:00; Jun 22-Aug 8 Mon-Sat 15:00-18:00; Aug 14-29 Fri-Sat 16:00-18:00; Sun/holidays closed.",
     "phone": "+47 906 11 905",
     "website": "https://www.hellelandgard.no/",
     "googleMapsUrl": "https://www.google.com/maps/place/HELLELAND+GARD+-+Heldre+sider+og+saft/@60.3371459,6.6576329,17z/data=!3m1!4b1!4m6!3m5!1s0x463e819b9e37f707:0xe55583b96fa814cf!8m2!3d60.3371459!4d6.6576329!16s%2Fg%2F1thtbql5?entry=ttu&g_ep=EgoyMDI2MDkxNS4wIKXMDSoASAFQAw%3D%3D",
@@ -3079,7 +3609,25 @@ export const SEO_LIVE_PRODUCERS = [
     "publicPointType": "estate",
     "visitStatus": "seasonal_public",
     "visitSourceUrl": "https://www.hellelandgard.no/",
-    "visitNotes": "The official site publishes 2026 seasonal shop/drop-in tasting hours and offers group tastings by advance booking."
+    "visitNotes": "Current first-party Helleland Gard page publishes 2026 seasonal farm-shop hours and explicitly offers drop-in cider tasting during shop opening hours. A separate cider tasting with food in Mosstova requires reservation at least three days in advance and has a maximum capacity of 20. General seasonal shop/drop-in access therefore does not require booking.",
+    "visitBookingRequirement": "not_required",
+    "walkInStatus": "accepted",
+    "visitorHours": {
+      "2026": {
+        "aug_14_aug_29": {
+          "friday_saturday": "16:00-18:00"
+        },
+        "jun_22_aug_08": {
+          "monday_saturday": "15:00-18:00"
+        },
+        "may_02_jun_20": {
+          "friday_saturday": "16:00-18:00"
+        },
+        "sundays_holidays": "closed"
+      }
+    },
+    "seasonalVisitNotes": "Drop-in cider tasting is available during shop hours. Mosstova cider tasting with food requires at least 3 days advance booking; maximum 20 people.",
+    "visitabilityReviewedAt": "2026-09-20 03:41:16.471005+00"
   },
   {
     "id": "herdade-da-malhadinha-nova-alentejo",
@@ -3113,7 +3661,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Wine tasting",
       "Food-and-wine experiences"
     ],
-    "openingHours": "Wine and estate experiences are offered as bookable activities and should be arranged in advance.",
+    "openingHours": "Wine tours/tastings: Mon-Sat 10:30-12:00 and 14:30-16:30; Sun 12:00 and 14:30 for hotel guests only. Prior booking required.",
     "phone": "+351 284 965 210",
     "website": "https://www.malhadinhanova.pt",
     "googleMapsUrl": "https://www.google.com/maps/place/Herdade+da+Malhadinha+Nova+Country+House+%26+Spa/@37.8213733,-7.9783449,17z/data=!4m9!3m8!1s0xd1a64e374e9fc6d:0x29a3fc770d28464!5m2!4m1!1i2!8m2!3d37.8213733!4d-7.9783449!16s%2Fg%2F1hc77d0pl?entry=ttu&g_ep=EgoyMDI2MDkxNS4wIKXMDSoASAFQAw%3D%3D",
@@ -3126,8 +3674,22 @@ export const SEO_LIVE_PRODUCERS = [
     "locationNotes": "Exact Google Maps producer point verified against the frozen 2026-09-18 expansion audit and current producer identity sources.",
     "publicPointType": "estate",
     "visitStatus": "appointment_only",
-    "visitSourceUrl": "https://www.malhadinhanova.pt/en/hotel/winebar-shop-reception/",
-    "visitNotes": "The estate publishes guided wine and food experiences connected to its organic agricultural production. Arrange the relevant producer experience in advance."
+    "visitSourceUrl": "https://www.malhadinhanova.pt/en/experiences/visits-wine-tasting/",
+    "visitNotes": "Current first-party Malhadinha Nova page publishes guided estate/winery visits with wine tasting Monday-Saturday during 10:30-12:00 and 14:30-16:30 windows. Sunday sessions at 12:00 and 14:30 are exclusively for hotel guests. Visits and tastings explicitly require prior booking and are subject to availability.",
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "visitorHours": {
+      "monday_saturday": [
+        "10:30-12:00",
+        "14:30-16:30"
+      ],
+      "sunday_guests_only": [
+        "12:00",
+        "14:30"
+      ]
+    },
+    "seasonalVisitNotes": "All visits and tastings require prior booking and are subject to availability.",
+    "visitabilityReviewedAt": "2026-09-20 04:02:09.929309+00"
   },
   {
     "id": "herdade-do-esporao-alentejo",
@@ -3162,7 +3724,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Olive-oil tasting",
       "Olive grove and biodiversity experiences"
     ],
-    "openingHours": "Guided wine experiences run on published time slots and require confirmed availability.",
+    "openingHours": "Guided visits: Classic 11:00 EN, 12:00 & 16:00 PT; Premium 15:00. Reservation required and subject to confirmation.",
     "phone": "+351 266 509 280",
     "website": "https://esporao.com",
     "googleMapsUrl": "https://www.google.com/maps/place/Herdade+do+Espor%C3%A3o/@38.3799123,-7.5609479,17z/data=!3m1!4b1!4m6!3m5!1s0xd174ca51ac66db1:0x4bb8f1413b92b0f6!8m2!3d38.3799123!4d-7.5609479!16s%2Fg%2F11c2j457cd?entry=ttu&g_ep=EgoyMDI2MDkxNS4wIKXMDSoASAFQAw%3D%3D",
@@ -3175,8 +3737,26 @@ export const SEO_LIVE_PRODUCERS = [
     "locationNotes": "Exact Google Maps producer point verified against the frozen 2026-09-18 expansion audit and current producer identity sources.",
     "publicPointType": "estate",
     "visitStatus": "appointment_only",
-    "visitSourceUrl": "https://esporao.com/pt/turismo/visita-a-herdade-do-esporao",
-    "visitNotes": "The official estate site publishes guided vineyard/winery visits, wine tastings and olive-oil experiences. Reservations are subject to confirmation."
+    "visitSourceUrl": "https://esporao.com/en/tourism/herdade-do-esporao-visit",
+    "visitNotes": "Current first-party Esporão page publishes a two-hour guided Herdade do Esporão vineyard/winery visit with tasting. Classic visits are scheduled at 11:00 in English and 12:00/16:00 in Portuguese; Premium tasting visits at 15:00. Reservations are made by email and are explicitly subject to confirmation of availability.",
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "typicalVisitMinutes": 120,
+    "visitorHours": {
+      "classic": {
+        "english": "11:00",
+        "portuguese": [
+          "12:00",
+          "16:00"
+        ]
+      },
+      "premium": "15:00"
+    },
+    "visitorLanguages": [
+      "en",
+      "pt"
+    ],
+    "visitabilityReviewedAt": "2026-09-20 04:02:19.831879+00"
   },
   {
     "id": "herdade-do-monte-outeiro-alentejo",
@@ -3211,7 +3791,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Farm landscape experiences",
       "Traditional regional food experiences"
     ],
-    "openingHours": "",
+    "openingHours": "Rural-tourism estate active; standalone producer-visit access for non-guests is not currently defined.",
     "phone": "+351 268 499 272",
     "website": "https://www.herdademonteouteiro.com",
     "googleMapsUrl": "https://www.google.com/maps/place/Herdade+do+Monte+Outeiro+-+Turismo+Rural/@38.5522483,-7.4234948,17z/data=!4m9!3m8!1s0xd174849743c714d:0xf799b63502935b0c!5m2!4m1!1i2!8m2!3d38.5522483!4d-7.4234948!16s%2Fg%2F1tgjmk6f",
@@ -3223,9 +3803,10 @@ export const SEO_LIVE_PRODUCERS = [
     "locationSourceUrl": "https://www.google.com/maps/place/Herdade+do+Monte+Outeiro+-+Turismo+Rural/@38.5522483,-7.4234948,17z/data=!4m9!3m8!1s0xd174849743c714d:0xf799b63502935b0c!5m2!4m1!1i2!8m2!3d38.5522483!4d-7.4234948!16s%2Fg%2F1tgjmk6f",
     "locationNotes": "Exact Google Maps producer point verified against the frozen 2026-09-18 expansion audit and current producer identity sources.",
     "publicPointType": "estate",
-    "visitStatus": "appointment_only",
+    "visitStatus": "current_access_uncertain",
     "visitSourceUrl": "https://www.herdademonteouteiro.com/",
-    "visitNotes": "The official site operates the estate as rural tourism and offers farm/nature activities by arrangement. This does not imply unrestricted walk-in access to agricultural areas."
+    "visitNotes": "Current first-party Herdade do Monte Outeiro site confirms active rural-tourism accommodation on an agricultural estate with olive groves, sheep, goats, beehives and nature activities. However, it does not publish a standalone producer/farm visit programme for non-guests, visitor hours, booking rules for agricultural areas, walk-in access or a structured tasting experience. Do not treat accommodation availability as proof of ordinary producer access.",
+    "visitabilityReviewedAt": "2026-09-20 04:02:24.495578+00"
   },
   {
     "id": "herdade-do-rocim-alentejo",
@@ -3268,7 +3849,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Winery experiences",
       "Talha-focused wine tour"
     ],
-    "openingHours": "Wine-tourism experiences require confirmation of availability.",
+    "openingHours": "Tue-Sat 11:00-18:00; Mon and Sun by reservation.",
     "website": "https://rocim.pt",
     "googleMapsUrl": "https://www.google.com/maps/place/Herdade+do+Rocim/@38.1982608,-7.8575163,17z/data=!3m1!4b1!4m6!3m5!1s0xd1a08c14eb26fbb:0x1bf92ac400a65ede!8m2!3d38.1982608!4d-7.8575163!16s%2Fm%2F06_2_c6?entry=ttu&g_ep=EgoyMDI2MDkxNS4wIKXMDSoASAFQAw%3D%3D",
     "googlePlaceId": "ChIJu2-yTsEIGg0R3l6mAMQq-Rs",
@@ -3279,9 +3860,16 @@ export const SEO_LIVE_PRODUCERS = [
     "locationSourceUrl": "https://www.google.com/maps/place/Herdade+do+Rocim/@38.1982608,-7.8575163,17z/data=!3m1!4b1!4m6!3m5!1s0xd1a08c14eb26fbb:0x1bf92ac400a65ede!8m2!3d38.1982608!4d-7.8575163!16s%2Fm%2F06_2_c6?entry=ttu&g_ep=EgoyMDI2MDkxNS4wIKXMDSoASAFQAw%3D%3D",
     "locationNotes": "Exact Google Maps producer point verified against the frozen 2026-09-18 expansion audit and current producer identity sources.",
     "publicPointType": "estate",
-    "visitStatus": "appointment_only",
-    "visitSourceUrl": "https://rocim.pt/enoturismos/provas-experiencias/",
-    "visitNotes": "The official site offers multiple tastings and amphora-focused experiences; all are subject to availability confirmation."
+    "visitStatus": "public_visits",
+    "visitSourceUrl": "https://rocim.pt/en/contact/",
+    "visitNotes": "Current first-party Herdade do Rocim contact page publishes ordinary estate opening Tuesday-Saturday 11:00-18:00, with Monday and Sunday available by reservation. The current wine-tourism section also publishes multiple tasting and experience products. General Tuesday-Saturday access is therefore distinct from reservation-only Monday/Sunday access and bookable structured experiences.",
+    "visitBookingRequirement": "not_required",
+    "walkInStatus": "accepted",
+    "visitorHours": {
+      "monday_sunday": "by_reservation",
+      "tuesday_saturday": "11:00-18:00"
+    },
+    "visitabilityReviewedAt": "2026-09-20 04:02:29.008808+00"
   },
   {
     "id": "ipsa-istria",
@@ -3327,7 +3915,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Olive-grove visit",
       "Winemaker-led cellar experience"
     ],
-    "openingHours": "Guided tastings are by prior reservation; the estate shop publishes seasonal opening hours.",
+    "openingHours": "Guided tastings only by prior reservation; no fixed public visitor timetable published.",
     "phone": "+385 91 206 0538",
     "website": "https://ipsa-maslinovaulja.com/en/",
     "googleMapsUrl": "https://www.google.com/maps/place/Ip%C5%A1a/@45.3681461,13.8492159,17z/data=!3m1!4b1!4m6!3m5!1s0x477b589ecb183b95:0x7b48d07e0bd73c9f!8m2!3d45.3681461!4d13.8492159!16s%2Fg%2F11dfjwn1j0?entry=ttu&g_ep=EgoyMDI2MDkxNS4wIKXMDSoASAFQAw%3D%3D",
@@ -3341,7 +3929,11 @@ export const SEO_LIVE_PRODUCERS = [
     "publicPointType": "estate",
     "visitStatus": "appointment_only",
     "visitSourceUrl": "https://ipsa-maslinovaulja.com/en/posjetite-nas/",
-    "visitNotes": "The official site offers multiple guided oil-and-wine tasting formats; guided tastings explicitly require prior reservation."
+    "visitNotes": "Current first-party Ipša page offers several guided olive-oil and wine experiences and explicitly states that guided tastings are possible only with prior reservation. Programme lengths vary substantially, from 60 minutes for the Selection tasting to several hours for the most elaborate experiences. Official Istrian tourism material confirms free parking at the estate.",
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "parkingStatus": "available",
+    "visitabilityReviewedAt": "2026-09-20 04:24:51.59373+00"
   },
   {
     "id": "karavitakis-winery",
@@ -3367,7 +3959,7 @@ export const SEO_LIVE_PRODUCERS = [
     "story": "The family describes an eighty-year winemaking legacy in western Crete. Rather than turning that history into a museum piece, the current generation has built a boutique winery with modern equipment and continues experimenting with different varieties and carefully selected vineyard sites.",
     "indigenousVarieties": [],
     "tastingHighlights": [],
-    "openingHours": "Visitors accepted with or without appointment; check current tour availability",
+    "openingHours": "",
     "phone": "+30 28240 23381",
     "website": "https://karavitakiswines.com",
     "googleMapsUrl": "https://maps.google.com/?q=35.501992,23.791172",
@@ -3387,7 +3979,11 @@ export const SEO_LIVE_PRODUCERS = [
     "locationNotes": "Pontikiana winery location and contact details are producer-verified; coordinates match Wines of Crete route data.",
     "visitStatus": "public_visits",
     "visitSourceUrl": "https://www.karavitakiswines.com/",
-    "visitNotes": "Karavitakis explicitly welcomes visitors with or without appointments; appointments remain preferable for a guided visit."
+    "visitNotes": "Current first-party homepage explicitly welcomes visitors and states that the winery accepts visitors with or without appointments. The separate online-booking page still contains a stale 2025 date note, so it is not used to infer current tour availability, hours or programme dates. Current daily visitor hours, visit duration, parking and tour languages are not published clearly enough to structure.",
+    "visitBookingRequirement": "not_required",
+    "walkInStatus": "accepted",
+    "seasonalVisitNotes": "Online booking remains available, but the current booking page includes a stale 2025 cutoff note; contact the winery for specific guided-tour scheduling.",
+    "visitabilityReviewedAt": "2026-09-19 16:05:00+00"
   },
   {
     "id": "kasta-brewery",
@@ -3413,7 +4009,7 @@ export const SEO_LIVE_PRODUCERS = [
     "story": "Biologist and brewer Kostas Antonakakis founded KASTA with his wife Anna Tzani, a pharmacist, opening the Heraklion brewing lab in late 2018. Even the name is personal: KASTA is an acronym built from the initials of members of their family.",
     "indigenousVarieties": [],
     "tastingHighlights": [],
-    "openingHours": "Mon-Fri 09:00-17:00",
+    "openingHours": "Tap Room closed until further notice; Show Room hours not currently published. Beer tasting sessions are offered by booking.",
     "phone": "+30 2811 813479",
     "website": "https://kastabeer.com",
     "googleMapsUrl": "https://maps.google.com/?q=35.338429,25.131678",
@@ -3426,9 +4022,11 @@ export const SEO_LIVE_PRODUCERS = [
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://kastabeer.com",
     "locationNotes": "Current brewery address verified as Zampeliou 6, Heraklion.",
-    "visitStatus": "public_visits",
-    "visitSourceUrl": "https://kastabeer.com/about-us/",
-    "visitNotes": "KASTA publishes showroom visiting hours at its Heraklion Brewing Lab. A tasting session is a separate producer offering and is not a TerroirTrail experience."
+    "visitStatus": "appointment_only",
+    "visitSourceUrl": "https://kastabeer.com/beer-tasting/",
+    "visitNotes": "Current first-party pages state that the Tap Room is closed until further notice and that Show Room visiting hours are to be announced. A separate current Beer Tasting page and booking/workshop page still promote an interactive tasting session. Treat visitor access as appointment-based for the tasting experience; do not present the site as an open taproom or publish the older Mon-Fri 09:00-17:00 showroom hours.",
+    "visitBookingRequirement": "required",
+    "visitabilityReviewedAt": "2026-09-19 16:05:00+00"
   },
   {
     "id": "kazani-stilianou",
@@ -3454,7 +4052,7 @@ export const SEO_LIVE_PRODUCERS = [
     "story": "The family dates its domain to 1922 and describes five generations of winemakers. The continuity is less about reproducing the past unchanged than keeping native varieties, vineyards and family-scale production at the centre while working in a contemporary natural-wine style.",
     "indigenousVarieties": [],
     "tastingHighlights": [],
-    "openingHours": "Daily from 11:00; Nov-Mar by booking; check current closing time",
+    "openingHours": "Daily 11:00-19:00. Nov-Mar: contact/book before visiting.",
     "phone": "+30 6940784329",
     "website": "https://stilianouwinery.com",
     "googleMapsUrl": "https://maps.google.com/?q=35.235858,25.191400",
@@ -3469,7 +4067,15 @@ export const SEO_LIVE_PRODUCERS = [
     "locationNotes": "Current winery identity, visitor operation and phone verified on the producer site. Closing time varies between current producer pages, so users should check the booking page.",
     "visitStatus": "public_visits",
     "visitSourceUrl": "https://stilianouwinery.com/",
-    "visitNotes": "Stilianou publishes winery visiting/tasting hours; from November to March visits are by booking. Check the producer page for the current closing time."
+    "visitNotes": "Current first-party homepage publishes visitor/tasting hours of 11:00-19:00 daily and an active booking calendar. A separate older first-party tasting page still shows 11:00-18:00 and explicitly states that November-March visits are by booking. TerroirTrail uses the newer 19:00 closing time while retaining the winter booking rule. No reliable visit duration, parking policy, walk-in policy, or tour-language information is published.",
+    "visitorHours": {
+      "current_daily": "11:00-19:00",
+      "november_march": {
+        "access": "by_booking"
+      }
+    },
+    "seasonalVisitNotes": "An older first-party tasting page still shows an 18:00 closing time; the newer homepage publishes 19:00 and is used as the current value.",
+    "visitabilityReviewedAt": "2026-09-19 16:05:00+00"
   },
   {
     "id": "kir-yianni-naoussa",
@@ -3498,7 +4104,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Cabernet Sauvignon"
     ],
     "tastingHighlights": [],
-    "openingHours": "Tue-Sun 11:00-18:00; Mon closed; reservations necessary.",
+    "openingHours": "Tue-Sun 11:00-18:00; Mon closed. Reservations mandatory.",
     "phone": "+30 23320 51100",
     "website": "https://kiryianni.gr",
     "googleMapsUrl": "https://www.google.com/maps/place/?q=place_id:ChIJd_C6CY-XVxMRwFU6h_zEof8",
@@ -3513,8 +4119,16 @@ export const SEO_LIVE_PRODUCERS = [
     "locationSourceUrl": "https://mapcarta.com/N9797265812",
     "locationNotes": "Phase 10B exact-location audit: Kir-Yianni Winery point in Yiannakohori independently matched in OpenStreetMap-backed mapping data and corroborated by the producer-published Naoussa address and contact details. Road access remains unreviewed.",
     "visitStatus": "appointment_only",
-    "visitSourceUrl": "https://kiryianni.gr/visit/",
-    "visitNotes": "Current first-party Naoussa visitor programme requires reservations."
+    "visitSourceUrl": "https://kiryianni.gr/el/episkepseis-naoussa/",
+    "visitNotes": "Current first-party Naoussa visitor page, updated in June 2026, explicitly states that reservations are mandatory. The estate is open Tuesday-Sunday 11:00-18:00 and closed Monday. The page also explicitly publishes free parking and disabled access. Current visitor offers include wine tastings, food-and-wine pairing, vineyard picnics, cycling routes and private tastings. A standard visit duration and visitor languages are not explicitly published.",
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "parkingStatus": "available",
+    "visitorHours": {
+      "monday": "closed",
+      "tuesday_sunday": "11:00-18:00"
+    },
+    "visitabilityReviewedAt": "2026-09-19 17:29:00+00"
   },
   {
     "id": "kirnig-mushrooms-south-tyrol",
@@ -3547,7 +4161,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Pre-booked mushroom-growing tour",
       "Optional mushroom tasting"
     ],
-    "openingHours": "Guided visits are available daily by advance registration for groups of at least 10 people.",
+    "openingHours": "Guided visits available daily by advance registration; minimum 10 people.",
     "phone": "+39 340 8696047",
     "website": "https://www.kirnig.com",
     "googleMapsUrl": "https://www.google.com/maps/place/KIRNIG+S%C3%BCdtiroler+Edelpilze/@46.3782366,11.3575922,17z/data=!3m1!4b1!4m6!3m5!1s0x477879866f5b898b:0x9e5da5778889eea8!8m2!3d46.3782366!4d11.3575922!16s%2Fg%2F11h6vb_gcn",
@@ -3561,7 +4175,17 @@ export const SEO_LIVE_PRODUCERS = [
     "publicPointType": "production_site",
     "visitStatus": "appointment_only",
     "visitSourceUrl": "https://www.kirnig.com/kaufen-fuehrungen/",
-    "visitNotes": "The official site offers daily guided visits only with advance registration and a minimum group size of 10; a tasting can be added."
+    "visitNotes": "Current first-party Kirnig page offers guided mushroom-farm visits daily only with advance registration and a minimum group size of 10 people. A tasting can be added. No fixed tour start times, standard duration, parking details or visitor languages are published.",
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "visitorHours": {
+      "guided_visits": {
+        "days": "daily",
+        "minimum_group_size": 10,
+        "advance_registration": true
+      }
+    },
+    "visitabilityReviewedAt": "2026-09-20 03:51:44.453065+00"
   },
   {
     "id": "kozlovic-winery-istria",
@@ -3600,7 +4224,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Optional cellar tour",
       "Native-variety tasting programmes"
     ],
-    "openingHours": "Wine tastings operate on published programmes and time windows; advance booking is recommended.",
+    "openingHours": "Tue-Fri 10:00-19:00; Sat 12:00-20:00; Sun 11:00-17:00; Mon closed. Winter tours/tastings close while the wine shop remains open.",
     "website": "https://www.kozlovic.hr/en/",
     "googleMapsUrl": "https://www.google.com/maps/place/Kozlovi%C4%87+Winery/@45.443348,13.709297,17z/data=!3m1!4b1!4m6!3m5!1s0x477b60dd7c78c71f:0xb46142c9cd91dc7a!8m2!3d45.443348!4d13.709297!16s%2Fg%2F11b5ytw2k5?entry=ttu&g_ep=EgoyMDI2MDkxNS4wIKXMDSoASAFQAw%3D%3D",
     "googlePlaceId": "ChIJH8d4fN1ge0cRetyRzclCYbQ",
@@ -3611,9 +4235,23 @@ export const SEO_LIVE_PRODUCERS = [
     "locationSourceUrl": "https://www.google.com/maps/place/Kozlovi%C4%87+Winery/@45.443348,13.709297,17z/data=!3m1!4b1!4m6!3m5!1s0x477b60dd7c78c71f:0xb46142c9cd91dc7a!8m2!3d45.443348!4d13.709297!16s%2Fg%2F11b5ytw2k5?entry=ttu&g_ep=EgoyMDI2MDkxNS4wIKXMDSoASAFQAw%3D%3D",
     "locationNotes": "Exact Google Maps producer point verified against the frozen 2026-09-18 expansion audit and current producer identity sources.",
     "publicPointType": "estate",
-    "visitStatus": "appointment_only",
-    "visitSourceUrl": "https://www.kozlovic.hr/en/wine-experience-kozlovic-with-wine-1904/",
-    "visitNotes": "The official site publishes multiple structured tasting programmes and optional cellar tours. Booking or checking current opening windows before travel is recommended."
+    "visitStatus": "public_visits",
+    "visitSourceUrl": "https://www.kozlovic.hr/en/frequently-asked-questions/",
+    "visitNotes": "Current first-party Kozlović FAQ welcomes winery visitors Tuesday-Sunday and says booking is recommended, not universally mandatory. It also warns that during high turnout or private events entry for unreserved public visitors may be limited. Guided tasting programmes currently operate in Croatian and English. The wine shop remains open during the winter period when tours and tastings close.",
+    "visitBookingRequirement": "recommended",
+    "walkInStatus": "subject_to_availability",
+    "visitorHours": {
+      "monday": "closed",
+      "sunday": "11:00-17:00",
+      "saturday": "12:00-20:00",
+      "tuesday_friday": "10:00-19:00"
+    },
+    "seasonalVisitNotes": "Winery tours and tastings close during winter while the wine shop remains open; current winter shop hours should be rechecked before travel.",
+    "visitorLanguages": [
+      "hr",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-09-20 04:24:54.792586+00"
   },
   {
     "id": "kraeuterreich-wegleit-south-tyrol",
@@ -3649,7 +4287,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Guided herb-garden tour",
       "Seasonal herb and forest walks"
     ],
-    "openingHours": "Farm shop: Tue, Thu and Sat 16:00-18:00. Guided farm tours run seasonally; advance registration applies to scheduled tours.",
+    "openingHours": "Farm shop: Tue, Thu, Sat 16:00-18:00. Guided farm tour May-Oct Tue 10:00, registration by previous day.",
     "phone": "+39 339 7290937",
     "website": "https://www.kraeuterreich.com",
     "googleMapsUrl": "https://www.google.com/maps/place/Kr%C3%A4uterReich+Wegleit+Fam.+Hannes+Schwienbacher/@46.5426617,10.9889791,17z/data=!3m1!4b1!4m6!3m5!1s0x4782eb420d7c12db:0x293a55dc575caa77!8m2!3d46.5426617!4d10.9889791!16s%2Fg%2F1tmk7c0g",
@@ -3663,7 +4301,22 @@ export const SEO_LIVE_PRODUCERS = [
     "publicPointType": "estate",
     "visitStatus": "public_visits",
     "visitSourceUrl": "https://www.kraeuterreich.com/",
-    "visitNotes": "The official site publishes regular farm-shop hours and seasonal guided farm tours. Guided activities may require registration even when the farm shop itself is open."
+    "visitNotes": "Current first-party KräuterReich Wegleit page publishes a public farm shop Tuesday, Thursday and Saturday 16:00-18:00. Separate 2026 guided farm tours run May-October every Tuesday at 10:00, last about one hour and require registration by the previous day; individually arranged tours are also available by telephone.",
+    "visitBookingRequirement": "not_required",
+    "walkInStatus": "accepted",
+    "visitorHours": {
+      "farm_shop": {
+        "tuesday_thursday_saturday": "16:00-18:00"
+      },
+      "guided_farm_tour_2026": {
+        "may_october": {
+          "tuesday": "10:00"
+        },
+        "registration_deadline": "previous_day"
+      }
+    },
+    "seasonalVisitNotes": "Guided farm tour runs May-October and lasts about 60 minutes; individual tours can also be arranged by phone.",
+    "visitabilityReviewedAt": "2026-09-20 03:51:50.476906+00"
   },
   {
     "id": "ktima-gerovassiliou",
@@ -3693,7 +4346,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Mavrotragano"
     ],
     "tastingHighlights": [],
-    "openingHours": "Mon, Thu, Fri 10:00-16:00; Wed 13:00-19:00; Sat-Sun 11:00-17:00; Tue closed.",
+    "openingHours": "Mon, Thu, Fri 10:00-16:00; Wed 13:00-19:00; Sat-Sun 11:00-17:00; Tue closed. Additional holiday closures apply.",
     "phone": "+30 23920 44567",
     "website": "https://gerovassiliou.gr",
     "googleMapsUrl": "https://www.google.com/maps/place/?q=place_id:ChIJUfMMwwsUqBQRoUIYIMQbCgI",
@@ -3706,8 +4359,19 @@ export const SEO_LIVE_PRODUCERS = [
     "locationSourceUrl": "https://mapcarta.com/W918357275",
     "locationNotes": "Phase 10B exact-location audit: Ktima Gerovassiliou winery point independently matched in OpenStreetMap-backed mapping data and corroborated by the current first-party Epanomi address and telephone. Road access remains unreviewed.",
     "visitStatus": "public_visits",
-    "visitSourceUrl": "https://gerovassiliou.gr/en/contact",
-    "visitNotes": "Current first-party site publishes public opening times for the estate and Wine Museum. Group and school visits require advance booking."
+    "visitSourceUrl": "https://gerovassiliou.gr/en/visits/useful-information",
+    "visitNotes": "Current first-party visitor pages publish open public access to Ktima Gerovassiliou and the Wine Museum: Monday, Thursday and Friday 10:00-16:00; Wednesday 13:00-19:00; Saturday-Sunday 11:00-17:00; Tuesday closed, with additional published holiday closures. General guided tours run at fixed times and last approximately 45-60 minutes. Booking is required for groups over 10 people and for certain special experiences such as Harmony; weekends operate on a first-come, first-served basis. All visitor areas are stated to be accessible to people with disabilities.",
+    "visitBookingRequirement": "not_required",
+    "walkInStatus": "accepted",
+    "visitorHours": {
+      "monday": "10:00-16:00",
+      "tuesday": "closed",
+      "wednesday": "13:00-19:00",
+      "saturday_sunday": "11:00-17:00",
+      "thursday_friday": "10:00-16:00"
+    },
+    "seasonalVisitNotes": "General guided tours last approximately 45-60 minutes. Groups over 10 require booking; some special experiences require reservations. Weekends operate first come, first served. See the official page for holiday and summer closure dates.",
+    "visitabilityReviewedAt": "2026-09-19 17:29:00+00"
   },
   {
     "id": "ktima-pavlidis",
@@ -3731,7 +4395,7 @@ export const SEO_LIVE_PRODUCERS = [
     "story": "The estate works within the PGI Drama wine region. Its published vineyard information emphasizes low summer night temperatures, mountain breezes and site-specific cultivation.",
     "indigenousVarieties": [],
     "tastingHighlights": [],
-    "openingHours": "Visits upon communication; Mon-Fri 10:00-16:00, Sat 10:00-14:00, Sun closed.",
+    "openingHours": "Mon-Fri 10:00-16:00; Sat 10:00-14:00; Sun closed. Visits upon prior communication.",
     "phone": "+30 25210 58300",
     "website": "https://ktima-pavlidis.gr",
     "googleMapsUrl": "https://www.google.com/maps/place/?q=place_id:ChIJiVyvYCBYqRQRgo04TZknytU",
@@ -3745,7 +4409,16 @@ export const SEO_LIVE_PRODUCERS = [
     "locationNotes": "Producer-controlled contact page links directly to the Ktima Pavlidis Google Maps business point in Kokkinogia. Business location verified; entrance and road access remain unverified.",
     "visitStatus": "appointment_only",
     "visitSourceUrl": "https://ktima-pavlidis.gr/en/contact-2/",
-    "visitNotes": "Current first-party site welcomes visits six days per week upon communication. Confirm the current schedule directly before travel."
+    "visitNotes": "Current first-party contact page states that Ktima Pavlidis welcomes wine lovers and professionals for visits six days per week upon communication. Published visiting hours are Monday-Friday 10:00-16:00 and Saturday 10:00-14:00; Sunday is closed, and the winery may also close on national or local holidays. The current site does not publish a standard visit duration, parking details or visitor languages.",
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "visitorHours": {
+      "sunday": "closed",
+      "saturday": "10:00-14:00",
+      "monday_friday": "10:00-16:00"
+    },
+    "seasonalVisitNotes": "The winery may be closed on national or local holidays.",
+    "visitabilityReviewedAt": "2026-09-19 17:29:00+00"
   },
   {
     "id": "ktima-tselepos",
@@ -3772,7 +4445,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Agiorgitiko"
     ],
     "tastingHighlights": [],
-    "openingHours": "Tours by appointment; contact estate for current available times.",
+    "openingHours": "Tours: Mon-Sun by appointment. Estate contact/working hours: Mon-Fri 09:00-17:00; Sat 10:00-16:00; Sun closed.",
     "phone": "+30 2710 544440",
     "website": "https://tselepos.gr",
     "googleMapsUrl": "https://www.google.com/maps/place/?q=place_id:ChIJHXFisgYYYBMRZxx-VMAJx1s",
@@ -3787,7 +4460,21 @@ export const SEO_LIVE_PRODUCERS = [
     "locationNotes": "Phase 10B exact-location audit: published GPS point for Ktima Tselepos matches the producer-controlled 14th km Tripoli-Kastri Road, Rizes address and telephone. Road access remains unreviewed.",
     "visitStatus": "appointment_only",
     "visitSourceUrl": "https://tselepos.gr/%CE%B5%CF%80%CE%B9%CF%83%CE%BA%CE%B5%CF%86%CF%84%CE%B5%CE%AF%CF%84%CE%B5-%CE%BC%CE%B1%CF%82/?lang=en",
-    "visitNotes": "Current first-party visitor page states that tours are available by appointment."
+    "visitNotes": "Current first-party Visit page states that all tours are available Monday through Sunday by appointment. The separate contact page publishes general estate working hours of Mon-Fri 09:00-17:00, Sat 10:00-16:00 and Sunday closed; this is kept separate from pre-arranged tour availability. Current tasting options include introductory, premium and old-vintage packages, plus a seasonal Fall(ing) for Wine tasting from 14 September to 30 November 2026. Parking, visit duration and actual tour languages are not explicitly published.",
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "visitorHours": {
+      "tours": {
+        "monday_sunday": "appointment_only"
+      },
+      "estate_working_hours": {
+        "sunday": "closed",
+        "saturday": "10:00-16:00",
+        "monday_friday": "09:00-17:00"
+      }
+    },
+    "seasonalVisitNotes": "Seasonal Fall(ing) for Wine tasting is published for 14 Sep-30 Nov 2026. Premium and old-vintage packages may include a vineyard tour depending on circumstances.",
+    "visitabilityReviewedAt": "2026-09-18 21:00:00+00"
   },
   {
     "id": "kykao-handcrafted-beers",
@@ -3831,7 +4518,8 @@ export const SEO_LIVE_PRODUCERS = [
     "locationNotes": "Phase 10B exact-location audit: KYKAO Handcrafted industrial brewery point independently matched in OpenStreetMap-backed mapping data and corroborated by the producer-controlled Platani 26504 contact address and phone. Road access remains unreviewed.",
     "visitStatus": "not_publicly_confirmed",
     "visitSourceUrl": "https://kykao.gr/",
-    "visitNotes": "Current first-party site exposes a Tap Room / Visit Tap Room entry point, but dependable current opening or booking terms were not established in the first pass. Contact directly before travel."
+    "visitNotes": "KYKAO remains an active independent microbrewery near Patras, but no current first-party visitor page, taproom timetable, public shop hours, tour/tasting procedure, booking rule, or walk-in policy could be verified. A 2026 public social report describes a brewery visit and tasting, but that does not establish ordinary public access. Keep public visitability unconfirmed.",
+    "visitabilityReviewedAt": "2026-09-18 21:00:00+00"
   },
   {
     "id": "la-vinyeta-catalonia",
@@ -3866,7 +4554,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Wine tasting",
       "Vineyard breakfast and picnic options"
     ],
-    "openingHours": "Guided visits are published for weekends, holidays, Mondays and Fridays year-round, with additional weekday availability from July to September; other days by arrangement.",
+    "openingHours": "Guided visit slots Sat-Sun and public holidays: 10:30-12:15 and 12:30-14:15. Other days by request.",
     "website": "https://www.lavinyeta.es",
     "googleMapsUrl": "https://www.google.com/maps/place/Celler+La+Vinyeta/@42.357026,2.995657,17z/data=!3m1!4b1!4m6!3m5!1s0x12ba858ac33373dd:0xedf031d8c8d68b10!8m2!3d42.357026!4d2.995657!16s%2Fg%2F1tglcxj0?entry=ttu",
     "googlePlaceId": "ChIJ3XMzw4qFuhIREIvWyNgx8O0",
@@ -3879,7 +4567,19 @@ export const SEO_LIVE_PRODUCERS = [
     "publicPointType": "estate",
     "visitStatus": "public_visits",
     "visitSourceUrl": "https://www.lavinyeta.es/es/experiencias/act/3/visita-guiada-i-tast-de-vins",
-    "visitNotes": "The official site publishes regular guided winery-and-vineyard visit slots with wine tasting. Reservations are available online and additional days can be requested."
+    "visitNotes": "Current first-party La Vinyeta page publishes regular guided vineyard/winery visits with wine tasting on Saturdays, Sundays and public holidays, with other days available on request. Standard published slots are 10:30-12:15 and 12:30-14:15. The standard tour page lists Catalan, while the current site also publishes an exclusive English tour. A reservation flow is provided, but the page does not explicitly state that all ordinary visits require advance booking or define walk-in access.",
+    "visitorHours": {
+      "other_days": "on_request",
+      "saturday_sunday_holidays": [
+        "10:30-12:15",
+        "12:30-14:15"
+      ]
+    },
+    "visitorLanguages": [
+      "ca",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-09-20 03:39:30.461104+00"
   },
   {
     "id": "lafkas-brewery",
@@ -3905,7 +4605,7 @@ export const SEO_LIVE_PRODUCERS = [
     "story": "The story began in 2011, when Michalis was studying winemaking and beverage technology and travelled to Belgium, where he met Aurelie. Five years later they were living together in Crete and developing their own Greek–Belgian beer; in 2017 they launched their first release, a Triple Hop Pale Ale.",
     "indigenousVarieties": [],
     "tastingHighlights": [],
-    "openingHours": "By appointment",
+    "openingHours": "Open by appointment",
     "phone": "+30 6945430402",
     "website": "https://lafkasbrewery.com",
     "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Lafkas%20Brewery%2C%20Pazinos%20731%2000&query_place_id=ChIJSSvI3YiHnBQRBtbO7K4u444",
@@ -3919,8 +4619,11 @@ export const SEO_LIVE_PRODUCERS = [
     "locationSourceUrl": "https://www.google.com/maps/search/?api=1&query=Lafkas%20Brewery%2C%20Pazinos%20731%2000&query_place_id=ChIJSSvI3YiHnBQRBtbO7K4u444",
     "locationNotes": "Phase 9B correction (2026-09-14): previous TerroirTrail pin was stale/wrong by about 12.8 km. Google Places audit resolved the Lafkas Brewery business in Pazinos at 35.5182760, 24.1244784 (Place ID ChIJSSvI3YiHnBQRBtbO7K4u444), and the producer-owned Lafkas Brewery website independently confirms the current address as Pazinos 73100 Chania. Location verified at business-property level; entrance-level precision has not been separately established.",
     "visitStatus": "appointment_only",
-    "visitSourceUrl": "https://lafkasbrewery.com/",
-    "visitNotes": "Lafkas explicitly states that the Pazinos brewery is open by appointment. This is visitability only; no TerroirTrail bookable experience exists."
+    "visitSourceUrl": "https://lafkasbrewery.com/beer-tasting-brewery-tour/",
+    "visitNotes": "Current first-party pages say the Pazinos taproom is open by appointment and that the brewery tour/tasting is available after booking an appointment. The brewery currently advertises a simple tasting of four beers. No reliable visit duration, parking policy, or visitor-language information is published.",
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "visitabilityReviewedAt": "2026-09-19 16:45:00+00"
   },
   {
     "id": "lahnerhof-distillery-south-tyrol",
@@ -3957,7 +4660,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Spirit tasting",
       "Small farm museum"
     ],
-    "openingHours": "Tours and tastings are offered by direct arrangement with the farm.",
+    "openingHours": "Distillery tours, tastings and sales are offered; contact Lahnerhof for current timing.",
     "phone": "+39 335 7043583",
     "website": "https://lahnerhof.com",
     "googleMapsUrl": "https://www.google.com/maps/place/Brennerei+Lahnerhof/@46.6420848,11.1426446,17z/data=!3m1!4b1!4m6!3m5!1s0x4782be9b21a5d683:0xc736a3724b4437f4!8m2!3d46.6420848!4d11.1426446!16s%2Fg%2F11c55fz4q1",
@@ -3969,9 +4672,10 @@ export const SEO_LIVE_PRODUCERS = [
     "locationSourceUrl": "https://www.google.com/maps/place/Brennerei+Lahnerhof/@46.6420848,11.1426446,17z/data=!3m1!4b1!4m6!3m5!1s0x4782be9b21a5d683:0xc736a3724b4437f4!8m2!3d46.6420848!4d11.1426446!16s%2Fg%2F11c55fz4q1",
     "locationNotes": "Exact Google Maps producer point manually verified against the producer identity and official website during the 2026-09-18 expansion audit.",
     "publicPointType": "estate",
-    "visitStatus": "appointment_only",
+    "visitStatus": "public_visits",
     "visitSourceUrl": "https://lahnerhof.com/de/brennerei",
-    "visitNotes": "The official site invites visitors to distillery tours, tastings and on-site purchases via direct contact. No fixed walk-in tasting schedule is published, so arrange the visit in advance."
+    "visitNotes": "Current first-party Lahnerhof distillery page actively advertises distillery tours through the historic vaulted cellar, tastings and on-site sales. The current site does not explicitly state that advance booking is mandatory, nor does it publish fixed visitor hours, a standard duration, parking details or visitor languages. The older appointment-only assumption is therefore not retained.",
+    "visitabilityReviewedAt": "2026-09-20 03:51:54.893109+00"
   },
   {
     "id": "lenkhof-south-tyrol",
@@ -4012,7 +4716,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Cheese-dairy tour",
       "Farm-product tasting"
     ],
-    "openingHours": "Farm shop: Mon-Sat 10:00-18:00. Guided cheese-dairy tours require registration through the local tourism office.",
+    "openingHours": "Farm shop: Mon-Sat 10:00-18:00. Guided farm/dairy tours require registration through the Hafling tourism association.",
     "phone": "+39 0473 278124",
     "website": "https://lenkhof.com",
     "googleMapsUrl": "https://www.google.com/maps/place/Lenkhof/@46.6247027,11.219308,17z/data=!3m1!4b1!4m6!3m5!1s0x4782bd1af52b9975:0x394e6784c2f49cba!8m2!3d46.6247027!4d11.219308!16s%2Fg%2F11h_xmhzsf",
@@ -4026,7 +4730,21 @@ export const SEO_LIVE_PRODUCERS = [
     "publicPointType": "estate",
     "visitStatus": "public_visits",
     "visitSourceUrl": "https://lenkhof.com/",
-    "visitNotes": "The official site welcomes visitors to the farm shop Monday-Saturday and states that guided farm and dairy tours are offered separately. Current 2026 guided-tour dates require registration."
+    "visitNotes": "Current first-party Lenkhof page welcomes visitors to the farm shop Monday-Saturday 10:00-18:00. Guided farm/dairy tours are offered separately and registration is requested through the Hafling tourism association. The site explicitly lists German and Italian for the guided tour and states that sufficient visitor parking is available.",
+    "visitBookingRequirement": "not_required",
+    "walkInStatus": "accepted",
+    "parkingStatus": "available",
+    "visitorHours": {
+      "farm_shop": {
+        "monday_saturday": "10:00-18:00"
+      },
+      "guided_farm_dairy_tour": "registration_via_hafling_tourism_association"
+    },
+    "visitorLanguages": [
+      "de",
+      "it"
+    ],
+    "visitabilityReviewedAt": "2026-09-20 03:51:59.126055+00"
   },
   {
     "id": "les-agnels-provence",
@@ -4062,7 +4780,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Lavender and lavandin scent discovery",
       "Seasonal guided distillery visit"
     ],
-    "openingHours": "April-May: Mon-Fri 10:00-13:00 / 14:00-17:30, Sat 10:00-13:00. June and September: Mon-Sat 10:00-13:00 / 14:00-18:00. July-August: daily 10:00-19:00. November-March: groups by appointment.",
+    "openingHours": "Apr-May: Mon-Fri 10:00-13:00 / 14:00-17:30, Sat 10:00-13:00. Jun & Sep: Mon-Sat 10:00-13:00 / 14:00-18:00. Jul-Aug: daily 10:00-19:00. Oct: Mon-Fri 10:00-13:00 / 14:00-17:30, Sat 10:00-13:00. Nov-Mar: groups by appointment.",
     "phone": "+33 4 90 04 77 00",
     "website": "https://www.lesagnels.com",
     "googleMapsUrl": "https://www.google.com/maps/place/Les+Agnels+-+Distillerie+BIO+de+Lavande+%26+Plantes+aromatiques/@43.8539022,5.3860233,17z/data=!3m1!4b1!4m6!3m5!1s0x12ca17d328d079ed:0x7f365fb934c894fa!8m2!3d43.8539022!4d5.3860233!16s%2Fg%2F1jgm1fgxr?entry=ttu",
@@ -4076,7 +4794,37 @@ export const SEO_LIVE_PRODUCERS = [
     "publicPointType": "production_site",
     "visitStatus": "seasonal_public",
     "visitSourceUrl": "https://www.lesagnels.com/",
-    "visitNotes": "The official site provides free access to the distillery exhibition and producer shop during the published April-October season. Guided summer visits require reservation; winter group visits are by appointment."
+    "visitNotes": "Current first-party Les Agnels material publishes free public access to the distillery exhibition and producer shop from April through October with seasonal opening hours. November-March group access is by appointment. Separate July-August guided distillery visits run on scheduled French and English slots and require reservation.",
+    "visitBookingRequirement": "not_required",
+    "walkInStatus": "accepted",
+    "visitorHours": {
+      "october": {
+        "saturday": "10:00-13:00",
+        "monday_friday": [
+          "10:00-13:00",
+          "14:00-17:30"
+        ]
+      },
+      "april_may": {
+        "saturday": "10:00-13:00",
+        "monday_friday": [
+          "10:00-13:00",
+          "14:00-17:30"
+        ]
+      },
+      "july_august": {
+        "daily": "10:00-19:00"
+      },
+      "june_september": {
+        "monday_saturday": [
+          "10:00-13:00",
+          "14:00-18:00"
+        ]
+      },
+      "november_march": "groups_by_appointment"
+    },
+    "seasonalVisitNotes": "Regular public exhibition/shop access is April-October. November-March groups are appointment-only. July-August guided visits require reservation and last about 60 minutes.",
+    "visitabilityReviewedAt": "2026-09-20 04:27:56.671273+00"
   },
   {
     "id": "liokareas-olive-estate",
@@ -4119,7 +4867,9 @@ export const SEO_LIVE_PRODUCERS = [
     "publicPointType": "producer_shop",
     "visitStatus": "not_publicly_confirmed",
     "visitSourceUrl": "https://www.liokareas.com/collections/harvest-trip-2026",
-    "visitNotes": "Current first-party evidence supports Liokareas as a family olive-oil producer and documents packaged harvest-trip activity, but ordinary public access to the farm, orchards or production site is not established. The verified Lagkada map point is the producer shop only."
+    "visitNotes": "Liokareas is a family olive-oil producer whose mapped TerroirTrail public point is the previously verified producer shop in Lagkada. The current first-party site separately sells an eight-day October 2026 Harvest Trip that includes picking and pressing olives at the family farm. That packaged trip does not establish ordinary public access to the farm, orchards or production site, and current shop opening hours are not published on the first-party site. Keep farm visitability unconfirmed and do not infer general walk-in access from the Harvest Trip.",
+    "seasonalVisitNotes": "A packaged eight-day Harvest Trip is offered in October 2026 and includes participation in the family olive harvest and pressing. This is not evidence of ordinary public farm access.",
+    "visitabilityReviewedAt": "2026-09-18 21:00:00+00"
   },
   {
     "id": "lyrarakis-winery",
@@ -4145,7 +4895,7 @@ export const SEO_LIVE_PRODUCERS = [
     "story": "Brothers Manolis and Sotiris Lyrarakis founded the winery in 1966. The family planted the rare Dafni and Plyto varieties in the Psarades vineyard in 1992 and later gave Melissaki a home at Gero Deti in 2010—part of a continuing search for Cretan grapes that had almost disappeared.",
     "indigenousVarieties": [],
     "tastingHighlights": [],
-    "openingHours": "Apr-Oct: daily 11:30-19:00, last tasting 17:30; Nov-Mar by request; bank holidays closed",
+    "openingHours": "Apr-Oct: daily 11:30-19:00; last tastings start 17:30. Bank holidays closed. Nov-Mar: visits available upon request.",
     "phone": "+30 6981050681",
     "website": "https://lyrarakis.com",
     "googleMapsUrl": "https://maps.google.com/?q=35.184889,25.208222",
@@ -4159,8 +4909,21 @@ export const SEO_LIVE_PRODUCERS = [
     "locationSourceUrl": "https://lyrarakis.com/en/visit-us",
     "locationNotes": "Producer publishes exact tasting/event GPS coordinates: 35°11'05.6\"N 25°12'29.6\"E, matching the database pin.",
     "visitStatus": "seasonal_public",
-    "visitSourceUrl": "https://lyrarakis.com/en/visit-us",
-    "visitNotes": "The tasting site is open daily April-October on published hours; November-March visits are available on request."
+    "visitSourceUrl": "https://www.lyrarakis.com/en/visit-us",
+    "visitNotes": "Current first-party visit page publishes April-October daily opening hours, last tasting time, an estimated total visit duration of 1.5 hours, and November-March visits available upon request. The page does not explicitly state a general main-season booking requirement, walk-in policy, parking policy, or visitor languages.",
+    "typicalVisitMinutes": 90,
+    "visitorHours": {
+      "april_october": {
+        "daily": "11:30-19:00",
+        "last_tasting": "17:30",
+        "bank_holidays": "closed"
+      },
+      "november_march": {
+        "access": "upon_request"
+      }
+    },
+    "seasonalVisitNotes": "Estimated whole-visit duration published by the winery: 1.5 hours. November-March visits are available upon request.",
+    "visitabilityReviewedAt": "2026-09-19 16:05:00+00"
   },
   {
     "id": "manousakis-winery",
@@ -4186,7 +4949,7 @@ export const SEO_LIVE_PRODUCERS = [
     "story": "Ted Manousakis was born in Vatolakkos in 1943 and left Crete for the United States at the age of eleven. His desire to reconnect with the village eventually became the winery: the first vineyards were planted in 1993, and the wines took the name Nostos, the Greek idea of yearning to return home. His daughter Alexandra made a similar return in 2007, leaving New York for Crete and helping grow the family winery.",
     "indigenousVarieties": [],
     "tastingHighlights": [],
-    "openingHours": "1 Jun-18 Oct 2026: Mon-Sat 12:00-22:00; Sun closed; booking required",
+    "openingHours": "Through 10 Oct 2026: Mon-Sat 12:00-20:00; Sun closed. 12 Oct-14 Nov 2026: 12:00-18:00; Sun closed. 16 Nov 2026-Apr 2027: tours & tastings by appointment only.",
     "phone": "+30 28210 78787",
     "website": "https://manousakiswinery.com",
     "googleMapsUrl": "https://maps.google.com/?q=35.449042,23.887819",
@@ -4201,7 +4964,24 @@ export const SEO_LIVE_PRODUCERS = [
     "locationNotes": "Vatolakkos winery location and coordinates are verified through producer and Wines of Crete sources.",
     "visitStatus": "appointment_only",
     "visitSourceUrl": "https://www.manousakiswinery.com/visit",
-    "visitNotes": "Manousakis publishes seasonal visitor hours and requires bookings for visits."
+    "visitNotes": "Current first-party visit page requires bookings for tours, tastings and/or dining. Complimentary winery tours are offered at published daily slots depending on season. The tasting terrace and taverna operate on published seasonal hours; Sundays are closed. Parking, typical visit duration and tour languages are not published on the current visit/contact pages.",
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "visitorHours": {
+      "2026_oct_12_nov_14": {
+        "sunday": "closed",
+        "monday_saturday": "12:00-18:00"
+      },
+      "2026_through_oct_10": {
+        "sunday": "closed",
+        "monday_saturday": "12:00-20:00"
+      },
+      "2026_nov_16_to_2027_april": {
+        "tours_tastings": "appointment_only"
+      }
+    },
+    "seasonalVisitNotes": "Tours are complimentary and published at 12:00, 14:00, 16:00, 18:00 and 20:00 depending on time of year. Booking is required.",
+    "visitabilityReviewedAt": "2026-09-19 16:50:00+00"
   },
   {
     "id": "mas-deroles-catalonia",
@@ -4251,7 +5031,19 @@ export const SEO_LIVE_PRODUCERS = [
     "publicPointType": "production_site",
     "visitStatus": "public_visits",
     "visitSourceUrl": "https://www.masderoles.com/la-formatgeria",
-    "visitNotes": "The official site publishes regular shop hours. Visits to the cheese dairy itself are available only by arranged time via telephone."
+    "visitNotes": "Current first-party Mas d'Eroles page publishes regular public shop hours at the Adrall cheese dairy: Monday-Friday 09:00-18:00, Saturday 11:00-13:00, Sunday closed. Visits to the cheese dairy itself are separately available only at an arranged time by telephone. Public shop access and production-area visits therefore have different rules.",
+    "visitBookingRequirement": "not_required",
+    "walkInStatus": "accepted",
+    "visitorHours": {
+      "shop": {
+        "sunday": "closed",
+        "saturday": "11:00-13:00",
+        "monday_friday": "09:00-18:00"
+      },
+      "dairy_visit": "arranged_time"
+    },
+    "seasonalVisitNotes": "Advance arrangement applies to the dairy visit, not ordinary shop access.",
+    "visitabilityReviewedAt": "2026-09-20 03:39:26.844135+00"
   },
   {
     "id": "masseria-il-frantoio-puglia",
@@ -4286,7 +5078,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Ancient olive-grove walk",
       "Guided tasting of four organic EVOOs"
     ],
-    "openingHours": "",
+    "openingHours": "Bookable 60-minute olive-oil experience; no general visitor timetable published.",
     "phone": "+39 0831 330276",
     "website": "https://www.masseriailfrantoio.it",
     "googleMapsUrl": "https://www.google.com/maps/place/Masseria+Il+Frantoio/@40.7586235,17.522337,17z/data=!4m9!3m8!1s0x1346450368a17b03:0x507225f683406388!5m2!4m1!1i2!8m2!3d40.7586235!4d17.522337!16s%2Fg%2F1tkp27zf?entry=ttu&g_ep=EgoyMDI2MDkxNS4wIKXMDSoASAFQAw%3D%3D",
@@ -4298,9 +5090,11 @@ export const SEO_LIVE_PRODUCERS = [
     "locationSourceUrl": "https://www.google.com/maps/place/Masseria+Il+Frantoio/@40.7586235,17.522337,17z/data=!4m9!3m8!1s0x1346450368a17b03:0x507225f683406388!5m2!4m1!1i2!8m2!3d40.7586235!4d17.522337!16s%2Fg%2F1tkp27zf?entry=ttu&g_ep=EgoyMDI2MDkxNS4wIKXMDSoASAFQAw%3D%3D",
     "locationNotes": "Exact Google Maps producer point manually verified against the producer identity and official website during the 2026-09-18 expansion audit.",
     "publicPointType": "estate",
-    "visitStatus": "appointment_only",
+    "visitStatus": "public_visits",
     "visitSourceUrl": "https://www.masseriailfrantoio.it/en/farmhouse-for-oil-tasting-near-ostuni",
-    "visitNotes": "The official site offers a bookable olive-oil experience with a guided estate/mill visit and tasting of four organic extra virgin olive oils."
+    "visitNotes": "Current first-party Masseria Il Frantoio page publishes a 60-minute olive-oil experience including a guided visit through the farmhouse, underground oil mill and ancient olive grove, followed by a technical tasting of four organic extra virgin olive oils. The page invites visitors to book the experience but does not explicitly state that advance reservation is universally mandatory, define walk-in access, publish general visitor hours, parking details, or visitor languages.",
+    "typicalVisitMinutes": 60,
+    "visitabilityReviewedAt": "2026-09-20 03:19:56.564639+00"
   },
   {
     "id": "mate-olive-oil-istria",
@@ -4341,7 +5135,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Olive-oil tasting",
       "Estate visit"
     ],
-    "openingHours": "Producer and regional tourism sources publish tasting access; contact the estate before a dedicated visit.",
+    "openingHours": "Guided tasting and estate visit are publicly promoted; current routine hours are not published in the reviewed sources.",
     "phone": "+385 52 759 281",
     "website": "https://mateoliveoil.com/",
     "googleMapsUrl": "https://www.google.com/maps/place/Mate+organic+extra+virgin+olive+oil/@45.476902,13.5140524,17z/data=!3m1!4b1!4m6!3m5!1s0x477b7c87501327af:0x13309a249cb5021!8m2!3d45.476902!4d13.5140524!16s%2Fg%2F11d_848ljj?entry=ttu&g_ep=EgoyMDI2MDkxNS4wIKXMDSoASAFQAw%3D%3D",
@@ -4353,9 +5147,11 @@ export const SEO_LIVE_PRODUCERS = [
     "locationSourceUrl": "https://www.google.com/maps/place/Mate+organic+extra+virgin+olive+oil/@45.476902,13.5140524,17z/data=!3m1!4b1!4m6!3m5!1s0x477b7c87501327af:0x13309a249cb5021!8m2!3d45.476902!4d13.5140524!16s%2Fg%2F11d_848ljj?entry=ttu&g_ep=EgoyMDI2MDkxNS4wIKXMDSoASAFQAw%3D%3D",
     "locationNotes": "Exact Google Maps producer point verified against the frozen 2026-09-18 expansion audit and current producer identity sources.",
     "publicPointType": "production_site",
-    "visitStatus": "appointment_only",
+    "visitStatus": "public_visits",
     "visitSourceUrl": "https://www.istra.hr/en/mc/food-and-cuisine/4470",
-    "visitNotes": "Current Istrian tourism sources promote a guided tasting and estate visit at the verified Mate farm. Advance contact is recommended."
+    "visitNotes": "Current official Istrian tourism material actively promotes a guided olive-oil tasting and estate tour at the verified Mate farm, and the regional producer listing confirms a tasting room with capacity for 30 visitors and free parking. The reviewed sources do not publish current visitor hours or a universal booking rule, so those fields remain unknown rather than being inferred.",
+    "parkingStatus": "available",
+    "visitabilityReviewedAt": "2026-09-20 04:24:58.164398+00"
   },
   {
     "id": "meligyris-apiary",
@@ -4381,7 +5177,7 @@ export const SEO_LIVE_PRODUCERS = [
     "story": "Manolis Stefanakis grew up inside that beekeeping tradition and later studied at the Agricultural University of Athens. He brought the two worlds together by examining how altitude, humidity, soil and local microclimates affect the organoleptic and biochemical character of each honey.",
     "indigenousVarieties": [],
     "tastingHighlights": [],
-    "openingHours": "Contact producer before visiting",
+    "openingHours": "",
     "phone": "+30 28910 29066",
     "website": "https://meligyris.com",
     "googleMapsUrl": "https://maps.google.com/?q=35.149930,25.265626",
@@ -4396,7 +5192,8 @@ export const SEO_LIVE_PRODUCERS = [
     "locationNotes": "Exact coordinates verified from the producer-controlled map destination.",
     "visitStatus": "not_publicly_confirmed",
     "visitSourceUrl": "https://meligyris.com/pages/contact",
-    "visitNotes": "Meligyris publishes its Arkalochori production/contact address but does not currently advertise the site as a public visitor attraction on its own website."
+    "visitNotes": "Current first-party site confirms the Arkalochori contact/pickup location. The online store offers order pickup at Arkalochori, but the producer does not publish a current apiary visit, tour, tasting programme, public shop timetable, booking rule, or walk-in policy. Do not present the site as a general visitor attraction.",
+    "visitabilityReviewedAt": "2026-09-19 16:25:00+00"
   },
   {
     "id": "miellerie-des-butineuses-provence",
@@ -4443,7 +5240,18 @@ export const SEO_LIVE_PRODUCERS = [
     "publicPointType": "producer_shop",
     "visitStatus": "public_visits",
     "visitSourceUrl": "https://miellerie.fr/",
-    "visitNotes": "The verified Google point is the producer's honey shop and the official site publishes regular shop opening hours. This confirms public access to the shop, not unrestricted access to apiary locations."
+    "visitNotes": "Current first-party La Miellerie des Butineuses material publishes regular opening hours for the producer honey shop. This confirms public access to the shop at the verified point, not unrestricted access to apiary locations or production areas.",
+    "visitBookingRequirement": "not_required",
+    "walkInStatus": "accepted",
+    "visitorHours": {
+      "saturday": "10:00-12:00",
+      "tuesday_friday": [
+        "10:00-12:00",
+        "16:00-18:00"
+      ],
+      "sunday_monday_public_holidays": "closed"
+    },
+    "visitabilityReviewedAt": "2026-09-20 04:27:54.036868+00"
   },
   {
     "id": "moarhof-cheese-dairy-south-tyrol",
@@ -4477,7 +5285,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Farm-gate dairy products",
       "Traditional Graukäse"
     ],
-    "openingHours": "",
+    "openingHours": "Direct farm sales: Mon-Fri 08:00-11:00 & 17:00-18:00; Sat 08:00-11:00; Sun closed.",
     "phone": "+39 340 0538406",
     "website": "https://www.moarhof-hofkaeserei.it",
     "googleMapsUrl": "https://www.google.com/maps/place/Moarhof+Hofk%C3%A4serei+-+XXL+-+Appartement/@46.9245933,11.9747972,17z/data=!3m1!5s0x4777f33371c63ec9:0x4bee81f0f21e88c3!4m9!3m8!1s0x4777f33371eabaa9:0x7d145ade9f0c85fb!5m2!4m1!1i2!8m2!3d46.9245933!4d11.9747972!16s%2Fg%2F11f3z85ysc",
@@ -4490,8 +5298,22 @@ export const SEO_LIVE_PRODUCERS = [
     "locationNotes": "Exact Google Maps producer point manually verified against the producer identity and official website during the 2026-09-18 expansion audit.",
     "publicPointType": "estate",
     "visitStatus": "public_visits",
-    "visitSourceUrl": "https://www.roterhahn.it/de/qualitaetsprodukte-vom-bauern/suedtirol/moarhof-sand-in-taufers%2B5738-3",
-    "visitNotes": "Roter Hahn lists direct farm sales at Moarhof. No fixed farm-gate opening schedule was confirmed, so contacting the family before making a special trip is recommended."
+    "visitSourceUrl": "https://moarhof-hofkaeserei.it/",
+    "visitNotes": "Current first-party Moarhof page confirms direct farm sales and a show dairy, with Monday-Friday 08:00-11:00 and 17:00-18:00, Saturday 08:00-11:00 and Sunday closed. The official Ahrntal tourism listing also invites visitors to buy directly at the farm, observe animal care and milking, and look into the dairy, and explicitly states there is parking in front of the cheese dairy. No separate advance-booking requirement or guided-tour duration is published.",
+    "visitBookingRequirement": "not_required",
+    "walkInStatus": "accepted",
+    "parkingStatus": "available",
+    "visitorHours": {
+      "direct_farm_sales": {
+        "sunday": "closed",
+        "saturday": "08:00-11:00",
+        "monday_friday": [
+          "08:00-11:00",
+          "17:00-18:00"
+        ]
+      }
+    },
+    "visitabilityReviewedAt": "2026-09-20 03:52:06.607189+00"
   },
   {
     "id": "monemvasia-winery",
@@ -4520,7 +5342,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Mavroudi"
     ],
     "tastingHighlights": [],
-    "openingHours": "Tue-Fri 10:00-17:00; Sat 10:00-16:00; Mon and Sun closed; reservation required for tour/tasting.",
+    "openingHours": "Tour/tasting: Tue-Sat 10:00-16:00; reservation required. General winery hours: Tue-Fri 10:00-17:00; Sat 10:00-16:00; Mon/Sun closed.",
     "phone": "+30 2732 071 705",
     "website": "https://monemvasiawinery.gr",
     "googleMapsUrl": "https://www.google.com/maps/place/?q=place_id:ChIJwU0GkC4-nhQRlcJGAJ6fbWk",
@@ -4537,8 +5359,24 @@ export const SEO_LIVE_PRODUCERS = [
     "locationSourceUrl": "https://www.monemvasiawinery.gr/en/contact/",
     "locationNotes": "Producer-controlled contact page links directly to the Monemvasia Winery Tsimbidi Google Maps point. Business location verified; entrance and road access remain unverified.",
     "visitStatus": "appointment_only",
-    "visitSourceUrl": "https://www.monemvasiawinery.gr/en/contact/",
-    "visitNotes": "Current first-party contact page publishes winery opening hours; the tour/tasting programme requires a reservation."
+    "visitSourceUrl": "https://www.monemvasiawinery.gr/en/tour-tasting/",
+    "visitNotes": "Current first-party Tour/Tasting page explicitly requires reservations for standard winery tastings. Tour/tasting visits are published Tuesday-Saturday 10:00-16:00 and last 60-90 minutes. The general contact page separately lists Tue-Fri winery opening hours to 17:00 and Saturday to 16:00, with Monday/Sunday closed; the visitor tasting window is kept distinct. Parking and actual visitor languages are not explicitly published.",
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "visitorHours": {
+      "tour_tasting": {
+        "booking": "required",
+        "tuesday_saturday": "10:00-16:00"
+      },
+      "general_winery": {
+        "monday": "closed",
+        "sunday": "closed",
+        "saturday": "10:00-16:00",
+        "tuesday_friday": "10:00-17:00"
+      }
+    },
+    "seasonalVisitNotes": "Tour/tasting duration is published as 60-90 minutes depending on the visit/tasting.",
+    "visitabilityReviewedAt": "2026-09-18 21:00:00+00"
   },
   {
     "id": "monteraponi-tuscany",
@@ -4567,7 +5405,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Trebbiano"
     ],
     "tastingHighlights": [],
-    "openingHours": "Mon-Fri 09:00-17:00 by advance booking.",
+    "openingHours": "Mon-Fri 09:00-17:00 by prior reservation.",
     "phone": "+39 0577 738208",
     "website": "https://www.monteraponi.it",
     "googleMapsUrl": "https://www.google.com/maps/place/?q=place_id:ChIJkZQPIE3LKxMR2vIDXqZvH54",
@@ -4583,47 +5421,15 @@ export const SEO_LIVE_PRODUCERS = [
     "locationSourceUrl": "https://mapcarta.com/N1669100024",
     "locationNotes": "Phase 10B exact-location audit: Monteraponi locality/estate point independently matched in OpenStreetMap-backed mapping data and corroborated by the producer-controlled Radda in Chianti contact details. Road access remains unreviewed.",
     "visitStatus": "appointment_only",
-    "visitSourceUrl": "https://www.monteraponi.it/contatti_azienda_agricola_monteraponi.php?lang=en",
-    "visitNotes": "Current first-party contact page publishes tastings/visits Monday-Friday by advance booking."
-  },
-  {
-    "id": "monumental-olive-tree-vouves",
-    "name": "Olive Tree Museum of Vouves & Monumental Olive Tree",
-    "greekName": "Μουσείο Ελιάς Βουβών & Μνημειακή Ελιά",
-    "category": "olive_mill",
-    "destination": "crete",
-    "country": "Greece",
-    "countryCode": "GR",
-    "region": "Chania",
-    "village": "Ano Vouves",
-    "locality": "Ano Vouves",
-    "coordinates": [
-      35.48703,
-      23.78679
-    ],
-    "coverImage": "https://images.unsplash.com/photo-1508615039623-a25605d2b022?auto=format&fit=crop&w=1000&q=80",
-    "gallery": [
-      "https://images.unsplash.com/photo-1508615039623-a25605d2b022?auto=format&fit=crop&w=1000&q=80"
-    ],
-    "tagLine": "Olive heritage gathered around one of Crete's living monuments",
-    "description": "In Ano Vouves, the protected Monumental Olive Tree and the neighbouring Olive Tree Museum preserve the agricultural memory of western Crete. The museum occupies a traditional village building and presents tools connected with olive cultivation, harvesting, transport and olive-oil production.",
-    "story": "The Monumental Olive Tree was declared a protected natural monument in 1997. Beside it, the Olive Tree Museum opened in 2009 in a traditional building dating to around 1800, preserving the tools and everyday objects of the region's olive-growing culture. The site should be understood as rural heritage rather than as an olive-oil producer or commercial estate.",
-    "indigenousVarieties": [],
-    "tastingHighlights": [],
-    "openingHours": "Apr-Oct: daily 10:00-19:00; Nov-Mar by agreement",
-    "phone": "+30 28240 22279",
-    "googleMapsUrl": "https://maps.google.com/?q=35.48703,23.78679",
-    "googlePlaceId": "ChIJRTuqIBaLnBQRbiOsG6_Ozb8",
-    "roadAccess": "paved",
-    "roadAccessStatus": "verified",
-    "roadAccessNotes": "Manual operator road review: normal paved approach. Road classification only; does not establish rental-car suitability or guarantee current conditions.",
-    "ethos": [],
-    "locationStatus": "verified_location",
-    "locationSourceUrl": "https://visitchania.gr/en/places-to-visit/museum-of-olive-vouves/",
-    "locationNotes": "This is a heritage attraction/local project rather than a producer. Coordinates identify the museum/tree site, not a commercial olive mill.",
-    "visitStatus": "seasonal_public",
-    "visitSourceUrl": "https://www.cretetravel.com/en/activity/82/Olive_Tree_Museum_of_Vouves",
-    "visitNotes": "The museum and monumental tree are publicly visitable April-October; winter access is by prior agreement."
+    "visitSourceUrl": "https://www.monteraponi.it/contatti_azienda_agricola_monteraponi.php?lang=it",
+    "visitNotes": "Current first-party Monteraponi contact page explicitly states that tastings and cellar visits are available Monday-Friday from 09:00 to 17:00 by prior reservation. The current page does not publish a standard visit duration, parking information, ordinary visitor languages, or a walk-in option.",
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "visitorHours": {
+      "booking": "required",
+      "monday_friday": "09:00-17:00"
+    },
+    "visitabilityReviewedAt": "2026-09-19 18:01:09.286988+00"
   },
   {
     "id": "moulin-clos-des-jeannons-provence",
@@ -4659,7 +5465,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Self-guided mill visit",
       "Olive trail"
     ],
-    "openingHours": "Mon-Sat 09:30-19:00. Free oil tastings are offered without reservation; self-guided mill visits run from March to early October.",
+    "openingHours": "Mon-Sat 09:30-19:00. Free self-guided mill visit Mar to early Oct; free olive-oil tasting available during opening hours.",
     "phone": "+33 4 90 72 68 35",
     "website": "https://www.moulinjeannons.com",
     "googleMapsUrl": "https://www.google.com/maps/place/Clos+du+Moulin+of+Jeannons/@43.882923,5.1897779,17z/data=!3m1!4b1!4m6!3m5!1s0x12ca0e5e006d3bc1:0x1588a58095381f26!8m2!3d43.882923!4d5.1897779!16s%2Fg%2F1q646bk6g",
@@ -4673,7 +5479,15 @@ export const SEO_LIVE_PRODUCERS = [
     "publicPointType": "production_site",
     "visitStatus": "public_visits",
     "visitSourceUrl": "https://www.moulinjeannons.com/contactez-nous.html",
-    "visitNotes": "The official site offers free olive-oil tasting every day without reservation and free self-guided mill visits from March to early October. Groups over 20 must book in advance."
+    "visitNotes": "Current first-party Moulin du Clos des Jeannons material publishes regular Monday-Saturday opening, free olive-oil tastings without reservation and free self-guided mill visits from March to early October. Only groups larger than 20 people are explicitly asked to reserve.",
+    "visitBookingRequirement": "not_required",
+    "walkInStatus": "accepted",
+    "visitorHours": {
+      "monday_saturday": "09:30-19:00",
+      "self_guided_mill_visit": "march_to_early_october"
+    },
+    "seasonalVisitNotes": "Self-guided mill visits run from March to early October. Groups over 20 people must reserve in advance.",
+    "visitabilityReviewedAt": "2026-09-20 04:28:03.813599+00"
   },
   {
     "id": "nocciolenatura-piedmont",
@@ -4712,7 +5526,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Processing explanation",
       "Product tasting"
     ],
-    "openingHours": "The farm offers 1.5-hour tours with final tasting by request.",
+    "openingHours": "90-minute farm tour with final tasting by prior request; no fixed visitor timetable published.",
     "phone": "+39 347 7853123",
     "website": "https://www.nocciolenatura.it/",
     "googleMapsUrl": "https://www.google.com/maps/place/?q=place_id:ChIJAfdo97jJ0hIRTIf15rJjpSw",
@@ -4726,7 +5540,11 @@ export const SEO_LIVE_PRODUCERS = [
     "publicPointType": "estate",
     "visitStatus": "appointment_only",
     "visitSourceUrl": "https://nocciolenatura.it/azienda.html",
-    "visitNotes": "The official producer site explicitly offers a 1.5-hour farm tour with final tasting through a booking/enquiry request."
+    "visitNotes": "Current first-party NoccioleNatura company page explicitly offers a 1.5-hour farm tour with final tasting and directs visitors to request a quote/booking. The current page does not publish fixed visitor hours, parking details, visitor languages or walk-in access.",
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "typicalVisitMinutes": 90,
+    "visitabilityReviewedAt": "2026-09-20 03:26:09.952301+00"
   },
   {
     "id": "notos-brewery",
@@ -4752,7 +5570,7 @@ export const SEO_LIVE_PRODUCERS = [
     "story": "Childhood friends Antonis Tampakakis, Giorgos Neroladakis, Kostas Verigos and Lambros Petsalakis spent years talking, planning and learning before turning their brewing hobby into Notos. Their project became Heraklion's first microbrewery and introduced their own local craft beer to the city.",
     "indigenousVarieties": [],
     "tastingHighlights": [],
-    "openingHours": "Contact brewery before visiting",
+    "openingHours": "",
     "phone": "+30 2811 117167",
     "website": "https://notosbrewery.gr",
     "googleMapsUrl": "https://maps.google.com/?q=35.329399,25.114201",
@@ -4765,9 +5583,10 @@ export const SEO_LIVE_PRODUCERS = [
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://notosbrewery.gr",
     "locationNotes": "Current address verified as Patriarchou Meletiou Metaxaki 36A, Heraklion.",
-    "visitStatus": "not_publicly_confirmed",
+    "visitStatus": "current_access_uncertain",
     "visitSourceUrl": "https://brewshop.notosbrewery.gr/?page_id=282",
-    "visitNotes": "Notos publishes its brewery address and direct brewer contact details, but its current official pages do not clearly advertise general public visiting hours."
+    "visitNotes": "The current first-party site confirms the Heraklion brewery and direct brewer contact details but does not publish a formal visitor programme or visitor hours. Current public listings and 2026 visitor reports indicate that informal brewery visits, beer tasting/drinking and takeaway purchases do occur, while also describing the site as not set up as a formal taproom. Contact the brewery before travelling.",
+    "visitabilityReviewedAt": "2026-09-19 16:30:00+00"
   },
   {
     "id": "nougat-andre-boyer-provence",
@@ -4818,7 +5637,8 @@ export const SEO_LIVE_PRODUCERS = [
     "publicPointType": "production_site",
     "visitStatus": "public_visits",
     "visitSourceUrl": "https://www.nougat-boyer.fr/fr/",
-    "visitNotes": "The official site identifies the historic Sault shop as a public-facing boutique offering traditional confectionery, house-made pastries, ice cream and a tea room."
+    "visitNotes": "Current first-party André Boyer material identifies the historic Sault location as a public-facing boutique selling traditional confectionery and house-made products, with pastries, ice cream and a tea-room offering. The reviewed official material does not provide sufficiently clear current opening hours or a booking rule, so those fields remain unknown rather than inferred.",
+    "visitabilityReviewedAt": "2026-09-20 04:28:05.903015+00"
   },
   {
     "id": "nougats-silvain-provence",
@@ -4856,7 +5676,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Tea room and seasonal ice cream",
       "Producer-confectionery visit"
     ],
-    "openingHours": "The Saint-Didier shop is generally open daily with a midday break; published 2026 seasonal hours vary by month.",
+    "openingHours": "2026: Jan 10:00-12:00 & 14:00-18:00, with annual closure Jan 16-Feb 2 inclusive; Feb-May 10:00-12:00 & 14:00-18:00; Jun-Aug 10:00-12:00 & 15:00-19:00; Sep-Dec 10:00-12:00 & 14:00-18:00. Normally 7/7; Dec 25-26 closed.",
     "phone": "+33 4 90 66 09 57",
     "website": "https://nougats-silvain.fr",
     "googleMapsUrl": "https://www.google.com/maps/place/Nougats+SILVAIN/@44.0055286,5.1123119,17z/data=!3m1!4b1!4m6!3m5!1s0x12ca74e8ae7639ad:0x4b69aab856facff2!8m2!3d44.0055286!4d5.1123119!16s%2Fg%2F1tvbgj6d?entry=ttu",
@@ -4870,7 +5690,32 @@ export const SEO_LIVE_PRODUCERS = [
     "publicPointType": "production_site",
     "visitStatus": "public_visits",
     "visitSourceUrl": "https://nougats-silvain.fr/pages/le-magasin-de-saint-didier",
-    "visitNotes": "The official site confirms a year-round public shop at the production location, with seasonal opening times and additional guided/gourmet visitor activities."
+    "visitNotes": "Current first-party Silvain material confirms a year-round public shop at the Saint-Didier production location and publishes 2026 seasonal opening hours. The shop is normally open seven days a week with a midday break, subject to the published January annual closure and Christmas closures. Guided or gourmet activities are separate from ordinary shop access.",
+    "visitBookingRequirement": "not_required",
+    "walkInStatus": "accepted",
+    "visitorHours": {
+      "january": [
+        "10:00-12:00",
+        "14:00-18:00"
+      ],
+      "usual_days": "daily",
+      "june_august": [
+        "10:00-12:00",
+        "15:00-19:00"
+      ],
+      "february_may": [
+        "10:00-12:00",
+        "14:00-18:00"
+      ],
+      "december_25_26": "closed",
+      "september_december": [
+        "10:00-12:00",
+        "14:00-18:00"
+      ],
+      "annual_closure_2026": "january_16_february_2_inclusive"
+    },
+    "seasonalVisitNotes": "2026 annual closure runs January 16 through February 2 inclusive. December 25-26 are closed. Recheck annually published hours for future travel.",
+    "visitabilityReviewedAt": "2026-09-20 04:28:08.942867+00"
   },
   {
     "id": "olea-bb-oleum-viride-bellic-istria",
@@ -4915,7 +5760,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Oleoteca tasting",
       "Direct olive-oil purchase"
     ],
-    "openingHours": "The Rabac oleoteca publishes seasonal opening hours on the official site.",
+    "openingHours": "May-Oct: Mon-Fri 09:00-16:00, Sat 09:00-14:00, Sun/holidays closed. Nov-Apr: Mon-Fri 08:00-16:00, weekends/holidays closed.",
     "phone": "+385 52 872 189",
     "website": "https://www.oleabb.hr/en/home/",
     "googleMapsUrl": "https://www.google.com/maps/place/Oleum+Viride+Belic/@45.083103,14.1550858,17z/data=!4m10!1m2!2m1!1sOlea+B.B.+Rabac+Croatia!3m6!1s0x476348c759b08961:0x3ea935f1c8bbbff0!8m2!3d45.083103!4d14.1572745!15sChdPbGVhIEIuQi4gUmFiYWMgQ3JvYXRpYZIBFm9saXZlX29pbF9tYW51ZmFjdHVyZXLgAQA!16s%2Fg%2F11csrkwtcc?entry=ttu&g_ep=EgoyMDI2MDkxNS4wIKXMDSoASAFQAw%3D%3D",
@@ -4929,7 +5774,21 @@ export const SEO_LIVE_PRODUCERS = [
     "publicPointType": "producer_shop",
     "visitStatus": "public_visits",
     "visitSourceUrl": "https://www.oleabb.hr/en/home/",
-    "visitNotes": "The verified point is the producer's Rabac oleoteca, for which the official site publishes seasonal public opening hours."
+    "visitNotes": "Current first-party Olea B.B. page explicitly invites visitors to taste the producer's extra virgin olive oils at the Rabac oleoteca and publishes seasonal public opening hours. This supports ordinary public shop/tasting access; no separate mandatory advance-booking rule is published.",
+    "visitBookingRequirement": "not_required",
+    "walkInStatus": "accepted",
+    "visitorHours": {
+      "may_october": {
+        "saturday": "09:00-14:00",
+        "monday_friday": "09:00-16:00",
+        "sunday_holidays": "closed"
+      },
+      "november_april": {
+        "monday_friday": "08:00-16:00",
+        "saturday_sunday_holidays": "closed"
+      }
+    },
+    "visitabilityReviewedAt": "2026-09-20 04:25:01.401188+00"
   },
   {
     "id": "olicatessen-moli-dels-torms-catalonia",
@@ -4963,7 +5822,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Tasting among ancestral olive trees",
       "Estate educational experiences"
     ],
-    "openingHours": "Experiences run on arranged times and require advance booking; minimum group sizes apply.",
+    "openingHours": "Experiences by advance booking; schedules arranged with the mill.",
     "website": "https://olicatessen.com",
     "googleMapsUrl": "https://www.google.com/maps/place/Olicatessen+-+Mol%C3%AD+dels+Torms,+SL/@41.3949531,0.7282507,17z/data=!3m1!4b1!4m6!3m5!1s0x12a6d1ac13c17c1b:0x30baef00b6841e6e!8m2!3d41.3949531!4d0.7282507!16s%2Fg%2F1tgkdfmt?entry=ttu",
     "googlePlaceId": "ChIJG3zBE6zRphIRbh6EtgDvujA",
@@ -4975,8 +5834,17 @@ export const SEO_LIVE_PRODUCERS = [
     "locationNotes": "Exact Google Maps producer point manually verified against the producer identity and official website during the 2026-09-18 expansion audit.",
     "publicPointType": "production_site",
     "visitStatus": "appointment_only",
-    "visitSourceUrl": "https://olicatessen.com/experiencies/",
-    "visitNotes": "The official site publishes several estate and mill experiences. These require advance booking and generally minimum participant numbers; ordinary walk-in production access is not assumed."
+    "visitSourceUrl": "https://olicatessen.com/en/experiences/",
+    "visitNotes": "Current first-party Olicatessen pages publish guided olive-oil tastings, estate walks, harvest workshops and mill visits at Molí dels Torms. Published experiences explicitly require advance booking and generally a minimum of 6 participants. Two current examples last about 90 minutes. Experiences are offered in Catalan, Spanish and English. No ordinary walk-in production access or fixed general visitor timetable is published.",
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "seasonalVisitNotes": "Some experiences are available all year; the harvest-and-milling experience runs mid-October through November and is weather dependent.",
+    "visitorLanguages": [
+      "ca",
+      "es",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-09-20 03:39:16.039532+00"
   },
   {
     "id": "olio-intini-puglia",
@@ -5008,7 +5876,7 @@ export const SEO_LIVE_PRODUCERS = [
       "EVO mill tour",
       "Professional guided tasting"
     ],
-    "openingHours": "",
+    "openingHours": "EVO Tour currently paused; official page states it will return next year.",
     "phone": "+39 080 4325983",
     "website": "https://oliointini.it",
     "googleMapsUrl": "https://www.google.com/maps/place/Olio+Intini+-+Frantoio+e+Shop/@40.7846274,17.2474272,17z/data=!3m1!4b1!4m6!3m5!1s0x1347b28acbb97b17:0xf783a5d2af3f8410!8m2!3d40.7846274!4d17.2474272!16s%2Fg%2F11g_yr9v2?entry=ttu&g_ep=EgoyMDI2MDkxNS4wIKXMDSoASAFQAw%3D%3D",
@@ -5022,7 +5890,9 @@ export const SEO_LIVE_PRODUCERS = [
     "publicPointType": "production_site",
     "visitStatus": "current_access_uncertain",
     "visitSourceUrl": "https://oliointini.it/en/experience-extra-virgin-olive-oil-in-puglia/",
-    "visitNotes": "The official experience page describes mill tours and tastings but currently states that the EVO Tour will return next year; other experiences may be available on request. Confirm directly before travelling."
+    "visitNotes": "Current first-party Olio Intini experience page documents the EVO Tour as a one-hour olive-mill visit and guided tasting, but explicitly states that the EVO Tour will return next year. No current visitor timetable, active booking window, walk-in policy, parking details or visitor languages are published for the paused programme. Confirm current availability directly before travelling.",
+    "seasonalVisitNotes": "Published EVO Tour duration is 60 minutes when active. The current 2026 page states the tour will return next year.",
+    "visitabilityReviewedAt": "2026-09-20 03:16:46.450311+00"
   },
   {
     "id": "olio-mimi-puglia",
@@ -5066,7 +5936,9 @@ export const SEO_LIVE_PRODUCERS = [
     "locationNotes": "Exact Google Maps producer point manually verified against the producer identity and official website during the 2026-09-18 expansion audit.",
     "publicPointType": "production_site",
     "visitStatus": "not_publicly_confirmed",
-    "visitNotes": "The producer and production site are verified, but a current producer-controlled public visit programme was not confirmed during this import."
+    "visitSourceUrl": "https://www.oliomimi.com/en/",
+    "visitNotes": "Current first-party Olio Mimì site verifies the active Modugno oil mill, production identity and direct contact/e-commerce channels, but current navigation and indexed first-party pages do not publish a public mill visit, guided tasting programme, visitor timetable, booking rule or walk-in policy. Keep ordinary public access unconfirmed.",
+    "visitabilityReviewedAt": "2026-09-20 03:16:58.878137+00"
   },
   {
     "id": "olio-mio-sicily",
@@ -5108,8 +5980,9 @@ export const SEO_LIVE_PRODUCERS = [
     "locationNotes": "Exact Google Maps producer point manually verified against the producer identity and official website during the 2026-09-18 expansion audit.",
     "publicPointType": "production_site",
     "visitStatus": "not_publicly_confirmed",
-    "visitSourceUrl": "https://oliomiosicily.com",
-    "visitNotes": "The official site confirms the San Cipirello business address and direct purchase/contact channels, but a current producer-controlled public mill or farm visit programme was not confirmed."
+    "visitSourceUrl": "https://oliomiosicily.com/produzione-olio-extravergine-artigianale/",
+    "visitNotes": "Current first-party Olio Mio pages confirm the Mirto Verde Agricola mill in Contrada Gianvicario, San Cipirello, and offer on-site order pickup. However, they do not publish a current public mill/farm visitor programme, guided tour, tasting procedure, visitor timetable, booking rule, or walk-in policy. On-site pickup is not treated as evidence of general mill visitability.",
+    "visitabilityReviewedAt": "2026-09-20 03:07:44.676756+00"
   },
   {
     "id": "oljarna-kocbek-pomurska",
@@ -5145,7 +6018,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Multisensory oil experience",
       "Hands-on team experience"
     ],
-    "openingHours": "Guided experiences are by prior arrangement; group programmes are accepted on specified Monday-Saturday periods.",
+    "openingHours": "Guided mill experiences: Mon-Sat mornings by prior arrangement.",
     "phone": "+386 2 568 90 26",
     "website": "https://kocbek.si/en/",
     "googleMapsUrl": "https://www.google.com/maps/place/Oljarna+Kocbek+Gorazd+Kocbek+s.p./@46.5557109,16.0324758,17z/data=!3m1!4b1!4m6!3m5!1s0x476f41fe2fd6c72b:0xe5d098e81b68c18e!8m2!3d46.5557109!4d16.0324758!16s%2Fg%2F1vxvgp16?entry=ttu&g_ep=EgoyMDI2MDkxNS4wIKXMDSoASAFQAw%3D%3D",
@@ -5159,7 +6032,16 @@ export const SEO_LIVE_PRODUCERS = [
     "publicPointType": "production_site",
     "visitStatus": "appointment_only",
     "visitSourceUrl": "https://kocbek.si/en/kocbek-oil-mill-tasting-dosivettes-and-tours",
-    "visitNotes": "The official site offers guided mill tours and tastings and explicitly requires advance booking."
+    "visitNotes": "Current first-party Kocbek experience page publishes guided oil-mill tours, tastings and culinary experiences and explicitly states that groups are accepted Monday-Saturday mornings by prior arrangement. Booking is required by phone or email. General business hours on the contact page are kept separate from the tour schedule.",
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "visitorHours": {
+      "guided_experiences": {
+        "booking": "required",
+        "monday_saturday": "morning"
+      }
+    },
+    "visitabilityReviewedAt": "2026-09-20 03:40:20.298222+00"
   },
   {
     "id": "parasiris-olive-mill",
@@ -5185,7 +6067,7 @@ export const SEO_LIVE_PRODUCERS = [
     "story": "The mill has remained in the Paraschakis family for generations. Rather than discarding older equipment as production modernised, the family kept the story visible: visitors can see how pressing moved from manual and animal-powered methods to contemporary centrifugal extraction.",
     "indigenousVarieties": [],
     "tastingHighlights": [],
-    "openingHours": "Mon-Sat 09:00-18:00; Sunday closed (check current listing before travel)",
+    "openingHours": "",
     "phone": "+30 28340 22039",
     "website": "https://paraschakis.gr",
     "googleMapsUrl": "https://maps.google.com/?q=35.375870,24.728410",
@@ -5200,7 +6082,8 @@ export const SEO_LIVE_PRODUCERS = [
     "locationNotes": "Current official site verifies the Paraschakis family olive mill in Melidoni. The public landline +30 28340 22039 is consistently listed by the Municipality/local business sources and current travel listings.",
     "visitStatus": "public_visits",
     "visitSourceUrl": "https://paraschakis.gr/olive-oil-factory/",
-    "visitNotes": "The Paraschakis family explicitly welcomes visitors to the Melidoni olive mill for an introduction to older and modern production methods and olive-oil tasting. Current public listings show Monday-Saturday 09:00-18:00; check before a special trip."
+    "visitNotes": "Current first-party site explicitly presents the Melidoni olive mill as visitor-friendly and welcomes guests for a guided introduction to olive-oil production and tasting. The current official pages do not publish daily visitor hours, a booking requirement, walk-in policy, visit duration, parking policy, or visitor languages. The previously displayed Mon-Sat 09:00-18:00 timetable came from public listings and is no longer surfaced as a producer-confirmed schedule.",
+    "visitabilityReviewedAt": "2026-09-19 16:05:00+00"
   },
   {
     "id": "peralada-mas-marce-catalonia",
@@ -5236,7 +6119,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Recuit-making workshop",
       "Wool workshop"
     ],
-    "openingHours": "Family visits are scheduled on weekends and require booking at least 48 hours in advance; organized groups can arrange visits year-round.",
+    "openingHours": "Family visits: autumn/winter/spring Sat-Sun 10:30; summer/holidays Sat-Sun 10:00. Reserve at least 48h ahead. Groups by arrangement year-round.",
     "phone": "+34 674 076 691",
     "website": "https://www.peraladamasmarce.com",
     "googleMapsUrl": "https://www.google.com/maps/place/Peralada+Mas+Marc%C3%A8/@42.2112968,2.9936245,17z/data=!3m1!4b1!4m6!3m5!1s0x12ba8c9aa659e971:0x7cd997908a44f9e7!8m2!3d42.2112968!4d2.9936245!16s%2Fg%2F1tfh1jsc?entry=ttu",
@@ -5250,7 +6133,20 @@ export const SEO_LIVE_PRODUCERS = [
     "publicPointType": "estate",
     "visitStatus": "appointment_only",
     "visitSourceUrl": "https://www.peraladamasmarce.com/es/visitas-granja/",
-    "visitNotes": "The official site offers structured farm visits with tasting and workshops. Family visits require reservation at least 48 hours in advance."
+    "visitNotes": "Current first-party Mas Marcè farm-visit page publishes structured sheep-farm visits with dairy tasting and workshops. Family visits require reservation at least 48 hours in advance. Autumn, winter and spring family visits start Saturdays and Sundays at 10:30; summer and holiday family visits start at 10:00. Organised groups and school visits can be arranged throughout the year.",
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "visitorHours": {
+      "organised_groups": "year_round_by_arrangement",
+      "family_summer_holidays": {
+        "saturday_sunday": "10:00"
+      },
+      "family_autumn_winter_spring": {
+        "saturday_sunday": "10:30"
+      }
+    },
+    "seasonalVisitNotes": "An annual shearing-themed visit normally replaces the standard programme once in May; exact date is announced separately.",
+    "visitabilityReviewedAt": "2026-09-20 03:39:19.716138+00"
   },
   {
     "id": "peskesi-farm-kazani",
@@ -5276,7 +6172,7 @@ export const SEO_LIVE_PRODUCERS = [
     "story": "The farm follows what Peskesi calls a “Farm to Table” and “Table to Farm” cycle: food begins in the soil, while organic material and knowledge return to the farm rather than ending at the plate. The result is less a showcase farm than a working attempt to make cultivation, cooking and waste reduction part of one system.",
     "indigenousVarieties": [],
     "tastingHighlights": [],
-    "openingHours": "Farm: Mon-Fri 09:00-15:00; check activity/visit requirements before travelling",
+    "openingHours": "Guided farm tours daily at 11:00 and 13:00; tours are weather-dependent.",
     "phone": "+30 6988889994",
     "website": "https://peskesicrete.gr",
     "googleMapsUrl": "https://maps.google.com/?q=35.275161,25.299635",
@@ -5296,7 +6192,19 @@ export const SEO_LIVE_PRODUCERS = [
     "locationNotes": "Current Peskesi farm location verified as Charaso, Hersonissos. Producer approval is still required for TerroirTrail experiences.",
     "visitStatus": "public_visits",
     "visitSourceUrl": "https://peskesicrete.gr/en/experiences/explore-the-farm",
-    "visitNotes": "Peskesi publishes the Charaso farm as a visitor destination and gives access directions. Individual activities may require separate booking with Peskesi; none are TerroirTrail experiences."
+    "visitNotes": "Current first-party farm page publishes a guided farm visit every day at 11:00 and 13:00. The experience lasts 2 hours, includes a guided walk through gardens, olive groves, herbs and farm animals, and ends with a small farm tasting. Tours operate only in suitable weather and may be postponed in rain or severe weather. The page provides a booking flow but does not clearly state whether advance booking is mandatory for the guided tour, so no booking/walk-in flag is inferred.",
+    "typicalVisitMinutes": 120,
+    "visitorHours": {
+      "guided_farm_tour": {
+        "daily_start_times": [
+          "11:00",
+          "13:00"
+        ],
+        "weather_dependent": true
+      }
+    },
+    "seasonalVisitNotes": "Tours take place only under suitable weather conditions and may be postponed in rain or severe weather.",
+    "visitabilityReviewedAt": "2026-09-19 16:05:00+00"
   },
   {
     "id": "propator-sknipa-brewery",
@@ -5325,7 +6233,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Sknipa Lady"
     ],
     "tastingHighlights": [],
-    "openingHours": "",
+    "openingHours": "Visits by arrangement. Brewery/contact hours: Mon-Fri 09:00-17:30.",
     "phone": "+30 2310 463 444",
     "website": "https://www.sknipa.beer/",
     "googleMapsUrl": "https://www.google.com/maps/place/?q=place_id:ChIJHSyH3VFAqBQRdF-4PVdW8f8",
@@ -5341,9 +6249,12 @@ export const SEO_LIVE_PRODUCERS = [
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://untappd.com/SknipaMicrobreweryOfThessaloniki/beer",
     "locationNotes": "Phase 10B exact-location audit: the brewery-specific location published by the official Untappd brewery profile in Nea Raidestos matches Sknipa's producer-controlled site, 17th km Thessaloniki-Polygyros address, phone and website identity. Road access remains unreviewed.",
-    "visitStatus": "not_publicly_confirmed",
-    "visitSourceUrl": "https://www.sknipa.beer/en/facilities",
-    "visitNotes": "Current first-party facility/contact details are verified. Event-specific Open Breweries participation does not establish ordinary year-round public access."
+    "visitStatus": "appointment_only",
+    "visitSourceUrl": "https://www.sknipa.beer/en/contact",
+    "visitNotes": "Current first-party contact page tells visitors who want to learn how Sknipa beer is made to send a message to arrange a meeting. This establishes arranged brewery visits, but not ordinary walk-in access. The page publishes Monday-Friday 09:00-17:30 as brewery/contact hours; these are kept separate from any guaranteed tour timetable. No standard visit duration, parking details or visitor languages are published.",
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "visitabilityReviewedAt": "2026-09-19 17:29:00+00"
   },
   {
     "id": "psiloritis-cheese-dairy-livadia",
@@ -5415,7 +6326,8 @@ export const SEO_LIVE_PRODUCERS = [
     "publicPointType": "production_site",
     "visitStatus": "not_publicly_confirmed",
     "visitSourceUrl": "https://www.psiloriths.gr/en/the-company/",
-    "visitNotes": "No current first-party visitor programme, opening hours, tour procedure, or booking method was verified for the dairy."
+    "visitNotes": "Current first-party site confirms the Livadia dairy as a modern production plant and publishes direct contact details, but it does not publish a public visitor programme, tour/tasting procedure, public opening hours, booking rule, or walk-in policy. Keep public access unconfirmed.",
+    "visitabilityReviewedAt": "2026-09-19 16:40:00+00"
   },
   {
     "id": "ra-nissora-piedmont",
@@ -5456,7 +6368,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Guided hazelnut tasting",
       "Direct farm sales"
     ],
-    "openingHours": "Regional tourism sources list visits and tastings throughout the week; contact ahead to confirm the current slot.",
+    "openingHours": "Visits/tastings listed Mon-Sun; contact the producer for the current time.",
     "phone": "+39 334 3662016",
     "website": "https://www.ranissora.com/",
     "googleMapsUrl": "https://www.google.com/maps/place/?q=place_id:ChIJw_dzVLWw0hIRhRWASDtucJI",
@@ -5470,7 +6382,30 @@ export const SEO_LIVE_PRODUCERS = [
     "publicPointType": "estate",
     "visitStatus": "public_visits",
     "visitSourceUrl": "https://www.visitlmr.it/en/aziende/ra-nissora",
-    "visitNotes": "The current regional tourism authority lists visits, sales and guided tastings, including orchard and production-lab visits."
+    "visitNotes": "The current official Langhe Monferrato Roero tourism-authority listing identifies Ra Nissora as open for visits, tastings and sales throughout the week. It publishes a 90-minute guided visit to the hazelnut groves and processing/production laboratory plus a 60-minute guided tasting, with car and bus parking and accessible production/tasting areas. The producer website was not reliably reachable during this audit, so operational visitor details are retained as public-listing evidence rather than producer-confirmed facts. Exact daily visit times and booking/walk-in rules are not stated.",
+    "parkingStatus": "available",
+    "typicalVisitMinutes": 90,
+    "visitorHours": {
+      "days": [
+        "monday",
+        "tuesday",
+        "wednesday",
+        "thursday",
+        "friday",
+        "saturday",
+        "sunday"
+      ]
+    },
+    "seasonalVisitNotes": "Tourism-authority listing gives 90 minutes for the guided visit and 60 minutes for the tasting.",
+    "visitorLanguages": [
+      "fr",
+      "ja",
+      "en",
+      "ro",
+      "es",
+      "de"
+    ],
+    "visitabilityReviewedAt": "2026-09-20 03:29:29.074839+00"
   },
   {
     "id": "ribafreixo-wines-alentejo",
@@ -5516,7 +6451,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Professional wine tasting",
       "Wine shop"
     ],
-    "openingHours": "Visits require advance booking and are subject to availability.",
+    "openingHours": "Wine shop: Mon-Fri 09:00-18:00; Sat-Sun 10:00-18:00.",
     "phone": "+351 967 409 249",
     "website": "https://ribafreixo.com",
     "googleMapsUrl": "https://www.google.com/maps/place/Ribafreixo+Wines/@38.1924588,-7.8108298,17z/data=!3m1!4b1!4m6!3m5!1s0xd1a08116e5e6dbb:0xc0ce5d74b3724dfb!8m2!3d38.1924588!4d-7.8108298!16s%2Fg%2F1pp2x8pfz?entry=ttu&g_ep=EgoyMDI2MDkxNS4wIKXMDSoASAFQAw%3D%3D",
@@ -5528,9 +6463,18 @@ export const SEO_LIVE_PRODUCERS = [
     "locationSourceUrl": "https://www.google.com/maps/place/Ribafreixo+Wines/@38.1924588,-7.8108298,17z/data=!3m1!4b1!4m6!3m5!1s0xd1a08116e5e6dbb:0xc0ce5d74b3724dfb!8m2!3d38.1924588!4d-7.8108298!16s%2Fg%2F1pp2x8pfz?entry=ttu&g_ep=EgoyMDI2MDkxNS4wIKXMDSoASAFQAw%3D%3D",
     "locationNotes": "Exact Google Maps producer point verified against the frozen 2026-09-18 expansion audit and current producer identity sources.",
     "publicPointType": "estate",
-    "visitStatus": "appointment_only",
-    "visitSourceUrl": "https://ribafreixo.com/en/pages/enoturismo",
-    "visitNotes": "The official wine-tourism page states that visits must be booked in advance and are subject to availability."
+    "visitStatus": "public_visits",
+    "visitSourceUrl": "https://pacheca.com/pages/ribafreixowines",
+    "visitNotes": "Current Ribafreixo first-party page, now hosted by Pacheca Group, confirms the Vidigueira winery remains active with a public wine shop, tasting area, restaurant and multiple wine-tourism activities including vineyard tours, guided winery tours and tastings. The wine shop is open Monday-Friday 09:00-18:00 and Saturday-Sunday 10:00-18:00. The page does not explicitly state a universal advance-booking requirement for all visitor access.",
+    "visitBookingRequirement": "not_required",
+    "walkInStatus": "accepted",
+    "visitorHours": {
+      "wine_shop": {
+        "monday_friday": "09:00-18:00",
+        "saturday_sunday": "10:00-18:00"
+      }
+    },
+    "visitabilityReviewedAt": "2026-09-20 04:02:33.606277+00"
   },
   {
     "id": "rueslatten-ysteri-buskerud",
@@ -5566,7 +6510,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Farm cheese shop",
       "Direct purchase at Hol Ysteri"
     ],
-    "openingHours": "Farm-shop access is advertised, but fixed current hours were not consistently published across producer sources; contact before a dedicated trip.",
+    "openingHours": "Public farm-shop access confirmed; current fixed hours not reliably published in the authoritative source used.",
     "phone": "+47 41 51 23 18",
     "website": "https://www.rueslåtten.no",
     "googleMapsUrl": "https://www.google.com/maps/place/Hol+Ysteri/@60.6148838,8.2966756,17z/data=!3m1!4b1!4m6!3m5!1s0x463fbf759f5946eb:0x5610bdb86403c6a!8m2!3d60.6148838!4d8.2966756!16s%2Fg%2F11gmdgw5q_?entry=ttu&g_ep=EgoyMDI2MDkxNS4wIKXMDSoASAFQAw%3D%3D",
@@ -5580,7 +6524,10 @@ export const SEO_LIVE_PRODUCERS = [
     "publicPointType": "production_site",
     "visitStatus": "public_visits",
     "visitSourceUrl": "https://www.hanen.no/en/bedrift/rueslaatten-ysteri/",
-    "visitNotes": "Current farm-food and destination sources invite visitors to stop at Hol Ysteri to buy farm-made cheese. Confirm current shop hours before travel."
+    "visitNotes": "Current official HANEN farm-tourism listing confirms the Rueslåtten Ysteri / Hol Ysteri farm-shop point and explicitly invites visitors to stop by and buy cheese made on the farm. The producer website was not reliably reachable during this audit, and the current HANEN page does not publish fixed shop hours, guided-tour terms, duration, parking or visitor languages. Public shop access is confirmed; production-area access is not inferred.",
+    "visitBookingRequirement": "not_required",
+    "walkInStatus": "accepted",
+    "visitabilityReviewedAt": "2026-09-20 03:41:36.651784+00"
   },
   {
     "id": "sabino-leone-puglia",
@@ -5615,7 +6562,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Coratina grove visit",
       "Five-oil tasting course"
     ],
-    "openingHours": "Tours: Mon-Fri 08:30-11:30 and 15:30-17:30; Sat 08:30-11:30. Longer grove tour has narrower time slots; booking recommended.",
+    "openingHours": "Oil Mill Tour: Mon-Fri 08:30-11:30 & 15:30-17:30; Sat 08:30-11:30. Origins tour: Mon-Fri 08:30-10:30 & 15:30-16:30; Sat 08:30-10:30.",
     "phone": "+39 0883 1957758",
     "website": "https://www.sabinoleone.it",
     "googleMapsUrl": "https://www.google.com/maps/place/Sabino+Leone+-+Frantoio+oleario/@41.1703351,16.0271417,17z/data=!3m1!4b1!4m6!3m5!1s0x13383972678c74c5:0x40190fdd663b467e!8m2!3d41.1703351!4d16.0271417!16s%2Fg%2F11gbkxkc_c?entry=ttu&g_ep=EgoyMDI2MDkxNS4wIKXMDSoASAFQAw%3D%3D",
@@ -5627,9 +6574,26 @@ export const SEO_LIVE_PRODUCERS = [
     "locationSourceUrl": "https://www.google.com/maps/place/Sabino+Leone+-+Frantoio+oleario/@41.1703351,16.0271417,17z/data=!3m1!4b1!4m6!3m5!1s0x13383972678c74c5:0x40190fdd663b467e!8m2!3d41.1703351!4d16.0271417!16s%2Fg%2F11gbkxkc_c?entry=ttu&g_ep=EgoyMDI2MDkxNS4wIKXMDSoASAFQAw%3D%3D",
     "locationNotes": "Exact Google Maps producer point manually verified against the producer identity and official website during the 2026-09-18 expansion audit.",
     "publicPointType": "production_site",
-    "visitStatus": "appointment_only",
+    "visitStatus": "public_visits",
     "visitSourceUrl": "https://www.sabinoleone.it/en/pages/tour",
-    "visitNotes": "The official site publishes bookable oil-mill and olive-grove tours with guided EVOO tastings and current visiting hours."
+    "visitNotes": "Current first-party Sabino Leone tour pages publish two visitor programmes at the Canosa di Puglia oil mill. The Oil Mill Tour lasts about 90 minutes and is available Monday-Friday 08:30-11:30 and 15:30-17:30, Saturday 08:30-11:30. Discovering the Origins lasts about 120 minutes and is available Monday-Friday 08:30-10:30 and 15:30-16:30, Saturday 08:30-10:30. The site offers a Book Now flow but does not explicitly state that reservations are mandatory or define a general walk-in policy. Parking and actual visitor languages are not explicitly published.",
+    "visitorHours": {
+      "oil_mill_tour": {
+        "saturday": "08:30-11:30",
+        "monday_friday": [
+          "08:30-11:30",
+          "15:30-17:30"
+        ]
+      },
+      "discovering_origins": {
+        "saturday": "08:30-10:30",
+        "monday_friday": [
+          "08:30-10:30",
+          "15:30-16:30"
+        ]
+      }
+    },
+    "visitabilityReviewedAt": "2026-09-20 03:20:00.099929+00"
   },
   {
     "id": "santa-tresa-sicily",
@@ -5672,7 +6636,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Winery and vineyard tour",
       "Seasonal workshops and food pairings"
     ],
-    "openingHours": "",
+    "openingHours": "Core tasting experiences: Mon-Sat. Excellence experience: Wed-Sat. Contact the estate for specific availability.",
     "phone": "+39 0932 875 615",
     "website": "https://www.santatresa.com",
     "googleMapsUrl": "https://www.google.com/maps/place/Feudo+Santa+Tresa/@37.00781,14.522807,17z/data=!3m1!4b1!4m6!3m5!1s0x1311a688ee934849:0x292070b9f9d4565!8m2!3d37.00781!4d14.522807!16s%2Fg%2F11bzwrtbkz",
@@ -5686,7 +6650,14 @@ export const SEO_LIVE_PRODUCERS = [
     "publicPointType": "estate",
     "visitStatus": "public_visits",
     "visitSourceUrl": "https://www.santatresa.com/en/tastings-and-tours/tastings-and-tours/",
-    "visitNotes": "The official site publishes winery tours, tastings and seasonal workshops and provides direct contact for visits. Specific experiences may require advance reservation."
+    "visitNotes": "Current first-party Santa Tresa pages publish winery tours, vineyard walks, wine tastings, Sicilian brunch and workshop experiences. Core tasting experiences are available Monday-Saturday; the Excellence experience is Wednesday-Saturday. Published core visit durations range from 90 minutes to 2 hours. Each experience provides direct booking contacts, but the current first-party pages do not explicitly state a universal advance-booking mandate or define general walk-in access. Parking and visitor languages are not explicitly published.",
+    "visitorHours": {
+      "excellence": "wednesday_saturday",
+      "sicilian_brunch": "monday_saturday",
+      "classics_of_vittoria": "monday_saturday"
+    },
+    "seasonalVisitNotes": "Published core tasting durations range from 90 to 120 minutes depending on the experience.",
+    "visitabilityReviewedAt": "2026-09-20 03:10:59.579839+00"
   },
   {
     "id": "santo-wines-santorini",
@@ -5715,7 +6686,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Mavrotragano"
     ],
     "tastingHighlights": [],
-    "openingHours": "Wine Tourism Center open year-round; individual service hours vary, so check the official site before visiting",
+    "openingHours": "Wine Tourism Center open year-round; individual service hours vary, so check the current official booking/visit pages before travelling.",
     "phone": "+30 22860 28058",
     "website": "https://santowines.gr",
     "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Santo%20Wines&query_place_id=ChIJFbhZ3F7OmRQReOlBpwauSzg",
@@ -5730,7 +6701,12 @@ export const SEO_LIVE_PRODUCERS = [
     "locationNotes": "Phase 10A manual Google Places audit (2026-09-15): matched Santo Wines in Pyrgos to the current cooperative wine-tourism identity and official locality. Stored pin updated to the Google business point; entrance-level precision is not separately established.",
     "visitStatus": "public_visits",
     "visitSourceUrl": "https://santowines.gr/visit-us",
-    "visitNotes": "Santo Wines states that its Wine Tourism Center in Pyrgos is open all year. Winery tours, tastings, restaurant and shop services are producer-operated; reservations may apply to specific activities."
+    "visitNotes": "Current first-party Santo Wines site states that the Wine Tourism Center in Pyrgos is open all year round. The current visitor offer includes winery tours, wine tasting, olive-oil tasting, restaurant service, documentary film and a wine/deli shop, with online reservation flows for several services. The official site does not currently publish one dependable daily timetable covering all visitor services or state that reservations are mandatory, so booking and walk-in status remain unset.",
+    "visitorHours": {
+      "year_round": true,
+      "service_hours": "vary_by_service"
+    },
+    "visitabilityReviewedAt": "2026-09-18 21:00:00+00"
   },
   {
     "id": "santorini-brewing-company",
@@ -5754,7 +6730,7 @@ export const SEO_LIVE_PRODUCERS = [
     "story": "The brewery built its identity around the Donkey beer range and a small visitor space connected directly to the working brewery. Because space is limited, the producer asks groups of four or more to arrange an appointment.",
     "indigenousVarieties": [],
     "tastingHighlights": [],
-    "openingHours": "Summer: Mon-Sat 11:30-17:00; Nov-Apr: weekdays 12:00-16:00; closed Sundays",
+    "openingHours": "Summer: Mon-Sat 11:30-17:00. Nov-Apr: weekdays 12:00-16:00. Closed Sundays.",
     "phone": "+30 22860 30268",
     "website": "https://www.santorinibrewingcompany.gr",
     "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Santorini%20Brewing%20Company&query_place_id=ChIJ30mo9xjOmRQRSFZDLJsvVy4",
@@ -5769,7 +6745,21 @@ export const SEO_LIVE_PRODUCERS = [
     "locationNotes": "Phase 10A manual Google Places audit (2026-09-15): selected the Google candidate named Santorini Brewing Company, matching the producer official identity and Mesa Gonia locality. The nearby Donkey brewery listing was not persisted. Stored pin updated to the Google business point; entrance-level precision is not separately established.",
     "visitStatus": "public_visits",
     "visitSourceUrl": "https://www.santorinibrewingcompany.gr/the-brewery",
-    "visitNotes": "The brewery invites visitors to its tasting area. Groups of four or more are asked to make an appointment because space is limited; large groups cannot be accommodated."
+    "visitNotes": "Current first-party brewery page welcomes visitors to stop by the Mesa Gonia microbrewery and use the upstairs tasting area. Summer hours are Monday-Saturday 11:30-17:00; in the winter period from November through April, the brewery is open weekdays 12:00-16:00. Sundays are always closed. Appointments are requested for groups of 4 or more because space is limited, while ordinary individual/small-party visits are presented as walk-in visits.",
+    "visitBookingRequirement": "not_required",
+    "walkInStatus": "accepted",
+    "visitorHours": {
+      "summer": {
+        "sunday": "closed",
+        "monday_saturday": "11:30-17:00"
+      },
+      "november_april": {
+        "sunday": "closed",
+        "weekdays": "12:00-16:00"
+      }
+    },
+    "seasonalVisitNotes": "Appointments are requested for groups of 4+ people because the tasting area has limited space; large groups cannot be accommodated.",
+    "visitabilityReviewedAt": "2026-09-18 21:00:00+00"
   },
   {
     "id": "schmiedthof-herb-farm-south-tyrol",
@@ -5805,7 +6795,7 @@ export const SEO_LIVE_PRODUCERS = [
     "tastingHighlights": [
       "Seasonal farm-gate herb products"
     ],
-    "openingHours": "Mid-May to end of September: farm sales on Thursday afternoons, or by telephone appointment.",
+    "openingHours": "Mid-May to end-Sep: farm sales Thu afternoon. Other times by telephone arrangement.",
     "phone": "+39 340 2416992",
     "website": "https://www.schmiedthof.com",
     "googleMapsUrl": "https://www.google.com/maps/place/Schmiedthof-Kr%C3%A4uterhof/@46.7195284,11.7018205,17z/data=!3m1!4b1!4m6!3m5!1s0x47781acc06db1c83:0xa2b2c88eca4ddbcd!8m2!3d46.7195284!4d11.7018205!16s%2Fg%2F11cn_pbwsl",
@@ -5819,7 +6809,17 @@ export const SEO_LIVE_PRODUCERS = [
     "publicPointType": "estate",
     "visitStatus": "seasonal_public",
     "visitSourceUrl": "https://www.schmiedthof.com/de/produkte.html",
-    "visitNotes": "The official site states that farm products are sold on-site from mid-May through the end of September on Thursday afternoons, or at other times by telephone arrangement."
+    "visitNotes": "Current first-party Schmiedthof page states that farm products are sold on-site from mid-May through the end of September every Thursday afternoon. Visits/purchases at other times are available by telephone arrangement. This confirms seasonal public farm-gate sales, not unrestricted production-area access.",
+    "visitBookingRequirement": "not_required",
+    "walkInStatus": "accepted",
+    "visitorHours": {
+      "other_times": "telephone_appointment",
+      "mid_may_end_september": {
+        "thursday": "afternoon"
+      }
+    },
+    "seasonalVisitNotes": "Regular on-site sales are seasonal from mid-May through the end of September; other times require telephone arrangement.",
+    "visitabilityReviewedAt": "2026-09-20 03:52:11.488305+00"
   },
   {
     "id": "semeli-estate-nemea",
@@ -5848,7 +6848,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Malagousia"
     ],
     "tastingHighlights": [],
-    "openingHours": "Mon and Wed-Fri 10:00-16:00; Sat-Sun 11:00-17:00; Tue closed; booking mandatory.",
+    "openingHours": "Mon and Wed-Fri 10:00-16:00; Sat-Sun 11:00-17:00; Tue and public holidays closed. Booking mandatory.",
     "phone": "+30 27460 20360",
     "website": "https://semeliestate.gr",
     "googleMapsUrl": "https://www.google.com/maps/place/?q=place_id:ChIJ2Smk-U0GoBQRzptIjnEnPU0",
@@ -5861,8 +6861,19 @@ export const SEO_LIVE_PRODUCERS = [
     "locationSourceUrl": "https://www.semeliestate.gr/front/",
     "locationNotes": "Phase 10B exact-location audit: coordinates are published directly by Semeli Estate and correspond to the Koutsi, Nemea winery identified on the producer-controlled contact page. Road access remains unreviewed.",
     "visitStatus": "appointment_only",
-    "visitSourceUrl": "https://www.semeliestate.gr/contact/",
-    "visitNotes": "Current first-party site publishes wine-tourism programmes and requires booking before the visit."
+    "visitSourceUrl": "https://www.semeliestate.gr/experience/",
+    "visitNotes": "Current first-party experience/contact pages state that booking is mandatory before visiting. Wine tourism programs operate every day except Tuesday and public holidays. Published estate hours are Mon and Wed-Fri 10:00-16:00 and weekends 11:00-17:00. Standard open wine experiences last 60 minutes; private cellar experiences last 90 minutes. The estate states that all hospitality facilities and venues are fully accessible to visitors with disabilities. Parking and actual visitor languages are not explicitly published.",
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "visitorHours": {
+      "monday": "10:00-16:00",
+      "tuesday": "closed",
+      "public_holidays": "closed",
+      "saturday_sunday": "11:00-17:00",
+      "wednesday_friday": "10:00-16:00"
+    },
+    "seasonalVisitNotes": "Open wine experiences are published as 60 minutes; private cellar tastings are published as 90 minutes.",
+    "visitabilityReviewedAt": "2026-09-18 21:00:00+00"
   },
   {
     "id": "sennerhof-south-tyrol",
@@ -5897,7 +6908,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Farm-shop visit",
       "Farmstead goat cheeses"
     ],
-    "openingHours": "Farm shop: Tue, Thu, Fri and Sat 09:00-11:00 and 16:00-19:00.",
+    "openingHours": "Farm shop: Tue, Thu, Fri, Sat 09:00-11:00 and 16:00-19:00.",
     "phone": "+39 348 474 3881",
     "website": "https://www.sennerhof.eu",
     "googleMapsUrl": "https://www.google.com/maps/place/Sennerhof/@46.8528876,11.3841094,17z/data=!3m1!4b1!4m9!3m8!1s0x4782ad4da3dcae87:0x505873f1a88d58ef!5m2!4m1!1i2!8m2!3d46.8528876!4d11.3841094!16s%2Fg%2F11hf27cpjz",
@@ -5910,8 +6921,19 @@ export const SEO_LIVE_PRODUCERS = [
     "locationNotes": "Exact Google Maps producer point manually verified against the producer identity and official website during the 2026-09-18 expansion audit.",
     "publicPointType": "estate",
     "visitStatus": "public_visits",
-    "visitSourceUrl": "https://www.ratschings.info/en/holiday-planning/shops/rid-5de80a8d1c4c944ba95c7e16c6a2bca0-p-sennerhof-hofladen.html",
-    "visitNotes": "The regional tourism authority lists the on-site Sennerhof farm shop and publishes regular opening hours. This confirms public access to the farm shop, not unrestricted access to all agricultural or dairy work areas."
+    "visitSourceUrl": "https://www.sennerhof.eu/index.php?option=com_content&view=article&id=170:hofladen&Itemid=626&lang=de&catid=2",
+    "visitNotes": "Current first-party Sennerhof farm-shop page publishes regular public hours Tuesday, Thursday, Friday and Saturday 09:00-11:00 and 16:00-19:00. The shop sells the farm’s own goat cheese, eggs, spreads, syrups and seasonal vegetables. This confirms public farm-shop access, not unrestricted access to dairy or agricultural work areas.",
+    "visitBookingRequirement": "not_required",
+    "walkInStatus": "accepted",
+    "visitorHours": {
+      "farm_shop": {
+        "tuesday_thursday_friday_saturday": [
+          "09:00-11:00",
+          "16:00-19:00"
+        ]
+      }
+    },
+    "visitabilityReviewedAt": "2026-09-20 03:52:15.733434+00"
   },
   {
     "id": "serra-ferdinandea-sicily",
@@ -5960,8 +6982,9 @@ export const SEO_LIVE_PRODUCERS = [
     "locationNotes": "Exact Google Maps producer point manually verified against the producer identity and official website during the 2026-09-18 expansion audit.",
     "publicPointType": "estate",
     "visitStatus": "not_publicly_confirmed",
-    "visitSourceUrl": "https://serraferdinandea.com/",
-    "visitNotes": "The official site confirms the estate, vineyard and farm identity but does not publish a routine public visit programme for this exact point."
+    "visitSourceUrl": "https://serraferdinandea.com/en/",
+    "visitNotes": "Current first-party Serra Ferdinandea site confirms the Sambuca di Sicilia estate, vineyards, wines and agricultural project but does not publish a routine public visitor programme, tasting/tour booking flow, visitor timetable, walk-in policy, standard duration, parking details or visitor languages. Keep ordinary public access unconfirmed.",
+    "visitabilityReviewedAt": "2026-09-20 03:07:48.283649+00"
   },
   {
     "id": "silva-daskalaki-winery",
@@ -5988,7 +7011,7 @@ export const SEO_LIVE_PRODUCERS = [
     "story": "The Daskalaki family dates its viticulture and winemaking tradition to 1920. In 1998 Irini Daskalaki-Xenogiannaki began building the modern winery in Siva; by 2004 the family had made its first official bottlings of dry and naturally sweet Liatiko.",
     "indigenousVarieties": [],
     "tastingHighlights": [],
-    "openingHours": "Apr-Oct: Mon-Sat 10:30-17:30; Nov-Mar: Mon-Fri 10:30-17:30; appointment required one day ahead",
+    "openingHours": "Apr-Oct: Mon-Sat 10:30-17:30; Nov-Mar: Mon-Fri 10:30-17:30. Closed on holidays. Appointment required one day ahead.",
     "phone": "+30 2810 792021",
     "website": "https://silvawines.gr",
     "googleMapsUrl": "https://maps.google.com/?q=35.208883,25.035853",
@@ -6008,7 +7031,24 @@ export const SEO_LIVE_PRODUCERS = [
     "locationNotes": "Siva winery coordinates match Wines of Crete route data; producer contact details verified.",
     "visitStatus": "appointment_only",
     "visitSourceUrl": "https://www.silvawines.gr/en/guided-tours-tasting-amp-wine-tips",
-    "visitNotes": "Silva Daskalaki requires arrangements one day in advance for winery visits and tastings."
+    "visitNotes": "Current first-party visitor page lists five guided-tour/tasting programmes. Arrangement one day in advance is required. Tours are offered in Greek and English. Published programme durations vary from 45 to 120 minutes, so no single typical visit duration is stored. Food can be arranged with tastings on request. Parking is not explicitly documented on the current visitor page.",
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "visitorHours": {
+      "holidays": "closed",
+      "april_october": {
+        "monday_saturday": "10:30-17:30"
+      },
+      "november_march": {
+        "monday_friday": "10:30-17:30"
+      }
+    },
+    "seasonalVisitNotes": "Last tasting time varies by programme: 15:00-16:00. Appointment must be arranged one day in advance.",
+    "visitorLanguages": [
+      "el",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-09-18 21:00:00+00"
   },
   {
     "id": "siris-craft-brewery",
@@ -6037,7 +7077,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Voreia Imperial Porter"
     ],
     "tastingHighlights": [],
-    "openingHours": "",
+    "openingHours": "Current ordinary visitor hours are not published; contact the brewery before travelling.",
     "phone": "+30 2321 099 949",
     "website": "https://www.sirisbrewery.com/",
     "googleMapsUrl": "https://www.google.com/maps/place/?q=place_id:ChIJb5JrTlRRqRQRk35ZlaAr9Yo",
@@ -6053,9 +7093,10 @@ export const SEO_LIVE_PRODUCERS = [
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://mapcarta.com/W1091010202",
     "locationNotes": "Phase 10B exact-location audit: Siris Craft Brewery industrial/brewery point independently matched in OpenStreetMap-backed mapping data; domain and telephone match the producer-controlled Siris/Voreia identity. Road access remains unreviewed.",
-    "visitStatus": "not_publicly_confirmed",
+    "visitStatus": "current_access_uncertain",
     "visitSourceUrl": "https://www.sirisbrewery.com/en/contact-us/",
-    "visitNotes": "Current first-party site explicitly welcomes brewery tours, but ordinary visit hours and booking rules were not published clearly enough to classify normal public access. Contact the brewery first."
+    "visitNotes": "Current first-party Siris/Voreia pages explicitly welcome visitors into the brewery for a tour of the beer-making world. However, the current site does not publish a normal visitor timetable, advance-booking requirement, walk-in policy, standard duration, parking details or visitor languages. Event-specific Open Breweries participation is not treated as ordinary year-round access. Contact the brewery before travelling.",
+    "visitabilityReviewedAt": "2026-09-19 17:29:00+00"
   },
   {
     "id": "skouras-winery-nemea",
@@ -6083,7 +7124,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Assyrtiko"
     ],
     "tastingHighlights": [],
-    "openingHours": "",
+    "openingHours": "Mon-Fri 09:00-16:30; Sat 10:30-17:30; closed Sundays and national holidays. Reservation required.",
     "phone": "+30 27510 23688",
     "website": "https://skouras.gr",
     "googleMapsUrl": "https://www.google.com/maps/place/?q=place_id:ChIJfXHxqfz7nxQRao9QAPAeJLQ",
@@ -6095,9 +7136,18 @@ export const SEO_LIVE_PRODUCERS = [
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://www.allaboutpeloponnisos.com/en/type/Trips/domaine-skouras",
     "locationNotes": "Phase 10B exact-location audit: published GPS point matches Domaine Skouras at 10th km Argos-Sternas, Malandreni, including the producer website and telephone. Road access remains unreviewed.",
-    "visitStatus": "not_publicly_confirmed",
-    "visitSourceUrl": "https://www.skouras.gr/",
-    "visitNotes": "Producer identity/location and public contact are corroborated, but the Phase 10B first pass did not retrieve a sufficiently current first-party visitor page. Keep visitor access unconfirmed pending direct evidence."
+    "visitStatus": "appointment_only",
+    "visitSourceUrl": "https://skouras.gr/en/tastings-wine-tours",
+    "visitNotes": "Current first-party visitor page explicitly states that reservations are required to visit Domaine Skouras. Visits include the 1,000-barrel cellar, bottling, vinification and wine-storage areas plus wine tasting. Published visitor hours are Monday-Friday 09:00-16:30 and Saturday 10:30-17:30; the winery is closed Sundays and national holidays. Parking, visit duration and actual tour languages are not explicitly published.",
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "visitorHours": {
+      "sunday": "closed",
+      "saturday": "10:30-17:30",
+      "monday_friday": "09:00-16:30",
+      "national_holidays": "closed"
+    },
+    "visitabilityReviewedAt": "2026-09-18 21:00:00+00"
   },
   {
     "id": "solo-craft-brewery",
@@ -6123,7 +7173,7 @@ export const SEO_LIVE_PRODUCERS = [
     "story": "From the beginning, Solo framed good beer as something social rather than simply commercial—its own language says craft beer is about people, togetherness and sharing ideas. That philosophy explains why experimentation and dialogue with beer drinkers are part of the brewery's identity.",
     "indigenousVarieties": [],
     "tastingHighlights": [],
-    "openingHours": "Mon-Fri 11:00-16:00; Sat-Sun by appointment; contact before visiting",
+    "openingHours": "Mon-Fri 11:00-16:00; Sat-Sun by appointment. Contact before visiting so the brewery can schedule the visit.",
     "phone": "+30 2811 750209",
     "website": "https://solobeer.gr",
     "googleMapsUrl": "https://maps.google.com/?q=35.311700,25.176000",
@@ -6138,7 +7188,14 @@ export const SEO_LIVE_PRODUCERS = [
     "locationNotes": "Current production-site address verified as Kountourioti 35, Heraklion.",
     "visitStatus": "appointment_only",
     "visitSourceUrl": "https://solobeer.gr/en/",
-    "visitNotes": "Solo welcomes visitors but explicitly asks them to contact the brewery in advance so the visit can be scheduled; weekends are by appointment."
+    "visitNotes": "Current first-party site explicitly welcomes visitors to the Kallithea brewery and asks them to contact the brewery before visiting so the visit can be scheduled. Published visiting hours are 11:00-16:00 on weekdays, with Saturday and Sunday by appointment. Group tastings, brewery tours and tailor-made experiences are available after communication. Parking, visit duration and visitor languages are not published.",
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "visitorHours": {
+      "monday_friday": "11:00-16:00",
+      "saturday_sunday": "appointment_only"
+    },
+    "visitabilityReviewedAt": "2026-09-18 21:00:00+00"
   },
   {
     "id": "spildegarden-vestland",
@@ -6175,7 +7232,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Farm restaurant",
       "Group storytelling tasting"
     ],
-    "openingHours": "2026 farm shop and restaurant: Monday-Saturday 11:00-16:00, with seasonal extended restaurant/drop-in periods; group experiences by booking.",
+    "openingHours": "Farm shop/restaurant: Mon-Sat 11:00-16:00. Summer drop-in: Mon-Sat 11:00-17:00.",
     "phone": "+47 915 59 879",
     "website": "https://www.spildegarden.no/english",
     "googleMapsUrl": "https://www.google.com/maps/place/Spildegarden/@60.3865044,6.1938503,17z/data=!3m1!4b1!4m6!3m5!1s0x463c33836778aaff:0x429be77f88c5b78a!8m2!3d60.3865044!4d6.1938503!16s%2Fg%2F1hc0_sgjc?entry=ttu&g_ep=EgoyMDI2MDkxNS4wIKXMDSoASAFQAw%3D%3D",
@@ -6189,7 +7246,19 @@ export const SEO_LIVE_PRODUCERS = [
     "publicPointType": "estate",
     "visitStatus": "public_visits",
     "visitSourceUrl": "https://www.spildegarden.no/english",
-    "visitNotes": "The official site publishes 2026 farm-shop, restaurant and drop-in cider-tasting hours. Guided group tastings require advance booking."
+    "visitNotes": "Current first-party Spildegarden page publishes 2026 public farm-shop and restaurant access Monday-Saturday and drop-in summer access. Cider tasting with lunch is available Monday-Saturday, while guided history-and-cider tastings are group-only, last about 1 hour, and require booking for groups of at least 5 people. Public shop/restaurant access and guided group experiences therefore have different rules.",
+    "visitBookingRequirement": "not_required",
+    "walkInStatus": "accepted",
+    "visitorHours": {
+      "summer_drop_in": {
+        "monday_saturday": "11:00-17:00"
+      },
+      "farm_shop_restaurant": {
+        "monday_saturday": "11:00-16:00"
+      }
+    },
+    "seasonalVisitNotes": "Guided history/cider tasting is group-only, about 60 minutes, booking required, minimum 5 people.",
+    "visitabilityReviewedAt": "2026-09-20 03:41:31.006853+00"
   },
   {
     "id": "stamatogiorgis-dairy-smari",
@@ -6257,7 +7326,8 @@ export const SEO_LIVE_PRODUCERS = [
     "publicPointType": "production_site",
     "visitStatus": "current_access_uncertain",
     "visitSourceUrl": "https://stamatogiorgis.gr/en/",
-    "visitNotes": "The current producer site describes tasting experiences at its facilities, but a clear current booking procedure, ordinary opening hours, price, or walk-in policy was not verified. Do not present as guaranteed public walk-in access."
+    "visitNotes": "Current first-party site explicitly says the dairy offers tasting experiences at its facilities. It does not publish a clear current visitor timetable, booking requirement, walk-in policy, visit duration, or parking policy. Contact the dairy before travelling.",
+    "visitabilityReviewedAt": "2026-09-19 16:10:00+00"
   },
   {
     "id": "stankovic-honey-garden-southeast-slovenia",
@@ -6294,7 +7364,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Apitherapy hive",
       "Beeswax workshop"
     ],
-    "openingHours": "Visits and honey experiences require advance appointment; the main visitor season is spring through autumn.",
+    "openingHours": "Visits by advance appointment; no fixed public timetable published.",
     "phone": "+386 41 697 907",
     "website": "https://medenodozivetje.si",
     "googleMapsUrl": "https://www.google.com/maps/place/%C4%8Cebela,+zavod+za+izobra%C5%BEevanje+in+razvoj+na+podro%C4%8Dju+doma%C4%8De+obrti,+%C4%8Cebelarstva+in+turizma+Novo+mesto/@45.8214187,15.1848038,17z/data=!3m1!4b1!4m6!3m5!1s0x4765000eb64af8ed:0x73076b4331b6ebf7!8m2!3d45.8214187!4d15.1848038!16s%2Fg%2F1hc2m6bmx?entry=ttu&g_ep=EgoyMDI2MDkxNS4wIKXMDSoASAFQAw%3D%3D",
@@ -6308,7 +7378,11 @@ export const SEO_LIVE_PRODUCERS = [
     "publicPointType": "visitor_center",
     "visitStatus": "appointment_only",
     "visitSourceUrl": "https://www.visitdolenjska.eu/en/offer/api-beehive-and-honey-garden/",
-    "visitNotes": "Current regional and national tourism sources list structured Honey Garden experiences by advance appointment."
+    "visitNotes": "Current official VisitDolenjska listing publishes structured Honey Garden experiences at Irča vas and repeatedly states that visits are by appointment. The main family beehive-and-garden programme lasts 2 hours; apitherapy with honey tasting lasts 30 minutes. Honey picnic, massage and forest-selfness experiences also require advance arrangement. The producer-controlled site was not reliably accessible during this audit.",
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "seasonalVisitNotes": "Published programmes vary by format; the main family programme is 2 hours and apitherapy with honey tasting is 30 minutes.",
+    "visitabilityReviewedAt": "2026-09-20 03:40:24.464216+00"
   },
   {
     "id": "stathakis-honey-park",
@@ -6334,7 +7408,7 @@ export const SEO_LIVE_PRODUCERS = [
     "story": "The family business began in 1963 when Stelios Stathakis acquired his first hives. More than sixty years later, the next generations have expanded the operation with a modern packing facility while keeping beekeeping—not tourism—as the foundation of the family business.",
     "indigenousVarieties": [],
     "tastingHighlights": [],
-    "openingHours": "Spring-Summer; check current visitor hours before travelling",
+    "openingHours": "",
     "phone": "+30 6977906195",
     "website": "https://stathakisfamily.com",
     "googleMapsUrl": "https://maps.google.com/?q=35.480012,23.689595",
@@ -6352,9 +7426,10 @@ export const SEO_LIVE_PRODUCERS = [
     "locationStatus": "verified_entrance",
     "locationSourceUrl": "https://stathakisfamily.com",
     "locationNotes": "Exact visitor-site coordinates verified from the producer-controlled map link.",
-    "visitStatus": "seasonal_public",
-    "visitSourceUrl": "https://stathakisfamily.com/about-us/",
-    "visitNotes": "The family explicitly lists its Cretan Honey Experience site in Kaloudiana as open during spring and summer. This does not make its paid activities TerroirTrail experiences."
+    "visitStatus": "public_visits",
+    "visitSourceUrl": "https://stathakisfamily.com/cretan-honey-experience-tour-taste/",
+    "visitNotes": "Current first-party site actively promotes and books the Cretan Honey Experience in Kaloudiana, including guided honey-production tours, tastings, a honey shop and coffee place. Four current bookable experiences are published with durations of 45 or 90 minutes. The site does not publish a current seasonal opening period, daily visitor timetable, general walk-in policy, parking policy, or tour languages, so those remain unconfirmed.",
+    "visitabilityReviewedAt": "2026-09-19 16:05:00+00"
   },
   {
     "id": "tenuta-cantagallo-tuscany",
@@ -6384,7 +7459,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Estate extra virgin olive oil"
     ],
     "tastingHighlights": [],
-    "openingHours": "",
+    "openingHours": "Visits and tastings by prior request; no general public visitor timetable published.",
     "phone": "+39 327 015 2798",
     "website": "https://www.cantagallolefarnete.it",
     "googleMapsUrl": "https://www.google.com/maps/place/Tenuta+Cantagallo/@43.7515351,11.015723,17z/data=!4m9!3m8!1s0x132a5d07cd14bddd:0x19daa75b8d6c6ceb!5m2!4m1!1i2!8m2!3d43.7515351!4d11.015723!16s%2Fg%2F1xflmk7y?entry=ttu&g_ep=EgoyMDI2MDkxNS4wIKXMDSoASAFQAw%3D%3D",
@@ -6396,9 +7471,18 @@ export const SEO_LIVE_PRODUCERS = [
     "locationSourceUrl": "https://www.google.com/maps/place/Tenuta+Cantagallo/@43.7515351,11.015723,17z/data=!4m9!3m8!1s0x132a5d07cd14bddd:0x19daa75b8d6c6ceb!5m2!4m1!1i2!8m2!3d43.7515351!4d11.015723!16s%2Fg%2F1xflmk7y?entry=ttu&g_ep=EgoyMDI2MDkxNS4wIKXMDSoASAFQAw%3D%3D",
     "locationNotes": "Exact Google Maps producer point manually verified against the producer identity and official website during the 2026-09-18 expansion audit.",
     "publicPointType": "estate",
-    "visitStatus": "not_publicly_confirmed",
-    "visitSourceUrl": "https://www.consorziovinochianti.it/aziende-old/tenuta-cantagallo-e-le-farnete/",
-    "visitNotes": "A Chianti consortium listing describes guided visits and tastings by reservation, but a current producer-controlled visitor page was not independently confirmed during this import."
+    "visitStatus": "appointment_only",
+    "visitSourceUrl": "https://www.cantagallolefarnete.it/en/the-activities/",
+    "visitNotes": "Current first-party Cantagallo activity page states that food-and-wine tastings and guided visits of wineries, vineyards and olive groves are organised upon request for both agriturismo guests and outside groups. Tours include Cantagallo wines and extra-virgin olive oil and are conducted in Italian, English, French and German. No current public visitor timetable, standard duration, parking details, or ordinary walk-in policy are published.",
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "visitorLanguages": [
+      "it",
+      "en",
+      "fr",
+      "de"
+    ],
+    "visitabilityReviewedAt": "2026-09-19 17:54:26.673597+00"
   },
   {
     "id": "tenuta-di-castellaro-sicily",
@@ -6440,7 +7524,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Vineyard experience",
       "Vineyard picnic"
     ],
-    "openingHours": "Tastings and experiences operate on published time slots and by reservation.",
+    "openingHours": "Experiences operate on published time slots and by reservation; see current booking page for date-specific availability.",
     "phone": "+39 345 434 2755",
     "website": "https://www.tenutadicastellaro.it",
     "googleMapsUrl": "https://www.google.com/maps/place/Tenuta+di+Castellaro/@38.496903,14.9140921,17z/data=!4m9!3m8!1s0x13167a47b9503929:0xec370764af875698!5m2!4m1!1i2!8m2!3d38.496903!4d14.9140921!16s%2Fg%2F11bcclkfdd",
@@ -6454,7 +7538,23 @@ export const SEO_LIVE_PRODUCERS = [
     "publicPointType": "estate",
     "visitStatus": "appointment_only",
     "visitSourceUrl": "https://www.tenutadicastellaro.it/en/experiences-and-tastings/",
-    "visitNotes": "The official site publishes tastings and vineyard experiences with defined time slots and explicitly requires reservations for core tasting formats."
+    "visitNotes": "Current first-party Tenuta di Castellaro experience page publishes guided tastings, sunset experiences, vineyard activities, cooking classes and food-and-wine experiences. Core tasting and experience listings explicitly state only by reservation and publish fixed or sunset-dependent time slots. Examples include daily 12:30 tastings, a daily 11:00 cooking class, and a Monday-Friday 09:30 vineyard experience. Published durations vary by package; the principal wine tastings last about two hours. Parking and visitor languages are not explicitly published.",
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "visitorHours": {
+      "cooking_class": {
+        "daily": "11:00"
+      },
+      "core_tastings": {
+        "daily": "12:30"
+      },
+      "sunset_experiences": "sunset_dependent",
+      "vineyard_light_lunch": {
+        "monday_friday": "09:30"
+      }
+    },
+    "seasonalVisitNotes": "Sunset experiences vary with sunset time. Some published experiences note cool evening temperatures and weather-dependent conditions.",
+    "visitabilityReviewedAt": "2026-09-20 03:10:51.017695+00"
   },
   {
     "id": "tetramythos-winery",
@@ -6494,8 +7594,15 @@ export const SEO_LIVE_PRODUCERS = [
     "locationSourceUrl": "https://mapcarta.com/W292772878",
     "locationNotes": "Phase 10B exact-location audit: Tetramythos Winery building point independently matched in OpenStreetMap-backed mapping data and corroborated by the producer-controlled 8th km Pounta-Kalavryta, Ano Diakopto address. Road access remains unreviewed.",
     "visitStatus": "public_visits",
-    "visitSourceUrl": "https://www.tetramythoswines.com/en/contact/",
-    "visitNotes": "Current first-party contact page publishes tasting-room hours throughout the week. The winery also advertises guided tours; contact the winery directly for current tour arrangements."
+    "visitSourceUrl": "https://www.tetramythoswines.com/contact/",
+    "visitNotes": "Current first-party site explicitly presents Tetramythos as a visitable winery offering tours, and the current contact page publishes tasting-room hours. The tasting room is open Monday-Friday 08:00-16:00 and Saturday-Sunday 09:00-14:00. The current official pages do not explicitly state whether advance booking is required, whether walk-ins are guaranteed, or publish parking, visit duration or visitor-language details.",
+    "visitorHours": {
+      "tasting_room": {
+        "monday_friday": "08:00-16:00",
+        "saturday_sunday": "09:00-14:00"
+      }
+    },
+    "visitabilityReviewedAt": "2026-09-18 21:00:00+00"
   },
   {
     "id": "thymiopoulos-naoussa",
@@ -6536,8 +7643,9 @@ export const SEO_LIVE_PRODUCERS = [
     "locationSourceUrl": "https://www.thymiopoulosvineyards.gr/contact",
     "locationNotes": "Producer-controlled contact page links directly to the Thymiopoulos Vineyards Google Maps point in Trilofos. Business location verified; entrance and road access remain unverified.",
     "visitStatus": "not_publicly_confirmed",
-    "visitSourceUrl": "https://www.thymiopoulosvineyards.gr/",
-    "visitNotes": "Producer identity and current contact are first-party verified, but no current public visitor programme was found in the Phase 10B first pass."
+    "visitSourceUrl": "https://www.thymiopoulosvineyards.gr/contact/",
+    "visitNotes": "Current first-party Thymiopoulos Vineyards site verifies the active Trilofos winery and publishes direct contact details, but the current navigation and indexed first-party pages do not publish a visitor programme, winery tour, tasting procedure, visitor timetable, booking rule, or walk-in policy. Keep public visitability unconfirmed.",
+    "visitabilityReviewedAt": "2026-09-19 17:29:00+00"
   },
   {
     "id": "tingvollost-more-og-romsdal",
@@ -6573,7 +7681,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Guided farm tour",
       "View into the cheese room and Kraftkar maturation room"
     ],
-    "openingHours": "Farm shop: Monday-Friday 08:00-16:00; Saturday 10:00-14:00; Sunday closed.",
+    "openingHours": "Farm shop: Mon-Fri 08:00-16:00; Sat 10:00-14:00; Sun closed.",
     "phone": "+47 461 64 000",
     "website": "https://www.tingvollost.no/",
     "googleMapsUrl": "https://www.google.com/maps/place/Tingvollost/@62.9701448,8.2480665,17z/data=!3m1!4b1!4m6!3m5!1s0x4613bd8554099fcb:0xa44187a9b0cf9a65!8m2!3d62.9701448!4d8.2480665!16s%2Fg%2F1tdd3vhw?entry=ttu&g_ep=EgoyMDI2MDkxNS4wIKXMDSoASAFQAw%3D%3D",
@@ -6586,8 +7694,19 @@ export const SEO_LIVE_PRODUCERS = [
     "locationNotes": "Exact Google Maps producer point verified against the frozen 2026-09-18 expansion audit and current producer identity sources.",
     "publicPointType": "estate",
     "visitStatus": "public_visits",
-    "visitSourceUrl": "https://www.tingvollost.no/",
-    "visitNotes": "The official site publishes year-round farm-shop hours and offers tasting and guided visits. The shop also allows visitors to see into the production and maturation rooms."
+    "visitSourceUrl": "https://www.tingvollost.no/gardsbutikk/apen-gardsbutikk",
+    "visitNotes": "Current first-party Tingvollost page publishes a public farm shop Monday-Friday 08:00-16:00 and Saturday 10:00-14:00, Sunday closed. Visitors can watch cheesemaking and the maturation room through large windows, but hygiene rules prevent public entry into the dairy itself. Group orientation/tasting visits are separately available by arrangement, with a minimum of 4 for the cheese-plate option.",
+    "visitBookingRequirement": "not_required",
+    "walkInStatus": "accepted",
+    "visitorHours": {
+      "farm_shop": {
+        "sunday": "closed",
+        "saturday": "10:00-14:00",
+        "monday_friday": "08:00-16:00"
+      }
+    },
+    "seasonalVisitNotes": "Group visits are by arrangement; public entry into the dairy production room is not permitted, but production is visible through shop windows.",
+    "visitabilityReviewedAt": "2026-09-20 03:41:42.74295+00"
   },
   {
     "id": "titakis-winery",
@@ -6613,7 +7732,7 @@ export const SEO_LIVE_PRODUCERS = [
     "story": "Titos Titakis founded the first family winery in Kalloni in 1952, and his son Nikolaos expanded its commercial reach. Production moved to modern facilities in Kounavoi in 1996; the third generation entered management in 2005 and has continued expanding the family's vineyards and wine portfolio.",
     "indigenousVarieties": [],
     "tastingHighlights": [],
-    "openingHours": "Book Fabrika visit with the winery; contact for current hours",
+    "openingHours": "Booking office: Mon-Fri 08:00-15:00; Sat upon request. Visit time is arranged through the Fabrika reservation flow.",
     "phone": "+30 2810 743630",
     "website": "https://titakis.gr",
     "googleMapsUrl": "https://maps.google.com/?q=35.2330555556,25.1838666667",
@@ -6627,8 +7746,17 @@ export const SEO_LIVE_PRODUCERS = [
     "locationSourceUrl": "https://titakis.gr/en/history/",
     "locationNotes": "Coordinates normalized to Wines of Crete Kounavoi location; current phone verified by the winery and Wines of Crete.",
     "visitStatus": "appointment_only",
-    "visitSourceUrl": "https://titakis.gr/en/contact/",
-    "visitNotes": "Titakis publishes the Fabrika visitor concept and a booking route for winery visits; do not imply walk-in availability without confirmation."
+    "visitSourceUrl": "https://www.fabrikaexperience.gr/en/book-your-visit",
+    "visitNotes": "Current first-party Fabrika Experience site presents Titakis Winery as an active wine-tour destination with multiple bookable tour/tasting packages. Reservations are handled by phone or booking form. The page publishes booking-office hours and package-specific durations, including additional 1- or 2-day notice for selected premium experiences. The site does not explicitly state a general walk-in policy, parking policy, or tour languages, so those remain unconfirmed.",
+    "visitBookingRequirement": "required",
+    "visitorHours": {
+      "booking_office": {
+        "saturday": "upon_request",
+        "monday_friday": "08:00-15:00"
+      }
+    },
+    "seasonalVisitNotes": "Published packages range from about 60 to 150 minutes. Some premium packages require 1-day notice; the Wine & Food Pairing Experience requires 2-day notice.",
+    "visitabilityReviewedAt": "2026-09-19 16:05:00+00"
   },
   {
     "id": "toplou-monastery-winery",
@@ -6654,7 +7782,7 @@ export const SEO_LIVE_PRODUCERS = [
     "story": "Wine has long been part of monastery life here: an inscription on Toplou's wine press records Liatiko cultivation in 1709. The monastery revived old vineyards and planted new ones in the late 1990s, leading to the modern winery and distillery that now carry this agricultural heritage forward.",
     "indigenousVarieties": [],
     "tastingHighlights": [],
-    "openingHours": "Toplou Fabrica daily 10:00-18:00; winery contact Mon-Fri 08:30-16:30",
+    "openingHours": "Toplou Fabrica visitor/tasting room: daily 10:00-18:00. Production winery contact hours: Mon-Fri 08:30-16:30; tastings do not take place at the winery.",
     "phone": "+30 28430 29630",
     "website": "https://www.ktimatoplou.gr/",
     "googleMapsUrl": "https://maps.google.com/?q=35.2215,26.2163",
@@ -6669,7 +7797,18 @@ export const SEO_LIVE_PRODUCERS = [
     "locationNotes": "Monastery/estate location is verified. Do not present the production winery pin as the tasting-room entrance; current tastings are at Toplou Fabrica in the monastery courtyard.",
     "visitStatus": "public_visits",
     "visitSourceUrl": "https://www.ktimatoplou.gr/en/toplou-fabrica-tasting-room-315",
-    "visitNotes": "Public tastings are offered at Toplou Fabrica inside the courtyard of the Holy Monastery of Toplou. Ktima Toplou explicitly states that tastings do not take place at the production winery. The current monastery/estate location is suitable for reaching the visitor destination; use Toplou Fabrica instructions for final access."
+    "visitNotes": "Current first-party pages confirm that public tastings and visitor experiences take place at Toplou Fabrica inside the courtyard of the Holy Monastery of Toplou, open daily 10:00-18:00. Ktima Toplou explicitly states that wine tastings do not take place at the production winery. The winery publishes separate contact hours Mon-Fri 08:30-16:30. Booking availability exists through the Fabrica request/contact flow, but a general mandatory-booking or walk-in rule is not explicitly stated.",
+    "visitorHours": {
+      "toplou_fabrica": {
+        "daily": "10:00-18:00",
+        "location": "Toplou Monastery courtyard"
+      },
+      "production_winery_contact": {
+        "monday_friday": "08:30-16:30",
+        "public_tastings": false
+      }
+    },
+    "visitabilityReviewedAt": "2026-09-19 16:05:00+00"
   },
   {
     "id": "trnulja-estate-central-slovenia",
@@ -6705,7 +7844,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Farm-to-table gastronomy",
       "Estate experiences"
     ],
-    "openingHours": "Estate experiences, restaurant use and accommodation are reservation-led; contact the estate for current farm-shop access.",
+    "openingHours": "Estate experiences are enquiry/reservation-led; no general visitor timetable published.",
     "phone": "+386 41 610 522",
     "website": "https://trnulja.com/en/",
     "googleMapsUrl": "https://www.google.com/maps/place/Bio+restaurant+%26+team+building+Trnulja/@46.0005715,14.475515,17z/data=!4m13!1m2!2m1!1sPosestvo+Trnulja+%C4%8Crna+vas+Slovenia!3m9!1s0x47652ceb63f786df:0x353bdc27f372a74a!5m2!4m1!1i2!8m2!3d46.0005715!4d14.4777037!15sCiNQb3Nlc3R2byBUcm51bGphIMSMcm5hIHZhcyBTbG92ZW5pYVolIiNwb3Nlc3R2byB0cm51bGphIMSNcm5hIHZhcyBzbG92ZW5pYZIBCnJlc3RhdXJhbnTgAQA!16s%2Fg%2F1hc8423_v?entry=ttu&g_ep=EgoyMDI2MDkxNS4wIKXMDSoASAFQAw%3D%3D",
@@ -6717,9 +7856,10 @@ export const SEO_LIVE_PRODUCERS = [
     "locationSourceUrl": "https://www.google.com/maps/place/Bio+restaurant+%26+team+building+Trnulja/@46.0005715,14.475515,17z/data=!4m13!1m2!2m1!1sPosestvo+Trnulja+%C4%8Crna+vas+Slovenia!3m9!1s0x47652ceb63f786df:0x353bdc27f372a74a!5m2!4m1!1i2!8m2!3d46.0005715!4d14.4777037!15sCiNQb3Nlc3R2byBUcm51bGphIMSMcm5hIHZhcyBTbG92ZW5pYVolIiNwb3Nlc3R2byB0cm51bGphIMSNcm5hIHZhcyBzbG92ZW5pYZIBCnJlc3RhdXJhbnTgAQA!16s%2Fg%2F1hc8423_v?entry=ttu&g_ep=EgoyMDI2MDkxNS4wIKXMDSoASAFQAw%3D%3D",
     "locationNotes": "Exact Google Maps producer point verified against the frozen 2026-09-18 expansion audit and current producer identity sources.",
     "publicPointType": "estate",
-    "visitStatus": "appointment_only",
+    "visitStatus": "current_access_uncertain",
     "visitSourceUrl": "https://trnulja.com/en/",
-    "visitNotes": "The official site offers estate experiences, organic gastronomy and accommodation through enquiries/bookings. Agricultural work areas are not assumed to be freely accessible."
+    "visitNotes": "Current first-party Trnulja site confirms an active organic tourist estate with accommodation, gastronomy, wellness, events and an estate shop/product offer. Visitor experiences are handled through enquiries/reservations, but the site does not publish a general estate visitor timetable, ordinary walk-in farm access, or a clear universal booking rule for non-overnight visitors. Agricultural work areas are not assumed to be publicly accessible.",
+    "visitabilityReviewedAt": "2026-09-20 03:40:09.484826+00"
   },
   {
     "id": "tsililis-theopetra-thessaly",
@@ -6758,7 +7898,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Wine and tsipouro introduction",
       "Theopetra estate wines"
     ],
-    "openingHours": "Visits last about 45 minutes and are offered upon request.",
+    "openingHours": "Visits by request; no general daily visitor timetable published.",
     "phone": "+30 24310 85885",
     "website": "https://www.tsililis.gr/",
     "googleMapsUrl": "https://www.google.com/maps/place/?q=place_id:ChIJeYUZP5MbWRMR_Uu0qBtSxg4",
@@ -6772,7 +7912,11 @@ export const SEO_LIVE_PRODUCERS = [
     "publicPointType": "production_site",
     "visitStatus": "appointment_only",
     "visitSourceUrl": "https://www.tsililis.gr/english/episkepsi5bee.html?cat=0&id=1055",
-    "visitNotes": "The producer's visit page states that winery-distillery visits are upon request and take approximately 45 minutes."
+    "visitNotes": "The current first-party Tsililis visitor page states that visits to the Tsililis family winery-distillery / Theopetra Estate are offered upon request and take about 45 minutes. The current site does not publish general daily visitor hours, parking details, or actual visitor languages.",
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "typicalVisitMinutes": 45,
+    "visitabilityReviewedAt": "2026-09-19 17:29:00+00"
   },
   {
     "id": "tyrnavos-winery-cooperative-thessaly",
@@ -6816,7 +7960,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Working distillery",
       "Tyrnavos wine and spirit heritage"
     ],
-    "openingHours": "The cooperative is officially visitable; contact the winery for current visitor arrangements.",
+    "openingHours": "Visits by prior arrangement; no general public visitor timetable published.",
     "phone": "+30 24920 24771",
     "website": "https://www.tirnavoswinery.gr/en/",
     "googleMapsUrl": "https://www.google.com/maps/place/?q=place_id:ChIJyzAQncphWBMRHCt_J5d3qVE",
@@ -6828,9 +7972,12 @@ export const SEO_LIVE_PRODUCERS = [
     "locationSourceUrl": "https://www.google.com/maps/place/?q=place_id:ChIJyzAQncphWBMRHCt_J5d3qVE",
     "locationNotes": "Exact producer identity, persistent Google Place ID and same-point coordinates were verified in the prior strict TerroirTrail Google Maps audit; current producer identity was refreshed before import.",
     "publicPointType": "production_site",
-    "visitStatus": "public_visits",
-    "visitSourceUrl": "https://www.tirnavoswinery.gr/en/",
-    "visitNotes": "The cooperative's current official site states that the winery is now officially visitable. Contact ahead for the current programme and timing."
+    "visitStatus": "appointment_only",
+    "visitSourceUrl": "https://www.tirnavoswinery.gr/en/episkepsimo-oinopoieio-2/",
+    "visitNotes": "The current first-party visitor announcement confirms that the Agricultural Cooperative Winery & Distillery of Tyrnavos is officially visitable and states that visits are organised by prior arrangement with the responsible staff. The page also states that the visitor facilities are appropriately configured for disabled visitors. No current public visitor timetable, standard duration, parking details, or visitor languages are published.",
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "visitabilityReviewedAt": "2026-09-19 17:29:00+00"
   },
   {
     "id": "tzourmpakis-dairy-amari",
@@ -6856,7 +8003,7 @@ export const SEO_LIVE_PRODUCERS = [
     "story": "The family dates its cheesemaking activity to 1978. Its own account emphasises continuity rather than reinvention: milk from local grazing flocks, recipes and handling passed between generations, and modern food-safety certification supporting a traditional range of Cretan cheeses.",
     "indigenousVarieties": [],
     "tastingHighlights": [],
-    "openingHours": "Contact dairy before visiting",
+    "openingHours": "",
     "phone": "+30 28320 20013",
     "website": "https://tzourmpakis.gr",
     "googleMapsUrl": "https://www.google.com/maps/place/%CE%A4%CF%85%CF%81%CE%BF%CE%BA%CE%BF%CE%BC%CE%B5%CE%AF%CE%BF+%CE%A4%CE%B6%CE%BF%CF%85%CF%81%CE%BC%CF%80%CE%AC%CE%BA%CE%B7/@35.2210821,24.4977471,21z/data=!4m14!1m7!3m6!1s0x149b6d60e5af177f:0x28f04e6827f00777!2zzqTPhc-Bzr_Ous6_zrzOtc6vzr8gzqTOts6_z4XPgc68z4DOrM66zrc!8m2!3d35.2211278!4d24.4979202!16s%2Fg%2F11bxd77_pt!3m5!1s0x149b6d60e5af177f:0x28f04e6827f00777!8m2!3d35.2211278!4d24.4979202!16s%2Fg%2F11bxd77_pt?entry=ttu&g_ep=EgoyMDI2MDkwOS4wIKXMDSoASAFQAw%3D%3D",
@@ -6869,9 +8016,10 @@ export const SEO_LIVE_PRODUCERS = [
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://www.google.com/maps/place/%CE%A4%CF%85%CF%81%CE%BF%CE%BA%CE%BF%CE%BC%CE%B5%CE%AF%CE%BF+%CE%A4%CE%B6%CE%BF%CF%85%CF%81%CE%BC%CF%80%CE%AC%CE%BA%CE%B7/@35.2210821,24.4977471,21z/data=!4m14!1m7!3m6!1s0x149b6d60e5af177f:0x28f04e6827f00777!2zzqTPhc-Bzr_Ous6_zrzOtc6vzr8gzqTOts6_z4XPgc68z4DOrM66zrc!8m2!3d35.2211278!4d24.4979202!16s%2Fg%2F11bxd77_pt!3m5!1s0x149b6d60e5af177f:0x28f04e6827f00777!8m2!3d35.2211278!4d24.4979202!16s%2Fg%2F11bxd77_pt?entry=ttu&g_ep=EgoyMDI2MDkwOS4wIKXMDSoASAFQAw%3D%3D",
     "locationNotes": "Current Tzourmpakis Dairy location supplied from the Google Maps business listing. Treat as verified location; entrance-level precision has not been separately established.",
-    "visitStatus": "current_access_uncertain",
+    "visitStatus": "not_publicly_confirmed",
     "visitSourceUrl": "https://tzourmpakis.gr/",
-    "visitNotes": "The current dairy and producer-controlled map destination are verified. Historical sources mention a shop on the Rethymno-Spili road, but current public walk-in instructions are not explicit enough to promise access."
+    "visitNotes": "Current first-party site confirms the working dairy and direct contact details in Mixorrouma, but it does not publish a current public visitor programme, shop opening schedule, tour procedure, booking rule, or walk-in policy. Older public sources mention a shop on the Rethymno-Spili road, but that evidence is not current enough to establish present-day public access. Contact the producer before considering a visit.",
+    "visitabilityReviewedAt": "2026-09-19 16:15:00+00"
   },
   {
     "id": "vassaltis-vineyards",
@@ -6895,7 +8043,7 @@ export const SEO_LIVE_PRODUCERS = [
     "story": "Valambous left a finance career in London and returned to Santorini to revive the family vineyards, building a winemaking team around a modern interpretation of the island's wine tradition. The winery presents sustainability and continuity for the next generation as part of that approach.",
     "indigenousVarieties": [],
     "tastingHighlights": [],
-    "openingHours": "Daily 11:00-20:00; check reservation availability before visiting",
+    "openingHours": "Daily 11:00-20:00.",
     "phone": "+30 22860 22211",
     "website": "https://vassaltis.com",
     "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Vassaltis%20Vineyards&query_place_id=ChIJVX4lYq_NmRQR1_VKq8vhjd8",
@@ -6909,8 +8057,14 @@ export const SEO_LIVE_PRODUCERS = [
     "locationSourceUrl": "https://www.google.com/maps/search/?api=1&query=Vassaltis%20Vineyards&query_place_id=ChIJVX4lYq_NmRQR1_VKq8vhjd8",
     "locationNotes": "Phase 10A manual Google Places audit (2026-09-15): matched Vassaltis Vineyards in Vourvoulos to the current producer identity and official locality. Stored pin updated to the Google business point; entrance-level precision is not separately established.",
     "visitStatus": "public_visits",
-    "visitSourceUrl": "https://vassaltis.com/reservations/",
-    "visitNotes": "Vassaltis publishes wine experiences, lunch and dinner together with an online reservation flow. Public visitor service is confirmed; unrestricted walk-in availability is not assumed."
+    "visitSourceUrl": "https://vassaltis.com/contact/",
+    "visitNotes": "Current first-party Vassaltis pages publish winery opening hours of 11:00-20:00 and describe multiple wine experiences, including tasting flights, food-and-wine experiences, and an intimate cellar tour. The cellar tour is currently published daily from 16:00-17:00 for up to 12 people. Reservation flows are provided for experiences, but the current site does not explicitly state a universal advance-booking requirement or define a general walk-in policy. Parking and visitor languages are not published.",
+    "visitorHours": {
+      "daily": "11:00-20:00",
+      "cellar_tour": "16:00-17:00"
+    },
+    "seasonalVisitNotes": "Cellar tour is currently published daily 16:00-17:00 with a maximum of 12 guests.",
+    "visitabilityReviewedAt": "2026-09-18 21:00:00+00"
   },
   {
     "id": "venetsanos-winery-santorini",
@@ -6941,7 +8095,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Mandilaria"
     ],
     "tastingHighlights": [],
-    "openingHours": "Main Hall Terrace daily 11:00-20:00; Sunset Terrace May-Sep 18:00-22:00; last tasting pour 18:30",
+    "openingHours": "Main Hall Terrace: daily 11:00-20:00; last tasting pour 18:30. Sunset Terrace: May-Sep 18:00-22:00.",
     "phone": "+30 22860 21100",
     "website": "https://venetsanoswinery.com",
     "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Venetsanos%20Winery&query_place_id=ChIJTy6LeFnOmRQRkX31v9sqMWo",
@@ -6956,7 +8110,25 @@ export const SEO_LIVE_PRODUCERS = [
     "locationNotes": "Phase 10A manual Google Places audit (2026-09-15): matched Venetsanos Winery on the Megalochori caldera to the current producer identity and official locality. Stored pin updated to the Google business point; entrance-level precision is not separately established.",
     "visitStatus": "public_visits",
     "visitSourceUrl": "https://venetsanoswinery.com/contact/",
-    "visitNotes": "Venetsanos operates public tasting and tour service. The FAQ says visitors may turn up, but reservations are recommended because the winery is often fully booked."
+    "visitNotes": "Current first-party operational pages publish Main Hall Terrace hours daily 11:00-20:00, with the last tasting pour at 18:30. The Sunset Terrace operates May-September 18:00-22:00 according to the current contact page; an older FAQ still says 18:30 and is treated as superseded. Reservations are recommended because the winery is often fully booked, but the FAQ does not state that reservations are mandatory. Guided tour language is English unless all guests know Greek. Current bookable packages include a 75-minute museum winery tour and tasting and a 90-minute tasting with light lunch.",
+    "visitBookingRequirement": "recommended",
+    "walkInStatus": "subject_to_availability",
+    "visitorHours": {
+      "sunset_terrace": {
+        "daily": "18:00-22:00",
+        "season": "may_september"
+      },
+      "main_hall_terrace": {
+        "daily": "11:00-20:00",
+        "last_tasting_pour": "18:30"
+      }
+    },
+    "seasonalVisitNotes": "An older FAQ still lists the Sunset Terrace as 18:30-22:00; the current contact page, modified more recently, publishes 18:00-22:00 and is used as the current value.",
+    "visitorLanguages": [
+      "en",
+      "el"
+    ],
+    "visitabilityReviewedAt": "2026-09-18 21:00:00+00"
   },
   {
     "id": "vina-gustin-goriska",
@@ -6994,7 +8166,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Local charcuterie pairing",
       "Estate olive-oil tasting"
     ],
-    "openingHours": "Tastings are arranged for groups and should be booked in advance.",
+    "openingHours": "Structured tasting programmes are published; contact the winery for current timing.",
     "website": "https://vinagustin.si",
     "googleMapsUrl": "https://www.google.com/maps/place/Vina+Gu%C5%A1tin/@45.8954888,13.6486745,17z/data=!3m1!4b1!4m6!3m5!1s0x477b04de324543c9:0x2cd0f1b9ee8376ba!8m2!3d45.8954888!4d13.6486745!16s%2Fg%2F11hdy20msf?entry=ttu&g_ep=EgoyMDI2MDkxNS4wIKXMDSoASAFQAw%3D%3D",
     "googlePlaceId": "ChIJyUNFMt4Ee0cRunaD7rnx0Cw",
@@ -7005,9 +8177,11 @@ export const SEO_LIVE_PRODUCERS = [
     "locationSourceUrl": "https://www.google.com/maps/place/Vina+Gu%C5%A1tin/@45.8954888,13.6486745,17z/data=!3m1!4b1!4m6!3m5!1s0x477b04de324543c9:0x2cd0f1b9ee8376ba!8m2!3d45.8954888!4d13.6486745!16s%2Fg%2F11hdy20msf?entry=ttu&g_ep=EgoyMDI2MDkxNS4wIKXMDSoASAFQAw%3D%3D",
     "locationNotes": "Exact Google Maps producer point verified against the frozen 2026-09-18 expansion audit and current producer identity sources.",
     "publicPointType": "estate",
-    "visitStatus": "appointment_only",
-    "visitSourceUrl": "https://vinagustin.si/degustacije",
-    "visitNotes": "The official winery site publishes structured tasting programmes for groups in its tasting rooms. Arrange the tasting in advance."
+    "visitStatus": "public_visits",
+    "visitSourceUrl": "https://vinagustin.si/en/degustacije",
+    "visitNotes": "Current first-party Vina Guštin page publishes structured guided wine tastings in dedicated tasting rooms, including 4-wine and 6-wine programmes with food for groups of 6 people. The current site provides direct contact for tastings but does not explicitly state a universal advance-booking requirement, fixed visitor hours, walk-in policy, duration, parking or visitor languages.",
+    "seasonalVisitNotes": "Published tasting programmes are structured around groups of 6 people.",
+    "visitabilityReviewedAt": "2026-09-20 03:40:16.482444+00"
   },
   {
     "id": "vina-laguna-istria",
@@ -7045,7 +8219,7 @@ export const SEO_LIVE_PRODUCERS = [
     "tastingHighlights": [
       "Wine tasting room"
     ],
-    "openingHours": "A tasting room is publicly listed for Vina Laguna; confirm the current programme directly before travelling.",
+    "openingHours": "Public Festigia Taste & Shop confirmed at the mapped Poreč point; current routine hours not published in the reviewed sources.",
     "phone": "+385 91 452 4414",
     "website": "https://agrolaguna.hr/",
     "googleMapsUrl": "https://www.google.com/maps/place/Vina+Laguna/@45.227567,13.6160081,17z/data=!3m1!4b1!4m6!3m5!1s0x477c9793d1c14ccd:0xdc7ace590363774c!8m2!3d45.227567!4d13.6160081!16s%2Fg%2F11hf04m078?entry=ttu&g_ep=EgoyMDI2MDkxNS4wIKXMDSoASAFQAw%3D%3D",
@@ -7057,9 +8231,11 @@ export const SEO_LIVE_PRODUCERS = [
     "locationSourceUrl": "https://www.google.com/maps/place/Vina+Laguna/@45.227567,13.6160081,17z/data=!3m1!4b1!4m6!3m5!1s0x477c9793d1c14ccd:0xdc7ace590363774c!8m2!3d45.227567!4d13.6160081!16s%2Fg%2F11hf04m078?entry=ttu&g_ep=EgoyMDI2MDkxNS4wIKXMDSoASAFQAw%3D%3D",
     "locationNotes": "Exact Google Maps producer point verified against the frozen 2026-09-18 expansion audit and current producer identity sources.",
     "publicPointType": "production_site",
-    "visitStatus": "appointment_only",
-    "visitSourceUrl": "https://www.istra.hr/en/gourmet/wine/wine-makers/59",
-    "visitNotes": "Current regional wine-tourism sources list a Vina Laguna tasting room at the verified Poreč point. Confirm current tasting availability in advance."
+    "visitStatus": "public_visits",
+    "visitSourceUrl": "https://agrolaguna.hr/festigia-taste-shop/",
+    "visitNotes": "Current first-party Agrolaguna material confirms the Festigia Taste & Shop at the verified Poreč address as a public tasting room and shop for Vina Laguna/Festigia wines, Ol Istria olive oils and Špin cheeses. Official Istrian tourism material independently lists the tasting room and free parking. Current routine opening hours and a universal booking rule are not published in the reviewed sources, so they remain unknown.",
+    "parkingStatus": "available",
+    "visitabilityReviewedAt": "2026-09-20 04:25:04.083312+00"
   },
   {
     "id": "voliotis-family-olive-mill-thessaly",
@@ -7099,7 +8275,7 @@ export const SEO_LIVE_PRODUCERS = [
       "Olive-oil tasting",
       "Olive-mill museum elements"
     ],
-    "openingHours": "The mill is open to visitors by appointment; book directly with the producer.",
+    "openingHours": "Tours by appointment, Mon-Sat 08:00-22:00.",
     "phone": "+30 24280 93216",
     "website": "https://www.elaioladopiliou.gr/",
     "googleMapsUrl": "https://www.google.com/maps/place/OLIVE+MILL+VOLIOTIS+FAMILY+S.A./@39.3206918,23.0562586,17z/data=!3m1!4b1!4m6!3m5!1s0x14a715f835559a7b:0x97f24144bcf533e6!8m2!3d39.3206918!4d23.0562586!16s%2Fg%2F11hzp37swm?entry=ttu&g_ep=EgoyMDI2MDkxNS4wIKXMDSoASAFQAw%3D%3D",
@@ -7113,7 +8289,15 @@ export const SEO_LIVE_PRODUCERS = [
     "publicPointType": "production_site",
     "visitStatus": "appointment_only",
     "visitSourceUrl": "https://www.elaioladopiliou.gr/en/olive-mill-open-to-public/",
-    "visitNotes": "The official site explicitly invites visitors to the traditional mill and asks guests to book an appointment."
+    "visitNotes": "Current first-party Open to Public page invites visitors to arrange an appointment for guided mill visits. The published tour schedule is Monday-Saturday 08:00-22:00. The visitor facilities include a reception/waiting area, guided mill tour, olive-oil tasting, product sales, accessible routes and WC facilities for disabled visitors. The page states a maximum indoor group size of 20 people. No standard visit duration or visitor languages are explicitly published.",
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "visitorHours": {
+      "booking": "appointment",
+      "monday_saturday": "08:00-22:00"
+    },
+    "seasonalVisitNotes": "Maximum indoor group size published as 20 people.",
+    "visitabilityReviewedAt": "2026-09-19 17:29:00+00"
   },
   {
     "id": "wild-herbs-kallikratis",
@@ -7139,7 +8323,7 @@ export const SEO_LIVE_PRODUCERS = [
     "story": "Their old field notes make the work tangible: collecting wild dittany meant climbing carefully on rocky slopes and taking only leaves so the perennial roots remained alive. In 2011 they also documented opening a tiny mountain café in Kallikratis where herbs, soaps and essential oils sat alongside coffee and homemade lemonade.",
     "indigenousVarieties": [],
     "tastingHighlights": [],
-    "openingHours": "Wed-Sun 11:00-19:00 (seasonal; check current listing before travel)",
+    "openingHours": "",
     "phone": "+30 6949092073",
     "website": "https://wildherbsofcrete.com",
     "googleMapsUrl": "https://www.google.com/maps/place/Wild+Herbs+of+Crete/@35.2376928,24.2562818,21z/data=!4m22!1m15!4m14!1m6!1m2!1s0x149b64897e85fdbf:0x23fbfa93da44674!2zV2lsZCBIZXJicyBvZiBDcmV0ZSwgzprOsc67zrvOuc66z4HOrM-EzrfPgiA3MzAgMTE!2m2!1d24.2565003!2d35.2378367!1m6!1m2!1s0x149a586bd068e13f:0x400bd2ce2b9b6f0!2zzpfPgc6szrrOu861zrnOvw!2m2!1d25.1421291!2d35.3386746!3m5!1s0x149b64897e85fdbf:0x23fbfa93da44674!8m2!3d35.2378367!4d24.2565003!16s%2Fg%2F1q5glqyf8?entry=ttu&g_ep=EgoyMDI2MDkwOS4wIKXMDSoASAFQAw%3D%3D",
@@ -7152,9 +8336,10 @@ export const SEO_LIVE_PRODUCERS = [
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://www.google.com/maps/place/Wild+Herbs+of+Crete/@35.2376928,24.2562818,21z/data=!4m22!1m15!4m14!1m6!1m2!1s0x149b64897e85fdbf:0x23fbfa93da44674!2zV2lsZCBIZXJicyBvZiBDcmV0ZSwgzprOsc67zrvOuc66z4HOrM-EzrfPgiA3MzAgMTE!2m2!1d24.2565003!2d35.2378367!1m6!1m2!1s0x149a586bd068e13f:0x400bd2ce2b9b6f0!2zzpfPgc6szrrOu861zrnOvw!2m2!1d25.1421291!2d35.3386746!3m5!1s0x149b64897e85fdbf:0x23fbfa93da44674!8m2!3d35.2378367!4d24.2565003!16s%2Fg%2F1q5glqyf8?entry=ttu&g_ep=EgoyMDI2MDkwOS4wIKXMDSoASAFQAw%3D%3D",
     "locationNotes": "Current Wild Herbs of Crete Google Maps business pin in Kallikratis supplied by the TerroirTrail project owner. Location verified; entrance-level precision has not been separately established.",
-    "visitStatus": "seasonal_public",
-    "visitSourceUrl": "https://www.google.com/maps/place/Wild+Herbs+of+Crete/@35.2376928,24.2562818,21z/data=!4m22!1m15!4m14!1m6!1m2!1s0x149b64897e85fdbf:0x23fbfa93da44674!2zV2lsZCBIZXJicyBvZiBDcmV0ZSwgzprOsc67zrvOuc66z4HOrM-EzrfPgiA3MzAgMTE!2m2!1d24.2565003!2d35.2378367!1m6!1m2!1s0x149a586bd068e13f:0x400bd2ce2b9b6f0!2zzpfPgc6szrrOu861zrnOvw!2m2!1d25.1421291!2d35.3386746!3m5!1s0x149b64897e85fdbf:0x23fbfa93da44674!8m2!3d35.2378367!4d24.2565003!16s%2Fg%2F1q5glqyf8?entry=ttu&g_ep=EgoyMDI2MDkwOS4wIKXMDSoASAFQAw%3D%3D",
-    "visitNotes": "Current public business listing shows Wild Herbs of Crete open seasonally in Kallikratis, with published hours Wednesday-Sunday. Hours can change seasonally, so travelers should check the current listing or call before making a long mountain drive."
+    "visitStatus": "not_publicly_confirmed",
+    "visitSourceUrl": "https://www.facebook.com/wildherbsofcrete/",
+    "visitNotes": "The producer-controlled Facebook page states that the Kallikratis shop is now closed and thanks visitors for their company over the years. The previously stored website no longer resolves. No current first-party visitor programme, opening hours, booking flow, or walk-in access could be verified in 2026. Keep the producer record, but do not present it as currently visitable.",
+    "visitabilityReviewedAt": "2026-09-19 16:05:00+00"
   },
   {
     "id": "zacharioudakis-winery",
@@ -7180,7 +8365,7 @@ export const SEO_LIVE_PRODUCERS = [
     "story": "Journalist Stelios Zacharioudakis and his wife Victoria began creating the estate in 2000 on land connected to his father and grandfather. By 2009 the project had grown into a completed winery, and Zacharioudakis describes that moment as the point when journalism moved to the background and winemaking became his daily work.",
     "indigenousVarieties": [],
     "tastingHighlights": [],
-    "openingHours": "Apr-Oct: Mon-Sat 10:00-17:00; winter visits after contact",
+    "openingHours": "Open to visitors year-round; current daily visitor hours are not published on the official visit page. Contact the winery before travelling.",
     "phone": "+30 28920 96226",
     "website": "https://zacharioudakis.com",
     "googleMapsUrl": "https://maps.google.com/?q=35.077339,24.941453",
@@ -7198,8 +8383,14 @@ export const SEO_LIVE_PRODUCERS = [
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://www.winesofcrete.gr/en/wineries/domaine-zacharioudakis/",
     "locationNotes": "Plouti estate coordinates and current visitor details are verified through Wines of Crete.",
-    "visitStatus": "seasonal_public",
-    "visitSourceUrl": "https://www.winesofcrete.gr/en/wineries/domaine-zacharioudakis/",
-    "visitNotes": "The winery and vineyard are open to visitors April-October, Monday-Saturday 10:00-17:00. During winter, contact the estate before visiting."
+    "visitStatus": "public_visits",
+    "visitSourceUrl": "https://www.zacharioudakis.com/en/visit-us/",
+    "visitNotes": "Current first-party visitor page confirms that both the vineyard and winery are open and visitable to the public throughout the year. Visitors can tour the vineyard and production areas, taste estate wines and traditional Cretan foods, and buy wines/products from the wine shop. The official page does not publish current daily opening hours, a general booking requirement, walk-in policy, parking policy, visit duration, or tour languages.",
+    "visitorHours": {
+      "year_round": true,
+      "daily_hours": "not_published"
+    },
+    "seasonalVisitNotes": "Programmed traditional grape-pressing participation is offered during harvest; timing is seasonal and not treated as a general opening-hours rule.",
+    "visitabilityReviewedAt": "2026-09-19 16:05:00+00"
   }
 ] as Producer[];

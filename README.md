@@ -1,19 +1,8 @@
 # TerroirTrail
 
-TerroirTrail is a discovery-first agritourism, craft beverage, and artisan food guide for independent culinary travelers, road-trippers, and slow travelers across Europe. The live catalogue currently spans 8 countries and 22 destinations.
+TerroirTrail is a discovery-first agritourism, craft beverage, and artisan food guide for independent culinary travelers, road-trippers, and slow travelers across Europe. Current production catalogue totals are derived from the live Supabase `public.producers` catalogue rather than maintained by hand.
 
-The live Supabase catalogue contains **148 researched producer/project records across 22 destinations in 8 countries** (verified 18 September 2026):
-
-- **Greece — 66:** Crete 30, Santorini 9, Peloponnese 11, Macedonia 11, Thessaly 5
-- **Italy — 39:** Tuscany 5, Piedmont 8, Puglia 8, Sicily 9, South Tyrol 9
-- **France — 8:** Provence-Alpes-Côte d'Azur 8
-- **Spain — 6:** Catalonia 6
-- **Portugal — 8:** Alentejo 8
-- **Croatia — 8:** Istria 8
-- **Slovenia — 5:** Pomurska 1, Southeast Slovenia 1, Central Slovenia 1, Goriška 2
-- **Norway — 8:** Trøndelag 1, Møre og Romsdal 1, Buskerud 1, Vestland 5
-
-The deterministic SEO/AEO snapshot is synchronized to the live catalogue at **148 canonical producer records**.
+Production deployment runs `npm run sync:seo-catalogue` before the build, refreshes the deterministic SEO/AEO snapshot, and calculates producer, destination, country, region, category, country-breakdown, landing-page, and sitemap totals from that synchronized set.
 
 Production: https://terroir-trail.web.app/
 
@@ -37,7 +26,7 @@ The canonical implementation state and milestone history are maintained in [`ROA
 ## Current Public Product
 
 - **Interactive Terroir Map:** High-performance Leaflet map featuring administrative terroir region boundaries sourced from geoBoundaries and Eurostat / GISCO (CC BY 4.0) and custom tile providers.
-- **Multi-Category Producer Directory (148 Live Records):** Wineries, craft breweries, artisan cheese dairies, olive mills and olive-oil producers, apiaries, farms, cideries, confectioneries, herb farms, mushroom farms, oil mills, and distilleries across 8 European countries.
+- **Multi-Category Producer Directory:** Wineries, craft breweries, artisan cheese dairies, olive mills and olive-oil producers, apiaries, farms, cideries, confectioneries, herb farms, mushroom farms, oil mills, and distilleries across the currently published European catalogue.
 - **Evidence-Backed Auditing:** Independent verification badges for location precision, visitability status, and road-access suitability.
 - **Traveler Accounts & Passport:** Private accounts (Firebase Auth), visited-place passport stamps, and private tasting notes.
 - **Favorites / Saved Places:** Account-partitioned saved producers in device local storage.
@@ -59,11 +48,11 @@ TerroirTrail is currently **discovery-first**, not an online travel agency (OTA)
 
 ## Catalogue Statistics & Structure
 
-- **Live Supabase catalogue:** 148 producer/project records across 22 destinations and 8 countries.
-- **Bundled deterministic SEO/AEO snapshot:** 148 canonical producer records, synchronized with the live catalogue.
-- **Canonical sitemap footprint:** 235 unique canonical URLs, covering producer entities, country pages, destination pages, eligible region/category landing pages, and core index pages.
-- **SEO/AEO deployment contract:** build-time generation and verification require the live catalogue snapshot, canonical producer pages, landing-page entity graph, robots.txt, llms.txt, and sitemap to remain synchronized.
-- **Live categories represented:** Winery (63), Cheese Dairy (21), Olive Mill (19), Brewery (9), Farm (9), Apiary (7), Cidery (5), Distillery (4), Olive Oil Producer (4), Confectionery (3), Herb Farm (2), Mushroom Farm (1), Other Oil Mill (1).
+- **Live Supabase catalogue:** authoritative published producer/project rows in `public.producers`.
+- **Bundled deterministic SEO/AEO snapshot:** refreshed from the live catalogue before production deployment.
+- **Canonical sitemap footprint:** generated from the synchronized producer set plus eligible country, destination, region, category, and index pages.
+- **SEO/AEO deployment contract:** generation and verification require the live catalogue snapshot, canonical producer pages, landing-page entity graph, robots.txt, llms.txt, and sitemap to remain synchronized.
+- **Current totals and geography/category breakdowns:** emitted by the live sync and SEO build logs instead of being hand-maintained in this README.
 
 ---
 
@@ -114,7 +103,7 @@ The check gate runs:
 4. Vitest frontend component & logic test suites
 5. Node / Vitest server test suites
 6. Firestore Security Rules unit tests (Firestore emulator)
-7. Production Vite build & synchronized SEO/AEO generation and verification (148 producer pages / 235 canonical sitemap URLs)
+7. Production Vite build & synchronized SEO/AEO generation and verification (producer-page and sitemap totals are derived from the synchronized catalogue)
 
 ### Additional Tests
 

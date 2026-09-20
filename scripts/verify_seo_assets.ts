@@ -1,7 +1,11 @@
 import fs from 'fs';
 import path from 'path';
 import type { Producer } from '../src/types/terroir';
-import { LIVE_CATALOGUE_METRICS, SEO_PRODUCERS } from './seoCatalogue';
+import {
+  LIVE_CATALOGUE_METRICS,
+  SEO_PRODUCERS,
+  buildCatalogueCountryBreakdownLines,
+} from './seoCatalogue';
 
 const CANONICAL_HOST = 'https://terroir-trail.web.app';
 const CANONICAL_SITEMAP_URL = `${CANONICAL_HOST}/sitemap.xml`;
@@ -9,8 +13,6 @@ const PRODUCER_DIRECTORY_URL = `${CANONICAL_HOST}/producers/`;
 const distDir = path.resolve(process.cwd(), 'dist');
 
 const PRODUCERS: Producer[] = SEO_PRODUCERS;
-const CRETE_COUNT = PRODUCERS.filter((producer) => producer.destination === 'crete').length;
-const SANTORINI_COUNT = PRODUCERS.filter((producer) => producer.destination === 'santorini').length;
 
 const fail = (message: string): never => {
   console.error(`[SEO Verification Failed] ${message}`);
@@ -108,10 +110,11 @@ function verifySeoAssets(): void {
   const llmsContent = requireFile(llmsPath, 'dist/llms.txt');
   const requiredLlmsClaims = [
     `${LIVE_CATALOGUE_METRICS.totalProducers} producer/project records`,
-    `Greece — 66 records: Crete ${CRETE_COUNT}, Santorini ${SANTORINI_COUNT}, Peloponnese 11, Macedonia 11, Thessaly 5.`,
-    'Italy — 39 records: Tuscany 5, Piedmont 8, Puglia 8, Sicily 9, South Tyrol 9.',
+    `${LIVE_CATALOGUE_METRICS.destinationCount} destinations in ${LIVE_CATALOGUE_METRICS.countryCount} European countries`,
+    `${LIVE_CATALOGUE_METRICS.regionCount} named producer regions`,
+    `${LIVE_CATALOGUE_METRICS.categoryCount} producer categories`,
+    ...buildCatalogueCountryBreakdownLines(),
     'France — Provence-Alpes-Côte d\'Azur 8.',
-    'Norway — 8 records: Trøndelag 1, Møre og Romsdal 1, Buskerud 1, Vestland 5.',
     `Deterministic canonical SEO/AEO producer snapshot — ${PRODUCERS.length} records, synchronized with the live catalogue.`,
     '## Navigation safety and road access',
     '/producers/<producer-id>/',
@@ -124,6 +127,7 @@ function verifySeoAssets(): void {
     'Greek cheese and dairy expansion is now included in the audited catalogue',
   ];
   for (const claim of requiredLlmsClaims) requireIncludes(llmsContent, claim, 'dist/llms.txt');
+  banIncludes(llmsContent, '{{LIVE_', 'dist/llms.txt');
 
   const staleLlmsClaims = [
     '36 producer/project records',

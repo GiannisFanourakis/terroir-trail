@@ -1,7 +1,11 @@
 import fs from 'fs';
 import path from 'path';
 import type { Producer } from '../src/types/terroir';
-import { LIVE_CATALOGUE_METRICS, SEO_PRODUCERS } from './seoCatalogue';
+import {
+  LIVE_CATALOGUE_METRICS,
+  SEO_PRODUCERS,
+  buildCatalogueCountryBreakdownLines,
+} from './seoCatalogue';
 
 const CANONICAL_HOST = 'https://terroir-trail.web.app';
 const CANONICAL_SITEMAP_URL = `${CANONICAL_HOST}/sitemap.xml`;
@@ -12,8 +16,6 @@ const MIN_REGION_RECORDS = 2;
 const MIN_DESTINATION_CATEGORY_RECORDS = 3;
 
 const PRODUCERS: Producer[] = SEO_PRODUCERS;
-const CRETE_COUNT = PRODUCERS.filter((producer) => producer.destination === 'crete').length;
-const SANTORINI_COUNT = PRODUCERS.filter((producer) => producer.destination === 'santorini').length;
 
 const categorySlugs: Record<Producer['category'], string> = {
   winery: 'wineries',
@@ -207,8 +209,10 @@ function verifySeo(): void {
   const llmsContent = requireFile(path.join(distDir, 'llms.txt'), 'dist/llms.txt');
   const requiredLlmsClaims = [
     `${LIVE_CATALOGUE_METRICS.totalProducers} producer/project records`,
-    `Greece — 66 records: Crete ${CRETE_COUNT}, Santorini ${SANTORINI_COUNT}, Peloponnese 11, Macedonia 11, Thessaly 5.`,
-    'Italy — 39 records: Tuscany 5, Piedmont 8, Puglia 8, Sicily 9, South Tyrol 9.',
+    `${LIVE_CATALOGUE_METRICS.destinationCount} destinations in ${LIVE_CATALOGUE_METRICS.countryCount} European countries`,
+    `${LIVE_CATALOGUE_METRICS.regionCount} named producer regions`,
+    `${LIVE_CATALOGUE_METRICS.categoryCount} producer categories`,
+    ...buildCatalogueCountryBreakdownLines(),
     `Deterministic canonical SEO/AEO producer snapshot — ${PRODUCERS.length} records, synchronized with the live catalogue.`,
     '## Navigation safety and road access',
     '/producers/<producer-id>/',
@@ -220,6 +224,7 @@ function verifySeo(): void {
     'Greek cheese and dairy expansion is now included in the audited catalogue',
   ];
   for (const claim of requiredLlmsClaims) requireIncludes(llmsContent, claim, 'dist/llms.txt');
+  banIncludes(llmsContent, '{{LIVE_', 'dist/llms.txt');
   const staleLlmsClaims = [
     '36 producer/project records',
     '55 producer/project records',

@@ -481,7 +481,7 @@ function generateSeoPages(): void {
   }
 
   fs.writeFileSync(path.join(distDir, 'sitemap.xml'), renderSitemap(), 'utf-8');
-  console.log(`SEO generation complete: ${PRODUCERS.length} synchronized canonical producer pages across ${LIVE_CATALOGUE_METRICS.destinationCount} destinations / ${LIVE_CATALOGUE_METRICS.countryCount} countries + sitemap.`);
+  console.log(`SEO generation complete: ${PRODUCERS.length} synchronized canonical producer pages across ${LIVE_CATALOGUE_METRICS.destinationCount} destinations / ${LIVE_CATALOGUE_METRICS.countryCount} countries / ${LIVE_CATALOGUE_METRICS.regionCount} regions / ${LIVE_CATALOGUE_METRICS.categoryCount} categories + sitemap.`);
 }
 
 generateSeoPages();

@@ -5,7 +5,7 @@
 > Completion convention: change `- [ ] Step` to `- [x] ~~Step~~` when finished. Do not mark a step complete until it has been implemented, tested, pushed, deployed where applicable, and verified.
 
 **Last updated:** 2026-09-18
-**Current focus:** Mobile UX refinement and synchronized catalogue/search coverage. Live Supabase and the deterministic SEO/AEO catalogue are aligned at 148 producer/project records across 22 destinations in 8 countries, with 235 canonical sitemap URLs.
+**Current focus:** Mobile UX refinement and synchronized catalogue/search coverage. Production SEO/AEO totals are derived from the live Supabase catalogue during deployment rather than maintained as hardcoded roadmap statistics.
 
 ---
 
@@ -426,7 +426,7 @@ Phase 12 dairy rollout notes:
 - Five originally imported candidates were removed on 2026-09-16 because their exact persistent Google business identity could not meet the final publication standard: **GYPAS / Gyparaki Bros, Iliakis Dairy / Meraki Iliaki, Agricultural Dairy Cooperative of Kalavryta, Katsouli Cheese Factory, and Tsatsoulis Cheese**.
 - The five removed listings had **0 bookings, 0 reviews and 0 Experience rows** at removal time.
 - The removal is recorded in Supabase migration `20260916171211_remove_unresolved_phase13_dairies` and mirrored in the repository migration of the same name.
-- Historical Phase 13 closeout snapshot: **62 producer/project records** (**30 Crete, 9 Santorini, and 23 across Peloponnese + Macedonia, Greece (`northern_greece`) + Tuscany / Italy**). The catalogue has since expanded; current Supabase state is **148 records across 22 destinations in 8 countries** as of 2026-09-18.
+- Historical Phase 13 closeout snapshot: **62 producer/project records** (**30 Crete, 9 Santorini, and 23 across Peloponnese + Macedonia, Greece (`northern_greece`) + Tuscany / Italy**). The catalogue has since expanded; current production totals are derived from live Supabase during SEO synchronization rather than maintained as a static roadmap snapshot.
 - Google Place IDs are never inferred from coordinates or third-party directory IDs.
 - Local `cover_image` / gallery fields remain empty for the retained new dairy records unless appropriately sourced, credited, or producer-provided media is obtained.
 - Live producer media eligibility uses the Supabase producer trust state (`google_place_id` plus `verified_location` / `verified_entrance`) rather than requiring records to exist in the legacy static compatibility allowlist.

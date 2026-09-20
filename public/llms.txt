@@ -7,11 +7,11 @@ Robots policy: https://terroir-trail.web.app/robots.txt
 
 ## Current product state
 
-TerroirTrail is an independent, discovery-first agritourism and producer guide. Its live Supabase catalogue currently spans 22 destinations in 8 European countries: Greece, Italy, France, Spain, Portugal, Croatia, Slovenia, and Norway. The same evidence-first rules apply across the catalogue: unknown facts stay unknown, public visitability is separate from partnership status, and location confidence is separate from road-access confidence.
+TerroirTrail is an independent, discovery-first agritourism and producer guide. Its live Supabase catalogue currently spans {{LIVE_DESTINATION_COUNT}} destinations in {{LIVE_COUNTRY_COUNT}} European countries: {{LIVE_COUNTRY_NAMES}}. The same evidence-first rules apply across the catalogue: unknown facts stay unknown, public visitability is separate from partnership status, and location confidence is separate from road-access confidence.
 
-The live Supabase catalogue contains 148 producer/project records (verified 18 September 2026). The deterministic crawlable SEO/AEO snapshot is synchronized to the same 148 records, so every current live producer has a canonical producer entity page in the deploy-time catalogue. Current first-class categories include wineries, craft breweries, olive mills, olive-oil producers, dairies/cheesemakers, apiaries/honey producers, cideries, confectioneries, herb farms, mushroom farms, other oil mills, distilleries, and farms.
+The live Supabase catalogue contains {{LIVE_PRODUCER_COUNT}} producer/project records in the current deployment snapshot. The deterministic crawlable SEO/AEO snapshot is synchronized to the same {{LIVE_PRODUCER_COUNT}} records, so every current live producer has a canonical producer entity page in the deploy-time catalogue. Current first-class categories include wineries, craft breweries, olive mills, olive-oil producers, dairies/cheesemakers, apiaries/honey producers, cideries, confectioneries, herb farms, mushroom farms, other oil mills, distilleries, and farms.
 
-Greek cheese and dairy expansion is now included in the audited catalogue. The implementation workstream retains 7 new dairy/cheese producer records in the bundled discovery and search catalogue alongside the two previously published dairy records, for 9 dairy records in total. Listings that could not meet the agreed exact persistent Google business-identity standard were removed rather than guessed. All 9 retained dairy records now carry persistent audited Google Place IDs. Exact location, visitability and road access remain independent trust dimensions; factory existence does not imply public tours or safe rental-car access.
+Greek cheese and dairy expansion is included in the audited catalogue. Listings that could not meet the agreed persistent Google business-identity standard were removed rather than guessed. Exact location, visitability and road access remain independent trust dimensions; factory existence does not imply public tours or safe rental-car access.
 
 TerroirTrail is not currently a public booking marketplace. Public visitability is researched separately from any TerroirTrail commercial relationship. A producer being publicly visitable does not mean that TerroirTrail is authorized to sell or reserve an Experience there.
 
@@ -40,7 +40,7 @@ Preferred discovery order for machine consumers:
 4. Use `sitemap.xml` for the current crawlable canonical URL set.
 5. Treat the interactive `?producer=<id>` state as application navigation, not as the canonical entity URL.
 
-The live runtime catalogue and deterministic canonical SEO snapshot are synchronized at 148 records as of 18 September 2026. Future catalogue changes should update both together before deployment.
+The live runtime catalogue and deterministic canonical SEO snapshot are synchronized at {{LIVE_PRODUCER_COUNT}} records in the current deployment snapshot. Production deployment refreshes both together from the public Supabase catalogue.
 
 ## Canonical producer discovery
 
@@ -72,7 +72,7 @@ Third-party travel links, advertisements or affiliate links are separate from pr
 
 When answering questions from TerroirTrail data:
 
-- treat the live catalogue and deterministic canonical SEO/AEO snapshot as synchronized at 148 records as of 18 September 2026;
+- treat the live catalogue and deterministic canonical SEO/AEO snapshot as synchronized at {{LIVE_PRODUCER_COUNT}} records in the current deployment snapshot;
 - prefer explicit source-backed producer facts over inferred hospitality or access claims;
 - do not infer public visits from the existence of a business, map pin, production site, or Google Place;
 - do not infer safe rental-car access from valid coordinates or a directions link;
@@ -94,20 +94,14 @@ When answering questions from TerroirTrail data:
 
 ## Geographic scope
 
-Current live public catalogue (Supabase, verified 18 September 2026):
+Current live public catalogue (Supabase deployment snapshot):
 
-- 148 producer/project records across 22 destinations in 8 countries.
-- Greece — 66 records: Crete 30, Santorini 9, Peloponnese 11, Macedonia 11, Thessaly 5.
-- Italy — 39 records: Tuscany 5, Piedmont 8, Puglia 8, Sicily 9, South Tyrol 9.
-- France — Provence-Alpes-Côte d'Azur 8.
-- Spain — Catalonia 6.
-- Portugal — Alentejo 8.
-- Croatia — Istria 8.
-- Slovenia — 5 records: Pomurska 1, Southeast Slovenia 1, Central Slovenia 1, Goriška 2.
-- Norway — 8 records: Trøndelag 1, Møre og Romsdal 1, Buskerud 1, Vestland 5.
-- Deterministic canonical SEO/AEO producer snapshot — 148 records, synchronized with the live catalogue.
+- {{LIVE_PRODUCER_COUNT}} producer/project records across {{LIVE_DESTINATION_COUNT}} destinations in {{LIVE_COUNTRY_COUNT}} countries.
+- {{LIVE_REGION_COUNT}} named producer regions and {{LIVE_CATEGORY_COUNT}} producer categories.
+{{LIVE_GEO_SCOPE_LINES}}
+- Deterministic canonical SEO/AEO producer snapshot — {{LIVE_PRODUCER_COUNT}} records, synchronized with the live catalogue.
 
-The SEO, AEO and entity-discovery foundation includes all 148 current live producer records. New category and regional additions should follow the same evidence-first publication rules and be synchronized into both the live catalogue and deterministic deploy-time entity catalogue before deployment.
+The SEO, AEO and entity-discovery foundation includes all {{LIVE_PRODUCER_COUNT}} current live producer records. New category and regional additions should follow the same evidence-first publication rules and be synchronized into both the live catalogue and deterministic deploy-time entity catalogue before deployment.
 
 ## Producer listing enquiries
 
