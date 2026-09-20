@@ -1,7 +1,11 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import type { SupabaseClient } from '@supabase/supabase-js';
-import { ingestIntentEvent } from '../services/analyticsIngestionService';
+import {
+  deleteIntentEventsForFirebaseUid,
+  exportIntentEventsForFirebaseUid,
+  ingestIntentEvent,
+} from '../services/analyticsIngestionService';
 
 test('ingestIntentEvent calls the deployed RPC with the exact Phase 14.2 parameter contract', async () => {
   let rpcName = '';
@@ -52,4 +56,31 @@ test('ingestIntentEvent calls the deployed RPC with the exact Phase 14.2 paramet
   assert.equal(rpcArgs?.p_destination, null);
   assert.equal('country_code' in (rpcArgs ?? {}), false);
   assert.equal('category' in (rpcArgs ?? {}), false);
+});
+
+
+test('analytics privacy helpers use service-only RPC contracts with derived actor keys', async () => {
+  const calls: Array<{ name: string; args: Record<string, unknown> }> = [];
+  const fakeSupabase = {
+    rpc: async (name: string, args: Record<string, unknown>) => {
+      calls.push({ name, args });
+      if (name === 'export_intent_events_v1') {
+        return { data: [{ event_name: 'producer_view' }], error: null };
+      }
+      return { data: 2, error: null };
+    },
+  } as unknown as SupabaseClient;
+
+  const secret = 'x'.repeat(32);
+  const exported = await exportIntentEventsForFirebaseUid('firebase-user-1', fakeSupabase, secret);
+  const deleted = await deleteIntentEventsForFirebaseUid('firebase-user-1', fakeSupabase, secret);
+
+  assert.deepEqual(exported, [{ event_name: 'producer_view' }]);
+  assert.equal(deleted, 2);
+  assert.equal(calls[0].name, 'export_intent_events_v1');
+  assert.equal(calls[1].name, 'delete_intent_actor_v1');
+  assert.deepEqual(Object.keys(calls[0].args), ['p_actor_key']);
+  assert.deepEqual(Object.keys(calls[1].args), ['p_actor_key']);
+  assert.match(String(calls[0].args.p_actor_key), /^v1:[0-9a-f]{64}$/);
+  assert.equal(calls[0].args.p_actor_key, calls[1].args.p_actor_key);
 });
