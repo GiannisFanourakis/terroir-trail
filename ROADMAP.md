@@ -642,55 +642,59 @@ Explicitly prohibit:
 
 #### 14.2.1 Schema
 
-- [ ] Create the canonical event table with a narrow schema.
-- [ ] Separate event identity/time from optional contextual metadata.
-- [ ] Use database constraints or validated enums/checks for canonical event names.
-- [ ] Add only indexes justified by expected aggregate queries.
-- [ ] Do not store redundant producer facts that can be joined from canonical producer data.
+- [x] ~~Create the canonical event table with a narrow schema.~~
+- [x] ~~Separate event identity/time from optional contextual metadata.~~
+- [x] ~~Use database constraints or validated enums/checks for canonical event names.~~
+- [x] ~~Add only indexes justified by expected aggregate queries.~~
+- [x] ~~Do not store redundant producer facts that can be joined from canonical producer data.~~
 
 #### 14.2.2 Security
 
-- [ ] Enable RLS before exposing any event-write path.
-- [ ] Ensure travelers cannot read other users' raw events.
-- [ ] Ensure public/anonymous users cannot enumerate raw event data.
-- [ ] Ensure frontend clients cannot forge privileged/admin-only dimensions.
-- [ ] Restrict internal aggregate reporting appropriately.
-- [ ] Verify service-role/admin access remains server-side only.
+- [x] ~~Enable RLS before exposing any event-write path.~~
+- [x] ~~Ensure travelers cannot read other users' raw events.~~
+- [x] ~~Ensure public/anonymous users cannot enumerate raw event data.~~
+- [x] ~~Ensure frontend clients cannot forge privileged/admin-only dimensions.~~
+- [x] ~~Restrict internal aggregate reporting appropriately.~~
+- [x] ~~Verify service-role/admin access remains server-side only.~~
 
 #### 14.2.3 Privacy lifecycle
 
-- [ ] Define event retention period.
-- [ ] Define account deletion behavior.
-- [ ] Define whether account export includes raw events, summarized events, or neither based on product/privacy policy.
-- [ ] Define handling for anonymous-session events.
-- [ ] Ensure expired/deleted identity links do not break aggregate reporting unnecessarily.
-- [ ] Document what remains as anonymized aggregate statistics after account deletion, if applicable.
+- [x] ~~Define event retention period.~~
+- [x] ~~Define account deletion behavior.~~
+- [x] ~~Define whether account export includes raw events, summarized events, or neither based on product/privacy policy.~~
+- [x] ~~Define handling for anonymous-session events.~~
+- [x] ~~Ensure expired/deleted identity links do not break aggregate reporting unnecessarily.~~
+- [x] ~~Document what remains as anonymized aggregate statistics after account deletion, if applicable.~~
 
 #### 14.2.4 Aggregation layer
 
 Create internal aggregates for:
-- [ ] producer views;
-- [ ] producer saves;
-- [ ] trip additions;
-- [ ] direct website/contact actions;
-- [ ] directions actions;
-- [ ] region engagement;
-- [ ] affiliate impressions/click-through;
-- [ ] time-window trends.
+- [x] ~~producer views;~~
+- [x] ~~producer saves;~~
+- [x] ~~trip additions;~~
+- [x] ~~direct website/contact actions;~~
+- [x] ~~directions actions;~~
+- [x] ~~region engagement;~~
+- [x] ~~affiliate impressions/click-through;~~
+- [x] ~~time-window trends.~~
 
 Prefer aggregate views/materialized summaries where appropriate rather than giving operational dashboards unrestricted raw-event access.
 
 #### 14.2.5 Verification
 
-- [ ] Insert controlled test events.
-- [ ] Verify accepted payloads.
-- [ ] Verify rejected malformed/prohibited payloads.
-- [ ] Verify RLS from anonymous, traveler and privileged contexts.
-- [ ] Verify deletion/retention behavior.
-- [ ] Verify aggregate counts match source events.
-- [ ] Run Supabase security/performance advisors after DDL.
+- [x] ~~Insert controlled test events.~~
+- [x] ~~Verify accepted payloads.~~
+- [x] ~~Verify rejected malformed/prohibited payloads.~~
+- [x] ~~Verify RLS from anonymous, traveler and privileged contexts.~~
+- [x] ~~Verify deletion/retention behavior.~~
+- [x] ~~Verify aggregate counts match source events.~~
+- [x] ~~Run Supabase security/performance advisors after DDL.~~
 
 **Gate 14.2:** no frontend production instrumentation until RLS, privacy lifecycle and aggregate correctness pass verification.
+
+**Phase 14.2 verification:** completed 2026-09-20. Private `analytics` schema, raw event warehouse, strict contract constraints, RLS/privilege boundaries, 180-day raw retention, 24-month daily aggregates, pg_cron maintenance, service-role-only ingestion/export/deletion RPCs and controlled database tests are implemented. Synthetic test data was removed; production event count remains zero. Supabase advisors were rerun; the Phase-14 affiliate FK index finding was fixed. INFO-level no-policy/unused-index notices on the private zero-row analytics warehouse are expected; pre-existing managed PostGIS/public-extension findings remain separate maintenance work.
+
+**Authoritative implementation record:** `docs/phase14-event-contract-v1.md`. Supabase migration history remains authoritative; routine operational migration SQL is not duplicated into Git.
 
 ---
 
