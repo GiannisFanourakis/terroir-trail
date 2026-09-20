@@ -16,6 +16,7 @@ import { resolveProducerCover, resolveProducerGallery } from '../../utils/produc
 import { GooglePlaceMedia } from '../GooglePlaces/GooglePlaceMedia';
 import { ProducerCategoryIcon } from '../Common/ProducerCategoryIcon';
 import { formatCatalogueReviewedAt } from '../../data/catalogueMetadata';
+import { trackIntent, type SourceSurface } from '../../services/intentAnalytics';
 
 interface ProducerDetailDrawerProps {
   producer: Producer | null;
@@ -23,9 +24,9 @@ interface ProducerDetailDrawerProps {
   user?: UserProfile | null;
   onOpenProducerPortal?: () => void;
   isFavorite?: boolean;
-  onToggleFavorite?: (id: string) => void;
+  onToggleFavorite?: (id: string, sourceSurface?: SourceSurface) => void;
   isVisited?: boolean;
-  onToggleVisited?: (id: string) => void;
+  onToggleVisited?: (id: string, sourceSurface?: SourceSurface) => void;
   tastingNote?: string;
   onSaveTastingNote?: (id: string, note: string) => void;
   isAuthenticated?: boolean;
@@ -122,6 +123,13 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
     navigator.clipboard.writeText(window.location.href);
     setCopiedLink(true);
     setTimeout(() => setCopiedLink(false), 2000);
+    if (producer) {
+      void trackIntent({
+        event: 'producer_share',
+        sourceSurface: 'producer_drawer',
+        producerId: producer.id,
+      });
+    }
   };
 
   const getCategoryDetails = (p: Producer) => {
@@ -656,7 +664,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
           <div className="absolute top-4 right-4 z-20 flex items-center gap-2">
             {onToggleFavorite && (
               <button
-                onClick={() => onToggleFavorite(producer.id)}
+                onClick={() => onToggleFavorite(producer.id, 'producer_drawer')}
                 className={`w-9 h-9 rounded-full flex items-center justify-center backdrop-blur-md border transition ${
                   isFavorite
                     ? 'bg-rose-500/80 border-rose-400/50 text-white shadow-lg shadow-rose-950/40'
@@ -871,7 +879,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                   if (!isAuthenticated && onOpenAuth) {
                     onOpenAuth();
                   } else {
-                    onToggleVisited(producer.id);
+                    onToggleVisited(producer.id, 'producer_drawer');
                   }
                 }}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition active:scale-95 ${
@@ -1246,6 +1254,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                       href={producer.website}
                       target="_blank"
                       rel="noopener noreferrer"
+                      onClick={() => void trackIntent({ event: 'producer_website_click', sourceSurface: 'producer_drawer', producerId: producer.id })}
                       className="flex-1 py-2.5 px-3 rounded-xl bg-stone-800 hover:bg-stone-750 border border-white/10 text-stone-200 hover:text-white font-medium text-xs transition flex items-center justify-center gap-1.5 active:scale-98"
                     >
                       <Globe className="w-3.5 h-3.5 text-sky-400" />
@@ -1255,6 +1264,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                   {effectivePhone && (
                     <a
                       href={`tel:${effectivePhone}`}
+                      onClick={() => void trackIntent({ event: 'producer_phone_click', sourceSurface: 'producer_drawer', producerId: producer.id })}
                       className="flex-1 py-2.5 px-3 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 font-bold text-xs transition flex items-center justify-center gap-1.5 active:scale-98"
                     >
                       <Phone className="w-3.5 h-3.5" />
@@ -1264,6 +1274,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                   {effectiveEmail && (
                     <a
                       href={`mailto:${effectiveEmail}`}
+                      onClick={() => void trackIntent({ event: 'producer_email_click', sourceSurface: 'producer_drawer', producerId: producer.id })}
                       className="flex-1 py-2.5 px-3 rounded-xl bg-sky-500/15 hover:bg-sky-500/25 border border-sky-500/30 text-sky-200 font-bold text-xs transition flex items-center justify-center gap-1.5 active:scale-98"
                     >
                       <Mail className="w-3.5 h-3.5" />
@@ -1442,6 +1453,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
             href={producer.googleMapsUrl}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => void trackIntent({ event: 'directions_click', sourceSurface: 'producer_drawer', producerId: producer.id })}
             className="flex-1 min-w-0 flex items-center justify-center gap-1.5 py-3 px-2.5 sm:px-3.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-stone-950 font-bold text-xs rounded-2xl shadow-xl shadow-amber-500/20 transition transform active:scale-98 whitespace-nowrap"
             title={roadWarning}
           >
@@ -1459,6 +1471,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
         {effectivePhone ? (
           <a
             href={`tel:${effectivePhone}`}
+            onClick={() => void trackIntent({ event: 'producer_phone_click', sourceSurface: 'producer_drawer', producerId: producer.id })}
             className="flex-1 min-w-0 flex items-center justify-center gap-1.5 py-3 px-2.5 sm:px-3.5 bg-stone-800 hover:bg-stone-750 text-stone-100 font-bold text-xs rounded-2xl border border-white/10 transition transform active:scale-98 whitespace-nowrap"
             title={`Call ${effectivePhone}`}
           >
@@ -1468,6 +1481,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
         ) : effectiveEmail ? (
           <a
             href={`mailto:${effectiveEmail}`}
+            onClick={() => void trackIntent({ event: 'producer_email_click', sourceSurface: 'producer_drawer', producerId: producer.id })}
             className="flex-1 min-w-0 flex items-center justify-center gap-1.5 py-3 px-2.5 sm:px-3.5 bg-stone-800 hover:bg-stone-750 text-stone-100 font-bold text-xs rounded-2xl border border-white/10 transition transform active:scale-98 whitespace-nowrap"
             title={`Email ${effectiveEmail}`}
           >
@@ -1479,6 +1493,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
             href={producer.website}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => void trackIntent({ event: 'producer_website_click', sourceSurface: 'producer_drawer', producerId: producer.id })}
             className="flex-1 min-w-0 flex items-center justify-center gap-1.5 py-3 px-2.5 sm:px-3.5 bg-stone-800 hover:bg-stone-750 text-stone-100 font-bold text-xs rounded-2xl border border-white/10 transition transform active:scale-98 whitespace-nowrap"
             title="Visit Website"
           >
@@ -1504,6 +1519,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
             href={producer.website}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => void trackIntent({ event: 'producer_website_click', sourceSurface: 'producer_drawer', producerId: producer.id })}
             className="p-3 rounded-2xl bg-stone-800 hover:bg-stone-750 border border-white/10 text-stone-200 transition shrink-0"
             title="Visit Official Website"
           >

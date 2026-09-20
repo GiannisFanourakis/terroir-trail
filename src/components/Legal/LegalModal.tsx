@@ -111,6 +111,16 @@ export const LegalModal: React.FC<LegalModalProps> = ({
               </section>
 
               <section className="space-y-2">
+                <h4 className="font-bold text-white">First-party intent analytics</h4>
+                <p>
+                  To understand regional travel interest, maker popularity, and improve the discovery guide, TerroirTrail records anonymous, aggregate product interactions (such as viewing a producer, exploring a region, or clicking directions).
+                </p>
+                <p>
+                  These events use rotating, pseudonymous session identifiers stored in browser session storage, and authenticated account identifiers are cryptographically pseudonymized using server-side HMAC hashing before storage. We do not use third-party behavioral advertising trackers, ad network pixels, or commercial data brokers.
+                </p>
+              </section>
+
+              <section className="space-y-2">
                 <h4 className="font-bold text-white">Privacy requests & account deletion</h4>
                 <p>
                   Authenticated users may download a machine-readable data export or permanently delete their account at any time via the in-app <strong>Account & privacy</strong> settings. Requests to access, correct or delete account-related personal information can also be sent to{' '}

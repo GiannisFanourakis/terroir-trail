@@ -10,6 +10,7 @@ import {
   subscribeToTravelerFavorites,
 } from '../services/travelerFavoritesCloud';
 import { logger } from '../services/logger';
+import { trackIntent, type SourceSurface } from '../services/intentAnalytics';
 
 const GUEST_FAVORITES_KEY = STORAGE_KEYS.FAVORITES;
 
@@ -92,11 +93,33 @@ export function useFavorites(ownerId?: string | null) {
     return normalized;
   }, [ownerId, storageKey]);
 
-  const toggleFavorite = useCallback((id: string) => {
-    setFavorites((prev) => persist(
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
-    ));
-  }, [persist]);
+  const toggleFavorite = useCallback(
+    (id: string, sourceSurface: SourceSurface = 'producer_drawer') => {
+      setFavorites((prev) => {
+        const isFavorited = prev.includes(id);
+        const next = isFavorited ? prev.filter((item) => item !== id) : [...prev, id];
+        const normalized = normalizeFavoriteProducerIds(next);
+        writeStorage(storageKey, normalized, { scope: 'Favorites' });
+        if (ownerId) {
+          saveTravelerFavoritesToCloud(ownerId, normalized)
+            .then(() => {
+              void trackIntent({
+                event: isFavorited ? 'producer_unsave' : 'producer_save',
+                sourceSurface,
+                producerId: id,
+              });
+            })
+            .catch((error) => {
+              logger.warn('Favorites', 'cloud_write_failed', {
+                reason: error instanceof Error ? error.message : String(error),
+              });
+            });
+        }
+        return normalized;
+      });
+    },
+    [ownerId, storageKey]
+  );
 
   const isFavorite = useCallback(
     (id: string) => favorites.includes(id),

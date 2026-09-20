@@ -10,6 +10,7 @@ import {
   X,
 } from 'lucide-react';
 import type { TerroirRegion, TerroirRegionSection } from '../../data/terroirRegions';
+import { trackIntent } from '../../services/intentAnalytics';
 
 interface TerroirRegionDrawerProps {
   region: TerroirRegion;
@@ -160,7 +161,14 @@ export const TerroirRegionDrawer: React.FC<TerroirRegionDrawerProps> = ({
         <div className="sticky bottom-0 border-t border-white/10 bg-stone-950/76 px-5 py-4 backdrop-blur-2xl sm:px-6">
           <button
             type="button"
-            onClick={onShowProducers}
+            onClick={() => {
+              void trackIntent({
+                event: 'region_producers_view',
+                destination: region.destination,
+                sourceSurface: 'region_drawer',
+              });
+              onShowProducers();
+            }}
             className="flex w-full items-center justify-center gap-2 rounded-2xl bg-amber-500 px-4 py-3 text-xs font-bold text-stone-950 shadow-xl transition hover:bg-amber-400 active:scale-[0.99]"
           >
             <MapPin className="h-4 w-4" aria-hidden="true" />

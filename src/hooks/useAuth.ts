@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { Capacitor } from '@capacitor/core';
 import { UserProfile, TravelerType, ProducerTaxDetails, ProducerRegistrationRecord } from '../types/auth';
 import {
@@ -37,6 +37,11 @@ import {
   removeStorage,
   STORAGE_KEYS,
 } from '../services/browserStorage';
+import {
+  rotateAnalyticsSessionId,
+  trackIntent,
+  type SourceSurface,
+} from '../services/intentAnalytics';
 
 export { DEMO_PROFILES, DEMO_PRODUCER_PROFILES };
 
@@ -128,6 +133,7 @@ export const useAuth = () => {
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [authError, setAuthError] = useState<string | null>(null);
+  const prevAuthUidRef = useRef<string | null>(user?.id ?? null);
   const { pass, refreshExplorerPass } = useExplorerPass(user?.id);
 
   const mapFirebaseUser = (
@@ -144,8 +150,8 @@ export const useAuth = () => {
         .filter(ownership => ownership.status === 'active' && ownership.producerId)
         .map(ownership => ownership.producerId)
     ));
-    const isTrustedHost = producerIds.length > 0;
     const primaryProducerId = producerIds[0];
+    const isTrustedHost = producerIds.length > 0;
 
     return {
       id: fbUser.uid,
@@ -180,6 +186,12 @@ export const useAuth = () => {
     if (!isFirebaseConfigured || !auth) return;
 
     const unsubscribe = onAuthStateChanged(auth, async (fbUser) => {
+      const currentUid = fbUser?.uid ?? null;
+      if (prevAuthUidRef.current !== currentUid) {
+        prevAuthUidRef.current = currentUid;
+        rotateAnalyticsSessionId();
+      }
+
       if (fbUser) {
         try {
           const [cloudProfile, trustedOwnerships] = await Promise.all([
@@ -534,10 +546,12 @@ export const useAuth = () => {
     } catch (e) {
       console.error('Sign out error:', e);
     }
+    prevAuthUidRef.current = null;
+    rotateAnalyticsSessionId();
     setUser(null);
   }, []);
 
-  const toggleVisited = useCallback((producerId: string) => {
+  const toggleVisited = useCallback((producerId: string, sourceSurface: SourceSurface = 'passport') => {
     setUser((prev) => {
       if (!prev) return prev;
       const isAlready = prev.visitedProducers.includes(producerId);
@@ -550,7 +564,19 @@ export const useAuth = () => {
         visitedProducers: updated,
       };
       saveUserData(newProfile.id, updated, newProfile.personalNotes, newProfile);
-      void saveUserProfileToCloud(newProfile);
+      void saveUserProfileToCloud(newProfile)
+        .then(() => {
+          void trackIntent({
+            event: isAlready ? 'passport_stamp_removed' : 'passport_stamp_added',
+            sourceSurface,
+            producerId,
+          });
+        })
+        .catch((err) => {
+          logger.warn('Auth', 'passport_cloud_sync_failed_analytics_suppressed', {
+            reason: err instanceof Error ? err.message : String(err),
+          });
+        });
       return newProfile;
     });
   }, []);

@@ -17,6 +17,7 @@ import {
 } from '../../config/geography';
 import type { CountryScope } from '../../config/geography';
 import { getProducerCategoryIconMarkup } from '../Common/ProducerCategoryIcon';
+import type { SourceSurface } from '../../services/intentAnalytics';
 
 interface MapCanvasProps {
   producers: Producer[];
@@ -25,7 +26,7 @@ interface MapCanvasProps {
   onOpenDrawer: (producer: Producer) => void;
   selectedDestination: Destination | 'all';
   isFavorite: (id: string) => boolean;
-  onToggleFavorite: (id: string) => void;
+  onToggleFavorite: (id: string, sourceSurface?: SourceSurface) => void;
   onExploreCountry?: (country: Exclude<CountryScope, 'all'>) => void;
   onExploreRegion?: (destination: Destination) => void;
 }
@@ -1208,7 +1209,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        onToggleFavorite(selectedProducer.id);
+                        onToggleFavorite(selectedProducer.id, 'map_quick_card');
                       }}
                       className={`w-10 h-10 sm:w-9 sm:h-9 rounded-full flex items-center justify-center transition ${
                         isFavorite(selectedProducer.id) ? 'text-rose-500 scale-110' : 'text-stone-400 hover:text-white'

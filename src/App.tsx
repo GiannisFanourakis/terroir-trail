@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect, Suspense, lazy } from 'react';
+import React, { useState, useMemo, useEffect, useRef, Suspense, lazy } from 'react';
 import { useProducers } from './hooks/useProducers';
 import { Producer, FilterState, Destination } from './types/terroir';
 import type { UserProfile } from './types/auth';
@@ -24,6 +24,7 @@ import { filterProducers } from './utils/filterProducers';
 import { producerService } from './services/producerService';
 import { CountryScope, setActiveCountryScope } from './config/geography';
 import { usePwaInstall } from './hooks/usePwaInstall';
+import { trackIntent, type SourceSurface } from './services/intentAnalytics';
 
 // Performance optimization: lazy-load modals on demand to shrink initial bundle
 const ProducerDetailDrawer = lazy(() =>
@@ -92,6 +93,44 @@ export const App: React.FC = () => {
   const [isRegionGuideOpen, setIsRegionGuideOpen] = useState<boolean>(false);
   const [activeModal, setActiveModal] = useState<ActiveModal>(null);
   const [adminPortalPreviewProducerId, setAdminPortalPreviewProducerId] = useState<string | null>(null);
+  const lastViewedProducerRef = useRef<string | null>(null);
+  const lastOpenedRegionRef = useRef<string | null>(null);
+
+  const handleSelectProducer = (producer: Producer | null, surface: SourceSurface = 'map_marker') => {
+    setSelectedProducer(producer);
+    if (producer) {
+      setIsRegionGuideOpen(false);
+      if (lastViewedProducerRef.current !== producer.id) {
+        lastViewedProducerRef.current = producer.id;
+        void trackIntent({
+          event: 'producer_view',
+          sourceSurface: surface,
+          producerId: producer.id,
+        });
+      }
+    } else {
+      lastViewedProducerRef.current = null;
+    }
+  };
+
+  const handleOpenDrawer = (producer: Producer, surface: SourceSurface = 'map_quick_card') => {
+    setSelectedProducer(producer);
+    setIsRegionGuideOpen(false);
+    setIsDrawerOpen(true);
+    if (lastViewedProducerRef.current !== producer.id) {
+      lastViewedProducerRef.current = producer.id;
+      void trackIntent({
+        event: 'producer_view',
+        sourceSurface: surface,
+        producerId: producer.id,
+      });
+    }
+  };
+
+  const handleCloseDrawer = () => {
+    setIsDrawerOpen(false);
+    lastViewedProducerRef.current = null;
+  };
   const [showFirstRunWelcome, setShowFirstRunWelcome] = useState<boolean>(() =>
     !readStorage<boolean>(STORAGE_KEYS.FIRST_RUN_WELCOME, false, {
       scope: 'Onboarding',
@@ -278,6 +317,14 @@ export const App: React.FC = () => {
     setSelectedProducer(null);
     setIsDrawerOpen(false);
     setIsRegionGuideOpen(hasStory);
+    if (hasStory && lastOpenedRegionRef.current !== destination) {
+      lastOpenedRegionRef.current = destination;
+      void trackIntent({
+        event: 'region_open',
+        destination,
+        sourceSurface: 'map_canvas',
+      });
+    }
   };
 
   const handleExploreCountry = (country: Exclude<CountryScope, 'all'>) => {
@@ -300,6 +347,7 @@ export const App: React.FC = () => {
   useEffect(() => {
     if (filters.destination === 'all' && isRegionGuideOpen) {
       setIsRegionGuideOpen(false);
+      lastOpenedRegionRef.current = null;
     }
   }, [filters.destination, isRegionGuideOpen]);
 
@@ -315,8 +363,15 @@ export const App: React.FC = () => {
       );
       if (match) {
         setSelectedProducer(match);
-        setIsRegionGuideOpen(false);
         setIsDrawerOpen(true);
+        if (lastViewedProducerRef.current !== match.id) {
+          lastViewedProducerRef.current = match.id;
+          void trackIntent({
+            event: 'producer_view',
+            sourceSurface: 'deep_link',
+            producerId: match.id,
+          });
+        }
       }
     }
   }, [publicProducers]);
@@ -384,15 +439,8 @@ export const App: React.FC = () => {
           <MapCanvas
             producers={filteredProducers}
             selectedProducer={publicSelectedProducer}
-            onSelectProducer={(producer) => {
-              setSelectedProducer(producer);
-              if (producer) setIsRegionGuideOpen(false);
-            }}
-            onOpenDrawer={(producer) => {
-              setSelectedProducer(producer);
-              setIsRegionGuideOpen(false);
-              setIsDrawerOpen(true);
-            }}
+            onSelectProducer={(producer) => handleSelectProducer(producer, 'map_marker')}
+            onOpenDrawer={(producer) => handleOpenDrawer(producer, 'map_quick_card')}
             selectedDestination={filters.destination}
             isFavorite={isFavorite}
             onToggleFavorite={toggleFavorite}
@@ -417,8 +465,14 @@ export const App: React.FC = () => {
                 producerCount={regionGuideProducers.length}
                 categoryCount={regionGuideCategoryCount}
                 isOpen={isRegionGuideOpen}
-                onClose={() => setIsRegionGuideOpen(false)}
-                onShowProducers={() => setIsRegionGuideOpen(false)}
+                onClose={() => {
+                  setIsRegionGuideOpen(false);
+                  lastOpenedRegionRef.current = null;
+                }}
+                onShowProducers={() => {
+                  setIsRegionGuideOpen(false);
+                  lastOpenedRegionRef.current = null;
+                }}
               />
             </Suspense>
           )}
@@ -438,7 +492,7 @@ export const App: React.FC = () => {
           >
             <ProducerDetailDrawer
               producer={publicSelectedProducer}
-              onClose={() => setIsDrawerOpen(false)}
+              onClose={handleCloseDrawer}
               user={user}
               onOpenProducerPortal={() => handleOpenProducerPortal(selectedProducer)}
               isFavorite={selectedProducer ? isFavorite(selectedProducer.id) : false}
@@ -493,9 +547,7 @@ export const App: React.FC = () => {
             onToggleVisited={toggleVisited}
             onSaveTastingNote={saveTastingNote}
             onSelectProducer={(producer) => {
-              setSelectedProducer(producer);
-              setIsRegionGuideOpen(false);
-              setIsDrawerOpen(true);
+              handleOpenDrawer(producer, 'passport');
               closeModal();
             }}
           />
@@ -548,9 +600,7 @@ export const App: React.FC = () => {
               getProducerOverride={getOverride}
               onUpdateProducerTaxDetails={adminPortalPreviewProducer ? async () => undefined : updateProducerTaxDetails}
               onSelectProducerForDrawer={(producer) => {
-                setSelectedProducer(producer);
-                setIsRegionGuideOpen(false);
-                setIsDrawerOpen(true);
+                handleOpenDrawer(producer, 'profile_menu');
                 closeModal();
               }}
               onPassVerified={(info) => setActiveModal({ type: 'host_verify', guestInfo: info })}
@@ -574,9 +624,7 @@ export const App: React.FC = () => {
             producers={publicProducers}
             onCancelBooking={cancelBooking}
             onSelectProducer={(producer) => {
-              setSelectedProducer(producer);
-              setIsRegionGuideOpen(false);
-              setIsDrawerOpen(true);
+              handleOpenDrawer(producer, 'my_trips');
               closeModal();
             }}
           />

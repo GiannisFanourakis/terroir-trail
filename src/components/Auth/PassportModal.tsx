@@ -7,13 +7,14 @@ import { getCategoryFallbackImage } from '../../utils/imageFallbacks';
 import { getEffectiveProducerCategory } from '../../utils/producerCategory';
 import { producerService } from '../../services/producerService';
 import { resolveProducerCover } from '../../utils/producerMediaResolver';
+import type { SourceSurface } from '../../services/intentAnalytics';
 
 interface PassportModalProps {
   isOpen: boolean;
   onClose: () => void;
   user: UserProfile | null;
   producers: Producer[];
-  onToggleVisited: (producerId: string) => void;
+  onToggleVisited: (producerId: string, sourceSurface?: SourceSurface) => void;
   onSaveTastingNote: (producerId: string, note: string) => void;
   onSelectProducer: (producer: Producer) => void;
 }
@@ -48,7 +49,7 @@ export const PassportModal: React.FC<PassportModalProps> = ({
   });
 
   const handleToggleStamp = (producerId: string) => {
-    onToggleVisited(producerId);
+    onToggleVisited(producerId, 'passport');
   };
 
   const handleStartEditNote = (producerId: string) => {

@@ -704,41 +704,41 @@ Prefer aggregate views/materialized summaries where appropriate rather than givi
 
 #### 14.3.1 Producer interaction instrumentation
 
-- [ ] Instrument producer detail views without double-counting rerenders.
-- [ ] Instrument save/unsave actions.
-- [ ] Instrument share actions.
-- [ ] Instrument producer website clicks.
-- [ ] Instrument phone actions.
-- [ ] Instrument email actions.
-- [ ] Instrument directions actions.
-- [ ] Include valid source-surface context.
+- [x] ~~Instrument producer detail views without double-counting rerenders.~~
+- [x] ~~Instrument save/unsave actions.~~
+- [x] ~~Instrument share actions.~~
+- [x] ~~Instrument producer website clicks.~~
+- [x] ~~Instrument phone actions.~~
+- [x] ~~Instrument email actions.~~
+- [x] ~~Instrument directions actions.~~
+- [x] ~~Include valid source-surface context.~~
 
 #### 14.3.2 Regional interaction instrumentation
 
-- [ ] Instrument region-guide opens.
-- [ ] Instrument "view producers on map" actions.
-- [ ] Preserve current region UX and do not add tracking-only UI.
+- [x] ~~Instrument region-guide opens.~~
+- [x] ~~Instrument "view producers on map" actions.~~
+- [x] ~~Preserve current region UX and do not add tracking-only UI.~~
 
 #### 14.3.3 Passport instrumentation
 
-- [ ] Instrument stamp add/remove actions.
-- [ ] Never send tasting-note contents.
-- [ ] Keep personal notes private and outside analytics payloads.
+- [x] ~~Instrument stamp add/remove actions.~~
+- [x] ~~Never send tasting-note contents.~~
+- [x] ~~Keep personal notes private and outside analytics payloads.~~
 
 #### 14.3.4 Affiliate baseline instrumentation
 
-- [ ] Instrument affiliate impressions.
-- [ ] Instrument affiliate clicks.
-- [ ] Record affiliate campaign ID and source surface.
-- [ ] Do not track destination URLs containing unnecessary personal/query information.
-- [ ] Preserve clear affiliate disclosure.
+- [x] ~~Instrument affiliate impressions.~~
+- [x] ~~Instrument affiliate clicks.~~
+- [x] ~~Record affiliate campaign ID and source surface.~~
+- [x] ~~Do not track destination URLs containing unnecessary personal/query information.~~
+- [x] ~~Preserve clear affiliate disclosure.~~
 
 #### 14.3.5 Reliability
 
-- [ ] Tracking failures must never break discovery, contact, navigation, favorites or Passport.
-- [ ] Avoid blocking page interaction while analytics requests complete.
-- [ ] Prevent obvious duplicate producer-view/impression events from rerenders.
-- [ ] Add focused automated tests for event dispatch and payload sanitization.
+- [x] ~~Tracking failures must never break discovery, contact, navigation, favorites or Passport.~~
+- [x] ~~Avoid blocking page interaction while analytics requests complete.~~
+- [x] ~~Prevent obvious duplicate producer-view/impression events from rerenders.~~
+- [x] ~~Add focused automated tests for event dispatch and payload sanitization.~~
 
 #### 14.3.6 Production verification
 

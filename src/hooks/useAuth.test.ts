@@ -30,6 +30,7 @@ vi.mock('react', () => ({
     if (cleanup) effectCleanups.push(cleanup);
   },
   useCallback: (fn: any) => fn,
+  useRef: (initial: any) => ({ current: initial }),
 }));
 
 // Mock services/firebase as configurable

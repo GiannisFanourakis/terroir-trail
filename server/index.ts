@@ -8,6 +8,7 @@ import { registerAdminReviewRoutes } from './adminReviewRoutes';
 import { registerProducerListingChangeRoutes } from './producerListingChangeRoutes';
 import { registerProducerMediaRoutes } from './producerMediaRoutes';
 import { registerReviewRoutes } from './reviewRoutes';
+import { registerAnalyticsRoutes } from './analyticsRoutes';
 
 registerAdminMediaRoutes(app);
 registerAdminListingChangeRoutes(app);
@@ -17,6 +18,7 @@ registerProducerMediaRoutes(app);
 registerProducerListingChangeRoutes(app);
 registerReviewRoutes(app);
 registerAccountSelfRoutes(app);
+registerAnalyticsRoutes(app);
 
 const port = Number(process.env.PORT || 4242);
 app.listen(port, '0.0.0.0', () => {

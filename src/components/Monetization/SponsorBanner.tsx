@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { ExternalLink, Sparkles, Car, Wine, Wifi } from 'lucide-react';
+import { trackIntent, type AffiliateCampaignId } from '../../services/intentAnalytics';
 
 interface SponsorBannerProps {
   hasExplorerPass?: boolean;
@@ -90,6 +91,8 @@ export const SponsorBanner: React.FC<SponsorBannerProps> = ({
 }) => {
   const [currentIdx, setCurrentIdx] = useState<number>(0);
   const affiliateEnabled = isTravelAffiliatesEnabled();
+  const bannerRef = useRef<HTMLDivElement>(null);
+  const impressedCampaignsRef = useRef(new Set<string>());
 
   useEffect(() => {
     if (!affiliateEnabled || hasExplorerPass) return undefined;
@@ -101,10 +104,60 @@ export const SponsorBanner: React.FC<SponsorBannerProps> = ({
     return () => window.clearInterval(timer);
   }, [affiliateEnabled, hasExplorerPass]);
 
+  useEffect(() => {
+    if (!affiliateEnabled || hasExplorerPass || !bannerRef.current) return undefined;
+    const sponsor = SPONSOR_CAMPAIGNS[currentIdx];
+    if (impressedCampaignsRef.current.has(sponsor.id)) return undefined;
+
+    let dwellTimer: number | null = null;
+
+    if (typeof IntersectionObserver !== 'undefined') {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          const entry = entries[0];
+          if (entry && entry.isIntersecting && entry.intersectionRatio >= 0.5) {
+            if (dwellTimer === null) {
+              dwellTimer = window.setTimeout(() => {
+                if (!impressedCampaignsRef.current.has(sponsor.id)) {
+                  impressedCampaignsRef.current.add(sponsor.id);
+                  void trackIntent({
+                    event: 'affiliate_impression',
+                    sourceSurface: 'map_affiliate_banner',
+                    affiliateCampaignId: sponsor.id as AffiliateCampaignId,
+                  });
+                }
+              }, 1000);
+            }
+          } else {
+            if (dwellTimer !== null) {
+              window.clearTimeout(dwellTimer);
+              dwellTimer = null;
+            }
+          }
+        },
+        { threshold: [0, 0.5, 1.0] }
+      );
+
+      observer.observe(bannerRef.current);
+      return () => {
+        if (dwellTimer !== null) window.clearTimeout(dwellTimer);
+        observer.disconnect();
+      };
+    }
+  }, [affiliateEnabled, hasExplorerPass, currentIdx]);
+
   if (!affiliateEnabled || hasExplorerPass) return null;
 
   const sponsor = SPONSOR_CAMPAIGNS[currentIdx];
   const affiliateUrl = withSubId(sponsor.ctaUrl, sponsor.subId);
+
+  const handleAffiliateClick = () => {
+    void trackIntent({
+      event: 'affiliate_click',
+      sourceSurface: 'map_affiliate_banner',
+      affiliateCampaignId: sponsor.id as AffiliateCampaignId,
+    });
+  };
 
   const renderIcon = (sizeClass = 'w-3.5 h-3.5') => {
     switch (sponsor.iconType) {
@@ -121,6 +174,7 @@ export const SponsorBanner: React.FC<SponsorBannerProps> = ({
 
   return (
     <div
+      ref={bannerRef}
       className={`relative z-20 mx-auto w-full max-w-3xl px-2 sm:px-3 py-1 transition-all animate-in fade-in slide-in-from-top-1 duration-300 ${className}`}
       aria-label="Sponsored travel affiliate offer"
     >
@@ -129,6 +183,7 @@ export const SponsorBanner: React.FC<SponsorBannerProps> = ({
           href={affiliateUrl}
           target="_blank"
           rel="sponsored noopener noreferrer"
+          onClick={handleAffiliateClick}
           className="flex items-center gap-1.5 min-w-0 flex-1 truncate text-stone-200 hover:text-white"
           title="Affiliate link — TerroirTrail may earn a commission"
         >
@@ -163,6 +218,7 @@ export const SponsorBanner: React.FC<SponsorBannerProps> = ({
                 href={affiliateUrl}
                 target="_blank"
                 rel="sponsored noopener noreferrer"
+                onClick={handleAffiliateClick}
               >
                 {sponsor.title}
               </a>
@@ -178,6 +234,7 @@ export const SponsorBanner: React.FC<SponsorBannerProps> = ({
             href={affiliateUrl}
             target="_blank"
             rel="sponsored noopener noreferrer"
+            onClick={handleAffiliateClick}
             className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-stone-900/90 hover:bg-stone-850 text-stone-200 border border-white/10 hover:border-white/20 text-[11px] font-semibold transition active:scale-95 cursor-pointer shadow-sm"
           >
             <span>{sponsor.ctaText}</span>
