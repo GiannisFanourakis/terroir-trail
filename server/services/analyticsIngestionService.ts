@@ -262,7 +262,8 @@ export function resetSupabaseAdminClient(): void {
 }
 
 export function getAnalyticsHmacSecret(): string {
-  return process.env.ANALYTICS_HMAC_SECRET || '';
+  const secret = process.env.ANALYTICS_HMAC_SECRET || '';
+  return secret.length >= 32 ? secret : '';
 }
 
 export function deriveActorKey(uid: string, secret: string): string {
@@ -350,4 +351,46 @@ export async function ingestIntentEvent(
     console.error('RPC invocation error:', err);
     return { success: false, error: err instanceof Error ? err.message : String(err) };
   }
+}
+
+
+export async function exportIntentEventsForFirebaseUid(
+  uid: string,
+  supabase: SupabaseClient | null = getSupabaseAdmin(),
+  secret: string = getAnalyticsHmacSecret()
+): Promise<unknown[]> {
+  if (!uid) throw new Error('Authenticated user ID is required for analytics export.');
+  if (!supabase || !secret) throw new Error('Analytics privacy export is unavailable.');
+
+  const actorKey = deriveActorKey(uid, secret);
+  const { data, error } = await supabase.rpc('export_intent_events_v1', {
+    p_actor_key: actorKey,
+  });
+
+  if (error) {
+    throw new Error(`Analytics privacy export failed: ${error.message}`);
+  }
+
+  return Array.isArray(data) ? data : data == null ? [] : [data];
+}
+
+export async function deleteIntentEventsForFirebaseUid(
+  uid: string,
+  supabase: SupabaseClient | null = getSupabaseAdmin(),
+  secret: string = getAnalyticsHmacSecret()
+): Promise<number> {
+  if (!uid) throw new Error('Authenticated user ID is required for analytics deletion.');
+  if (!supabase || !secret) throw new Error('Analytics privacy deletion is unavailable.');
+
+  const actorKey = deriveActorKey(uid, secret);
+  const { data, error } = await supabase.rpc('delete_intent_actor_v1', {
+    p_actor_key: actorKey,
+  });
+
+  if (error) {
+    throw new Error(`Analytics privacy deletion failed: ${error.message}`);
+  }
+
+  const deleted = Number(data ?? 0);
+  return Number.isFinite(deleted) ? deleted : 0;
 }
