@@ -26,7 +26,7 @@ describe('intentAnalytics client', () => {
   describe('session management', () => {
     it('creates and persists a valid UUID v4 session ID in storage', () => {
       const sid = getAnalyticsSessionId(mockStorage);
-      expect(sid).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i);
+      expect(sid).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i);
       expect(mockStorage.getItem(SESSION_ID_STORAGE_KEY)).toBe(sid);
 
       // Subsequent call returns same session ID
@@ -182,6 +182,25 @@ describe('intentAnalytics client', () => {
 
       expect(result.success).toBe(false);
       expect(callCount).toBe(1);
+    });
+
+    it('rejects an event/source combination outside the frozen contract without sending a request', async () => {
+      const mockFetch = vi.fn();
+
+      const result = await trackIntent(
+        {
+          event: 'producer_view',
+          sourceSurface: 'my_trips',
+          producerId: 'producer-1',
+        },
+        {
+          fetchImpl: mockFetch as unknown as typeof fetch,
+          storage: mockStorage,
+        }
+      );
+
+      expect(result.success).toBe(false);
+      expect(mockFetch).not.toHaveBeenCalled();
     });
 
     it('never throws even when network fetch completely rejects', async () => {
