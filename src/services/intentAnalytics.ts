@@ -158,10 +158,6 @@ export async function trackIntent(
   const clientEventId = generateUuidV4();
 
   if (!isAllowedIntentSourceSurface(params.event, params.sourceSurface)) {
-    logger.warn('Analytics', 'intent_analytics_client_validation_failed', {
-      event: params.event,
-      sourceSurface: params.sourceSurface,
-    });
     return { success: false, clientEventId };
   }
 
