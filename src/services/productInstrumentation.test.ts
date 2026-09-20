@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest';
-import type { SourceSurface, IntentEventPayload } from './intentAnalytics';
+import { CLIENT_EVENT_ALLOWED_SURFACES, type IntentEventPayload } from './intentAnalytics';
 
 // Test that all frontend instrumentation calls adhere to the Phase 14.3 Event Contract v1
 
@@ -9,22 +9,7 @@ describe('Phase 14.3 Product Instrumentation & Contract Compliance', () => {
   });
 
   describe('Contract v1 Event Vocabulary & Allowed Surfaces', () => {
-    const ALLOWED_SURFACES: Record<string, SourceSurface[]> = {
-      producer_view: ['map_marker', 'map_quick_card', 'region_drawer', 'passport', 'deep_link', 'profile_menu', 'my_trips'],
-      producer_share: ['producer_drawer'],
-      producer_save: ['map_quick_card', 'producer_drawer'],
-      producer_unsave: ['map_quick_card', 'producer_drawer'],
-      producer_website_click: ['producer_drawer'],
-      producer_phone_click: ['producer_drawer'],
-      producer_email_click: ['producer_drawer'],
-      directions_click: ['producer_drawer'],
-      region_open: ['map_canvas'],
-      region_producers_view: ['region_drawer'],
-      passport_stamp_added: ['passport', 'producer_drawer'],
-      passport_stamp_removed: ['passport', 'producer_drawer'],
-      affiliate_impression: ['map_affiliate_banner'],
-      affiliate_click: ['map_affiliate_banner'],
-    };
+    const ALLOWED_SURFACES = CLIENT_EVENT_ALLOWED_SURFACES;
 
     const ALLOWED_AFFILIATE_CAMPAIGNS = [
       'klook-experiences',
