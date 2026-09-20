@@ -113,10 +113,10 @@ export const LegalModal: React.FC<LegalModalProps> = ({
               <section className="space-y-2">
                 <h4 className="font-bold text-white">First-party intent analytics</h4>
                 <p>
-                  TerroirTrail records narrow first-party interaction events to improve the discovery guide. Pseudonymous raw events are kept for up to 180 days; non-identifying daily aggregates for up to 24 months.
+                  TerroirTrail records narrow first-party interactions to improve the guide. Pseudonymous events are kept up to 180 days; aggregates up to 24 months.
                 </p>
                 <p>
-                  Session identifiers rotate in session storage; signed-in account IDs are HMAC-pseudonymized server-side. Account export includes retained linked events, and account deletion removes them while non-identifying aggregates remain. We do not use third-party behavioral analytics or ad-network pixels.
+                  Session IDs rotate; account IDs are HMAC-pseudonymized server-side. Exports include events; deletion removes them. No third-party trackers or ad pixels.
                 </p>
               </section>
 

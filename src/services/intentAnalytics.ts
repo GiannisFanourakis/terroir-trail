@@ -1,6 +1,5 @@
 import { auth } from './firebase';
 import { resolveApiBaseUrl } from './apiOrigin';
-import { logger } from './logger';
 
 export type IntentEventName =
   | 'producer_view'
@@ -67,60 +66,42 @@ export function isAllowedIntentSourceSurface(
   event: IntentEventName,
   sourceSurface: SourceSurface
 ): boolean {
-  let allowed: string;
+  if (event === 'region_open') return sourceSurface === 'map_canvas' || sourceSurface === 'header_region_picker';
+  if (event === 'region_producers_view') return sourceSurface === 'region_drawer';
+  if (event.startsWith('affiliate_')) return 'map_affiliate_banner|trip_preparation|region_planning'.includes(sourceSurface);
+  if (event.startsWith('passport_')) return sourceSurface === 'producer_drawer' || sourceSurface === 'passport';
+  if (event === 'producer_save') return sourceSurface !== 'favorites' && 'producer_drawer|favorites|producer_list_card|map_quick_card'.includes(sourceSurface);
+  if (event === 'producer_unsave') return 'producer_drawer|favorites|producer_list_card|map_quick_card'.includes(sourceSurface);
   if (event === 'producer_view') {
-    allowed = 'producer_list_card|map_marker|map_quick_card|deep_link|favorites|passport|region_drawer|trip_workspace';
-  } else if (event === 'producer_share') {
-    allowed = 'producer_drawer|map_quick_card|trip_workspace';
-  } else if (event === 'region_open') {
-    allowed = 'map_canvas|header_region_picker';
-  } else if (event === 'region_producers_view') {
-    allowed = 'region_drawer';
-  } else if (event === 'producer_save') {
-    allowed = 'producer_drawer|producer_list_card|map_quick_card';
-  } else if (event === 'producer_unsave') {
-    allowed = 'producer_drawer|favorites|producer_list_card|map_quick_card';
-  } else if (event === 'directions_click') {
-    allowed = 'producer_drawer|map_quick_card|trip_workspace';
-  } else if (event.startsWith('passport_')) {
-    allowed = 'producer_drawer|passport';
-  } else if (event.startsWith('affiliate_')) {
-    allowed = 'map_affiliate_banner|trip_preparation|region_planning';
-  } else {
-    allowed = 'producer_drawer|trip_workspace';
+    return 'producer_list_card|map_marker|map_quick_card|deep_link|favorites|passport|region_drawer|trip_workspace'.includes(sourceSurface);
   }
-  return `|${allowed}|`.includes(`|${sourceSurface}|`);
+  if (event === 'producer_share' || event === 'directions_click') return 'producer_drawer|map_quick_card|trip_workspace'.includes(sourceSurface);
+  return sourceSurface === 'producer_drawer' || sourceSurface === 'trip_workspace';
 }
 
 export function generateUuidV4(): string {
-  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
-    return crypto.randomUUID();
-  }
+  if (typeof crypto !== 'undefined' && crypto.randomUUID) return crypto.randomUUID();
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
     const r = (Math.random() * 16) | 0;
-    const v = c === 'x' ? r : (r & 0x3) | 0x8;
-    return v.toString(16);
+    return (c === 'x' ? r : (r & 3) | 8).toString(16);
   });
 }
 
 function getSessionStorage(): Storage | null {
-  if (typeof window === 'undefined') return null;
   try {
-    return window.sessionStorage;
+    return typeof window !== 'undefined' ? window.sessionStorage : null;
   } catch {
     return null;
   }
 }
 
 export function getAnalyticsSessionId(storage: Storage | null = getSessionStorage()): string {
-  if (!storage) return generateUuidV4();
   try {
-    let sid = storage.getItem(SESSION_ID_STORAGE_KEY);
-    if (!sid || !UUID_V4_REGEX.test(sid)) {
-      sid = generateUuidV4();
-      storage.setItem(SESSION_ID_STORAGE_KEY, sid);
-    }
-    return sid;
+    const sid = storage?.getItem(SESSION_ID_STORAGE_KEY);
+    if (sid && UUID_V4_REGEX.test(sid)) return sid;
+    const newSid = generateUuidV4();
+    storage?.setItem(SESSION_ID_STORAGE_KEY, newSid);
+    return newSid;
   } catch {
     return generateUuidV4();
   }
@@ -128,13 +109,9 @@ export function getAnalyticsSessionId(storage: Storage | null = getSessionStorag
 
 export function rotateAnalyticsSessionId(storage: Storage | null = getSessionStorage()): string {
   const newSid = generateUuidV4();
-  if (storage) {
-    try {
-      storage.setItem(SESSION_ID_STORAGE_KEY, newSid);
-    } catch {
-      // Storage unavailable or quota exceeded
-    }
-  }
+  try {
+    storage?.setItem(SESSION_ID_STORAGE_KEY, newSid);
+  } catch {}
   return newSid;
 }
 
@@ -163,10 +140,10 @@ export async function trackIntent(
 
   const sessionId = getAnalyticsSessionId(options.storage ?? getSessionStorage());
   const fetchFn = options.fetchImpl || fetch;
-  const baseUrl = options.apiBaseUrl !== undefined ? options.apiBaseUrl : resolveApiBaseUrl();
+  const baseUrl = options.apiBaseUrl ?? resolveApiBaseUrl();
   const maxRetries = options.maxRetries ?? 2;
 
-  const payload = {
+  const body = JSON.stringify({
     schemaVersion: 1,
     event: params.event,
     clientEventId,
@@ -175,27 +152,17 @@ export async function trackIntent(
     destination: params.destination ?? null,
     sourceSurface: params.sourceSurface,
     affiliateCampaignId: params.affiliateCampaignId ?? null,
-  };
-
-  const body = JSON.stringify(payload);
+  });
 
   let token: string | null = null;
   try {
-    if (options.getAuthToken) {
-      token = await options.getAuthToken();
-    } else if (auth?.currentUser) {
-      token = await auth.currentUser.getIdToken();
-    }
-  } catch {
-    // Gracefully proceed without token if token fetch fails
-  }
+    token = options.getAuthToken ? await options.getAuthToken() : (await auth?.currentUser?.getIdToken()) ?? null;
+  } catch {}
 
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
   };
-  if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
-  }
 
   const endpoint = `${baseUrl}/api/analytics/events`;
 
@@ -214,20 +181,10 @@ export async function trackIntent(
 
       // If client error (4xx except 429), retrying won't help
       if (response.status >= 400 && response.status < 500 && response.status !== 429) {
-        logger.warn('Analytics', 'intent_analytics_rejected', {
-          event: params.event,
-          status: response.status,
-        });
         return { success: false, clientEventId };
       }
-    } catch (networkError) {
-      if (attempt === maxRetries) {
-        logger.warn('Analytics', 'intent_analytics_network_failed', {
-          event: params.event,
-          attempt,
-          error: networkError instanceof Error ? networkError.message : String(networkError),
-        });
-      }
+    } catch {
+      // Network failure; proceed to next retry attempt
     }
 
     // Delay before retry (jittered backoff)
