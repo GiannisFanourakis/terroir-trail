@@ -71,6 +71,7 @@ test('checked-in sitemap is only a stable seed; build generation owns live catal
   assert.equal(new Set(urls).size, urls.length);
   assert.deepEqual(urls, [
     'https://terroir-trail.web.app/',
+    'https://terroir-trail.web.app/privacy.html',
     'https://terroir-trail.web.app/producers/',
   ]);
   assert.doesNotMatch(sitemap, /\?producer=/);
