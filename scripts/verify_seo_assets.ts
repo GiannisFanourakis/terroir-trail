@@ -114,7 +114,6 @@ function verifySeoAssets(): void {
     `${LIVE_CATALOGUE_METRICS.regionCount} named producer regions`,
     `${LIVE_CATALOGUE_METRICS.categoryCount} producer categories`,
     ...buildCatalogueCountryBreakdownLines(),
-    'France — Provence-Alpes-Côte d\'Azur 8.',
     `Deterministic canonical SEO/AEO producer snapshot — ${PRODUCERS.length} records, synchronized with the live catalogue.`,
     '## Navigation safety and road access',
     '/producers/<producer-id>/',

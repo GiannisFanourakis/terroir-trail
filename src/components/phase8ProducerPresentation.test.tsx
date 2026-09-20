@@ -47,56 +47,48 @@ describe('Phase 8 Producer Card + Detail Hierarchy', () => {
         cat: Category;
         whatTheyMake: string;
         specialties: string;
-        visiting: string;
         callAction: string;
       }[] = [
         {
           cat: 'winery',
           whatTheyMake: 'Wines &amp; Indigenous Grape Varieties',
           specialties: 'Indigenous Grape Varieties',
-          visiting: 'Cellar Door &amp; Visiting',
           callAction: 'Call Cellar Door',
         },
         {
           cat: 'brewery',
           whatTheyMake: 'Craft Beers &amp; Seasonal Brews',
           specialties: 'Beer Styles &amp; Hop Profiles',
-          visiting: 'Brewery &amp; Visiting',
           callAction: 'Call Brewery',
         },
         {
           cat: 'olive_mill',
           whatTheyMake: 'Extra Virgin Olive Oils &amp; Harvests',
           specialties: 'Olive Cultivars &amp; Pressings',
-          visiting: 'Mill &amp; Visiting',
           callAction: 'Call Olive Mill',
         },
         {
           cat: 'cheese_dairy',
           whatTheyMake: 'Artisanal Mountain Cheeses &amp; Dairy',
           specialties: 'Cheeses &amp; Milk Traditions',
-          visiting: 'Dairy &amp; Visiting',
           callAction: 'Call Dairy',
         },
         {
           cat: 'apiary',
           whatTheyMake: 'Honeys &amp; Bee Products',
           specialties: 'Honey Botanicals &amp; Nectars',
-          visiting: 'Apiary &amp; Visiting',
           callAction: 'Call Apiary',
         },
         {
           cat: 'distillery',
           whatTheyMake: 'Distillates &amp; Traditional Spirits',
           specialties: 'Spirits &amp; Alembic Distillations',
-          visiting: 'Distillery &amp; Visiting',
           callAction: 'Call Distillery',
         },
         {
           cat: 'farm',
           whatTheyMake: 'Farm Produce &amp; Agricultural Harvests',
           specialties: 'Cultivations &amp; Crops',
-          visiting: 'Farm &amp; Visiting',
           callAction: 'Call Farm',
         },
       ];
@@ -120,8 +112,9 @@ describe('Phase 8 Producer Card + Detail Hierarchy', () => {
 
         expect(makeHtml).toContain(item.whatTheyMake);
         expect(makeHtml).toContain(item.specialties);
-        expect(makeHtml).not.toContain(item.visiting);
-        expect(visitHtml).toContain(item.visiting);
+        expect(makeHtml).not.toContain('Know Before You Go');
+        expect(visitHtml).toContain('Visiting &amp; Access');
+        expect(visitHtml).toContain('Know Before You Go');
         expect(visitHtml).toContain(item.callAction);
       }
     });
@@ -144,7 +137,7 @@ describe('Phase 8 Producer Card + Detail Hierarchy', () => {
       );
 
       // Section C: Visiting
-      expect(html).toContain('Farm &amp; Visiting');
+      expect(html).toContain('Know Before You Go');
       expect(html).toContain('Visitors Welcome');
       expect(html).toContain('Tours available on weekdays');
       expect(html).toContain('Call Farm');

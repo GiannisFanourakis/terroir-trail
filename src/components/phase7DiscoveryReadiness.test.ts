@@ -41,7 +41,7 @@ describe('Phase 7 discovery readiness boundaries', () => {
     const map = read('src/components/Map/MapCanvas.tsx');
     expect(map).toContain("selectedProducer.locationStatus === 'unresolved'");
     expect(map).toContain(
-      'role="region" aria-label="Interactive producer, country and NUTS-backed terroir-region map"'
+      'role="region" aria-label="Interactive producer map"'
     );
   });
 

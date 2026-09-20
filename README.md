@@ -1,68 +1,107 @@
 # TerroirTrail
 
-TerroirTrail is a discovery-first agritourism, craft beverage, and artisan food guide for independent culinary travelers, road-trippers, and slow travelers across Europe. Current production catalogue totals are derived from the live Supabase `public.producers` catalogue rather than maintained by hand.
-
-Production deployment runs `npm run sync:seo-catalogue` before the build, refreshes the deterministic SEO/AEO snapshot, and calculates producer, destination, country, region, category, country-breakdown, landing-page, and sitemap totals from that synchronized set.
+TerroirTrail is an independent, discovery-first agritourism and producer guide for culinary travelers, road-trippers, and slow travelers across Europe. It helps people find place-based producers, understand whether and how they can be visited, assess practical access information, and contact makers directly through official channels.
 
 Production: https://terroir-trail.web.app/
 
 ---
 
+## What TerroirTrail Is
+
+TerroirTrail is built around **curated discovery rather than catalogue volume**. The public product brings together wineries, breweries, cideries, distilleries, olive and other oil producers, dairies and cheesemakers, apiaries, confectionery makers, herb and mushroom farms, farms, and other eligible place-based producers.
+
+A public listing is an editorial discovery record. It does **not** automatically mean that the producer is a commercial partner, accepts bookings through TerroirTrail, or has paid for inclusion.
+
+The current roadmap and milestone history are maintained in [ROADMAP.md](ROADMAP.md).
+
+---
+
 ## Product Principles
 
-TerroirTrail is built around authenticity, safety, and rigorous verification rather than uncurated volume:
-
-- **Discovery and Commercial Partnerships are Separate Layers:** A producer can be catalogued and discovered without being a commercial partner. Editorial discovery does not imply a paid relationship.
-- **Public Visitability Does Not Equal Booking Permission:** Visiting information is researched from producer-controlled or verified public channels without implying a TerroirTrail booking relationship.
-- **Unknown Stays Unknown:** The platform never fabricates ratings, review scores, visitor prices, amenities, road conditions, or hours to fill empty fields.
-- **Location Confidence and Road-Access Confidence are Separate:** A verified geographic coordinate does not mean the access road is suitable for a standard low-clearance rental car.
-- **Direct Producer Contact is Preferred:** Travelers are connected directly to official producer-controlled channels (official website, direct phone, email).
-- **Rural Road Safety (Fail-Closed Navigation):** Turn-by-turn navigation is deliberately suppressed if coordinates, road access, or vehicle suitability are unverified or require 4x4 vehicles.
-
-The canonical implementation state and milestone history are maintained in [`ROADMAP.md`](ROADMAP.md).
+- **Unknown stays unknown.** Missing evidence is never converted into a positive claim.
+- **Listing, visitability, and partnership are separate.** A producer can be discoverable without being a commercial partner, and a mapped producer is not automatically open to visitors.
+- **Location and road access are separate facts.** A verified map point does not prove that the final approach is suitable for a standard rental car.
+- **Direct producer contact comes first.** Official websites, phone numbers, and producer-controlled channels are preferred for current visiting arrangements.
+- **Road guidance fails closed.** Positive access guidance is only shown when it has been independently supported; otherwise uncertainty remains visible.
+- **Evidence is attached to the fact it supports.** Visitability, location, and access can have different sources and different confidence states.
+- **The public catalogue is curated.** Expansion is allowed only when new records meet the same identity, location, evidence, and publication standards.
 
 ---
 
 ## Current Public Product
 
-- **Interactive Terroir Map:** High-performance Leaflet map featuring administrative terroir region boundaries sourced from geoBoundaries and Eurostat / GISCO (CC BY 4.0) and custom tile providers.
-- **Multi-Category Producer Directory:** Wineries, craft breweries, artisan cheese dairies, olive mills and olive-oil producers, apiaries, farms, cideries, confectioneries, herb farms, mushroom farms, oil mills, and distilleries across the currently published European catalogue.
-- **Evidence-Backed Auditing:** Independent verification badges for location precision, visitability status, and road-access suitability.
-- **Traveler Accounts & Passport:** Private accounts (Firebase Auth), visited-place passport stamps, and private tasting notes.
-- **Favorites / Saved Places:** Account-partitioned saved producers in device local storage.
-- **Travel Affiliate Links (Travelpayouts):** Curated, non-intrusive outbound affiliate links for car hire, transfers, experiences, and travel eSIMs. No personal profile data or tracking cookies are transmitted; active Explorer Pass holders enjoy an ad-free experience.
-- **Fail-Closed Road Access Warnings:** Location confidence and road-access confidence are strictly separated; clear road-access warnings and rental-car advisories are provided per producer.
-- **Resilient Fallback Data:** Offline/static catalogue fallback ensures full usability even if remote services are unavailable.
+- **Interactive map and producer directory** with country, destination, region, and category discovery.
+- **Multi-category catalogue** spanning the active European publication scope.
+- **Producer detail pages** with story, products, official contact details, map location, visit information, and access notes where known.
+- **Visitability V1** with explicit states for public visits, seasonal public access, appointment-only access, uncertain current access, and visits that are not publicly confirmed.
+- **Booking and walk-in guidance** that distinguishes required, recommended, not-required, accepted, not-accepted, and subject-to-availability states without turning unknown values into “No.”
+- **Independent road-access classification** with fail-closed rental-car guidance.
+- **Traveler accounts and Terroir Passport** for visited places and private tasting / trip notes.
+- **Favorites / saved places** separated by traveler account.
+- **Producer claim / Host Portal** with ownership review before management privileges are granted.
+- **Canonical SEO/AEO pages** for active producer entities and eligible country, destination, region, category, and destination/category landing pages.
+- **Offline/static fallback** generated from the same active catalogue and lazy-loaded only when the live service is unavailable.
 
 ---
 
-## Experiences, Bookings, and Commercial Features
+## Catalogue Source of Truth
 
-TerroirTrail is currently **discovery-first**, not an online travel agency (OTA) or open booking marketplace.
+The authoritative public catalogue is the Supabase **public.producers** table.
 
-- **Experiences:** All prototype commercial experiences in the database remain inactive (`is_active = FALSE`). Public experiences require explicit, negotiated agreements with individual hosts.
-- **Dormant Commercial Infrastructure:** Payment workflows (Stripe checkout) and display advertising (Google AdSense) are architecturally integrated but **disabled/dormant (pilot safety active)** in this production release.
-- **Affiliate Disclosure:** Outbound links to external travel providers (e.g. car rental, transfers, activities/experiences, or travel eSIMs) may earn TerroirTrail a referral commission at no additional cost to the user.
+Publication is controlled by **public.producers.is_active**.
+
+Only rows with **is_active = true** are exposed through the public RLS policy and included in runtime discovery, generated fallback data, SEO/AEO output, public catalogue summaries, and sitemap generation.
+
+Current totals are **not maintained manually in README, FAQ, About copy, tests, or SEO prose**.
+
+The synchronization pipeline generates:
+
+- **src/data/liveCatalogue.generated.ts** — deterministic active producer snapshot used by SEO/AEO and the full offline fallback.
+- **src/data/activeProducerIds.generated.ts** — compact active-ID publication set.
+- **src/data/catalogueSummary.generated.ts** — lightweight public totals, country names, and category names used by About/FAQ UI.
+- **dist/catalogue-state.json** — deployment state containing catalogue dimensions and a deterministic catalogue hash.
+- canonical producer pages, landing pages, **llms.txt**, and the production sitemap.
+
+Exact synchronization checks compare producer IDs **and** a SHA-256 catalogue-content hash, so a same-size producer swap or content change cannot pass unnoticed.
 
 ---
 
-## Catalogue Statistics & Structure
+## Automated Catalogue & Deployment Reconciliation
 
-- **Live Supabase catalogue:** authoritative published producer/project rows in `public.producers`.
-- **Bundled deterministic SEO/AEO snapshot:** refreshed from the live catalogue before production deployment.
-- **Canonical sitemap footprint:** generated from the synchronized producer set plus eligible country, destination, region, category, and index pages.
-- **SEO/AEO deployment contract:** generation and verification require the live catalogue snapshot, canonical producer pages, landing-page entity graph, robots.txt, llms.txt, and sitemap to remain synchronized.
-- **Current totals and geography/category breakdowns:** emitted by the live sync and SEO build logs instead of being hand-maintained in this README.
+Catalogue publication is automated through GitHub Actions and Supabase.
+
+The **Production Reconcile** workflow:
+
+1. reads the latest active Supabase catalogue;
+2. regenerates the active producer snapshot, active IDs, and public catalogue summary;
+3. verifies exact live ↔ generated parity;
+4. runs the complete quality gate;
+5. runs browser-level responsive checks;
+6. commits generated catalogue changes when necessary;
+7. rebuilds from the final commit;
+8. re-verifies live catalogue parity immediately before deployment;
+9. compares the local commit and catalogue hash with production;
+10. deploys Firebase Hosting only when production is stale;
+11. runs public smoke and production-UI checks after deployment; and
+12. verifies that the deployed catalogue hash matches the synchronized build.
+
+The reconcile workflow runs after a successful **Quality Gate**, on a scheduled cadence, and can also be invoked manually. Failed gates prevent deployment.
+
+This means adding, editing, deactivating, or reactivating a producer in the authoritative catalogue automatically flows through public counts, About/FAQ statistics, fallback data, SEO/AEO pages, sitemap generation, and the deployed catalogue state.
 
 ---
 
-## Technology Stack
+## Commercial Status
 
-- **Frontend:** React 19, TypeScript, Vite, Tailwind CSS v4, Lucide Icons
-- **Mapping & Geospatial:** Leaflet 1.9.x, sourced regional geometries, geoBoundaries, Eurostat/GISCO
-- **Data & Backend:** Supabase (PostgreSQL / PostGIS) for producer catalogue, Firebase Authentication + Cloud Firestore for traveler accounts & private passport notes
-- **Hosting & Infrastructure:** Firebase Hosting (production web), Google Cloud Platform
-- **Mobile Packaging:** Capacitor (iOS & Android native wrappers)
+TerroirTrail is currently **discovery-first**, not an online travel agency or open booking marketplace.
+
+- Public TerroirTrail tasting Experiences remain inactive unless a producer-specific agreement is deliberately introduced.
+- Explorer Pass sales and Host Pro subscriptions are not part of the current public product.
+- Display advertising remains disabled.
+- Some outbound travel links may be affiliate links. TerroirTrail may earn a referral commission from a third-party provider at no additional cost to the traveler.
+- Editorial producer inclusion is independent of affiliate activity and commercial partnership.
+
+Dormant infrastructure in the codebase must not be treated as an active public feature.
 
 ---
 
@@ -70,68 +109,99 @@ TerroirTrail is currently **discovery-first**, not an online travel agency (OTA)
 
 ### Are you a producer who belongs on TerroirTrail?
 
-If you run an independent winery, brewery, cidery, distillery, olive or other oil producer, dairy/cheesemaker, apiary, farm, confectionery, herb farm, mushroom farm, or another place-based producer that fits the TerroirTrail catalogue, we would like to hear from you.
+If you run an independent, place-based producer that fits the TerroirTrail catalogue, contact **[terroirtrail@gmail.com](mailto:terroirtrail@gmail.com)** with:
 
-Contact **[terroirtrail@gmail.com](mailto:terroirtrail@gmail.com)** with your producer name, location, official website or public business page, and a short note about what you make.
+- producer name;
+- location;
+- official website or public business page; and
+- a short description of what you make.
 
-TerroirTrail reviews producer identity, location, visitability and access independently. An enquiry does not automatically guarantee inclusion, verification, a commercial partnership, or a booking relationship.
+TerroirTrail reviews identity, location, visitability, and access independently. An enquiry does not guarantee inclusion, verification, commercial partnership, booking permission, or Host access.
 
-## Development & Verification
+### Already listed?
 
-### Install Dependencies
+Use the Host Portal to submit a producer claim. Management privileges are granted only after ownership review.
 
-```bash
+---
+
+## Technology Stack
+
+- **Frontend:** React 19, TypeScript, Vite, Tailwind CSS v4, Lucide Icons
+- **Mapping:** Leaflet 1.9.x
+- **Geospatial data:** sourced regional boundaries from geoBoundaries and Eurostat / GISCO
+- **Catalogue / backend:** Supabase PostgreSQL / PostGIS
+- **Traveler identity and private account data:** Firebase Authentication and Cloud Firestore
+- **Hosting:** Firebase Hosting
+- **Mobile packaging:** Capacitor for iOS and Android wrappers
+- **Automation:** GitHub Actions + deterministic catalogue generation / verification
+
+---
+
+## Development
+
+### Install
+
+~~~bash
 npm install
-```
+~~~
 
-### Run Locally
+### Run locally
 
-```bash
+~~~bash
 npm run dev
-```
+~~~
 
-### Full Quality & Verification Gate
+### Full quality gate
 
-```bash
+~~~bash
 npm run check
-```
+~~~
 
-The check gate runs:
-1. TypeScript compiler checks (`tsc --noEmit`)
-2. ESLint code quality checks
-3. Prettier format validation
-4. Vitest frontend component & logic test suites
-5. Node / Vitest server test suites
-6. Firestore Security Rules unit tests (Firestore emulator)
-7. Production Vite build & synchronized SEO/AEO generation and verification (producer-page and sitemap totals are derived from the synchronized catalogue)
+The quality gate covers TypeScript, ESLint, formatting, frontend and server tests, Firebase rules tests, production build generation, SEO/AEO verification, and build budgets.
 
-### Additional Tests
+### Synchronize the active catalogue locally
 
-```bash
-# Python verification tools
+Requires the public Supabase URL and publishable/anon key used by the application:
+
+~~~bash
+npm run sync:seo-catalogue
+npm run verify:live-catalogue
+~~~
+
+### Production-oriented live build
+
+~~~bash
+npm run build:live
+~~~
+
+### Additional checks
+
+~~~bash
 npm run test:python
-
-# Mobile preflight validation
 npm run mobile:preflight -- all
-```
+~~~
 
 ---
 
 ## Important Project Files
 
-- [`LICENSE.md`](LICENSE.md) — Proprietary software license, open-source acknowledgements, and geospatial attributions
-- [`PRIVACY_POLICY.md`](PRIVACY_POLICY.md) — Comprehensive privacy policy and GDPR disclosure
-- [`TERMS_OF_SERVICE.md`](TERMS_OF_SERVICE.md) — Terms of service and commercial disclosures
-- [`ROADMAP.md`](ROADMAP.md) — Canonical product roadmap and feature statuses
-- [`AGENTS.md`](AGENTS.md) — Repository-level operating rules, including the mandatory producer verification/import gate
-- [`src/data/terroirRegions.ts`](src/data/terroirRegions.ts) — Sourced regional terroir polygon boundaries
-- [`src/utils/producerAccess.ts`](src/utils/producerAccess.ts) — Fail-closed producer road-access warnings and rental-car advisories
-- [`public/llms.txt`](public/llms.txt) — Authoritative machine-readable catalogue summary
+- [ROADMAP.md](ROADMAP.md) — canonical product roadmap and milestone state
+- [AGENTS.md](AGENTS.md) — repository operating and producer-verification rules
+- [LICENSE.md](LICENSE.md) — proprietary software notice and third-party attributions
+- [PRIVACY_POLICY.md](PRIVACY_POLICY.md) — privacy and GDPR disclosures
+- [TERMS_OF_SERVICE.md](TERMS_OF_SERVICE.md) — service and commercial terms
+- [src/services/producerService.ts](src/services/producerService.ts) — runtime producer retrieval and fallback behavior
+- [src/data/catalogueSummary.generated.ts](src/data/catalogueSummary.generated.ts) — generated lightweight public catalogue scope
+- [scripts/sync_seo_catalogue.ts](scripts/sync_seo_catalogue.ts) — active-catalogue generator
+- [scripts/verify_live_catalogue_sync.ts](scripts/verify_live_catalogue_sync.ts) — exact live/generated parity verification
+- [.github/workflows/production-reconcile.yml](.github/workflows/production-reconcile.yml) — automated catalogue/deployment reconciliation
+- [public/llms.txt](public/llms.txt) — source template for the machine-readable public product summary
+- [src/utils/producerAccess.ts](src/utils/producerAccess.ts) — road-access and rental-car guidance logic
 
 ---
 
 ## License & Attribution
 
-TerroirTrail software, design assets, and proprietary database schemas are **Proprietary Works** owned exclusively by TerroirTrail. All rights reserved. See [`LICENSE.md`](LICENSE.md).
+TerroirTrail software, design assets, proprietary database schemas, and associated project materials are **Proprietary Works** owned exclusively by TerroirTrail. All rights reserved. See [LICENSE.md](LICENSE.md).
 
-Third-party dependencies and open-source packages remain subject to their respective licenses. Regional boundary geometries are sourced from geoBoundaries (ADM2 for Crete, Tuscany, Agion Oros) and Eurostat / GISCO (LAU 2021 Thira, NUTS 2021 NUTS 3 for Peloponnese and Macedonia), licensed under CC BY 4.0. Map base tiles are provided by OpenStreetMap contributors (ODbL), CARTO, and Esri.
+Third-party libraries and data remain subject to their respective licenses. Map boundaries and base layers retain their required geoBoundaries, Eurostat / GISCO, OpenStreetMap, CARTO, Esri, and other applicable attributions.

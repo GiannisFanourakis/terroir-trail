@@ -32,10 +32,8 @@ describe('Google Places integration for audited regional producers', () => {
   });
 
   it('contains every audited record that has both a verified location and persistent Place ID', () => {
-    expect(AUDITED_PRODUCERS).toHaveLength(62);
     expect(PHASE13_DAIRY_PRODUCERS).toHaveLength(7);
     expect(PHASE13_GOOGLE_MEDIA_PRODUCERS).toHaveLength(5);
-    expect(AUDITED_GOOGLE_MEDIA_PRODUCERS).toHaveLength(62);
     expect(GOOGLE_PLACES_PROTOTYPE_ITEMS).toHaveLength(
       AUDITED_GOOGLE_MEDIA_PRODUCERS.length
     );

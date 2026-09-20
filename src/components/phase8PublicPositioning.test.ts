@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { readFileSync, existsSync } from 'node:fs';
+import { CATALOGUE_SUMMARY } from '../data/catalogueSummary.generated';
 
 const read = (file: string) => readFileSync(file, 'utf8');
 
@@ -91,13 +92,13 @@ describe('Public Positioning & SEO Synchronization', () => {
       );
     });
 
-    it('represents all 13 categories in AboutFaqModal and metric counts', () => {
-      expect(aboutFaqModal).toContain('TerroirTrail supports 13 first-class producer categories');
-      expect(aboutFaqModal).toContain(
-        'Wineries, Breweries, Distilleries, Cideries, Olive Mills, Olive Oil Producers, Other Oil Mills, Dairies / Cheesemakers, Apiaries / Honey, Confectionery Producers, Herb Farms, Mushroom Farms, and Farms'
-      );
-      expect(aboutFaqModal).toContain('<Metric value="13" label="Producer categories" />');
-      expect(aboutFaqModal).not.toContain('<Metric value="12" label="Producer categories" />');
+    it('drives About/FAQ category scope from the generated active catalogue summary', () => {
+      expect(CATALOGUE_SUMMARY.categories).toBe(13);
+      expect(CATALOGUE_SUMMARY.categoryNames).toHaveLength(CATALOGUE_SUMMARY.categories);
+      expect(aboutFaqModal).toContain('CATALOGUE_SUMMARY.categories');
+      expect(aboutFaqModal).toContain('CATEGORY_SCOPE_TEXT');
+      expect(aboutFaqModal).toContain('label="Producer categories"');
+      expect(aboutFaqModal).not.toContain('<Metric value="13" label="Producer categories" />');
     });
   });
 
@@ -110,7 +111,7 @@ describe('Public Positioning & SEO Synchronization', () => {
         'TerroirTrail treats location and road access as separate facts'
       );
       expect(aboutFaqModal).toContain(
-        'when it is not, the site does not invent a road condition'
+        'the platform fails closed and does not invent a positive road condition'
       );
     });
 

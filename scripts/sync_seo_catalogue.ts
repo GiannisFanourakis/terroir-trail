@@ -1,17 +1,28 @@
 import fs from 'fs';
 import path from 'path';
-import dotenv from 'dotenv';
-import { createClient } from '@supabase/supabase-js';
 import type { Producer } from '../src/types/terroir';
+import { buildCatalogueState } from './catalogueState';
+import { fetchActiveProducerRows } from './liveCatalogueSource';
 
 const rootDir = process.cwd();
-const targetPath = path.resolve(rootDir, 'scripts', 'seoLiveCatalogue.generated.ts');
+const catalogueTargetPath = path.resolve(rootDir, 'src', 'data', 'liveCatalogue.generated.ts');
+const activeIdsTargetPath = path.resolve(rootDir, 'src', 'data', 'activeProducerIds.generated.ts');
+const summaryTargetPath = path.resolve(rootDir, 'src', 'data', 'catalogueSummary.generated.ts');
 
-const loadProductionEnv = (): void => {
-  for (const file of ['.env.production.local', '.env.production', '.env.local', '.env']) {
-    const filePath = path.resolve(rootDir, file);
-    if (fs.existsSync(filePath)) dotenv.config({ path: filePath, override: false });
-  }
+const CATEGORY_LABELS: Record<string, string> = {
+  apiary: 'Apiaries / Honey',
+  brewery: 'Breweries',
+  cheese_dairy: 'Dairies / Cheesemakers',
+  cidery: 'Cideries',
+  confectionery: 'Confectionery Producers',
+  distillery: 'Distilleries',
+  farm: 'Farms',
+  herb_farm: 'Herb Farms',
+  mushroom_farm: 'Mushroom Farms',
+  oil_mill: 'Other Oil Mills',
+  olive_mill: 'Olive Mills',
+  olive_oil_producer: 'Olive Oil Producers',
+  winery: 'Wineries',
 };
 
 const fail = (message: string): never => {
@@ -20,58 +31,97 @@ const fail = (message: string): never => {
 };
 
 async function syncSeoCatalogue(): Promise<void> {
-  loadProductionEnv();
-  const url = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
-  const key = process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
-  if (!url || !key) {
-    fail('Supabase public URL/key are unavailable. Production SEO sync requires VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY (or SUPABASE_URL / SUPABASE_ANON_KEY).');
+  const rows = await fetchActiveProducerRows();
+  const { mapRowToProducer } = await import('../src/services/producerService');
+  const producers: Producer[] = rows
+    .map((row) => mapRowToProducer(row))
+    .sort((a, b) => a.id.localeCompare(b.id));
+
+  const ids = producers.map((producer) => producer.id);
+  if (new Set(ids).size !== ids.length) {
+    fail('Duplicate producer IDs were returned by the active live catalogue.');
   }
 
-  const supabase = createClient(url, key, {
-    auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
-  });
+  const invalid = producers.filter(
+    (producer) =>
+      !producer.id ||
+      !producer.destination ||
+      !producer.countryCode ||
+      !producer.region ||
+      !producer.category
+  );
+  if (invalid.length > 0) {
+    fail(`Active live catalogue contains ${invalid.length} row(s) missing required SEO geography/category fields.`);
+  }
 
-  // "Active" currently means every row published through public.producers,
-  // matching producerService.getProducers(). There is no producer is_active
-  // column today; if publication status is added later, filter both paths together.
-  const { data, error } = await supabase.from('producers').select('*').order('id', { ascending: true });
-  if (error) fail(error.message);
-  if (!data || data.length === 0) fail('The live public.producers catalogue returned no rows.');
+  const latestUpdatedAt =
+    rows
+      .map((row) => (typeof row.updated_at === 'string' ? row.updated_at : null))
+      .filter((value): value is string => Boolean(value))
+      .sort()
+      .at(-1) || 'unknown';
 
-  const { mapRowToProducer } = await import('../src/services/producerService');
-  const producers: Producer[] = data.map((row) => mapRowToProducer(row)).sort((a, b) => a.id.localeCompare(b.id));
-  const ids = new Set(producers.map((producer) => producer.id));
-  if (ids.size !== producers.length) fail('Duplicate producer IDs were returned by the live catalogue.');
-
-  const invalid = producers.filter((producer) => !producer.id || !producer.destination || !producer.countryCode || !producer.region || !producer.category);
-  if (invalid.length > 0) fail(`Live catalogue contains ${invalid.length} row(s) missing required SEO geography/category fields.`);
-
-  const latestUpdatedAt = data
-    .map((row) => (typeof row.updated_at === 'string' ? row.updated_at : null))
-    .filter((value): value is string => Boolean(value))
-    .sort()
-    .at(-1) || 'unknown';
-
-  const source = `import type { Producer } from '../src/types/terroir';
+  const catalogueSource = `import type { Producer } from '../types/terroir';
 
 /**
- * Deterministic SEO/AEO producer snapshot generated from the live Supabase
- * public.producers catalogue.
+ * Deterministic active producer snapshot generated from the live Supabase
+ * public.producers catalogue where is_active = true.
  *
- * Runtime Supabase remains authoritative. This file is refreshed automatically
- * before production SEO generation; do not hand-edit producer records here.
- * Latest source row update: ${latestUpdatedAt}
+ * Runtime Supabase remains authoritative. This file is shared by runtime fallback
+ * and SEO/AEO generation and is refreshed automatically; do not hand-edit it.
+ * Latest active source row update: ${latestUpdatedAt}
  */
-export const SEO_LIVE_PRODUCERS = ${JSON.stringify(producers, null, 2)} as Producer[];
+export const LIVE_CATALOGUE_PRODUCERS = ${JSON.stringify(producers, null, 2)} as Producer[];
 `;
 
-  fs.writeFileSync(targetPath, source, 'utf-8');
+  const activeIdsSource = `/**
+ * Generated from Supabase public.producers where is_active = true.
+ * Do not hand-edit. Production catalogue synchronization rewrites this file.
+ */
+export const ACTIVE_PRODUCER_IDS = ${JSON.stringify(ids, null, 2)} as const;
+`;
 
-  const destinations = new Set(producers.map((producer) => producer.destination)).size;
-  const countries = new Set(producers.map((producer) => producer.countryCode).filter(Boolean)).size;
-  const regions = new Set(producers.map((producer) => producer.region)).size;
-  const categories = new Set(producers.map((producer) => producer.category)).size;
-  console.log(`SEO live catalogue synchronized: ${producers.length} active records / ${destinations} destinations / ${countries} countries / ${regions} regions / ${categories} categories.`);
+  const state = buildCatalogueState(producers);
+  const countryNames = Array.from(
+    new Set(
+      producers
+        .map((producer) => producer.country)
+        .filter((country): country is string => Boolean(country))
+    )
+  ).sort((a, b) => a.localeCompare(b));
+  const categoryNames = Array.from(
+    new Set(producers.map((producer) => producer.category))
+  )
+    .map((category) => CATEGORY_LABELS[category] ?? category)
+    .sort((a, b) => a.localeCompare(b));
+
+  const summarySource = `/**
+ * Generated from active rows in Supabase public.producers.
+ * Do not hand-edit. Production catalogue synchronization rewrites this file.
+ */
+export const CATALOGUE_SUMMARY = ${JSON.stringify(
+    {
+      producers: state.producers,
+      destinations: state.destinations,
+      countries: state.countries,
+      regions: state.regions,
+      categories: state.categories,
+      countryNames,
+      categoryNames,
+    },
+    null,
+    2
+  )} as const;
+`;
+
+  fs.writeFileSync(catalogueTargetPath, catalogueSource, 'utf-8');
+  fs.writeFileSync(activeIdsTargetPath, activeIdsSource, 'utf-8');
+  fs.writeFileSync(summaryTargetPath, summarySource, 'utf-8');
+  console.log(
+    `Live catalogue synchronized: ${state.producers} active records / ${state.destinations} destinations / ${state.countries} countries / ${state.regions} regions / ${state.categories} categories / hash ${state.catalogueHash.slice(0, 12)}…`
+  );
 }
 
-syncSeoCatalogue().catch((error) => fail(error instanceof Error ? error.message : String(error)));
+syncSeoCatalogue().catch((error) =>
+  fail(error instanceof Error ? error.message : String(error))
+);

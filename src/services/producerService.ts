@@ -3,15 +3,32 @@ import { TastingExperience } from '../types/booking';
 import { CRETAN_PRODUCERS } from '../data/producers';
 import { SANTORINI_PRODUCERS } from '../data/santoriniProducers';
 import { PHASE10B_PRODUCERS } from '../data/phase10bProducers';
+import { ACTIVE_PRODUCER_IDS } from '../data/activeProducerIds.generated';
 import { ALL_EXPERIENCES } from '../data/experiences';
 import { supabase, isSupabaseConfigured } from './supabase';
 import { logger } from './logger';
 
-const FALLBACK_PRODUCERS: Producer[] = [
+const ACTIVE_PRODUCER_ID_SET = new Set<string>(ACTIVE_PRODUCER_IDS);
+const BOOTSTRAP_FALLBACK_PRODUCERS: Producer[] = [
   ...CRETAN_PRODUCERS,
   ...SANTORINI_PRODUCERS,
   ...PHASE10B_PRODUCERS,
-];
+].filter((producer) => ACTIVE_PRODUCER_ID_SET.has(producer.id));
+
+let fallbackProducersCache: Producer[] = BOOTSTRAP_FALLBACK_PRODUCERS;
+let fullFallbackPromise: Promise<Producer[]> | null = null;
+
+async function loadFullFallbackProducers(): Promise<Producer[]> {
+  if (!fullFallbackPromise) {
+    fullFallbackPromise = import('../data/liveCatalogue.generated').then(
+      ({ LIVE_CATALOGUE_PRODUCERS }) => {
+        fallbackProducersCache = LIVE_CATALOGUE_PRODUCERS;
+        return fallbackProducersCache;
+      }
+    );
+  }
+  return fullFallbackPromise;
+}
 
 export interface ViewportBounds {
   north: number;
@@ -176,7 +193,7 @@ function filterProducersList(producers: Producer[], options: ProducerQueryOption
 /**
  * Authoritative in-memory state and provenance tracking.
  *
- * - fallback: audited bundled Crete, Santorini, and Phase 10B producer snapshots.
+ * - fallback: lightweight audited bootstrap, then a lazy-loaded deterministic snapshot of the full active catalogue.
  * - live: Supabase successfully returned data and remains the sole authority.
  */
 let cacheProvenance: DataProvenance = 'fallback';
@@ -201,6 +218,8 @@ export const producerService = {
   resetCacheForTesting(): void {
     cacheProvenance = 'fallback';
     liveProducersCache.clear();
+    fallbackProducersCache = BOOTSTRAP_FALLBACK_PRODUCERS;
+    fullFallbackPromise = null;
     experienceProvenance = 'fallback';
     liveExperiencesCache = [];
   },
@@ -210,7 +229,7 @@ export const producerService = {
 
     if (this.isLiveDb() && supabase) {
       try {
-        let query = supabase.from('producers').select('*');
+        let query = supabase.from('producers').select('*').eq('is_active', true);
 
         if (destination && destination !== 'all') {
           query = query.eq('destination', destination);
@@ -264,7 +283,8 @@ export const producerService = {
       }
     }
 
-    return filterProducersList(FALLBACK_PRODUCERS, options);
+    const fallbackProducers = await loadFullFallbackProducers();
+    return filterProducersList(fallbackProducers, options);
   },
 
   async getProducerById(id: string): Promise<Producer | null> {
@@ -277,6 +297,7 @@ export const producerService = {
         const { data, error } = await supabase
           .from('producers')
           .select('*')
+          .eq('is_active', true)
           .eq('id', id)
           .maybeSingle();
         if (!error) {
@@ -289,17 +310,17 @@ export const producerService = {
           return null;
         }
         logger.warn('Catalogue', 'producer_by_id_failed', { id, reason: error.message });
-        return FALLBACK_PRODUCERS.find((p) => p.id === id) || null;
+        return (await loadFullFallbackProducers()).find((p) => p.id === id) || null;
       } catch (err) {
         logger.warn('Catalogue', 'producer_by_id_error', {
           id,
           reason: err instanceof Error ? err.message : String(err),
         });
-        return FALLBACK_PRODUCERS.find((p) => p.id === id) || null;
+        return (await loadFullFallbackProducers()).find((p) => p.id === id) || null;
       }
     }
 
-    return FALLBACK_PRODUCERS.find((p) => p.id === id) || null;
+    return (await loadFullFallbackProducers()).find((p) => p.id === id) || null;
   },
 
   async getExperiences(producerId?: string): Promise<TastingExperience[]> {
@@ -339,14 +360,14 @@ export const producerService = {
     if (cacheProvenance === 'live') {
       return Array.from(liveProducersCache.values());
     }
-    return FALLBACK_PRODUCERS;
+    return fallbackProducersCache;
   },
 
   getCachedProducer(id: string): Producer | undefined {
     if (cacheProvenance === 'live') {
       return liveProducersCache.get(id);
     }
-    return FALLBACK_PRODUCERS.find((p) => p.id === id);
+    return fallbackProducersCache.find((p) => p.id === id);
   },
 
   getCachedExperiences(producerId?: string): TastingExperience[] {

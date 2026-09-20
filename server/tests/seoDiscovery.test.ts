@@ -11,12 +11,16 @@ const read = (relativePath: string): string =>
 test('SEO/AEO manifests publish live scope and canonical snapshot distinctly', () => {
   const llms = read('public/llms.txt');
 
-  assert.match(llms, /148 producer\/project records/);
-  assert.match(llms, /22 destinations in 8 countries/);
+  assert.match(llms, /\{\{LIVE_PRODUCER_COUNT\}\} producer\/project records/);
   assert.match(
     llms,
-    /Deterministic canonical SEO\/AEO producer snapshot — 148 records, synchronized with the live catalogue\./
+    /\{\{LIVE_DESTINATION_COUNT\}\} destinations in \{\{LIVE_COUNTRY_COUNT\}\} countries/
   );
+  assert.match(
+    llms,
+    /Deterministic canonical SEO\/AEO producer snapshot — \{\{LIVE_PRODUCER_COUNT\}\} records, synchronized with the live catalogue\./
+  );
+  assert.match(llms, /\{\{LIVE_GEO_SCOPE_LINES\}\}/);
   assert.match(llms, /## Search and answer-engine discovery/);
   assert.match(llms, /## Answer-engine interpretation rules/);
 });
@@ -60,16 +64,15 @@ test('SEO landing generation uses a structural idempotent homepage marker', () =
 });
 
 
-test('checked-in sitemap covers the synchronized canonical catalogue', () => {
+test('checked-in sitemap is only a stable seed; build generation owns live catalogue URLs', () => {
   const sitemap = read('public/sitemap.xml');
   const urls = [...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map((match) => match[1]);
 
-  assert.equal(urls.length, 235);
-  assert.equal(new Set(urls).size, 235);
-  assert.ok(urls.includes('https://terroir-trail.web.app/producers/adega-de-borba-alentejo/'));
-  assert.ok(urls.includes('https://terroir-trail.web.app/producers/tingvollost-more-og-romsdal/'));
-  assert.ok(urls.includes('https://terroir-trail.web.app/france/provence/'));
-  assert.ok(urls.includes('https://terroir-trail.web.app/norway/vestland/'));
-  assert.ok(urls.includes('https://terroir-trail.web.app/slovenia/goriska/'));
-  assert.ok(urls.includes('https://terroir-trail.web.app/producers/wineries/'));
+  assert.equal(new Set(urls).size, urls.length);
+  assert.deepEqual(urls, [
+    'https://terroir-trail.web.app/',
+    'https://terroir-trail.web.app/privacy.html',
+    'https://terroir-trail.web.app/producers/',
+  ]);
+  assert.doesNotMatch(sitemap, /\?producer=/);
 });
