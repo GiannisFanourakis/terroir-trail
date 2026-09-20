@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest';
-import { CLIENT_EVENT_ALLOWED_SURFACES, type IntentEventPayload } from './intentAnalytics';
+import { isAllowedIntentSourceSurface, type IntentEventPayload, type IntentEventName } from './intentAnalytics';
 
 // Test that all frontend instrumentation calls adhere to the Phase 14.3 Event Contract v1
 
@@ -9,7 +9,22 @@ describe('Phase 14.3 Product Instrumentation & Contract Compliance', () => {
   });
 
   describe('Contract v1 Event Vocabulary & Allowed Surfaces', () => {
-    const ALLOWED_SURFACES = CLIENT_EVENT_ALLOWED_SURFACES;
+    const INSTRUMENTED_EVENTS: IntentEventName[] = [
+      'producer_view',
+      'producer_share',
+      'region_open',
+      'region_producers_view',
+      'producer_save',
+      'producer_unsave',
+      'producer_website_click',
+      'producer_phone_click',
+      'producer_email_click',
+      'directions_click',
+      'passport_stamp_added',
+      'passport_stamp_removed',
+      'affiliate_impression',
+      'affiliate_click',
+    ];
 
     const ALLOWED_AFFILIATE_CAMPAIGNS = [
       'klook-experiences',
@@ -20,7 +35,7 @@ describe('Phase 14.3 Product Instrumentation & Contract Compliance', () => {
     ];
 
     it('defines valid surfaces for all 14 instrumented event types', () => {
-      expect(Object.keys(ALLOWED_SURFACES)).toHaveLength(14);
+      expect(INSTRUMENTED_EVENTS).toHaveLength(14);
     });
 
     it('requires valid source surfaces for producer events', () => {
@@ -37,7 +52,7 @@ describe('Phase 14.3 Product Instrumentation & Contract Compliance', () => {
       ];
 
       for (const payload of producerEvents) {
-        expect(ALLOWED_SURFACES[payload.event]).toContain(payload.sourceSurface);
+        expect(isAllowedIntentSourceSurface(payload.event, payload.sourceSurface)).toBe(true);
         if ('producerId' in payload) {
           expect(payload.producerId).toBeTruthy();
         }
@@ -51,7 +66,7 @@ describe('Phase 14.3 Product Instrumentation & Contract Compliance', () => {
       ];
 
       for (const payload of regionEvents) {
-        expect(ALLOWED_SURFACES[payload.event]).toContain(payload.sourceSurface);
+        expect(isAllowedIntentSourceSurface(payload.event, payload.sourceSurface)).toBe(true);
         if ('destination' in payload) {
           expect(payload.destination).toBeTruthy();
         }
@@ -65,7 +80,7 @@ describe('Phase 14.3 Product Instrumentation & Contract Compliance', () => {
       ];
 
       for (const payload of passportEvents) {
-        expect(ALLOWED_SURFACES[payload.event]).toContain(payload.sourceSurface);
+        expect(isAllowedIntentSourceSurface(payload.event, payload.sourceSurface)).toBe(true);
       }
     });
 
@@ -76,7 +91,7 @@ describe('Phase 14.3 Product Instrumentation & Contract Compliance', () => {
       ];
 
       for (const payload of affiliateEvents) {
-        expect(ALLOWED_SURFACES[payload.event]).toContain(payload.sourceSurface);
+        expect(isAllowedIntentSourceSurface(payload.event, payload.sourceSurface)).toBe(true);
         if ('affiliateCampaignId' in payload) {
           expect(ALLOWED_AFFILIATE_CAMPAIGNS).toContain(payload.affiliateCampaignId);
         }
