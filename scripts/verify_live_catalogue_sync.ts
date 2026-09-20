@@ -1,6 +1,7 @@
 import { SEO_PRODUCERS } from './seoCatalogue';
 import { buildCatalogueState } from './catalogueState';
 import { fetchActiveProducerRows } from './liveCatalogueSource';
+import { CATALOGUE_SUMMARY } from '../src/data/catalogueSummary.generated';
 
 const fail = (message: string): never => {
   console.error(`[Live catalogue verification failed] ${message}`);
@@ -34,6 +35,34 @@ async function verify(): Promise<void> {
     fail(
       `Producer content drift detected with identical IDs. Live hash ${liveState.catalogueHash}; snapshot hash ${snapshotState.catalogueHash}.`
     );
+  }
+
+  const summaryMetrics = {
+    producers: CATALOGUE_SUMMARY.producers,
+    destinations: CATALOGUE_SUMMARY.destinations,
+    countries: CATALOGUE_SUMMARY.countries,
+    regions: CATALOGUE_SUMMARY.regions,
+    categories: CATALOGUE_SUMMARY.categories,
+  };
+  const liveMetrics = {
+    producers: liveState.producers,
+    destinations: liveState.destinations,
+    countries: liveState.countries,
+    regions: liveState.regions,
+    categories: liveState.categories,
+  };
+
+  if (JSON.stringify(summaryMetrics) !== JSON.stringify(liveMetrics)) {
+    fail(
+      `Public catalogue summary drift detected. Summary ${JSON.stringify(summaryMetrics)}; live ${JSON.stringify(liveMetrics)}.`
+    );
+  }
+
+  const liveCountryNames = Array.from(
+    new Set(liveProducers.map((producer) => producer.country).filter(Boolean))
+  ).sort((a, b) => String(a).localeCompare(String(b)));
+  if (JSON.stringify(CATALOGUE_SUMMARY.countryNames) !== JSON.stringify(liveCountryNames)) {
+    fail('Public catalogue country-name summary is out of sync with the active catalogue.');
   }
 
   console.log(

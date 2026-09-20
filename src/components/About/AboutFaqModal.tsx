@@ -14,6 +14,7 @@ import {
   Sparkles,
   X,
 } from 'lucide-react';
+import { CATALOGUE_SUMMARY } from '../../data/catalogueSummary.generated';
 
 interface AboutFaqModalProps {
   isOpen: boolean;
@@ -42,6 +43,15 @@ interface FaqItem {
 const CONTACT_EMAIL = 'terroirtrail@gmail.com';
 const INSTAGRAM_URL = 'https://www.instagram.com/terroirtrail/';
 
+const formatHumanList = (values: readonly string[]): string => {
+  if (values.length <= 1) return values[0] ?? '';
+  if (values.length === 2) return `${values[0]} and ${values[1]}`;
+  return `${values.slice(0, -1).join(', ')}, and ${values[values.length - 1]}`;
+};
+
+const COUNTRY_SCOPE_TEXT = formatHumanList(CATALOGUE_SUMMARY.countryNames);
+const CATEGORY_SCOPE_TEXT = formatHumanList(CATALOGUE_SUMMARY.categoryNames);
+
 const FAQ_DATA: FaqItem[] = [
   {
     id: 'what-is-terroirtrail',
@@ -57,9 +67,8 @@ const FAQ_DATA: FaqItem[] = [
     category: 'about',
     categoryLabel: 'About & Curation',
     question: 'What categories of producers are included?',
-    answer:
-      'TerroirTrail supports 13 first-class producer categories: Wineries, Breweries, Distilleries, Cideries, Olive Mills, Olive Oil Producers, Other Oil Mills, Dairies / Cheesemakers, Apiaries / Honey, Confectionery Producers, Herb Farms, Mushroom Farms, and Farms.',
-    highlight: 'Thirteen producer categories are presented under the same research standard.',
+    answer: `The active catalogue currently spans ${CATALOGUE_SUMMARY.categories} producer categories: ${CATEGORY_SCOPE_TEXT}. The category total is generated from the same active catalogue used by discovery and SEO, so it changes automatically as publication scope changes.`,
+    highlight: 'Every active category is presented under the same evidence-first research standard.',
   },
   {
     id: 'how-producers-selected',
@@ -70,13 +79,21 @@ const FAQ_DATA: FaqItem[] = [
       'Listings are researched from producer websites, reliable public sources and direct evidence when available. TerroirTrail separates producer identity, visiting information, location and road access so uncertain details can be shown as uncertain rather than guessed.',
   },
   {
+    id: 'listing-partnership',
+    category: 'about',
+    categoryLabel: 'About & Curation',
+    question: 'Does a TerroirTrail listing mean the producer is a commercial partner?',
+    answer:
+      'No. Editorial inclusion, public visitability and commercial partnership are separate things. A producer can be researched and published because it fits the catalogue without paying TerroirTrail, accepting bookings through TerroirTrail or having any commercial relationship with the platform.',
+    highlight: 'Published does not mean partnered.',
+  },
+  {
     id: 'coverage',
     category: 'about',
     categoryLabel: 'About & Curation',
-    question: 'Which regions are currently covered?',
-    answer:
-      'TerroirTrail currently includes 148 producer/project records across 22 destinations in 8 European countries. Coverage continues to expand as new records meet the same research, verification and presentation standard.',
-    highlight: 'The catalogue already reaches beyond Greece while keeping a consistent research standard.',
+    question: 'Where does TerroirTrail currently have coverage?',
+    answer: `The active catalogue currently contains ${CATALOGUE_SUMMARY.producers} producer/project records across ${CATALOGUE_SUMMARY.destinations} destinations, ${CATALOGUE_SUMMARY.regions} named regions and ${CATALOGUE_SUMMARY.countries} European countries: ${COUNTRY_SCOPE_TEXT}. These figures are generated from the active public catalogue and update automatically when publication state changes.`,
+    highlight: 'Coverage expands without weakening the same evidence and publication standard.',
   },
   {
     id: 'visits',
@@ -119,7 +136,7 @@ const FAQ_DATA: FaqItem[] = [
     categoryLabel: 'Visiting Producers',
     question: 'How does TerroirTrail handle rural road access?',
     answer:
-      'TerroirTrail treats location and road access as separate facts. When useful access information is available, it is shown on the listing; when it is not, the site does not invent a road condition.',
+      'TerroirTrail treats location and road access as separate facts. A verified map point does not automatically mean the final approach is suitable for a standard rental car. When access has been independently classified, the listing shows that information; when it has not, the platform fails closed and does not invent a positive road condition.',
   },
   {
     id: 'producer-join',
@@ -147,7 +164,7 @@ const FAQ_DATA: FaqItem[] = [
     categoryLabel: 'For Producers',
     question: 'Does TerroirTrail currently sell tastings, paid passes or Host Pro subscriptions?',
     answer:
-      'No public TerroirTrail tasting Experiences, Explorer Pass sales or Host Pro subscriptions are part of the current launch product. The codebase contains dormant infrastructure for future pilots, but commercial features remain private until they are validated and, where relevant, backed by producer agreements.',
+      'TerroirTrail is currently discovery-first. Public tasting Experiences, Explorer Pass sales and Host Pro subscriptions remain inactive. Some outbound travel links may be affiliate links and can earn TerroirTrail a referral commission at no additional cost to the traveler. Display advertising remains disabled, and producer listings are not presented as paid partnerships unless that relationship actually exists.',
   },
 ];
 
@@ -246,10 +263,10 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
                 </p>
 
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-5 border-t border-white/10">
-                  <Metric value="148" label="Producer records" />
-                  <Metric value="13" label="Producer categories" />
-                  <Metric value="Direct" label="Maker contact" />
-                  <Metric value="Clear" label="Visit & access notes" />
+                  <Metric value={String(CATALOGUE_SUMMARY.producers)} label="Active listings" />
+                  <Metric value={String(CATALOGUE_SUMMARY.countries)} label="Countries" />
+                  <Metric value={String(CATALOGUE_SUMMARY.destinations)} label="Destinations" />
+                  <Metric value={String(CATALOGUE_SUMMARY.categories)} label="Producer categories" />
                 </div>
               </div>
 
@@ -279,10 +296,10 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
               <div className="p-5 rounded-2xl bg-stone-900 border border-white/10 space-y-2">
                 <div className="flex items-center gap-2 text-amber-300 font-bold text-sm">
                   <MapPin className="w-4 h-4" />
-                  <span>Across Greece and into Italy</span>
+                  <span>Across Europe</span>
                 </div>
                 <p className="text-xs text-stone-300 leading-relaxed">
-                  The current catalogue spans Crete, Santorini, the Peloponnese, Macedonia, Greece and Tuscany. TerroirTrail is designed to grow into more Mediterranean and European regions without losing the same research standard.
+                  The active catalogue currently spans {CATALOGUE_SUMMARY.countries} countries — {COUNTRY_SCOPE_TEXT}. Coverage is driven by published, active records rather than a fixed country list, so this scope updates automatically as the catalogue changes.
                 </p>
               </div>
 
@@ -429,7 +446,7 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
                 </div>
                 <h1 className="mt-3 text-2xl sm:text-3xl font-bold font-serif-title text-white">Contact TerroirTrail</h1>
                 <p className="mt-3 max-w-2xl text-xs sm:text-sm text-stone-300 leading-relaxed">
-                  Questions, listing corrections, producer enquiries or collaboration ideas are welcome. For current visit times, prices or same-day arrangements, contact the producer directly through the official details on its listing.
+                  Questions, listing corrections, producer enquiries or collaboration ideas are welcome. For current visit times, prices or same-day arrangements, contact the producer directly through the official details on its listing. A published listing does not by itself imply a commercial partnership with TerroirTrail.
                 </p>
               </div>
 
