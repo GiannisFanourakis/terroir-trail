@@ -21,7 +21,8 @@ import {
   type AffiliateCampaignId,
 } from './services/analyticsIngestionService';
 
-const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+const UUID_V4_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+const MAX_CONTEXT_STRING_LENGTH = 128;
 
 const ALLOWED_REQUEST_KEYS = new Set([
   'schemaVersion',
@@ -58,7 +59,10 @@ export function registerAnalyticsRoutes(
 
   app.post('/api/analytics/events', async (req: Request, res: Response): Promise<void> => {
     // 1. In-memory abuse prevention
-    const ip = req.ip || req.socket.remoteAddress || 'unknown';
+    // Firebase Hosting/Cloud Run forwards the originating address in X-Forwarded-For.
+    // This value is used transiently for abuse control only and is never persisted.
+    const forwardedFor = req.get('x-forwarded-for')?.split(',')[0]?.trim();
+    const ip = forwardedFor || req.ip || req.socket.remoteAddress || 'unknown';
     const now = Date.now();
     const bucket = rateLimitBuckets.get(ip);
     if (!bucket || bucket.resetAt <= now) {
@@ -99,14 +103,14 @@ export function registerAnalyticsRoutes(
 
     // 5. Validate clientEventId as UUID
     const clientEventId = typeof body.clientEventId === 'string' ? body.clientEventId.trim() : '';
-    if (!clientEventId || !UUID_REGEX.test(clientEventId)) {
+    if (!clientEventId || !UUID_V4_REGEX.test(clientEventId)) {
       res.status(400).json({ error: 'Invalid clientEventId. Must be a valid UUID v4.' });
       return;
     }
 
     // 6. Validate sessionId as UUID
     const sessionId = typeof body.sessionId === 'string' ? body.sessionId.trim() : '';
-    if (!sessionId || !UUID_REGEX.test(sessionId)) {
+    if (!sessionId || !UUID_V4_REGEX.test(sessionId)) {
       res.status(400).json({ error: 'Invalid sessionId. Must be a valid UUID v4.' });
       return;
     }
@@ -135,9 +139,26 @@ export function registerAnalyticsRoutes(
     }
 
     // 9. Validate event-specific properties and resolve dimensions
-    const rawProducerId = body.producerId != null ? String(body.producerId).trim() : null;
-    const rawDestination = body.destination != null ? String(body.destination).trim() : null;
-    const rawAffiliateCampaignId = body.affiliateCampaignId != null ? String(body.affiliateCampaignId).trim() : null;
+    const normalizeOptionalString = (value: unknown, fieldName: string): string | null => {
+      if (value == null) return null;
+      if (typeof value !== 'string') {
+        res.status(400).json({ error: `${fieldName} must be a string when supplied.` });
+        return '__INVALID__';
+      }
+      const normalized = value.trim();
+      if (normalized.length > MAX_CONTEXT_STRING_LENGTH) {
+        res.status(400).json({ error: `${fieldName} exceeds the maximum allowed length.` });
+        return '__INVALID__';
+      }
+      return normalized;
+    };
+
+    const rawProducerId = normalizeOptionalString(body.producerId, 'producerId');
+    if (rawProducerId === '__INVALID__') return;
+    const rawDestination = normalizeOptionalString(body.destination, 'destination');
+    if (rawDestination === '__INVALID__') return;
+    const rawAffiliateCampaignId = normalizeOptionalString(body.affiliateCampaignId, 'affiliateCampaignId');
+    if (rawAffiliateCampaignId === '__INVALID__') return;
 
     let derivedProducerId: string | null = null;
     let derivedDestination: string | null = null;
