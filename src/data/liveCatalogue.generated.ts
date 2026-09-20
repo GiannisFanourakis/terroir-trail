@@ -6,7 +6,7 @@ import type { Producer } from '../types/terroir';
  *
  * Runtime Supabase remains authoritative. This file is shared by runtime fallback
  * and SEO/AEO generation and is refreshed automatically; do not hand-edit it.
- * Latest active source row update: 2026-09-20T06:27:09.186105+00:00
+ * Latest active source row update: 2026-09-20T11:03:08.900442+00:00
  */
 export const LIVE_CATALOGUE_PRODUCERS = [
   {
@@ -121,9 +121,10 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "locationNotes": "Exact Google Maps producer point verified against the frozen 2026-09-18 expansion audit and current producer identity sources.",
     "publicPointType": "production_site",
     "visitStatus": "public_visits",
-    "visitSourceUrl": "https://www.jmf.pt/index.php?id=96",
-    "visitNotes": "Current first-party José Maria da Fonseca page publishes daily visits and a daily wine shop at Adega José de Sousa. April-October visits run at 11:00, 15:00 and 17:00; November-March at 11:00 and 15:00. The shop is open daily 10:00-19:00 April-October and 10:00-17:30 November-March. Prior reservation is explicitly recommended, not stated as mandatory.",
-    "visitBookingRequirement": "recommended",
+    "visitSourceUrl": "https://www.jmf.pt/img/enoturismo/js/BROCHURA_ENOTURISMO_JOSEDESOUSA_EN_2026.pdf",
+    "visitNotes": "The current first-party 2026 José Maria da Fonseca wine-tourism brochure gives a more specific booking rule than the generic visitor webpage: advance appointment is required, while visitors without an appointment may be accommodated subject to availability. The published visit and shop schedules remain unchanged. The official 2026 wine-tourism brochure explicitly states that guided visits are available in Portuguese and English. Published visitor programmes vary in duration, commonly 90 minutes with selected experiences lasting 150 minutes, so no single typical_visit_minutes value is assigned.",
+    "visitBookingRequirement": "required",
+    "walkInStatus": "subject_to_availability",
     "visitorHours": {
       "shop": {
         "april_october": "10:00-19:00",
@@ -141,8 +142,12 @@ export const LIVE_CATALOGUE_PRODUCERS = [
         ]
       }
     },
-    "seasonalVisitNotes": "Prior reservation is recommended.",
-    "visitabilityReviewedAt": "2026-09-20T04:01:59.562143+00:00"
+    "seasonalVisitNotes": "The official 2026 wine-tourism brochure states that an advance appointment must be made for the published visitor services. Visitors arriving without an appointment may still be accommodated subject to availability. Visits run daily at 11:00, 15:00 and 17:00 from April to October, and at 11:00 and 15:00 from November to March.",
+    "visitorLanguages": [
+      "pt",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-09-20T11:01:54.009031+00:00"
   },
   {
     "id": "aerakis-dairy-anogeia",
@@ -310,11 +315,16 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "locationNotes": "Exact producer identity, persistent Google Place ID and same-point coordinates were verified in the prior strict TerroirTrail Google Maps audit; current producer identity was refreshed before import.",
     "publicPointType": "estate",
     "visitStatus": "appointment_only",
-    "visitSourceUrl": "https://www.agricolamarrone.com/en/book-a-visit/",
-    "visitNotes": "Current first-party Agricola Gian Piero Marrone winery page explicitly instructs visitors to complete the booking form to book a winery tour and publishes winery tours, tastings, cooking classes, viticulture lessons and guided tastings. Separate restaurant opening hours are not treated as winery-visit hours. The current winery pages do not publish a universal tour timetable, standard duration, parking details or visitor languages.",
+    "visitSourceUrl": "https://www.agricolamarrone.com/en/contacts/",
+    "visitNotes": "Current first-party Agricola Marrone contact page publishes daily opening hours of 10:00-17:00 and states that visits are by appointment only. The kitchen is available 11:30-14:00 and evening openings may be arranged on request for special events or groups over 15 people. Parking, a standard visit duration and visitor languages remain unconfirmed.",
     "visitBookingRequirement": "required",
     "walkInStatus": "not_accepted",
-    "visitabilityReviewedAt": "2026-09-20T03:25:48.553005+00:00"
+    "visitorHours": {
+      "daily": "10:00-17:00",
+      "kitchen": "11:30-14:00",
+      "evening_openings": "on_request_for_special_events_or_groups_over_15"
+    },
+    "visitabilityReviewedAt": "2026-09-20T10:44:56.315889+00:00"
   },
   {
     "id": "agricola-piano-puglia",
@@ -450,11 +460,15 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "locationNotes": "Estate location in Anoskeli is verified by the producer; reservation number stored for visitor contact.",
     "visitStatus": "seasonal_public",
     "visitSourceUrl": "https://anoskeli.gr/experiences",
-    "visitNotes": "The live first-party Experiences page confirms guided olive-oil/wine tasting experiences, strongly recommends advance booking, and says drop-ins are welcomed subject to availability. However, the page still labels its active season and visiting hours as 2025. Current 2026 visitor evidence supports that the estate is still receiving guests, but TerroirTrail does not carry the stale 2025 timetable forward as current hours.",
+    "visitNotes": "The current first-party visitor material confirms guided tasting experiences, strongly recommends advance booking, and welcomes drop-ins subject to availability. A current French-language version of the visitor guidance explicitly states that guided tours are offered in English or Greek. The English page still carries a 2025 season label, so TerroirTrail does not reuse that stale season/timetable as current 2026 visitor hours.",
     "visitBookingRequirement": "recommended",
     "walkInStatus": "subject_to_availability",
     "seasonalVisitNotes": "Official visitor page currently still displays its 2025 season (April-20 November, Mon-Fri 10:00-18:00). Treat those hours as stale until the producer publishes a current schedule.",
-    "visitabilityReviewedAt": "2026-09-19T16:05:00+00:00"
+    "visitorLanguages": [
+      "en",
+      "el"
+    ],
+    "visitabilityReviewedAt": "2026-09-20T10:52:31.323478+00:00"
   },
   {
     "id": "antichi-vinai-1877-sicily",
@@ -748,10 +762,14 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "publicPointType": "estate",
     "visitStatus": "appointment_only",
     "visitSourceUrl": "https://assuli.it/pages/degustazioni-in-cantina",
-    "visitNotes": "Current first-party Assuli wine-tourism page explicitly states that winery visits are by reservation (su prenotazione). The estate offers winery tastings and has an on-site wine shop. The current page does not publish a general visitor timetable beyond reservation-only access, a standard visit duration, parking details, or visitor languages.",
+    "visitNotes": "Current first-party Assuli wine-tourism page explicitly states that winery visits are by reservation. Its published Experience, Tasting, Full Tasting and Master Class programmes are offered in Italian and English. Programme durations vary (90, 90, 120 and 180 minutes), so no single typical_visit_minutes value is assigned. Parking and fixed clock-time visitor hours remain unconfirmed.",
     "visitBookingRequirement": "required",
     "walkInStatus": "not_accepted",
-    "visitabilityReviewedAt": "2026-09-20T03:10:42.989135+00:00"
+    "visitorLanguages": [
+      "it",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-09-20T10:42:15.41884+00:00"
   },
   {
     "id": "baladinos-dairy-varipetro",
@@ -1014,8 +1032,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "publicPointType": "estate",
     "visitStatus": "public_visits",
     "visitSourceUrl": "https://www.biohof-oberwerkstatt.it/bio/",
-    "visitNotes": "Current first-party Biohof Oberwerkstatt page confirms a year-round farm shop and a weekly farm/show-dairy experience from March through September. The guided farm activity includes the animals, the farm concept, cheese making in the show dairy and product tasting. Places are limited and advance registration is explicitly requested. Fixed farm-shop hours, parking, visitor languages and tour duration are not published.",
-    "visitBookingRequirement": "required",
+    "visitNotes": "Current first-party Biohof Oberwerkstatt material describes two distinct visitor contexts: a year-round farm shop and a weekly farm/show-dairy experience from March through September. Advance registration is explicitly required for the limited-capacity farm/show-dairy tour, but no universal booking rule is published for the separate farm-shop visit. The global booking field is therefore intentionally NULL and the tour rule is retained as scoped evidence.",
     "visitorHours": {
       "farm_shop": "year_round_hours_not_published",
       "farm_show_dairy_tour": {
@@ -1024,7 +1041,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       }
     },
     "seasonalVisitNotes": "Farm/show-dairy tours operate from March through September with limited capacity and advance registration.",
-    "visitabilityReviewedAt": "2026-09-20T03:51:40.36798+00:00"
+    "visitabilityReviewedAt": "2026-09-20T10:47:12.909605+00:00"
   },
   {
     "id": "biolea-estate",
@@ -1289,9 +1306,12 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "publicPointType": "production_site",
     "visitStatus": "public_visits",
     "visitSourceUrl": "https://cantineiuppa.it/en/visite-degustazioni",
-    "visitNotes": "Current first-party Cantine Iuppa visitor page publishes wine-tasting and lunch experiences at the Milo estate and provides an online request flow plus a reservations contact. Published tasting/lunch packages last 120 minutes. The current page does not explicitly state that advance booking is universally mandatory, define a general walk-in policy, publish visitor hours, parking details, or visitor languages.",
+    "visitNotes": "Current first-party Cantine Iuppa visitor guidance states that tastings must be booked through the website or by telephone. The winery also says that visitors who request a tasting directly at the cellar may be accommodated where possible, but availability cannot be guaranteed if scheduled tastings overlap. This supports required booking with walk-ins subject to availability. The existing 120-minute typical value refers to the currently published tasting-and-lunch packages. The current first-party Cantine Iuppa homepage explicitly lists car parking and coach parking (with advance notice) among available visitor services.",
+    "visitBookingRequirement": "required",
+    "walkInStatus": "subject_to_availability",
+    "parkingStatus": "available",
     "typicalVisitMinutes": 120,
-    "visitabilityReviewedAt": "2026-09-20T03:06:39.307835+00:00"
+    "visitabilityReviewedAt": "2026-09-20T11:00:09.294364+00:00"
   },
   {
     "id": "casa-julia-tuscany",
@@ -1752,7 +1772,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "publicPointType": "production_site",
     "visitStatus": "public_visits",
     "visitSourceUrl": "https://chiavalon.hr/en/tasting-experience/",
-    "visitNotes": "Current first-party Chiavalon pages publish visitor opening hours and guided olive-oil tasting programmes. The FAQ states that advance booking for guided tastings is recommended to secure a time slot and guide, not universally mandatory. Same-day online booking is unavailable, so unreserved guided-tasting access remains subject to availability.",
+    "visitNotes": "Current first-party Chiavalon FAQ states that free olive-oil tastings are available during opening hours without prior reservation, while guided programmes are recommended to be booked in advance. Guided programme durations vary by programme, commonly 60-120 minutes and up to 150 minutes for selected experiences, so no single typical_visit_minutes value is assigned. Tastings are explicitly offered in Croatian, English, German and Italian. Parking remains unconfirmed.",
     "visitBookingRequirement": "recommended",
     "walkInStatus": "subject_to_availability",
     "visitorHours": {
@@ -1761,7 +1781,13 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       "sunday_holidays": "closed"
     },
     "seasonalVisitNotes": "The official page labels these as the current-period hours; visitors should recheck before travel. Advance booking is recommended for guided tastings.",
-    "visitabilityReviewedAt": "2026-09-20T04:24:41.559874+00:00"
+    "visitorLanguages": [
+      "hr",
+      "en",
+      "de",
+      "it"
+    ],
+    "visitabilityReviewedAt": "2026-09-20T10:49:28.303926+00:00"
   },
   {
     "id": "christakis-patria-feta-proastio",
@@ -2171,12 +2197,34 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "locationNotes": "Exact Google Maps producer point manually verified against the producer identity and official website during the 2026-09-18 expansion audit.",
     "publicPointType": "other_verified_point",
     "visitStatus": "appointment_only",
-    "visitSourceUrl": "https://www.chateaudubarroux.fr/nos-visites/",
+    "visitSourceUrl": "https://www.chateaudubarroux.fr/nous-rendre-visite/",
     "visitNotes": "Current first-party Château du Barroux material publishes guided distillery visits and tastings on bookable 2026 time slots and requires a confirmed reservation. Ordinary château visiting follows a separate access arrangement and must not be treated as proof of walk-in distillery access.",
     "visitBookingRequirement": "required",
     "walkInStatus": "not_accepted",
-    "seasonalVisitNotes": "Distillery availability follows the current bookable tour calendar; ordinary château entry is a separate visitor product.",
-    "visitabilityReviewedAt": "2026-09-20T04:27:51.204431+00:00"
+    "visitorHours": {
+      "chateau_venue": {
+        "may_end_september": {
+          "hours": "10:00-18:00",
+          "tuesday": "groups_only_except_july_august",
+          "open_days": "wednesday-monday",
+          "last_entry": "17:15"
+        },
+        "october_end_april_except_january": {
+          "hours": [
+            "10:00-13:00",
+            "14:00-18:00"
+          ],
+          "tuesday": "groups_only_except_july_august",
+          "open_days": "wednesday-monday",
+          "last_entry": "17:15"
+        }
+      },
+      "guided_distillery_visit": {
+        "access": "confirmed_reservation_slot_required"
+      }
+    },
+    "seasonalVisitNotes": "The château publishes venue opening hours from February through December, with January excluded from the winter schedule. Guided distillery visits remain a separately bookable product requiring a confirmed time slot; château opening hours are not treated as walk-in distillery-tour hours.",
+    "visitabilityReviewedAt": "2026-09-20T10:40:45.495889+00:00"
   },
   {
     "id": "domaine-biblia-chora",
@@ -3049,7 +3097,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "publicPointType": "production_site",
     "visitStatus": "seasonal_public",
     "visitSourceUrl": "https://www.frantoiodorazio.it/pages/esperienze",
-    "visitNotes": "Current first-party Frantoio D'Orazio experience page publishes an actual mill visit at the Via dell'Ulivo production site during the olive-oil campaign, November-January, Monday-Friday in morning and afternoon sessions. The visit includes live milling observation and tasting freshly pressed EVOO. The page lists Italian, English and French. It does not state a universal advance-booking requirement, exact daily start times, walk-in policy, parking details or standard duration. Separate year-round/seasonal experiences at the BI-SHOP and countryside locations are not used to redefine this mapped production-site record.",
+    "visitNotes": "Current first-party Frantoio D’Orazio Experiences page publishes visitor programmes in Italian, English and French. Programme durations vary by experience, including 90, 120, 150 and 240 minutes, while the seasonal mill visit has no single fixed duration published. typical_visit_minutes therefore remains NULL rather than collapsing distinct products into one number.",
     "visitorHours": {
       "season": {
         "end": "01-31",
@@ -3066,7 +3114,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       "en",
       "fr"
     ],
-    "visitabilityReviewedAt": "2026-09-20T03:16:52.747524+00:00"
+    "visitabilityReviewedAt": "2026-09-20T10:42:43.690365+00:00"
   },
   {
     "id": "frantoio-muraglia-puglia",
@@ -3693,9 +3741,10 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "publicPointType": "estate",
     "visitStatus": "appointment_only",
     "visitSourceUrl": "https://www.malhadinhanova.pt/en/experiences/visits-wine-tasting/",
-    "visitNotes": "Current first-party Malhadinha Nova page publishes guided estate/winery visits with wine tasting Monday-Saturday during 10:30-12:00 and 14:30-16:30 windows. Sunday sessions at 12:00 and 14:30 are exclusively for hotel guests. Visits and tastings explicitly require prior booking and are subject to availability.",
+    "visitNotes": "Current first-party Malhadinha Nova page publishes guided estate/winery visits with wine tasting Monday-Saturday during 10:30-12:00 and 14:30-16:30 windows. Sunday sessions at 12:00 and 14:30 are exclusively for hotel guests. Visits and tastings explicitly require prior booking and are subject to availability. The current first-party standard guided property-and-winery visit with wine tasting is explicitly published as a 1-hour experience; separate themed tastings are distinct 45-minute products.",
     "visitBookingRequirement": "required",
     "walkInStatus": "not_accepted",
+    "typicalVisitMinutes": 60,
     "visitorHours": {
       "monday_saturday": [
         "10:30-12:00",
@@ -3707,7 +3756,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       ]
     },
     "seasonalVisitNotes": "All visits and tastings require prior booking and are subject to availability.",
-    "visitabilityReviewedAt": "2026-09-20T04:02:09.929309+00:00"
+    "visitabilityReviewedAt": "2026-09-20T11:01:54.009031+00:00"
   },
   {
     "id": "herdade-do-esporao-alentejo",
@@ -3880,14 +3929,18 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "publicPointType": "estate",
     "visitStatus": "public_visits",
     "visitSourceUrl": "https://rocim.pt/en/contact/",
-    "visitNotes": "Current first-party Herdade do Rocim contact page publishes ordinary estate opening Tuesday-Saturday 11:00-18:00, with Monday and Sunday available by reservation. The current wine-tourism section also publishes multiple tasting and experience products. General Tuesday-Saturday access is therefore distinct from reservation-only Monday/Sunday access and bookable structured experiences.",
+    "visitNotes": "Current first-party Herdade do Rocim contact page publishes ordinary estate opening Tuesday-Saturday 11:00-18:00, with Monday and Sunday available by reservation. The current wine-tourism section also publishes multiple tasting and experience products. General Tuesday-Saturday access is therefore distinct from reservation-only Monday/Sunday access and bookable structured experiences. Current first-party Herdade do Rocim tasting and experience pages explicitly state that guided tastings are available in Portuguese and English.",
     "visitBookingRequirement": "not_required",
     "walkInStatus": "accepted",
     "visitorHours": {
       "monday_sunday": "by_reservation",
       "tuesday_saturday": "11:00-18:00"
     },
-    "visitabilityReviewedAt": "2026-09-20T04:02:29.008808+00:00"
+    "visitorLanguages": [
+      "pt",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-09-20T11:01:54.009031+00:00"
   },
   {
     "id": "ipsa-istria",
@@ -3947,11 +4000,15 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "publicPointType": "estate",
     "visitStatus": "appointment_only",
     "visitSourceUrl": "https://ipsa-maslinovaulja.com/en/posjetite-nas/",
-    "visitNotes": "Current first-party Ipša page offers several guided olive-oil and wine experiences and explicitly states that guided tastings are possible only with prior reservation. Programme lengths vary substantially, from 60 minutes for the Selection tasting to several hours for the most elaborate experiences. Official Istrian tourism material confirms free parking at the estate.",
+    "visitNotes": "Current first-party Ipša page offers several guided olive-oil and wine experiences and explicitly states that guided tastings are possible only with prior reservation. Programme lengths vary substantially, from 60 minutes for the Selection tasting to several hours for the most elaborate experiences. Official Istrian tourism material confirms free parking at the estate. The current first-party Ipša visitor page publishes summer hours of 10:00-18:00 and winter hours of 11:00-16:00. Guided tastings remain reservation-only.",
     "visitBookingRequirement": "required",
     "walkInStatus": "not_accepted",
     "parkingStatus": "available",
-    "visitabilityReviewedAt": "2026-09-20T04:24:51.59373+00:00"
+    "visitorHours": {
+      "summer": "10:00-18:00",
+      "winter": "11:00-16:00"
+    },
+    "visitabilityReviewedAt": "2026-09-20T11:03:08.900442+00:00"
   },
   {
     "id": "karavitakis-winery",
@@ -4085,7 +4142,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "locationNotes": "Current winery identity, visitor operation and phone verified on the producer site. Closing time varies between current producer pages, so users should check the booking page.",
     "visitStatus": "public_visits",
     "visitSourceUrl": "https://stilianouwinery.com/",
-    "visitNotes": "Current first-party homepage publishes visitor/tasting hours of 11:00-19:00 daily and an active booking calendar. A separate older first-party tasting page still shows 11:00-18:00 and explicitly states that November-March visits are by booking. TerroirTrail uses the newer 19:00 closing time while retaining the winter booking rule. No reliable visit duration, parking policy, walk-in policy, or tour-language information is published.",
+    "visitNotes": "The current Stilianou Winery homepage publishes daily opening hours of 11:00-19:00 and presents visitor tastings under an explicit “On booking / Contact us for appointment” instruction with a “Book your visit” calendar. This supports advance booking as required for the visitor tasting experience. The source does not explicitly state a general walk-in rejection rule, so walk_in_status remains unknown.",
+    "visitBookingRequirement": "required",
     "visitorHours": {
       "current_daily": "11:00-19:00",
       "november_march": {
@@ -4093,7 +4151,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       }
     },
     "seasonalVisitNotes": "An older first-party tasting page still shows an 18:00 closing time; the newer homepage publishes 19:00 and is used as the current value.",
-    "visitabilityReviewedAt": "2026-09-19T16:05:00+00:00"
+    "visitabilityReviewedAt": "2026-09-20T10:30:11.413816+00:00"
   },
   {
     "id": "kir-yianni-naoussa",
@@ -4586,6 +4644,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitStatus": "public_visits",
     "visitSourceUrl": "https://www.lavinyeta.es/es/experiencias/act/3/visita-guiada-i-tast-de-vins",
     "visitNotes": "Current first-party La Vinyeta page publishes regular guided vineyard/winery visits with wine tasting on Saturdays, Sundays and public holidays, with other days available on request. Standard published slots are 10:30-12:15 and 12:30-14:15. The standard tour page lists Catalan, while the current site also publishes an exclusive English tour. A reservation flow is provided, but the page does not explicitly state that all ordinary visits require advance booking or define walk-in access.",
+    "typicalVisitMinutes": 105,
     "visitorHours": {
       "other_days": "on_request",
       "saturday_sunday_holidays": [
@@ -5511,15 +5570,16 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "publicPointType": "production_site",
     "visitStatus": "public_visits",
     "visitSourceUrl": "https://www.moulinjeannons.com/contactez-nous.html",
-    "visitNotes": "Current first-party Moulin du Clos des Jeannons material publishes regular Monday-Saturday opening, free olive-oil tastings without reservation and free self-guided mill visits from March to early October. Only groups larger than 20 people are explicitly asked to reserve.",
+    "visitNotes": "Current first-party Moulin du Clos des Jeannons material publishes regular Monday-Saturday opening, free olive-oil tastings without reservation and free self-guided mill visits from March to early October. Only groups larger than 20 people are explicitly asked to reserve. Current first-party Moulin du Clos des Jeannons material explicitly advertises free private parking. The mill offers free olive-oil tasting every day without reservation and a self-guided mill visit from March to early October. No standard visit duration or visitor-language list is published.",
     "visitBookingRequirement": "not_required",
     "walkInStatus": "accepted",
+    "parkingStatus": "available",
     "visitorHours": {
       "monday_saturday": "09:30-19:00",
       "self_guided_mill_visit": "march_to_early_october"
     },
     "seasonalVisitNotes": "Self-guided mill visits run from March to early October. Groups over 20 people must reserve in advance.",
-    "visitabilityReviewedAt": "2026-09-20T04:28:03.813599+00:00"
+    "visitabilityReviewedAt": "2026-09-20T10:54:10.746017+00:00"
   },
   {
     "id": "nocciolenatura-piedmont",
@@ -5734,9 +5794,10 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "publicPointType": "production_site",
     "visitStatus": "public_visits",
     "visitSourceUrl": "https://nougats-silvain.fr/pages/le-magasin-de-saint-didier",
-    "visitNotes": "Current first-party Silvain material confirms a year-round public shop at the Saint-Didier production location and publishes 2026 seasonal opening hours. The shop is normally open seven days a week with a midday break, subject to the published January annual closure and Christmas closures. Guided or gourmet activities are separate from ordinary shop access.",
+    "visitNotes": "Current first-party Silvain material confirms a year-round public shop at the Saint-Didier production location and publishes 2026 seasonal opening hours. The shop is normally open seven days a week with a midday break, subject to the published January annual closure and Christmas closures. Guided or gourmet activities are separate from ordinary shop access. The current first-party Nougatourisme page publishes the standard guided nougat-making visit as 45 minutes. Separate creative workshops have their own durations and are not used to redefine the standard guided-visit duration.",
     "visitBookingRequirement": "not_required",
     "walkInStatus": "accepted",
+    "typicalVisitMinutes": 45,
     "visitorHours": {
       "january": [
         "10:00-12:00",
@@ -5759,7 +5820,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       "annual_closure_2026": "january_16_february_2_inclusive"
     },
     "seasonalVisitNotes": "2026 annual closure runs January 16 through February 2 inclusive. December 25-26 are closed. Recheck annually published hours for future travel.",
-    "visitabilityReviewedAt": "2026-09-20T04:28:08.942867+00:00"
+    "visitabilityReviewedAt": "2026-09-20T10:54:10.746017+00:00"
   },
   {
     "id": "olea-bb-oleum-viride-bellic-istria",
@@ -6236,7 +6297,9 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "locationNotes": "Current Peskesi farm location verified as Charaso, Hersonissos. Producer approval is still required for TerroirTrail experiences.",
     "visitStatus": "public_visits",
     "visitSourceUrl": "https://peskesicrete.gr/en/experiences/explore-the-farm",
-    "visitNotes": "Current first-party farm page publishes a guided farm visit every day at 11:00 and 13:00. The experience lasts 2 hours, includes a guided walk through gardens, olive groves, herbs and farm animals, and ends with a small farm tasting. Tours operate only in suitable weather and may be postponed in rain or severe weather. The page provides a booking flow but does not clearly state whether advance booking is mandatory for the guided tour, so no booking/walk-in flag is inferred.",
+    "visitNotes": "Current first-party Peskesi farm experience page publishes the guided farm tour at 11:00 and 13:00 with a 2-hour duration. The current website Terms state that access may be denied without company confirmation and that visitors must show their confirmation to gain entry, supporting advance booking as required for the farm experience and no unconfirmed walk-in access. Vehicle-size access guidance is not treated as parking evidence, and visitor languages remain unconfirmed.",
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
     "typicalVisitMinutes": 120,
     "visitorHours": {
       "guided_farm_tour": {
@@ -6248,7 +6311,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       }
     },
     "seasonalVisitNotes": "Tours take place only under suitable weather conditions and may be postponed in rain or severe weather.",
-    "visitabilityReviewedAt": "2026-09-19T16:05:00+00:00"
+    "visitabilityReviewedAt": "2026-09-20T10:45:43.449268+00:00"
   },
   {
     "id": "propator-sknipa-brewery",
