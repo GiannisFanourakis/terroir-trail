@@ -51,7 +51,7 @@
           <ul class="list-disc pl-5 space-y-2">
             <li><strong>Traveler accounts:</strong> authentication identifiers, name, email address, optional profile information, passport stamp IDs and personal tasting notes.</li>
             <li><strong>Saved favorites:</strong> favorites are stored in the browser on the current device. Signed-in favorites are separated by account on that device.</li>
-            <li><strong>First-party product-intent signals:</strong> aggregate, pseudonymous interactions (such as viewing an estate, opening a regional guide, or requesting directions) to evaluate maker popularity and guide quality.</li>
+            <li><strong>First-party product-intent signals:</strong> narrow pseudonymous interaction events (such as viewing an estate, opening a regional guide, or requesting directions) used to evaluate maker popularity and guide quality. Raw event rows are retained for up to 180 days; non-identifying daily aggregates are retained for up to 24 months.</li>
             <li><strong>Producer claims:</strong> a claimant may submit their name, account/email, selected estate and optional business evidence such as a tax/VAT identifier, registered business name, address or contact details. Submission does not itself grant host authority.</li>
             <li><strong>Public producer information:</strong> researched listing information such as producer/project name, location, contact details, visiting information and source-backed access metadata may be displayed publicly.</li>
             <li><strong>Location:</strong> if you use a browser or device location feature, location is requested for the user-initiated map action. TerroirTrail does not intentionally run background location tracking.</li>
@@ -77,7 +77,7 @@
             <li><strong>Map/tile providers:</strong> requests for map imagery or tiles (OpenStreetMap, CARTO, Esri) involve standard network communication (such as IP address) with the respective providers.</li>
             <li><strong>Google Places / Maps Media:</strong> for verified listings, place photo media may be fetched directly from Google Places API or linked to Google Maps.</li>
             <li><strong>Travel affiliate links (Travelpayouts):</strong> curated outbound links to third-party travel services (car rentals, ferries, transfers, connectivity). TerroirTrail transmits no account, personal profile, or booking data to affiliate partners, and sets no third-party tracking cookies. Pass-holders enjoy an ad-free experience without affiliate banners.</li>
-            <li><strong>First-party intent telemetry:</strong> rotating, pseudonymous session identifiers stored in browser session storage; for signed-in users, account identifiers are cryptographically pseudonymized using server-side HMAC keys before storage. TerroirTrail employs zero third-party behavioral analytics or ad network tracking pixels.</li>
+            <li><strong>First-party intent telemetry:</strong> rotating session identifiers stored in browser session storage; for signed-in users, account identifiers are cryptographically pseudonymized using a server-side HMAC before storage. Raw analytics does not store the Firebase UID, private note text, precise movement coordinates, IP address, or outbound affiliate URL. TerroirTrail employs no third-party behavioral analytics or ad network tracking pixels.</li>
             <li><strong>Browser local storage:</strong> used for device-local preferences and saved favorites.</li>
           </ul>
         </div>
@@ -99,7 +99,7 @@
         <div>
           <h2 class="text-xl font-bold text-stone-100 mb-3">7. Access, export, and deletion requests</h2>
           <p>
-            Authenticated users can access self-service account data export (downloading a machine-readable JSON archive) and self-service permanent account deletion directly within the in-app <strong>Account & privacy</strong> settings.
+            Authenticated users can access self-service account data export (downloading a machine-readable JSON archive) and self-service permanent account deletion directly within the in-app <strong>Account & privacy</strong> settings. The export includes retained account-linked intent events. Account deletion removes retained raw intent events linked to the account; historical non-identifying aggregate statistics remain.
           </p>
           <p class="mt-2">
             You may also contact TerroirTrail to exercise any data protection rights (access, correction, erasure, objection, restriction, or portability) at
