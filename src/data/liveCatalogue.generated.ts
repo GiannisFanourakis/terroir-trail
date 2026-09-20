@@ -6,7 +6,7 @@ import type { Producer } from '../types/terroir';
  *
  * Runtime Supabase remains authoritative. This file is shared by runtime fallback
  * and SEO/AEO generation and is refreshed automatically; do not hand-edit it.
- * Latest active source row update: 2026-09-18T14:24:04.723436+00:00
+ * Latest active source row update: 2026-09-20T06:27:09.186105+00:00
  */
 export const LIVE_CATALOGUE_PRODUCERS = [
   {
@@ -502,9 +502,23 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "locationNotes": "Exact Google Maps producer point manually verified against the producer identity and official website during the 2026-09-18 expansion audit.",
     "publicPointType": "production_site",
     "visitStatus": "public_visits",
-    "visitSourceUrl": "https://www.antichivinai.it/en/experience-the-volcano/",
-    "visitNotes": "Current first-party Antichi Vinai pages explicitly welcome visitors for underground-cellar tours and Etna wine tastings, and the producer links to a live booking platform with multiple visitor experiences. A currently listed short winery-tour-and-tasting experience lasts 60 minutes. The current first-party pages do not explicitly state that all visits require advance booking, define a general walk-in policy, publish universal visitor hours, parking details, or visitor languages.",
-    "visitabilityReviewedAt": "2026-09-20T03:10:55.872668+00:00"
+    "visitSourceUrl": "https://www.antichivinai.it/faq/",
+    "visitNotes": "Current first-party Antichi Vinai FAQ confirms winery visits and tastings, recommends booking rather than stating a universal mandatory-booking rule, publishes visit windows for small groups and groups of 7+, confirms internal parking, and states that a visit with tasting averages about 60 minutes (maximum about 90 minutes). Walk-in status and visitor languages remain unconfirmed.",
+    "visitBookingRequirement": "recommended",
+    "parkingStatus": "available",
+    "typicalVisitMinutes": 60,
+    "visitorHours": {
+      "small_groups": {
+        "saturday": "10:00-12:00",
+        "monday_friday": "10:00-17:00"
+      },
+      "groups_7_plus": {
+        "sunday": "10:00-17:00",
+        "saturday": "12:00-17:00"
+      }
+    },
+    "seasonalVisitNotes": "The current first-party FAQ says visits are available year-round, with normal closure during the Christmas holidays and New Year. Booking is recommended. Minimum advance notice published for Etna Experience Plus is 24 hours and for Etna Experience Classic is 6 hours; the winery also invites last-minute contact to check availability.",
+    "visitabilityReviewedAt": "2026-09-20T06:25:14.820599+00:00"
   },
   {
     "id": "apis-aurum-south-tyrol",
@@ -1001,6 +1015,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitStatus": "public_visits",
     "visitSourceUrl": "https://www.biohof-oberwerkstatt.it/bio/",
     "visitNotes": "Current first-party Biohof Oberwerkstatt page confirms a year-round farm shop and a weekly farm/show-dairy experience from March through September. The guided farm activity includes the animals, the farm concept, cheese making in the show dairy and product tasting. Places are limited and advance registration is explicitly requested. Fixed farm-shop hours, parking, visitor languages and tour duration are not published.",
+    "visitBookingRequirement": "required",
     "visitorHours": {
       "farm_shop": "year_round_hours_not_published",
       "farm_show_dairy_tour": {
@@ -1049,8 +1064,11 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "locationSourceUrl": "https://biolea.gr",
     "locationNotes": "Exact GPS coordinates published by Biolea match the database pin.",
     "visitStatus": "public_visits",
-    "visitSourceUrl": "https://biolea.gr/book-a-tour/",
-    "visitNotes": "Current first-party pages confirm a year-round visitor-oriented estate with several access modes. The standard olive-oil guided tour is available by appointment only, Monday-Sunday 10:00-17:00, with classic tours published for April-October. The Restaurant/Kafeneion is open Tuesday-Sunday 11:00-15:30, and the Kafeneion explicitly operates first-come-first-served. Because booking rules differ by activity, no single estate-wide booking or walk-in flag is stored.",
+    "visitSourceUrl": "https://biolea.gr/el/kratisi-xenagisis/",
+    "visitNotes": "Current first-party Biolea visitor pages state that advance reservation is required before visiting the estate because places are limited. The standard Olive Oil Guided Tour & Tasting is published as a one-hour experience. Other hospitality products have different durations, so the 60-minute typical value refers to the standard guided mill tour. Parking and visitor languages remain unconfirmed.",
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "typicalVisitMinutes": 60,
     "visitorHours": {
       "guided_tour": {
         "booking": "required",
@@ -1063,7 +1081,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       }
     },
     "seasonalVisitNotes": "Classic tours are published for April-October. The estate homepage also describes the olive mill as designed to accommodate visitors year-round; activity availability varies by product.",
-    "visitabilityReviewedAt": "2026-09-19T16:05:00+00:00"
+    "visitabilityReviewedAt": "2026-09-20T06:27:09.186105+00:00"
   },
   {
     "id": "brist-olive-oil-istria",
@@ -4675,7 +4693,21 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitStatus": "public_visits",
     "visitSourceUrl": "https://lahnerhof.com/de/brennerei",
     "visitNotes": "Current first-party Lahnerhof distillery page actively advertises distillery tours through the historic vaulted cellar, tastings and on-site sales. The current site does not explicitly state that advance booking is mandatory, nor does it publish fixed visitor hours, a standard duration, parking details or visitor languages. The older appointment-only assumption is therefore not retained.",
-    "visitabilityReviewedAt": "2026-09-20T03:51:54.893109+00:00"
+    "parkingStatus": "limited",
+    "visitorHours": {
+      "april_october": {
+        "monday_friday": [
+          "08:30-12:30",
+          "14:00-18:00"
+        ],
+        "saturday_and_public_holidays_except_sunday": "08:30-12:30"
+      },
+      "guided_distillery_tour_and_tasting": {
+        "year_round": "by_telephone_appointment"
+      }
+    },
+    "seasonalVisitNotes": "The current Marlengo/South Tyrol tourism listing publishes April-October opening hours and states that guided distillery tours and tastings are available by arrangement year-round by telephone. Parking in front of Lahnerhof is limited. A universal booking rule for ordinary on-site access is not inferred.",
+    "visitabilityReviewedAt": "2026-09-20T06:25:14.820599+00:00"
   },
   {
     "id": "lenkhof-south-tyrol",
@@ -5638,6 +5670,18 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitStatus": "public_visits",
     "visitSourceUrl": "https://www.nougat-boyer.fr/fr/",
     "visitNotes": "Current first-party André Boyer material identifies the historic Sault location as a public-facing boutique selling traditional confectionery and house-made products, with pastries, ice cream and a tea-room offering. The reviewed official material does not provide sufficiently clear current opening hours or a booking rule, so those fields remain unknown rather than inferred.",
+    "visitorHours": {
+      "guided_factory_visit_2026": {
+        "tuesday": "15:00",
+        "date_range": "2026-06-16/2026-09-16",
+        "recommended_arrival": "14:50"
+      }
+    },
+    "seasonalVisitNotes": "Current 2026 regional-tourism listings publish an individual guided workshop visit on Tuesdays at 15:00 from 16 June through 16 September 2026. Duration remains unset because current public tourism sources conflict (45 vs 60 minutes). Recheck the current schedule before travel.",
+    "visitorLanguages": [
+      "fr",
+      "en"
+    ],
     "visitabilityReviewedAt": "2026-09-20T04:28:05.903015+00:00"
   },
   {
