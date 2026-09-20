@@ -1,17 +1,11 @@
 import { Producer, Destination, Category, Ethos, RoadAccess, FoodOption } from '../types/terroir';
 import { TastingExperience } from '../types/booking';
-import { CRETAN_PRODUCERS } from '../data/producers';
-import { SANTORINI_PRODUCERS } from '../data/santoriniProducers';
-import { PHASE10B_PRODUCERS } from '../data/phase10bProducers';
+import { LIVE_CATALOGUE_PRODUCERS } from '../data/liveCatalogue.generated';
 import { ALL_EXPERIENCES } from '../data/experiences';
 import { supabase, isSupabaseConfigured } from './supabase';
 import { logger } from './logger';
 
-const FALLBACK_PRODUCERS: Producer[] = [
-  ...CRETAN_PRODUCERS,
-  ...SANTORINI_PRODUCERS,
-  ...PHASE10B_PRODUCERS,
-];
+const FALLBACK_PRODUCERS: Producer[] = LIVE_CATALOGUE_PRODUCERS;
 
 export interface ViewportBounds {
   north: number;
@@ -176,7 +170,7 @@ function filterProducersList(producers: Producer[], options: ProducerQueryOption
 /**
  * Authoritative in-memory state and provenance tracking.
  *
- * - fallback: audited bundled Crete, Santorini, and Phase 10B producer snapshots.
+ * - fallback: deterministic generated snapshot of the active live producer catalogue.
  * - live: Supabase successfully returned data and remains the sole authority.
  */
 let cacheProvenance: DataProvenance = 'fallback';
@@ -210,7 +204,7 @@ export const producerService = {
 
     if (this.isLiveDb() && supabase) {
       try {
-        let query = supabase.from('producers').select('*');
+        let query = supabase.from('producers').select('*').eq('is_active', true);
 
         if (destination && destination !== 'all') {
           query = query.eq('destination', destination);
@@ -277,6 +271,7 @@ export const producerService = {
         const { data, error } = await supabase
           .from('producers')
           .select('*')
+          .eq('is_active', true)
           .eq('id', id)
           .maybeSingle();
         if (!error) {

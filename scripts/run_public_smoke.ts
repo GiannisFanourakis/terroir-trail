@@ -21,6 +21,11 @@ const checks: Check[] = [
     contentType: 'application/manifest+json',
     includes: ['TerroirTrail'],
   },
+  {
+    path: '/catalogue-state.json',
+    contentType: 'application/json',
+    includes: ['catalogueHash', 'producers', 'destinations', 'countries'],
+  },
   { path: '/offline.html', contentType: 'text/html', includes: ['You’re offline'] },
   {
     path: '/api/health',
@@ -69,5 +74,23 @@ if (!version?.buildId || typeof version.buildId !== 'string') {
   throw new Error('version.json does not contain a valid buildId.');
 }
 
+const catalogueState = await (
+  await fetch(`${origin}/catalogue-state.json?t=${Date.now()}`, {
+    cache: 'no-store',
+    signal: AbortSignal.timeout(timeoutMs),
+  })
+).json();
+
+if (
+  !catalogueState?.catalogueHash ||
+  typeof catalogueState.catalogueHash !== 'string' ||
+  !Number.isInteger(catalogueState.producers)
+) {
+  throw new Error('catalogue-state.json does not contain a valid synchronized catalogue state.');
+}
+
 console.log(`[public smoke] live build ${version.buildId}`);
+console.log(
+  `[public smoke] catalogue ${catalogueState.producers} producers / hash ${catalogueState.catalogueHash.slice(0, 12)}…`
+);
 console.log('[public smoke] production surface is healthy.');

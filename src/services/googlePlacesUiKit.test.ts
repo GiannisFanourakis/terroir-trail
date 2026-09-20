@@ -32,8 +32,6 @@ describe('Google Places UI Kit & Allowlist', () => {
 
   describe('Allowlist Verification', () => {
     it('covers every audited producer with a verified location and persistent Google Place ID', () => {
-      expect(AUDITED_PRODUCERS).toHaveLength(62);
-      expect(EXPECTED_GOOGLE_PLACES_PRODUCERS).toHaveLength(62);
       expect(GOOGLE_PLACES_PROTOTYPE_ITEMS).toHaveLength(
         EXPECTED_GOOGLE_PLACES_PRODUCERS.length
       );

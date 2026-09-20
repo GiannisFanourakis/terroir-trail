@@ -125,6 +125,7 @@ async function syncFallbackCatalogue() {
     const { data, error } = await supabase
       .from('producers')
       .select('*')
+      .eq('is_active', true)
       .eq('destination', 'crete')
       .order('region', { ascending: true })
       .order('name', { ascending: true });

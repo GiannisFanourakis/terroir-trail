@@ -3,6 +3,7 @@ import { CRETAN_PRODUCERS } from './producers';
 import { SANTORINI_PRODUCERS } from './santoriniProducers';
 import { PHASE10B_PRODUCERS } from './phase10bProducers';
 import { PHASE13_DAIRY_PRODUCERS } from './phase13DairyProducers';
+import { ACTIVE_PRODUCER_IDS } from './activeProducerIds.generated';
 import { enrichPhase13DairyProducer } from './phase13DairyContentOverrides';
 
 /**
@@ -51,9 +52,11 @@ function syncAuditedPhase13Media(producer: Producer): Producer {
  * Live Supabase remains authoritative at runtime when configured. This bundle is
  * kept in parity for offline fallback, SEO/AEO generation and deterministic CI.
  */
+const ACTIVE_PRODUCER_ID_SET = new Set<string>(ACTIVE_PRODUCER_IDS);
+
 export const AUDITED_PRODUCERS: Producer[] = [
   ...CRETAN_PRODUCERS,
   ...SANTORINI_PRODUCERS,
   ...PHASE10B_PRODUCERS,
   ...PHASE13_DAIRY_PRODUCERS.map(syncAuditedPhase13Media),
-];
+].filter((producer) => ACTIVE_PRODUCER_ID_SET.has(producer.id));
