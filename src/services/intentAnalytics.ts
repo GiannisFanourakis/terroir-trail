@@ -63,99 +63,28 @@ export const SESSION_ID_STORAGE_KEY = 'terroir_analytics_session_id';
 
 const UUID_V4_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
-export const CLIENT_EVENT_ALLOWED_SURFACES: Readonly<Record<IntentEventName, readonly SourceSurface[]>> = {
-  producer_view: [
-    'producer_list_card',
-    'map_marker',
-    'map_quick_card',
-    'deep_link',
-    'favorites',
-    'passport',
-    'region_drawer',
-    'trip_workspace',
-  ],
-  producer_share: ['producer_drawer', 'map_quick_card', 'trip_workspace'],
-  region_open: ['map_canvas', 'header_region_picker'],
-  region_producers_view: ['region_drawer'],
-  producer_save: ['producer_drawer', 'producer_list_card', 'map_quick_card'],
-  producer_unsave: ['producer_drawer', 'favorites', 'producer_list_card', 'map_quick_card'],
-  producer_website_click: ['producer_drawer', 'trip_workspace'],
-  producer_phone_click: ['producer_drawer', 'trip_workspace'],
-  producer_email_click: ['producer_drawer', 'trip_workspace'],
-  directions_click: ['producer_drawer', 'map_quick_card', 'trip_workspace'],
-  passport_stamp_added: ['producer_drawer', 'passport'],
-  passport_stamp_removed: ['producer_drawer', 'passport'],
-  affiliate_impression: ['map_affiliate_banner', 'trip_preparation', 'region_planning'],
-  affiliate_click: ['map_affiliate_banner', 'trip_preparation', 'region_planning'],
+const SOURCE_SURFACE_RULES: Readonly<Record<IntentEventName, string>> = {
+  producer_view: 'producer_list_card|map_marker|map_quick_card|deep_link|favorites|passport|region_drawer|trip_workspace',
+  producer_share: 'producer_drawer|map_quick_card|trip_workspace',
+  region_open: 'map_canvas|header_region_picker',
+  region_producers_view: 'region_drawer',
+  producer_save: 'producer_drawer|producer_list_card|map_quick_card',
+  producer_unsave: 'producer_drawer|favorites|producer_list_card|map_quick_card',
+  producer_website_click: 'producer_drawer|trip_workspace',
+  producer_phone_click: 'producer_drawer|trip_workspace',
+  producer_email_click: 'producer_drawer|trip_workspace',
+  directions_click: 'producer_drawer|map_quick_card|trip_workspace',
+  passport_stamp_added: 'producer_drawer|passport',
+  passport_stamp_removed: 'producer_drawer|passport',
+  affiliate_impression: 'map_affiliate_banner|trip_preparation|region_planning',
+  affiliate_click: 'map_affiliate_banner|trip_preparation|region_planning',
 };
 
-const PRODUCER_CONTEXT_EVENTS = new Set<IntentEventName>([
-  'producer_view',
-  'producer_share',
-  'producer_save',
-  'producer_unsave',
-  'producer_website_click',
-  'producer_phone_click',
-  'producer_email_click',
-  'directions_click',
-  'passport_stamp_added',
-  'passport_stamp_removed',
-]);
-
-const REGION_CONTEXT_EVENTS = new Set<IntentEventName>([
-  'region_open',
-  'region_producers_view',
-]);
-
-const AFFILIATE_CONTEXT_EVENTS = new Set<IntentEventName>([
-  'affiliate_impression',
-  'affiliate_click',
-]);
-
-const ALLOWED_AFFILIATE_CAMPAIGNS = new Set<AffiliateCampaignId>([
-  'klook-experiences',
-  'localrent-cars',
-  'welcome-pickups',
-  'gettransfer-rides',
-  'yesim-esim',
-]);
-
-function isValidTrackIntentParams(params: TrackIntentParams): boolean {
-  if (!CLIENT_EVENT_ALLOWED_SURFACES[params.event]?.includes(params.sourceSurface)) return false;
-
-  if (PRODUCER_CONTEXT_EVENTS.has(params.event)) {
-    return (
-      typeof params.producerId === 'string' &&
-      params.producerId.trim().length > 0 &&
-      params.producerId.length <= 128 &&
-      params.destination == null &&
-      params.affiliateCampaignId == null
-    );
-  }
-
-  if (REGION_CONTEXT_EVENTS.has(params.event)) {
-    return (
-      typeof params.destination === 'string' &&
-      params.destination.trim().length > 0 &&
-      params.destination.length <= 128 &&
-      params.producerId == null &&
-      params.affiliateCampaignId == null
-    );
-  }
-
-  if (AFFILIATE_CONTEXT_EVENTS.has(params.event)) {
-    return (
-      params.producerId == null &&
-      (params.destination == null ||
-        (typeof params.destination === 'string' &&
-          params.destination.trim().length > 0 &&
-          params.destination.length <= 128)) &&
-      typeof params.affiliateCampaignId === 'string' &&
-      ALLOWED_AFFILIATE_CAMPAIGNS.has(params.affiliateCampaignId)
-    );
-  }
-
-  return false;
+export function isAllowedIntentSourceSurface(
+  event: IntentEventName,
+  sourceSurface: SourceSurface
+): boolean {
+  return `|${SOURCE_SURFACE_RULES[event]}|`.includes(`|${sourceSurface}|`);
 }
 
 export function generateUuidV4(): string {
@@ -223,7 +152,7 @@ export async function trackIntent(
 ): Promise<TrackIntentResult> {
   const clientEventId = generateUuidV4();
 
-  if (!isValidTrackIntentParams(params)) {
+  if (!isAllowedIntentSourceSurface(params.event, params.sourceSurface)) {
     logger.warn('Analytics', 'intent_analytics_client_validation_failed', {
       event: params.event,
       sourceSurface: params.sourceSurface,
