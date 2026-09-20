@@ -11,7 +11,7 @@ TerroirTrail is an independent, discovery-first agritourism and producer guide. 
 
 The live Supabase catalogue contains {{LIVE_PRODUCER_COUNT}} producer/project records in the current deployment snapshot. The deterministic crawlable SEO/AEO snapshot is synchronized to the same {{LIVE_PRODUCER_COUNT}} records, so every current live producer has a canonical producer entity page in the deploy-time catalogue. Current first-class categories include wineries, craft breweries, olive mills, olive-oil producers, dairies/cheesemakers, apiaries/honey producers, cideries, confectioneries, herb farms, mushroom farms, other oil mills, distilleries, and farms.
 
-Greek cheese and dairy expansion is included in the audited catalogue. Listings that could not meet the agreed persistent Google business-identity standard were removed rather than guessed. Exact location, visitability and road access remain independent trust dimensions; factory existence does not imply public tours or safe rental-car access.
+Greek cheese and dairy expansion is now included in the audited catalogue. Listings that could not meet the agreed persistent Google business-identity standard were removed rather than guessed. Exact location, visitability and road access remain independent trust dimensions; factory existence does not imply public tours or safe rental-car access.
 
 TerroirTrail is not currently a public booking marketplace. Public visitability is researched separately from any TerroirTrail commercial relationship. A producer being publicly visitable does not mean that TerroirTrail is authorized to sell or reserve an Experience there.
 
