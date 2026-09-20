@@ -119,16 +119,19 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
 
   if (!producer) return null;
 
-  const handleShare = () => {
-    navigator.clipboard.writeText(window.location.href);
-    setCopiedLink(true);
-    setTimeout(() => setCopiedLink(false), 2000);
-    if (producer) {
+  const handleShare = async () => {
+    if (!producer) return;
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setCopiedLink(true);
+      setTimeout(() => setCopiedLink(false), 2000);
       void trackIntent({
         event: 'producer_share',
         sourceSurface: 'producer_drawer',
         producerId: producer.id,
       });
+    } catch {
+      // A failed clipboard action is not a successful share and must not emit analytics.
     }
   };
 
