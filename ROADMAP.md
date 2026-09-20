@@ -4,8 +4,8 @@
 >
 > Completion convention: change `- [ ] Step` to `- [x] ~~Step~~` when finished. Do not mark a step complete until it has been implemented, tested, pushed, deployed where applicable, and verified.
 
-**Last updated:** 2026-09-18
-**Current focus:** Mobile UX refinement and synchronized catalogue/search coverage. Production SEO/AEO totals are derived from the live Supabase catalogue during deployment rather than maintained as hardcoded roadmap statistics.
+**Last updated:** 2026-09-20
+**Current focus:** Product-value and monetisation foundations on top of the verified catalogue: privacy-conscious intent measurement, a free My Trips planning layer, contextual affiliate utility, and internal Producer / Regional Intelligence. Catalogue expansion is intentionally paused; no new producers or projects are being added right now.
 
 ---
 
@@ -477,9 +477,108 @@ This phase adds a geographic discovery layer above individual producer pins so t
 
 ---
 
+## Strategic Intermission — Product Value & Monetisation Foundations
+
+**Status:** Active — this programme takes priority over Phases 14–20 while catalogue expansion is paused.
+
+TerroirTrail now has a sufficiently strong discovery/trust foundation to stop optimizing for catalogue size and start proving where the verified data creates recurring economic value. This programme is deliberately **not** a payment-screen programme. It builds the measurement, planning and intelligence layers required to decide what deserves to become a paid product later.
+
+### Monetisation principles
+
+- [ ] Keep the core discovery catalogue free.
+- [ ] Keep essential location, road/access, visitability, booking-rule, opening/contact and other safety-relevant information free.
+- [ ] Monetise **convenience, workflow and intelligence — not trust or safety**.
+- [ ] Keep producer factual corrections, current visitor notices and safety/access corrections available without requiring a paid producer tier.
+- [ ] Never sell paid ranking, editorial preference, verification status, or the appearance of being more trustworthy.
+- [ ] Avoid early payment screens, generic AI itinerary generation, route-safety invention, booking/commission complexity, and marketplace liability.
+- [ ] Preserve the distinction between independent researched listing, verified Host ownership, commercial partnership and any future paid software entitlement.
+- [ ] Keep display advertising disabled unless a later deliberate product decision reverses that.
+- [ ] Treat current Explorer Pass / QR-pass / chauffeur / booking infrastructure as dormant optionality rather than the active monetisation strategy.
+
+### Stage A — Privacy-conscious intent measurement
+
+Build the measurement layer before deciding what to charge for.
+
+- [ ] Define a first-party event model for meaningful product intent, including producer views, saves/unsaves, shares, producer-controlled website/phone/email actions, directions actions, region opens, trip actions, Passport stamps, and affiliate impressions/clicks.
+- [ ] Record only the minimum context needed for product decisions, such as producer, category, country/region, source surface, coarse account/session scope and event time.
+- [ ] Never record private tasting-note contents, personal trip-note contents, contact-message contents, passwords, secrets, or unnecessary personal data in analytics events.
+- [ ] Define retention, deletion/account-export behavior, consent/privacy wording and aggregation rules before production rollout.
+- [ ] Add internal measurement/reporting that can answer whether discovery leads to saves, trip planning, direct producer contact, directions and eventual visits.
+- [ ] Keep diagnostic logging separate from behavioral product analytics.
+
+### Stage B — Free **My Trips** planning foundation
+
+Complete the missing traveler loop:
+
+**Discover → Save → Plan → Prepare → Visit → Remember**
+
+- [ ] Let travelers create named trips and add/remove existing TerroirTrail producers.
+- [ ] Support simple trip organization such as manual ordering and optional day buckets without generating an optimized route.
+- [ ] Build a trip-readiness view from verified TerroirTrail facts: visitability, booking requirement, visitor hours/freshness, direct contact, road/access caution and explicit unknowns.
+- [ ] Preserve fail-closed road/access behavior inside trip planning.
+- [ ] Do not invent drive times, opening times, road suitability or visit availability.
+- [ ] Do not introduce checkout or a paid planner gate in the initial My Trips rollout.
+- [ ] Reuse current account/favorites/Passport foundations rather than creating a parallel traveler identity model.
+- [ ] Validate repeat planning use before defining any Traveler Plus boundary.
+
+### Stage C — Contextual affiliate utility
+
+The existing Travelpayouts pilot remains the only active monetisation experiment, but it should evolve from generic map advertising toward useful trip context.
+
+- [ ] Measure affiliate impressions/clicks by surface and intent context.
+- [ ] Prefer relevant preparation contexts such as car rental, transfers or connectivity around trip planning rather than an always-rotating generic map banner.
+- [ ] Keep all affiliate relationships clearly disclosed and visually separate from producer editorial ranking.
+- [ ] Never make producer visibility contingent on affiliate participation.
+- [ ] Evaluate whether generic third-party activity marketplaces fit TerroirTrail's independent-producer positioning before expanding them.
+- [ ] Remove or reduce low-value affiliate surfaces when usage data shows they distract from discovery.
+
+### Stage D — Internal Producer Insights prototype
+
+Build this for TerroirTrail/Admin first, not as an immediate paid Host screen.
+
+- [ ] Aggregate producer-level intent signals such as profile views, saves, trip additions, website/contact actions and directions actions.
+- [ ] Show trends over time without exposing individual traveler identities or private traveler content.
+- [ ] Separate editorial/listing quality from demand metrics; high traffic never changes verification status or ranking authority.
+- [ ] Validate whether claimed/verified Hosts find these insights operationally useful.
+- [ ] Keep the free Host layer focused on ownership, factual corrections, current visitor information, content/media workflow and trust-sensitive updates.
+- [ ] Define a future Producer Insights / Producer Pro product only after the internal metrics prove useful.
+
+### Stage E — Internal Regional Intelligence prototype
+
+Use the same verified dataset to test a B2B product before selling regional contracts.
+
+- [ ] Build internal region-level reporting for catalogue coverage, categories, verified location coverage, visitability, appointment-only/public access, access/road review, evidence freshness and reviewed-unknown gaps.
+- [ ] Add aggregated traveler-intent signals once Stage A has enough data.
+- [ ] Keep regional reporting clear that TerroirTrail coverage is curated rather than exhaustive.
+- [ ] Prototype exportable/readable regional reports before building a separate B2B portal.
+- [ ] Validate the usefulness of this reporting with potential regional/institutional users before committing to contract-specific product work.
+- [ ] Keep regional contracts independent from producer ranking and editorial inclusion.
+
+### Stage F — Paid-product validation
+
+Do not choose the paid layer by intuition alone.
+
+Current validation order:
+
+1. **Contextual affiliates** — low-complexity experiment already running.
+2. **B2B Regional Intelligence / regional contracts** — likely first high-value paid opportunity once the internal report is credible.
+3. **Producer Insights / producer software** — after enough claimed Hosts and traveler-intent volume exist.
+4. **Traveler premium planning** — only after My Trips shows repeat use and clear demand for advanced workflow.
+5. **Booking/transaction commission** — much later, if ever, and only by deliberate decision.
+
+- [ ] Validate willingness to pay before exposing pricing.
+- [ ] If a paid traveler tier is justified later, charge for advanced workflow such as multiple/complex trips, collaboration, offline packs, exports, alerts or richer organization — never for essential safety/access facts.
+- [ ] If a paid producer tier is justified later, charge for software/insights/workflow — never for factual corrections, verification, safety updates or editorial ranking.
+- [ ] If B2B contracts are validated, sell regional intelligence, reporting, data quality and workflow rather than sponsored catalogue bias.
+- [ ] Only refactor the existing Explorer Pass/Stripe entitlement model into generic product entitlements after a real paid product has been validated.
+
+**Definition of done:** TerroirTrail can measure meaningful intent, travelers can plan with verified data through a useful free My Trips foundation, affiliate placements are contextual and measurable, and internal Producer/Regional Intelligence prototypes provide enough evidence to choose the first serious paid product without weakening the trust layer.
+
+---
+
 ## Phase 14 — Greek Olive & Olive Oil Expansion
 
-**Status:** Planned after Phase 13 — Interactive Terroir Regions.
+**Status:** Paused — catalogue expansion is intentionally frozen while the Product Value & Monetisation Foundations programme is active. Resume only by explicit roadmap decision.
 
 - [ ] Expand beyond the current olive coverage with audited independent mills, growers, estates, cooperatives, and other appropriate olive-oil producers across Greece.
 - [ ] Distinguish olive grove, working mill, bottling/brand operation, visitor centre, and retail shop identities.
@@ -493,7 +592,7 @@ This phase adds a geographic discovery layer above individual producer pins so t
 
 ## Phase 15 — Greek Honey & Apiary Expansion
 
-**Status:** Planned after Phase 14.
+**Status:** Paused — catalogue expansion is intentionally frozen while the Product Value & Monetisation Foundations programme is active. Resume only by explicit roadmap decision.
 
 - [ ] Build an audited apiary/honey producer batch across appropriate Greek regions.
 - [ ] Distinguish beekeeper/apiary operations, packing/production premises, shops, cooperatives, and educational visitor sites.
@@ -507,7 +606,7 @@ This phase adds a geographic discovery layer above individual producer pins so t
 
 ## Phase 16 — Greek Herbs & Botanicals Expansion
 
-**Status:** Planned after Phase 15.
+**Status:** Paused — catalogue expansion is intentionally frozen while the Product Value & Monetisation Foundations programme is active. Resume only by explicit roadmap decision.
 
 - [ ] Build an audited batch of herb growers, botanical producers, distillers, and related small-scale makers where they fit TerroirTrail.
 - [ ] Distinguish cultivation/production sites from shops and reseller locations.
@@ -521,7 +620,7 @@ This phase adds a geographic discovery layer above individual producer pins so t
 
 ## Phase 17 — Greek Farm & Regional Produce Expansion
 
-**Status:** Planned after Phase 16.
+**Status:** Paused — catalogue expansion is intentionally frozen while the Product Value & Monetisation Foundations programme is active. Resume only by explicit roadmap decision.
 
 - [ ] Expand verified farms and primary-produce makers beyond the current catalogue.
 - [ ] Prioritize genuinely place-linked produce such as pulses, grains, carob, nuts, fruit, vegetables, and other regional crops where a traveler-facing listing makes sense.
@@ -535,7 +634,7 @@ This phase adds a geographic discovery layer above individual producer pins so t
 
 ## Phase 18 — Greek Regional Specialty Foods Expansion
 
-**Status:** Planned after Phase 17.
+**Status:** Paused — catalogue expansion is intentionally frozen while the Product Value & Monetisation Foundations programme is active. Resume only by explicit roadmap decision.
 
 - [ ] Identify regional food crafts that have a strong producer-and-place connection and fit TerroirTrail's discovery model.
 - [ ] Audit makers of preserves, traditional grain products, regional sweets, cured or preserved foods, and other local specialties where inclusion is evidence-backed and meaningful.
@@ -549,7 +648,7 @@ This phase adds a geographic discovery layer above individual producer pins so t
 
 ## Phase 19 — Greek Geoparks, Heritage & Local Projects
 
-**Status:** Planned after the core Greek food-producer verticals.
+**Status:** Paused — catalogue expansion is intentionally frozen while the Product Value & Monetisation Foundations programme is active. Resume only by explicit roadmap decision.
 
 - [ ] Define first-class non-producer entity types for geoparks, heritage projects, community initiatives, and other local projects that genuinely help travelers understand terroir and place.
 - [ ] Ensure these entities never masquerade as producers or commercial partners.
@@ -563,7 +662,7 @@ This phase adds a geographic discovery layer above individual producer pins so t
 
 ## Phase 20 — International Geographic Expansion
 
-**Status:** Deferred until the Greece-first category programme is complete and production-verified.
+**Status:** Paused / deferred — no further geographic expansion while the Product Value & Monetisation Foundations programme is active. Resume only by explicit roadmap decision.
 
 Greece remains the priority. Once the Greek catalogue has meaningful breadth beyond wine and the existing categories, geographic expansion can resume without reintroducing a Greece-only architecture.
 
@@ -583,9 +682,9 @@ Greece remains the priority. Once the Greek catalogue has meaningful breadth bey
 
 ## Phase 21 — Producer Partnerships & Deals
 
-**Status:** Deferred until the planned discovery-expansion programme is complete enough to support formal producer relationships safely. The Phase 11 account/authority prerequisite is already complete.
+**Status:** Deferred. Formal producer partnerships are not a prerequisite for the active Product Value & Monetisation Foundations programme.
 
-Independent researched listings and direct links to producer-controlled public channels may continue without implying a partnership.
+Intent measurement, My Trips, internal Producer Insights and internal Regional Intelligence may proceed without converting independent researched listings into commercial partnerships. Independent researched listings and direct links to producer-controlled public channels may continue without implying a partnership.
 
 Inbound producer listing enquiries may be accepted at `terroirtrail@gmail.com` before formal partnerships are launched. An enquiry is a request for editorial review only and does not imply listing acceptance, verification, commercial partnership, booking permission, or Host access.
 
@@ -644,17 +743,37 @@ Only after real approved Experiences exist.
 
 ## Phase 24 — Monetisation & Scale
 
-**Status:** Future overall; the Travelpayouts affiliate-carousel pilot is an intentionally early cross-cutting monetisation experiment and does not activate the rest of this phase.
+**Status:** Strategy defined; paid activation deferred until the active Product Value & Monetisation Foundations programme produces evidence. The controlled Travelpayouts affiliate pilot remains the only currently active monetisation experiment.
 
-- [ ] Validate Host Pro based on real producer needs.
-- [ ] Validate Explorer Pass based on real traveler value.
-- [ ] Introduce sponsored visibility/advertising only with clear disclosure and trust safeguards.
-- [ ] Validate affiliate travel services beyond the current controlled Travelpayouts pilot.
-- [ ] Validate chauffeur partnerships.
-- [ ] Expand direct producer shop linking where appropriate.
-- [ ] Revisit booking revenue only if the commercial model deliberately supports it.
+This phase is the later commercialisation layer. It does **not** mean “turn on every payment feature already present in the repository.”
 
-Monetisation follows the product and trust model; it must not dictate or weaken producer verification.
+### Commercial hierarchy
+
+1. Contextual affiliate utility.
+2. B2B Regional Intelligence / regional contracts.
+3. Producer Insights / producer workflow software.
+4. Traveler premium planning tools.
+5. Booking/payment commission only much later, if deliberately chosen.
+
+### Guardrails
+
+- [ ] Keep essential discovery, location, visitability, direct-contact and road/access safety information free.
+- [ ] Keep display advertising disabled unless a later deliberate decision shows a clear user benefit and trust-safe model.
+- [ ] Do not sell producer ranking, verification, editorial preference or safety visibility.
+- [ ] Do not require a producer subscription to correct factual, visitor, contact, access or safety information.
+- [ ] Keep contextual affiliates disclosed and separated from editorial producer ranking.
+- [ ] Validate B2B Regional Intelligence from the internal regional-report prototype before building contract-specific portals.
+- [ ] Validate Producer Insights with real claimed Hosts and sufficient traffic before exposing Producer Pro pricing.
+- [ ] Validate Traveler Plus only after the free My Trips product demonstrates repeat planning behavior and a clear advanced-workflow need.
+- [ ] Treat the current Explorer Pass, Digital Pass, Host pass-scanner and chauffeur prototypes as dormant optionality rather than roadmap commitments.
+- [ ] Refactor payment/entitlement infrastructure only when there is a validated product that needs it.
+- [ ] Revisit booking/transaction revenue only if Phase 22–23 are deliberately activated with real producer agreements, operational support and legal/accounting readiness.
+
+### Product principle
+
+> **Monetise convenience, workflow and intelligence — not trust or safety.**
+
+**Definition of done:** paid products are introduced only where actual TerroirTrail usage and customer validation demonstrate value, while the independent discovery/trust layer remains useful without payment.
 
 ---
 
@@ -664,18 +783,24 @@ Monetisation follows the product and trust model; it must not dictate or weaken 
 2. **No public TerroirTrail Experience exists without a producer agreement.**
 3. **Public visitability does not equal TerroirTrail booking permission.**
 4. **Unknown data stays unknown.** Never invent a positive or negative fact to fill a UI field.
-5. **Never guess unresolved coordinates or unresolved producer identity.**
+5. **Never guess unresolved coordinates, producer identity, visitor availability, drive time or road suitability.**
 6. **Direct producer contact is acceptable without a partnership only through producer-controlled public channels.**
 7. **Admin and producer authority must be server-trusted.**
-8. **Every completed roadmap item is crossed out in this file when verified complete.**
-9. **Before starting a major new feature, place it against this roadmap first.**
-10. **Crete is the reference-quality regional implementation.**
-11. **Phase 11 account/admin/host handling is complete; finish the current Phase 12 and Travelpayouts deployment/production-verification closeout before beginning Phase 13 Interactive Terroir Regions.**
-12. **Expand Greece by product field before resuming broad international geographic expansion, with Phase 13 first adding the reusable regional-terroir interaction layer that supports those later expansions.**
-13. **A shop, office, cooperative outlet, or visitor centre must never be silently treated as the underlying production site.**
-14. **New categories must receive category-appropriate taxonomy and UI rather than inheriting wine-centric assumptions.**
-15. **Finish the planned discovery expansion to an explicit reference-quality standard before producer-partnership/deal outreach becomes the main programme.**
-16. **Traveler, Host, and Admin account capabilities are production architecture prerequisites and remain subject to regression testing as the platform expands.**
-17. **Partnership-dependent commercial features stay dormant rather than forcing premature deals.**
-18. **A candidate listing may be removed when exact identity cannot meet the publication standard; catalogue size is never a reason to guess a Google business identity.**
-19. **Regional map overlays are contextual discovery layers, not evidence of exhaustive coverage, administrative endorsement, route safety, or commercial partnership.**
+8. **Essential location, visitability, road/access and other safety-relevant information remains free and fail-closed.**
+9. **Monetise convenience, workflow and intelligence — not trust or safety.**
+10. **Producer factual corrections and trust/safety updates must not require a paid producer plan.**
+11. **Paid tiers must never buy editorial ranking, verification status or the appearance of being more trustworthy.**
+12. **The first traveler-planning product organizes verified facts; it does not generate unsupported AI routes, opening times, drive times or road-safety claims.**
+13. **Booking, public Experiences, chauffeur workflows, QR partner-pass benefits and transaction/commission complexity remain dormant until explicitly reactivated by roadmap decision.**
+14. **Contextual affiliates must be clearly disclosed and should migrate toward relevant planning/preparation contexts rather than dominate the primary discovery surface.**
+15. **Catalogue expansion is paused. Do not add new producers or projects until the roadmap explicitly resumes an expansion phase.**
+16. **A shop, office, cooperative outlet or visitor centre must never be silently treated as the underlying production site.**
+17. **New categories must receive category-appropriate taxonomy and UI rather than inheriting wine-centric assumptions.**
+18. **Crete remains the reference-quality regional implementation standard.**
+19. **Regional discovery layers are contextual tools, not evidence of exhaustive coverage, administrative endorsement, route safety or commercial partnership.**
+20. **Intent analytics must be privacy-conscious and must never collect private tasting-note contents, personal trip-note contents, message contents or unnecessary PII.**
+21. **Existing Explorer Pass / Stripe code is infrastructure optionality, not proof that Explorer Pass is the product TerroirTrail should sell.**
+22. **Before starting a major new feature, place it against this roadmap first.**
+23. **Every completed roadmap item is crossed out in this file only after implementation, testing and any required production verification.**
+
+---
