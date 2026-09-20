@@ -479,197 +479,896 @@ This phase adds a geographic discovery layer above individual producer pins so t
 
 ## Phase 14 — Product Value & Monetisation Foundations
 
-**Status:** Active — this is the current product programme. Catalogue expansion is outside the active roadmap and may return later only through an explicit new roadmap decision.
+**Status:** Active — this is the current product programme.
 
-TerroirTrail now has a sufficiently strong discovery/trust foundation to stop optimizing for catalogue size and start proving where the verified data creates recurring economic value. This programme is deliberately **not** a payment-screen programme. It builds the measurement, planning and intelligence layers required to decide what deserves to become a paid product later.
+**Primary objective:** turn the existing verified catalogue and operational travel data into measurable traveler utility, reusable planning workflows, producer intelligence, and regional intelligence **before** deciding what should become a paid product.
 
-### Monetisation principles
+**Non-goals for Phase 14:**
+- no catalogue expansion;
+- no generic AI itinerary generator;
+- no automatic route optimization;
+- no invented drive times, opening times, road suitability or availability;
+- no new booking marketplace;
+- no commission model;
+- no public Host Pro pricing;
+- no Traveler Plus paywall;
+- no paid producer ranking;
+- no paywall on essential safety/access information;
+- no activation of dormant Explorer Pass, QR-pass, chauffeur or public booking flows.
 
-- [ ] Keep the core discovery catalogue free.
-- [ ] Keep essential location, road/access, visitability, booking-rule, opening/contact and other safety-relevant information free.
-- [ ] Monetise **convenience, workflow and intelligence — not trust or safety**.
-- [ ] Keep producer factual corrections, current visitor notices and safety/access corrections available without requiring a paid producer tier.
-- [ ] Never sell paid ranking, editorial preference, verification status, or the appearance of being more trustworthy.
-- [ ] Avoid early payment screens, generic AI itinerary generation, route-safety invention, booking/commission complexity, and marketplace liability.
-- [ ] Preserve the distinction between independent researched listing, verified Host ownership, commercial partnership and any future paid software entitlement.
-- [ ] Keep display advertising disabled unless a later deliberate product decision reverses that.
-- [ ] Treat current Explorer Pass / QR-pass / chauffeur / booking infrastructure as dormant optionality rather than the active monetisation strategy.
+### Phase 14 ownership boundary
 
-### Stage A — Privacy-conscious intent measurement
+**Supabase / data-side work**
+- event schema and aggregation model;
+- RLS, retention, deletion and export behavior;
+- trip persistence schema;
+- privacy-preserving internal reporting views;
+- producer/regional aggregate views;
+- database-side verification and integrity checks.
 
-Build the measurement layer before deciding what to charge for.
+**Application / codebase work**
+- event instrumentation in React/TypeScript;
+- My Trips UI and account integration;
+- contextual affiliate placement;
+- internal admin visualization;
+- Producer Insights prototype UI;
+- Regional Intelligence prototype UI/report rendering;
+- tests, accessibility, build/deploy and production-smoke work.
 
-- [ ] Define a first-party event model for meaningful product intent, including producer views, saves/unsaves, shares, producer-controlled website/phone/email actions, directions actions, region opens, trip actions, Passport stamps, and affiliate impressions/clicks.
-- [ ] Record only the minimum context needed for product decisions, such as producer, category, country/region, source surface, coarse account/session scope and event time.
-- [ ] Never record private tasting-note contents, personal trip-note contents, contact-message contents, passwords, secrets, or unnecessary personal data in analytics events.
-- [ ] Define retention, deletion/account-export behavior, consent/privacy wording and aggregation rules before production rollout.
-- [ ] Add internal measurement/reporting that can answer whether discovery leads to saves, trip planning, direct producer contact, directions and eventual visits.
-- [ ] Keep diagnostic logging separate from behavioral product analytics.
+Do not duplicate routine operational/data migrations into the repository unless the application-facing database contract materially changes.
 
-### Stage B — Free **My Trips** planning foundation
+---
 
-Complete the missing traveler loop:
+### 14.0 — Baseline, freeze and success criteria
 
-**Discover → Save → Plan → Prepare → Visit → Remember**
+**Purpose:** establish the exact starting point before new behavior is introduced.
 
-- [ ] Let travelers create named trips and add/remove existing TerroirTrail producers.
-- [ ] Support simple trip organization such as manual ordering and optional day buckets without generating an optimized route.
-- [ ] Build a trip-readiness view from verified TerroirTrail facts: visitability, booking requirement, visitor hours/freshness, direct contact, road/access caution and explicit unknowns.
-- [ ] Preserve fail-closed road/access behavior inside trip planning.
-- [ ] Do not invent drive times, opening times, road suitability or visit availability.
-- [ ] Do not introduce checkout or a paid planner gate in the initial My Trips rollout.
-- [ ] Reuse current account/favorites/Passport foundations rather than creating a parallel traveler identity model.
-- [ ] Validate repeat planning use before defining any Traveler Plus boundary.
+- [ ] Confirm catalogue expansion remains frozen and no producer/project additions are part of Phase 14.
+- [ ] Record the current production baseline for active producers, regions, categories and audited visitability/access coverage.
+- [ ] Record the current traveler surfaces that can generate measurable intent: producer drawer, favorites, region guide, Passport, direct contact, directions and affiliate banner.
+- [ ] Record current monetisation feature flags and confirm:
+  - Explorer Pass purchases disabled;
+  - display advertising disabled;
+  - public Experiences/bookings quarantined;
+  - Travelpayouts affiliate pilot is the only active monetisation experiment.
+- [ ] Define the minimum Phase 14 success questions:
+  - Which producers/regions generate meaningful traveler intent?
+  - Do saves lead to trip planning?
+  - Do trip plans lead to direct producer contact or directions?
+  - Which affiliate placements are useful rather than distracting?
+  - Can producer-level aggregates provide useful operational insight?
+  - Can regional aggregates support a credible institutional report?
+- [ ] Define the minimum production privacy boundary before any behavioral analytics are collected.
 
-### Stage C — Contextual affiliate utility
+**Gate 14.0:** do not create production analytics tables or instrument user behavior until the event taxonomy, prohibited fields and retention/deletion principles are written down.
 
-The existing Travelpayouts pilot remains the only active monetisation experiment, but it should evolve from generic map advertising toward useful trip context.
+---
 
-- [ ] Measure affiliate impressions/clicks by surface and intent context.
-- [ ] Prefer relevant preparation contexts such as car rental, transfers or connectivity around trip planning rather than an always-rotating generic map banner.
-- [ ] Keep all affiliate relationships clearly disclosed and visually separate from producer editorial ranking.
-- [ ] Never make producer visibility contingent on affiliate participation.
-- [ ] Evaluate whether generic third-party activity marketplaces fit TerroirTrail's independent-producer positioning before expanding them.
-- [ ] Remove or reduce low-value affiliate surfaces when usage data shows they distract from discovery.
+### 14.1 — Define the first-party intent event contract
 
-### Stage D — Internal Producer Insights prototype
+**Purpose:** create one stable event vocabulary shared by Supabase, the frontend and future reporting.
 
-Build this for TerroirTrail/Admin first, not as an immediate paid Host screen.
+#### 14.1.1 Event taxonomy
 
-- [ ] Aggregate producer-level intent signals such as profile views, saves, trip additions, website/contact actions and directions actions.
-- [ ] Show trends over time without exposing individual traveler identities or private traveler content.
-- [ ] Separate editorial/listing quality from demand metrics; high traffic never changes verification status or ranking authority.
-- [ ] Validate whether claimed/verified Hosts find these insights operationally useful.
-- [ ] Keep the free Host layer focused on ownership, factual corrections, current visitor information, content/media workflow and trust-sensitive updates.
-- [ ] Define a future Producer Insights / Producer Pro product only after the internal metrics prove useful.
+Define canonical events, initially limited to meaningful actions:
 
-### Stage E — Internal Regional Intelligence prototype
+**Discovery**
+- [ ] `producer_view`
+- [ ] `producer_share`
+- [ ] `region_open`
+- [ ] `region_producers_view`
 
-Use the same verified dataset to test a B2B product before selling regional contracts.
+**Saved intent**
+- [ ] `producer_save`
+- [ ] `producer_unsave`
 
-- [ ] Build internal region-level reporting for catalogue coverage, categories, verified location coverage, visitability, appointment-only/public access, access/road review, evidence freshness and reviewed-unknown gaps.
-- [ ] Add aggregated traveler-intent signals once Stage A has enough data.
-- [ ] Keep regional reporting clear that TerroirTrail coverage is curated rather than exhaustive.
-- [ ] Prototype exportable/readable regional reports before building a separate B2B portal.
-- [ ] Validate the usefulness of this reporting with potential regional/institutional users before committing to contract-specific product work.
-- [ ] Keep regional contracts independent from producer ranking and editorial inclusion.
+**Direct producer intent**
+- [ ] `producer_website_click`
+- [ ] `producer_phone_click`
+- [ ] `producer_email_click`
+- [ ] `directions_click`
 
-### Stage F — Paid-product validation
+**Trip intent**
+- [ ] `trip_created`
+- [ ] `trip_renamed`
+- [ ] `trip_producer_added`
+- [ ] `trip_producer_removed`
+- [ ] `trip_item_reordered`
+- [ ] `trip_day_assigned`
+- [ ] `trip_opened`
 
-Do not choose the paid layer by intuition alone.
+**Post-visit**
+- [ ] `passport_stamp_added`
+- [ ] `passport_stamp_removed`
 
-Current validation order:
+**Affiliate**
+- [ ] `affiliate_impression`
+- [ ] `affiliate_click`
 
-1. **Contextual affiliates** — low-complexity experiment already running.
-2. **B2B Regional Intelligence / regional contracts** — likely first high-value paid opportunity once the internal report is credible.
-3. **Producer Insights / producer software** — after enough claimed Hosts and traveler-intent volume exist.
-4. **Traveler premium planning** — only after My Trips shows repeat use and clear demand for advanced workflow.
-5. **Booking/transaction commission** — much later, if ever, and only by deliberate decision.
+Do not add events merely because they are easy to track. Every event must answer a defined product or commercial question.
 
-- [ ] Validate willingness to pay before exposing pricing.
-- [ ] If a paid traveler tier is justified later, charge for advanced workflow such as multiple/complex trips, collaboration, offline packs, exports, alerts or richer organization — never for essential safety/access facts.
-- [ ] If a paid producer tier is justified later, charge for software/insights/workflow — never for factual corrections, verification, safety updates or editorial ranking.
-- [ ] If B2B contracts are validated, sell regional intelligence, reporting, data quality and workflow rather than sponsored catalogue bias.
-- [ ] Only refactor the existing Explorer Pass/Stripe entitlement model into generic product entitlements after a real paid product has been validated.
+#### 14.1.2 Allowed event context
 
-**Definition of done:** TerroirTrail can measure meaningful intent, travelers can plan with verified data through a useful free My Trips foundation, affiliate placements are contextual and measurable, and internal Producer/Regional Intelligence prototypes provide enough evidence to choose the first serious paid product without weakening the trust layer.
+- [ ] Define a strict allowlist for event metadata.
+- [ ] Allow identifiers/context such as:
+  - producer ID;
+  - region/destination;
+  - country;
+  - producer category;
+  - source surface;
+  - affiliate campaign ID;
+  - coarse authenticated/anonymous scope;
+  - event timestamp.
+- [ ] Decide whether anonymous sessions require a pseudonymous rotating session ID; avoid persistent cross-site identity.
+- [ ] Keep user/account identifiers out of general aggregate reporting unless required for account-scoped product behavior.
+
+#### 14.1.3 Prohibited event content
+
+Explicitly prohibit:
+- [ ] tasting-note text;
+- [ ] personal trip-note text;
+- [ ] email addresses;
+- [ ] phone numbers;
+- [ ] contact-message contents;
+- [ ] exact free-text search strings if they may contain personal information, unless separately reviewed;
+- [ ] passwords/tokens/secrets;
+- [ ] precise background location;
+- [ ] payment details;
+- [ ] arbitrary serialized component/user objects.
+
+#### 14.1.4 Contract documentation
+
+- [ ] Create one canonical event-contract document/type shared by implementation and tests.
+- [ ] Define required/optional fields for every event.
+- [ ] Define allowed `source_surface` values.
+- [ ] Define validation behavior for malformed events.
+- [ ] Define deduplication/idempotency behavior where duplicate events would distort metrics.
+
+**Gate 14.1:** event names and payload contracts must be frozen enough for both database and frontend implementation before Stage 14.2/14.3 begin.
+
+---
+
+### 14.2 — Build the Supabase intent-measurement foundation
+
+**Purpose:** provide a secure, minimal, queryable first-party measurement layer.
+
+#### 14.2.1 Schema
+
+- [ ] Create the canonical event table with a narrow schema.
+- [ ] Separate event identity/time from optional contextual metadata.
+- [ ] Use database constraints or validated enums/checks for canonical event names.
+- [ ] Add only indexes justified by expected aggregate queries.
+- [ ] Do not store redundant producer facts that can be joined from canonical producer data.
+
+#### 14.2.2 Security
+
+- [ ] Enable RLS before exposing any event-write path.
+- [ ] Ensure travelers cannot read other users' raw events.
+- [ ] Ensure public/anonymous users cannot enumerate raw event data.
+- [ ] Ensure frontend clients cannot forge privileged/admin-only dimensions.
+- [ ] Restrict internal aggregate reporting appropriately.
+- [ ] Verify service-role/admin access remains server-side only.
+
+#### 14.2.3 Privacy lifecycle
+
+- [ ] Define event retention period.
+- [ ] Define account deletion behavior.
+- [ ] Define whether account export includes raw events, summarized events, or neither based on product/privacy policy.
+- [ ] Define handling for anonymous-session events.
+- [ ] Ensure expired/deleted identity links do not break aggregate reporting unnecessarily.
+- [ ] Document what remains as anonymized aggregate statistics after account deletion, if applicable.
+
+#### 14.2.4 Aggregation layer
+
+Create internal aggregates for:
+- [ ] producer views;
+- [ ] producer saves;
+- [ ] trip additions;
+- [ ] direct website/contact actions;
+- [ ] directions actions;
+- [ ] region engagement;
+- [ ] affiliate impressions/click-through;
+- [ ] time-window trends.
+
+Prefer aggregate views/materialized summaries where appropriate rather than giving operational dashboards unrestricted raw-event access.
+
+#### 14.2.5 Verification
+
+- [ ] Insert controlled test events.
+- [ ] Verify accepted payloads.
+- [ ] Verify rejected malformed/prohibited payloads.
+- [ ] Verify RLS from anonymous, traveler and privileged contexts.
+- [ ] Verify deletion/retention behavior.
+- [ ] Verify aggregate counts match source events.
+- [ ] Run Supabase security/performance advisors after DDL.
+
+**Gate 14.2:** no frontend production instrumentation until RLS, privacy lifecycle and aggregate correctness pass verification.
+
+---
+
+### 14.3 — Instrument the existing product
+
+**Purpose:** measure the existing discovery loop before building a new monetised product.
+
+#### 14.3.1 Producer interaction instrumentation
+
+- [ ] Instrument producer detail views without double-counting rerenders.
+- [ ] Instrument save/unsave actions.
+- [ ] Instrument share actions.
+- [ ] Instrument producer website clicks.
+- [ ] Instrument phone actions.
+- [ ] Instrument email actions.
+- [ ] Instrument directions actions.
+- [ ] Include valid source-surface context.
+
+#### 14.3.2 Regional interaction instrumentation
+
+- [ ] Instrument region-guide opens.
+- [ ] Instrument "view producers on map" actions.
+- [ ] Preserve current region UX and do not add tracking-only UI.
+
+#### 14.3.3 Passport instrumentation
+
+- [ ] Instrument stamp add/remove actions.
+- [ ] Never send tasting-note contents.
+- [ ] Keep personal notes private and outside analytics payloads.
+
+#### 14.3.4 Affiliate baseline instrumentation
+
+- [ ] Instrument affiliate impressions.
+- [ ] Instrument affiliate clicks.
+- [ ] Record affiliate campaign ID and source surface.
+- [ ] Do not track destination URLs containing unnecessary personal/query information.
+- [ ] Preserve clear affiliate disclosure.
+
+#### 14.3.5 Reliability
+
+- [ ] Tracking failures must never break discovery, contact, navigation, favorites or Passport.
+- [ ] Avoid blocking page interaction while analytics requests complete.
+- [ ] Prevent obvious duplicate producer-view/impression events from rerenders.
+- [ ] Add focused automated tests for event dispatch and payload sanitization.
+
+#### 14.3.6 Production verification
+
+- [ ] Deploy with measurement enabled only after privacy/RLS checks pass.
+- [ ] Perform a controlled production smoke for each event class.
+- [ ] Verify received events in Supabase.
+- [ ] Verify no private note/contact contents are present.
+- [ ] Verify event volumes are plausible rather than duplicated.
+
+**Gate 14.3:** collect a baseline before using intent data to redesign affiliate placement or expose producer/regional insights.
+
+---
+
+### 14.4 — Internal intent dashboard / baseline report
+
+**Purpose:** prove that the measurement layer answers useful questions before building paid-product concepts.
+
+- [ ] Add an admin-only internal view/report for aggregate intent.
+- [ ] Show configurable time windows.
+- [ ] Show producer-level aggregate demand signals.
+- [ ] Show region-level aggregate demand signals.
+- [ ] Show category-level aggregate demand signals.
+- [ ] Show the funnel:
+  - producer view;
+  - save;
+  - trip addition;
+  - direct contact/directions;
+  - Passport stamp where measurable.
+- [ ] Show affiliate impressions and clicks by placement/campaign.
+- [ ] Explicitly label low-volume data to avoid over-interpreting tiny samples.
+- [ ] Do not expose individual traveler identities.
+- [ ] Document which metrics are directional rather than proof of an actual visit/purchase.
+
+**Gate 14.4:** confirm the event system produces interpretable data before using it as a foundation for Producer Insights or B2B reporting.
+
+---
+
+### 14.5 — Design the My Trips domain model
+
+**Purpose:** define the missing product layer between Saved and Passport.
+
+#### 14.5.1 Core trip model
+
+- [ ] Define account-owned `trips`.
+- [ ] Define `trip_items` referencing existing producer IDs.
+- [ ] Support trip name/title.
+- [ ] Support optional date/date-range without requiring it.
+- [ ] Support manual ordering.
+- [ ] Support optional day buckets/day numbers.
+- [ ] Support created/updated timestamps.
+- [ ] Decide whether one producer may appear more than once in a trip; default to one occurrence unless a real use case requires otherwise.
+- [ ] Decide behavior when a producer becomes inactive after being added to a trip.
+
+#### 14.5.2 Security and account lifecycle
+
+- [ ] Ensure travelers can read/write only their own trips.
+- [ ] Include trips in account deletion.
+- [ ] Include appropriate trip data in account export.
+- [ ] Define guest behavior:
+  - either signed-in only initially;
+  - or local guest draft with explicit later migration.
+- [ ] Do not silently merge guest trips into an account without a deliberate migration rule.
+
+#### 14.5.3 Integrity
+
+- [ ] Foreign-key/reference trip items to canonical producers where technically appropriate.
+- [ ] Prevent invalid producer IDs from entering a trip.
+- [ ] Ensure ordering updates are atomic enough to avoid duplicate/unstable positions.
+- [ ] Define maximum practical trip/item limits if needed for abuse protection, not monetisation.
+
+#### 14.5.4 Trip event integration
+
+- [ ] Emit the canonical trip events from 14.1.
+- [ ] Never put private trip notes into event payloads.
+
+**Gate 14.5:** trip persistence, ownership and deletion/export behavior must be verified before full My Trips UI work.
+
+---
+
+### 14.6 — Build free My Trips V1
+
+**Purpose:** make verified data useful for actual trip preparation without introducing route-generation or payment complexity.
+
+#### 14.6.1 Entry points
+
+- [ ] Add "Add to trip" from producer detail.
+- [ ] Add trip access from the signed-in traveler menu.
+- [ ] Allow creation of a trip during the add flow without losing the current producer context.
+- [ ] Keep Favorites separate from Trips; a saved producer is not automatically assigned to a trip.
+
+#### 14.6.2 Trip workspace
+
+- [ ] Show trip title/date context.
+- [ ] Show included producers.
+- [ ] Support manual reorder.
+- [ ] Support optional day assignment.
+- [ ] Support remove-from-trip.
+- [ ] Support direct opening of the producer drawer from the trip.
+- [ ] Preserve mobile usability.
+
+#### 14.6.3 Trip readiness
+
+For each producer, derive a readiness summary only from verified/current TerroirTrail data:
+
+- [ ] location confidence;
+- [ ] visit status;
+- [ ] booking requirement;
+- [ ] walk-in status where known;
+- [ ] visitor hours where current;
+- [ ] evidence freshness/review timestamp where useful;
+- [ ] direct producer contact;
+- [ ] parking where known;
+- [ ] road/access classification/caution where verified;
+- [ ] explicit unknown/not-confirmed state.
+
+#### 14.6.4 Safety rules
+
+- [ ] Preserve all existing fail-closed navigation behavior.
+- [ ] Do not infer road safety from coordinates or map routing.
+- [ ] Do not invent travel times.
+- [ ] Do not optimize producer order into a route.
+- [ ] Do not claim a producer is open on a planned date unless current evidence explicitly supports that inference.
+- [ ] Do not claim booking availability.
+- [ ] Keep safety/access facts free.
+
+#### 14.6.5 V1 scope control
+
+Do **not** add in V1:
+- [ ] checkout;
+- [ ] paid trip limits;
+- [ ] AI itinerary generation;
+- [ ] automatic routing;
+- [ ] collaborative editing;
+- [ ] accommodation booking;
+- [ ] live availability;
+- [ ] producer reservation requests.
+
+#### 14.6.6 QA
+
+- [ ] Test create/rename/delete trip.
+- [ ] Test add/remove producer.
+- [ ] Test duplicate-add behavior.
+- [ ] Test reorder/day assignment.
+- [ ] Test account isolation.
+- [ ] Test inactive/missing producer behavior.
+- [ ] Test mobile.
+- [ ] Test offline/failure state.
+- [ ] Test event instrumentation.
+- [ ] Run full quality gate and production smoke.
+
+**Gate 14.6:** My Trips V1 must be useful while entirely free and without route-generation/payment features.
+
+---
+
+### 14.7 — Contextual affiliate utility
+
+**Purpose:** move affiliate monetisation from generic interruption toward relevant trip-preparation utility.
+
+#### 14.7.1 Establish baseline
+
+- [ ] Measure current map-banner impressions/clicks before major placement changes.
+- [ ] Record performance by campaign.
+- [ ] Identify placements with high impressions but negligible useful engagement.
+
+#### 14.7.2 Define allowed contextual surfaces
+
+Candidate contexts:
+- [ ] trip preparation;
+- [ ] destination/region planning;
+- [ ] transport preparation;
+- [ ] connectivity preparation.
+
+Potential categories:
+- [ ] car rental;
+- [ ] transfers;
+- [ ] eSIM/connectivity.
+
+Treat generic third-party activity marketplaces separately because they may conflict with TerroirTrail's producer-first positioning.
+
+#### 14.7.3 Placement rules
+
+- [ ] Affiliate blocks must be clearly labeled.
+- [ ] Affiliate participation must never affect producer ordering/ranking.
+- [ ] Do not insert affiliate CTAs into safety/access warnings.
+- [ ] Avoid placing commercial content between a warning and its source/evidence.
+- [ ] Prefer a small number of contextually relevant offers over rotating unrelated offers.
+
+#### 14.7.4 Experiment and decision
+
+- [ ] Compare contextual placement against map-banner baseline.
+- [ ] Measure click-through and downstream usefulness where available.
+- [ ] Remove low-value campaigns.
+- [ ] Decide whether the primary-map sponsor banner should be reduced or retired.
+
+**Gate 14.7:** affiliate placement is judged by relevance and user utility, not impression volume alone.
+
+---
+
+### 14.8 — Internal Producer Insights prototype
+
+**Purpose:** determine whether TerroirTrail can provide useful producer software before creating Producer Pro.
+
+#### 14.8.1 Define producer metrics
+
+Candidate metrics:
+- [ ] profile views;
+- [ ] saves;
+- [ ] trip additions;
+- [ ] website clicks;
+- [ ] phone actions;
+- [ ] email actions;
+- [ ] directions actions;
+- [ ] aggregate region/category comparison where sample size is sufficient;
+- [ ] time trends.
+
+#### 14.8.2 Privacy and trust constraints
+
+- [ ] No individual traveler identities.
+- [ ] No private trip contents.
+- [ ] No tasting-note contents.
+- [ ] No claim that a click equals a booking or visit.
+- [ ] No ranking boost tied to metrics or payment.
+- [ ] Do not expose tiny demographic/segment counts that could identify individuals.
+
+#### 14.8.3 Internal prototype
+
+- [ ] Build admin-only producer insight view first.
+- [ ] Validate metric definitions and consistency.
+- [ ] Test whether metrics remain understandable at low traffic.
+- [ ] Identify which metrics a verified Host could reasonably act on.
+
+#### 14.8.4 Host validation
+
+- [ ] Show prototype to a small number of appropriate verified/known producers when ready.
+- [ ] Ask whether the information changes real operational decisions.
+- [ ] Record requested workflows separately from requested vanity metrics.
+- [ ] Do not expose pricing yet.
+
+**Gate 14.8:** Producer Pro is not created unless the prototype demonstrates repeatable operational value to actual producers.
+
+---
+
+### 14.9 — Internal Regional Intelligence prototype
+
+**Purpose:** test the strongest likely B2B opportunity using the data already collected.
+
+#### 14.9.1 Supply/readiness metrics
+
+Build regional aggregates for:
+- [ ] audited producer count;
+- [ ] category coverage;
+- [ ] verified-location coverage;
+- [ ] public/seasonal/appointment-only visitability;
+- [ ] booking-policy coverage;
+- [ ] visitor-hours coverage;
+- [ ] road/access review coverage;
+- [ ] parking evidence coverage;
+- [ ] visitor-language evidence coverage;
+- [ ] evidence freshness;
+- [ ] reviewed-unknown coverage;
+- [ ] direct-contact coverage.
+
+#### 14.9.2 Demand/intent metrics
+
+Once enough Stage 14.3 data exists:
+- [ ] producer views by region;
+- [ ] saves by region;
+- [ ] trip additions by region;
+- [ ] direct producer actions by region;
+- [ ] directions actions by region;
+- [ ] category demand within region;
+- [ ] affiliate/travel-preparation engagement where meaningful.
+
+#### 14.9.3 Reporting
+
+- [ ] Build an admin-only regional report first.
+- [ ] Make the reporting period explicit.
+- [ ] Make curated/non-exhaustive coverage explicit.
+- [ ] Separate supply/readiness from traveler-demand metrics.
+- [ ] Avoid scoring a region with a single opaque "quality score".
+- [ ] Prefer auditable component metrics.
+- [ ] Create export/print output only after the on-screen report is correct.
+
+#### 14.9.4 External validation
+
+Potential future validation audiences include:
+- regional/municipal tourism bodies;
+- local development organizations;
+- producer associations;
+- chambers;
+- geoparks/heritage organizations where relevant.
+
+- [ ] Validate which metrics they actually need.
+- [ ] Identify whether they value recurring monitoring, one-off audits, embeds, reports or data export.
+- [ ] Do not promise exhaustive regional coverage unless the catalogue truly is exhaustive.
+
+**Gate 14.9:** do not build a standalone B2B portal until the internal report has been reviewed with real potential institutional users.
+
+---
+
+### 14.10 — Paid-product validation and Phase 14 closeout
+
+**Purpose:** decide what deserves commercial development based on evidence collected in Phase 14.
+
+#### Validation order
+
+1. **Contextual affiliates**
+2. **B2B Regional Intelligence / regional contracts**
+3. **Producer Insights / producer workflow software**
+4. **Traveler premium planning**
+5. **Booking/transaction commission much later, if ever**
+
+#### Required decision package
+
+Before closing Phase 14:
+- [ ] Summarize real usage of discovery, saves, trips, direct actions and affiliates.
+- [ ] Summarize My Trips adoption and repeat use.
+- [ ] Summarize Producer Insights validation.
+- [ ] Summarize Regional Intelligence validation.
+- [ ] Identify which proposed paid feature solves a demonstrated problem.
+- [ ] Identify which proposed paid feature has credible willingness-to-pay evidence.
+- [ ] Explicitly record products **not** being pursued.
+- [ ] Decide whether existing Explorer Pass/Stripe entitlement code should be:
+  - retained dormant;
+  - generalized into reusable entitlements;
+  - or removed later.
+- [ ] Keep essential safety/access data outside any paid boundary.
+- [ ] Update Phase 18 commercial priorities from evidence rather than assumptions.
+
+**Phase 14 definition of done:** TerroirTrail has a secure first-party intent-measurement layer, a production-quality free My Trips workflow, measured/contextual affiliate utility, validated internal Producer Insights and Regional Intelligence prototypes, and enough real evidence to choose the next commercial product without weakening the trust layer.
 
 ---
 
 ## Phase 15 — Producer Partnerships & Deals
 
-**Status:** Deferred. Formal producer partnerships are not a prerequisite for the active Product Value & Monetisation Foundations programme.
+**Status:** Deferred until Phase 14 evidence demonstrates a concrete reason to formalize producer commercial relationships.
 
-Intent measurement, My Trips, internal Producer Insights and internal Regional Intelligence may proceed without converting independent researched listings into commercial partnerships. Independent researched listings and direct links to producer-controlled public channels may continue without implying a partnership.
+**Objective:** create a controlled relationship model for producers who explicitly choose to work commercially with TerroirTrail, without changing the status or value of independent researched listings.
 
-Inbound producer listing enquiries may be accepted at `terroirtrail@gmail.com` before formal partnerships are launched. An enquiry is a request for editorial review only and does not imply listing acceptance, verification, commercial partnership, booking permission, or Host access.
+**Prerequisites:**
+- Phase 11 Host ownership/security remains production-valid.
+- Phase 14 Producer Insights has identified real producer value or another explicit partnership use case exists.
+- Independent researched listings remain fully separate from partnership status.
 
-- [ ] Define producer partnership onboarding.
-- [ ] Verify producer identity and authorized representative.
-- [ ] Convert the appropriate verified Host/listing ownership state into a formal partnership state only after agreement.
-- [ ] Obtain contact/inquiry permissions where applicable.
-- [ ] Obtain image/content rights where applicable.
-- [ ] Agree commercial terms where applicable.
-- [ ] Allow a producer to opt into TerroirTrail inquiries without requiring a full bookable Experience.
-- [ ] Define how partnership status is displayed without confusing it with public visitability or listing verification.
+### 15.1 — Define the partnership model
 
-Relationship levels:
+- [ ] Define formal relationship states:
+  1. independent researched listing;
+  2. verified Host managing factual/listing content;
+  3. commercial partner accepting defined TerroirTrail workflows;
+  4. partner with approved Experiences, only if Phase 16 is later activated.
+- [ ] Define exactly what partnership changes and what it does not change.
+- [ ] Ensure partnership never changes verification evidence or editorial ranking.
+- [ ] Define termination/suspension behavior.
 
-1. Independent researched listing
-2. Partner accepting TerroirTrail inquiries
-3. Partner offering approved Experiences
+### 15.2 — Define permissions and rights
+
+- [ ] Define authorized representative verification.
+- [ ] Define permitted contact/inquiry routing.
+- [ ] Define image/content rights where producer material is used.
+- [ ] Define data-processing responsibilities.
+- [ ] Define brand/logo usage.
+- [ ] Define any response-time or operational expectations.
+- [ ] Keep safety/access truth under TerroirTrail's controlled evidence model.
+
+### 15.3 — Build onboarding workflow
+
+- [ ] Reuse trusted Host identity/ownership.
+- [ ] Create explicit partnership application/offer state.
+- [ ] Record agreement version/date/status.
+- [ ] Prevent self-upgrading from Host to Partner.
+- [ ] Require trusted admin activation.
+- [ ] Add audit history for status changes.
+
+### 15.4 — Pilot
+
+- [ ] Select a deliberately small pilot.
+- [ ] Verify every pilot participant's authority.
+- [ ] Test onboarding and offboarding.
+- [ ] Test content/contact permissions.
+- [ ] Test that non-partner listings remain unaffected.
+- [ ] Gather producer feedback before scaling.
+
+### 15.5 — Exit gate
+
+- [ ] Formalize partnership documentation.
+- [ ] Confirm audit/security behavior.
+- [ ] Confirm there is a real workflow worth partnering for.
+- [ ] Do not activate Experiences automatically.
+
+**Phase 15 definition of done:** TerroirTrail can establish, operate and terminate explicit producer partnerships without confusing partnership with verification, public visitability, Host ownership or editorial inclusion.
 
 ---
 
 ## Phase 16 — Experiences
 
-**Status:** Do not populate before producer agreements.
+**Status:** Deferred — activate only after Phase 15 has real partner producers who explicitly want TerroirTrail-managed Experience publishing.
 
-- [ ] Create Experiences only after explicit producer agreement.
-- [ ] Agree the exact activity.
-- [ ] Agree title and description.
-- [ ] Agree duration.
-- [ ] Agree price.
-- [ ] Agree capacity.
-- [ ] Agree inclusions.
-- [ ] Agree schedule and seasonal availability.
-- [ ] Agree cancellation terms.
-- [ ] Agree accessibility information where relevant.
-- [ ] Agree the booking process.
-- [ ] Implement/confirm lifecycle: `draft → awaiting producer approval → approved → published → paused/withdrawn`.
-- [ ] Ensure pausing/removing an Experience never removes the underlying producer listing.
+**Objective:** create accurate, producer-approved activity records without turning the producer catalogue itself into a booking marketplace.
+
+**Prerequisites:**
+- explicit partner agreement;
+- producer-approved activity;
+- trusted producer ownership;
+- clear operational responsibility;
+- no assumption that public visitability equals Experience permission.
+
+### 16.1 — Define the Experience contract
+
+For each Experience define:
+- [ ] producer ID;
+- [ ] canonical title;
+- [ ] factual description;
+- [ ] activity type;
+- [ ] duration;
+- [ ] capacity/minimum group;
+- [ ] price/currency where applicable;
+- [ ] inclusions/exclusions;
+- [ ] language availability;
+- [ ] accessibility information;
+- [ ] age/participant restrictions where justified;
+- [ ] season/date availability model;
+- [ ] meeting point;
+- [ ] cancellation/change terms;
+- [ ] booking/inquiry method;
+- [ ] evidence/producer approval reference.
+
+### 16.2 — Lifecycle and approval
+
+- [ ] Enforce lifecycle:
+  `draft → awaiting producer approval → approved → published → paused/withdrawn`.
+- [ ] Require explicit producer approval before publication.
+- [ ] Keep admin authority over publication state.
+- [ ] Record approval/version history.
+- [ ] Ensure material content changes can trigger re-approval.
+- [ ] Ensure pausing/removing an Experience never removes the producer listing.
+
+### 16.3 — Data and UI boundaries
+
+- [ ] Keep producer visitability separate from Experience availability.
+- [ ] Do not reuse Experience price/duration as a generic producer-level fact.
+- [ ] Clearly label the Experience as a separate commercial/product layer.
+- [ ] Preserve direct producer discovery regardless of Experience participation.
+- [ ] Keep non-partner producers free of artificial disadvantages.
+
+### 16.4 — Pilot publication
+
+- [ ] Publish only a small approved set.
+- [ ] Verify mobile/desktop presentation.
+- [ ] Verify accurate dates/times/prices.
+- [ ] Verify pause/withdrawal behavior.
+- [ ] Verify stale Experience content cannot remain public after withdrawal.
+- [ ] Run production smoke with partner confirmation.
+
+### 16.5 — Exit gate
+
+- [ ] Confirm producers can understand and approve what is published.
+- [ ] Confirm TerroirTrail can keep Experience details operationally current.
+- [ ] Confirm no Experience publication implies booking/payment capability unless Phase 17 is active.
+
+**Phase 16 definition of done:** approved partner Experiences can be published, changed, paused and withdrawn safely while remaining strictly separate from the underlying independent producer catalogue.
 
 ---
 
 ## Phase 17 — Booking & Payments
 
-**Status:** Future.
+**Status:** Future — do not activate merely because booking/payment code already exists.
 
-Only after real approved Experiences exist.
+**Objective:** decide whether TerroirTrail should become transactionally responsible at all, and if so implement the smallest safe commercial model.
 
-- [ ] Decide whether TerroirTrail handles inquiry only, reservation, payment, or deposits.
-- [ ] Design availability/scheduling model.
-- [ ] Design cancellation/refund flows.
-- [ ] Design producer payout model if payments are handled.
-- [ ] Decide commission/subscription economics.
-- [ ] Address VAT/invoicing/accounting implications.
-- [ ] Implement booking security and authorization around actual commercial agreements.
+**Prerequisites:**
+- real approved Phase 16 Experiences;
+- demonstrated booking demand;
+- producers willing to operate under defined commercial terms;
+- support capacity;
+- legal/accounting review appropriate to the chosen model.
+
+### 17.1 — Choose the commercial responsibility level
+
+Explicitly choose one model before implementation:
+
+1. [ ] outbound/direct producer contact only;
+2. [ ] TerroirTrail inquiry request without confirmed reservation;
+3. [ ] reservation confirmation without payment;
+4. [ ] deposit collection;
+5. [ ] full payment/marketplace transaction.
+
+Do not implement levels 3–5 unless they are deliberately chosen.
+
+### 17.2 — Availability model
+
+- [ ] Define authoritative availability source.
+- [ ] Define how slots become held/confirmed.
+- [ ] Define race-condition/double-booking prevention.
+- [ ] Define timezone behavior.
+- [ ] Define cutoff windows.
+- [ ] Define producer closure/blackout handling.
+- [ ] Define stale-availability failure behavior.
+
+### 17.3 — Booking lifecycle
+
+- [ ] Define booking states.
+- [ ] Define traveler request/confirmation UX.
+- [ ] Define producer acceptance/rejection where needed.
+- [ ] Define cancellation and modification flows.
+- [ ] Define no-show behavior.
+- [ ] Define notification responsibilities.
+- [ ] Define support/escalation path.
+
+### 17.4 — Payment architecture, only if selected
+
+- [ ] Decide merchant-of-record/payment-facilitator responsibilities.
+- [ ] Define deposit/full-payment model.
+- [ ] Define producer payout/reconciliation.
+- [ ] Define refund/chargeback handling.
+- [ ] Define currency behavior.
+- [ ] Define tax/VAT/invoicing responsibilities.
+- [ ] Keep secret/payment credentials server-side.
+- [ ] Test idempotency and webhook replay.
+- [ ] Test failure recovery.
+
+### 17.5 — Legal/operational readiness
+
+- [ ] Update traveler terms.
+- [ ] Update producer commercial agreements.
+- [ ] Define support SLA/process.
+- [ ] Define refund responsibility.
+- [ ] Define accounting/reconciliation process.
+- [ ] Define fraud/abuse response.
+- [ ] Confirm privacy/data-retention implications.
+
+### 17.6 — Pilot and exit gate
+
+- [ ] Pilot with very few partners/Experiences.
+- [ ] Reconcile every test/real transaction manually during pilot.
+- [ ] Verify refunds/cancellations.
+- [ ] Verify producer notifications.
+- [ ] Verify support workflow.
+- [ ] Do not scale until operations are stable.
+
+**Phase 17 definition of done:** TerroirTrail has deliberately chosen and safely proven a booking responsibility level; payment is introduced only if the operational/legal model supports it.
 
 ---
 
 ## Phase 18 — Monetisation & Scale
 
-**Status:** Strategy defined; paid activation deferred until the active Product Value & Monetisation Foundations programme produces evidence. The controlled Travelpayouts affiliate pilot remains the only currently active monetisation experiment.
+**Status:** Strategy defined; paid activation depends on evidence from Phase 14 and any deliberately activated later phases.
 
-This phase is the later commercialisation layer. It does **not** mean “turn on every payment feature already present in the repository.”
+**Objective:** commercialize only validated value while preserving TerroirTrail's independent discovery and trust model.
 
-### Commercial hierarchy
+### Commercial priority order
 
-1. Contextual affiliate utility.
-2. B2B Regional Intelligence / regional contracts.
-3. Producer Insights / producer workflow software.
-4. Traveler premium planning tools.
-5. Booking/payment commission only much later, if deliberately chosen.
+1. contextual affiliate utility;
+2. B2B Regional Intelligence / regional contracts;
+3. Producer Insights / producer workflow software;
+4. Traveler premium planning;
+5. booking/payment commission only if Phase 17 proves viable.
 
-### Guardrails
+### 18.1 — Select the first validated paid product
 
-- [ ] Keep essential discovery, location, visitability, direct-contact and road/access safety information free.
-- [ ] Keep display advertising disabled unless a later deliberate decision shows a clear user benefit and trust-safe model.
-- [ ] Do not sell producer ranking, verification, editorial preference or safety visibility.
-- [ ] Do not require a producer subscription to correct factual, visitor, contact, access or safety information.
-- [ ] Keep contextual affiliates disclosed and separated from editorial producer ranking.
-- [ ] Validate B2B Regional Intelligence from the internal regional-report prototype before building contract-specific portals.
-- [ ] Validate Producer Insights with real claimed Hosts and sufficient traffic before exposing Producer Pro pricing.
-- [ ] Validate Traveler Plus only after the free My Trips product demonstrates repeat planning behavior and a clear advanced-workflow need.
-- [ ] Treat the current Explorer Pass, Digital Pass, Host pass-scanner and chauffeur prototypes as dormant optionality rather than roadmap commitments.
-- [ ] Refactor payment/entitlement infrastructure only when there is a validated product that needs it.
-- [ ] Revisit booking/transaction revenue only if Phase 16–17 are deliberately activated with real producer agreements, operational support and legal/accounting readiness.
+- [ ] Review Phase 14 evidence.
+- [ ] State the paying customer clearly.
+- [ ] State the problem being solved.
+- [ ] State what remains free.
+- [ ] State what is paid.
+- [ ] Record willingness-to-pay evidence.
+- [ ] Reject monetisation concepts without demonstrated value.
+
+### 18.2 — Define entitlements
+
+Only after a paid product is chosen:
+
+- [ ] Define generic entitlement/capability IDs.
+- [ ] Avoid hard-coding all future commerce around `hasExplorerPass`.
+- [ ] Define entitlement source of truth.
+- [ ] Define start/end/grace/cancel state.
+- [ ] Define account transfer/refund effects.
+- [ ] Keep entitlement checks server-trusted for privileged functionality.
+- [ ] Decide whether dormant Explorer Pass infrastructure can be generalized or should remain untouched.
+
+### 18.3 — Pricing and packaging
+
+- [ ] Define pricing hypothesis from validated customer value.
+- [ ] Avoid charging for safety/access facts.
+- [ ] Avoid paid ranking.
+- [ ] Define trial/pilot terms only if useful.
+- [ ] Define invoicing/subscription handling appropriate to customer type.
+- [ ] For B2B, prefer contract/value-based packaging over forcing consumer subscription mechanics.
+
+### 18.4 — Product-specific scale gates
+
+**B2B Regional Intelligence**
+- [ ] validate report cadence;
+- [ ] validate export/data needs;
+- [ ] define contract scope;
+- [ ] define data freshness commitment;
+- [ ] ensure non-exhaustive coverage is represented honestly.
+
+**Producer Insights**
+- [ ] validate sufficient traffic volume;
+- [ ] define free Host vs paid software boundary;
+- [ ] preserve free factual/safety corrections;
+- [ ] add multi-user/workflow features only when demanded.
+
+**Traveler premium planning**
+- [ ] validate repeat My Trips use;
+- [ ] identify advanced workflow users ask for;
+- [ ] potential paid features may include collaboration, exports, offline packs, alerts and richer organization;
+- [ ] never hide safety/access facts behind the paid tier.
+
+### 18.5 — Affiliate scale
+
+- [ ] Keep affiliate placements contextual.
+- [ ] Keep disclosure explicit.
+- [ ] Measure by useful engagement, not impression volume.
+- [ ] Remove irrelevant campaigns.
+- [ ] Never tie producer editorial visibility to affiliate economics.
+
+### 18.6 — Commercial reporting
+
+- [ ] Track revenue by product line.
+- [ ] Track conversion separately from discovery metrics.
+- [ ] Track churn/renewal where applicable.
+- [ ] Track support burden.
+- [ ] Track whether monetisation harms core discovery behavior.
+- [ ] Maintain a clear trust metric/QA review independent of revenue.
+
+### 18.7 — Scale decision
+
+Before scaling any paid product:
+- [ ] confirm real customer value;
+- [ ] confirm operational support;
+- [ ] confirm privacy/security;
+- [ ] confirm economics;
+- [ ] confirm the free trust layer remains intact;
+- [ ] explicitly decide whether to scale, revise or stop the product.
 
 ### Product principle
 
 > **Monetise convenience, workflow and intelligence — not trust or safety.**
 
-**Definition of done:** paid products are introduced only where actual TerroirTrail usage and customer validation demonstrate value, while the independent discovery/trust layer remains useful without payment.
+**Phase 18 definition of done:** TerroirTrail has one or more validated commercial products with clear economics, entitlement boundaries and operating processes, while independent discovery, factual correction, visitability and safety/access information remain useful without payment.
 
 ---
 
