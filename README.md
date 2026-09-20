@@ -8,9 +8,9 @@ Production: https://terroir-trail.web.app/
 
 ## What TerroirTrail Is
 
-TerroirTrail is built around **curated discovery rather than catalogue volume**. The public product brings together wineries, breweries, cideries, distilleries, olive and other oil producers, dairies and cheesemakers, apiaries, confectionery makers, herb and mushroom farms, farms, and other eligible place-based producers.
+TerroirTrail is built around **curated discovery rather than catalogue volume**. The public product brings together wineries, breweries, cideries, distilleries, olive mills, olive-oil producers, other oil producers, dairies / cheesemakers, apiaries / honey producers, confectionery producers, herb farms, mushroom farms, and traditional farms across Europe.
 
-A public listing is an editorial discovery record. It does **not** automatically mean that the producer is a commercial partner, accepts bookings through TerroirTrail, or has paid for inclusion.
+A public listing is an editorial discovery record. It does **not** automatically mean that the producer is a commercial partner, accepts bookings through TerroirTrail, or has paid for inclusion. Published does not mean partnered.
 
 The current roadmap and milestone history are maintained in [ROADMAP.md](ROADMAP.md).
 
@@ -18,7 +18,7 @@ The current roadmap and milestone history are maintained in [ROADMAP.md](ROADMAP
 
 ## Product Principles
 
-- **Unknown stays unknown.** Missing evidence is never converted into a positive claim.
+- **Unknown stays unknown.** Missing evidence is never converted into a positive claim or an unsupported travel promise.
 - **Listing, visitability, and partnership are separate.** A producer can be discoverable without being a commercial partner, and a mapped producer is not automatically open to visitors.
 - **Location and road access are separate facts.** A verified map point does not prove that the final approach is suitable for a standard rental car.
 - **Direct producer contact comes first.** Official websites, phone numbers, and producer-controlled channels are preferred for current visiting arrangements.
@@ -31,7 +31,7 @@ The current roadmap and milestone history are maintained in [ROADMAP.md](ROADMAP
 ## Current Public Product
 
 - **Interactive map and producer directory** with country, destination, region, and category discovery.
-- **Multi-category catalogue** spanning the active European publication scope.
+- **Multi-category catalogue** spanning the active European publication scope across 13 first-class producer categories.
 - **Producer detail pages** with story, products, official contact details, map location, visit information, and access notes where known.
 - **Visitability V1** with explicit states for public visits, seasonal public access, appointment-only access, uncertain current access, and visits that are not publicly confirmed.
 - **Booking and walk-in guidance** that distinguishes required, recommended, not-required, accepted, not-accepted, and subject-to-availability states without turning unknown values into “No.”
@@ -95,11 +95,10 @@ This means adding, editing, deactivating, or reactivating a producer in the auth
 
 TerroirTrail is currently **discovery-first**, not an online travel agency or open booking marketplace.
 
-- Public TerroirTrail tasting Experiences remain inactive unless a producer-specific agreement is deliberately introduced.
-- Explorer Pass sales and Host Pro subscriptions are not part of the current public product.
+- Public TerroirTrail tasting Experiences, Explorer Pass sales, Host Pro subscriptions, TerroirTrail checkout, open OTA-style booking, and chauffeur bookings remain dormant/quarantined and are not active public products.
 - Display advertising remains disabled.
-- Some outbound travel links may be affiliate links. TerroirTrail may earn a referral commission from a third-party provider at no additional cost to the traveler.
-- Editorial producer inclusion is independent of affiliate activity and commercial partnership.
+- Some outbound travel links may be affiliate links. TerroirTrail may receive a referral commission from the third-party provider at no additional cost to the traveler.
+- Editorial producer inclusion is independent of affiliate activity and commercial partnership. Published does not mean partnered.
 
 Dormant infrastructure in the codebase must not be treated as an active public feature.
 

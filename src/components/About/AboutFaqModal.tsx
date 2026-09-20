@@ -6,6 +6,7 @@ import {
   Building2,
   ChevronDown,
   ChevronUp,
+  Compass,
   HelpCircle,
   Mail,
   MapPin,
@@ -52,15 +53,24 @@ const formatHumanList = (values: readonly string[]): string => {
 const COUNTRY_SCOPE_TEXT = formatHumanList(CATALOGUE_SUMMARY.countryNames);
 const CATEGORY_SCOPE_TEXT = formatHumanList(CATALOGUE_SUMMARY.categoryNames);
 
-const FAQ_DATA: FaqItem[] = [
+export const FAQ_DATA: FaqItem[] = [
   {
     id: 'what-is-terroirtrail',
     category: 'about',
     categoryLabel: 'About & Curation',
     question: 'What is TerroirTrail?',
     answer:
-      'TerroirTrail is an independent producer and agritourism guide for culinary travelers, road-trippers and slow travelers. It helps people discover wineries, breweries, olive mills, dairies, apiaries, traditional distilleries and farms, with direct producer contact and clear information about visiting, location and access where those details are known.',
+      'TerroirTrail is an independent, discovery-first agritourism and producer guide for culinary travelers, road-trippers, and slow travelers across Europe. It helps people discover wineries, breweries, cideries, distilleries, olive and other oil producers, dairies, apiaries, confectionery makers, herb and mushroom farms, and traditional farms, with direct producer contact and clear information about visiting, location, and access where those details are known.',
     highlight: 'Independent producer discovery built around useful, practical travel information.',
+  },
+  {
+    id: 'why-terroirtrail',
+    category: 'about',
+    categoryLabel: 'About & Curation',
+    question: 'Why does TerroirTrail exist?',
+    answer:
+      'Rural producer discovery is fragmented. Essential visiting details are often scattered across individual producer websites, business listings, maps, social media, and outdated tourism directories. TerroirTrail brings those signals into one curated discovery guide, organizing practical travel facts in one place without pretending that missing information is known.',
+    highlight: 'Bringing scattered rural producer signals into one curated discovery guide.',
   },
   {
     id: 'categories-included',
@@ -74,17 +84,18 @@ const FAQ_DATA: FaqItem[] = [
     id: 'how-producers-selected',
     category: 'about',
     categoryLabel: 'About & Curation',
-    question: 'How are listings researched?',
+    question: 'How are listings researched and verified?',
     answer:
-      'Listings are researched from producer websites, reliable public sources and direct evidence when available. TerroirTrail separates producer identity, visiting information, location and road access so uncertain details can be shown as uncertain rather than guessed.',
+      'Every listing is researched from official producer websites, reliable business sources, and direct first-party evidence. TerroirTrail operates on the principle that "Unknown does not mean No." We never infer walk-ins from opening hours, booking requirements from contact forms, visitor access from a map pin, or rental-car-safe roads from a navigation line. When evidence is incomplete, we leave it unknown rather than guessing.',
+    highlight: 'Unknown does not mean No: we never convert missing evidence into travel claims.',
   },
   {
     id: 'listing-partnership',
     category: 'about',
     categoryLabel: 'About & Curation',
-    question: 'Does a TerroirTrail listing mean the producer is a commercial partner?',
+    question: 'Does a TerroirTrail listing mean the producer is a partner?',
     answer:
-      'No. Editorial inclusion, public visitability and commercial partnership are separate things. A producer can be researched and published because it fits the catalogue without paying TerroirTrail, accepting bookings through TerroirTrail or having any commercial relationship with the platform.',
+      'No. Editorial inclusion, public visitability, and commercial partnership are separate things. A producer may be researched and published because it fits the catalogue and evidence standards. A public listing by itself does not indicate a commercial relationship: producers do not pay for inclusion, TerroirTrail does not represent them, and we do not take bookings on their behalf.',
     highlight: 'Published does not mean partnered.',
   },
   {
@@ -93,42 +104,25 @@ const FAQ_DATA: FaqItem[] = [
     categoryLabel: 'About & Curation',
     question: 'Where does TerroirTrail currently have coverage?',
     answer: `The active catalogue currently contains ${CATALOGUE_SUMMARY.producers} producer/project records across ${CATALOGUE_SUMMARY.destinations} destinations, ${CATALOGUE_SUMMARY.regions} named regions and ${CATALOGUE_SUMMARY.countries} European countries: ${COUNTRY_SCOPE_TEXT}. These figures are generated from the active public catalogue and update automatically when publication state changes.`,
-    highlight: 'Coverage expands without weakening the same evidence and publication standard.',
+    highlight: 'Coverage expands across Europe without weakening our evidence and publication standard.',
   },
   {
-    id: 'visits',
+    id: 'visitability-states',
     category: 'visiting',
     categoryLabel: 'Visiting Producers',
-    question: 'Do I need to contact a producer before visiting?',
+    question: 'What visitability states does TerroirTrail show?',
     answer:
-      'It depends on the producer. TerroirTrail records public-visit, appointment-only and uncertain visit states where evidence supports them. Check the individual listing and use the producer’s official phone or website before travelling when advance contact is recommended or current access is uncertain.',
-    highlight: 'Use the producer’s official contact channel for current visiting arrangements.',
+      'Each producer listing displays an independently verified visitability state: public visits, seasonal public access, appointment only, current access uncertain, or not publicly confirmed. TerroirTrail never collapses unknown states into negative states. A producer without published visitor information is not assumed to be closed to visitors; unconfirmed details simply remain clearly marked as uncertain.',
+    highlight: 'Unknown states are never collapsed into negative assumptions.',
   },
   {
-    id: 'tasting-costs',
+    id: 'booking-walkin-policies',
     category: 'visiting',
     categoryLabel: 'Visiting Producers',
-    question: 'How much do tastings or visits cost?',
+    question: 'How do booking and walk-in policies work?',
     answer:
-      'TerroirTrail does not publish generic tasting-price ranges. Prices, inclusions and visiting terms vary by producer and can change seasonally. Confirm current prices and arrangements directly with the producer unless a listing contains current source-backed information.',
-  },
-  {
-    id: 'family-accessibility',
-    category: 'visiting',
-    categoryLabel: 'Visiting Producers',
-    question: 'Are producers family-friendly or accessible?',
-    answer:
-      'Facilities vary significantly between rural estates. TerroirTrail does not assume family suitability, step-free access, parking conditions or other facilities simply because a producer is publicly visitable. Confirm any requirement that matters to your trip directly with the producer.',
-  },
-  {
-    id: 'passport',
-    category: 'passport',
-    categoryLabel: 'Traveler Passport',
-    question: 'What is the Terroir Passport?',
-    answer:
-      'The Terroir Passport is a personal travel journal inside your account. You can mark places as visited and keep private tasting or visit notes. Passport stamps are part of the current account experience and are not limited by a paid stamp tier.',
-    actionText: 'Sign In / Create Account',
-    actionType: 'auth_traveler',
+      'Booking requirements and walk-in policies are evaluated as separate facts. Booking guidance can independently be required, recommended, not required, or unknown. Walk-in policy can independently be accepted, not accepted, subject to availability, or unknown. We do not assume a contact form implies mandatory booking, nor that posted hours guarantee walk-in entry.',
+    highlight: 'Booking rules and walk-in availability are verified independently.',
   },
   {
     id: 'road-access',
@@ -137,14 +131,51 @@ const FAQ_DATA: FaqItem[] = [
     question: 'How does TerroirTrail handle rural road access?',
     answer:
       'TerroirTrail treats location and road access as separate facts. A verified map point does not automatically mean the final approach is suitable for a standard rental car. When access has been independently classified, the listing shows that information; when it has not, the platform fails closed and does not invent a positive road condition.',
+    highlight: 'Location and road access are separate: road guidance fails closed.',
+  },
+  {
+    id: 'direct-contact',
+    category: 'visiting',
+    categoryLabel: 'Visiting Producers',
+    question: 'Do I need to contact a producer before visiting?',
+    answer:
+      'For current, time-sensitive arrangements—such as today’s opening hours, same-day tasting availability, prices, reservations, private tastings, or seasonal hours—travelers should use the producer’s official contact details shown on the listing. Cached research provides discovery guidance, but does not replace direct confirmation with the maker.',
+    highlight: 'Use the producer’s official contact details for current visiting arrangements.',
+  },
+  {
+    id: 'tasting-costs',
+    category: 'visiting',
+    categoryLabel: 'Visiting Producers',
+    question: 'How much do tastings or visits cost?',
+    answer:
+      'TerroirTrail does not publish generic tasting-price ranges or estimated fee schedules. Prices, inclusions, and visiting terms vary by producer and can change seasonally. Always confirm current prices and arrangements directly with the producer.',
+  },
+  {
+    id: 'family-accessibility',
+    category: 'visiting',
+    categoryLabel: 'Visiting Producers',
+    question: 'Are producers family-friendly or accessible?',
+    answer:
+      'Facilities vary significantly across rural estates, farmhouses, and historic working sites. TerroirTrail does not assume family suitability, step-free access, parking availability, or other amenities simply because a producer is publicly visitable. Confirm any requirement that matters to your trip directly with the producer.',
+  },
+  {
+    id: 'passport',
+    category: 'passport',
+    categoryLabel: 'Traveler Passport',
+    question: 'What is the Terroir Passport?',
+    answer:
+      'The Terroir Passport is a personal travel journal inside your account. You can mark places as visited and keep private tasting or visit notes as you explore. Passport stamps are part of the core account experience and are not limited by a paid stamp tier.',
+    highlight: 'Your personal European culinary travel journal.',
+    actionText: 'Sign In / Create Account',
+    actionType: 'auth_traveler',
   },
   {
     id: 'producer-join',
     category: 'producers',
     categoryLabel: 'For Producers',
-    question: 'I am a producer and I am not listed yet. Can I be considered for TerroirTrail?',
+    question: 'How can a producer be added to TerroirTrail?',
     answer:
-      'Yes. If you run an independent, place-based producer that fits the TerroirTrail catalogue, email terroirtrail@gmail.com with your producer name, location, official website or public business page, and a short note about what you make. Every enquiry is reviewed independently; contacting us does not automatically guarantee inclusion, verification, partnership, booking permission or Host access.',
+      'If you run an independent, place-based producer in Europe that fits the TerroirTrail catalogue, email terroirtrail@gmail.com with your producer name, location, official website or public business page, and a short description of what you make. Every enquiry is reviewed independently against our evidence standards; contacting us does not automatically guarantee inclusion, verification, partnership, booking permission, or Host access.',
     highlight: 'Producer listing enquiries: terroirtrail@gmail.com',
   },
   {
@@ -153,18 +184,28 @@ const FAQ_DATA: FaqItem[] = [
     categoryLabel: 'For Producers',
     question: 'I own or represent a listed producer. How can I manage the listing?',
     answer:
-      'Use the Host Portal to sign in or submit a producer claim. Host privileges are granted only from trusted ownership records after review; they cannot be self-assigned by changing browser or profile data.',
+      'Use the Host Portal to sign in or submit a producer claim. Host privileges are granted only from trusted ownership records after review; they cannot be self-assigned by changing profile data or automatically verified.',
     highlight: 'Producer ownership is reviewed before host access is granted.',
     actionText: 'Open Host Portal',
     actionType: 'producer_portal',
   },
   {
+    id: 'producer-corrections',
+    category: 'producers',
+    categoryLabel: 'For Producers',
+    question: 'How can a producer correct or update information?',
+    answer:
+      'We welcome factual corrections and updated first-party evidence. Producers can submit updates to physical location, official contact details, visitor information, access notes, or production descriptions by emailing terroirtrail@gmail.com or through the Host Portal. We prioritize verified first-party corrections.',
+    highlight: 'Factual corrections and first-party evidence updates are always welcomed.',
+  },
+  {
     id: 'bookings-commercial',
     category: 'producers',
     categoryLabel: 'For Producers',
-    question: 'Does TerroirTrail currently sell tastings, paid passes or Host Pro subscriptions?',
+    question: 'Does TerroirTrail sell bookings, paid passes, or charge commissions?',
     answer:
-      'TerroirTrail is currently discovery-first. Public tasting Experiences, Explorer Pass sales and Host Pro subscriptions remain inactive. Some outbound travel links may be affiliate links and can earn TerroirTrail a referral commission at no additional cost to the traveler. Display advertising remains disabled, and producer listings are not presented as paid partnerships unless that relationship actually exists.',
+      'TerroirTrail is currently discovery-first. Public tasting Experiences, Explorer Pass sales, Host Pro subscriptions, TerroirTrail checkout, and chauffeur bookings remain inactive. Display advertising remains disabled. Some outbound travel links may be affiliate links. TerroirTrail may receive a referral commission from the third-party provider at no additional cost to the traveler. Affiliate activity is never conflated with producer listing inclusion, and listings are never paid partnerships.',
+    highlight: 'Discovery-first: zero booking commissions, no paid listings, and no display ads.',
   },
 ];
 
@@ -259,7 +300,7 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
                   Discover independent makers and the places behind what they make.
                 </h1>
                 <p className="text-xs sm:text-sm text-stone-300 leading-relaxed max-w-3xl">
-                  TerroirTrail helps culinary travelers find wineries, breweries, distilleries, cideries, olive and other oil mills, dairies, apiaries, confectionery makers, herb and mushroom farms, and other farms — with direct producer contact, clear visiting information and practical access notes.
+                  TerroirTrail is an independent discovery guide connecting culinary travelers, road-trippers, and slow travelers with authentic place-based producers across Europe. It helps you find wineries, breweries, cideries, distilleries, olive and other oil mills, dairies, apiaries, confectionery makers, herb and mushroom farms, and traditional farms — with direct producer contact, clear visiting guidance, and practical road-access notes before you make a rural trip.
                 </p>
 
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-5 border-t border-white/10">
@@ -270,26 +311,76 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
                 </div>
               </div>
 
+              <div className="p-5 sm:p-6 rounded-2xl bg-stone-900 border border-white/10 space-y-2.5">
+                <div className="flex items-center gap-2 text-amber-300 font-bold text-sm">
+                  <Compass className="w-4 h-4" />
+                  <span>Why TerroirTrail exists</span>
+                </div>
+                <p className="text-xs sm:text-sm text-stone-300 leading-relaxed">
+                  Rural producer discovery is fragmented. Useful travel information is often scattered between individual producer websites, business listings, maps, social media, and outdated tourism pages. TerroirTrail brings those signals into one curated discovery experience — giving travelers practical, source-backed facts without pretending that missing information is known.
+                </p>
+              </div>
+
+              <div className="p-5 sm:p-6 rounded-2xl bg-stone-900 border border-amber-500/30 bg-gradient-to-br from-amber-500/5 via-stone-900 to-stone-950 space-y-4">
+                <div className="flex items-center gap-2 text-amber-300 font-bold text-sm">
+                  <ShieldCheck className="w-4 h-4" />
+                  <span>Evidence-first standard: Unknown does not mean No</span>
+                </div>
+                <p className="text-xs sm:text-sm text-stone-300 leading-relaxed">
+                  TerroirTrail never converts an absence of evidence into an assumption or an unsupported travel promise. When visitor or access conditions have not been verified from first-party sources, they stay clearly marked as unconfirmed. TerroirTrail deliberately does not infer:
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-stone-300">
+                  <div className="flex items-center gap-2 p-2.5 rounded-xl bg-stone-950/60 border border-white/5">
+                    <span className="text-amber-400 font-bold">✕</span>
+                    <span>Opening hours → walk-ins accepted</span>
+                  </div>
+                  <div className="flex items-center gap-2 p-2.5 rounded-xl bg-stone-950/60 border border-white/5">
+                    <span className="text-amber-400 font-bold">✕</span>
+                    <span>Contact form → booking required</span>
+                  </div>
+                  <div className="flex items-center gap-2 p-2.5 rounded-xl bg-stone-950/60 border border-white/5">
+                    <span className="text-amber-400 font-bold">✕</span>
+                    <span>Booking button → every visit requires booking</span>
+                  </div>
+                  <div className="flex items-center gap-2 p-2.5 rounded-xl bg-stone-950/60 border border-white/5">
+                    <span className="text-amber-400 font-bold">✕</span>
+                    <span>Map point → public visitor access</span>
+                  </div>
+                  <div className="flex items-center gap-2 p-2.5 rounded-xl bg-stone-950/60 border border-white/5">
+                    <span className="text-amber-400 font-bold">✕</span>
+                    <span>Cars or photos → parking available</span>
+                  </div>
+                  <div className="flex items-center gap-2 p-2.5 rounded-xl bg-stone-950/60 border border-white/5">
+                    <span className="text-amber-400 font-bold">✕</span>
+                    <span>Route on a map → rental-car-safe road</span>
+                  </div>
+                  <div className="flex items-center gap-2 p-2.5 rounded-xl bg-stone-950/60 border border-white/5 sm:col-span-2">
+                    <span className="text-amber-400 font-bold">✕</span>
+                    <span>Shop access → factory or production-site access</span>
+                  </div>
+                </div>
+              </div>
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <Principle
-                  icon={<ShieldCheck className="w-5 h-5" />}
-                  title="Independent curation"
-                  text="The catalogue is built for travelers who want to move beyond generic tourism directories and discover producers in their own setting."
-                />
-                <Principle
                   icon={<MapPin className="w-5 h-5" />}
-                  title="Useful visiting information"
-                  text="Visit status, location and access notes are shown when supported by evidence, while uncertain details stay clearly marked as uncertain."
+                  title="Location & road access are separate"
+                  text="TerroirTrail treats location and road access as separate facts. A verified map point does not automatically mean the final approach is suitable for a standard rental car. When access has been independently classified, the listing shows that information; when it has not, the platform fails closed and does not invent a positive road condition."
                 />
                 <Principle
-                  icon={<Award className="w-5 h-5" />}
-                  title="Your travel journal"
-                  text="Signed-in travelers can save places, record visits and keep private tasting or trip notes as they explore."
+                  icon={<ShieldCheck className="w-5 h-5" />}
+                  title="Published does not mean partnered"
+                  text="A public TerroirTrail listing is an editorial discovery record. It does not mean the producer paid for inclusion, is a commercial partner, accepts bookings through TerroirTrail, or has any commercial relationship with the platform. Editorial inclusion and commercial partnership are separate."
                 />
                 <Principle
                   icon={<Building2 className="w-5 h-5" />}
                   title="Direct producer connection"
-                  text="Official contact details make it easier to reach makers directly and confirm current visiting arrangements before you travel."
+                  text="Official contact details make it easy to reach makers directly to confirm today's opening hours, tasting fees, and same-day visiting arrangements before traveling."
+                />
+                <Principle
+                  icon={<Award className="w-5 h-5" />}
+                  title="Your travel journal"
+                  text="Signed-in travelers can save places, collect digital passport stamps, and keep private tasting or trip notes as they explore European gastronomic regions."
                 />
               </div>
 
@@ -299,7 +390,7 @@ export const AboutFaqModal: React.FC<AboutFaqModalProps> = ({
                   <span>Across Europe</span>
                 </div>
                 <p className="text-xs text-stone-300 leading-relaxed">
-                  The active catalogue currently spans {CATALOGUE_SUMMARY.countries} countries — {COUNTRY_SCOPE_TEXT}. Coverage is driven by published, active records rather than a fixed country list, so this scope updates automatically as the catalogue changes.
+                  The active catalogue currently spans {CATALOGUE_SUMMARY.countries} countries — {COUNTRY_SCOPE_TEXT} — across {CATALOGUE_SUMMARY.categories} producer categories: {CATEGORY_SCOPE_TEXT}. Coverage is driven by published, verified active records rather than a fixed country list, updating automatically as the catalogue changes.
                 </p>
               </div>
 
