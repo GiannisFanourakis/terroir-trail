@@ -5,7 +5,7 @@
 > Completion convention: change `- [ ] Step` to `- [x] ~~Step~~` when finished. Do not mark a step complete until it has been implemented, tested, pushed, deployed where applicable, and verified.
 
 **Last updated:** 2026-09-20
-**Current focus:** Product-value and monetisation foundations on top of the verified catalogue: privacy-conscious intent measurement, a free My Trips planning layer, contextual affiliate utility, and internal Producer / Regional Intelligence. Catalogue expansion is intentionally paused; no new producers or projects are being added right now.
+**Current focus:** Phase 14 — Product Value & Monetisation Foundations: privacy-conscious intent measurement, a free My Trips planning layer, contextual affiliate utility, and internal Producer / Regional Intelligence. No catalogue-expansion programme is currently scheduled; no new producers or projects are being added right now.
 
 ---
 
@@ -384,7 +384,7 @@ Phase 11 production-smoke work is recorded by commit `5e95575ecfd26a28aafcc143f5
 
 ---
 
-## Expansion Quality Bar — Applies to Phases 12–20 where relevant
+## Expansion Quality Bar — Applies whenever catalogue expansion is explicitly resumed
 
 Every new Greek producer, project, category, regional context layer, or later international region must follow the same evidence-first standard where applicable:
 
@@ -477,9 +477,9 @@ This phase adds a geographic discovery layer above individual producer pins so t
 
 ---
 
-## Strategic Intermission — Product Value & Monetisation Foundations
+## Phase 14 — Product Value & Monetisation Foundations
 
-**Status:** Active — this programme takes priority over Phases 14–20 while catalogue expansion is paused.
+**Status:** Active — this is the current product programme. Catalogue expansion is outside the active roadmap and may return later only through an explicit new roadmap decision.
 
 TerroirTrail now has a sufficiently strong discovery/trust foundation to stop optimizing for catalogue size and start proving where the verified data creates recurring economic value. This programme is deliberately **not** a payment-screen programme. It builds the measurement, planning and intelligence layers required to decide what deserves to become a paid product later.
 
@@ -576,111 +576,7 @@ Current validation order:
 
 ---
 
-## Phase 14 — Greek Olive & Olive Oil Expansion
-
-**Status:** Paused — catalogue expansion is intentionally frozen while the Product Value & Monetisation Foundations programme is active. Resume only by explicit roadmap decision.
-
-- [ ] Expand beyond the current olive coverage with audited independent mills, growers, estates, cooperatives, and other appropriate olive-oil producers across Greece.
-- [ ] Distinguish olive grove, working mill, bottling/brand operation, visitor centre, and retail shop identities.
-- [ ] Verify origin, cultivar, production, and visitor claims from reliable sources.
-- [ ] Keep mill access and rural-road evidence separate from simple business-location verification.
-- [ ] Bring the new records through the common Expansion Quality Bar.
-
-**Definition of done:** olive and olive-oil discovery represents multiple Greek regions and real production contexts without confusing shops with production sites.
-
----
-
-## Phase 15 — Greek Honey & Apiary Expansion
-
-**Status:** Paused — catalogue expansion is intentionally frozen while the Product Value & Monetisation Foundations programme is active. Resume only by explicit roadmap decision.
-
-- [ ] Build an audited apiary/honey producer batch across appropriate Greek regions.
-- [ ] Distinguish beekeeper/apiary operations, packing/production premises, shops, cooperatives, and educational visitor sites.
-- [ ] Verify honey type, botanical/geographic claims, public contact channels, and visitability.
-- [ ] Avoid publishing sensitive or unsuitable hive locations simply to create map pins.
-- [ ] Bring the new records through the common Expansion Quality Bar.
-
-**Definition of done:** honey discovery is useful to travelers while respecting both evidence quality and the practical sensitivity of apiary locations.
-
----
-
-## Phase 16 — Greek Herbs & Botanicals Expansion
-
-**Status:** Paused — catalogue expansion is intentionally frozen while the Product Value & Monetisation Foundations programme is active. Resume only by explicit roadmap decision.
-
-- [ ] Build an audited batch of herb growers, botanical producers, distillers, and related small-scale makers where they fit TerroirTrail.
-- [ ] Distinguish cultivation/production sites from shops and reseller locations.
-- [ ] Verify species/product claims and avoid unsupported medicinal or health claims.
-- [ ] Include regionally meaningful herbs and botanical traditions only where a real producer/project can be verified.
-- [ ] Bring the new records through the common Expansion Quality Bar.
-
-**Definition of done:** herbs and botanicals become a real producer-led category, not a collection of generic retail listings or folklore claims.
-
----
-
-## Phase 17 — Greek Farm & Regional Produce Expansion
-
-**Status:** Paused — catalogue expansion is intentionally frozen while the Product Value & Monetisation Foundations programme is active. Resume only by explicit roadmap decision.
-
-- [ ] Expand verified farms and primary-produce makers beyond the current catalogue.
-- [ ] Prioritize genuinely place-linked produce such as pulses, grains, carob, nuts, fruit, vegetables, and other regional crops where a traveler-facing listing makes sense.
-- [ ] Distinguish farms, packing facilities, cooperatives, markets, and shops.
-- [ ] Verify whether a site is appropriate for public discovery before publishing visitor language.
-- [ ] Bring the new records through the common Expansion Quality Bar.
-
-**Definition of done:** TerroirTrail represents Greek terroir through primary agricultural production as well as drinks and processed foods.
-
----
-
-## Phase 18 — Greek Regional Specialty Foods Expansion
-
-**Status:** Paused — catalogue expansion is intentionally frozen while the Product Value & Monetisation Foundations programme is active. Resume only by explicit roadmap decision.
-
-- [ ] Identify regional food crafts that have a strong producer-and-place connection and fit TerroirTrail's discovery model.
-- [ ] Audit makers of preserves, traditional grain products, regional sweets, cured or preserved foods, and other local specialties where inclusion is evidence-backed and meaningful.
-- [ ] Avoid becoming a generic restaurant, supermarket, souvenir-shop, or packaged-food directory.
-- [ ] Give each new category appropriate terminology and presentation rather than forcing it into winery-style UI.
-- [ ] Bring the new records through the common Expansion Quality Bar.
-
-**Definition of done:** regional specialty foods broaden TerroirTrail without diluting its producer-first, place-based identity.
-
----
-
-## Phase 19 — Greek Geoparks, Heritage & Local Projects
-
-**Status:** Paused — catalogue expansion is intentionally frozen while the Product Value & Monetisation Foundations programme is active. Resume only by explicit roadmap decision.
-
-- [ ] Define first-class non-producer entity types for geoparks, heritage projects, community initiatives, and other local projects that genuinely help travelers understand terroir and place.
-- [ ] Ensure these entities never masquerade as producers or commercial partners.
-- [ ] Add Greek UNESCO Global Geoparks and other appropriate projects only with verified identity, location, public-access, and official-source information.
-- [ ] Design search/filter/detail presentation that clearly separates projects/places from producer listings while allowing useful discovery connections.
-- [ ] Bring the new records through the common Expansion Quality Bar where applicable.
-
-**Definition of done:** TerroirTrail can represent the landscape and cultural context around production without corrupting the producer taxonomy.
-
----
-
-## Phase 20 — International Geographic Expansion
-
-**Status:** Paused / deferred — no further geographic expansion while the Product Value & Monetisation Foundations programme is active. Resume only by explicit roadmap decision.
-
-Greece remains the priority. Once the Greek catalogue has meaningful breadth beyond wine and the existing categories, geographic expansion can resume without reintroducing a Greece-only architecture.
-
-### Sequence
-
-1. Wider Mediterranean regions
-2. Northern Europe regions
-
-- [ ] Define small, manageable regional batches rather than opening entire countries at once.
-- [ ] Apply the same producer/category/entity trust model established in Greece.
-- [ ] Preserve local product diversity rather than exporting a wine-centric Greek taxonomy to other countries.
-- [ ] Complete each international batch through the common Expansion Quality Bar before opening the next.
-
-**Definition of done:** international growth happens from a mature, inclusive Greek reference model rather than by rapidly multiplying thin regional catalogues.
-
----
-
-## Phase 21 — Producer Partnerships & Deals
+## Phase 15 — Producer Partnerships & Deals
 
 **Status:** Deferred. Formal producer partnerships are not a prerequisite for the active Product Value & Monetisation Foundations programme.
 
@@ -705,7 +601,7 @@ Relationship levels:
 
 ---
 
-## Phase 22 — Experiences
+## Phase 16 — Experiences
 
 **Status:** Do not populate before producer agreements.
 
@@ -725,7 +621,7 @@ Relationship levels:
 
 ---
 
-## Phase 23 — Booking & Payments
+## Phase 17 — Booking & Payments
 
 **Status:** Future.
 
@@ -741,7 +637,7 @@ Only after real approved Experiences exist.
 
 ---
 
-## Phase 24 — Monetisation & Scale
+## Phase 18 — Monetisation & Scale
 
 **Status:** Strategy defined; paid activation deferred until the active Product Value & Monetisation Foundations programme produces evidence. The controlled Travelpayouts affiliate pilot remains the only currently active monetisation experiment.
 
@@ -767,7 +663,7 @@ This phase is the later commercialisation layer. It does **not** mean “turn on
 - [ ] Validate Traveler Plus only after the free My Trips product demonstrates repeat planning behavior and a clear advanced-workflow need.
 - [ ] Treat the current Explorer Pass, Digital Pass, Host pass-scanner and chauffeur prototypes as dormant optionality rather than roadmap commitments.
 - [ ] Refactor payment/entitlement infrastructure only when there is a validated product that needs it.
-- [ ] Revisit booking/transaction revenue only if Phase 22–23 are deliberately activated with real producer agreements, operational support and legal/accounting readiness.
+- [ ] Revisit booking/transaction revenue only if Phase 16–17 are deliberately activated with real producer agreements, operational support and legal/accounting readiness.
 
 ### Product principle
 
@@ -793,7 +689,7 @@ This phase is the later commercialisation layer. It does **not** mean “turn on
 12. **The first traveler-planning product organizes verified facts; it does not generate unsupported AI routes, opening times, drive times or road-safety claims.**
 13. **Booking, public Experiences, chauffeur workflows, QR partner-pass benefits and transaction/commission complexity remain dormant until explicitly reactivated by roadmap decision.**
 14. **Contextual affiliates must be clearly disclosed and should migrate toward relevant planning/preparation contexts rather than dominate the primary discovery surface.**
-15. **Catalogue expansion is paused. Do not add new producers or projects until the roadmap explicitly resumes an expansion phase.**
+15. **No catalogue-expansion programme is currently scheduled. Do not add new producers or projects unless a future roadmap update explicitly creates and activates a new expansion phase.**
 16. **A shop, office, cooperative outlet or visitor centre must never be silently treated as the underlying production site.**
 17. **New categories must receive category-appropriate taxonomy and UI rather than inheriting wine-centric assumptions.**
 18. **Crete remains the reference-quality regional implementation standard.**
