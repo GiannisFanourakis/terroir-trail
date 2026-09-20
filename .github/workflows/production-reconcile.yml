@@ -122,8 +122,8 @@ jobs:
         id: production
         shell: bash
         run: |
-          node <<'NODE'
-          const fs = require('node:fs');
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
           const localVersion = JSON.parse(fs.readFileSync('dist/version.json', 'utf8'));
           const localState = JSON.parse(fs.readFileSync('dist/catalogue-state.json', 'utf8'));
 
@@ -193,8 +193,8 @@ jobs:
         if: steps.production.outputs.deploy == 'true'
         shell: bash
         run: |
-          node <<'NODE'
-          const fs = require('node:fs');
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
           const local = JSON.parse(fs.readFileSync('dist/catalogue-state.json', 'utf8'));
           const response = await fetch(
             `https://terroir-trail.web.app/catalogue-state.json?t=${Date.now()}`,
