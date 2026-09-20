@@ -529,22 +529,22 @@ Do not duplicate routine operational/data migrations into the repository unless 
 
 **Purpose:** establish the exact starting point before new behavior is introduced.
 
-- [ ] Confirm catalogue expansion remains frozen and no producer/project additions are part of Phase 14.
-- [ ] Record the current production baseline for active producers, regions, categories and audited visitability/access coverage.
-- [ ] Record the current traveler surfaces that can generate measurable intent: producer drawer, favorites, region guide, Passport, direct contact, directions and affiliate banner.
-- [ ] Record current monetisation feature flags and confirm:
+- [x] ~~Confirm catalogue expansion remains frozen and no producer/project additions are part of Phase 14.~~
+- [x] ~~Record the current production baseline for active producers, regions, categories and audited visitability/access coverage.~~
+- [x] ~~Record the current traveler surfaces that can generate measurable intent: producer drawer, favorites, region guide, Passport, direct contact, directions and affiliate banner.~~
+- [x] ~~Record current monetisation feature flags and confirm:~~
   - Explorer Pass purchases disabled;
   - display advertising disabled;
   - public Experiences/bookings quarantined;
   - Travelpayouts affiliate pilot is the only active monetisation experiment.
-- [ ] Define the minimum Phase 14 success questions:
+- [x] ~~Define the minimum Phase 14 success questions:~~
   - Which producers/regions generate meaningful traveler intent?
   - Do saves lead to trip planning?
   - Do trip plans lead to direct producer contact or directions?
   - Which affiliate placements are useful rather than distracting?
   - Can producer-level aggregates provide useful operational insight?
   - Can regional aggregates support a credible institutional report?
-- [ ] Define the minimum production privacy boundary before any behavioral analytics are collected.
+- [x] ~~Define the minimum production privacy boundary before any behavioral analytics are collected.~~
 
 **Gate 14.0:** do not create production analytics tables or instrument user behavior until the event taxonomy, prohibited fields and retention/deletion principles are written down.
 
@@ -559,44 +559,44 @@ Do not duplicate routine operational/data migrations into the repository unless 
 Define canonical events, initially limited to meaningful actions:
 
 **Discovery**
-- [ ] `producer_view`
-- [ ] `producer_share`
-- [ ] `region_open`
-- [ ] `region_producers_view`
+- [x] ~~`producer_view`~~
+- [x] ~~`producer_share`~~
+- [x] ~~`region_open`~~
+- [x] ~~`region_producers_view`~~
 
 **Saved intent**
-- [ ] `producer_save`
-- [ ] `producer_unsave`
+- [x] ~~`producer_save`~~
+- [x] ~~`producer_unsave`~~
 
 **Direct producer intent**
-- [ ] `producer_website_click`
-- [ ] `producer_phone_click`
-- [ ] `producer_email_click`
-- [ ] `directions_click`
+- [x] ~~`producer_website_click`~~
+- [x] ~~`producer_phone_click`~~
+- [x] ~~`producer_email_click`~~
+- [x] ~~`directions_click`~~
 
 **Trip intent**
-- [ ] `trip_created`
-- [ ] `trip_renamed`
-- [ ] `trip_producer_added`
-- [ ] `trip_producer_removed`
-- [ ] `trip_item_reordered`
-- [ ] `trip_day_assigned`
-- [ ] `trip_opened`
+- [x] ~~`trip_created`~~
+- [x] ~~`trip_renamed`~~
+- [x] ~~`trip_producer_added`~~
+- [x] ~~`trip_producer_removed`~~
+- [x] ~~`trip_item_reordered`~~
+- [x] ~~`trip_day_assigned`~~
+- [x] ~~`trip_opened`~~
 
 **Post-visit**
-- [ ] `passport_stamp_added`
-- [ ] `passport_stamp_removed`
+- [x] ~~`passport_stamp_added`~~
+- [x] ~~`passport_stamp_removed`~~
 
 **Affiliate**
-- [ ] `affiliate_impression`
-- [ ] `affiliate_click`
+- [x] ~~`affiliate_impression`~~
+- [x] ~~`affiliate_click`~~
 
 Do not add events merely because they are easy to track. Every event must answer a defined product or commercial question.
 
 #### 14.1.2 Allowed event context
 
-- [ ] Define a strict allowlist for event metadata.
-- [ ] Allow identifiers/context such as:
+- [x] ~~Define a strict allowlist for event metadata.~~
+- [x] ~~Allow identifiers/context such as:~~
   - producer ID;
   - region/destination;
   - country;
@@ -605,32 +605,34 @@ Do not add events merely because they are easy to track. Every event must answer
   - affiliate campaign ID;
   - coarse authenticated/anonymous scope;
   - event timestamp.
-- [ ] Decide whether anonymous sessions require a pseudonymous rotating session ID; avoid persistent cross-site identity.
-- [ ] Keep user/account identifiers out of general aggregate reporting unless required for account-scoped product behavior.
+- [x] ~~Decide whether anonymous sessions require a pseudonymous rotating session ID; avoid persistent cross-site identity.~~
+- [x] ~~Keep user/account identifiers out of general aggregate reporting unless required for account-scoped product behavior.~~
 
 #### 14.1.3 Prohibited event content
 
 Explicitly prohibit:
-- [ ] tasting-note text;
-- [ ] personal trip-note text;
-- [ ] email addresses;
-- [ ] phone numbers;
-- [ ] contact-message contents;
-- [ ] exact free-text search strings if they may contain personal information, unless separately reviewed;
-- [ ] passwords/tokens/secrets;
-- [ ] precise background location;
-- [ ] payment details;
-- [ ] arbitrary serialized component/user objects.
+- [x] ~~tasting-note text;~~
+- [x] ~~personal trip-note text;~~
+- [x] ~~email addresses;~~
+- [x] ~~phone numbers;~~
+- [x] ~~contact-message contents;~~
+- [x] ~~exact free-text search strings if they may contain personal information, unless separately reviewed;~~
+- [x] ~~passwords/tokens/secrets;~~
+- [x] ~~precise background location;~~
+- [x] ~~payment details;~~
+- [x] ~~arbitrary serialized component/user objects.~~
 
 #### 14.1.4 Contract documentation
 
-- [ ] Create one canonical event-contract document/type shared by implementation and tests.
-- [ ] Define required/optional fields for every event.
-- [ ] Define allowed `source_surface` values.
-- [ ] Define validation behavior for malformed events.
-- [ ] Define deduplication/idempotency behavior where duplicate events would distort metrics.
+- [x] ~~Create one canonical event-contract document/type shared by implementation and tests.~~
+- [x] ~~Define required/optional fields for every event.~~
+- [x] ~~Define allowed `source_surface` values.~~
+- [x] ~~Define validation behavior for malformed events.~~
+- [x] ~~Define deduplication/idempotency behavior where duplicate events would distort metrics.~~
 
 **Gate 14.1:** event names and payload contracts must be frozen enough for both database and frontend implementation before Stage 14.2/14.3 begin.
+
+**Canonical artifact:** `docs/phase14-event-contract-v1.md` — baseline verified and event contract frozen on 2026-09-20.
 
 ---
 
