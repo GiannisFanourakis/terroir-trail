@@ -207,14 +207,18 @@ export const FilterBar: React.FC<FilterBarProps> = ({
           </div>
         )}
 
-        {/* Desktop View (sm: and up): Rich category chip strip */}
-        <div className="hidden sm:flex items-center justify-between gap-2">
-          <div className="flex items-center gap-1 sm:gap-2 overflow-x-auto scrollbar-none min-w-0 flex-1 py-0.5">
+        {/* Desktop View (sm: and up): Rich category chip strip with dedicated horizontal scrollbar */}
+        <div className="hidden sm:flex items-center justify-between gap-2.5 min-w-0 w-full">
+          <div
+            className="category-scroll-area flex items-center gap-1 sm:gap-2 overflow-x-auto overflow-y-hidden min-w-0 flex-1 pt-1 pb-1.5 px-0.5"
+            aria-label="Producer categories"
+          >
             {categories.map((cat) => {
               const isSelected = filters.category === cat.id;
               return (
                 <button
                   key={cat.id}
+                  type="button"
                   onClick={() => onFilterChange('category', cat.id)}
                   className={`flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-semibold transition-all duration-200 whitespace-nowrap shadow-sm shrink-0 cursor-pointer min-h-[44px] lg:min-h-[32px] lg:py-1.5 ${
                     isSelected
@@ -229,12 +233,13 @@ export const FilterBar: React.FC<FilterBarProps> = ({
             })}
           </div>
 
-          <div className="flex items-center gap-1.5 shrink-0 pl-1.5 border-l border-white/10">
-            <span className="text-[11px] font-semibold text-stone-400 hidden xl:inline">
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0 pl-2 sm:pl-2.5 border-l border-white/10">
+            <span className="text-[11px] font-semibold text-stone-400 whitespace-nowrap">
               <span className="text-amber-400 font-bold">{totalFiltered}</span> of {totalCount} makers
             </span>
 
             <button
+              type="button"
               onClick={() => setIsMoreFiltersOpen((prev) => !prev)}
               className={`flex items-center gap-1 text-[11px] sm:text-xs px-3 py-2 sm:px-2.5 sm:py-1 rounded-full font-medium border transition shrink-0 cursor-pointer min-h-[44px] lg:min-h-[32px] ${
                 isMoreFiltersOpen || activeSecondaryCount > 0
@@ -254,6 +259,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
 
             {isFiltered && (
               <button
+                type="button"
                 onClick={onResetFilters}
                 className="flex items-center gap-1 text-[11px] sm:text-xs text-rose-400 hover:text-rose-300 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 px-3 py-2 sm:px-2.5 sm:py-1 rounded-full font-medium transition shrink-0 cursor-pointer min-h-[44px] sm:min-h-[32px]"
                 title="Reset all filters"

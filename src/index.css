@@ -328,6 +328,37 @@
 }
 
 
+/* Category horizontal scrollbar: sleek, compact, clearly visible on dark UI */
+.category-scroll-area {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(245, 158, 11, 0.5) rgba(255, 255, 255, 0.06);
+  -webkit-overflow-scrolling: touch;
+}
+
+.category-scroll-area::-webkit-scrollbar {
+  height: 4px;
+}
+
+.category-scroll-area::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 9999px;
+  margin: 0 4px;
+}
+
+.category-scroll-area::-webkit-scrollbar-thumb {
+  background: rgba(245, 158, 11, 0.5);
+  border-radius: 9999px;
+  transition: background 0.15s ease;
+}
+
+.category-scroll-area::-webkit-scrollbar-thumb:hover {
+  background: rgba(245, 158, 11, 0.85);
+}
+
+.category-scroll-area::-webkit-scrollbar-thumb:active {
+  background: #f59e0b;
+}
+
 /* Mobile menu scrolling: visible affordance + reliable touch gestures */
 .mobile-scroll {
   scrollbar-width: thin;
