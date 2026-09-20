@@ -87,6 +87,14 @@ jobs:
           fi
 
       - name: Run full quality gate on synchronized catalogue
+        env:
+          # Match the neutral Quality Gate environment. Production feature flags
+          # are restored automatically for the later final rebuild/deploy step.
+          VITE_ENABLE_TRAVEL_AFFILIATES: 'false'
+          VITE_ENABLE_GOOGLE_PLACES_MEDIA: 'false'
+          VITE_ENABLE_HOST_MEDIA_UPLOADS: 'false'
+          VITE_ENABLE_EXPLORER_PASS_PURCHASES: 'false'
+          VITE_ENABLE_ADVERTISING: 'false'
         run: npm run check
 
       - name: Run real-browser responsive smoke
