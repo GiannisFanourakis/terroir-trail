@@ -2,11 +2,11 @@ import type { Producer } from '../types/terroir';
 
 /**
  * Deterministic active producer snapshot generated from the live Supabase
- * public.producers catalogue.
+ * public.producers catalogue where is_active = true.
  *
  * Runtime Supabase remains authoritative. This file is shared by runtime fallback
  * and SEO/AEO generation and is refreshed automatically; do not hand-edit it.
- * Latest source row update: 2026-09-18 14:24:04.723436+00
+ * Latest active source row update: 2026-09-18T14:24:04.723436+00:00
  */
 export const LIVE_CATALOGUE_PRODUCERS = [
   {
@@ -72,7 +72,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       }
     },
     "seasonalVisitNotes": "Guided winery visit duration is approximately 105 minutes and requires prior booking.",
-    "visitabilityReviewedAt": "2026-09-20 04:01:54.930917+00"
+    "visitabilityReviewedAt": "2026-09-20T04:01:54.930917+00:00"
   },
   {
     "id": "adega-jose-de-sousa-alentejo",
@@ -142,7 +142,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       }
     },
     "seasonalVisitNotes": "Prior reservation is recommended.",
-    "visitabilityReviewedAt": "2026-09-20 04:01:59.562143+00"
+    "visitabilityReviewedAt": "2026-09-20T04:01:59.562143+00:00"
   },
   {
     "id": "aerakis-dairy-anogeia",
@@ -189,7 +189,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitStatus": "not_publicly_confirmed",
     "visitSourceUrl": "https://cretancheeseaerakis.com/",
     "visitNotes": "Current first-party site confirms the working dairy in Sokaras and presents the business as a production, quality-assurance and export operation. It does not publish a public visitor programme, tasting/tour procedure, shop opening hours, booking rule, or walk-in policy. Do not present the dairy as a public attraction; contact the producer directly if considering a visit.",
-    "visitabilityReviewedAt": "2026-09-19 16:20:00+00"
+    "visitabilityReviewedAt": "2026-09-19T16:20:00+00:00"
   },
   {
     "id": "aga-sideri-vestland",
@@ -250,7 +250,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       }
     },
     "seasonalVisitNotes": "Group tastings are available on request. September-March has reduced capacity for tastings.",
-    "visitabilityReviewedAt": "2026-09-20 03:41:20.218628+00"
+    "visitabilityReviewedAt": "2026-09-20T03:41:20.218628+00:00"
   },
   {
     "id": "agricola-gian-piero-marrone-piedmont",
@@ -314,7 +314,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitNotes": "Current first-party Agricola Gian Piero Marrone winery page explicitly instructs visitors to complete the booking form to book a winery tour and publishes winery tours, tastings, cooking classes, viticulture lessons and guided tastings. Separate restaurant opening hours are not treated as winery-visit hours. The current winery pages do not publish a universal tour timetable, standard duration, parking details or visitor languages.",
     "visitBookingRequirement": "required",
     "walkInStatus": "not_accepted",
-    "visitabilityReviewedAt": "2026-09-20 03:25:48.553005+00"
+    "visitabilityReviewedAt": "2026-09-20T03:25:48.553005+00:00"
   },
   {
     "id": "agricola-piano-puglia",
@@ -359,7 +359,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitStatus": "not_publicly_confirmed",
     "visitSourceUrl": "https://www.agricolapiano.com/en/",
     "visitNotes": "Current first-party Agricola Piano site verifies the Apricena family farm, direct supply chain, wheat, olive and EVOO production, but current navigation and indexed first-party pages do not publish a public farm visit, mill tour, tasting programme, visitor timetable, booking rule or walk-in policy. Product tasting gift sets and e-commerce references are not treated as evidence of on-site visitability.",
-    "visitabilityReviewedAt": "2026-09-20 03:16:49.488059+00"
+    "visitabilityReviewedAt": "2026-09-20T03:16:49.488059+00:00"
   },
   {
     "id": "alpha-estate",
@@ -409,7 +409,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       "booking": "upon_request",
       "monday_sunday": "10:00-17:00"
     },
-    "visitabilityReviewedAt": "2026-09-19 17:29:00+00"
+    "visitabilityReviewedAt": "2026-09-19T17:29:00+00:00"
   },
   {
     "id": "anoskeli-estate",
@@ -454,7 +454,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitBookingRequirement": "recommended",
     "walkInStatus": "subject_to_availability",
     "seasonalVisitNotes": "Official visitor page currently still displays its 2025 season (April-20 November, Mon-Fri 10:00-18:00). Treat those hours as stale until the producer publishes a current schedule.",
-    "visitabilityReviewedAt": "2026-09-19 16:05:00+00"
+    "visitabilityReviewedAt": "2026-09-19T16:05:00+00:00"
   },
   {
     "id": "antichi-vinai-1877-sicily",
@@ -504,7 +504,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitStatus": "public_visits",
     "visitSourceUrl": "https://www.antichivinai.it/en/experience-the-volcano/",
     "visitNotes": "Current first-party Antichi Vinai pages explicitly welcome visitors for underground-cellar tours and Etna wine tastings, and the producer links to a live booking platform with multiple visitor experiences. A currently listed short winery-tour-and-tasting experience lasts 60 minutes. The current first-party pages do not explicitly state that all visits require advance booking, define a general walk-in policy, publish universal visitor hours, parking details, or visitor languages.",
-    "visitabilityReviewedAt": "2026-09-20 03:10:55.872668+00"
+    "visitabilityReviewedAt": "2026-09-20T03:10:55.872668+00:00"
   },
   {
     "id": "apis-aurum-south-tyrol",
@@ -547,7 +547,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitStatus": "not_publicly_confirmed",
     "visitSourceUrl": "https://met.apisaurum.com/",
     "visitNotes": "Current first-party Apis Aurum / Imkerei Hafner pages confirm the beekeeping and mead/mead-vinegar production business and provide commercial enquiry contact, but do not publish a routine public apiary visit, production tour, tasting programme, visitor timetable, booking rule or walk-in policy for the mapped production site.",
-    "visitabilityReviewedAt": "2026-09-20 03:51:36.112567+00"
+    "visitabilityReviewedAt": "2026-09-20T03:51:36.112567+00:00"
   },
   {
     "id": "argogal-koromichi-kefalari",
@@ -610,7 +610,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitStatus": "not_publicly_confirmed",
     "visitSourceUrl": "https://www.argogal.gr/en/",
     "visitNotes": "Current first-party site confirms ARGOGAL as an active dairy producer with modern production facilities in Kefalari, Argos, and publishes direct contact details. It does not publish a current public visitor programme, retail-shop opening hours, tour/tasting procedure, booking rule, or walk-in policy. Keep public access unconfirmed.",
-    "visitabilityReviewedAt": "2026-09-18 21:00:00+00"
+    "visitabilityReviewedAt": "2026-09-18T21:00:00+00:00"
   },
   {
     "id": "arvanitis-dairy-neochorouda",
@@ -677,7 +677,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitStatus": "not_publicly_confirmed",
     "visitSourceUrl": "https://arvanitis.gr/en/company/the-company/",
     "visitNotes": "Current first-party Arvanitis pages confirm the active Neochorouda dairy production site and publish direct factory contact details, but they do not publish a current public factory visitor programme, tour/tasting procedure, visitor timetable, booking rule, or walk-in policy. Keep the Neochorouda production site not publicly confirmed. The separate Thessaloniki Experience Store is a different public point and is not used to classify factory access.",
-    "visitabilityReviewedAt": "2026-09-19 17:29:00+00"
+    "visitabilityReviewedAt": "2026-09-19T17:29:00+00:00"
   },
   {
     "id": "assuli-winery-sicily",
@@ -737,7 +737,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitNotes": "Current first-party Assuli wine-tourism page explicitly states that winery visits are by reservation (su prenotazione). The estate offers winery tastings and has an on-site wine shop. The current page does not publish a general visitor timetable beyond reservation-only access, a standard visit duration, parking details, or visitor languages.",
     "visitBookingRequirement": "required",
     "walkInStatus": "not_accepted",
-    "visitabilityReviewedAt": "2026-09-20 03:10:42.989135+00"
+    "visitabilityReviewedAt": "2026-09-20T03:10:42.989135+00:00"
   },
   {
     "id": "baladinos-dairy-varipetro",
@@ -808,7 +808,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitNotes": "The mapped public point is the producer-owned Central Store in Chania, which the current first-party site lists separately from the Varipetro factory. Public retail access to the shop is supported; this does not establish public access, tours, or tastings at the factory.",
     "visitBookingRequirement": "not_required",
     "walkInStatus": "accepted",
-    "visitabilityReviewedAt": "2026-09-19 16:35:00+00"
+    "visitabilityReviewedAt": "2026-09-19T16:35:00+00:00"
   },
   {
     "id": "bastide-du-laval-provence",
@@ -878,7 +878,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       ]
     },
     "seasonalVisitNotes": "Additional Sunday opening applies from mid-July to mid-August. The estate closes between Christmas and New Year. Guided private tours/workshops require booking.",
-    "visitabilityReviewedAt": "2026-09-20 04:28:00.076289+00"
+    "visitabilityReviewedAt": "2026-09-20T04:28:00.076289+00:00"
   },
   {
     "id": "beppino-occelli-valcasotto-piedmont",
@@ -950,7 +950,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       }
     },
     "seasonalVisitNotes": "The maturation-cellar visit is approximately 30 minutes and should be booked separately; ordinary village/shop access is public.",
-    "visitabilityReviewedAt": "2026-09-20 03:29:16.696735+00"
+    "visitabilityReviewedAt": "2026-09-20T03:29:16.696735+00:00"
   },
   {
     "id": "biohof-oberwerkstatt-south-tyrol",
@@ -1009,7 +1009,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       }
     },
     "seasonalVisitNotes": "Farm/show-dairy tours operate from March through September with limited capacity and advance registration.",
-    "visitabilityReviewedAt": "2026-09-20 03:51:40.36798+00"
+    "visitabilityReviewedAt": "2026-09-20T03:51:40.36798+00:00"
   },
   {
     "id": "biolea-estate",
@@ -1063,7 +1063,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       }
     },
     "seasonalVisitNotes": "Classic tours are published for April-October. The estate homepage also describes the olive mill as designed to accommodate visitors year-round; activity availability varies by product.",
-    "visitabilityReviewedAt": "2026-09-19 16:05:00+00"
+    "visitabilityReviewedAt": "2026-09-19T16:05:00+00:00"
   },
   {
     "id": "brist-olive-oil-istria",
@@ -1127,7 +1127,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       }
     },
     "seasonalVisitNotes": "Summer drop-ins are explicitly welcomed. During the low season the producer advises calling ahead because staff may occasionally be away from the shop.",
-    "visitabilityReviewedAt": "2026-09-20 04:24:38.296327+00"
+    "visitabilityReviewedAt": "2026-09-20T04:24:38.296327+00:00"
   },
   {
     "id": "campore-wine-sicily",
@@ -1181,7 +1181,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitSourceUrl": "https://camporewine.it/en/tastings/",
     "visitNotes": "Current first-party Camporè tasting page publishes multiple visitor experiences at the Randazzo estate, ranging from 60-minute tastings to approximately 4-hour food, wine and wellness experiences. Several experiences explicitly require reservations, while the two simplest tasting formats provide a Book Here flow without stating a universal reservation mandate. The current pages do not define a general walk-in policy, ordinary visitor hours, parking details, or visitor languages.",
     "seasonalVisitNotes": "Some experiences are weather-dependent. Published programme durations range from 60 minutes to approximately 4 hours.",
-    "visitabilityReviewedAt": "2026-09-20 03:10:47.090178+00"
+    "visitabilityReviewedAt": "2026-09-20T03:10:47.090178+00:00"
   },
   {
     "id": "canava-santorini-distillery",
@@ -1221,7 +1221,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitStatus": "public_visits",
     "visitSourceUrl": "https://www.canavasantorini.com/",
     "visitNotes": "The live first-party Canava Santorini site states that its museum is open to guests and that visitors are welcomed for guided distillery tours, explanation of the distillation process, and spirit tasting. The official site does not publish current daily visitor hours, booking requirements, walk-in policy, parking, visit duration, or tour languages. Current 2026 public visitor reporting corroborates that the distillery remains a visitable site, but is not used to set operational details.",
-    "visitabilityReviewedAt": "2026-09-18 21:00:00+00"
+    "visitabilityReviewedAt": "2026-09-18T21:00:00+00:00"
   },
   {
     "id": "cantine-iuppa-sicily",
@@ -1273,7 +1273,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitSourceUrl": "https://cantineiuppa.it/en/visite-degustazioni",
     "visitNotes": "Current first-party Cantine Iuppa visitor page publishes wine-tasting and lunch experiences at the Milo estate and provides an online request flow plus a reservations contact. Published tasting/lunch packages last 120 minutes. The current page does not explicitly state that advance booking is universally mandatory, define a general walk-in policy, publish visitor hours, parking details, or visitor languages.",
     "typicalVisitMinutes": 120,
-    "visitabilityReviewedAt": "2026-09-20 03:06:39.307835+00"
+    "visitabilityReviewedAt": "2026-09-20T03:06:39.307835+00:00"
   },
   {
     "id": "casa-julia-tuscany",
@@ -1338,7 +1338,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       "standard_visit": "09:30-11:30"
     },
     "seasonalVisitNotes": "Best period: spring and early autumn. Hilly terrain; closed-toe shoes recommended; dogs allowed on leash.",
-    "visitabilityReviewedAt": "2026-09-19 18:03:11.473061+00"
+    "visitabilityReviewedAt": "2026-09-19T18:03:11.473061+00:00"
   },
   {
     "id": "cascina-barroero-piedmont",
@@ -1408,7 +1408,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
         ]
       }
     },
-    "visitabilityReviewedAt": "2026-09-20 03:25:51.384223+00"
+    "visitabilityReviewedAt": "2026-09-20T03:25:51.384223+00:00"
   },
   {
     "id": "cascina-fontane-piedmont",
@@ -1485,7 +1485,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       "es",
       "de"
     ],
-    "visitabilityReviewedAt": "2026-09-20 03:29:23.118628+00"
+    "visitabilityReviewedAt": "2026-09-20T03:29:23.118628+00:00"
   },
   {
     "id": "cebelarstvo-batistuta-goriska",
@@ -1544,7 +1544,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "walkInStatus": "not_accepted",
     "typicalVisitMinutes": 60,
     "seasonalVisitNotes": "Bee-aerosol therapy is published as suitable from March through September.",
-    "visitabilityReviewedAt": "2026-09-20 03:40:13.116238+00"
+    "visitabilityReviewedAt": "2026-09-20T03:40:13.116238+00:00"
   },
   {
     "id": "ceretto-piedmont",
@@ -1613,7 +1613,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       }
     },
     "seasonalVisitNotes": "October-November: open Monday-Saturday rather than daily. Shop tastings may be possible subject to staff availability.",
-    "visitabilityReviewedAt": "2026-09-20 03:25:57.322944+00"
+    "visitabilityReviewedAt": "2026-09-20T03:25:57.322944+00:00"
   },
   {
     "id": "chateau-pesquie-provence",
@@ -1686,7 +1686,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       ]
     },
     "seasonalVisitNotes": "Seasonal Sunday opening applies in high season. Guided cellar experiences are separately reservation-based.",
-    "visitabilityReviewedAt": "2026-09-20 04:27:45.3751+00"
+    "visitabilityReviewedAt": "2026-09-20T04:27:45.3751+00:00"
   },
   {
     "id": "chiavalon-istria",
@@ -1743,7 +1743,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       "sunday_holidays": "closed"
     },
     "seasonalVisitNotes": "The official page labels these as the current-period hours; visitors should recheck before travel. Advance booking is recommended for guided tastings.",
-    "visitabilityReviewedAt": "2026-09-20 04:24:41.559874+00"
+    "visitabilityReviewedAt": "2026-09-20T04:24:41.559874+00:00"
   },
   {
     "id": "christakis-patria-feta-proastio",
@@ -1814,7 +1814,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitStatus": "not_publicly_confirmed",
     "visitSourceUrl": "https://www.patriafeta.com/",
     "visitNotes": "The Proastio production site remains the verified Patria Feta / Christakis factory point, but the current first-party domain was unreachable during the 2026-09-19 visitability review and no indexed first-party visitor programme, factory-shop timetable, tour/tasting procedure, booking rule, or walk-in policy could be verified. Keep public access unconfirmed rather than inferring visitability from the factory listing.",
-    "visitabilityReviewedAt": "2026-09-19 17:29:00+00"
+    "visitabilityReviewedAt": "2026-09-19T17:29:00+00:00"
   },
   {
     "id": "ciomod-modica-sicily",
@@ -1864,7 +1864,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitSourceUrl": "https://www.ciomod.com/",
     "visitNotes": "Current first-party Ciomod pages confirm active visitor experiences, but those experiences are explicitly located at Terrazza Ciomod, Via Pizzo 23 in Modica Alta. The mapped TerroirTrail record represents the separate Ciomod production-site identity, and the current first-party site does not publish ordinary public access, tours, opening hours, booking terms, or walk-in access for that mapped production site. Keep production-site visitability unconfirmed.",
     "seasonalVisitNotes": "Separate Terrazza Ciomod experiences are bookable, but they are not used to classify this mapped production-site record.",
-    "visitabilityReviewedAt": "2026-09-20 03:07:41.508359+00"
+    "visitabilityReviewedAt": "2026-09-20T03:07:41.508359+00:00"
   },
   {
     "id": "colle-di-bordocheo-tuscany",
@@ -1930,7 +1930,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       "en",
       "es"
     ],
-    "visitabilityReviewedAt": "2026-09-19 18:04:48.877627+00"
+    "visitabilityReviewedAt": "2026-09-19T18:04:48.877627+00:00"
   },
   {
     "id": "cretan-brewery-charma",
@@ -1992,7 +1992,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       ]
     },
     "seasonalVisitNotes": "Guided tours run at 12:00, 13:30, 15:00 and 16:30 except Sundays and bank holidays. Cooking classes require at least 5 days advance contact.",
-    "visitabilityReviewedAt": "2026-09-19 16:05:00+00"
+    "visitabilityReviewedAt": "2026-09-19T16:05:00+00:00"
   },
   {
     "id": "cretan-olive-oil-farm",
@@ -2053,7 +2053,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       "ru",
       "pl"
     ],
-    "visitabilityReviewedAt": "2026-09-19 16:05:00+00"
+    "visitabilityReviewedAt": "2026-09-19T16:05:00+00:00"
   },
   {
     "id": "de-carlo-puglia",
@@ -2108,7 +2108,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       "it",
       "en"
     ],
-    "visitabilityReviewedAt": "2026-09-20 03:20:03.494272+00"
+    "visitabilityReviewedAt": "2026-09-20T03:20:03.494272+00:00"
   },
   {
     "id": "distillerie-chateau-du-barroux-provence",
@@ -2158,7 +2158,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitBookingRequirement": "required",
     "walkInStatus": "not_accepted",
     "seasonalVisitNotes": "Distillery availability follows the current bookable tour calendar; ordinary château entry is a separate visitor product.",
-    "visitabilityReviewedAt": "2026-09-20 04:27:51.204431+00"
+    "visitabilityReviewedAt": "2026-09-20T04:27:51.204431+00:00"
   },
   {
     "id": "domaine-biblia-chora",
@@ -2211,7 +2211,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       "booking": "upon_request",
       "monday_friday": "10:00-14:00"
     },
-    "visitabilityReviewedAt": "2026-09-19 17:29:00+00"
+    "visitabilityReviewedAt": "2026-09-19T17:29:00+00:00"
   },
   {
     "id": "domaine-d-migas-thessaly",
@@ -2273,7 +2273,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       "official_holidays": "closed"
     },
     "seasonalVisitNotes": "Guided visit duration is published as approximately 45-60 minutes.",
-    "visitabilityReviewedAt": "2026-09-19 17:29:00+00"
+    "visitabilityReviewedAt": "2026-09-19T17:29:00+00:00"
   },
   {
     "id": "domaine-karanika",
@@ -2322,7 +2322,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitNotes": "Current first-party contact page explicitly invites visitors for winery visits, organic-vineyard tours and wine tastings, and states that any visit requires advance booking. The current official site does not publish a general visitor timetable, standard duration, parking details or visitor languages.",
     "visitBookingRequirement": "required",
     "walkInStatus": "not_accepted",
-    "visitabilityReviewedAt": "2026-09-19 17:29:00+00"
+    "visitabilityReviewedAt": "2026-09-19T17:29:00+00:00"
   },
   {
     "id": "domaine-mercouri",
@@ -2365,7 +2365,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitStatus": "current_access_uncertain",
     "visitSourceUrl": "https://mercouri.gr/",
     "visitNotes": "The live first-party Domaine Mercouri site still presents a visitor pathway and links an English estate brochure describing tours, tastings, vineyards, olive groves and a folklore museum. However, that brochure is dated 2018 and its Mon-Sat 09:00-15:00 timetable cannot be treated as current 2026 visitor hours. The old dedicated virtual-visit link is no longer valid. Contact the estate before travelling.",
-    "visitabilityReviewedAt": "2026-09-18 21:00:00+00"
+    "visitabilityReviewedAt": "2026-09-18T21:00:00+00:00"
   },
   {
     "id": "domaine-paterianakis",
@@ -2417,7 +2417,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       }
     },
     "seasonalVisitNotes": "Guided estate tours are published as lasting 30-45 minutes. Winter access from mid-November through March is by appointment.",
-    "visitabilityReviewedAt": "2026-09-19 16:05:00+00"
+    "visitabilityReviewedAt": "2026-09-19T16:05:00+00:00"
   },
   {
     "id": "domaine-sigalas-santorini",
@@ -2465,7 +2465,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitNotes": "The live first-party Domaine Sigalas homepage invites visitors for tutored wine tastings, food-and-wine pairings and vineyard tours, and explicitly states that any visit requires advance booking. The current official site does not publish a dependable 2026 daily visitor timetable, parking policy, visit duration or visitor languages on the main visitor-facing content.",
     "visitBookingRequirement": "required",
     "walkInStatus": "not_accepted",
-    "visitabilityReviewedAt": "2026-09-18 21:00:00+00"
+    "visitabilityReviewedAt": "2026-09-18T21:00:00+00:00"
   },
   {
     "id": "domaine-zafeirakis-thessaly",
@@ -2527,7 +2527,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       "booking": "appointment",
       "monday_sunday": "11:00-19:00"
     },
-    "visitabilityReviewedAt": "2026-09-19 17:29:00+00"
+    "visitabilityReviewedAt": "2026-09-19T17:29:00+00:00"
   },
   {
     "id": "douloufakis-winery",
@@ -2594,7 +2594,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       "el",
       "en"
     ],
-    "visitabilityReviewedAt": "2026-09-19 16:55:00+00"
+    "visitabilityReviewedAt": "2026-09-19T16:55:00+00:00"
   },
   {
     "id": "elatos-kapetanou-schinochori",
@@ -2653,7 +2653,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitStatus": "not_publicly_confirmed",
     "visitSourceUrl": "https://afoikapetanou.gr/",
     "visitNotes": "Current first-party site confirms ELATOS as an active third-generation cheese and dairy producer in Schinochori, Argos, with production facilities and direct contact details. It does not publish a current public visitor programme, producer-shop opening hours, tour/tasting procedure, booking rule, or walk-in policy. Keep public access unconfirmed.",
-    "visitabilityReviewedAt": "2026-09-18 21:00:00+00"
+    "visitabilityReviewedAt": "2026-09-18T21:00:00+00:00"
   },
   {
     "id": "epli-sideri-vestland",
@@ -2704,7 +2704,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitNotes": "Current first-party Epli Sideri page explicitly welcomes visitors to the farm shop in the new cider house at Sekse and states that parking is available directly outside the door. Group cider tastings are by appointment. The current page does not publish fixed farm-shop hours or define a general walk-in policy beyond welcoming visitors.",
     "parkingStatus": "available",
     "seasonalVisitNotes": "Group cider tastings require appointment.",
-    "visitabilityReviewedAt": "2026-09-20 03:41:23.877496+00"
+    "visitabilityReviewedAt": "2026-09-20T03:41:23.877496+00:00"
   },
   {
     "id": "estate-argyros-santorini",
@@ -2755,7 +2755,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       "national_holidays": "closed"
     },
     "seasonalVisitNotes": "Published experiences currently include approximately 45-minute and 90-minute options. Tour schedules vary daily and seasonally.",
-    "visitabilityReviewedAt": "2026-09-18 21:00:00+00"
+    "visitabilityReviewedAt": "2026-09-18T21:00:00+00:00"
   },
   {
     "id": "familia-margaca-alentejo",
@@ -2811,7 +2811,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitStatus": "not_publicly_confirmed",
     "visitSourceUrl": "https://www.margaca.com",
     "visitNotes": "Current producer-controlled material confirms Família Margaça as an active wine producer in Pias/Serpa, but no routine public winery visit, tasting programme, visitor timetable, booking rule or walk-in policy for the mapped production site was found during this review.",
-    "visitabilityReviewedAt": "2026-09-20 04:02:05.10034+00"
+    "visitabilityReviewedAt": "2026-09-20T04:02:05.10034+00:00"
   },
   {
     "id": "fattoria-corzano-e-paterno-tuscany",
@@ -2879,7 +2879,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       }
     },
     "seasonalVisitNotes": "Published experiences vary by format: simple tasting about 45 minutes; tour+tasting formats about 90 minutes. Booking is highly recommended.",
-    "visitabilityReviewedAt": "2026-09-19 18:06:40.309601+00"
+    "visitabilityReviewedAt": "2026-09-19T18:06:40.309601+00:00"
   },
   {
     "id": "formatge-bauma-catalonia",
@@ -2923,7 +2923,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitStatus": "not_publicly_confirmed",
     "visitSourceUrl": "http://www.formatgebauma.com/",
     "visitNotes": "Current producer identity and the Sant Miquel de Balenyà dairy are verifiable, but the producer site was unreachable during this review and current indexed first-party/authoritative traces do not publish a public dairy visit, tasting programme, visitor timetable, booking rule or walk-in policy. Keep public access unconfirmed.",
-    "visitabilityReviewedAt": "2026-09-20 03:39:11.27156+00"
+    "visitabilityReviewedAt": "2026-09-20T03:39:11.27156+00:00"
   },
   {
     "id": "formatgeria-casa-mateu-catalonia",
@@ -2985,7 +2985,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       }
     },
     "seasonalVisitNotes": "Public access confirmed for the on-site shop only; production-area visits are not published.",
-    "visitabilityReviewedAt": "2026-09-20 03:39:23.281324+00"
+    "visitabilityReviewedAt": "2026-09-20T03:39:23.281324+00:00"
   },
   {
     "id": "frantoio-dorazio-puglia",
@@ -3048,7 +3048,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       "en",
       "fr"
     ],
-    "visitabilityReviewedAt": "2026-09-20 03:16:52.747524+00"
+    "visitabilityReviewedAt": "2026-09-20T03:16:52.747524+00:00"
   },
   {
     "id": "frantoio-muraglia-puglia",
@@ -3096,7 +3096,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       "it",
       "en"
     ],
-    "visitabilityReviewedAt": "2026-09-20 03:16:55.780476+00"
+    "visitabilityReviewedAt": "2026-09-20T03:16:55.780476+00:00"
   },
   {
     "id": "gaia-wines-nemea",
@@ -3150,7 +3150,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       "el",
       "en"
     ],
-    "visitabilityReviewedAt": "2026-09-18 21:00:00+00"
+    "visitabilityReviewedAt": "2026-09-18T21:00:00+00:00"
   },
   {
     "id": "gaia-wines-santorini",
@@ -3207,7 +3207,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       "el",
       "en"
     ],
-    "visitabilityReviewedAt": "2026-09-18 21:00:00+00"
+    "visitabilityReviewedAt": "2026-09-18T21:00:00+00:00"
   },
   {
     "id": "gangstad-gardsysteri-trondelag",
@@ -3269,7 +3269,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       }
     },
     "seasonalVisitNotes": "Summer farm-yard service includes farm ice cream and coffee. Larger/group visits should be arranged separately.",
-    "visitabilityReviewedAt": "2026-09-20 03:41:46.196873+00"
+    "visitabilityReviewedAt": "2026-09-20T03:41:46.196873+00:00"
   },
   {
     "id": "gavalas-crete-winery",
@@ -3311,7 +3311,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitStatus": "current_access_uncertain",
     "visitSourceUrl": "https://www.fragospitowinery.com/visit/",
     "visitNotes": "Current first-party visit page advertises a guided winery tour covering winemaking, bottling and cellar areas plus a tasting of selected labels. The winery does not publish a current visitor timetable, explicit booking requirement, or walk-in policy on that page. Contact the winery before travelling.",
-    "visitabilityReviewedAt": "2026-09-19 16:05:00+00"
+    "visitabilityReviewedAt": "2026-09-19T16:05:00+00:00"
   },
   {
     "id": "gavalas-winery-santorini",
@@ -3364,7 +3364,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       }
     },
     "seasonalVisitNotes": "Published tasting packages currently last 60 or 75 minutes depending on the selected option.",
-    "visitabilityReviewedAt": "2026-09-18 21:00:00+00"
+    "visitabilityReviewedAt": "2026-09-18T21:00:00+00:00"
   },
   {
     "id": "gd-vajra-piedmont",
@@ -3428,7 +3428,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
         "15:00-18:00"
       ]
     },
-    "visitabilityReviewedAt": "2026-09-20 03:26:05.106399+00"
+    "visitabilityReviewedAt": "2026-09-20T03:26:05.106399+00:00"
   },
   {
     "id": "grubic-olive-oil-istria",
@@ -3492,7 +3492,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       }
     },
     "seasonalVisitNotes": "Regular public showroom/museum access is published May-September; outside that period access is by appointment.",
-    "visitabilityReviewedAt": "2026-09-20 04:24:45.508567+00"
+    "visitabilityReviewedAt": "2026-09-20T04:24:45.508567+00:00"
   },
   {
     "id": "hardanger-saft-siderfabrikk-vestland",
@@ -3559,7 +3559,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       }
     },
     "seasonalVisitNotes": "Cider tasting, restaurant and group experiences have separate seasonal/booking conditions; check current experience pages.",
-    "visitabilityReviewedAt": "2026-09-20 03:41:26.96974+00"
+    "visitabilityReviewedAt": "2026-09-20T03:41:26.96974+00:00"
   },
   {
     "id": "helleland-heldre-sider-vestland",
@@ -3627,7 +3627,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       }
     },
     "seasonalVisitNotes": "Drop-in cider tasting is available during shop hours. Mosstova cider tasting with food requires at least 3 days advance booking; maximum 20 people.",
-    "visitabilityReviewedAt": "2026-09-20 03:41:16.471005+00"
+    "visitabilityReviewedAt": "2026-09-20T03:41:16.471005+00:00"
   },
   {
     "id": "herdade-da-malhadinha-nova-alentejo",
@@ -3689,7 +3689,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       ]
     },
     "seasonalVisitNotes": "All visits and tastings require prior booking and are subject to availability.",
-    "visitabilityReviewedAt": "2026-09-20 04:02:09.929309+00"
+    "visitabilityReviewedAt": "2026-09-20T04:02:09.929309+00:00"
   },
   {
     "id": "herdade-do-esporao-alentejo",
@@ -3756,7 +3756,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       "en",
       "pt"
     ],
-    "visitabilityReviewedAt": "2026-09-20 04:02:19.831879+00"
+    "visitabilityReviewedAt": "2026-09-20T04:02:19.831879+00:00"
   },
   {
     "id": "herdade-do-monte-outeiro-alentejo",
@@ -3806,7 +3806,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitStatus": "current_access_uncertain",
     "visitSourceUrl": "https://www.herdademonteouteiro.com/",
     "visitNotes": "Current first-party Herdade do Monte Outeiro site confirms active rural-tourism accommodation on an agricultural estate with olive groves, sheep, goats, beehives and nature activities. However, it does not publish a standalone producer/farm visit programme for non-guests, visitor hours, booking rules for agricultural areas, walk-in access or a structured tasting experience. Do not treat accommodation availability as proof of ordinary producer access.",
-    "visitabilityReviewedAt": "2026-09-20 04:02:24.495578+00"
+    "visitabilityReviewedAt": "2026-09-20T04:02:24.495578+00:00"
   },
   {
     "id": "herdade-do-rocim-alentejo",
@@ -3869,7 +3869,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       "monday_sunday": "by_reservation",
       "tuesday_saturday": "11:00-18:00"
     },
-    "visitabilityReviewedAt": "2026-09-20 04:02:29.008808+00"
+    "visitabilityReviewedAt": "2026-09-20T04:02:29.008808+00:00"
   },
   {
     "id": "ipsa-istria",
@@ -3933,7 +3933,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitBookingRequirement": "required",
     "walkInStatus": "not_accepted",
     "parkingStatus": "available",
-    "visitabilityReviewedAt": "2026-09-20 04:24:51.59373+00"
+    "visitabilityReviewedAt": "2026-09-20T04:24:51.59373+00:00"
   },
   {
     "id": "karavitakis-winery",
@@ -3983,7 +3983,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitBookingRequirement": "not_required",
     "walkInStatus": "accepted",
     "seasonalVisitNotes": "Online booking remains available, but the current booking page includes a stale 2025 cutoff note; contact the winery for specific guided-tour scheduling.",
-    "visitabilityReviewedAt": "2026-09-19 16:05:00+00"
+    "visitabilityReviewedAt": "2026-09-19T16:05:00+00:00"
   },
   {
     "id": "kasta-brewery",
@@ -4026,7 +4026,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitSourceUrl": "https://kastabeer.com/beer-tasting/",
     "visitNotes": "Current first-party pages state that the Tap Room is closed until further notice and that Show Room visiting hours are to be announced. A separate current Beer Tasting page and booking/workshop page still promote an interactive tasting session. Treat visitor access as appointment-based for the tasting experience; do not present the site as an open taproom or publish the older Mon-Fri 09:00-17:00 showroom hours.",
     "visitBookingRequirement": "required",
-    "visitabilityReviewedAt": "2026-09-19 16:05:00+00"
+    "visitabilityReviewedAt": "2026-09-19T16:05:00+00:00"
   },
   {
     "id": "kazani-stilianou",
@@ -4075,7 +4075,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       }
     },
     "seasonalVisitNotes": "An older first-party tasting page still shows an 18:00 closing time; the newer homepage publishes 19:00 and is used as the current value.",
-    "visitabilityReviewedAt": "2026-09-19 16:05:00+00"
+    "visitabilityReviewedAt": "2026-09-19T16:05:00+00:00"
   },
   {
     "id": "kir-yianni-naoussa",
@@ -4128,7 +4128,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       "monday": "closed",
       "tuesday_sunday": "11:00-18:00"
     },
-    "visitabilityReviewedAt": "2026-09-19 17:29:00+00"
+    "visitabilityReviewedAt": "2026-09-19T17:29:00+00:00"
   },
   {
     "id": "kirnig-mushrooms-south-tyrol",
@@ -4185,7 +4185,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
         "advance_registration": true
       }
     },
-    "visitabilityReviewedAt": "2026-09-20 03:51:44.453065+00"
+    "visitabilityReviewedAt": "2026-09-20T03:51:44.453065+00:00"
   },
   {
     "id": "kozlovic-winery-istria",
@@ -4251,7 +4251,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       "hr",
       "en"
     ],
-    "visitabilityReviewedAt": "2026-09-20 04:24:54.792586+00"
+    "visitabilityReviewedAt": "2026-09-20T04:24:54.792586+00:00"
   },
   {
     "id": "kraeuterreich-wegleit-south-tyrol",
@@ -4316,7 +4316,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       }
     },
     "seasonalVisitNotes": "Guided farm tour runs May-October and lasts about 60 minutes; individual tours can also be arranged by phone.",
-    "visitabilityReviewedAt": "2026-09-20 03:51:50.476906+00"
+    "visitabilityReviewedAt": "2026-09-20T03:51:50.476906+00:00"
   },
   {
     "id": "ktima-gerovassiliou",
@@ -4371,7 +4371,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       "thursday_friday": "10:00-16:00"
     },
     "seasonalVisitNotes": "General guided tours last approximately 45-60 minutes. Groups over 10 require booking; some special experiences require reservations. Weekends operate first come, first served. See the official page for holiday and summer closure dates.",
-    "visitabilityReviewedAt": "2026-09-19 17:29:00+00"
+    "visitabilityReviewedAt": "2026-09-19T17:29:00+00:00"
   },
   {
     "id": "ktima-pavlidis",
@@ -4418,7 +4418,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       "monday_friday": "10:00-16:00"
     },
     "seasonalVisitNotes": "The winery may be closed on national or local holidays.",
-    "visitabilityReviewedAt": "2026-09-19 17:29:00+00"
+    "visitabilityReviewedAt": "2026-09-19T17:29:00+00:00"
   },
   {
     "id": "ktima-tselepos",
@@ -4474,7 +4474,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       }
     },
     "seasonalVisitNotes": "Seasonal Fall(ing) for Wine tasting is published for 14 Sep-30 Nov 2026. Premium and old-vintage packages may include a vineyard tour depending on circumstances.",
-    "visitabilityReviewedAt": "2026-09-18 21:00:00+00"
+    "visitabilityReviewedAt": "2026-09-18T21:00:00+00:00"
   },
   {
     "id": "kykao-handcrafted-beers",
@@ -4519,7 +4519,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitStatus": "not_publicly_confirmed",
     "visitSourceUrl": "https://kykao.gr/",
     "visitNotes": "KYKAO remains an active independent microbrewery near Patras, but no current first-party visitor page, taproom timetable, public shop hours, tour/tasting procedure, booking rule, or walk-in policy could be verified. A 2026 public social report describes a brewery visit and tasting, but that does not establish ordinary public access. Keep public visitability unconfirmed.",
-    "visitabilityReviewedAt": "2026-09-18 21:00:00+00"
+    "visitabilityReviewedAt": "2026-09-18T21:00:00+00:00"
   },
   {
     "id": "la-vinyeta-catalonia",
@@ -4579,7 +4579,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       "ca",
       "en"
     ],
-    "visitabilityReviewedAt": "2026-09-20 03:39:30.461104+00"
+    "visitabilityReviewedAt": "2026-09-20T03:39:30.461104+00:00"
   },
   {
     "id": "lafkas-brewery",
@@ -4623,7 +4623,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitNotes": "Current first-party pages say the Pazinos taproom is open by appointment and that the brewery tour/tasting is available after booking an appointment. The brewery currently advertises a simple tasting of four beers. No reliable visit duration, parking policy, or visitor-language information is published.",
     "visitBookingRequirement": "required",
     "walkInStatus": "not_accepted",
-    "visitabilityReviewedAt": "2026-09-19 16:45:00+00"
+    "visitabilityReviewedAt": "2026-09-19T16:45:00+00:00"
   },
   {
     "id": "lahnerhof-distillery-south-tyrol",
@@ -4675,7 +4675,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitStatus": "public_visits",
     "visitSourceUrl": "https://lahnerhof.com/de/brennerei",
     "visitNotes": "Current first-party Lahnerhof distillery page actively advertises distillery tours through the historic vaulted cellar, tastings and on-site sales. The current site does not explicitly state that advance booking is mandatory, nor does it publish fixed visitor hours, a standard duration, parking details or visitor languages. The older appointment-only assumption is therefore not retained.",
-    "visitabilityReviewedAt": "2026-09-20 03:51:54.893109+00"
+    "visitabilityReviewedAt": "2026-09-20T03:51:54.893109+00:00"
   },
   {
     "id": "lenkhof-south-tyrol",
@@ -4744,7 +4744,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       "de",
       "it"
     ],
-    "visitabilityReviewedAt": "2026-09-20 03:51:59.126055+00"
+    "visitabilityReviewedAt": "2026-09-20T03:51:59.126055+00:00"
   },
   {
     "id": "les-agnels-provence",
@@ -4824,7 +4824,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       "november_march": "groups_by_appointment"
     },
     "seasonalVisitNotes": "Regular public exhibition/shop access is April-October. November-March groups are appointment-only. July-August guided visits require reservation and last about 60 minutes.",
-    "visitabilityReviewedAt": "2026-09-20 04:27:56.671273+00"
+    "visitabilityReviewedAt": "2026-09-20T04:27:56.671273+00:00"
   },
   {
     "id": "liokareas-olive-estate",
@@ -4869,7 +4869,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitSourceUrl": "https://www.liokareas.com/collections/harvest-trip-2026",
     "visitNotes": "Liokareas is a family olive-oil producer whose mapped TerroirTrail public point is the previously verified producer shop in Lagkada. The current first-party site separately sells an eight-day October 2026 Harvest Trip that includes picking and pressing olives at the family farm. That packaged trip does not establish ordinary public access to the farm, orchards or production site, and current shop opening hours are not published on the first-party site. Keep farm visitability unconfirmed and do not infer general walk-in access from the Harvest Trip.",
     "seasonalVisitNotes": "A packaged eight-day Harvest Trip is offered in October 2026 and includes participation in the family olive harvest and pressing. This is not evidence of ordinary public farm access.",
-    "visitabilityReviewedAt": "2026-09-18 21:00:00+00"
+    "visitabilityReviewedAt": "2026-09-18T21:00:00+00:00"
   },
   {
     "id": "lyrarakis-winery",
@@ -4923,7 +4923,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       }
     },
     "seasonalVisitNotes": "Estimated whole-visit duration published by the winery: 1.5 hours. November-March visits are available upon request.",
-    "visitabilityReviewedAt": "2026-09-19 16:05:00+00"
+    "visitabilityReviewedAt": "2026-09-19T16:05:00+00:00"
   },
   {
     "id": "manousakis-winery",
@@ -4981,7 +4981,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       }
     },
     "seasonalVisitNotes": "Tours are complimentary and published at 12:00, 14:00, 16:00, 18:00 and 20:00 depending on time of year. Booking is required.",
-    "visitabilityReviewedAt": "2026-09-19 16:50:00+00"
+    "visitabilityReviewedAt": "2026-09-19T16:50:00+00:00"
   },
   {
     "id": "mas-deroles-catalonia",
@@ -5043,7 +5043,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       "dairy_visit": "arranged_time"
     },
     "seasonalVisitNotes": "Advance arrangement applies to the dairy visit, not ordinary shop access.",
-    "visitabilityReviewedAt": "2026-09-20 03:39:26.844135+00"
+    "visitabilityReviewedAt": "2026-09-20T03:39:26.844135+00:00"
   },
   {
     "id": "masseria-il-frantoio-puglia",
@@ -5094,7 +5094,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitSourceUrl": "https://www.masseriailfrantoio.it/en/farmhouse-for-oil-tasting-near-ostuni",
     "visitNotes": "Current first-party Masseria Il Frantoio page publishes a 60-minute olive-oil experience including a guided visit through the farmhouse, underground oil mill and ancient olive grove, followed by a technical tasting of four organic extra virgin olive oils. The page invites visitors to book the experience but does not explicitly state that advance reservation is universally mandatory, define walk-in access, publish general visitor hours, parking details, or visitor languages.",
     "typicalVisitMinutes": 60,
-    "visitabilityReviewedAt": "2026-09-20 03:19:56.564639+00"
+    "visitabilityReviewedAt": "2026-09-20T03:19:56.564639+00:00"
   },
   {
     "id": "mate-olive-oil-istria",
@@ -5151,7 +5151,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitSourceUrl": "https://www.istra.hr/en/mc/food-and-cuisine/4470",
     "visitNotes": "Current official Istrian tourism material actively promotes a guided olive-oil tasting and estate tour at the verified Mate farm, and the regional producer listing confirms a tasting room with capacity for 30 visitors and free parking. The reviewed sources do not publish current visitor hours or a universal booking rule, so those fields remain unknown rather than being inferred.",
     "parkingStatus": "available",
-    "visitabilityReviewedAt": "2026-09-20 04:24:58.164398+00"
+    "visitabilityReviewedAt": "2026-09-20T04:24:58.164398+00:00"
   },
   {
     "id": "meligyris-apiary",
@@ -5193,7 +5193,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitStatus": "not_publicly_confirmed",
     "visitSourceUrl": "https://meligyris.com/pages/contact",
     "visitNotes": "Current first-party site confirms the Arkalochori contact/pickup location. The online store offers order pickup at Arkalochori, but the producer does not publish a current apiary visit, tour, tasting programme, public shop timetable, booking rule, or walk-in policy. Do not present the site as a general visitor attraction.",
-    "visitabilityReviewedAt": "2026-09-19 16:25:00+00"
+    "visitabilityReviewedAt": "2026-09-19T16:25:00+00:00"
   },
   {
     "id": "miellerie-des-butineuses-provence",
@@ -5251,7 +5251,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       ],
       "sunday_monday_public_holidays": "closed"
     },
-    "visitabilityReviewedAt": "2026-09-20 04:27:54.036868+00"
+    "visitabilityReviewedAt": "2026-09-20T04:27:54.036868+00:00"
   },
   {
     "id": "moarhof-cheese-dairy-south-tyrol",
@@ -5313,7 +5313,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
         ]
       }
     },
-    "visitabilityReviewedAt": "2026-09-20 03:52:06.607189+00"
+    "visitabilityReviewedAt": "2026-09-20T03:52:06.607189+00:00"
   },
   {
     "id": "monemvasia-winery",
@@ -5376,7 +5376,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       }
     },
     "seasonalVisitNotes": "Tour/tasting duration is published as 60-90 minutes depending on the visit/tasting.",
-    "visitabilityReviewedAt": "2026-09-18 21:00:00+00"
+    "visitabilityReviewedAt": "2026-09-18T21:00:00+00:00"
   },
   {
     "id": "monteraponi-tuscany",
@@ -5429,7 +5429,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       "booking": "required",
       "monday_friday": "09:00-17:00"
     },
-    "visitabilityReviewedAt": "2026-09-19 18:01:09.286988+00"
+    "visitabilityReviewedAt": "2026-09-19T18:01:09.286988+00:00"
   },
   {
     "id": "moulin-clos-des-jeannons-provence",
@@ -5487,7 +5487,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       "self_guided_mill_visit": "march_to_early_october"
     },
     "seasonalVisitNotes": "Self-guided mill visits run from March to early October. Groups over 20 people must reserve in advance.",
-    "visitabilityReviewedAt": "2026-09-20 04:28:03.813599+00"
+    "visitabilityReviewedAt": "2026-09-20T04:28:03.813599+00:00"
   },
   {
     "id": "nocciolenatura-piedmont",
@@ -5544,7 +5544,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitBookingRequirement": "required",
     "walkInStatus": "not_accepted",
     "typicalVisitMinutes": 90,
-    "visitabilityReviewedAt": "2026-09-20 03:26:09.952301+00"
+    "visitabilityReviewedAt": "2026-09-20T03:26:09.952301+00:00"
   },
   {
     "id": "notos-brewery",
@@ -5586,7 +5586,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitStatus": "current_access_uncertain",
     "visitSourceUrl": "https://brewshop.notosbrewery.gr/?page_id=282",
     "visitNotes": "The current first-party site confirms the Heraklion brewery and direct brewer contact details but does not publish a formal visitor programme or visitor hours. Current public listings and 2026 visitor reports indicate that informal brewery visits, beer tasting/drinking and takeaway purchases do occur, while also describing the site as not set up as a formal taproom. Contact the brewery before travelling.",
-    "visitabilityReviewedAt": "2026-09-19 16:30:00+00"
+    "visitabilityReviewedAt": "2026-09-19T16:30:00+00:00"
   },
   {
     "id": "nougat-andre-boyer-provence",
@@ -5638,7 +5638,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitStatus": "public_visits",
     "visitSourceUrl": "https://www.nougat-boyer.fr/fr/",
     "visitNotes": "Current first-party André Boyer material identifies the historic Sault location as a public-facing boutique selling traditional confectionery and house-made products, with pastries, ice cream and a tea-room offering. The reviewed official material does not provide sufficiently clear current opening hours or a booking rule, so those fields remain unknown rather than inferred.",
-    "visitabilityReviewedAt": "2026-09-20 04:28:05.903015+00"
+    "visitabilityReviewedAt": "2026-09-20T04:28:05.903015+00:00"
   },
   {
     "id": "nougats-silvain-provence",
@@ -5715,7 +5715,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       "annual_closure_2026": "january_16_february_2_inclusive"
     },
     "seasonalVisitNotes": "2026 annual closure runs January 16 through February 2 inclusive. December 25-26 are closed. Recheck annually published hours for future travel.",
-    "visitabilityReviewedAt": "2026-09-20 04:28:08.942867+00"
+    "visitabilityReviewedAt": "2026-09-20T04:28:08.942867+00:00"
   },
   {
     "id": "olea-bb-oleum-viride-bellic-istria",
@@ -5788,7 +5788,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
         "saturday_sunday_holidays": "closed"
       }
     },
-    "visitabilityReviewedAt": "2026-09-20 04:25:01.401188+00"
+    "visitabilityReviewedAt": "2026-09-20T04:25:01.401188+00:00"
   },
   {
     "id": "olicatessen-moli-dels-torms-catalonia",
@@ -5844,7 +5844,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       "es",
       "en"
     ],
-    "visitabilityReviewedAt": "2026-09-20 03:39:16.039532+00"
+    "visitabilityReviewedAt": "2026-09-20T03:39:16.039532+00:00"
   },
   {
     "id": "olio-intini-puglia",
@@ -5892,7 +5892,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitSourceUrl": "https://oliointini.it/en/experience-extra-virgin-olive-oil-in-puglia/",
     "visitNotes": "Current first-party Olio Intini experience page documents the EVO Tour as a one-hour olive-mill visit and guided tasting, but explicitly states that the EVO Tour will return next year. No current visitor timetable, active booking window, walk-in policy, parking details or visitor languages are published for the paused programme. Confirm current availability directly before travelling.",
     "seasonalVisitNotes": "Published EVO Tour duration is 60 minutes when active. The current 2026 page states the tour will return next year.",
-    "visitabilityReviewedAt": "2026-09-20 03:16:46.450311+00"
+    "visitabilityReviewedAt": "2026-09-20T03:16:46.450311+00:00"
   },
   {
     "id": "olio-mimi-puglia",
@@ -5938,7 +5938,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitStatus": "not_publicly_confirmed",
     "visitSourceUrl": "https://www.oliomimi.com/en/",
     "visitNotes": "Current first-party Olio Mimì site verifies the active Modugno oil mill, production identity and direct contact/e-commerce channels, but current navigation and indexed first-party pages do not publish a public mill visit, guided tasting programme, visitor timetable, booking rule or walk-in policy. Keep ordinary public access unconfirmed.",
-    "visitabilityReviewedAt": "2026-09-20 03:16:58.878137+00"
+    "visitabilityReviewedAt": "2026-09-20T03:16:58.878137+00:00"
   },
   {
     "id": "olio-mio-sicily",
@@ -5982,7 +5982,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitStatus": "not_publicly_confirmed",
     "visitSourceUrl": "https://oliomiosicily.com/produzione-olio-extravergine-artigianale/",
     "visitNotes": "Current first-party Olio Mio pages confirm the Mirto Verde Agricola mill in Contrada Gianvicario, San Cipirello, and offer on-site order pickup. However, they do not publish a current public mill/farm visitor programme, guided tour, tasting procedure, visitor timetable, booking rule, or walk-in policy. On-site pickup is not treated as evidence of general mill visitability.",
-    "visitabilityReviewedAt": "2026-09-20 03:07:44.676756+00"
+    "visitabilityReviewedAt": "2026-09-20T03:07:44.676756+00:00"
   },
   {
     "id": "oljarna-kocbek-pomurska",
@@ -6041,7 +6041,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
         "monday_saturday": "morning"
       }
     },
-    "visitabilityReviewedAt": "2026-09-20 03:40:20.298222+00"
+    "visitabilityReviewedAt": "2026-09-20T03:40:20.298222+00:00"
   },
   {
     "id": "parasiris-olive-mill",
@@ -6083,7 +6083,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitStatus": "public_visits",
     "visitSourceUrl": "https://paraschakis.gr/olive-oil-factory/",
     "visitNotes": "Current first-party site explicitly presents the Melidoni olive mill as visitor-friendly and welcomes guests for a guided introduction to olive-oil production and tasting. The current official pages do not publish daily visitor hours, a booking requirement, walk-in policy, visit duration, parking policy, or visitor languages. The previously displayed Mon-Sat 09:00-18:00 timetable came from public listings and is no longer surfaced as a producer-confirmed schedule.",
-    "visitabilityReviewedAt": "2026-09-19 16:05:00+00"
+    "visitabilityReviewedAt": "2026-09-19T16:05:00+00:00"
   },
   {
     "id": "peralada-mas-marce-catalonia",
@@ -6146,7 +6146,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       }
     },
     "seasonalVisitNotes": "An annual shearing-themed visit normally replaces the standard programme once in May; exact date is announced separately.",
-    "visitabilityReviewedAt": "2026-09-20 03:39:19.716138+00"
+    "visitabilityReviewedAt": "2026-09-20T03:39:19.716138+00:00"
   },
   {
     "id": "peskesi-farm-kazani",
@@ -6204,7 +6204,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       }
     },
     "seasonalVisitNotes": "Tours take place only under suitable weather conditions and may be postponed in rain or severe weather.",
-    "visitabilityReviewedAt": "2026-09-19 16:05:00+00"
+    "visitabilityReviewedAt": "2026-09-19T16:05:00+00:00"
   },
   {
     "id": "propator-sknipa-brewery",
@@ -6254,7 +6254,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitNotes": "Current first-party contact page tells visitors who want to learn how Sknipa beer is made to send a message to arrange a meeting. This establishes arranged brewery visits, but not ordinary walk-in access. The page publishes Monday-Friday 09:00-17:30 as brewery/contact hours; these are kept separate from any guaranteed tour timetable. No standard visit duration, parking details or visitor languages are published.",
     "visitBookingRequirement": "required",
     "walkInStatus": "not_accepted",
-    "visitabilityReviewedAt": "2026-09-19 17:29:00+00"
+    "visitabilityReviewedAt": "2026-09-19T17:29:00+00:00"
   },
   {
     "id": "psiloritis-cheese-dairy-livadia",
@@ -6327,7 +6327,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitStatus": "not_publicly_confirmed",
     "visitSourceUrl": "https://www.psiloriths.gr/en/the-company/",
     "visitNotes": "Current first-party site confirms the Livadia dairy as a modern production plant and publishes direct contact details, but it does not publish a public visitor programme, tour/tasting procedure, public opening hours, booking rule, or walk-in policy. Keep public access unconfirmed.",
-    "visitabilityReviewedAt": "2026-09-19 16:40:00+00"
+    "visitabilityReviewedAt": "2026-09-19T16:40:00+00:00"
   },
   {
     "id": "ra-nissora-piedmont",
@@ -6405,7 +6405,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       "es",
       "de"
     ],
-    "visitabilityReviewedAt": "2026-09-20 03:29:29.074839+00"
+    "visitabilityReviewedAt": "2026-09-20T03:29:29.074839+00:00"
   },
   {
     "id": "ribafreixo-wines-alentejo",
@@ -6474,7 +6474,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
         "saturday_sunday": "10:00-18:00"
       }
     },
-    "visitabilityReviewedAt": "2026-09-20 04:02:33.606277+00"
+    "visitabilityReviewedAt": "2026-09-20T04:02:33.606277+00:00"
   },
   {
     "id": "rueslatten-ysteri-buskerud",
@@ -6527,7 +6527,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitNotes": "Current official HANEN farm-tourism listing confirms the Rueslåtten Ysteri / Hol Ysteri farm-shop point and explicitly invites visitors to stop by and buy cheese made on the farm. The producer website was not reliably reachable during this audit, and the current HANEN page does not publish fixed shop hours, guided-tour terms, duration, parking or visitor languages. Public shop access is confirmed; production-area access is not inferred.",
     "visitBookingRequirement": "not_required",
     "walkInStatus": "accepted",
-    "visitabilityReviewedAt": "2026-09-20 03:41:36.651784+00"
+    "visitabilityReviewedAt": "2026-09-20T03:41:36.651784+00:00"
   },
   {
     "id": "sabino-leone-puglia",
@@ -6593,7 +6593,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
         ]
       }
     },
-    "visitabilityReviewedAt": "2026-09-20 03:20:00.099929+00"
+    "visitabilityReviewedAt": "2026-09-20T03:20:00.099929+00:00"
   },
   {
     "id": "santa-tresa-sicily",
@@ -6657,7 +6657,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       "classics_of_vittoria": "monday_saturday"
     },
     "seasonalVisitNotes": "Published core tasting durations range from 90 to 120 minutes depending on the experience.",
-    "visitabilityReviewedAt": "2026-09-20 03:10:59.579839+00"
+    "visitabilityReviewedAt": "2026-09-20T03:10:59.579839+00:00"
   },
   {
     "id": "santo-wines-santorini",
@@ -6706,7 +6706,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       "year_round": true,
       "service_hours": "vary_by_service"
     },
-    "visitabilityReviewedAt": "2026-09-18 21:00:00+00"
+    "visitabilityReviewedAt": "2026-09-18T21:00:00+00:00"
   },
   {
     "id": "santorini-brewing-company",
@@ -6759,7 +6759,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       }
     },
     "seasonalVisitNotes": "Appointments are requested for groups of 4+ people because the tasting area has limited space; large groups cannot be accommodated.",
-    "visitabilityReviewedAt": "2026-09-18 21:00:00+00"
+    "visitabilityReviewedAt": "2026-09-18T21:00:00+00:00"
   },
   {
     "id": "schmiedthof-herb-farm-south-tyrol",
@@ -6819,7 +6819,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       }
     },
     "seasonalVisitNotes": "Regular on-site sales are seasonal from mid-May through the end of September; other times require telephone arrangement.",
-    "visitabilityReviewedAt": "2026-09-20 03:52:11.488305+00"
+    "visitabilityReviewedAt": "2026-09-20T03:52:11.488305+00:00"
   },
   {
     "id": "semeli-estate-nemea",
@@ -6873,7 +6873,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       "wednesday_friday": "10:00-16:00"
     },
     "seasonalVisitNotes": "Open wine experiences are published as 60 minutes; private cellar tastings are published as 90 minutes.",
-    "visitabilityReviewedAt": "2026-09-18 21:00:00+00"
+    "visitabilityReviewedAt": "2026-09-18T21:00:00+00:00"
   },
   {
     "id": "sennerhof-south-tyrol",
@@ -6933,7 +6933,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
         ]
       }
     },
-    "visitabilityReviewedAt": "2026-09-20 03:52:15.733434+00"
+    "visitabilityReviewedAt": "2026-09-20T03:52:15.733434+00:00"
   },
   {
     "id": "serra-ferdinandea-sicily",
@@ -6984,7 +6984,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitStatus": "not_publicly_confirmed",
     "visitSourceUrl": "https://serraferdinandea.com/en/",
     "visitNotes": "Current first-party Serra Ferdinandea site confirms the Sambuca di Sicilia estate, vineyards, wines and agricultural project but does not publish a routine public visitor programme, tasting/tour booking flow, visitor timetable, walk-in policy, standard duration, parking details or visitor languages. Keep ordinary public access unconfirmed.",
-    "visitabilityReviewedAt": "2026-09-20 03:07:48.283649+00"
+    "visitabilityReviewedAt": "2026-09-20T03:07:48.283649+00:00"
   },
   {
     "id": "silva-daskalaki-winery",
@@ -7048,7 +7048,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       "el",
       "en"
     ],
-    "visitabilityReviewedAt": "2026-09-18 21:00:00+00"
+    "visitabilityReviewedAt": "2026-09-18T21:00:00+00:00"
   },
   {
     "id": "siris-craft-brewery",
@@ -7096,7 +7096,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitStatus": "current_access_uncertain",
     "visitSourceUrl": "https://www.sirisbrewery.com/en/contact-us/",
     "visitNotes": "Current first-party Siris/Voreia pages explicitly welcome visitors into the brewery for a tour of the beer-making world. However, the current site does not publish a normal visitor timetable, advance-booking requirement, walk-in policy, standard duration, parking details or visitor languages. Event-specific Open Breweries participation is not treated as ordinary year-round access. Contact the brewery before travelling.",
-    "visitabilityReviewedAt": "2026-09-19 17:29:00+00"
+    "visitabilityReviewedAt": "2026-09-19T17:29:00+00:00"
   },
   {
     "id": "skouras-winery-nemea",
@@ -7147,7 +7147,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       "monday_friday": "09:00-16:30",
       "national_holidays": "closed"
     },
-    "visitabilityReviewedAt": "2026-09-18 21:00:00+00"
+    "visitabilityReviewedAt": "2026-09-18T21:00:00+00:00"
   },
   {
     "id": "solo-craft-brewery",
@@ -7195,7 +7195,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       "monday_friday": "11:00-16:00",
       "saturday_sunday": "appointment_only"
     },
-    "visitabilityReviewedAt": "2026-09-18 21:00:00+00"
+    "visitabilityReviewedAt": "2026-09-18T21:00:00+00:00"
   },
   {
     "id": "spildegarden-vestland",
@@ -7258,7 +7258,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       }
     },
     "seasonalVisitNotes": "Guided history/cider tasting is group-only, about 60 minutes, booking required, minimum 5 people.",
-    "visitabilityReviewedAt": "2026-09-20 03:41:31.006853+00"
+    "visitabilityReviewedAt": "2026-09-20T03:41:31.006853+00:00"
   },
   {
     "id": "stamatogiorgis-dairy-smari",
@@ -7327,7 +7327,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitStatus": "current_access_uncertain",
     "visitSourceUrl": "https://stamatogiorgis.gr/en/",
     "visitNotes": "Current first-party site explicitly says the dairy offers tasting experiences at its facilities. It does not publish a clear current visitor timetable, booking requirement, walk-in policy, visit duration, or parking policy. Contact the dairy before travelling.",
-    "visitabilityReviewedAt": "2026-09-19 16:10:00+00"
+    "visitabilityReviewedAt": "2026-09-19T16:10:00+00:00"
   },
   {
     "id": "stankovic-honey-garden-southeast-slovenia",
@@ -7382,7 +7382,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitBookingRequirement": "required",
     "walkInStatus": "not_accepted",
     "seasonalVisitNotes": "Published programmes vary by format; the main family programme is 2 hours and apitherapy with honey tasting is 30 minutes.",
-    "visitabilityReviewedAt": "2026-09-20 03:40:24.464216+00"
+    "visitabilityReviewedAt": "2026-09-20T03:40:24.464216+00:00"
   },
   {
     "id": "stathakis-honey-park",
@@ -7429,7 +7429,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitStatus": "public_visits",
     "visitSourceUrl": "https://stathakisfamily.com/cretan-honey-experience-tour-taste/",
     "visitNotes": "Current first-party site actively promotes and books the Cretan Honey Experience in Kaloudiana, including guided honey-production tours, tastings, a honey shop and coffee place. Four current bookable experiences are published with durations of 45 or 90 minutes. The site does not publish a current seasonal opening period, daily visitor timetable, general walk-in policy, parking policy, or tour languages, so those remain unconfirmed.",
-    "visitabilityReviewedAt": "2026-09-19 16:05:00+00"
+    "visitabilityReviewedAt": "2026-09-19T16:05:00+00:00"
   },
   {
     "id": "tenuta-cantagallo-tuscany",
@@ -7482,7 +7482,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       "fr",
       "de"
     ],
-    "visitabilityReviewedAt": "2026-09-19 17:54:26.673597+00"
+    "visitabilityReviewedAt": "2026-09-19T17:54:26.673597+00:00"
   },
   {
     "id": "tenuta-di-castellaro-sicily",
@@ -7554,7 +7554,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       }
     },
     "seasonalVisitNotes": "Sunset experiences vary with sunset time. Some published experiences note cool evening temperatures and weather-dependent conditions.",
-    "visitabilityReviewedAt": "2026-09-20 03:10:51.017695+00"
+    "visitabilityReviewedAt": "2026-09-20T03:10:51.017695+00:00"
   },
   {
     "id": "tetramythos-winery",
@@ -7602,7 +7602,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
         "saturday_sunday": "09:00-14:00"
       }
     },
-    "visitabilityReviewedAt": "2026-09-18 21:00:00+00"
+    "visitabilityReviewedAt": "2026-09-18T21:00:00+00:00"
   },
   {
     "id": "thymiopoulos-naoussa",
@@ -7645,7 +7645,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitStatus": "not_publicly_confirmed",
     "visitSourceUrl": "https://www.thymiopoulosvineyards.gr/contact/",
     "visitNotes": "Current first-party Thymiopoulos Vineyards site verifies the active Trilofos winery and publishes direct contact details, but the current navigation and indexed first-party pages do not publish a visitor programme, winery tour, tasting procedure, visitor timetable, booking rule, or walk-in policy. Keep public visitability unconfirmed.",
-    "visitabilityReviewedAt": "2026-09-19 17:29:00+00"
+    "visitabilityReviewedAt": "2026-09-19T17:29:00+00:00"
   },
   {
     "id": "tingvollost-more-og-romsdal",
@@ -7706,7 +7706,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       }
     },
     "seasonalVisitNotes": "Group visits are by arrangement; public entry into the dairy production room is not permitted, but production is visible through shop windows.",
-    "visitabilityReviewedAt": "2026-09-20 03:41:42.74295+00"
+    "visitabilityReviewedAt": "2026-09-20T03:41:42.74295+00:00"
   },
   {
     "id": "titakis-winery",
@@ -7756,7 +7756,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       }
     },
     "seasonalVisitNotes": "Published packages range from about 60 to 150 minutes. Some premium packages require 1-day notice; the Wine & Food Pairing Experience requires 2-day notice.",
-    "visitabilityReviewedAt": "2026-09-19 16:05:00+00"
+    "visitabilityReviewedAt": "2026-09-19T16:05:00+00:00"
   },
   {
     "id": "toplou-monastery-winery",
@@ -7808,7 +7808,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
         "public_tastings": false
       }
     },
-    "visitabilityReviewedAt": "2026-09-19 16:05:00+00"
+    "visitabilityReviewedAt": "2026-09-19T16:05:00+00:00"
   },
   {
     "id": "trnulja-estate-central-slovenia",
@@ -7859,7 +7859,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitStatus": "current_access_uncertain",
     "visitSourceUrl": "https://trnulja.com/en/",
     "visitNotes": "Current first-party Trnulja site confirms an active organic tourist estate with accommodation, gastronomy, wellness, events and an estate shop/product offer. Visitor experiences are handled through enquiries/reservations, but the site does not publish a general estate visitor timetable, ordinary walk-in farm access, or a clear universal booking rule for non-overnight visitors. Agricultural work areas are not assumed to be publicly accessible.",
-    "visitabilityReviewedAt": "2026-09-20 03:40:09.484826+00"
+    "visitabilityReviewedAt": "2026-09-20T03:40:09.484826+00:00"
   },
   {
     "id": "tsililis-theopetra-thessaly",
@@ -7916,7 +7916,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitBookingRequirement": "required",
     "walkInStatus": "not_accepted",
     "typicalVisitMinutes": 45,
-    "visitabilityReviewedAt": "2026-09-19 17:29:00+00"
+    "visitabilityReviewedAt": "2026-09-19T17:29:00+00:00"
   },
   {
     "id": "tyrnavos-winery-cooperative-thessaly",
@@ -7977,7 +7977,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitNotes": "The current first-party visitor announcement confirms that the Agricultural Cooperative Winery & Distillery of Tyrnavos is officially visitable and states that visits are organised by prior arrangement with the responsible staff. The page also states that the visitor facilities are appropriately configured for disabled visitors. No current public visitor timetable, standard duration, parking details, or visitor languages are published.",
     "visitBookingRequirement": "required",
     "walkInStatus": "not_accepted",
-    "visitabilityReviewedAt": "2026-09-19 17:29:00+00"
+    "visitabilityReviewedAt": "2026-09-19T17:29:00+00:00"
   },
   {
     "id": "tzourmpakis-dairy-amari",
@@ -8019,7 +8019,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitStatus": "not_publicly_confirmed",
     "visitSourceUrl": "https://tzourmpakis.gr/",
     "visitNotes": "Current first-party site confirms the working dairy and direct contact details in Mixorrouma, but it does not publish a current public visitor programme, shop opening schedule, tour procedure, booking rule, or walk-in policy. Older public sources mention a shop on the Rethymno-Spili road, but that evidence is not current enough to establish present-day public access. Contact the producer before considering a visit.",
-    "visitabilityReviewedAt": "2026-09-19 16:15:00+00"
+    "visitabilityReviewedAt": "2026-09-19T16:15:00+00:00"
   },
   {
     "id": "vassaltis-vineyards",
@@ -8064,7 +8064,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       "cellar_tour": "16:00-17:00"
     },
     "seasonalVisitNotes": "Cellar tour is currently published daily 16:00-17:00 with a maximum of 12 guests.",
-    "visitabilityReviewedAt": "2026-09-18 21:00:00+00"
+    "visitabilityReviewedAt": "2026-09-18T21:00:00+00:00"
   },
   {
     "id": "venetsanos-winery-santorini",
@@ -8128,7 +8128,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       "en",
       "el"
     ],
-    "visitabilityReviewedAt": "2026-09-18 21:00:00+00"
+    "visitabilityReviewedAt": "2026-09-18T21:00:00+00:00"
   },
   {
     "id": "vina-gustin-goriska",
@@ -8181,7 +8181,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitSourceUrl": "https://vinagustin.si/en/degustacije",
     "visitNotes": "Current first-party Vina Guštin page publishes structured guided wine tastings in dedicated tasting rooms, including 4-wine and 6-wine programmes with food for groups of 6 people. The current site provides direct contact for tastings but does not explicitly state a universal advance-booking requirement, fixed visitor hours, walk-in policy, duration, parking or visitor languages.",
     "seasonalVisitNotes": "Published tasting programmes are structured around groups of 6 people.",
-    "visitabilityReviewedAt": "2026-09-20 03:40:16.482444+00"
+    "visitabilityReviewedAt": "2026-09-20T03:40:16.482444+00:00"
   },
   {
     "id": "vina-laguna-istria",
@@ -8235,7 +8235,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitSourceUrl": "https://agrolaguna.hr/festigia-taste-shop/",
     "visitNotes": "Current first-party Agrolaguna material confirms the Festigia Taste & Shop at the verified Poreč address as a public tasting room and shop for Vina Laguna/Festigia wines, Ol Istria olive oils and Špin cheeses. Official Istrian tourism material independently lists the tasting room and free parking. Current routine opening hours and a universal booking rule are not published in the reviewed sources, so they remain unknown.",
     "parkingStatus": "available",
-    "visitabilityReviewedAt": "2026-09-20 04:25:04.083312+00"
+    "visitabilityReviewedAt": "2026-09-20T04:25:04.083312+00:00"
   },
   {
     "id": "voliotis-family-olive-mill-thessaly",
@@ -8297,7 +8297,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       "monday_saturday": "08:00-22:00"
     },
     "seasonalVisitNotes": "Maximum indoor group size published as 20 people.",
-    "visitabilityReviewedAt": "2026-09-19 17:29:00+00"
+    "visitabilityReviewedAt": "2026-09-19T17:29:00+00:00"
   },
   {
     "id": "wild-herbs-kallikratis",
@@ -8339,7 +8339,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitStatus": "not_publicly_confirmed",
     "visitSourceUrl": "https://www.facebook.com/wildherbsofcrete/",
     "visitNotes": "The producer-controlled Facebook page states that the Kallikratis shop is now closed and thanks visitors for their company over the years. The previously stored website no longer resolves. No current first-party visitor programme, opening hours, booking flow, or walk-in access could be verified in 2026. Keep the producer record, but do not present it as currently visitable.",
-    "visitabilityReviewedAt": "2026-09-19 16:05:00+00"
+    "visitabilityReviewedAt": "2026-09-19T16:05:00+00:00"
   },
   {
     "id": "zacharioudakis-winery",
@@ -8391,6 +8391,6 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       "daily_hours": "not_published"
     },
     "seasonalVisitNotes": "Programmed traditional grape-pressing participation is offered during harvest; timing is seasonal and not treated as a general opening-hours rule.",
-    "visitabilityReviewedAt": "2026-09-19 16:05:00+00"
+    "visitabilityReviewedAt": "2026-09-19T16:05:00+00:00"
   }
 ] as Producer[];
