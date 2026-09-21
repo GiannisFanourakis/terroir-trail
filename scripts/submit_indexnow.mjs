@@ -62,7 +62,7 @@ const payload = {
   urlList: urls,
 };
 
-const response = await fetch(ENDPOINT, {
+const response = await globalThis.fetch(ENDPOINT, {
   method: 'POST',
   headers: {
     'content-type': 'application/json; charset=utf-8',
@@ -71,10 +71,10 @@ const response = await fetch(ENDPOINT, {
 });
 
 const body = await response.text();
-console.log(`IndexNow response: HTTP ${response.status}`);
-if (body) console.log(body);
-console.log(`IndexNow submitted ${urls.length} priority URLs.`);
-console.log(`Key location: ${payload.keyLocation}`);
+globalThis.console.log(`IndexNow response: HTTP ${response.status}`);
+if (body) globalThis.console.log(body);
+globalThis.console.log(`IndexNow submitted ${urls.length} priority URLs.`);
+globalThis.console.log(`Key location: ${payload.keyLocation}`);
 
 if (![200, 202].includes(response.status)) {
   throw new Error(`IndexNow submission failed with HTTP ${response.status}.`);
