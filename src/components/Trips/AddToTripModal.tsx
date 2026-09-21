@@ -10,11 +10,14 @@ import {
 import {
   addProducerToTrip,
   createTrip,
+  getTrip,
   listTrips,
   type TripRecordV1,
+  type TripWithItems,
   TripApiError,
 } from '../../services/tripApi';
 import type { Producer } from '../../types/terroir';
+import { trackIntent } from '../../services/intentAnalytics';
 import { ProducerCategoryIcon } from '../Common/ProducerCategoryIcon';
 
 interface AddToTripModalProps {
@@ -26,6 +29,10 @@ interface AddToTripModalProps {
   initialCreatingNew?: boolean;
   initialCreatedTrip?: TripRecordV1 | null;
   initialCreateError?: string | null;
+  initialAmbiguousCreate?: boolean;
+  initialAmbiguousTripId?: string | null;
+  initialSuccessTrip?: TripRecordV1 | null;
+  initialError?: string | null;
 }
 
 const formatDateSpan = (start: string | null, end: string | null): string => {
@@ -53,6 +60,26 @@ const dateSpanDays = (startDate: string, endDate: string): number => {
   return Math.floor((end - start) / 86400000) + 1;
 };
 
+export async function reconcileAddProducer(
+  tripId: string,
+  producerId: string
+): Promise<
+  | { status: 'added'; trip: TripWithItems }
+  | { status: 'absent'; trip: TripWithItems }
+  | { status: 'unconfirmed'; error: unknown }
+> {
+  try {
+    const authoritativeTrip = await getTrip(tripId);
+    const isPresent = authoritativeTrip.items.some((item) => item.producerId === producerId);
+    if (isPresent) {
+      return { status: 'added', trip: authoritativeTrip };
+    }
+    return { status: 'absent', trip: authoritativeTrip };
+  } catch (reconcileErr) {
+    return { status: 'unconfirmed', error: reconcileErr };
+  }
+}
+
 export const AddToTripModal: React.FC<AddToTripModalProps> = ({
   isOpen,
   onClose,
@@ -62,12 +89,21 @@ export const AddToTripModal: React.FC<AddToTripModalProps> = ({
   initialCreatingNew,
   initialCreatedTrip = null,
   initialCreateError = null,
+  initialAmbiguousCreate = false,
+  initialAmbiguousTripId = null,
+  initialSuccessTrip = null,
+  initialError = null,
 }) => {
   const [trips, setTrips] = useState<TripRecordV1[]>(initialTrips ?? []);
   const [loading, setLoading] = useState<boolean>(initialTrips !== undefined ? false : true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(
+    initialError ??
+      (initialAmbiguousTripId
+        ? "We couldn't confirm whether this stop was added. Reload the trip before trying again."
+        : null)
+  );
   const [submittingTripId, setSubmittingTripId] = useState<string | null>(null);
-  const [successTrip, setSuccessTrip] = useState<TripRecordV1 | null>(null);
+  const [successTrip, setSuccessTrip] = useState<TripRecordV1 | null>(initialSuccessTrip);
 
   // New trip mode
   const [isCreatingNew, setIsCreatingNew] = useState<boolean>(
@@ -79,6 +115,8 @@ export const AddToTripModal: React.FC<AddToTripModalProps> = ({
   const [endDateDraft, setEndDateDraft] = useState<string>('');
   const [createError, setCreateError] = useState<string | null>(initialCreateError);
   const [isSubmittingNew, setIsSubmittingNew] = useState<boolean>(false);
+  const [isAmbiguousCreate, setIsAmbiguousCreate] = useState<boolean>(initialAmbiguousCreate);
+  const [ambiguousTripId, setAmbiguousTripId] = useState<string | null>(initialAmbiguousTripId);
 
   const fetchTrips = useCallback(async () => {
     setLoading(true);
@@ -98,9 +136,17 @@ export const AddToTripModal: React.FC<AddToTripModalProps> = ({
 
   useEffect(() => {
     if (isOpen) {
-      setSuccessTrip(null);
+      setSuccessTrip(initialSuccessTrip);
       setSubmittingTripId(null);
       setCreatedTrip(initialCreatedTrip);
+      setIsAmbiguousCreate(initialAmbiguousCreate);
+      setAmbiguousTripId(initialAmbiguousTripId);
+      setError(
+        initialError ??
+          (initialAmbiguousTripId
+            ? "We couldn't confirm whether this stop was added. Reload the trip before trying again."
+            : null)
+      );
       if (initialCreatingNew !== undefined) {
         setIsCreatingNew(initialCreatingNew);
       } else if (initialTrips !== undefined) {
@@ -116,7 +162,18 @@ export const AddToTripModal: React.FC<AddToTripModalProps> = ({
         void fetchTrips();
       }
     }
-  }, [isOpen, initialTrips, initialCreatingNew, initialCreatedTrip, initialCreateError, fetchTrips]);
+  }, [
+    isOpen,
+    initialTrips,
+    initialCreatingNew,
+    initialCreatedTrip,
+    initialCreateError,
+    initialAmbiguousCreate,
+    initialAmbiguousTripId,
+    initialSuccessTrip,
+    initialError,
+    fetchTrips,
+  ]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -128,34 +185,146 @@ export const AddToTripModal: React.FC<AddToTripModalProps> = ({
     }
   }, [isOpen, onClose]);
 
-  const handleAddToExisting = async (targetTrip: TripRecordV1) => {
+  const handleReconcileAmbiguousExisting = async (tripId: string) => {
     if (!producer || submittingTripId) return;
-    setSubmittingTripId(targetTrip.id);
+    setSubmittingTripId(tripId);
     setError(null);
     try {
-      await addProducerToTrip(targetTrip.id, producer.id, targetTrip.revision, 'trip_add_flow');
-      setSuccessTrip(targetTrip);
-    } catch (err: any) {
-      if (err instanceof TripApiError && err.code === 'conflict') {
-        if (err.message.includes('already in the trip')) {
-          setError(`“${producer.name}” is already in “${targetTrip.title}”.`);
-        } else if (err.message.includes('another device or tab')) {
-          setError('This trip changed elsewhere. Reloading trips…');
-          void fetchTrips();
-        } else {
-          setError(err.message);
-        }
+      const reconciled = await reconcileAddProducer(tripId, producer.id);
+      if (reconciled.status === 'added') {
+        void trackIntent({
+          event: 'trip_producer_added',
+          sourceSurface: 'trip_add_flow',
+          producerId: producer.id,
+        });
+        setTrips((prev) =>
+          prev.map((t) => (t.id === reconciled.trip.id ? reconciled.trip : t))
+        );
+        setSuccessTrip(reconciled.trip);
+        setAmbiguousTripId(null);
+        setError(null);
+      } else if (reconciled.status === 'absent') {
+        setTrips((prev) =>
+          prev.map((t) => (t.id === reconciled.trip.id ? reconciled.trip : t))
+        );
+        setAmbiguousTripId(null);
+        setError(`“${producer.name}” was not added. You can try adding it now.`);
       } else {
-        setError(err.message || 'Failed to add producer to trip.');
+        setAmbiguousTripId(tripId);
+        setError("We couldn't confirm whether this stop was added. Reload the trip before trying again.");
       }
     } finally {
       setSubmittingTripId(null);
     }
   };
 
+  const handleAddToExisting = async (targetTrip: TripRecordV1) => {
+    if (!producer || submittingTripId) return;
+    if (ambiguousTripId === targetTrip.id) {
+      await handleReconcileAmbiguousExisting(targetTrip.id);
+      return;
+    }
+    setSubmittingTripId(targetTrip.id);
+    setError(null);
+    try {
+      const updated = await addProducerToTrip(
+        targetTrip.id,
+        producer.id,
+        targetTrip.revision,
+        'trip_add_flow'
+      );
+      setTrips((prev) =>
+        prev.map((t) => (t.id === updated.id ? updated : t))
+      );
+      setSuccessTrip(updated);
+      setAmbiguousTripId(null);
+    } catch (err: any) {
+      const reconciled = await reconcileAddProducer(targetTrip.id, producer.id);
+      if (reconciled.status === 'added') {
+        void trackIntent({
+          event: 'trip_producer_added',
+          sourceSurface: 'trip_add_flow',
+          producerId: producer.id,
+        });
+        setTrips((prev) =>
+          prev.map((t) => (t.id === reconciled.trip.id ? reconciled.trip : t))
+        );
+        setSuccessTrip(reconciled.trip);
+        setAmbiguousTripId(null);
+        setError(null);
+      } else if (reconciled.status === 'absent') {
+        setTrips((prev) =>
+          prev.map((t) => (t.id === reconciled.trip.id ? reconciled.trip : t))
+        );
+        setAmbiguousTripId(null);
+        if (err instanceof TripApiError && err.code === 'conflict') {
+          if (err.message.includes('already in the trip')) {
+            setError(`“${producer.name}” is already in “${reconciled.trip.title}”.`);
+          } else if (err.message.includes('another device or tab')) {
+            setError('This trip changed elsewhere. Trip refreshed to latest version.');
+          } else {
+            setError(err.message);
+          }
+        } else {
+          setError(err.message || 'Failed to add producer to trip.');
+        }
+      } else {
+        setAmbiguousTripId(targetTrip.id);
+        setError("We couldn't confirm whether this stop was added. Reload the trip before trying again.");
+      }
+    } finally {
+      setSubmittingTripId(null);
+    }
+  };
+
+  const handleReconcileAmbiguousCreated = async () => {
+    if (!producer || !createdTrip || isSubmittingNew) return;
+    setIsSubmittingNew(true);
+    setCreateError(null);
+    try {
+      const reconciled = await reconcileAddProducer(createdTrip.id, producer.id);
+      if (reconciled.status === 'added') {
+        void trackIntent({
+          event: 'trip_producer_added',
+          sourceSurface: 'trip_add_flow',
+          producerId: producer.id,
+        });
+        setTrips((prev) => [
+          reconciled.trip,
+          ...prev.filter((t) => t.id !== reconciled.trip.id),
+        ]);
+        setSuccessTrip(reconciled.trip);
+        setCreatedTrip(null);
+        setIsAmbiguousCreate(false);
+        setCreateError(null);
+      } else if (reconciled.status === 'absent') {
+        setCreatedTrip(reconciled.trip);
+        setTrips((prev) => [
+          reconciled.trip,
+          ...prev.filter((t) => t.id !== reconciled.trip.id),
+        ]);
+        setIsAmbiguousCreate(false);
+        setCreateError(
+          `Trip “${reconciled.trip.title}” was verified, but “${producer.name}” is not added. Retry adding below.`
+        );
+      } else {
+        setIsAmbiguousCreate(true);
+        setCreateError("We couldn't confirm whether this stop was added. Reload the trip before trying again.");
+      }
+    } finally {
+      setIsSubmittingNew(false);
+    }
+  };
+
   const handleCreateAndAdd = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     if (!producer || isSubmittingNew) return;
+
+    if (isAmbiguousCreate && createdTrip) {
+      await handleReconcileAmbiguousCreated();
+      return;
+    }
+
     setCreateError(null);
 
     const cleanTitle = titleDraft.trim();
@@ -208,14 +377,41 @@ export const AddToTripModal: React.FC<AddToTripModalProps> = ({
     }
 
     try {
-      await addProducerToTrip(targetTrip.id, producer.id, targetTrip.revision, 'trip_add_flow');
-      setSuccessTrip(targetTrip);
+      const updated = await addProducerToTrip(targetTrip.id, producer.id, targetTrip.revision, 'trip_add_flow');
+      setTrips((prev) => [updated, ...prev.filter((t) => t.id !== updated.id)]);
+      setSuccessTrip(updated);
       setCreatedTrip(null);
+      setIsAmbiguousCreate(false);
     } catch (err: any) {
-      void fetchTrips();
-      setCreateError(
-        `Trip “${targetTrip.title}” was created, but adding “${producer.name}” failed: ${err.message || 'Please retry.'}`
-      );
+      const reconciled = await reconcileAddProducer(targetTrip.id, producer.id);
+      if (reconciled.status === 'added') {
+        void trackIntent({
+          event: 'trip_producer_added',
+          sourceSurface: 'trip_add_flow',
+          producerId: producer.id,
+        });
+        setTrips((prev) => [
+          reconciled.trip,
+          ...prev.filter((t) => t.id !== reconciled.trip.id),
+        ]);
+        setSuccessTrip(reconciled.trip);
+        setCreatedTrip(null);
+        setIsAmbiguousCreate(false);
+        setCreateError(null);
+      } else if (reconciled.status === 'absent') {
+        setCreatedTrip(reconciled.trip);
+        setTrips((prev) => [
+          reconciled.trip,
+          ...prev.filter((t) => t.id !== reconciled.trip.id),
+        ]);
+        setIsAmbiguousCreate(false);
+        setCreateError(
+          `Trip “${reconciled.trip.title}” was created, but adding “${producer.name}” failed: ${err.message || 'Please retry.'}`
+        );
+      } else {
+        setIsAmbiguousCreate(true);
+        setCreateError("We couldn't confirm whether this stop was added. Reload the trip before trying again.");
+      }
     } finally {
       setIsSubmittingNew(false);
     }
@@ -317,10 +513,17 @@ export const AddToTripModal: React.FC<AddToTripModalProps> = ({
               )}
             </div>
 
-            {createdTrip && (
+            {createdTrip && !isAmbiguousCreate && (
               <div className="p-2.5 rounded-xl bg-amber-500/15 border border-amber-500/30 text-xs text-amber-200 flex items-center gap-2">
                 <AlertCircle className="w-4 h-4 text-amber-400 shrink-0" />
                 <span>{`Trip “${createdTrip.title}” was created. Retry adding “${producer.name}” below.`}</span>
+              </div>
+            )}
+
+            {createdTrip && isAmbiguousCreate && (
+              <div className="p-2.5 rounded-xl bg-amber-500/15 border border-amber-500/30 text-xs text-amber-200 flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 text-amber-400 shrink-0" />
+                <span>{`We couldn't confirm whether “${producer.name}” was added to “${createdTrip.title}”. Reload the trip before trying again.`}</span>
               </div>
             )}
 
@@ -367,7 +570,7 @@ export const AddToTripModal: React.FC<AddToTripModalProps> = ({
               </div>
             </div>
 
-            {createError && (
+            {createError && !isAmbiguousCreate && (
               <p className="text-xs text-rose-400 font-medium">{createError}</p>
             )}
 
@@ -387,12 +590,16 @@ export const AddToTripModal: React.FC<AddToTripModalProps> = ({
                 className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 text-xs font-bold transition shadow-md shadow-amber-500/20 cursor-pointer disabled:opacity-50"
               >
                 {isSubmittingNew
-                  ? createdTrip
-                    ? 'Adding Stop…'
-                    : 'Creating & Adding…'
-                  : createdTrip
-                    ? 'Retry Adding Stop'
-                    : 'Create & Add Stop'}
+                  ? isAmbiguousCreate
+                    ? 'Checking Status…'
+                    : createdTrip
+                      ? 'Adding Stop…'
+                      : 'Creating & Adding…'
+                  : isAmbiguousCreate
+                    ? 'Reload Trip'
+                    : createdTrip
+                      ? 'Retry Adding Stop'
+                      : 'Create & Add Stop'}
               </button>
             </div>
           </form>
@@ -401,7 +608,21 @@ export const AddToTripModal: React.FC<AddToTripModalProps> = ({
             {error && (
               <div className="p-3 rounded-xl bg-amber-500/15 border border-amber-500/30 text-xs text-amber-200 flex items-start gap-2">
                 <AlertCircle className="w-4 h-4 shrink-0 text-amber-400 mt-0.5" />
-                <span>{error}</span>
+                <div className="flex-1">
+                  <span>{error}</span>
+                  {ambiguousTripId && (
+                    <div className="mt-2">
+                      <button
+                        type="button"
+                        onClick={() => void handleReconcileAmbiguousExisting(ambiguousTripId)}
+                        disabled={Boolean(submittingTripId)}
+                        className="px-2.5 py-1 rounded-lg bg-amber-400 text-stone-950 text-[11px] font-bold hover:bg-amber-300 transition cursor-pointer disabled:opacity-50"
+                      >
+                        {submittingTripId === ambiguousTripId ? 'Checking Status…' : 'Reload Trip'}
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
             )}
 
@@ -431,6 +652,7 @@ export const AddToTripModal: React.FC<AddToTripModalProps> = ({
                 {trips.map((targetTrip) => {
                   const isFull = targetTrip.itemCount >= 50;
                   const isCurrentSubmitting = submittingTripId === targetTrip.id;
+                  const isAmbiguous = ambiguousTripId === targetTrip.id;
 
                   return (
                     <button
@@ -448,12 +670,22 @@ export const AddToTripModal: React.FC<AddToTripModalProps> = ({
                           <span>{formatDateSpan(targetTrip.startDate, targetTrip.endDate)}</span>
                           <span>·</span>
                           <span>{`${targetTrip.itemCount} / 50 stops`}</span>
+                          {isAmbiguous && (
+                            <>
+                              <span>·</span>
+                              <span className="text-amber-400 font-semibold">Tap to reload & verify</span>
+                            </>
+                          )}
                         </div>
                       </div>
 
                       <div className="shrink-0 flex items-center">
                         {isCurrentSubmitting ? (
                           <RefreshCw className="w-4 h-4 animate-spin text-amber-400" />
+                        ) : isAmbiguous ? (
+                          <div className="px-2 py-1 rounded-lg bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[10px] font-bold">
+                            Reload
+                          </div>
                         ) : isFull ? (
                           <span className="text-[10px] font-bold text-stone-500">Full</span>
                         ) : (

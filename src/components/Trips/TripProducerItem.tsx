@@ -133,7 +133,21 @@ export const TripProducerItem: React.FC<TripProducerItemProps> = ({
 
         {/* Item Content by state */}
         <div className="flex-1 min-w-0">
-          {showUnavailableNotice ? (
+          {producerState === 'no_longer_listed' ? (
+            <div className="p-3 rounded-xl bg-stone-950/80 border border-red-500/20 text-stone-300">
+              <div className="flex items-center gap-2 text-xs font-bold text-stone-200">
+                <AlertTriangle className="w-4 h-4 text-red-400 shrink-0" />
+                <span>Producer no longer listed on TerroirTrail</span>
+              </div>
+              <p className="mt-1 text-[11px] text-stone-400">
+                This producer has opted out or been delisted from the public catalogue. Historical operational details are no longer exposed.
+              </p>
+            </div>
+          ) : isStateLoading ? (
+            <div className="p-3 rounded-xl bg-stone-800/40 animate-pulse text-stone-400 text-xs">
+              Resolving producer status…
+            </div>
+          ) : showUnavailableNotice ? (
             <div className="p-3 rounded-xl bg-stone-800/70 border border-white/10 text-stone-300">
               <div className="flex items-center gap-2 text-xs font-semibold text-stone-200">
                 <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
@@ -143,20 +157,6 @@ export const TripProducerItem: React.FC<TripProducerItemProps> = ({
                 {catalogueIsLive === false
                   ? 'Live catalogue is currently unavailable. Your planned stop remains in this trip.'
                   : 'Your trip item is preserved. Live producer information will reload when connectivity is restored.'}
-              </p>
-            </div>
-          ) : isStateLoading ? (
-            <div className="p-3 rounded-xl bg-stone-800/40 animate-pulse text-stone-400 text-xs">
-              Resolving producer status…
-            </div>
-          ) : producerState === 'no_longer_listed' ? (
-            <div className="p-3 rounded-xl bg-stone-950/80 border border-red-500/20 text-stone-300">
-              <div className="flex items-center gap-2 text-xs font-bold text-stone-200">
-                <AlertTriangle className="w-4 h-4 text-red-400 shrink-0" />
-                <span>Producer no longer listed on TerroirTrail</span>
-              </div>
-              <p className="mt-1 text-[11px] text-stone-400">
-                This producer has opted out or been delisted from the public catalogue. Historical operational details are no longer exposed.
               </p>
             </div>
           ) : producerState === 'unavailable' ? (

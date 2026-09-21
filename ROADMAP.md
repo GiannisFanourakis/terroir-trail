@@ -5,7 +5,7 @@
 > Completion convention: change `- [ ] Step` to `- [x] ~~Step~~` when finished. Do not mark a step complete until it has been implemented, tested, pushed, deployed where applicable, and verified.
 
 **Last updated:** 2026-09-21
-**Current focus:** Phase 14.6A — Organic Discovery Foundation (SEO + AEO + GEO). My Trips V1 is deployed; its final two retry/lifecycle contract-edge fixes remain tracked separately while organic discovery work proceeds.
+**Current focus:** Phase 14.6A — Organic Discovery Foundation (SEO + AEO + GEO). My Trips V1 is deployed and its final two reviewed contract-edge fixes (delisting precedence during catalogue outage and authoritative add reconciliation) are verified.
 
 ---
 
@@ -895,9 +895,9 @@ Do **not** add in V1:
 - [x] ~~Test event instrumentation.~~
 - [x] ~~Run full quality gate and production smoke.~~
 
-**Phase 14.6 closeout verification checkpoint — 2026-09-21:** Free My Trips V1 verification gaps closed: fail-closed catalogue offline handling implemented (`catalogueIsLive === false` suppresses fallback facts while preserving structural trip stops), drawer opening from trip workspace correctly attributes `trip_workspace`, directions link clicks instrumented with `directions_click` (`trip_workspace`), expandable visit readiness details expose full audit status and direct producer contact, partial-failure retry in AddToTripModal preserves created trips without duplicate creation, and user-facing HTML entities cleaned. Gate 14.6 remains open pending production deployment and smoke verification.
+**Phase 14.6 closeout verification checkpoint — 2026-09-21:** Free My Trips V1 verification gaps closed: fail-closed catalogue offline handling implemented (`catalogueIsLive === false` suppresses fallback facts while preserving structural trip stops), drawer opening from trip workspace correctly attributes `trip_workspace`, directions link clicks instrumented with `directions_click` (`trip_workspace`), expandable visit readiness details expose full audit status and direct producer contact, partial-failure retry in AddToTripModal preserves created trips without duplicate creation, and user-facing HTML entities cleaned. Final reviewed contract edges closed: `no_longer_listed` status maintains precedence over catalogue outage (`catalogueIsLive === false`), and ambiguous add-to-trip mutations authoritatively reconcile via `getTrip` (confirming addition without duplicate mutations, updating fresh revisions upon absence for safe retry, and providing explicit reload controls on unconfirmed outcomes).
 
-**Gate 14.6:** Production deployment is green at `423adf8`, but the gate remains open pending the final two reviewed contract edges: `no_longer_listed` precedence during catalogue outage and authoritative reconciliation after an ambiguous add-to-trip response.
+**Gate 14.6:** COMPLETE — Free My Trips V1 is verified and production-ready with all reviewed contract edges closed.
 
 ---
 

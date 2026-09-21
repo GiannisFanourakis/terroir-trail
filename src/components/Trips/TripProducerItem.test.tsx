@@ -222,6 +222,35 @@ describe('TripProducerItem', () => {
     expect(html).not.toMatch(/<button[^>]*disabled=""[^>]*aria-label="Move item 3 up"/);
   });
 
+  it('preserves no_longer_listed precedence over catalogue outage (catalogueIsLive = false)', () => {
+    const html = renderToString(
+      <TripProducerItem
+        item={sampleItem}
+        position={0}
+        totalCount={1}
+        producerState="no_longer_listed"
+        producer={sampleProducer}
+        catalogueIsLive={false}
+        onMoveUp={vi.fn()}
+        onMoveDown={vi.fn()}
+        onAssignDay={vi.fn()}
+        onRemove={vi.fn()}
+        onSelectProducer={vi.fn()}
+      />
+    );
+
+    // Trusted delisting must outrank catalogue outage
+    expect(html).toContain('Producer no longer listed on TerroirTrail');
+    expect(html).not.toContain('Producer details are temporarily unavailable.');
+    // Historical/sensitive facts are not rendered
+    expect(html).not.toContain('Domaine Sigalas');
+    expect(html).not.toContain('winery');
+    expect(html).not.toContain('Santorini');
+    expect(html).not.toContain('Oia');
+    expect(html).not.toContain('title="Get directions"');
+    expect(html).not.toContain('Mon-Sat');
+  });
+
   it('renders preserved fallback message when state check encounters an error', () => {
     const html = renderToString(
       <TripProducerItem
