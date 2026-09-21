@@ -105,6 +105,65 @@ export interface ActiveProducerOwnership {
   assignedAt?: string;
 }
 
+export interface AdminIntentMetrics {
+  generated_at: string;
+  start_date: string;
+  end_date: string;
+  aggregate_data_through: string | null;
+  totals: {
+    producer_views: number;
+    saves: number;
+    trip_additions: number;
+    direct_producer_actions: number;
+    directions_clicks: number;
+    passport_stamps_added: number;
+    affiliate_impressions: number;
+    affiliate_clicks: number;
+  };
+  producers: Array<{
+    producer_id: string;
+    producer_name: string;
+    destination: string;
+    country_code: string | null;
+    category: string;
+    producer_views: number;
+    saves: number;
+    trip_additions: number;
+    direct_producer_actions: number;
+    directions_clicks: number;
+    passport_stamps_added: number;
+  }>;
+  regions: Array<{
+    destination: string;
+    country_code: string | null;
+    region_opens: number;
+    region_producers_views: number;
+    producer_views: number;
+    saves: number;
+    trip_additions: number;
+    direct_producer_actions: number;
+    directions_clicks: number;
+    passport_stamps_added: number;
+  }>;
+  categories: Array<{
+    category: string;
+    producer_views: number;
+    saves: number;
+    trip_additions: number;
+    direct_producer_actions: number;
+    directions_clicks: number;
+  }>;
+  affiliates: Array<{
+    affiliate_campaign: string;
+    campaign_label: string | null;
+    source_surface: string;
+    destination: string | null;
+    impressions: number;
+    clicks: number;
+    ctr: number | null;
+  }>;
+}
+
 export interface AdminDashboardMetrics {
   generatedAt: string;
   requests: {
@@ -162,6 +221,9 @@ export const fetchAccountCapabilities = () =>
 
 export const fetchAdminDashboardMetrics = () =>
   request<{ metrics: AdminDashboardMetrics }>('/admin/metrics');
+
+export const fetchAdminIntentMetrics = (days: 7 | 30 | 90 | 180) =>
+  request<{ metrics: AdminIntentMetrics }>(`/admin/intent-metrics?days=${days}`);
 
 export const searchAdminAccounts = (query: string) =>
   request<{ accounts: AdminAccountSummary[] }>(`/admin/accounts?q=${encodeURIComponent(query)}`);
