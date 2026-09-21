@@ -26,6 +26,7 @@ interface MyTripsModalProps {
   onSelectProducer: (producer: Producer) => void;
   publicProducers: Producer[];
   catalogueIsLive?: boolean;
+  hasExplorerPass?: boolean;
   initialTripId?: string;
   initialTrips?: TripRecordV1[];
   initialCreating?: boolean;
@@ -62,6 +63,7 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
   onSelectProducer,
   publicProducers,
   catalogueIsLive = true,
+  hasExplorerPass = false,
   initialTripId,
   initialTrips,
   initialCreating,
@@ -247,6 +249,7 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
               onSelectProducer={onSelectProducer}
               publicProducers={publicProducers}
               catalogueIsLive={catalogueIsLive}
+              hasExplorerPass={hasExplorerPass}
               onTripDeleted={(deletedId) => {
                 setTrips((prev) => prev.filter((t) => t.id !== deletedId));
                 setSelectedTripId(null);

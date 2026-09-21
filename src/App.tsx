@@ -498,6 +498,7 @@ export const App: React.FC = () => {
                 producerCount={regionGuideProducers.length}
                 categoryCount={regionGuideCategoryCount}
                 isOpen={isRegionGuideOpen}
+                hasExplorerPass={hasAdFreeTravelerPass}
                 onClose={() => {
                   setIsRegionGuideOpen(false);
                   lastOpenedRegionRef.current = null;
@@ -675,6 +676,7 @@ export const App: React.FC = () => {
             }}
             publicProducers={publicProducers}
             catalogueIsLive={catalogueIsLive && !catalogueError}
+            hasExplorerPass={hasAdFreeTravelerPass}
           />
         )}
 

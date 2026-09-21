@@ -11,12 +11,14 @@ import {
 } from 'lucide-react';
 import type { TerroirRegion, TerroirRegionSection } from '../../data/terroirRegions';
 import { trackIntent } from '../../services/intentAnalytics';
+import { ContextualAffiliateSection } from '../Monetization/ContextualAffiliateSection';
 
 interface TerroirRegionDrawerProps {
   region: TerroirRegion;
   producerCount: number;
   categoryCount: number;
   isOpen: boolean;
+  hasExplorerPass?: boolean;
   onClose: () => void;
   onShowProducers: () => void;
 }
@@ -43,6 +45,7 @@ export const TerroirRegionDrawer: React.FC<TerroirRegionDrawerProps> = ({
   producerCount,
   categoryCount,
   isOpen,
+  hasExplorerPass = false,
   onClose,
   onShowProducers,
 }) => {
@@ -156,6 +159,13 @@ export const TerroirRegionDrawer: React.FC<TerroirRegionDrawerProps> = ({
               ))}
             </div>
           </section>
+
+          <ContextualAffiliateSection
+            sourceSurface="region_planning"
+            hasExplorerPass={hasExplorerPass}
+            destination={region.destination}
+            className="mt-4"
+          />
         </div>
 
         <div className="sticky bottom-0 border-t border-white/10 bg-stone-950/76 px-5 py-4 backdrop-blur-2xl sm:px-6">

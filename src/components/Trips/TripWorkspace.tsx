@@ -25,6 +25,7 @@ import {
 } from '../../services/tripApi';
 import type { Producer } from '../../types/terroir';
 import { TripProducerItem } from './TripProducerItem';
+import { ContextualAffiliateSection } from '../Monetization/ContextualAffiliateSection';
 
 interface TripWorkspaceProps {
   tripId: string;
@@ -32,6 +33,7 @@ interface TripWorkspaceProps {
   onSelectProducer: (producer: Producer) => void;
   publicProducers: Producer[];
   catalogueIsLive?: boolean;
+  hasExplorerPass?: boolean;
   initialTrip?: TripWithItems;
   initialProducerStates?: Record<string, TripProducerState>;
   onTripDeleted?: (tripId: string) => void;
@@ -68,6 +70,7 @@ export const TripWorkspace: React.FC<TripWorkspaceProps> = ({
   onSelectProducer,
   publicProducers,
   catalogueIsLive = true,
+  hasExplorerPass = false,
   initialTrip,
   initialProducerStates,
   onTripDeleted,
@@ -606,6 +609,12 @@ export const TripWorkspace: React.FC<TripWorkspaceProps> = ({
             );
           })
         )}
+
+        <ContextualAffiliateSection
+          sourceSurface="trip_preparation"
+          hasExplorerPass={hasExplorerPass}
+          className="mt-4"
+        />
       </div>
 
       {/* Deliberate Delete Confirmation Modal */}

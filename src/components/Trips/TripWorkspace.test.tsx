@@ -106,4 +106,64 @@ describe('TripWorkspace', () => {
     expect(html).toContain('Remove producer from trip');
     expect(html).toContain('Unassigned');
   });
+
+  describe('Phase 14.7 Contextual Affiliate Pilot', () => {
+    it('renders non-rotating contextual travel utility separated after producer items', () => {
+      vi.stubEnv('VITE_ENABLE_TRAVEL_AFFILIATES', 'true');
+
+      const html = renderToString(
+        <TripWorkspace
+          tripId="trip-1"
+          onBack={vi.fn()}
+          onSelectProducer={vi.fn()}
+          publicProducers={[mockProducer]}
+          catalogueIsLive={true}
+          hasExplorerPass={false}
+          initialTrip={mockTrip}
+          initialProducerStates={{ 'prod-1': mockProducerState }}
+        />
+      );
+
+      // Clearly labelled affiliate utility
+      expect(html).toContain('Affiliate · Travel Utility');
+      expect(html).toContain('Trip Logistics &amp; Connectivity');
+      expect(html).toContain('4 services');
+
+      // Contains the 4 allowed utilities
+      expect(html).toContain('Localrent');
+      expect(html).toContain('Welcome Pickups');
+      expect(html).toContain('GetTransfer');
+      expect(html).toContain('Yesim');
+
+      // Offers are separated after producer information
+      const producerPos = html.indexOf('Domaine de Test');
+      const affiliatePos = html.indexOf('Trip Logistics &amp; Connectivity');
+      expect(producerPos).toBeGreaterThan(-1);
+      expect(affiliatePos).toBeGreaterThan(producerPos);
+
+      // Excludes Klook
+      expect(html).not.toContain('klook');
+    });
+
+    it('suppresses contextual affiliate section when user has Explorer Pass', () => {
+      vi.stubEnv('VITE_ENABLE_TRAVEL_AFFILIATES', 'true');
+
+      const html = renderToString(
+        <TripWorkspace
+          tripId="trip-1"
+          onBack={vi.fn()}
+          onSelectProducer={vi.fn()}
+          publicProducers={[mockProducer]}
+          catalogueIsLive={true}
+          hasExplorerPass={true}
+          initialTrip={mockTrip}
+          initialProducerStates={{ 'prod-1': mockProducerState }}
+        />
+      );
+
+      expect(html).not.toContain('Affiliate · Travel Utility');
+      expect(html).not.toContain('Trip Logistics &amp; Connectivity');
+    });
+  });
 });
+

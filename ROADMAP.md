@@ -972,11 +972,11 @@ Treat generic third-party activity marketplaces separately because they may conf
 
 #### 14.7.3 Placement rules
 
-- [ ] Affiliate blocks must be clearly labeled.
-- [ ] Affiliate participation must never affect producer ordering/ranking.
-- [ ] Do not insert affiliate CTAs into safety/access warnings.
-- [ ] Avoid placing commercial content between a warning and its source/evidence.
-- [ ] Prefer a small number of contextually relevant offers over rotating unrelated offers.
+- [x] ~~Affiliate blocks must be clearly labeled.~~
+- [x] ~~Affiliate participation must never affect producer ordering/ranking.~~
+- [x] ~~Do not insert affiliate CTAs into safety/access warnings.~~
+- [x] ~~Avoid placing commercial content between a warning and its source/evidence.~~
+- [x] ~~Prefer a small number of contextually relevant offers over rotating unrelated offers.~~
 
 #### 14.7.4 Experiment and decision
 
