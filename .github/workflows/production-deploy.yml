@@ -1,0 +1,192 @@
+name: Production Deploy
+
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows: ['Quality Gate']
+    types: [completed]
+
+permissions:
+  contents: write
+  actions: write
+  id-token: write
+
+concurrency:
+  group: production-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: ${{ github.event_name != 'workflow_run' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      SMOKE_PUBLIC_ORIGIN: https://terroir-trail.web.app
+
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v5
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Load production public build configuration
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const source = fs.readFileSync('.github/workflows/production-reconcile.yml', 'utf8');
+          const pattern = /^      (VITE_[A-Z0-9_]+):\s*(.+)$/gm;
+          let count = 0;
+          for (const match of source.matchAll(pattern)) {
+            let value = match[2].trim();
+            if ((value.startsWith("'") && value.endsWith("'")) || (value.startsWith('"') && value.endsWith('"'))) {
+              value = value.slice(1, -1);
+            }
+            fs.appendFileSync(process.env.GITHUB_ENV, `${match[1]}=${value}\n`);
+            count += 1;
+          }
+          if (count < 5) throw new Error('Production public build configuration could not be loaded.');
+          console.log(`Loaded ${count} public production build settings.`);
+          NODE
+
+      - name: Set up Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Set up Java for Firebase emulator checks
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Synchronize active catalogue
+        run: npm run sync:seo-catalogue
+
+      - name: Verify exact live catalogue parity
+        run: npm run verify:live-catalogue
+
+      - name: Detect generated catalogue changes
+        id: generated
+        shell: bash
+        run: |
+          if git diff --quiet -- src/data/liveCatalogue.generated.ts src/data/activeProducerIds.generated.ts src/data/catalogueSummary.generated.ts; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Run full quality gate on synchronized catalogue
+        env:
+          VITE_ENABLE_TRAVEL_AFFILIATES: 'false'
+          VITE_ENABLE_GOOGLE_PLACES_MEDIA: 'false'
+          VITE_ENABLE_HOST_MEDIA_UPLOADS: 'false'
+          VITE_ENABLE_EXPLORER_PASS_PURCHASES: 'false'
+          VITE_ENABLE_ADVERTISING: 'false'
+        run: npm run check
+
+      - name: Run real-browser responsive smoke
+        env:
+          CHROME_BIN: /usr/bin/google-chrome
+        run: npm run test:browser
+
+      - name: Commit synchronized catalogue snapshot
+        if: steps.generated.outputs.changed == 'true'
+        shell: bash
+        run: |
+          git config user.name "terroirtrail-catalogue-bot"
+          git config user.email "102972970+GiannisFanourakis@users.noreply.github.com"
+          git add src/data/liveCatalogue.generated.ts src/data/activeProducerIds.generated.ts src/data/catalogueSummary.generated.ts
+          git commit -m "Sync active producer catalogue"
+          git push origin HEAD:main
+
+      - name: Build final production frontend
+        run: npm run build
+
+      - name: Re-verify live catalogue before deployment
+        run: npm run verify:live-catalogue
+
+      - name: Authenticate with Google Cloud via GitHub OIDC
+        uses: google-github-actions/auth@v3
+        with:
+          project_id: terroir-trail
+          workload_identity_provider: projects/536226653448/locations/global/workloadIdentityPools/github-actions/providers/terroir-trail
+          service_account: terroirtrail-github-deployer@terroir-trail.iam.gserviceaccount.com
+
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Deploy Firestore rules and indexes
+        run: npx -y firebase-tools deploy --only firestore:rules,firestore:indexes --project terroir-trail --non-interactive
+
+      - name: Deploy Cloud Run API
+        shell: bash
+        run: |
+          gcloud run deploy terroirtrail-api \
+            --source . \
+            --project=terroir-trail \
+            --region=europe-west1 \
+            --min-instances=0 \
+            --max-instances=3 \
+            --cpu=1 \
+            --memory=512Mi \
+            --quiet
+
+      - name: Verify direct Cloud Run API health
+        run: |
+          curl --fail --silent --show-error --retry 5 --retry-delay 3 \
+            https://terroirtrail-api-mqznli4emq-ew.a.run.app/api/health
+
+      - name: Deploy Firebase Hosting
+        run: npx -y firebase-tools deploy --only hosting --project terroir-trail --non-interactive
+
+      - name: Verify Firebase API rewrite health
+        run: |
+          curl --fail --silent --show-error --retry 5 --retry-delay 3 \
+            https://terroir-trail.web.app/api/health
+
+      - name: Verify public production surface
+        run: npm run smoke:public
+
+      - name: Verify public production UI
+        env:
+          CHROME_BIN: /usr/bin/google-chrome
+        run: npm run smoke:production-ui
+
+      - name: Verify deployed catalogue hash
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const local = JSON.parse(fs.readFileSync('dist/catalogue-state.json', 'utf8'));
+          const response = await fetch(
+            `https://terroir-trail.web.app/catalogue-state.json?t=${Date.now()}`,
+            { cache: 'no-store' }
+          );
+          if (!response.ok) throw new Error(`catalogue-state.json returned HTTP ${response.status}`);
+          const remote = await response.json();
+          if (remote.catalogueHash !== local.catalogueHash) {
+            throw new Error(`Deployed catalogue hash ${remote.catalogueHash} does not match local ${local.catalogueHash}`);
+          }
+          console.log(`Deployed catalogue hash verified: ${local.catalogueHash}`);
+          NODE
+
+      - name: Disable legacy Production Reconcile workflow after successful cutover
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          curl --fail --silent --show-error --location --request PUT \
+            --header "Accept: application/vnd.github+json" \
+            --header "Authorization: Bearer $GH_TOKEN" \
+            --header "X-GitHub-Api-Version: 2022-11-28" \
+            https://api.github.com/repos/GiannisFanourakis/terroir-trail/actions/workflows/production-reconcile.yml/disable
+
+      - name: Deployment summary
+        run: |
+          echo "Production deployment completed from $(git rev-parse --short HEAD)."
+          echo "Future successful pushes to main deploy Firestore, Cloud Run, and Hosting automatically."
