@@ -24,6 +24,18 @@ Start with 3–5 verified/known producers representing different operating model
 - producer with strong direct digital presence;
 - producer with limited visitor information.
 
+### Suggested first Crete cohort
+
+Use a deliberately mixed operating set:
+
+- **Baladinos & Sons** — cheese dairy; public visits; walk-ins accepted; booking not required.
+- **Biolea Astrikas Estate** — olive mill; public visits; guided-tour booking required; walk-ins not accepted.
+- **Douloufakis Winery** — winery; appointment-only; booking required; structured visitor hours; parking/language evidence present.
+- **Cretan Brewery (Charma Beer)** — brewery; seasonal public access with published visitor/tour times.
+- **Aerakis Cheese Products** — cheese dairy; visitability not publicly confirmed, useful for testing whether insights still have value when visitor operations are lightly documented.
+
+This cohort intentionally spans public, appointment-only, seasonal and not-publicly-confirmed visit models. Treat participation as validation outreach, not partnership status.
+
 ### Show
 
 Use the admin Producer Insights prototype for that producer:
