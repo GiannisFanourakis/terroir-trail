@@ -439,7 +439,7 @@ const updateHomepage = (): void => {
   if (html.includes(navigationMarker)) return;
 
   const marker = '<h2>Audited Producer Directory — Homepage Excerpt</h2>';
-  const navigation = '<p data-seo-landing-nav="true">Explore canonical catalogue pages by <a href="/destinations/">destination</a>, <a href="/categories/">producer category</a>, <a href="/greece/">Greece</a>, or <a href="/italy/">Italy</a>.</p>';
+  const navigation = '<p data-seo-landing-nav="true">Explore canonical catalogue pages by <a href="/destinations/">destination</a>, <a href="/categories/">producer category</a>, <a href="/greece/">Greece</a>, or <a href="/italy/">Italy</a>. Read the <a href="/methodology/">verification methodology</a>.</p>';
   html = replaceRequired(html, marker, `${navigation}\n        ${marker}`, 'Homepage structural');
   fs.writeFileSync(homePath, html, 'utf-8');
 };
