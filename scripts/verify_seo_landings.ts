@@ -251,7 +251,7 @@ function verifySeo(): void {
   requireIncludes(indexContent, 'TerroirTrail — Independent Producer &amp; Agritourism Guide', 'dist/index.html');
   requireIncludes(indexContent, `${LIVE_CATALOGUE_METRICS.totalProducers} live producer/project records`, 'dist/index.html');
   requireIncludes(indexContent, `${LIVE_CATALOGUE_METRICS.destinationCount} destinations in ${LIVE_CATALOGUE_METRICS.countryCount} European countries`, 'dist/index.html');
-  if (!/<div id="root">\\s*<\\/div>/i.test(indexContent)) fail('Homepage #root must remain empty before React mounts.');
+  if (!/<div id="root">\s*<\/div>/i.test(indexContent)) fail('Homepage #root must remain empty before React mounts.');
   banIncludes(indexContent, 'data-seo-home-fallback="true"', 'dist/index.html');
   requireIncludes(indexContent, 'href="/producers/"', 'dist/index.html');
   requireIncludes(indexContent, 'href="/methodology/"', 'dist/index.html');
