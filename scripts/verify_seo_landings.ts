@@ -340,10 +340,28 @@ function verifySeo(): void {
   verifyIndexPage('/categories/', eligibleCategories.length, eligibleCategories.map(([category]) => categoryPath(category)), 'Categories index');
   for (const [urlPath, count] of expectedLandingPaths) verifyLandingPage(urlPath, count, `Landing page ${urlPath}`);
 
+  for (const [key, producers] of comboGroups) {
+    if (producers.length < MIN_DESTINATION_CATEGORY_RECORDS) continue;
+    const [destination, category] = key.split('::') as [Producer['destination'], Producer['category']];
+    const urlPath = comboPath(destination, category);
+    const label = `Destination/category planning page ${urlPath}`;
+    const content = requireFile(fileForUrlPath(urlPath), label);
+    requireIncludes(content, 'data-seo="visit-planning-table"', label);
+    requireIncludes(content, 'Current audited status by producer', label);
+    requireIncludes(content, 'Unknown or not publicly confirmed does not mean unavailable', label);
+    const rowCount = (content.match(/data-producer-planning-row="/g) || []).length;
+    if (rowCount !== producers.length) fail(`${label} has ${rowCount} planning rows; expected ${producers.length}.`);
+    for (const producer of producers) {
+      requireIncludes(content, `data-producer-planning-row="${escapeHtml(producer.id)}"`, `${label} row ${producer.id}`);
+      requireIncludes(content, `href="${producerPath(producer)}"`, `${label} producer link ${producer.id}`);
+    }
+  }
+
   console.log('SEO/AEO landing verification passed:');
   console.log(`  - ${PRODUCERS.length} canonical producer entities retain metadata, factual answers and JSON-LD`);
   console.log(`  - ${expectedLandingPaths.size + 2} country/destination/region/category/index pages verified`);
   console.log(`  - thin destination/category combinations remain withheld below ${MIN_DESTINATION_CATEGORY_RECORDS} records`);
+  console.log('  - eligible destination/category pages expose per-producer visit, booking, walk-in, location and road-access evidence');
   console.log('  - all producer pages link into applicable destination/category/region entities');
   console.log(`  - final sitemap contains exactly ${expectedSitemapUrls.length} canonical URLs with no duplicates or legacy producer-query URLs`);
   console.log(`  - robots.txt advertises ${CANONICAL_SITEMAP_URL}, llms.txt and explicit search/answer-engine crawler access`);

@@ -153,8 +153,57 @@ const roadSummary = (producers: Producer[]): string => {
   return `${verified} of ${producers.length} records have a verified road-access classification, ${uncertain} have current access uncertainty, and ${unknown} remain unverified or not publicly confirmed. A map point alone is never treated as a road-safety guarantee.`;
 };
 
+const visitStatusLabel = (producer: Producer): string => {
+  switch (producer.visitStatus) {
+    case 'public_visits': return 'Public visits confirmed';
+    case 'seasonal_public': return 'Seasonal public visits';
+    case 'appointment_only': return 'Appointment only';
+    case 'current_access_uncertain': return 'Current visit access uncertain';
+    case 'not_publicly_confirmed': return 'Not publicly confirmed';
+    default: return 'Not confirmed';
+  }
+};
+
+const bookingLabel = (producer: Producer): string => {
+  switch (producer.visitBookingRequirement) {
+    case 'required': return 'Booking required';
+    case 'recommended': return 'Booking recommended';
+    case 'not_required': return 'Booking not required';
+    default: return 'Booking requirement not confirmed';
+  }
+};
+
+const walkInLabel = (producer: Producer): string => {
+  switch (producer.walkInStatus) {
+    case 'accepted': return 'Walk-ins accepted';
+    case 'subject_to_availability': return 'Walk-ins subject to availability';
+    case 'not_accepted': return 'Walk-ins not accepted';
+    default: return 'Walk-in status not confirmed';
+  }
+};
+
+const locationLabel = (producer: Producer): string => {
+  switch (producer.locationStatus) {
+    case 'verified_entrance': return 'Verified entrance';
+    case 'verified_location': return 'Verified location';
+    case 'unresolved': return 'Location unresolved';
+    default: return 'Location not confirmed';
+  }
+};
+
+const roadAccessLabel = (producer: Producer): string => {
+  if (producer.roadAccessStatus === 'current_access_uncertain') return 'Current road access uncertain';
+  if (producer.roadAccessStatus !== 'verified') return 'Road access not publicly confirmed';
+  switch (producer.roadAccess) {
+    case 'paved': return 'Paved road';
+    case 'narrow_paved': return 'Narrow paved road';
+    case 'unpaved_passable': return 'Unpaved, passable road';
+    default: return 'Verified road access';
+  }
+};
+
 const pageStyles = `
-      :root{color-scheme:dark}.seo-page{box-sizing:border-box;min-height:100vh;background:#0c0a09;color:#e7e5e4;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding:32px 20px}.seo-page article{max-width:980px;margin:0 auto}.seo-page a{color:#fbbf24}.seo-page h1{font-size:clamp(2rem,5vw,3.6rem);line-height:1.05;color:#fff;margin:.5rem 0 1rem}.seo-page h2{color:#fff;margin-top:2rem}.seo-page .eyebrow{color:#fbbf24;font-weight:800;text-transform:uppercase;letter-spacing:.08em;font-size:.8rem}.seo-page .lead{font-size:1.15rem;line-height:1.7}.seo-page p,.seo-page dd,.seo-page li{line-height:1.7}.seo-page dl{display:grid;gap:1rem}.seo-page dt{font-weight:800;color:#fff}.seo-page dd{margin:.25rem 0 0;color:#d6d3d1}.seo-page .notice{border-left:3px solid #f59e0b;padding-left:1rem;color:#d6d3d1}.seo-page .directory{display:grid;gap:10px;padding:0;list-style:none}.seo-page .directory a{display:block;border:1px solid #292524;border-radius:14px;padding:12px 14px;text-decoration:none;background:#1c1917}.seo-page .directory small{display:block;color:#a8a29e;margin-top:3px}.seo-page .related{display:flex;gap:8px;flex-wrap:wrap;padding:0;list-style:none}.seo-page .related a{display:inline-block;border:1px solid #44403c;border-radius:999px;padding:7px 11px;text-decoration:none}.seo-page nav ol{display:flex;gap:7px;flex-wrap:wrap;padding:0;list-style:none;color:#a8a29e}.seo-page nav li:not(:last-child)::after{content:" /";color:#57534e;margin-left:7px}
+      :root{color-scheme:dark}.seo-page{box-sizing:border-box;min-height:100vh;background:#0c0a09;color:#e7e5e4;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding:32px 20px}.seo-page article{max-width:980px;margin:0 auto}.seo-page a{color:#fbbf24}.seo-page h1{font-size:clamp(2rem,5vw,3.6rem);line-height:1.05;color:#fff;margin:.5rem 0 1rem}.seo-page h2{color:#fff;margin-top:2rem}.seo-page .eyebrow{color:#fbbf24;font-weight:800;text-transform:uppercase;letter-spacing:.08em;font-size:.8rem}.seo-page .lead{font-size:1.15rem;line-height:1.7}.seo-page p,.seo-page dd,.seo-page li{line-height:1.7}.seo-page dl{display:grid;gap:1rem}.seo-page dt{font-weight:800;color:#fff}.seo-page dd{margin:.25rem 0 0;color:#d6d3d1}.seo-page .notice{border-left:3px solid #f59e0b;padding-left:1rem;color:#d6d3d1}.seo-page .directory{display:grid;gap:10px;padding:0;list-style:none}.seo-page .directory a{display:block;border:1px solid #292524;border-radius:14px;padding:12px 14px;text-decoration:none;background:#1c1917}.seo-page .directory small{display:block;color:#a8a29e;margin-top:3px}.seo-page .related{display:flex;gap:8px;flex-wrap:wrap;padding:0;list-style:none}.seo-page .related a{display:inline-block;border:1px solid #44403c;border-radius:999px;padding:7px 11px;text-decoration:none}.seo-page nav ol{display:flex;gap:7px;flex-wrap:wrap;padding:0;list-style:none;color:#a8a29e}.seo-page nav li:not(:last-child)::after{content:" /";color:#57534e;margin-left:7px}.seo-page .planning-wrap{overflow-x:auto;margin:1rem 0 1.5rem;border:1px solid #292524;border-radius:14px}.seo-page .planning-table{width:100%;min-width:760px;border-collapse:collapse;background:#151210}.seo-page .planning-table caption{text-align:left;padding:12px 14px;color:#d6d3d1;font-weight:700}.seo-page .planning-table th,.seo-page .planning-table td{text-align:left;vertical-align:top;padding:10px 12px;border-top:1px solid #292524}.seo-page .planning-table th{color:#fff;background:#1c1917;font-size:.82rem;text-transform:uppercase;letter-spacing:.04em}.seo-page .planning-table td{color:#d6d3d1}.seo-page .planning-table td:first-child{min-width:180px}.seo-page .planning-table span{color:#a8a29e}
 `;
 
 const buildJsonLd = (page: LandingPage, canonicalUrl: string): string => {
@@ -185,6 +234,14 @@ const renderProducerList = (producers: Producer[]): string =>
     const category = categoryConfig[producer.category].singular;
     return `<li><a href="${producerPath(producer)}"><strong>${escapeHtml(producer.name)}</strong><small>${escapeHtml(category)} · ${escapeHtml(producer.village)}, ${escapeHtml(producer.region)}</small></a></li>`;
   }).join('\n')}</ul>`;
+const renderVisitPlanningTable = (page: LandingPage): string => {
+  if (page.kind !== 'destination_category') return '';
+  const rows = sortProducers(page.producers).map((producer) =>
+    `<tr data-producer-planning-row="${escapeHtml(producer.id)}"><td><a href="${producerPath(producer)}"><strong>${escapeHtml(producer.name)}</strong></a></td><td>${escapeHtml(producer.village)}, ${escapeHtml(producer.region)}</td><td>${escapeHtml(visitStatusLabel(producer))}</td><td>${escapeHtml(bookingLabel(producer))}<br><span>${escapeHtml(walkInLabel(producer))}</span></td><td>${escapeHtml(locationLabel(producer))}<br><span>${escapeHtml(roadAccessLabel(producer))}</span></td></tr>`
+  ).join('\n');
+
+  return `<section data-seo="visit-planning-table"><h2>Visit planning snapshot</h2><p>Compare the current audited status for each listed producer. Unknown or not publicly confirmed does not mean unavailable; it means TerroirTrail does not publish a stronger claim without evidence.</p><div class="planning-wrap"><table class="planning-table"><caption>Current audited status by producer</caption><thead><tr><th>Producer</th><th>Area</th><th>Visitability</th><th>Booking / walk-ins</th><th>Location / road access</th></tr></thead><tbody>${rows}</tbody></table></div></section>`;
+};
 const renderRelatedLinks = (links: LandingPage['relatedLinks']): string => {
   const unique = [...new Map(links.map((link) => [link.path, link])).values()];
   if (unique.length === 0) return '';
@@ -242,6 +299,7 @@ const renderLandingPage = (page: LandingPage): string => {
         <div><dt>How confident are the listed locations?</dt><dd>${escapeHtml(locationSummary(page.producers))}</dd></div>
         <div><dt>What is known about road access?</dt><dd>${escapeHtml(roadSummary(page.producers))}</dd></div>
       </dl></section>
+      ${renderVisitPlanningTable(page)}
       ${renderTerroirContext(page)}
       <section><h2>Producer directory</h2>${renderProducerList(page.producers)}</section>
       ${renderRelatedLinks(page.relatedLinks)}

@@ -914,28 +914,28 @@ Do **not** add in V1:
 
 #### 14.6A.1 Discovery/indexation foundation
 - [x] ~~Keep the normal app `#root` empty until React mounts; retain discovery through the sitemap, canonical static landing pages, rendered app navigation and the genuine no-JavaScript fallback without a visible preload SEO page.~~
-- [ ] Preserve canonical producer, destination, category, region and country pages.
-- [ ] Add a build-time internal-link graph check so important sitemap URLs cannot become orphans.
-- [ ] Keep sitemap deterministic and free of query-state/private app URLs.
-- [ ] Publish a public verification methodology page and link it throughout the entity graph.
+- [x] ~~Preserve canonical producer, destination, category, region and country pages.~~
+- [x] ~~Add a build-time internal-link graph check so important sitemap URLs cannot become orphans.~~
+- [x] ~~Keep sitemap deterministic and free of query-state/private app URLs.~~
+- [x] ~~Publish a public verification methodology page and link it throughout the entity graph.~~
 
 #### 14.6A.2 Search-intent landing pages
-- [ ] Align destination/category page titles and H1s with natural intents such as **Wineries in Crete**, **Olive mills in Crete**, and **Dairies / cheesemakers in Crete** where real catalogue depth supports them.
-- [ ] Keep the existing minimum catalogue thresholds; do not manufacture thin keyword permutations.
-- [ ] Add direct catalogue-derived planning answers for visitability, booking, walk-ins, location confidence and road-access evidence.
-- [ ] Reuse human-written terroir context instead of generic generated travel copy.
+- [x] ~~Align destination/category page titles and H1s with natural intents such as **Wineries in Crete**, **Olive mills in Crete**, and **Dairies / cheesemakers in Crete** where real catalogue depth supports them.~~
+- [x] ~~Keep the existing minimum catalogue thresholds; do not manufacture thin keyword permutations.~~
+- [x] ~~Add direct catalogue-derived planning answers and per-producer planning snapshots for visitability, booking, walk-ins, location confidence and road-access evidence.~~
+- [x] ~~Reuse human-written terroir context instead of generic generated travel copy.~~
 
 #### 14.6A.3 AEO/GEO trust layer
-- [ ] Make answer-first content visible in canonical HTML.
-- [ ] Preserve **UNKNOWN != FALSE** in all aggregate answers.
-- [ ] Keep structured data aligned with visible facts; do not invent producer logos or special “AI SEO” schema.
-- [ ] Keep `llms.txt` supplemental while canonical HTML remains the source of truth.
-- [ ] Keep major search/answer-engine crawlers allowed.
+- [x] ~~Make answer-first content visible in canonical HTML.~~
+- [x] ~~Preserve **UNKNOWN != FALSE** in all aggregate and per-producer answers.~~
+- [x] ~~Keep structured data aligned with visible facts; do not invent producer logos or special “AI SEO” schema.~~
+- [x] ~~Keep `llms.txt` supplemental while canonical HTML remains the source of truth.~~
+- [x] ~~Keep major search/answer-engine crawlers allowed.~~
 
 #### 14.6A.4 Distribution readiness
 - [x] ~~Publish an IndexNow verification key file without adding long-lived secrets.~~
 - [x] ~~Configure IndexNow after production verification: submit only a small priority URL batch after successful SEO/catalogue-relevant production changes, never all sitemap URLs on every deploy.~~
-- [ ] Establish Search Console page/query/indexation tracking for the new landing clusters.
+- [x] ~~Establish Search Console page/query/indexation tracking for the new landing clusters.~~
 
 **Gate 14.6A:** implementation must pass the normal quality gate and production deployment. Immediate Google indexing is not a deployment gate because crawling/indexation is asynchronous; success is measured over time by sitemap discovery, indexed pages, non-brand query impressions/clicks and answer-engine referrals/citations.
 
