@@ -1,18 +1,20 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const getIdToken = vi.fn(async () => 'firebase-token');
-const trackIntent = vi.fn(async () => ({ success: true, clientEventId: 'event-id' }));
+const mocks = vi.hoisted(() => ({
+  getIdToken: vi.fn(async () => 'firebase-token'),
+  mocks.trackIntent: vi.fn(async () => ({ success: true, clientEventId: 'event-id' })),
+}));
 
 vi.mock('./firebase', () => ({
   auth: {
     currentUser: {
-      getIdToken,
+      getIdToken: mocks.getIdToken,
     },
   },
 }));
 
 vi.mock('./intentAnalytics', () => ({
-  trackIntent,
+  mocks.trackIntent: mocks.trackIntent,
 }));
 
 vi.mock('./apiOrigin', () => ({
@@ -54,7 +56,7 @@ describe('tripApi analytics ordering', () => {
 
     expect(trip.id).toBe('trip123');
     expect(fetchMock).toHaveBeenCalledTimes(1);
-    expect(trackIntent).toHaveBeenCalledWith({
+    expect(mocks.trackIntent).toHaveBeenCalledWith({
       event: 'trip_created',
       sourceSurface: 'my_trips',
     });
@@ -76,7 +78,7 @@ describe('tripApi analytics ordering', () => {
       addProducerToTrip('trip123', 'producer-one', 2, 'trip_add_flow')
     ).rejects.toBeInstanceOf(TripApiError);
 
-    expect(trackIntent).not.toHaveBeenCalled();
+    expect(mocks.trackIntent).not.toHaveBeenCalled();
     fetchMock.mockRestore();
   });
 });
