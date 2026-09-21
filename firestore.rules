@@ -66,6 +66,19 @@ service cloud.firestore {
       allow delete: if false;
     }
 
+    // 1b. My Trips — owner-readable, trusted API writes only.
+    // Canonical producer validation lives on the server because Firestore Rules
+    // cannot verify Supabase catalogue state.
+    match /users/{userId}/trips/{tripId} {
+      allow read: if isOwner(userId);
+      allow write: if false;
+
+      match /items/{producerId} {
+        allow read: if isOwner(userId);
+        allow write: if false;
+      }
+    }
+
     // 2. Trusted Producer Ownership (producerId <-> ownerUid mapping)
     // Only Admin SDK code may write ownership records.
     // Verified owners can read their own ownership records.
