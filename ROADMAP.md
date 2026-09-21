@@ -818,6 +818,8 @@ Prefer aggregate views/materialized summaries where appropriate rather than givi
 - [ ] Emit the canonical trip events from 14.1.
 - [ ] Never put private trip notes into event payloads.
 
+**Phase 14.5 implementation checkpoint — 2026-09-21:** the authoritative scenario/domain contract is in `docs/phase14-my-trips-domain-contract-v1.md`. Trusted API persistence, optimistic revisions, canonical producer validation, account export/deletion coverage, owner-read/server-write Firestore rules, practical limits and frozen trip analytics support are implemented and CI-green. A private Supabase publication tombstone now prevents opted-out/suspended producers from being automatically reactivated. Production Firestore/API deployment and verification remain required before Gate 14.5 can close.
+
 **Gate 14.5:** trip persistence, ownership and deletion/export behavior must be verified before full My Trips UI work.
 
 ---
