@@ -947,9 +947,11 @@ Do **not** add in V1:
 
 #### 14.7.1 Establish baseline
 
-- [ ] Measure current map-banner impressions/clicks before major placement changes.
-- [ ] Record performance by campaign.
-- [ ] Identify placements with high impressions but negligible useful engagement.
+- [x] ~~Measure current map-banner impressions/clicks before major placement changes.~~
+- [x] ~~Record performance by campaign.~~
+- [x] ~~Identify placements with high impressions but negligible useful engagement.~~
+
+**14.7.1 baseline — 2026-09-21:** first-party affiliate analytics began recording on 2026-09-21. The only active affiliate surface was `map_affiliate_banner`, with **216 qualified impressions / 1 click (0.46% CTR)** across **13 impression sessions**. Campaign breakdown: Klook Experiences **67 / 1 (1.49%)**; Localrent Cars **44 / 0**; Welcome Pickups **39 / 0**; GetTransfer Rides **35 / 0**; Yesim eSIM **31 / 0**. The four zero-click campaigns are the current negligible-engagement observations, but this is a low-volume Day-0 baseline and is **not decision-grade evidence to remove or rank campaigns**. Use it only as the pre-contextual-placement comparison point for 14.7.4.
 
 #### 14.7.2 Define allowed contextual surfaces
 
