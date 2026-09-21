@@ -1044,39 +1044,43 @@ Candidate metrics:
 #### 14.9.1 Supply/readiness metrics
 
 Build regional aggregates for:
-- [ ] audited producer count;
-- [ ] category coverage;
-- [ ] verified-location coverage;
-- [ ] public/seasonal/appointment-only visitability;
-- [ ] booking-policy coverage;
-- [ ] visitor-hours coverage;
-- [ ] road/access review coverage;
-- [ ] parking evidence coverage;
-- [ ] visitor-language evidence coverage;
-- [ ] evidence freshness;
-- [ ] reviewed-unknown coverage;
-- [ ] direct-contact coverage.
+- [x] ~~audited producer count;~~
+- [x] ~~category coverage;~~
+- [x] ~~verified-location coverage;~~
+- [x] ~~public/seasonal/appointment-only visitability;~~
+- [x] ~~booking-policy coverage;~~
+- [x] ~~visitor-hours coverage;~~
+- [x] ~~road/access review coverage;~~
+- [x] ~~parking evidence coverage;~~
+- [x] ~~visitor-language evidence coverage;~~
+- [x] ~~evidence freshness;~~
+- [x] ~~reviewed-unknown coverage;~~
+- [x] ~~direct-contact coverage.~~
 
 #### 14.9.2 Demand/intent metrics
 
 Once enough Stage 14.3 data exists:
-- [ ] producer views by region;
-- [ ] saves by region;
-- [ ] trip additions by region;
-- [ ] direct producer actions by region;
-- [ ] directions actions by region;
-- [ ] category demand within region;
-- [ ] affiliate/travel-preparation engagement where meaningful.
+- [x] ~~producer views by region;~~
+- [x] ~~saves by region;~~
+- [x] ~~trip additions by region;~~
+- [x] ~~direct producer actions by region;~~
+- [x] ~~directions actions by region;~~
+- [x] ~~category demand within region;~~
+- [x] ~~affiliate/travel-preparation engagement where meaningful.~~
+
+Demand/category comparisons are withheld below **100 regional producer views**. Destination-context affiliate conclusions are withheld below **100 impressions**.
 
 #### 14.9.3 Reporting
 
-- [ ] Build an admin-only regional report first.
-- [ ] Make the reporting period explicit.
-- [ ] Make curated/non-exhaustive coverage explicit.
-- [ ] Separate supply/readiness from traveler-demand metrics.
-- [ ] Avoid scoring a region with a single opaque "quality score".
-- [ ] Prefer auditable component metrics.
+- [x] ~~Build an admin-only regional report first.~~
+- [x] ~~Make the reporting period explicit.~~
+- [x] ~~Make curated/non-exhaustive coverage explicit.~~
+- [x] ~~Separate supply/readiness from traveler-demand metrics.~~
+- [x] ~~Avoid scoring a region with a single opaque "quality score".~~
+- [x] ~~Prefer auditable component metrics.~~
 - [ ] Create export/print output only after the on-screen report is correct.
+
+**14.9 internal prototype — 2026-09-21:** deployed at `a95bd81`. Quality Gate `35605792382` and Production Deploy `35606010679` both passed. The report uses current audited catalogue state for supply/readiness and explicit reporting windows for traveler intent. It remains an internal validation tool; no standalone B2B portal or commercial packaging is justified before 14.9.4 external validation.
 
 #### 14.9.4 External validation
 
