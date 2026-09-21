@@ -7,6 +7,7 @@ import {
   createTrip,
   deleteTrip,
   getTrip,
+  getTripProducerStates,
   listTrips,
   removeProducerFromTrip,
   reorderTripItems,
@@ -17,6 +18,7 @@ const defaults = {
   verifyToken: (token: string) => adminAuth().verifyIdToken(token, true),
   listTrips,
   getTrip,
+  getTripProducerStates,
   createTrip,
   updateTrip,
   deleteTrip,
@@ -95,6 +97,15 @@ export function registerTripRoutes(
   app.get('/api/trips/:tripId', requireAuth, async (req, res) => {
     await run(res, async () => ({
       trip: await deps.getTrip(res.locals.identity.uid, String(req.params.tripId)),
+    }));
+  });
+
+  app.get('/api/trips/:tripId/producer-states', requireAuth, async (req, res) => {
+    await run(res, async () => ({
+      producerStates: await deps.getTripProducerStates(
+        res.locals.identity.uid,
+        String(req.params.tripId)
+      ),
     }));
   });
 

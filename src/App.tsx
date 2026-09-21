@@ -50,6 +50,8 @@ const HostVerificationModal = lazy(() => import('./components/Monetization/HostV
 const ChauffeurBookingModal = lazy(() => import('./components/Monetization/ChauffeurBookingModal').then(m => ({ default: m.ChauffeurBookingModal })));
 const AboutFaqModal = lazy(() => import('./components/About/AboutFaqModal').then(m => ({ default: m.AboutFaqModal })));
 const LegalModal = lazy(() => import('./components/Legal/LegalModal').then(m => ({ default: m.LegalModal })));
+const MyTripsModal = lazy(() => import('./components/Trips/MyTripsModal').then(m => ({ default: m.MyTripsModal })));
+const AddToTripModal = lazy(() => import('./components/Trips/AddToTripModal').then(m => ({ default: m.AddToTripModal })));
 
 export type ActiveModal =
   | { type: 'auth'; initialRole?: 'traveler' | 'producer' }
@@ -59,6 +61,8 @@ export type ActiveModal =
   | { type: 'portal' }
   | { type: 'admin' }
   | { type: 'my_bookings' }
+  | { type: 'my_trips'; initialTripId?: string }
+  | { type: 'add_to_trip'; producer: Producer }
   | { type: 'pass' }
   | { type: 'digital_pass' }
   | { type: 'host_verify'; guestInfo: VerifiedPassInfo }
@@ -142,6 +146,7 @@ export const App: React.FC = () => {
   const closeModal = () => {
     setActiveModal(null);
     setAdminPortalPreviewProducerId(null);
+    setPendingAddToTripProducer(null);
   };
 
   const completeFirstRunWelcome = () => {
@@ -178,6 +183,33 @@ export const App: React.FC = () => {
 
   const { capabilities: accountCapabilities } = useAccountCapabilities(user?.id);
   const { favorites, toggleFavorite, isFavorite } = useFavorites(user?.id);
+
+  const [pendingAddToTripProducer, setPendingAddToTripProducer] = useState<Producer | null>(null);
+
+  useEffect(() => {
+    if (user && pendingAddToTripProducer) {
+      const producerToAdd = pendingAddToTripProducer;
+      setPendingAddToTripProducer(null);
+      setActiveModal({ type: 'add_to_trip', producer: producerToAdd });
+    }
+  }, [user, pendingAddToTripProducer]);
+
+  const handleAddToTrip = (producer: Producer) => {
+    if (!user) {
+      setPendingAddToTripProducer(producer);
+      setActiveModal({ type: 'auth', initialRole: 'traveler' });
+      return;
+    }
+    setActiveModal({ type: 'add_to_trip', producer });
+  };
+
+  const handleOpenMyTrips = (tripId?: string) => {
+    if (!user) {
+      setActiveModal({ type: 'auth', initialRole: 'traveler' });
+      return;
+    }
+    setActiveModal({ type: 'my_trips', initialTripId: tripId });
+  };
 
   const handleConfirmChauffeurBooking = (booking: ChauffeurBooking) => {
     const existing = readStorage<ChauffeurBooking[]>(STORAGE_KEYS.CHAUFFEUR_BOOKINGS, [], {
@@ -391,6 +423,7 @@ export const App: React.FC = () => {
         user={user}
         onOpenAuth={(role) => setActiveModal({ type: 'auth', initialRole: role || 'traveler' })}
         onOpenPassport={() => setActiveModal({ type: 'passport' })}
+        onOpenMyTrips={() => handleOpenMyTrips()}
         onOpenAccountSettings={user ? () => setActiveModal({ type: 'account_settings' }) : undefined}
         onLogout={logout}
         totalProducersCount={producers.length}
@@ -505,6 +538,7 @@ export const App: React.FC = () => {
               onOpenAuth={(role) => setActiveModal({ type: 'auth', initialRole: role || 'traveler' })}
               customNotice={selectedProducer ? getOverride(selectedProducer.id)?.customNotice : undefined}
               producerOverride={selectedProducer ? getOverride(selectedProducer.id) : undefined}
+              onAddToTrip={handleAddToTrip}
             />
           </Suspense>
         )}
@@ -626,6 +660,30 @@ export const App: React.FC = () => {
             onSelectProducer={(producer) => {
               handleOpenDrawer(producer, 'my_trips');
               closeModal();
+            }}
+          />
+        )}
+
+        {activeModal?.type === 'my_trips' && (
+          <MyTripsModal
+            isOpen
+            onClose={closeModal}
+            initialTripId={activeModal.initialTripId}
+            onSelectProducer={(producer) => {
+              handleOpenDrawer(producer, 'my_trips');
+              closeModal();
+            }}
+            publicProducers={publicProducers}
+          />
+        )}
+
+        {activeModal?.type === 'add_to_trip' && (
+          <AddToTripModal
+            isOpen
+            onClose={closeModal}
+            producer={activeModal.producer}
+            onOpenTrip={(tripId) => {
+              setActiveModal({ type: 'my_trips', initialTripId: tripId });
             }}
           />
         )}

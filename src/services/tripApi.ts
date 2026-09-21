@@ -184,3 +184,19 @@ export async function assignTripItemDay(
 
 export const trackTripOpened = (sourceSurface: 'my_trips' | 'profile_menu') =>
   trackIntent({ event: 'trip_opened', sourceSurface });
+
+export type TripProducerState = 'active' | 'unavailable' | 'no_longer_listed';
+
+export interface TripProducerStatesResponse {
+  producerStates: Record<string, TripProducerState>;
+}
+
+export async function getTripProducerStates(
+  tripId: string
+): Promise<Record<string, TripProducerState>> {
+  const data = await request<TripProducerStatesResponse>(
+    '/trips/' + encodeURIComponent(tripId) + '/producer-states'
+  );
+  return data.producerStates;
+}
+

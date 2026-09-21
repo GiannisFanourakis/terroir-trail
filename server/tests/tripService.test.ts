@@ -7,6 +7,7 @@ import {
   createTrip,
   deleteTrip,
   getTrip,
+  getTripProducerStates,
   removeProducerFromTrip,
   reorderTripItems,
   updateTrip,
@@ -397,4 +398,91 @@ test('My Trips enforces trip quota transactionally and avoids no-op revision chu
     db2 as any
   );
   assert.equal(unchanged.revision, 1);
+});
+
+test('getTripProducerStates maps active, unavailable, and no_longer_listed safely', async () => {
+  const db = new FakeDb();
+  const trip = await createTrip('traveler-1', { title: 'Tasting Trail' }, db as any);
+  await addProducerToTrip('traveler-1', trip.id, { producerId: 'p-active', expectedRevision: 1 }, db as any, async () => ({ id: 'p-active', destination: 'crete', category: 'winery' }));
+  await addProducerToTrip('traveler-1', trip.id, { producerId: 'p-unavail', expectedRevision: 2 }, db as any, async () => ({ id: 'p-unavail', destination: 'crete', category: 'winery' }));
+  await addProducerToTrip('traveler-1', trip.id, { producerId: 'p-opted-out', expectedRevision: 3 }, db as any, async () => ({ id: 'p-opted-out', destination: 'crete', category: 'winery' }));
+
+  let queriedIds: string[] | null = null;
+  const fakeSupabase = {
+    rpc: async (fn: string, params: { p_producer_ids: string[] }) => {
+      assert.equal(fn, 'resolve_trip_producer_states_v1');
+      queriedIds = params.p_producer_ids;
+      return {
+        data: [
+          { producer_id: 'p-active', state: 'active', reason: 'DO_NOT_LEAK' },
+          { producer_id: 'p-unavail', state: 'unavailable', reason: 'DO_NOT_LEAK' },
+          { producer_id: 'p-opted-out', state: 'no_longer_listed', tombstone_type: 'DO_NOT_LEAK' },
+        ],
+        error: null,
+      };
+    },
+  };
+
+  const states = await getTripProducerStates(
+    'traveler-1',
+    trip.id,
+    db as any,
+    () => fakeSupabase as any
+  );
+
+  assert.deepEqual(queriedIds, ['p-active', 'p-unavail', 'p-opted-out']);
+  assert.deepEqual(states, {
+    'p-active': 'active',
+    'p-unavail': 'unavailable',
+    'p-opted-out': 'no_longer_listed',
+  });
+});
+
+test('getTripProducerStates handles empty trips without calling RPC', async () => {
+  const db = new FakeDb();
+  const trip = await createTrip('traveler-1', { title: 'Empty' }, db as any);
+
+  let rpcCalled = false;
+  const fakeSupabase = {
+    rpc: async () => {
+      rpcCalled = true;
+      return { data: [], error: null };
+    },
+  };
+
+  const states = await getTripProducerStates(
+    'traveler-1',
+    trip.id,
+    db as any,
+    () => fakeSupabase as any
+  );
+  assert.deepEqual(states, {});
+  assert.equal(rpcCalled, false);
+});
+
+test('getTripProducerStates enforces ownership and fails closed on resolver errors', async () => {
+  const db = new FakeDb();
+  const trip = await createTrip('traveler-1', { title: 'Secret Trip' }, db as any);
+  await addProducerToTrip('traveler-1', trip.id, { producerId: 'p-1', expectedRevision: 1 }, db as any, async () => ({ id: 'p-1', destination: 'crete', category: 'winery' }));
+
+  // Non-owner cannot resolve producer states
+  await expectTripError(
+    getTripProducerStates('traveler-2', trip.id, db as any, () => ({} as any)),
+    'not_found'
+  );
+
+  // Missing Supabase client throws service_unavailable
+  await expectTripError(
+    getTripProducerStates('traveler-1', trip.id, db as any, () => null),
+    'service_unavailable'
+  );
+
+  // RPC error throws service_unavailable
+  const errorSupabase = {
+    rpc: async () => ({ data: null, error: new Error('RPC failure') }),
+  };
+  await expectTripError(
+    getTripProducerStates('traveler-1', trip.id, db as any, () => errorSupabase as any),
+    'service_unavailable'
+  );
 });

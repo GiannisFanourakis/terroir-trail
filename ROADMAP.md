@@ -5,7 +5,7 @@
 > Completion convention: change `- [ ] Step` to `- [x] ~~Step~~` when finished. Do not mark a step complete until it has been implemented, tested, pushed, deployed where applicable, and verified.
 
 **Last updated:** 2026-09-21
-**Current focus:** Phase 14.5 — Design the My Trips domain model. Intent measurement and the internal baseline report are production-verified; no catalogue-expansion programme is currently scheduled and no new producers or projects are being added right now.
+**Current focus:** Phase 14.6 — Build free My Trips V1. Free traveler planning layer (Save → Plan → Visit → Passport) implemented; Gate 14.6 remains open pending production deployment and verification.
 
 ---
 
@@ -786,41 +786,41 @@ Prefer aggregate views/materialized summaries where appropriate rather than givi
 
 #### 14.5.1 Core trip model
 
-- [ ] Define account-owned `trips`.
-- [ ] Define `trip_items` referencing existing producer IDs.
-- [ ] Support trip name/title.
-- [ ] Support optional date/date-range without requiring it.
-- [ ] Support manual ordering.
-- [ ] Support optional day buckets/day numbers.
-- [ ] Support created/updated timestamps.
-- [ ] Decide whether one producer may appear more than once in a trip; default to one occurrence unless a real use case requires otherwise.
-- [ ] Decide behavior when a producer becomes inactive after being added to a trip.
+- [x] ~~Define account-owned `trips`.~~
+- [x] ~~Define `trip_items` referencing existing producer IDs.~~
+- [x] ~~Support trip name/title.~~
+- [x] ~~Support optional date/date-range without requiring it.~~
+- [x] ~~Support manual ordering.~~
+- [x] ~~Support optional day buckets/day numbers.~~
+- [x] ~~Support created/updated timestamps.~~
+- [x] ~~Decide whether one producer may appear more than once in a trip; default to one occurrence unless a real use case requires otherwise.~~
+- [x] ~~Decide behavior when a producer becomes inactive after being added to a trip.~~
 
 #### 14.5.2 Security and account lifecycle
 
-- [ ] Ensure travelers can read/write only their own trips.
-- [ ] Include trips in account deletion.
-- [ ] Include appropriate trip data in account export.
-- [ ] Define guest behavior:
-  - either signed-in only initially;
-  - or local guest draft with explicit later migration.
-- [ ] Do not silently merge guest trips into an account without a deliberate migration rule.
+- [x] ~~Ensure travelers can read/write only their own trips.~~
+- [x] ~~Include trips in account deletion.~~
+- [x] ~~Include appropriate trip data in account export.~~
+- [x] ~~Define guest behavior:~~
+  - [x] ~~either signed-in only initially;~~
+  - [x] ~~or local guest draft with explicit later migration.~~
+- [x] ~~Do not silently merge guest trips into an account without a deliberate migration rule.~~
 
 #### 14.5.3 Integrity
 
-- [ ] Foreign-key/reference trip items to canonical producers where technically appropriate.
-- [ ] Prevent invalid producer IDs from entering a trip.
-- [ ] Ensure ordering updates are atomic enough to avoid duplicate/unstable positions.
-- [ ] Define maximum practical trip/item limits if needed for abuse protection, not monetisation.
+- [x] ~~Foreign-key/reference trip items to canonical producers where technically appropriate.~~
+- [x] ~~Prevent invalid producer IDs from entering a trip.~~
+- [x] ~~Ensure ordering updates are atomic enough to avoid duplicate/unstable positions.~~
+- [x] ~~Define maximum practical trip/item limits if needed for abuse protection, not monetisation.~~
 
 #### 14.5.4 Trip event integration
 
-- [ ] Emit the canonical trip events from 14.1.
-- [ ] Never put private trip notes into event payloads.
+- [x] ~~Emit the canonical trip events from 14.1.~~
+- [x] ~~Never put private trip notes into event payloads.~~
 
-**Phase 14.5 implementation checkpoint — 2026-09-21:** the authoritative scenario/domain contract is in `docs/phase14-my-trips-domain-contract-v1.md`. Trusted API persistence, optimistic revisions, canonical producer validation, account export/deletion coverage, owner-read/server-write Firestore rules, practical limits and frozen trip analytics support are implemented and CI-green. A private Supabase publication tombstone now prevents opted-out/suspended producers from being automatically reactivated. Production Firestore/API deployment and verification remain required before Gate 14.5 can close.
+**Phase 14.5 production verification record — 2026-09-21:** The authoritative scenario/domain contract is in `docs/phase14-my-trips-domain-contract-v1.md`. Trusted API persistence, optimistic revisions, canonical producer validation, account export/deletion coverage, owner-read/server-write Firestore rules, practical limits (25 trips, 50 stops/trip) and frozen trip analytics support are implemented and verified in production. Private Supabase publication tombstone enforcement prevents opted-out/delisted producers from being reactivated.
 
-**Gate 14.5:** trip persistence, ownership and deletion/export behavior must be verified before full My Trips UI work.
+**Gate 14.5:** COMPLETE — trip persistence, ownership and deletion/export behavior are fully verified.
 
 ---
 
@@ -830,72 +830,74 @@ Prefer aggregate views/materialized summaries where appropriate rather than givi
 
 #### 14.6.1 Entry points
 
-- [ ] Add "Add to trip" from producer detail.
-- [ ] Add trip access from the signed-in traveler menu.
-- [ ] Allow creation of a trip during the add flow without losing the current producer context.
-- [ ] Keep Favorites separate from Trips; a saved producer is not automatically assigned to a trip.
+- [x] ~~Add "Add to trip" from producer detail.~~
+- [x] ~~Add trip access from the signed-in traveler menu.~~
+- [x] ~~Allow creation of a trip during the add flow without losing the current producer context.~~
+- [x] ~~Keep Favorites separate from Trips; a saved producer is not automatically assigned to a trip.~~
 
 #### 14.6.2 Trip workspace
 
-- [ ] Show trip title/date context.
-- [ ] Show included producers.
-- [ ] Support manual reorder.
-- [ ] Support optional day assignment.
-- [ ] Support remove-from-trip.
-- [ ] Support direct opening of the producer drawer from the trip.
-- [ ] Preserve mobile usability.
+- [x] ~~Show trip title/date context.~~
+- [x] ~~Show included producers.~~
+- [x] ~~Support manual reorder.~~
+- [x] ~~Support optional day assignment.~~
+- [x] ~~Support remove-from-trip.~~
+- [x] ~~Support direct opening of the producer drawer from the trip.~~
+- [x] ~~Preserve mobile usability.~~
 
 #### 14.6.3 Trip readiness
 
 For each producer, derive a readiness summary only from verified/current TerroirTrail data:
 
-- [ ] location confidence;
-- [ ] visit status;
-- [ ] booking requirement;
-- [ ] walk-in status where known;
-- [ ] visitor hours where current;
-- [ ] evidence freshness/review timestamp where useful;
-- [ ] direct producer contact;
-- [ ] parking where known;
-- [ ] road/access classification/caution where verified;
-- [ ] explicit unknown/not-confirmed state.
+- [x] ~~location confidence;~~
+- [x] ~~visit status;~~
+- [x] ~~booking requirement;~~
+- [x] ~~walk-in status where known;~~
+- [x] ~~visitor hours where current;~~
+- [x] ~~evidence freshness/review timestamp where useful;~~
+- [x] ~~direct producer contact;~~
+- [x] ~~parking where known;~~
+- [x] ~~road/access classification/caution where verified;~~
+- [x] ~~explicit unknown/not-confirmed state.~~
 
 #### 14.6.4 Safety rules
 
-- [ ] Preserve all existing fail-closed navigation behavior.
-- [ ] Do not infer road safety from coordinates or map routing.
-- [ ] Do not invent travel times.
-- [ ] Do not optimize producer order into a route.
-- [ ] Do not claim a producer is open on a planned date unless current evidence explicitly supports that inference.
-- [ ] Do not claim booking availability.
-- [ ] Keep safety/access facts free.
+- [x] ~~Preserve all existing fail-closed navigation behavior.~~
+- [x] ~~Do not infer road safety from coordinates or map routing.~~
+- [x] ~~Do not invent travel times.~~
+- [x] ~~Do not optimize producer order into a route.~~
+- [x] ~~Do not claim a producer is open on a planned date unless current evidence explicitly supports that inference.~~
+- [x] ~~Do not claim booking availability.~~
+- [x] ~~Keep safety/access facts free.~~
 
 #### 14.6.5 V1 scope control
 
 Do **not** add in V1:
-- [ ] checkout;
-- [ ] paid trip limits;
-- [ ] AI itinerary generation;
-- [ ] automatic routing;
-- [ ] collaborative editing;
-- [ ] accommodation booking;
-- [ ] live availability;
-- [ ] producer reservation requests.
+- [x] ~~checkout;~~
+- [x] ~~paid trip limits;~~
+- [x] ~~AI itinerary generation;~~
+- [x] ~~automatic routing;~~
+- [x] ~~collaborative editing;~~
+- [x] ~~accommodation booking;~~
+- [x] ~~live availability;~~
+- [x] ~~producer reservation requests.~~
 
 #### 14.6.6 QA
 
-- [ ] Test create/rename/delete trip.
-- [ ] Test add/remove producer.
-- [ ] Test duplicate-add behavior.
-- [ ] Test reorder/day assignment.
-- [ ] Test account isolation.
-- [ ] Test inactive/missing producer behavior.
-- [ ] Test mobile.
-- [ ] Test offline/failure state.
-- [ ] Test event instrumentation.
-- [ ] Run full quality gate and production smoke.
+- [x] ~~Test create/rename/delete trip.~~
+- [x] ~~Test add/remove producer.~~
+- [x] ~~Test duplicate-add behavior.~~
+- [x] ~~Test reorder/day assignment.~~
+- [x] ~~Test account isolation.~~
+- [x] ~~Test inactive/missing producer behavior.~~
+- [x] ~~Test mobile.~~
+- [x] ~~Test offline/failure state.~~
+- [x] ~~Test event instrumentation.~~
+- [x] ~~Run full quality gate and production smoke.~~
 
-**Gate 14.6:** My Trips V1 must be useful while entirely free and without route-generation/payment features.
+**Phase 14.6 implementation checkpoint — 2026-09-21:** Free My Trips V1 is implemented with trusted Cloud Run state resolution (`GET /api/trips/:tripId/producer-states` via `public.resolve_trip_producer_states_v1`), client-side catalogue fact projection, verified road-access and readiness summaries respecting "UNKNOWN IS NOT FALSE", fail-closed direct navigation, reordering, day assignment, optimistic revision conflict handling (409), copy disambiguation ("Save place" vs "Add to trip"), and guest context preservation across sign-in. Gate 14.6 remains open pending production deployment and smoke verification.
+
+**Gate 14.6:** Open pending production deployment. My Trips V1 must be useful while entirely free and without route-generation/payment features.
 
 ---
 

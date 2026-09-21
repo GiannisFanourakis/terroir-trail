@@ -3,7 +3,7 @@ import { Destination } from '../../types/terroir';
 import { UserProfile } from '../../types/auth';
 import { ProfileMenu } from '../Auth/ProfileMenu';
 import { UserAvatar } from '../Common/UserAvatar';
-import { Search, X, Heart, Building2, Calendar, Sparkles, BookOpen, Menu, Award, LogOut, User, ChevronDown, Download, Share2, Plus, Smartphone } from 'lucide-react';
+import { Search, X, Heart, Building2, Calendar, Sparkles, BookOpen, Menu, Award, LogOut, User, ChevronDown, Download, Share2, Plus, Smartphone, MapPin } from 'lucide-react';
 import {
   COUNTRY_LAYERS,
   CountryScope,
@@ -26,6 +26,7 @@ interface HeaderProps {
   user: UserProfile | null;
   onOpenAuth: (role?: 'traveler' | 'producer') => void;
   onOpenPassport: () => void;
+  onOpenMyTrips?: () => void;
   onLogout: () => void;
   totalProducersCount: number;
   onOpenMyBookings?: () => void;
@@ -56,6 +57,7 @@ export const Header: React.FC<HeaderProps> = ({
   user,
   onOpenAuth,
   onOpenPassport,
+  onOpenMyTrips,
   onLogout,
   totalProducersCount,
   onOpenMyBookings,
@@ -177,6 +179,7 @@ export const Header: React.FC<HeaderProps> = ({
       onOpenAuth={onOpenAuth}
       onOpenPassport={onOpenPassport}
       onOpenWishlist={onToggleFavoritesOnly}
+      onOpenMyTrips={onOpenMyTrips}
       onLogout={onLogout}
       totalProducersCount={totalProducersCount}
       onOpenMyBookings={onOpenMyBookings}
@@ -463,6 +466,21 @@ export const Header: React.FC<HeaderProps> = ({
               )}
 
               <button onClick={() => { onOpenPassport(); closeMenu(); }} className="flex items-center gap-3 w-full px-3 py-3 text-sm font-semibold text-stone-200 bg-stone-900 rounded-xl border border-white/10 cursor-pointer"><Award className="w-4 h-4 text-amber-400" />Terroir Passport</button>
+              <button
+                type="button"
+                onClick={() => {
+                  if (user) {
+                    onOpenMyTrips?.();
+                  } else {
+                    onOpenAuth('traveler');
+                  }
+                  closeMenu();
+                }}
+                className="flex items-center gap-3 w-full px-3 py-3 text-sm font-semibold text-stone-200 bg-stone-900 rounded-xl border border-white/10 cursor-pointer"
+              >
+                <MapPin className="w-4 h-4 text-amber-400" />
+                My Trips
+              </button>
               {onOpenExperiences && <button onClick={() => { onOpenExperiences(); closeMenu(); }} className="flex items-center gap-3 w-full px-3 py-3 text-sm font-semibold text-stone-200 bg-stone-900 rounded-xl border border-white/10 cursor-pointer"><Sparkles className="w-4 h-4 text-amber-400" />Curated Experiences</button>}
 
               {canInstall && (

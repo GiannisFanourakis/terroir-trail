@@ -24,6 +24,7 @@ vi.mock('./apiOrigin', () => ({
 import {
   addProducerToTrip,
   createTrip,
+  getTripProducerStates,
   TripApiError,
 } from './tripApi';
 
@@ -81,4 +82,54 @@ describe('tripApi analytics ordering', () => {
     expect(mocks.trackIntent).not.toHaveBeenCalled();
     fetchMock.mockRestore();
   });
+
+  it('fetches producer states with auth and returns safe mapping', async () => {
+    const fetchMock = vi.spyOn(globalThis, 'fetch').mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => ({
+        producerStates: {
+          'p-active': 'active',
+          'p-closed': 'unavailable',
+          'p-delisted': 'no_longer_listed',
+        },
+      }),
+    } as Response);
+
+    const states = await getTripProducerStates('trip123');
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      'https://api.example.test/api/trips/trip123/producer-states',
+      expect.objectContaining({
+        headers: expect.objectContaining({
+          Authorization: 'Bearer firebase-token',
+        }),
+      })
+    );
+    expect(states).toEqual({
+      'p-active': 'active',
+      'p-closed': 'unavailable',
+      'p-delisted': 'no_longer_listed',
+    });
+
+    fetchMock.mockRestore();
+  });
+
+  it('throws TripApiError on 503 resolver failure', async () => {
+    const fetchMock = vi.spyOn(globalThis, 'fetch').mockResolvedValue({
+      ok: false,
+      status: 503,
+      json: async () => ({
+        code: 'service_unavailable',
+        error: 'Producer state resolution is temporarily unavailable.',
+      }),
+    } as Response);
+
+    await expect(getTripProducerStates('trip123')).rejects.toThrow(
+      'Producer state resolution is temporarily unavailable.'
+    );
+
+    fetchMock.mockRestore();
+  });
 });
+

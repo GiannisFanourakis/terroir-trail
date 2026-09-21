@@ -549,3 +549,70 @@ export async function deleteTrip(
 
   return { deleted: true, tripId: safeTripId };
 }
+
+export type TripProducerState = 'active' | 'unavailable' | 'no_longer_listed';
+
+export async function getTripProducerStates(
+  uid: string,
+  tripId: string,
+  db: any = adminDb(),
+  getSupabase: () => any = getSupabaseAdmin
+): Promise<Record<string, TripProducerState>> {
+  const trip = await getTrip(uid, tripId, db);
+  const producerIds = trip.items.map((item) => item.producerId);
+  if (producerIds.length === 0) {
+    return {};
+  }
+
+  const supabase = getSupabase();
+  if (!supabase) {
+    throw new TripServiceError(
+      'service_unavailable',
+      'Producer state resolution is temporarily unavailable.'
+    );
+  }
+
+  let data: any;
+  try {
+    const response = await supabase.rpc('resolve_trip_producer_states_v1', {
+      p_producer_ids: producerIds,
+    });
+    if (response.error) {
+      throw new TripServiceError(
+        'service_unavailable',
+        'Producer state resolution is temporarily unavailable.'
+      );
+    }
+    data = response.data;
+  } catch (error) {
+    if (error instanceof TripServiceError) throw error;
+    throw new TripServiceError(
+      'service_unavailable',
+      'Producer state resolution is temporarily unavailable.'
+    );
+  }
+
+  const returnedMap = new Map<string, string>();
+  if (Array.isArray(data)) {
+    for (const row of data) {
+      if (row && typeof row.producer_id === 'string' && typeof row.state === 'string') {
+        returnedMap.set(row.producer_id, row.state);
+      }
+    }
+  }
+
+  const states: Record<string, TripProducerState> = {};
+  for (const id of producerIds) {
+    const raw = returnedMap.get(id);
+    if (raw === 'active') {
+      states[id] = 'active';
+    } else if (raw === 'no_longer_listed') {
+      states[id] = 'no_longer_listed';
+    } else {
+      states[id] = 'unavailable';
+    }
+  }
+
+  return states;
+}
+

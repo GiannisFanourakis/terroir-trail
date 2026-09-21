@@ -6,8 +6,9 @@ import {
   X, MapPin, Star, Phone, Mail, Globe, Navigation, Clock,
   Dog, Footprints, Caravan, Car, Sparkles, Share2, Check, Heart, Award,
   CheckCircle2, Wine, ShoppingBag, ArrowRight, Building2,
-  Camera, ChevronLeft, ChevronRight, Beer
+  Camera, ChevronLeft, ChevronRight, Beer, CalendarPlus
 } from 'lucide-react';
+
 import { useProducerPhotos } from '../../services/googlePlacesPhotos';
 import { getCategoryFallbackImage } from '../../utils/imageFallbacks';
 import { getEffectiveProducerCategory } from '../../utils/producerCategory';
@@ -39,6 +40,7 @@ interface ProducerDetailDrawerProps {
   onOpenDigitalPass?: () => void;
   initialTab?: 'story' | 'tastings' | 'visit';
   producerOverride?: ProducerOverride;
+  onAddToTrip?: (producer: Producer) => void;
 }
 
 export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
@@ -62,6 +64,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
   onOpenDigitalPass,
   initialTab = 'story',
   producerOverride,
+  onAddToTrip,
 }) => {
   const [copiedLink, setCopiedLink] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<'story' | 'tastings' | 'visit'>(initialTab);
@@ -665,38 +668,52 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
           )}
 
           <div className="absolute top-4 right-4 z-20 flex items-center gap-2">
+            {onAddToTrip && (
+              <button
+                type="button"
+                onClick={() => onAddToTrip(producer)}
+                className="w-9 h-9 rounded-full flex items-center justify-center backdrop-blur-md border bg-black/60 hover:bg-black/80 text-amber-300 hover:text-white border-white/10 transition cursor-pointer"
+                title="Add to trip"
+                aria-label="Add to trip"
+              >
+                <CalendarPlus className="w-4 h-4" />
+              </button>
+            )}
             {onToggleFavorite && (
               <button
+                type="button"
                 onClick={() => onToggleFavorite(producer.id, 'producer_drawer')}
-                className={`w-9 h-9 rounded-full flex items-center justify-center backdrop-blur-md border transition ${
+                className={`w-9 h-9 rounded-full flex items-center justify-center backdrop-blur-md border transition cursor-pointer ${
                   isFavorite
                     ? 'bg-rose-500/80 border-rose-400/50 text-white shadow-lg shadow-rose-950/40'
                     : 'bg-black/60 hover:bg-black/80 text-stone-200 border-white/10 hover:text-white'
                 }`}
-                title={isFavorite ? 'Remove from Saved' : 'Save to My Trip'}
-                aria-label={isFavorite ? 'Remove from Saved' : 'Save to My Trip'}
+                title={isFavorite ? 'Remove from Saved' : 'Save place'}
+                aria-label={isFavorite ? 'Remove from Saved' : 'Save place'}
               >
                 <Heart className={`w-4 h-4 ${isFavorite ? 'fill-current text-white' : ''}`} />
               </button>
             )}
             <button
+              type="button"
               onClick={handleShare}
-              className="w-11 h-11 sm:w-10 sm:h-10 rounded-full bg-black/60 hover:bg-black/80 text-white flex items-center justify-center backdrop-blur-md border border-white/10 transition"
+              className="w-11 h-11 sm:w-10 sm:h-10 rounded-full bg-black/60 hover:bg-black/80 text-white flex items-center justify-center backdrop-blur-md border border-white/10 transition cursor-pointer"
               title="Copy Link"
               aria-label={copiedLink ? 'Producer link copied' : 'Copy producer link'}
             >
               {copiedLink ? <Check className="w-4 h-4 text-emerald-400" /> : <Share2 className="w-4 h-4" />}
             </button>
             <button
+              type="button"
               onClick={onClose}
-              className="w-11 h-11 sm:w-10 sm:h-10 rounded-full bg-black/60 hover:bg-black/80 text-white flex items-center justify-center backdrop-blur-md border border-white/10 transition"
+              className="w-11 h-11 sm:w-10 sm:h-10 rounded-full bg-black/60 hover:bg-black/80 text-white flex items-center justify-center backdrop-blur-md border border-white/10 transition cursor-pointer"
               aria-label="Close"
             >
               <X className="w-5 h-5" />
             </button>
           </div>
 
-          <div className="absolute top-4 left-4 z-20 flex flex-col items-start gap-1.5 max-w-[calc(100%-130px)]">
+          <div className="absolute top-4 left-4 z-20 flex flex-col items-start gap-1.5 max-w-[calc(100%-170px)]">
             <div className="flex items-center gap-2 flex-wrap">
               <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border backdrop-blur-md ${cat.color}`}>
                 <ProducerCategoryIcon category={effectiveCategory} className="w-3.5 h-3.5" />
@@ -862,6 +879,17 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
               </div>
             )}
           </div>
+        )}
+
+        {onAddToTrip && (
+          <button
+            type="button"
+            onClick={() => onAddToTrip(producer)}
+            className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-2xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/30 text-amber-300 text-xs font-bold transition cursor-pointer"
+          >
+            <CalendarPlus className="w-4 h-4" />
+            <span>Add to trip</span>
+          </button>
         )}
 
         <div className="p-3.5 rounded-2xl bg-gradient-to-r from-amber-950/30 to-stone-900 border border-amber-500/20 flex flex-col gap-2.5">

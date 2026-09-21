@@ -10,11 +10,13 @@ import {
   Heart,
   HelpCircle,
   LogOut,
+  MapPin,
   Scale,
   Settings,
   ShieldCheck,
   User,
 } from 'lucide-react';
+
 import { UserProfile } from '../../types/auth';
 import { UserAvatar } from '../Common/UserAvatar';
 
@@ -23,6 +25,7 @@ interface ProfileMenuProps {
   onOpenAuth: (role?: 'traveler' | 'producer') => void;
   onOpenPassport: () => void;
   onOpenWishlist: () => void;
+  onOpenMyTrips?: () => void;
   onLogout: () => void;
   totalProducersCount: number;
   onOpenMyBookings?: () => void;
@@ -44,6 +47,7 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
   onOpenAuth,
   onOpenPassport,
   onOpenWishlist,
+  onOpenMyTrips,
   onLogout,
   totalProducersCount,
   onOpenMyBookings,
@@ -133,6 +137,9 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
 
           <div className="space-y-1">
             <button type="button" onClick={() => runAndClose(onOpenWishlist)} className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-stone-300 hover:text-white hover:bg-white/5 transition cursor-pointer"><Heart className="w-3.5 h-3.5 text-rose-400" />My saved producers</button>
+            {onOpenMyTrips && (
+              <button type="button" onClick={() => runAndClose(onOpenMyTrips)} className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-stone-300 hover:text-white hover:bg-white/5 transition cursor-pointer"><MapPin className="w-3.5 h-3.5 text-amber-400" />My Trips</button>
+            )}
             <button type="button" onClick={() => runAndClose(onOpenPassport)} className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-stone-300 hover:text-white hover:bg-white/5 transition cursor-pointer"><Compass className="w-3.5 h-3.5 text-amber-400" />Passport stamps & notes</button>
 
             {onOpenMyBookings && (
