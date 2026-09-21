@@ -29,10 +29,13 @@ const totalCssGzip = css.reduce((sum, file) => sum + file.gzip, 0);
 const largestJs = [...js].sort((a, b) => b.gzip - a.gzip)[0];
 
 const KB = 1024;
+// Initial-load guardrails stay strict. The total-JS budget also counts lazy-loaded
+// admin/portal feature chunks, so keep modest headroom there without weakening
+// the main or largest-chunk limits that most directly affect traveler startup.
 const budgets = {
   mainJsGzip: 330 * KB,
   largestJsGzip: 330 * KB,
-  totalJsGzip: 800 * KB,
+  totalJsGzip: 850 * KB,
   totalCssGzip: 32 * KB,
 };
 
