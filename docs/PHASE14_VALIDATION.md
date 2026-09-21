@@ -36,9 +36,24 @@ Use a deliberately mixed operating set:
 
 This cohort intentionally spans public, appointment-only, seasonal and not-publicly-confirmed visit models. Treat participation as validation outreach, not partnership status.
 
+### Founder Insights V1 baseline
+
+Treat the following as the target minimum producer-facing metric set:
+
+1. **Reach** — profile views and unique visitor sessions.
+2. **Audience** — visitor country and language, aggregate-only.
+3. **Acquisition** — coarse discovery/source channel.
+4. **Planning** — saves and trip additions.
+5. **Intent** — website, phone, email and directions actions.
+6. **Trend** — current period, time series and previous equal-length period.
+
+Visitor country means coarse session geography, **not nationality**. Never expose IP addresses or individual traveler geography. Suppress/group small country, language or source segments into `Other`.
+
+Current prototype data is strongest for planning/intent/trend. Visitor country, visitor language and external acquisition channel are required V1 metrics but are not yet instrumented; do not fabricate them during validation.
+
 ### Show
 
-Use the admin Producer Insights prototype for that producer:
+Use the admin Producer Insights prototype for that producer and explain the V1 baseline above. Show currently measured:
 - profile views;
 - saves;
 - trip additions;
@@ -48,6 +63,8 @@ Use the admin Producer Insights prototype for that producer:
 - directions;
 - previous equal-length reporting window;
 - region/category context only when the sample threshold is met.
+
+Then ask whether country/language/acquisition would materially change a real operating or marketing decision before expanding the telemetry.
 
 ### Ask
 

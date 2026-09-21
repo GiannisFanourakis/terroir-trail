@@ -1008,6 +1008,20 @@ Candidate metrics:
 
 **Metric contract — 2026-09-21:** producer metrics use first-party intent aggregates only. Time trend means the selected reporting window versus the immediately preceding equal-length window. Region/category context is descriptive, never a ranking, and is withheld unless the comparison contains at least **5 active producers and 100 producer views**.
 
+
+**Founder Insights V1 required metric set — 2026-09-21:**
+- **Reach:** profile views and unique visitor sessions.
+- **Audience:** visitor country (coarse country-level only) and interface/browser language.
+- **Acquisition:** how the producer was discovered, using coarse source/channel categories rather than raw referral URLs.
+- **Planning:** saves and trip additions.
+- **Intent:** website clicks, phone actions, email actions and directions actions.
+- **Trend:** reporting-period time series and comparison with the immediately preceding equal-length period.
+- **Optional/future only after validation:** planning lead time, seasonality detail, booking-page conversion, returning-interest cohorts, device detail, sub-country geography and other segmentation.
+
+**Current instrumentation gap:** action/planning/source-surface metrics and equal-window trends exist. Unique-session reporting is derivable from pseudonymous session keys but is not yet exposed in Producer Insights. Visitor country, visitor language and external acquisition channel are **not currently collected** and must not be inferred from the existing producer `country_code`. They require a separate privacy-reviewed instrumentation decision before collection.
+
+**Audience privacy rule:** never expose IP addresses or individual traveler geography. Country/language/source segments must be aggregate-only; small segments must be suppressed or grouped into `Other`. Do not describe coarse network geography as nationality.
+
 #### 14.8.2 Privacy and trust constraints
 
 - [x] ~~No individual traveler identities.~~
