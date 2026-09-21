@@ -51,7 +51,7 @@ class FakeCollection {
   ) {}
 
   doc(id?: string) {
-    const resolved = id || `trip-${++this.db.counter}`;
+    const resolved = id || `trip${++this.db.counter}`;
     return new FakeDocRef(this.db, `${this.path}/${resolved}`, resolved);
   }
 
