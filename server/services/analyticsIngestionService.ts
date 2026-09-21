@@ -12,6 +12,13 @@ export type IntentEventName =
   | 'producer_phone_click'
   | 'producer_email_click'
   | 'directions_click'
+  | 'trip_created'
+  | 'trip_renamed'
+  | 'trip_producer_added'
+  | 'trip_producer_removed'
+  | 'trip_item_reordered'
+  | 'trip_day_assigned'
+  | 'trip_opened'
   | 'passport_stamp_added'
   | 'passport_stamp_removed'
   | 'affiliate_impression'
@@ -54,6 +61,13 @@ export const FROZEN_EVENT_NAMES = new Set<IntentEventName>([
   'producer_phone_click',
   'producer_email_click',
   'directions_click',
+  'trip_created',
+  'trip_renamed',
+  'trip_producer_added',
+  'trip_producer_removed',
+  'trip_item_reordered',
+  'trip_day_assigned',
+  'trip_opened',
   'passport_stamp_added',
   'passport_stamp_removed',
   'affiliate_impression',
@@ -139,6 +153,32 @@ export const EVENT_ALLOWED_SURFACES: Record<IntentEventName, ReadonlySet<SourceS
     'map_quick_card',
     'trip_workspace',
   ]),
+  trip_created: new Set([
+    'trip_add_flow',
+    'my_trips',
+    'profile_menu',
+  ]),
+  trip_renamed: new Set([
+    'trip_workspace',
+  ]),
+  trip_producer_added: new Set([
+    'trip_add_flow',
+    'producer_drawer',
+    'trip_workspace',
+  ]),
+  trip_producer_removed: new Set([
+    'trip_workspace',
+  ]),
+  trip_item_reordered: new Set([
+    'trip_workspace',
+  ]),
+  trip_day_assigned: new Set([
+    'trip_workspace',
+  ]),
+  trip_opened: new Set([
+    'my_trips',
+    'profile_menu',
+  ]),
   passport_stamp_added: new Set([
     'producer_drawer',
     'passport',
@@ -162,6 +202,13 @@ export const EVENT_ALLOWED_SURFACES: Record<IntentEventName, ReadonlySet<SourceS
 export const AUTH_REQUIRED_EVENTS = new Set<IntentEventName>([
   'producer_save',
   'producer_unsave',
+  'trip_created',
+  'trip_renamed',
+  'trip_producer_added',
+  'trip_producer_removed',
+  'trip_item_reordered',
+  'trip_day_assigned',
+  'trip_opened',
   'passport_stamp_added',
   'passport_stamp_removed',
 ]);
@@ -175,6 +222,8 @@ export const PRODUCER_REQUIRED_EVENTS = new Set<IntentEventName>([
   'producer_phone_click',
   'producer_email_click',
   'directions_click',
+  'trip_producer_added',
+  'trip_producer_removed',
   'passport_stamp_added',
   'passport_stamp_removed',
 ]);
