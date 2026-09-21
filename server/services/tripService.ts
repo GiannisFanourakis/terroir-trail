@@ -226,11 +226,6 @@ export async function createTrip(
   const title = cleanTitle(input.title);
   const { startDate, endDate } = validateDates(input.startDate, input.endDate);
   const collection = tripsCollection(db, uid);
-  const existing = await collection.get();
-  if (existing.docs.length >= MAX_TRIPS_PER_ACCOUNT) {
-    throw new TripServiceError('conflict', `An account can have up to ${MAX_TRIPS_PER_ACCOUNT} trips.`);
-  }
-
   const ref = collection.doc();
   const occurredAt = now.toISOString();
   const trip: TripRecordV1 = {
@@ -245,7 +240,15 @@ export async function createTrip(
     createdAt: occurredAt,
     updatedAt: occurredAt,
   };
-  await ref.set(trip);
+
+  await db.runTransaction(async (transaction: any) => {
+    const existing = await transaction.get(collection);
+    if (existing.docs.length >= MAX_TRIPS_PER_ACCOUNT) {
+      throw new TripServiceError('conflict', `An account can have up to ${MAX_TRIPS_PER_ACCOUNT} trips.`);
+    }
+    transaction.set(ref, trip);
+  });
+
   return trip;
 }
 
@@ -287,6 +290,14 @@ export async function updateTrip(
           'Move or clear day assignments before shortening this trip date range.'
         );
       }
+    }
+
+    if (
+      title === trip.title &&
+      dates.startDate === trip.startDate &&
+      dates.endDate === trip.endDate
+    ) {
+      return trip;
     }
 
     const updated: TripRecordV1 = {
