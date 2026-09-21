@@ -996,31 +996,35 @@ Treat generic third-party activity marketplaces separately because they may conf
 #### 14.8.1 Define producer metrics
 
 Candidate metrics:
-- [ ] profile views;
-- [ ] saves;
-- [ ] trip additions;
-- [ ] website clicks;
-- [ ] phone actions;
-- [ ] email actions;
-- [ ] directions actions;
-- [ ] aggregate region/category comparison where sample size is sufficient;
-- [ ] time trends.
+- [x] ~~profile views;~~
+- [x] ~~saves;~~
+- [x] ~~trip additions;~~
+- [x] ~~website clicks;~~
+- [x] ~~phone actions;~~
+- [x] ~~email actions;~~
+- [x] ~~directions actions;~~
+- [x] ~~aggregate region/category comparison where sample size is sufficient;~~
+- [x] ~~time trends.~~
+
+**Metric contract — 2026-09-21:** producer metrics use first-party intent aggregates only. Time trend means the selected reporting window versus the immediately preceding equal-length window. Region/category context is descriptive, never a ranking, and is withheld unless the comparison contains at least **5 active producers and 100 producer views**.
 
 #### 14.8.2 Privacy and trust constraints
 
-- [ ] No individual traveler identities.
-- [ ] No private trip contents.
-- [ ] No tasting-note contents.
-- [ ] No claim that a click equals a booking or visit.
-- [ ] No ranking boost tied to metrics or payment.
-- [ ] Do not expose tiny demographic/segment counts that could identify individuals.
+- [x] ~~No individual traveler identities.~~
+- [x] ~~No private trip contents.~~
+- [x] ~~No tasting-note contents.~~
+- [x] ~~No claim that a click equals a booking or visit.~~
+- [x] ~~No ranking boost tied to metrics or payment.~~
+- [x] ~~Do not expose tiny demographic/segment counts that could identify individuals.~~
 
 #### 14.8.3 Internal prototype
 
-- [ ] Build admin-only producer insight view first.
-- [ ] Validate metric definitions and consistency.
-- [ ] Test whether metrics remain understandable at low traffic.
-- [ ] Identify which metrics a verified Host could reasonably act on.
+- [x] ~~Build admin-only producer insight view first.~~
+- [x] ~~Validate metric definitions and consistency.~~
+- [x] ~~Test whether metrics remain understandable at low traffic.~~
+- [x] ~~Identify which metrics a verified Host could reasonably act on.~~
+
+**14.8 internal prototype — 2026-09-21:** deployed at `f82d53c`. The admin view separates discovery signals (views, saves, trip additions) from operational outbound actions (website, phone, email, directions), shows equal-window movement without manufacturing conversion claims, warns on very small producer samples, and suppresses region/category context below the comparison threshold. Supabase reporting remains server-only: `anon` and `authenticated` cannot execute the reporting RPC. Quality Gate `35600911485` and Production Deploy `35601089359` both passed. These metrics are candidate Host-useful signals only; repeatable value still requires 14.8.4 producer validation.
 
 #### 14.8.4 Host validation
 
