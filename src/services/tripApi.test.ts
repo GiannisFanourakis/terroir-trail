@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const mocks = vi.hoisted(() => ({
   getIdToken: vi.fn(async () => 'firebase-token'),
-  mocks.trackIntent: vi.fn(async () => ({ success: true, clientEventId: 'event-id' })),
+  trackIntent: vi.fn(async () => ({ success: true, clientEventId: 'event-id' })),
 }));
 
 vi.mock('./firebase', () => ({
@@ -14,7 +14,7 @@ vi.mock('./firebase', () => ({
 }));
 
 vi.mock('./intentAnalytics', () => ({
-  mocks.trackIntent: mocks.trackIntent,
+  trackIntent: mocks.trackIntent,
 }));
 
 vi.mock('./apiOrigin', () => ({
