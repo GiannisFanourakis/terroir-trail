@@ -225,4 +225,48 @@ describe('intentAnalytics client', () => {
       expect(result.clientEventId).toBeDefined();
     });
   });
+
+    it('allows frozen My Trips event surfaces and rejects invalid trip surfaces', async () => {
+      const mockFetch = vi.fn(async () => ({
+        ok: true,
+        status: 200,
+        json: async () => ({ accepted: true }),
+      }) as Response);
+
+      const created = await trackIntent(
+        { event: 'trip_created', sourceSurface: 'my_trips' },
+        {
+          fetchImpl: mockFetch as unknown as typeof fetch,
+          storage: mockStorage,
+          getAuthToken: async () => 'token',
+        }
+      );
+      expect(created.success).toBe(true);
+
+      const added = await trackIntent(
+        {
+          event: 'trip_producer_added',
+          sourceSurface: 'trip_add_flow',
+          producerId: 'producer-1',
+        },
+        {
+          fetchImpl: mockFetch as unknown as typeof fetch,
+          storage: mockStorage,
+          getAuthToken: async () => 'token',
+        }
+      );
+      expect(added.success).toBe(true);
+
+      const invalid = await trackIntent(
+        { event: 'trip_item_reordered', sourceSurface: 'my_trips' },
+        {
+          fetchImpl: mockFetch as unknown as typeof fetch,
+          storage: mockStorage,
+          getAuthToken: async () => 'token',
+        }
+      );
+      expect(invalid.success).toBe(false);
+      expect(mockFetch).toHaveBeenCalledTimes(2);
+    });
+
 });
