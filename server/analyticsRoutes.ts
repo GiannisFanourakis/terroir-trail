@@ -227,6 +227,13 @@ export function registerAnalyticsRoutes(
       }
 
       derivedAffiliateCampaign = rawAffiliateCampaignId;
+    } else {
+      // Context-free trip events must remain context-free. Private trip IDs,
+      // titles, dates, ordering and itinerary details are never accepted here.
+      if (rawProducerId !== null || rawDestination !== null || rawAffiliateCampaignId !== null) {
+        res.status(400).json({ error: `Context fields are not permitted for event "${eventName}".` });
+        return;
+      }
     }
 
     // 10. Authentication check
