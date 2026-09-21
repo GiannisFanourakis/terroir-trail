@@ -450,3 +450,104 @@ test('analytics API returns 503 when HMAC secret missing or ingestion fails with
     );
   }
 });
+
+
+test('analytics API enforces authenticated and context-free My Trips events', async () => {
+  const calls: IngestIntentEventParams[] = [];
+  const app = createApp();
+  registerAnalyticsRoutes(app, {
+    getHmacSecret: () => TEST_HMAC_SECRET,
+    verifyToken: async token => {
+      if (token === 'valid-trip-user') return { uid: 'trip-user-1' } as any;
+      throw new Error('invalid token');
+    },
+    lookupProducer: async id => ({
+      id,
+      destination: 'crete',
+      country: 'greece',
+      category: 'winery',
+    }),
+    ingestEvent: async params => {
+      calls.push(params);
+      return { success: true };
+    },
+  });
+
+  const server = app.listen(0, '127.0.0.1');
+  await new Promise<void>(resolve => server.once('listening', resolve));
+  const base = 'http://127.0.0.1:' + (server.address() as AddressInfo).port;
+
+  try {
+    const unauthenticated = await fetch(base + '/api/analytics/events', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        schemaVersion: 1,
+        event: 'trip_created',
+        clientEventId: VALID_CLIENT_EVENT_ID,
+        sessionId: VALID_SESSION_ID,
+        sourceSurface: 'my_trips',
+      }),
+    });
+    assert.equal(unauthenticated.status, 401);
+
+    const privateContext = await fetch(base + '/api/analytics/events', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer valid-trip-user',
+      },
+      body: JSON.stringify({
+        schemaVersion: 1,
+        event: 'trip_opened',
+        clientEventId: VALID_CLIENT_EVENT_ID,
+        sessionId: VALID_SESSION_ID,
+        sourceSurface: 'my_trips',
+        destination: 'crete',
+      }),
+    });
+    assert.equal(privateContext.status, 400);
+
+    const validCreated = await fetch(base + '/api/analytics/events', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer valid-trip-user',
+      },
+      body: JSON.stringify({
+        schemaVersion: 1,
+        event: 'trip_created',
+        clientEventId: VALID_CLIENT_EVENT_ID,
+        sessionId: VALID_SESSION_ID,
+        sourceSurface: 'my_trips',
+      }),
+    });
+    assert.equal(validCreated.status, 200);
+    assert.equal(calls[0].eventName, 'trip_created');
+    assert.equal(calls[0].producerId, null);
+    assert.equal(calls[0].destination, null);
+
+    const validAdd = await fetch(base + '/api/analytics/events', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer valid-trip-user',
+      },
+      body: JSON.stringify({
+        schemaVersion: 1,
+        event: 'trip_producer_added',
+        clientEventId: 'c1d2e3f4-a5b6-4c7d-8e9f-0a1b2c3d4e5f',
+        sessionId: VALID_SESSION_ID,
+        sourceSurface: 'trip_add_flow',
+        producerId: 'prod-trip-1',
+      }),
+    });
+    assert.equal(validAdd.status, 200);
+    assert.equal(calls[1].eventName, 'trip_producer_added');
+    assert.equal(calls[1].producerId, 'prod-trip-1');
+  } finally {
+    await new Promise<void>((resolve, reject) =>
+      server.close(error => error ? reject(error) : resolve())
+    );
+  }
+});
