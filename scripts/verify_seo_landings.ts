@@ -126,8 +126,11 @@ const verifyLandingPage = (urlPath: string, expectedCount: number, label: string
   requireIncludes(content, '<meta name="robots" content="index, follow', label);
   requireIncludes(content, '<h1>', label);
   requireIncludes(content, `${expectedCount} producer/project records.`, label);
-  requireIncludes(content, 'Are visits confirmed?', label);
+  requireIncludes(content, 'data-aeo="planning-answers"', label);
+  requireIncludes(content, 'What do current booking requirements show?', label);
+  requireIncludes(content, 'Are walk-ins confirmed?', label);
   requireIncludes(content, 'What is known about road access?', label);
+  requireIncludes(content, 'href="/methodology/"', `${label} methodology link`);
   requireIncludes(content, 'does not imply a commercial partnership', label);
 
   const jsonLd = parseJsonLd(content, label);
@@ -192,7 +195,7 @@ function verifySeo(): void {
     if (url.includes('?producer=')) fail(`Legacy query-state producer URL must not appear in the sitemap: ${url}`);
   }
 
-  const baseUrls = [`${CANONICAL_HOST}/`, `${CANONICAL_HOST}/privacy.html`, PRODUCER_DIRECTORY_URL, ...PRODUCERS.map(producerUrl)];
+  const baseUrls = [`${CANONICAL_HOST}/`, `${CANONICAL_HOST}/privacy.html`, `${CANONICAL_HOST}/methodology/`, PRODUCER_DIRECTORY_URL, ...PRODUCERS.map(producerUrl)];
   const landingUrls = [`${CANONICAL_HOST}/destinations/`, `${CANONICAL_HOST}/categories/`, ...[...expectedLandingPaths.keys()].map((urlPath) => `${CANONICAL_HOST}${urlPath}`)];
   const expectedSitemapUrls = [...baseUrls, ...landingUrls];
   if (sitemapUrls.length !== expectedSitemapUrls.length) fail(`Sitemap has ${sitemapUrls.length} URLs; expected ${expectedSitemapUrls.length} for the current catalogue.`);
@@ -218,6 +221,7 @@ function verifySeo(): void {
     '/producers/<producer-id>/',
     'Sitemap: https://terroir-trail.web.app/sitemap.xml',
     'Producer directory: https://terroir-trail.web.app/producers/',
+    'Verification methodology: https://terroir-trail.web.app/methodology/',
     '## Search and answer-engine discovery',
     '## Answer-engine interpretation rules',
     'does not represent Santorini as a UNESCO Global Geopark',
@@ -247,7 +251,10 @@ function verifySeo(): void {
   requireIncludes(indexContent, 'TerroirTrail — Independent Producer &amp; Agritourism Guide', 'dist/index.html');
   requireIncludes(indexContent, `${LIVE_CATALOGUE_METRICS.totalProducers} live producer/project records`, 'dist/index.html');
   requireIncludes(indexContent, `${LIVE_CATALOGUE_METRICS.destinationCount} destinations in ${LIVE_CATALOGUE_METRICS.countryCount} European countries`, 'dist/index.html');
+  requireIncludes(indexContent, 'data-seo-home-fallback="true"', 'dist/index.html');
   requireIncludes(indexContent, 'href="/producers/"', 'dist/index.html');
+  requireIncludes(indexContent, 'href="/methodology/"', 'dist/index.html');
+  if (indexContent.indexOf('data-seo-home-fallback="true"') > indexContent.indexOf('<noscript>')) fail('Homepage static discovery fallback must exist outside <noscript>.');
   requireIncludes(indexContent, 'data-seo-landing-nav="true"', 'dist/index.html');
   requireIncludes(indexContent, 'href="/destinations/"', 'dist/index.html');
   requireIncludes(indexContent, 'href="/categories/"', 'dist/index.html');
@@ -276,6 +283,11 @@ function verifySeo(): void {
   for (const claim of staleIndexClaims) banIncludes(indexContent, claim, 'dist/index.html');
   for (const tag of ['geo.placename', '35.3387;25.1442', '35.3387, 25.1442', 'pagead2.googlesyndication.com', 'emrld.ltd', 'ca-pub-1608902378435149']) banIncludes(indexContent, tag, 'dist/index.html');
 
+  const methodologyContent = requireFile(path.join(distDir, 'methodology', 'index.html'), 'Methodology page');
+  requireIncludes(methodologyContent, `<link rel="canonical" href="${CANONICAL_HOST}/methodology/" />`, 'Methodology page');
+  requireIncludes(methodologyContent, 'Unknown does not mean false', 'Methodology page');
+  requireIncludes(methodologyContent, 'Road access is reviewed separately from location', 'Methodology page');
+
   const producerDirectoryContent = requireFile(path.join(distDir, 'producers', 'index.html'), 'Producer directory');
   requireIncludes(producerDirectoryContent, `<link rel="canonical" href="${PRODUCER_DIRECTORY_URL}" />`, 'Producer directory');
   requireIncludes(producerDirectoryContent, `${PRODUCERS.length} canonical producer/project records`, 'Producer directory');
@@ -285,6 +297,7 @@ function verifySeo(): void {
   requireIncludes(producerDirectoryContent, 'href="/categories/"', 'Producer directory');
   requireIncludes(producerDirectoryContent, 'href="/greece/"', 'Producer directory');
   requireIncludes(producerDirectoryContent, 'href="/italy/"', 'Producer directory');
+  requireIncludes(producerDirectoryContent, 'href="/methodology/"', 'Producer directory');
   const directoryJsonLd = parseJsonLd(producerDirectoryContent, 'Producer directory');
   if (directoryJsonLd['@type'] !== 'CollectionPage') fail('Producer directory JSON-LD must describe a CollectionPage.');
 
@@ -302,6 +315,7 @@ function verifySeo(): void {
     requireIncludes(pageContent, `<dt>What is known about road access to ${escapedName}?</dt>`, `Producer page ${producer.id}`);
     requireIncludes(pageContent, 'does not imply a commercial partnership', `Producer page ${producer.id}`);
     requireIncludes(pageContent, 'href="/producers/"', `Producer page ${producer.id}`);
+    requireIncludes(pageContent, 'href="/methodology/"', `Producer methodology link ${producer.id}`);
     requireIncludes(pageContent, `href="${destinationPath(producer.destination)}"`, `Producer destination link ${producer.id}`);
     if ((categoryGroups.get(producer.category) || []).length >= MIN_CATEGORY_RECORDS) requireIncludes(pageContent, `href="${categoryPath(producer.category)}"`, `Producer category link ${producer.id}`);
     if ((regionGroups.get(`${producer.destination}::${producer.region}`) || []).length >= MIN_REGION_RECORDS) requireIncludes(pageContent, `href="${regionPath(producer.destination, producer.region)}"`, `Producer region link ${producer.id}`);

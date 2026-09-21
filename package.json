@@ -5,9 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && tsc -p tsconfig.server.json && vite build && tsx scripts/generate_seo_pages.ts && tsx scripts/finalize_phase12_homepage.ts && tsx scripts/finalize_llms_catalogue.ts && tsx scripts/write_catalogue_state.ts && tsx scripts/verify_seo_assets.ts && tsx scripts/enrich_producer_aeo.ts && tsx scripts/generate_seo_landings.ts && tsx scripts/enrich_seo_destination_stories.ts && tsx scripts/finalize_seo_landing_indexes.ts && tsx scripts/verify_seo_landings.ts && tsx scripts/verify_producer_aeo.ts && npm run check:budget",
+    "build": "tsc && tsc -p tsconfig.server.json && vite build && tsx scripts/generate_seo_pages.ts && tsx scripts/finalize_phase12_homepage.ts && tsx scripts/finalize_llms_catalogue.ts && tsx scripts/write_catalogue_state.ts && tsx scripts/verify_seo_assets.ts && tsx scripts/enrich_producer_aeo.ts && tsx scripts/generate_seo_landings.ts && tsx scripts/enrich_seo_destination_stories.ts && tsx scripts/finalize_seo_landing_indexes.ts && tsx scripts/verify_seo_landings.ts && tsx scripts/verify_seo_link_graph.ts && tsx scripts/verify_producer_aeo.ts && npm run check:budget",
     "generate:seo": "npm run sync:seo-catalogue && tsx scripts/generate_seo_pages.ts && tsx scripts/finalize_phase12_homepage.ts && tsx scripts/finalize_llms_catalogue.ts && tsx scripts/write_catalogue_state.ts && tsx scripts/enrich_producer_aeo.ts && tsx scripts/generate_seo_landings.ts && tsx scripts/enrich_seo_destination_stories.ts && tsx scripts/finalize_seo_landing_indexes.ts",
-    "verify:seo": "tsx scripts/verify_seo_landings.ts && tsx scripts/verify_producer_aeo.ts",
+    "verify:seo": "tsx scripts/verify_seo_landings.ts && tsx scripts/verify_seo_link_graph.ts && tsx scripts/verify_producer_aeo.ts",
+    "verify:seo-links": "tsx scripts/verify_seo_link_graph.ts",
     "verify:aeo": "tsx scripts/verify_producer_aeo.ts",
     "sync:fallback": "tsx scripts/sync_fallback_producers.ts",
     "audit:google-place-ids": "tsx scripts/audit_google_place_ids.ts",

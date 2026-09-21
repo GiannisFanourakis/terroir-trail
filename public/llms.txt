@@ -3,6 +3,7 @@
 Canonical URL: https://terroir-trail.web.app/
 Sitemap: https://terroir-trail.web.app/sitemap.xml
 Producer directory: https://terroir-trail.web.app/producers/
+Verification methodology: https://terroir-trail.web.app/methodology/
 Robots policy: https://terroir-trail.web.app/robots.txt
 
 ## Current product state
@@ -37,8 +38,9 @@ Preferred discovery order for machine consumers:
 1. Use the canonical homepage for product-level identity and current live catalogue scope.
 2. Use `/producers/` for the deterministic canonical producer directory.
 3. Use `/producers/<producer-id>/` for source-backed producer entity facts.
-4. Use `sitemap.xml` for the current crawlable canonical URL set.
-5. Treat the interactive `?producer=<id>` state as application navigation, not as the canonical entity URL.
+4. Use `/methodology/` for verification, uncertainty and evidence-handling rules.
+5. Use `sitemap.xml` for the current crawlable canonical URL set.
+6. Treat the interactive `?producer=<id>` state as application navigation, not as the canonical entity URL.
 
 The live runtime catalogue and deterministic canonical SEO snapshot are synchronized at {{LIVE_PRODUCER_COUNT}} records in the current deployment snapshot. Production deployment refreshes both together from the public Supabase catalogue.
 

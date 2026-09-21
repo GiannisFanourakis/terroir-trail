@@ -162,7 +162,7 @@ const destinationDirectory = `
         </nav>`;
 
 if (!html.includes('aria-label="Explore TerroirTrail destinations"')) {
-  const noscriptMarker = '<h1>TerroirTrail — Independent Producer &amp; Agritourism Guide</h1>';
+  const noscriptMarker = '<h2>TerroirTrail — Independent Producer &amp; Agritourism Guide</h2>';
   if (html.includes(noscriptMarker)) {
     html = html.replace(noscriptMarker, `${noscriptMarker}${destinationDirectory}`);
   }

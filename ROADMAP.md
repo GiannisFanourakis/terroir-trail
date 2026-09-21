@@ -5,7 +5,7 @@
 > Completion convention: change `- [ ] Step` to `- [x] ~~Step~~` when finished. Do not mark a step complete until it has been implemented, tested, pushed, deployed where applicable, and verified.
 
 **Last updated:** 2026-09-21
-**Current focus:** Phase 14.6 — Build free My Trips V1. Free traveler planning layer (Save → Plan → Visit → Passport) implemented; Gate 14.6 remains open pending production deployment and verification.
+**Current focus:** Phase 14.6A — Organic Discovery Foundation (SEO + AEO + GEO). My Trips V1 is deployed; its final two retry/lifecycle contract-edge fixes remain tracked separately while organic discovery work proceeds.
 
 ---
 
@@ -897,7 +897,47 @@ Do **not** add in V1:
 
 **Phase 14.6 closeout verification checkpoint — 2026-09-21:** Free My Trips V1 verification gaps closed: fail-closed catalogue offline handling implemented (`catalogueIsLive === false` suppresses fallback facts while preserving structural trip stops), drawer opening from trip workspace correctly attributes `trip_workspace`, directions link clicks instrumented with `directions_click` (`trip_workspace`), expandable visit readiness details expose full audit status and direct producer contact, partial-failure retry in AddToTripModal preserves created trips without duplicate creation, and user-facing HTML entities cleaned. Gate 14.6 remains open pending production deployment and smoke verification.
 
-**Gate 14.6:** Open pending production deployment. My Trips V1 must be useful while entirely free and without route-generation/payment features.
+**Gate 14.6:** Production deployment is green at `423adf8`, but the gate remains open pending the final two reviewed contract edges: `no_longer_listed` precedence during catalogue outage and authoritative reconciliation after an ambiguous add-to-trip response.
+
+---
+
+### 14.6A — Organic Discovery Foundation (SEO + AEO + GEO)
+
+**Purpose:** make the existing verified catalogue discoverable through non-brand search and usable as a source for answer/generative engines before expanding monetisation.
+
+**Baseline — 2026-09-21**
+- Search Console, last 28 settled days: **7 clicks / 29 impressions**, with current page visibility attributable to the homepage.
+- Live sitemap: **234 URLs**.
+- Sitemap URLs with Search Console visibility in the baseline window: **1 / 234**.
+- Google URL Inspection: homepage **Submitted and indexed**; sampled producer directory, producer entity, Crete destination and Crete wineries pages were **URL is unknown to Google**.
+- Sitemap was newly submitted and pending with **0 warnings / 0 errors** at baseline.
+
+#### 14.6A.1 Discovery/indexation foundation
+- [ ] Put useful crawlable acquisition content and static anchors in the homepage HTML outside `<noscript>`.
+- [ ] Preserve canonical producer, destination, category, region and country pages.
+- [ ] Add a build-time internal-link graph check so important sitemap URLs cannot become orphans.
+- [ ] Keep sitemap deterministic and free of query-state/private app URLs.
+- [ ] Publish a public verification methodology page and link it throughout the entity graph.
+
+#### 14.6A.2 Search-intent landing pages
+- [ ] Align destination/category page titles and H1s with natural intents such as **Wineries in Crete**, **Olive mills in Crete**, and **Dairies / cheesemakers in Crete** where real catalogue depth supports them.
+- [ ] Keep the existing minimum catalogue thresholds; do not manufacture thin keyword permutations.
+- [ ] Add direct catalogue-derived planning answers for visitability, booking, walk-ins, location confidence and road-access evidence.
+- [ ] Reuse human-written terroir context instead of generic generated travel copy.
+
+#### 14.6A.3 AEO/GEO trust layer
+- [ ] Make answer-first content visible in canonical HTML.
+- [ ] Preserve **UNKNOWN != FALSE** in all aggregate answers.
+- [ ] Keep structured data aligned with visible facts; do not invent producer logos or special “AI SEO” schema.
+- [ ] Keep `llms.txt` supplemental while canonical HTML remains the source of truth.
+- [ ] Keep major search/answer-engine crawlers allowed.
+
+#### 14.6A.4 Distribution readiness
+- [ ] Publish an IndexNow verification key file without adding long-lived secrets.
+- [ ] Do not auto-submit every URL on every deploy; configure/validate IndexNow after the production foundation is verified.
+- [ ] Establish Search Console page/query/indexation tracking for the new landing clusters.
+
+**Gate 14.6A:** implementation must pass the normal quality gate and production deployment. Immediate Google indexing is not a deployment gate because crawling/indexation is asynchronous; success is measured over time by sitemap discovery, indexed pages, non-brand query impressions/clicks and answer-engine referrals/citations.
 
 ---
 
