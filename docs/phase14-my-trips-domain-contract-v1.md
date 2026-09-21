@@ -158,6 +158,17 @@ Rules:
 
 Administrative/trust hold. Hidden publicly. Existing trip reference displays unavailable without exposing a reason that is not intended for travelers. Reinstatement is deliberate.
 
+### Durable publication tombstone
+
+Implemented 2026-09-21 in the private Supabase `catalogue_control` schema:
+
+- `producer_publication_tombstones` records durable `opted_out` / `suspended` suppressions;
+- an active tombstone blocks any `is_active=true` insert/update through a database trigger;
+- suppression atomically deactivates the producer;
+- releasing a tombstone deliberately **does not** republish the producer;
+- the table/functions are not available to `anon`, `authenticated` or application `service_role` access;
+- a rollback verification confirmed suppression, blocked reactivation, non-republishing release and zero residual catalogue change.
+
 ### Stale fallback rule
 
 A stale generated fallback must never be treated as authority over a newer non-public state.
@@ -362,8 +373,8 @@ The following register is exhaustive for the known V1 scenario classes. New case
 |---|---|---|
 | H01 | Normal account export | Include trips and their items. |
 | H02 | Normal self-deletion | Delete trips/items before deleting user auth record. |
-| H03 | Account deletion fails before trip deletion | Abort destructive continuation; return error, preserve recoverable account. |
-| H04 | Failure after trips deleted but before auth deletion | Existing account deletion workflow must surface failure; retry is safe because trip deletion is idempotent. |
+| H03 | Account deletion fails during collection cleanup | Surface failure and keep the Firebase Auth account/user parent until cleanup can be retried; individual cleanup operations are idempotent, but the multi-collection deletion is not globally transactional. |
+| H04 | Failure after trips deleted but before auth deletion | Surface failure; retry is safe because trip and other cleanup steps are designed to tolerate already-removed records. |
 | H05 | User re-registers with same email | New Firebase UID receives no old trips. |
 | H06 | Host deletes account | Personal trips removed; public producer catalogue remains independent. |
 | H07 | Admin attempts self-deletion | Existing admin safety rule still applies before trip deletion. |
