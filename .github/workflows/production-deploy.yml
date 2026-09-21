@@ -121,8 +121,10 @@ jobs:
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
 
+      # firebase-tools 15.22.2 has a documented ADC/WIF auth regression.
+      # Keep CI pinned to the last known-good WIF-compatible release until explicitly upgraded.
       - name: Deploy Firestore rules and indexes
-        run: npx -y firebase-tools deploy --only firestore:rules,firestore:indexes --project terroir-trail --non-interactive
+        run: npx -y firebase-tools@15.22.1 deploy --only firestore:rules,firestore:indexes --project terroir-trail --non-interactive
 
       - name: Deploy Cloud Run API
         shell: bash
@@ -143,7 +145,7 @@ jobs:
             https://terroirtrail-api-mqznli4emq-ew.a.run.app/api/health
 
       - name: Deploy Firebase Hosting
-        run: npx -y firebase-tools deploy --only hosting --project terroir-trail --non-interactive
+        run: npx -y firebase-tools@15.22.1 deploy --only hosting --project terroir-trail --non-interactive
 
       - name: Verify Firebase API rewrite health
         run: |
