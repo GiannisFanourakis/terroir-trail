@@ -33,6 +33,17 @@ const statusFor = (error: TripServiceError) =>
   error.code === 'not_found' ? 404 :
   error.code === 'conflict' ? 409 : 503;
 
+const assertOnlyKeys = (body: unknown, allowed: readonly string[]) => {
+  if (!body || typeof body !== 'object' || Array.isArray(body)) {
+    throw new TripServiceError('bad_request', 'Request body must be a JSON object.');
+  }
+  const allowedKeys = new Set(allowed);
+  const unexpected = Object.keys(body as Record<string, unknown>).find(key => !allowedKeys.has(key));
+  if (unexpected) {
+    throw new TripServiceError('bad_request', `Unrecognized property: ${unexpected}`);
+  }
+};
+
 export function registerTripRoutes(
   app: Express,
   overrides: Partial<TripRouteDependencies> = {}
@@ -71,13 +82,14 @@ export function registerTripRoutes(
   });
 
   app.post('/api/trips', requireAuth, async (req, res) => {
-    await run(res, async () => ({
-      trip: await deps.createTrip(res.locals.identity.uid, {
+    await run(res, async () => {
+      assertOnlyKeys(req.body, ['title', 'startDate', 'endDate']);
+      return { trip: await deps.createTrip(res.locals.identity.uid, {
         title: req.body?.title,
         startDate: req.body?.startDate,
         endDate: req.body?.endDate,
-      }),
-    }));
+      }) };
+    });
   });
 
   app.get('/api/trips/:tripId', requireAuth, async (req, res) => {
@@ -87,66 +99,72 @@ export function registerTripRoutes(
   });
 
   app.patch('/api/trips/:tripId', requireAuth, async (req, res) => {
-    await run(res, async () => ({
-      trip: await deps.updateTrip(res.locals.identity.uid, String(req.params.tripId), {
+    await run(res, async () => {
+      assertOnlyKeys(req.body, ['expectedRevision', 'title', 'startDate', 'endDate']);
+      return { trip: await deps.updateTrip(res.locals.identity.uid, String(req.params.tripId), {
         expectedRevision: req.body?.expectedRevision,
         title: req.body?.title,
         startDate: req.body?.startDate,
         endDate: req.body?.endDate,
-      }),
-    }));
+      }) };
+    });
   });
 
   app.delete('/api/trips/:tripId', requireAuth, async (req, res) => {
-    await run(res, async () =>
-      deps.deleteTrip(
+    await run(res, async () => {
+      assertOnlyKeys(req.body, ['expectedRevision']);
+      return deps.deleteTrip(
         res.locals.identity.uid,
         String(req.params.tripId),
         req.body?.expectedRevision
-      )
-    );
+      );
+    });
   });
 
   app.post('/api/trips/:tripId/items', requireAuth, async (req, res) => {
-    await run(res, async () => ({
-      trip: await deps.addProducerToTrip(res.locals.identity.uid, String(req.params.tripId), {
+    await run(res, async () => {
+      assertOnlyKeys(req.body, ['producerId', 'expectedRevision']);
+      return { trip: await deps.addProducerToTrip(res.locals.identity.uid, String(req.params.tripId), {
         producerId: req.body?.producerId,
         expectedRevision: req.body?.expectedRevision,
-      }),
-    }));
+      }) };
+    });
   });
 
   app.delete('/api/trips/:tripId/items/:producerId', requireAuth, async (req, res) => {
-    await run(res, async () => ({
-      trip: await deps.removeProducerFromTrip(
+    await run(res, async () => {
+      assertOnlyKeys(req.body, ['expectedRevision']);
+      return { trip: await deps.removeProducerFromTrip(
         res.locals.identity.uid,
         String(req.params.tripId),
         String(req.params.producerId),
         req.body?.expectedRevision
-      ),
-    }));
+      ) };
+    });
   });
 
   app.post('/api/trips/:tripId/reorder', requireAuth, async (req, res) => {
-    await run(res, async () => ({
-      trip: await deps.reorderTripItems(
+    await run(res, async () => {
+      assertOnlyKeys(req.body, ['producerIds', 'expectedRevision']);
+      return { trip: await deps.reorderTripItems(
         res.locals.identity.uid,
         String(req.params.tripId),
         req.body?.producerIds,
         req.body?.expectedRevision
-      ),
-    }));
+      ) };
+    });
   });
 
   app.patch('/api/trips/:tripId/items/:producerId/day', requireAuth, async (req, res) => {
-    await run(res, async () => ({
-      trip: await deps.assignTripItemDay(
+    await run(res, async () => {
+      assertOnlyKeys(req.body, ['dayNumber', 'expectedRevision']);
+      return { trip: await deps.assignTripItemDay(
         res.locals.identity.uid,
         String(req.params.tripId),
         String(req.params.producerId),
         req.body?.dayNumber,
         req.body?.expectedRevision
-      ),
-    }));
+      ) };
+    });
   });
 }
