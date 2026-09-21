@@ -1,0 +1,152 @@
+import type { Express, NextFunction, Request, Response } from 'express';
+import { adminAuth } from './firebaseAdmin';
+import {
+  TripServiceError,
+  addProducerToTrip,
+  assignTripItemDay,
+  createTrip,
+  deleteTrip,
+  getTrip,
+  listTrips,
+  removeProducerFromTrip,
+  reorderTripItems,
+  updateTrip,
+} from './services/tripService';
+
+const defaults = {
+  verifyToken: (token: string) => adminAuth().verifyIdToken(token, true),
+  listTrips,
+  getTrip,
+  createTrip,
+  updateTrip,
+  deleteTrip,
+  addProducerToTrip,
+  removeProducerFromTrip,
+  reorderTripItems,
+  assignTripItemDay,
+};
+
+type TripRouteDependencies = typeof defaults;
+
+const statusFor = (error: TripServiceError) =>
+  error.code === 'bad_request' ? 400 :
+  error.code === 'not_found' ? 404 :
+  error.code === 'conflict' ? 409 : 503;
+
+export function registerTripRoutes(
+  app: Express,
+  overrides: Partial<TripRouteDependencies> = {}
+) {
+  const deps: TripRouteDependencies = { ...defaults, ...overrides };
+
+  const requireAuth = async (req: Request, res: Response, next: NextFunction) => {
+    const bearer = req.get('authorization');
+    if (!bearer?.startsWith('Bearer ')) {
+      res.status(401).json({ error: 'Sign in to use My Trips.' });
+      return;
+    }
+    try {
+      res.locals.identity = await deps.verifyToken(bearer.slice(7));
+      next();
+    } catch {
+      res.status(401).json({ error: 'Your session has expired. Please sign in again.' });
+    }
+  };
+
+  const run = async (res: Response, action: () => Promise<unknown>) => {
+    try {
+      res.json(await action());
+    } catch (error) {
+      if (error instanceof TripServiceError) {
+        res.status(statusFor(error)).json({ error: error.message, code: error.code });
+        return;
+      }
+      console.error('My Trips API unavailable:', error);
+      res.status(503).json({ error: 'My Trips is temporarily unavailable.' });
+    }
+  };
+
+  app.get('/api/trips', requireAuth, async (_req, res) => {
+    await run(res, async () => ({ trips: await deps.listTrips(res.locals.identity.uid) }));
+  });
+
+  app.post('/api/trips', requireAuth, async (req, res) => {
+    await run(res, async () => ({
+      trip: await deps.createTrip(res.locals.identity.uid, {
+        title: req.body?.title,
+        startDate: req.body?.startDate,
+        endDate: req.body?.endDate,
+      }),
+    }));
+  });
+
+  app.get('/api/trips/:tripId', requireAuth, async (req, res) => {
+    await run(res, async () => ({
+      trip: await deps.getTrip(res.locals.identity.uid, String(req.params.tripId)),
+    }));
+  });
+
+  app.patch('/api/trips/:tripId', requireAuth, async (req, res) => {
+    await run(res, async () => ({
+      trip: await deps.updateTrip(res.locals.identity.uid, String(req.params.tripId), {
+        expectedRevision: req.body?.expectedRevision,
+        title: req.body?.title,
+        startDate: req.body?.startDate,
+        endDate: req.body?.endDate,
+      }),
+    }));
+  });
+
+  app.delete('/api/trips/:tripId', requireAuth, async (req, res) => {
+    await run(res, async () =>
+      deps.deleteTrip(
+        res.locals.identity.uid,
+        String(req.params.tripId),
+        req.body?.expectedRevision
+      )
+    );
+  });
+
+  app.post('/api/trips/:tripId/items', requireAuth, async (req, res) => {
+    await run(res, async () => ({
+      trip: await deps.addProducerToTrip(res.locals.identity.uid, String(req.params.tripId), {
+        producerId: req.body?.producerId,
+        expectedRevision: req.body?.expectedRevision,
+      }),
+    }));
+  });
+
+  app.delete('/api/trips/:tripId/items/:producerId', requireAuth, async (req, res) => {
+    await run(res, async () => ({
+      trip: await deps.removeProducerFromTrip(
+        res.locals.identity.uid,
+        String(req.params.tripId),
+        String(req.params.producerId),
+        req.body?.expectedRevision
+      ),
+    }));
+  });
+
+  app.post('/api/trips/:tripId/reorder', requireAuth, async (req, res) => {
+    await run(res, async () => ({
+      trip: await deps.reorderTripItems(
+        res.locals.identity.uid,
+        String(req.params.tripId),
+        req.body?.producerIds,
+        req.body?.expectedRevision
+      ),
+    }));
+  });
+
+  app.patch('/api/trips/:tripId/items/:producerId/day', requireAuth, async (req, res) => {
+    await run(res, async () => ({
+      trip: await deps.assignTripItemDay(
+        res.locals.identity.uid,
+        String(req.params.tripId),
+        String(req.params.producerId),
+        req.body?.dayNumber,
+        req.body?.expectedRevision
+      ),
+    }));
+  });
+}
