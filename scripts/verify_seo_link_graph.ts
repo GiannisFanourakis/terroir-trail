@@ -67,14 +67,15 @@ const orphans = sitemapUrls.filter((url) => !visited.has(url));
 if (orphans.length) fail(`Orphaned sitemap URLs:\n${orphans.join('\n')}`);
 
 const homepage = fs.readFileSync(path.join(distDir, 'index.html'), 'utf-8');
-const fallbackStart = homepage.indexOf('data-seo-home-fallback="true"');
-const noscriptStart = homepage.indexOf('<noscript>');
-if (fallbackStart < 0 || (noscriptStart >= 0 && fallbackStart > noscriptStart)) fail('Homepage crawlable fallback must exist outside <noscript>.');
+if (!/<div id="root">\s*<\/div>/i.test(homepage)) {
+  fail('Homepage #root must stay empty before React mounts; do not reintroduce a visible preload SEO fallback.');
+}
 for (const href of ['/producers/', '/destinations/', '/categories/', '/methodology/', '/greece/crete/', '/greece/santorini/']) {
-  if (!homepage.includes(`href="${href}"`)) fail(`Homepage fallback missing ${href}`);
+  if (!homepage.includes(`href="${href}"`)) fail(`Homepage no-JavaScript discovery fallback missing ${href}`);
 }
 
 console.log('SEO internal-link graph verification passed:');
 console.log(`  - ${sitemapUrls.length} sitemap URLs have canonical built files`);
 console.log('  - 0 orphaned sitemap URLs');
-console.log('  - crawlable homepage discovery hub is outside <noscript>');
+console.log('  - normal app #root stays empty until React mounts');
+console.log('  - no-JavaScript discovery links remain available without a visible preload fallback');

@@ -913,7 +913,7 @@ Do **not** add in V1:
 - Sitemap was newly submitted and pending with **0 warnings / 0 errors** at baseline.
 
 #### 14.6A.1 Discovery/indexation foundation
-- [ ] Put useful crawlable acquisition content and static anchors in the homepage HTML outside `<noscript>`.
+- [x] ~~Keep the normal app `#root` empty until React mounts; retain discovery through the sitemap, canonical static landing pages, rendered app navigation and the genuine no-JavaScript fallback without a visible preload SEO page.~~
 - [ ] Preserve canonical producer, destination, category, region and country pages.
 - [ ] Add a build-time internal-link graph check so important sitemap URLs cannot become orphans.
 - [ ] Keep sitemap deterministic and free of query-state/private app URLs.
