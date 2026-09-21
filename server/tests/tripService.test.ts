@@ -87,7 +87,8 @@ class FakeDb {
 
   async runTransaction<T>(handler: (tx: any) => Promise<T>): Promise<T> {
     const tx = {
-      get: async (ref: FakeDocRef) => this.snapshot(ref),
+      get: async (target: FakeDocRef | FakeCollection) =>
+        target instanceof FakeCollection ? target.get() : this.snapshot(target),
       set: (ref: FakeDocRef, data: Stored) => {
         this.store.set(ref.path, structuredClone(data));
       },
@@ -351,3 +352,4 @@ test('My Trips removal reindexes items and deletion removes the complete bounded
   assert.deepEqual(result, { deleted: true, tripId: trip.id });
   await expectTripError(getTrip('traveler-1', trip.id, db as any), 'not_found');
 });
+
