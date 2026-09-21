@@ -956,15 +956,17 @@ Do **not** add in V1:
 #### 14.7.2 Define allowed contextual surfaces
 
 Candidate contexts:
-- [ ] trip preparation;
-- [ ] destination/region planning;
-- [ ] transport preparation;
-- [ ] connectivity preparation.
+- [x] ~~trip preparation;~~
+- [x] ~~destination/region planning;~~
+- [x] ~~transport preparation;~~
+- [x] ~~connectivity preparation.~~
 
 Potential categories:
-- [ ] car rental;
-- [ ] transfers;
-- [ ] eSIM/connectivity.
+- [x] ~~car rental;~~
+- [x] ~~transfers;~~
+- [x] ~~eSIM/connectivity.~~
+
+**14.7.2 placement decision — 2026-09-21:** keep the frozen analytics vocabulary and use only `trip_preparation` and `region_planning` as contextual affiliate source surfaces. Transport preparation is represented within trip preparation using car-rental and transfer offers; connectivity preparation may appear in trip or region planning using eSIM offers. Do not place affiliate utility inside producer cards/drawers or safety/access evidence. The contextual pilot should use a small number of non-rotating, context-matched offers rather than the current generic rotating banner. Generic third-party activity marketplaces such as Klook remain outside this pilot because they can overlap with TerroirTrail's producer-first experience proposition.
 
 Treat generic third-party activity marketplaces separately because they may conflict with TerroirTrail's producer-first positioning.
 
