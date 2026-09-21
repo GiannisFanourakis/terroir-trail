@@ -173,6 +173,38 @@ npm run verify:live-catalogue
 npm run build:live
 ~~~
 
+### Minimum production redeploy
+
+From the repository root, update local `main` first:
+
+~~~bash
+git pull origin main
+~~~
+
+**Frontend / Firebase Hosting only:**
+
+~~~bash
+npm run deploy
+~~~
+
+**API / Cloud Run after server-side changes:**
+
+~~~bash
+gcloud run deploy terroirtrail-api --source . --project=terroir-trail --region=europe-west1 --allow-unauthenticated --min-instances=0 --max-instances=3 --cpu=1 --memory=512Mi
+~~~
+
+If a change touches both the API and frontend, deploy Cloud Run first, then run `npm run deploy`.
+
+The Cloud Run command updates the existing `terroirtrail-api` service. Do not create a second service. Existing server environment variables and Secret Manager bindings must remain configured on that service.
+
+Before a manual production redeploy, prefer:
+
+~~~bash
+npm run check
+~~~
+
+The automated **Production Reconcile** workflow deploys Firebase Hosting, but it does **not** deploy Cloud Run server changes.
+
 ### Additional checks
 
 ~~~bash
