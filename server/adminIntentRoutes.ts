@@ -4,10 +4,12 @@ import {
   AdminIntentMetricsError,
   getAdminIntentMetrics,
 } from './services/adminIntentMetricsService';
+import { getAdminRegionalIntelligence } from './services/adminRegionalIntelligenceService';
 
 const defaults = {
   verifyToken: (token: string) => adminAuth().verifyIdToken(token, true),
   getAdminIntentMetrics,
+  getAdminRegionalIntelligence,
 };
 
 type AdminIntentRouteDependencies = typeof defaults;
@@ -31,6 +33,24 @@ export function registerAdminIntentRoutes(
       res.status(401).json({ error: 'Your session has expired. Please sign in again.' });
     }
   };
+
+  app.get('/api/admin/regional-intelligence', requireAuth, async (req, res) => {
+    const days = Number(req.query.days ?? 30);
+    try {
+      const report = await deps.getAdminRegionalIntelligence(res.locals.identity.uid, days);
+      res.json({ report });
+    } catch (error) {
+      if (error instanceof AdminIntentMetricsError) {
+        const status =
+          error.code === 'bad_request' ? 400 :
+          error.code === 'forbidden' ? 403 : 503;
+        res.status(status).json({ error: error.message });
+        return;
+      }
+      console.error('Admin regional intelligence unavailable:', error);
+      res.status(503).json({ error: 'Regional intelligence is temporarily unavailable.' });
+    }
+  });
 
   app.get('/api/admin/intent-metrics', requireAuth, async (req, res) => {
     const days = Number(req.query.days ?? 30);

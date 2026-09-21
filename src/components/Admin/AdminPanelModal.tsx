@@ -35,6 +35,7 @@ import {
 } from '../../utils/adminCatalogueMetrics';
 import { ProducerOwnershipAdmin } from './ProducerOwnershipAdmin';
 import { AdminIntentBaseline } from './AdminIntentBaseline';
+import { AdminRegionalIntelligence } from './AdminRegionalIntelligence';
 
 interface AdminPanelModalProps {
   isOpen: boolean;
@@ -371,6 +372,7 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
           </section>
 
           <AdminIntentBaseline />
+          <AdminRegionalIntelligence />
 
           <section>
             <div className="flex items-center justify-between gap-3 mb-3">

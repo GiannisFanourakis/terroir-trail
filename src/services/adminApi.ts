@@ -186,6 +186,62 @@ export interface AdminIntentMetrics {
   }>;
 }
 
+export interface AdminRegionalIntelligence {
+  generated_at: string;
+  start_date: string;
+  end_date: string;
+  aggregate_data_through: string | null;
+  freshness_days: number;
+  demand_minimum_views: number;
+  affiliate_minimum_impressions: number;
+  coverage_note: string;
+  regions: Array<{
+    destination: string;
+    country_code: string | null;
+    audited_producer_count: number;
+    category_count: number;
+    verified_location_count: number;
+    public_visits_count: number;
+    seasonal_public_count: number;
+    appointment_only_count: number;
+    not_publicly_confirmed_count: number;
+    current_access_uncertain_count: number;
+    booking_policy_count: number;
+    visitor_hours_count: number;
+    road_access_review_count: number;
+    parking_evidence_count: number;
+    visitor_language_evidence_count: number;
+    fresh_review_count: number;
+    reviewed_unknown_count: number;
+    direct_contact_count: number;
+    demand_sample_sufficient: boolean;
+    affiliate_sample_sufficient: boolean;
+    demand: {
+      region_opens: number;
+      region_producers_views: number;
+      producer_views: number;
+      saves: number;
+      trip_additions: number;
+      direct_producer_actions: number;
+      directions_clicks: number;
+    };
+    affiliates: {
+      impressions: number;
+      clicks: number;
+      ctr: number | null;
+    };
+    categories: Array<{
+      category: string;
+      producer_count: number;
+      producer_views: number;
+      saves: number;
+      trip_additions: number;
+      direct_producer_actions: number;
+      directions_clicks: number;
+    }>;
+  }>;
+}
+
 export interface AdminDashboardMetrics {
   generatedAt: string;
   requests: {
@@ -246,6 +302,9 @@ export const fetchAdminDashboardMetrics = () =>
 
 export const fetchAdminIntentMetrics = (days: 7 | 30 | 90 | 180) =>
   request<{ metrics: AdminIntentMetrics }>(`/admin/intent-metrics?days=${days}`);
+
+export const fetchAdminRegionalIntelligence = (days: 7 | 30 | 90 | 180) =>
+  request<{ report: AdminRegionalIntelligence }>(`/admin/regional-intelligence?days=${days}`);
 
 export const searchAdminAccounts = (query: string) =>
   request<{ accounts: AdminAccountSummary[] }>(`/admin/accounts?q=${encodeURIComponent(query)}`);
