@@ -353,3 +353,37 @@ test('My Trips removal reindexes items and deletion removes the complete bounded
   await expectTripError(getTrip('traveler-1', trip.id, db as any), 'not_found');
 });
 
+
+
+test('My Trips enforces trip quota transactionally and avoids no-op revision churn', async () => {
+  const db = new FakeDb();
+  for (let i = 0; i < 25; i += 1) {
+    db.store.set('users/traveler-1/trips/existing' + i, {
+      id: 'existing' + i,
+      ownerUid: 'traveler-1',
+      title: 'Trip ' + i,
+      startDate: null,
+      endDate: null,
+      itemCount: 0,
+      revision: 1,
+      schemaVersion: 1,
+      createdAt: '2026-09-21T00:00:00Z',
+      updatedAt: '2026-09-21T00:00:00Z',
+    });
+  }
+
+  await expectTripError(
+    createTrip('traveler-1', { title: 'Too many' }, db as any),
+    'conflict'
+  );
+
+  const db2 = new FakeDb();
+  const trip = await createTrip('traveler-1', { title: 'Crete' }, db2 as any);
+  const unchanged = await updateTrip(
+    'traveler-1',
+    trip.id,
+    { expectedRevision: 1, title: 'Crete' },
+    db2 as any
+  );
+  assert.equal(unchanged.revision, 1);
+});
