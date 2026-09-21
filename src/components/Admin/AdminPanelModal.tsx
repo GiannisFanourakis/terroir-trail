@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 import {
   Activity,
   AlertTriangle,
-  BarChart3,
   CheckCircle2,
   Clock3,
   Database,
@@ -35,6 +34,7 @@ import {
   type AdminCatalogueMetrics,
 } from '../../utils/adminCatalogueMetrics';
 import { ProducerOwnershipAdmin } from './ProducerOwnershipAdmin';
+import { AdminIntentBaseline } from './AdminIntentBaseline';
 
 interface AdminPanelModalProps {
   isOpen: boolean;
@@ -370,41 +370,7 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
             </div>
           </section>
 
-          <section className="rounded-xl border border-white/10 bg-stone-900/60 overflow-hidden">
-            <div className="px-4 py-3 border-b border-white/10 flex items-center gap-2">
-              <BarChart3 className="w-4 h-4 text-cyan-400" />
-              <div>
-                <h3 className="text-sm font-bold text-white">Greece coverage matrix</h3>
-                <p className="text-[11px] text-stone-400 mt-0.5">Region × current producer category. Use this to choose the next evidence-based Greek expansion batch.</p>
-              </div>
-            </div>
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[760px] text-[11px]">
-                <thead className="bg-stone-950/70 text-stone-500 uppercase">
-                  <tr>
-                    <th className="text-left px-4 py-2.5">Region</th>
-                    <th className="text-right px-3 py-2.5">Total</th>
-                    {catalogueMetrics?.categories.map((category) => (
-                      <th key={category} className="text-right px-3 py-2.5 whitespace-nowrap">{formatCategory(category)}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {catalogueMetrics?.coverageByRegion.length ? catalogueMetrics.coverageByRegion.map((row) => (
-                    <tr key={row.region} className="border-t border-white/5">
-                      <td className="px-4 py-2.5 font-semibold text-stone-200">{row.region}</td>
-                      <td className="px-3 py-2.5 text-right font-bold text-white">{row.total}</td>
-                      {catalogueMetrics.categories.map((category) => (
-                        <td key={category} className="px-3 py-2.5 text-right text-stone-400">{row.byCategory[category] || 0}</td>
-                      ))}
-                    </tr>
-                  )) : (
-                    <tr><td className="px-4 py-6 text-stone-500" colSpan={(catalogueMetrics?.categories.length || 0) + 2}>Coverage data unavailable.</td></tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </section>
+          <AdminIntentBaseline />
 
           <section>
             <div className="flex items-center justify-between gap-3 mb-3">
