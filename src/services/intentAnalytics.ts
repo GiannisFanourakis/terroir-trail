@@ -12,6 +12,13 @@ export type IntentEventName =
   | 'producer_phone_click'
   | 'producer_email_click'
   | 'directions_click'
+  | 'trip_created'
+  | 'trip_renamed'
+  | 'trip_producer_added'
+  | 'trip_producer_removed'
+  | 'trip_item_reordered'
+  | 'trip_day_assigned'
+  | 'trip_opened'
   | 'passport_stamp_added'
   | 'passport_stamp_removed'
   | 'affiliate_impression'
@@ -67,6 +74,13 @@ export function isAllowedIntentSourceSurface(
   sourceSurface: SourceSurface
 ): boolean {
   if (event === 'region_open') return sourceSurface === 'map_canvas' || sourceSurface === 'header_region_picker';
+  if (event === 'trip_created') return 'trip_add_flow|my_trips|profile_menu'.includes(sourceSurface);
+  if (event === 'trip_renamed') return sourceSurface === 'trip_workspace';
+  if (event === 'trip_producer_added') return 'trip_add_flow|producer_drawer|trip_workspace'.includes(sourceSurface);
+  if (event === 'trip_producer_removed' || event === 'trip_item_reordered' || event === 'trip_day_assigned') {
+    return sourceSurface === 'trip_workspace';
+  }
+  if (event === 'trip_opened') return sourceSurface === 'my_trips' || sourceSurface === 'profile_menu';
   if (event === 'region_producers_view') return sourceSurface === 'region_drawer';
   if (event.startsWith('affiliate_')) return 'map_affiliate_banner|trip_preparation|region_planning'.includes(sourceSurface);
   if (event.startsWith('passport_')) return sourceSurface === 'producer_drawer' || sourceSurface === 'passport';
