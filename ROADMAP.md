@@ -933,8 +933,8 @@ Do **not** add in V1:
 - [ ] Keep major search/answer-engine crawlers allowed.
 
 #### 14.6A.4 Distribution readiness
-- [ ] Publish an IndexNow verification key file without adding long-lived secrets.
-- [ ] Do not auto-submit every URL on every deploy; configure/validate IndexNow after the production foundation is verified.
+- [x] ~~Publish an IndexNow verification key file without adding long-lived secrets.~~
+- [x] ~~Configure IndexNow after production verification: submit only a small priority URL batch after successful SEO/catalogue-relevant production changes, never all sitemap URLs on every deploy.~~
 - [ ] Establish Search Console page/query/indexation tracking for the new landing clusters.
 
 **Gate 14.6A:** implementation must pass the normal quality gate and production deployment. Immediate Google indexing is not a deployment gate because crawling/indexation is asynchronous; success is measured over time by sitemap discovery, indexed pages, non-brand query impressions/clicks and answer-engine referrals/citations.

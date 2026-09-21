@@ -178,6 +178,24 @@ jobs:
           console.log(`Deployed catalogue hash verified: ${local.catalogueHash}`);
           NODE
 
+      - name: Detect IndexNow-relevant production changes
+        id: indexnow
+        shell: bash
+        run: |
+          changed_files="$(git diff --name-only HEAD^ HEAD || true)"
+          printf '%s\n' "$changed_files"
+
+          if printf '%s\n' "$changed_files" | grep -Eq '^(public/5d8e7c2a4b1f6093c8e5a7d2f4b6c901\.txt|public/methodology/|scripts/(generate_seo_pages|generate_seo_landings|enrich_producer_aeo|enrich_seo_destination_stories|finalize_phase12_homepage|finalize_llms_catalogue|finalize_seo_landing_indexes|submit_indexnow)\.(ts|mjs)|src/data/(liveCatalogue\.generated|activeProducerIds\.generated|catalogueSummary\.generated|terroirRegionStories).*|\.github/workflows/production-deploy\.yml); then
+            echo "submit=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "submit=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Submit priority SEO URLs to IndexNow
+        if: steps.indexnow.outputs.submit == 'true'
+        continue-on-error: true
+        run: node scripts/submit_indexnow.mjs
+
       - name: Deployment summary
         run: |
           echo "Production deployment completed from $(git rev-parse --short HEAD)."
