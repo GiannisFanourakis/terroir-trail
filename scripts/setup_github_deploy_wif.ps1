@@ -20,23 +20,34 @@ function Invoke-Gcloud {
   }
 }
 
+function Test-GcloudResource {
+  param([Parameter(ValueFromRemainingArguments = $true)][string[]]$Args)
+
+  $PreviousPreference = $ErrorActionPreference
+  try {
+    $ErrorActionPreference = "Continue"
+    & gcloud @Args *> $null
+    return $LASTEXITCODE -eq 0
+  }
+  finally {
+    $ErrorActionPreference = $PreviousPreference
+  }
+}
+
 Write-Host "Configuring keyless GitHub Actions deployment for $Repository..."
 Invoke-Gcloud config set project $ProjectId
 
 Invoke-Gcloud services enable iamcredentials.googleapis.com sts.googleapis.com run.googleapis.com cloudbuild.googleapis.com artifactregistry.googleapis.com firebasehosting.googleapis.com firebaserules.googleapis.com firestore.googleapis.com --project=$ProjectId
 
-& gcloud iam service-accounts describe $DeployerSa --project=$ProjectId *> $null
-if ($LASTEXITCODE -ne 0) {
+if (-not (Test-GcloudResource iam service-accounts describe $DeployerSa --project=$ProjectId)) {
   Invoke-Gcloud iam service-accounts create $DeployerName --project=$ProjectId --display-name="TerroirTrail GitHub production deployer"
 }
 
-& gcloud iam workload-identity-pools describe $PoolId --project=$ProjectId --location=global *> $null
-if ($LASTEXITCODE -ne 0) {
+if (-not (Test-GcloudResource iam workload-identity-pools describe $PoolId --project=$ProjectId --location=global)) {
   Invoke-Gcloud iam workload-identity-pools create $PoolId --project=$ProjectId --location=global --display-name="GitHub Actions"
 }
 
-& gcloud iam workload-identity-pools providers describe $ProviderId --project=$ProjectId --location=global --workload-identity-pool=$PoolId *> $null
-if ($LASTEXITCODE -ne 0) {
+if (-not (Test-GcloudResource iam workload-identity-pools providers describe $ProviderId --project=$ProjectId --location=global --workload-identity-pool=$PoolId)) {
   Invoke-Gcloud iam workload-identity-pools providers create-oidc $ProviderId --project=$ProjectId --location=global --workload-identity-pool=$PoolId --display-name="TerroirTrail main branch" --issuer-uri="https://token.actions.githubusercontent.com" --attribute-mapping="google.subject=assertion.sub,attribute.repository=assertion.repository,attribute.ref=assertion.ref" --attribute-condition="assertion.repository=='$Repository' && assertion.ref=='refs/heads/main'"
 }
 
