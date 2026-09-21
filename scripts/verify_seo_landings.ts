@@ -251,10 +251,11 @@ function verifySeo(): void {
   requireIncludes(indexContent, 'TerroirTrail — Independent Producer &amp; Agritourism Guide', 'dist/index.html');
   requireIncludes(indexContent, `${LIVE_CATALOGUE_METRICS.totalProducers} live producer/project records`, 'dist/index.html');
   requireIncludes(indexContent, `${LIVE_CATALOGUE_METRICS.destinationCount} destinations in ${LIVE_CATALOGUE_METRICS.countryCount} European countries`, 'dist/index.html');
-  requireIncludes(indexContent, 'data-seo-home-fallback="true"', 'dist/index.html');
+  if (!/<div id="root">\\s*<\\/div>/i.test(indexContent)) fail('Homepage #root must remain empty before React mounts.');
+  banIncludes(indexContent, 'data-seo-home-fallback="true"', 'dist/index.html');
   requireIncludes(indexContent, 'href="/producers/"', 'dist/index.html');
   requireIncludes(indexContent, 'href="/methodology/"', 'dist/index.html');
-  if (indexContent.indexOf('data-seo-home-fallback="true"') > indexContent.indexOf('<noscript>')) fail('Homepage static discovery fallback must exist outside <noscript>.');
+  requireIncludes(indexContent, '<noscript>', 'dist/index.html');
   requireIncludes(indexContent, 'data-seo-landing-nav="true"', 'dist/index.html');
   requireIncludes(indexContent, 'href="/destinations/"', 'dist/index.html');
   requireIncludes(indexContent, 'href="/categories/"', 'dist/index.html');
