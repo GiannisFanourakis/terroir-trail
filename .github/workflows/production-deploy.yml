@@ -8,7 +8,6 @@ on:
 
 permissions:
   contents: write
-  actions: write
   id-token: write
 
 concurrency:
@@ -22,6 +21,27 @@ jobs:
     timeout-minutes: 45
     env:
       SMOKE_PUBLIC_ORIGIN: https://terroir-trail.web.app
+      VITE_SUPABASE_URL: https://eoenugkkzmzsrzclvdhl.supabase.co
+      VITE_SUPABASE_ANON_KEY: sb_publishable_W01ZB3X4vjEjW1JFPQCzUw_Kh0AMrbH
+      VITE_FIREBASE_API_KEY: AIzaSyBodZLWoi5WVkvqZ-4T7z5hhYBCPR6EiAc
+      VITE_FIREBASE_AUTH_DOMAIN: terroir-trail.firebaseapp.com
+      VITE_FIREBASE_PROJECT_ID: terroir-trail
+      VITE_FIREBASE_STORAGE_BUCKET: terroir-trail.firebasestorage.app
+      VITE_FIREBASE_MESSAGING_SENDER_ID: '536226653448'
+      VITE_FIREBASE_APP_ID: 1:536226653448:web:dd796c068e38282e1938bd
+      VITE_FIREBASE_MEASUREMENT_ID: G-LVZHD0ZFHG
+      VITE_GOOGLE_MAPS_API_KEY: AIzaSyAzsaefmksvvAg5Rfp5b7S1sDbLqi1C6lU
+      VITE_PUBLIC_APP_URL: https://terroir-trail.web.app
+      VITE_ENABLE_EXPLORER_PASS_PURCHASES: 'false'
+      VITE_ENABLE_GOOGLE_PLACES_MEDIA: 'true'
+      VITE_ENABLE_HOST_MEDIA_UPLOADS: 'true'
+      VITE_ENABLE_TRAVEL_AFFILIATES: 'true'
+      VITE_ENABLE_ADVERTISING: 'false'
+      VITE_ADSENSE_CLIENT_ID: ca-pub-1608902378435149
+      VITE_STRIPE_PUBLISHABLE_KEY: pk_live_51UE7LDPTLRkIE3byut0tGErMGzNZxfBlWi0gZNEBfaX42M6ij4WcYZnBnzgsYldskdWP42fKuNHup87L0sC5jf23009lbjPX9z
+      VITE_STRIPE_PRODUCER_UPGRADE_URL: https://buy.stripe.com/8x24gBgpfdUa8zrgnLa7C01
+      VITE_STRIPE_EXPLORER_PASS_URL: https://buy.stripe.com/28EaEZeh76rIcPH1sRa7C00
+      VITE_STRIPE_ANNUAL_PASS_URL: https://buy.stripe.com/00w6oJa0RaHY2b39Zna7C03
 
     steps:
       - name: Checkout latest main
@@ -29,26 +49,6 @@ jobs:
         with:
           ref: main
           fetch-depth: 0
-
-      - name: Load production public build configuration
-        shell: bash
-        run: |
-          node --input-type=module <<'NODE'
-          import fs from 'node:fs';
-          const source = fs.readFileSync('.github/workflows/production-reconcile.yml', 'utf8');
-          const pattern = /^      (VITE_[A-Z0-9_]+):\s*(.+)$/gm;
-          let count = 0;
-          for (const match of source.matchAll(pattern)) {
-            let value = match[2].trim();
-            if ((value.startsWith("'") && value.endsWith("'")) || (value.startsWith('"') && value.endsWith('"'))) {
-              value = value.slice(1, -1);
-            }
-            fs.appendFileSync(process.env.GITHUB_ENV, `${match[1]}=${value}\n`);
-            count += 1;
-          }
-          if (count < 5) throw new Error('Production public build configuration could not be loaded.');
-          console.log(`Loaded ${count} public production build settings.`);
-          NODE
 
       - name: Set up Node
         uses: actions/setup-node@v5
@@ -177,16 +177,6 @@ jobs:
           }
           console.log(`Deployed catalogue hash verified: ${local.catalogueHash}`);
           NODE
-
-      - name: Disable legacy Production Reconcile workflow after successful cutover
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          curl --fail --silent --show-error --location --request PUT \
-            --header "Accept: application/vnd.github+json" \
-            --header "Authorization: Bearer $GH_TOKEN" \
-            --header "X-GitHub-Api-Version: 2022-11-28" \
-            https://api.github.com/repos/GiannisFanourakis/terroir-trail/actions/workflows/production-reconcile.yml/disable
 
       - name: Deployment summary
         run: |
