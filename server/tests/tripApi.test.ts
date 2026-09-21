@@ -95,7 +95,7 @@ test('My Trips API maps stale revision conflicts without leaking internal errors
   }
 });
 
-test('My Trips API never accepts caller-supplied ownership or timestamps', async () => {
+test('My Trips API rejects caller-supplied ownership and server-managed fields', async () => {
   const inputs: any[] = [];
   const app = createApp();
   registerTripRoutes(app, {
@@ -103,7 +103,7 @@ test('My Trips API never accepts caller-supplied ownership or timestamps', async
     createTrip: async (uid, input) => {
       inputs.push({ uid, input });
       return {
-        id: 'trip-1',
+        id: 'trip123',
         ownerUid: uid,
         title: String(input.title),
         startDate: null,
@@ -136,11 +136,9 @@ test('My Trips API never accepts caller-supplied ownership or timestamps', async
         itemCount: 999,
       }),
     });
-    assert.equal(response.status, 200);
-    assert.deepEqual(inputs, [{
-      uid: 'traveler-1',
-      input: { title: 'Trip', startDate: undefined, endDate: undefined },
-    }]);
+    assert.equal(response.status, 400);
+    assert.equal((await response.json() as any).code, 'bad_request');
+    assert.deepEqual(inputs, []);
   } finally {
     await new Promise<void>((resolve, reject) =>
       server.close(error => error ? reject(error) : resolve())
