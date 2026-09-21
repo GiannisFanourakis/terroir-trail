@@ -173,6 +173,34 @@ npm run verify:live-catalogue
 npm run build:live
 ~~~
 
+### Automatic production deploy
+
+Normal production releases are triggered by a successful push to `main`:
+
+~~~bash
+git push origin main
+~~~
+
+GitHub Actions runs the Quality Gate first. When it passes, `Production Deploy`:
+
+1. synchronizes and verifies the active catalogue;
+2. reruns the full repository gate and responsive browser smoke;
+3. deploys Firestore rules/indexes;
+4. deploys the existing `terroirtrail-api` Cloud Run service;
+5. verifies API health;
+6. deploys Firebase Hosting;
+7. runs public production/UI smoke checks and verifies the catalogue hash.
+
+`git pull` never deploys production.
+
+Google Cloud authentication is keyless through GitHub OIDC / Workload Identity Federation. One-time project bootstrap:
+
+~~~powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\setup_github_deploy_wif.ps1
+~~~
+
+The manual commands below remain recovery/fallback tools only.
+
 ### Minimum production redeploy
 
 From the repository root, update local `main` first:
