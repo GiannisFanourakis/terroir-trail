@@ -191,6 +191,17 @@ test('My Trips rejects duplicate, unverifiable and stale producer additions', as
       db as any,
       async () => null
     ),
+    'not_found'
+  );
+
+  await expectTripError(
+    addProducerToTrip(
+      'traveler-1',
+      trip.id,
+      { producerId: 'producer-two', expectedRevision: 2 },
+      db as any,
+      async () => { throw new Error('catalogue unavailable'); }
+    ),
     'service_unavailable'
   );
 
