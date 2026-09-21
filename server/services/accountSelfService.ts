@@ -22,6 +22,40 @@ const mapDocs = (snapshot: any) => snapshot.docs.map((item: any) => ({
   ...item.data(),
 }));
 
+async function exportTrips(uid: string, db: any) {
+  const trips = await db.collection('users').doc(uid).collection('trips').get();
+  return Promise.all(
+    trips.docs.map(async (trip: any) => {
+      const items = await trip.ref.collection('items').get();
+      return {
+        id: trip.id,
+        ...trip.data(),
+        items: mapDocs(items).sort((a: any, b: any) => Number(a.position || 0) - Number(b.position || 0)),
+      };
+    })
+  );
+}
+
+async function deleteTrips(uid: string, db: any) {
+  const trips = await db.collection('users').doc(uid).collection('trips').get();
+  let deletedTrips = 0;
+  let deletedTripItems = 0;
+
+  for (const trip of trips.docs) {
+    const items = await trip.ref.collection('items').get();
+    const batch = db.batch();
+    for (const item of items.docs) {
+      batch.delete(item.ref);
+      deletedTripItems += 1;
+    }
+    batch.delete(trip.ref);
+    await batch.commit();
+    deletedTrips += 1;
+  }
+
+  return { deletedTrips, deletedTripItems };
+}
+
 export async function exportAccountData(
   uid: string,
   db = adminDb(),
@@ -40,6 +74,7 @@ export async function exportAccountData(
     authoredReviews,
     reviewReports,
     hostReplyReviews,
+    trips,
     intentAnalytics,
   ] = await Promise.all([
     authClient.getUser(uid),
@@ -51,6 +86,7 @@ export async function exportAccountData(
     db.collection('producer_reviews').where('travelerUid', '==', uid).get(),
     db.collection('review_reports').where('reporterUid', '==', uid).get(),
     db.collection('producer_reviews').where('hostReply.hostUid', '==', uid).get(),
+    exportTrips(uid, db),
     exportIntentEvents(uid),
   ]);
 
@@ -77,6 +113,7 @@ export async function exportAccountData(
       producerId: item.data()?.producerId,
       hostReply: item.data()?.hostReply,
     })),
+    trips,
     intentAnalytics,
   };
 }
@@ -194,6 +231,7 @@ export async function deleteOwnAccount(
     deletedReviewReports,
     removedHostReplies,
     anonymizedAudits,
+    tripDeletion,
   ] = await Promise.all([
     deleteSnapshotDocs(bookings, db),
     deleteSnapshotDocs(ownerships, db),
@@ -203,6 +241,7 @@ export async function deleteOwnAccount(
     deleteSnapshotDocs(reviewReports, db),
     removeHostReplies(uid, db),
     anonymizeAuditEvents(uid, db),
+    deleteTrips(uid, db),
   ]);
 
   await db.collection('users').doc(uid).delete();
@@ -221,6 +260,8 @@ export async function deleteOwnAccount(
     deletedReviewReports,
     removedHostReplies,
     anonymizedAudits,
+    deletedTrips: tripDeletion.deletedTrips,
+    deletedTripItems: tripDeletion.deletedTripItems,
     deletedIntentEvents,
     occurredAt: new Date().toISOString(),
     source: 'self_service',
@@ -231,6 +272,8 @@ export async function deleteOwnAccount(
   return {
     deleted: true,
     producerIdsUnassigned: producerIds,
+    deletedTrips: tripDeletion.deletedTrips,
+    deletedTripItems: tripDeletion.deletedTripItems,
     deletedIntentEvents,
   };
 }
