@@ -4,8 +4,8 @@
 >
 > Completion convention: change `- [ ] Step` to `- [x] ~~Step~~` when finished. Do not mark a step complete until it has been implemented, tested, pushed, deployed where applicable, and verified.
 
-**Last updated:** 2026-09-20
-**Current focus:** Phase 14 — Product Value & Monetisation Foundations: privacy-conscious intent measurement, a free My Trips planning layer, contextual affiliate utility, and internal Producer / Regional Intelligence. No catalogue-expansion programme is currently scheduled; no new producers or projects are being added right now.
+**Last updated:** 2026-09-21
+**Current focus:** Phase 14.5 — Design the My Trips domain model. Intent measurement and the internal baseline report are production-verified; no catalogue-expansion programme is currently scheduled and no new producers or projects are being added right now.
 
 ---
 
@@ -758,23 +758,25 @@ Prefer aggregate views/materialized summaries where appropriate rather than givi
 
 **Purpose:** prove that the measurement layer answers useful questions before building paid-product concepts.
 
-- [ ] Add an admin-only internal view/report for aggregate intent.
-- [ ] Show configurable time windows.
-- [ ] Show producer-level aggregate demand signals.
-- [ ] Show region-level aggregate demand signals.
-- [ ] Show category-level aggregate demand signals.
-- [ ] Show the funnel:
+- [x] ~~Add an admin-only internal view/report for aggregate intent.~~
+- [x] ~~Show configurable time windows.~~
+- [x] ~~Show producer-level aggregate demand signals.~~
+- [x] ~~Show region-level aggregate demand signals.~~
+- [x] ~~Show category-level aggregate demand signals.~~
+- [x] ~~Show the funnel:~~
   - producer view;
   - save;
   - trip addition;
   - direct contact/directions;
   - Passport stamp where measurable.
-- [ ] Show affiliate impressions and clicks by placement/campaign.
-- [ ] Explicitly label low-volume data to avoid over-interpreting tiny samples.
-- [ ] Do not expose individual traveler identities.
-- [ ] Document which metrics are directional rather than proof of an actual visit/purchase.
+- [x] ~~Show affiliate impressions and clicks by placement/campaign.~~
+- [x] ~~Explicitly label low-volume data to avoid over-interpreting tiny samples.~~
+- [x] ~~Do not expose individual traveler identities.~~
+- [x] ~~Document which metrics are directional rather than proof of an actual visit/purchase.~~
 
-**Gate 14.4:** confirm the event system produces interpretable data before using it as a foundation for Producer Insights or B2B reporting.
+**Phase 14.4 production verification:** completed 2026-09-21. Firebase Hosting is deployed at commit `4571637`; `/api/health` returns healthy and the admin intent endpoint is live behind Firebase authentication/admin authorization, returning 401 without credentials. The service-role-only aggregate report produces current producer, region, category, funnel and affiliate metrics with 7/30/90/180-day windows, low-volume labeling and no traveler identity exposure. The 30-day baseline remains intentionally small and directional.
+
+**Gate 14.4:** COMPLETE — the event system produces interpretable aggregate data and is suitable as a foundation for later internal Producer Insights and Regional Intelligence work.
 
 ---
 
