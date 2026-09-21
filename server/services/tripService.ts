@@ -1,5 +1,5 @@
 import { adminDb } from '../firebaseAdmin';
-import { lookupCanonicalProducer, type ProducerLookupRow } from './analyticsIngestionService';
+import { getSupabaseAdmin, type ProducerLookupRow } from './analyticsIngestionService';
 
 export const MAX_TRIPS_PER_ACCOUNT = 25;
 export const MAX_TRIP_ITEMS = 50;
@@ -189,6 +189,30 @@ const assertRevision = (trip: TripRecordV1, expectedRevision: number) => {
 const tripsCollection = (db: any, uid: string) =>
   db.collection('users').doc(uid).collection('trips');
 
+async function lookupActiveTripProducer(producerId: string): Promise<ProducerLookupRow | null> {
+  const supabase = getSupabaseAdmin();
+  if (!supabase) {
+    throw new TripServiceError('service_unavailable', 'Producer verification is temporarily unavailable.');
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('producers')
+      .select('id, destination, country, country_code, category')
+      .eq('id', producerId)
+      .eq('is_active', true)
+      .maybeSingle();
+
+    if (error) {
+      throw new TripServiceError('service_unavailable', 'Producer verification is temporarily unavailable.');
+    }
+    return data ? data as ProducerLookupRow : null;
+  } catch (error) {
+    if (error instanceof TripServiceError) throw error;
+    throw new TripServiceError('service_unavailable', 'Producer verification is temporarily unavailable.');
+  }
+}
+
 export async function listTrips(uid: string, db: any = adminDb()): Promise<TripRecordV1[]> {
   if (!uid) throw new TripServiceError('bad_request', 'Authenticated user ID is required.');
   const snapshot = await tripsCollection(db, uid).get();
@@ -318,17 +342,23 @@ export async function addProducerToTrip(
   tripId: string,
   input: { producerId: unknown; expectedRevision: unknown },
   db: any = adminDb(),
-  lookupProducer: (producerId: string) => Promise<ProducerLookupRow | null> = lookupCanonicalProducer,
+  lookupProducer: (producerId: string) => Promise<ProducerLookupRow | null> = lookupActiveTripProducer,
   now = new Date()
 ): Promise<TripWithItems> {
   const safeTripId = validateTripId(tripId);
   const producerId = validateProducerId(input.producerId);
   const expectedRevision = requireExpectedRevision(input.expectedRevision);
-  const producer = await lookupProducer(producerId);
+  let producer: ProducerLookupRow | null;
+  try {
+    producer = await lookupProducer(producerId);
+  } catch (error) {
+    if (error instanceof TripServiceError) throw error;
+    throw new TripServiceError('service_unavailable', 'Producer verification is temporarily unavailable.');
+  }
   if (!producer) {
     throw new TripServiceError(
-      'service_unavailable',
-      'This producer cannot currently be verified as an active TerroirTrail listing.'
+      'not_found',
+      'This producer is not currently available to add to a trip.'
     );
   }
 
