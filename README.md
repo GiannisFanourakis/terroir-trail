@@ -193,7 +193,13 @@ npm run deploy
 gcloud run deploy terroirtrail-api --source . --project=terroir-trail --region=europe-west1 --allow-unauthenticated --min-instances=0 --max-instances=3 --cpu=1 --memory=512Mi
 ~~~
 
-If a change touches both the API and frontend, deploy Cloud Run first, then run `npm run deploy`.
+**Firestore rules/indexes only:**
+
+~~~bash
+npm run deploy:firestore
+~~~
+
+If a change touches Firestore rules, deploy them with `npm run deploy:firestore`. If a change touches API and frontend, deploy Cloud Run first, then run `npm run deploy`.
 
 The Cloud Run command updates the existing `terroirtrail-api` service. Do not create a second service. Existing server environment variables and Secret Manager bindings must remain configured on that service.
 
