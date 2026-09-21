@@ -24,6 +24,8 @@ interface AddToTripModalProps {
   onOpenTrip?: (tripId: string) => void;
   initialTrips?: TripRecordV1[];
   initialCreatingNew?: boolean;
+  initialCreatedTrip?: TripRecordV1 | null;
+  initialCreateError?: string | null;
 }
 
 const formatDateSpan = (start: string | null, end: string | null): string => {
@@ -58,6 +60,8 @@ export const AddToTripModal: React.FC<AddToTripModalProps> = ({
   onOpenTrip,
   initialTrips,
   initialCreatingNew,
+  initialCreatedTrip = null,
+  initialCreateError = null,
 }) => {
   const [trips, setTrips] = useState<TripRecordV1[]>(initialTrips ?? []);
   const [loading, setLoading] = useState<boolean>(initialTrips !== undefined ? false : true);
@@ -69,10 +73,11 @@ export const AddToTripModal: React.FC<AddToTripModalProps> = ({
   const [isCreatingNew, setIsCreatingNew] = useState<boolean>(
     initialCreatingNew ?? (initialTrips ? initialTrips.length === 0 : false)
   );
+  const [createdTrip, setCreatedTrip] = useState<TripRecordV1 | null>(initialCreatedTrip);
   const [titleDraft, setTitleDraft] = useState<string>('');
   const [startDateDraft, setStartDateDraft] = useState<string>('');
   const [endDateDraft, setEndDateDraft] = useState<string>('');
-  const [createError, setCreateError] = useState<string | null>(null);
+  const [createError, setCreateError] = useState<string | null>(initialCreateError);
   const [isSubmittingNew, setIsSubmittingNew] = useState<boolean>(false);
 
   const fetchTrips = useCallback(async () => {
@@ -95,6 +100,7 @@ export const AddToTripModal: React.FC<AddToTripModalProps> = ({
     if (isOpen) {
       setSuccessTrip(null);
       setSubmittingTripId(null);
+      setCreatedTrip(initialCreatedTrip);
       if (initialCreatingNew !== undefined) {
         setIsCreatingNew(initialCreatingNew);
       } else if (initialTrips !== undefined) {
@@ -105,12 +111,12 @@ export const AddToTripModal: React.FC<AddToTripModalProps> = ({
       setTitleDraft('');
       setStartDateDraft('');
       setEndDateDraft('');
-      setCreateError(null);
+      setCreateError(initialCreateError);
       if (initialTrips === undefined) {
         void fetchTrips();
       }
     }
-  }, [isOpen, initialTrips, initialCreatingNew, fetchTrips]);
+  }, [isOpen, initialTrips, initialCreatingNew, initialCreatedTrip, initialCreateError, fetchTrips]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -132,7 +138,7 @@ export const AddToTripModal: React.FC<AddToTripModalProps> = ({
     } catch (err: any) {
       if (err instanceof TripApiError && err.code === 'conflict') {
         if (err.message.includes('already in the trip')) {
-          setError(`&ldquo;${producer.name}&rdquo; is already in &ldquo;${targetTrip.title}&rdquo;.`);
+          setError(`“${producer.name}” is already in “${targetTrip.title}”.`);
         } else if (err.message.includes('another device or tab')) {
           setError('This trip changed elsewhere. Reloading trips…');
           void fetchTrips();
@@ -147,24 +153,24 @@ export const AddToTripModal: React.FC<AddToTripModalProps> = ({
     }
   };
 
-  const handleCreateAndAdd = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleCreateAndAdd = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     if (!producer || isSubmittingNew) return;
     setCreateError(null);
 
     const cleanTitle = titleDraft.trim();
-    if (!cleanTitle || cleanTitle.length > 80) {
+    if (!createdTrip && (!cleanTitle || cleanTitle.length > 80)) {
       setCreateError('Trip title must be between 1 and 80 characters.');
       return;
     }
     const cleanStart = startDateDraft.trim() || null;
     const cleanEnd = endDateDraft.trim() || null;
 
-    if (cleanEnd && !cleanStart) {
+    if (!createdTrip && cleanEnd && !cleanStart) {
       setCreateError('An end date requires a start date.');
       return;
     }
-    if (cleanStart && cleanEnd) {
+    if (!createdTrip && cleanStart && cleanEnd) {
       const days = dateSpanDays(cleanStart, cleanEnd);
       if (days < 1) {
         setCreateError('End date cannot be before start date.');
@@ -177,20 +183,39 @@ export const AddToTripModal: React.FC<AddToTripModalProps> = ({
     }
 
     setIsSubmittingNew(true);
+    let targetTrip: TripRecordV1;
+
     try {
-      const newTrip = await createTrip(
-        {
-          title: cleanTitle,
-          startDate: cleanStart,
-          endDate: cleanEnd,
-        },
-        'trip_add_flow'
-      );
-      // Immediately add the producer to the created trip
-      await addProducerToTrip(newTrip.id, producer.id, newTrip.revision, 'trip_add_flow');
-      setSuccessTrip(newTrip);
+      if (createdTrip) {
+        // Retry against existing created trip without creating another duplicate trip!
+        targetTrip = createdTrip;
+      } else {
+        targetTrip = await createTrip(
+          {
+            title: cleanTitle,
+            startDate: cleanStart,
+            endDate: cleanEnd,
+          },
+          'trip_add_flow'
+        );
+        setCreatedTrip(targetTrip);
+        setTrips((prev) => [targetTrip, ...prev.filter((t) => t.id !== targetTrip.id)]);
+      }
     } catch (err: any) {
-      setCreateError(err.message || 'Failed to create trip and add producer.');
+      setCreateError(err.message || 'Failed to create trip.');
+      setIsSubmittingNew(false);
+      return;
+    }
+
+    try {
+      await addProducerToTrip(targetTrip.id, producer.id, targetTrip.revision, 'trip_add_flow');
+      setSuccessTrip(targetTrip);
+      setCreatedTrip(null);
+    } catch (err: any) {
+      void fetchTrips();
+      setCreateError(
+        `Trip “${targetTrip.title}” was created, but adding “${producer.name}” failed: ${err.message || 'Please retry.'}`
+      );
     } finally {
       setIsSubmittingNew(false);
     }
@@ -249,7 +274,7 @@ export const AddToTripModal: React.FC<AddToTripModalProps> = ({
             <div>
               <h3 className="font-bold text-sm text-white">Added to Trip!</h3>
               <p className="mt-1 text-xs text-stone-400">
-                &ldquo;{producer.name}&rdquo; was added to &ldquo;{successTrip.title}&rdquo;.
+                “{producer.name}” was added to “{successTrip.title}”.
               </p>
             </div>
             <div className="flex items-center justify-center gap-3 pt-2">
@@ -292,17 +317,25 @@ export const AddToTripModal: React.FC<AddToTripModalProps> = ({
               )}
             </div>
 
+            {createdTrip && (
+              <div className="p-2.5 rounded-xl bg-amber-500/15 border border-amber-500/30 text-xs text-amber-200 flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 text-amber-400 shrink-0" />
+                <span>{`Trip “${createdTrip.title}” was created. Retry adding “${producer.name}” below.`}</span>
+              </div>
+            )}
+
             <div>
               <label className="block text-[11px] font-bold text-stone-400 mb-1">
                 Trip Title <span className="text-amber-400">*</span>
               </label>
               <input
                 type="text"
-                value={titleDraft}
+                value={createdTrip ? createdTrip.title : titleDraft}
                 onChange={(e) => setTitleDraft(e.target.value)}
                 maxLength={80}
                 placeholder="e.g. Aegean Coast & Highlands"
-                className="w-full bg-stone-900 border border-white/15 rounded-xl px-3 py-2 text-xs font-semibold text-white focus:outline-none focus:border-amber-400"
+                disabled={Boolean(createdTrip)}
+                className="w-full bg-stone-900 border border-white/15 rounded-xl px-3 py-2 text-xs font-semibold text-white focus:outline-none focus:border-amber-400 disabled:opacity-60"
                 autoFocus
               />
             </div>
@@ -314,9 +347,10 @@ export const AddToTripModal: React.FC<AddToTripModalProps> = ({
                 </label>
                 <input
                   type="date"
-                  value={startDateDraft}
+                  value={createdTrip ? (createdTrip.startDate || '') : startDateDraft}
                   onChange={(e) => setStartDateDraft(e.target.value)}
-                  className="w-full bg-stone-900 border border-white/15 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400"
+                  disabled={Boolean(createdTrip)}
+                  className="w-full bg-stone-900 border border-white/15 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400 disabled:opacity-60"
                 />
               </div>
               <div>
@@ -325,9 +359,10 @@ export const AddToTripModal: React.FC<AddToTripModalProps> = ({
                 </label>
                 <input
                   type="date"
-                  value={endDateDraft}
+                  value={createdTrip ? (createdTrip.endDate || '') : endDateDraft}
                   onChange={(e) => setEndDateDraft(e.target.value)}
-                  className="w-full bg-stone-900 border border-white/15 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400"
+                  disabled={Boolean(createdTrip)}
+                  className="w-full bg-stone-900 border border-white/15 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400 disabled:opacity-60"
                 />
               </div>
             </div>
@@ -348,10 +383,16 @@ export const AddToTripModal: React.FC<AddToTripModalProps> = ({
               )}
               <button
                 type="submit"
-                disabled={isSubmittingNew || !titleDraft.trim()}
+                disabled={isSubmittingNew || (!createdTrip && !titleDraft.trim())}
                 className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 text-xs font-bold transition shadow-md shadow-amber-500/20 cursor-pointer disabled:opacity-50"
               >
-                {isSubmittingNew ? 'Creating & Adding…' : 'Create & Add Stop'}
+                {isSubmittingNew
+                  ? createdTrip
+                    ? 'Adding Stop…'
+                    : 'Creating & Adding…'
+                  : createdTrip
+                    ? 'Retry Adding Stop'
+                    : 'Create & Add Stop'}
               </button>
             </div>
           </form>
@@ -360,7 +401,7 @@ export const AddToTripModal: React.FC<AddToTripModalProps> = ({
             {error && (
               <div className="p-3 rounded-xl bg-amber-500/15 border border-amber-500/30 text-xs text-amber-200 flex items-start gap-2">
                 <AlertCircle className="w-4 h-4 shrink-0 text-amber-400 mt-0.5" />
-                <span dangerouslySetInnerHTML={{ __html: error }} />
+                <span>{error}</span>
               </div>
             )}
 

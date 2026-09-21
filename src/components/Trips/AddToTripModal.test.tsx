@@ -144,4 +144,43 @@ describe('AddToTripModal', () => {
     expect(html).toContain('Choose existing trip');
     expect(html).toContain('Create &amp; Add Stop');
   });
+
+  it('renders partial failure state gracefully without allowing duplicate trip creation on retry', () => {
+    const createdTrip: TripRecordV1 = {
+      id: 'trip-created-1',
+      ownerUid: 'user-123',
+      title: 'Crete Highlands',
+      startDate: '2026-07-01',
+      endDate: '2026-07-05',
+      itemCount: 0,
+      revision: 1,
+      schemaVersion: 1,
+      createdAt: '2026-06-01T10:00:00Z',
+      updatedAt: '2026-06-01T10:00:00Z',
+    };
+
+    const html = renderToString(
+      <AddToTripModal
+        isOpen={true}
+        onClose={vi.fn()}
+        producer={sampleProducer}
+        initialTrips={[createdTrip]}
+        initialCreatingNew={true}
+        initialCreatedTrip={createdTrip}
+        initialCreateError={`Trip “${createdTrip.title}” was created, but adding “${sampleProducer.name}” failed: Network timeout. Please retry.`}
+      />
+    );
+
+    // Displays clear notification that trip was created
+    expect(html).toContain('Trip “Crete Highlands” was created. Retry adding “Vassaltis Vineyards” below.');
+    // Displays retry error message
+    expect(html).toContain('Trip “Crete Highlands” was created, but adding “Vassaltis Vineyards” failed: Network timeout. Please retry.');
+    // Button changes to retry adding stop
+    expect(html).toContain('Retry Adding Stop');
+    // Inputs are disabled to prevent editing already-created trip
+    expect(html).toContain('value="Crete Highlands"');
+    expect(html).toMatch(/<input[^>]*disabled=""[^>]*value="Crete Highlands"/);
+    // Does not use raw HTML entities like &ldquo; in error strings
+    expect(html).not.toContain('&amp;ldquo;');
+  });
 });

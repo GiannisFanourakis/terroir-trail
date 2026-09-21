@@ -670,10 +670,11 @@ export const App: React.FC = () => {
             onClose={closeModal}
             initialTripId={activeModal.initialTripId}
             onSelectProducer={(producer) => {
-              handleOpenDrawer(producer, 'my_trips');
+              handleOpenDrawer(producer, 'trip_workspace');
               closeModal();
             }}
             publicProducers={publicProducers}
+            catalogueIsLive={catalogueIsLive && !catalogueError}
           />
         )}
 

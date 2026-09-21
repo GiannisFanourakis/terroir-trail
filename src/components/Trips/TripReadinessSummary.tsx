@@ -141,6 +141,25 @@ export const TripReadinessSummary: React.FC<TripReadinessSummaryProps> = ({
     }).format(date);
   })();
 
+  const locationConfidenceBadge = (() => {
+    if (producer.locationStatus === 'verified_entrance') {
+      return {
+        label: 'Verified entrance',
+        className: 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30',
+      };
+    }
+    if (producer.locationStatus === 'verified_location') {
+      return {
+        label: 'Verified location',
+        className: 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30',
+      };
+    }
+    return {
+      label: 'Location pending verification',
+      className: 'bg-amber-500/15 text-amber-300 border-amber-500/30',
+    };
+  })();
+
   if (compact) {
     return (
       <div className="flex flex-wrap items-center gap-1.5 text-[10px]">
@@ -186,23 +205,40 @@ export const TripReadinessSummary: React.FC<TripReadinessSummaryProps> = ({
         </span>
 
         <span
+          className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full border text-[11px] font-semibold ${locationConfidenceBadge.className}`}
+        >
+          <MapPin className="w-3 h-3" />
+          <span>{locationConfidenceBadge.label}</span>
+        </span>
+
+        <span
           className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full border text-[11px] font-semibold ${roadAccessBadge.className}`}
         >
           <Car className="w-3 h-3" />
           <span>{roadAccessBadge.label}</span>
         </span>
 
-        {bookingLabel && (
+        {bookingLabel ? (
           <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-stone-800/80 text-stone-300 border border-white/10 text-[11px]">
             <Calendar className="w-3 h-3 text-amber-400" />
             <span>{bookingLabel}</span>
           </span>
+        ) : (
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-stone-800/80 text-stone-400 border border-white/10 text-[11px]">
+            <Calendar className="w-3 h-3 text-stone-500" />
+            <span>Booking requirement not confirmed</span>
+          </span>
         )}
 
-        {walkInLabel && (
+        {walkInLabel ? (
           <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-stone-800/80 text-stone-300 border border-white/10 text-[11px]">
             <Footprints className="w-3 h-3 text-amber-400" />
             <span>{walkInLabel}</span>
+          </span>
+        ) : (
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-stone-800/80 text-stone-400 border border-white/10 text-[11px]">
+            <Footprints className="w-3 h-3 text-stone-500" />
+            <span>Walk-in status not confirmed</span>
           </span>
         )}
 
@@ -226,16 +262,25 @@ export const TripReadinessSummary: React.FC<TripReadinessSummaryProps> = ({
         </div>
       )}
 
-      {producer.openingHours && (
-        <div className="flex items-center gap-1.5 text-[11px] text-stone-400">
+      {producer.openingHours ? (
+        <div className="flex items-center gap-1.5 text-[11px] text-stone-300">
           <Clock className="w-3 h-3 text-amber-400/80 shrink-0" />
           <span className="truncate">{producer.openingHours}</span>
         </div>
+      ) : (
+        <div className="flex items-center gap-1.5 text-[11px] text-stone-500">
+          <Clock className="w-3 h-3 text-stone-600 shrink-0" />
+          <span>Opening hours not confirmed</span>
+        </div>
       )}
 
-      {reviewedDateLabel && (
-        <div className="text-[10px] text-stone-500">
+      {reviewedDateLabel ? (
+        <div className="text-[10px] text-stone-400">
           {`Visitability verified on ${reviewedDateLabel}`}
+        </div>
+      ) : (
+        <div className="text-[10px] text-stone-500">
+          Visitability review date unrecorded
         </div>
       )}
     </div>

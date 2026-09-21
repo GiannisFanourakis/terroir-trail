@@ -158,6 +158,7 @@ export interface Producer {
   openingHours: string;
   bestSeason?: string;
   phone?: string;
+  email?: string;
   website?: string;
   googleMapsUrl?: string;
   /** Manually audited Google Maps business identity. Never inferred from coordinates. */

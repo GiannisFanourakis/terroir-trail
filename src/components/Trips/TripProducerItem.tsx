@@ -1,18 +1,40 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   AlertTriangle,
   ArrowDown,
   ArrowUp,
   Calendar,
   ChevronDown,
+  ExternalLink,
+  Globe,
+  Mail,
   MapPin,
   Navigation,
+  Phone,
   Trash2,
 } from 'lucide-react';
 import type { TripItemRecordV1, TripProducerState } from '../../services/tripApi';
 import type { Producer } from '../../types/terroir';
+import { trackIntent } from '../../services/intentAnalytics';
 import { ProducerCategoryIcon } from '../Common/ProducerCategoryIcon';
 import { TripReadinessSummary } from './TripReadinessSummary';
+
+export function handleTripProducerAction(
+  action: 'directions' | 'phone' | 'email' | 'website',
+  producerId: string
+) {
+  const eventMap = {
+    directions: 'directions_click',
+    phone: 'producer_phone_click',
+    email: 'producer_email_click',
+    website: 'producer_website_click',
+  } as const;
+  void trackIntent({
+    event: eventMap[action],
+    sourceSurface: 'trip_workspace',
+    producerId,
+  });
+}
 
 interface TripProducerItemProps {
   item: TripItemRecordV1;
@@ -20,14 +42,17 @@ interface TripProducerItemProps {
   totalCount: number;
   producerState?: TripProducerState;
   producer?: Producer;
+  catalogueIsLive?: boolean;
   isStateLoading?: boolean;
   isStateError?: boolean;
   maxDays?: number;
+  initialExpanded?: boolean;
   onMoveUp: (producerId: string) => void;
   onMoveDown: (producerId: string) => void;
   onAssignDay: (producerId: string, dayNumber: number | null) => void;
   onRemove: (producerId: string) => void;
   onSelectProducer: (producer: Producer) => void;
+  onAction?: (action: 'directions' | 'phone' | 'email' | 'website', producerId: string) => void;
   disabled?: boolean;
 }
 
@@ -37,16 +62,20 @@ export const TripProducerItem: React.FC<TripProducerItemProps> = ({
   totalCount,
   producerState = 'active',
   producer,
+  catalogueIsLive = true,
   isStateLoading = false,
   isStateError = false,
   maxDays,
+  initialExpanded = false,
   onMoveUp,
   onMoveDown,
   onAssignDay,
   onRemove,
   onSelectProducer,
+  onAction = handleTripProducerAction,
   disabled = false,
 }) => {
+  const [isExpanded, setIsExpanded] = useState<boolean>(initialExpanded);
   const isFirst = position === 0;
   const isLast = position === totalCount - 1;
 
@@ -66,6 +95,9 @@ export const TripProducerItem: React.FC<TripProducerItemProps> = ({
     Boolean(producer?.googleMapsUrl) &&
     producer?.locationStatus !== 'unresolved' &&
     !roadAccessBlocksDirections;
+
+  const showUnavailableNotice =
+    catalogueIsLive === false || isStateError;
 
   return (
     <div className="group relative rounded-2xl bg-stone-900/80 hover:bg-stone-900 border border-white/10 hover:border-white/20 transition-all p-3.5 sm:p-4 text-stone-200 shadow-md">
@@ -101,14 +133,16 @@ export const TripProducerItem: React.FC<TripProducerItemProps> = ({
 
         {/* Item Content by state */}
         <div className="flex-1 min-w-0">
-          {isStateError ? (
+          {showUnavailableNotice ? (
             <div className="p-3 rounded-xl bg-stone-800/70 border border-white/10 text-stone-300">
               <div className="flex items-center gap-2 text-xs font-semibold text-stone-200">
                 <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
                 <span>Producer details are temporarily unavailable.</span>
               </div>
               <p className="mt-1 text-[11px] text-stone-400">
-                Your trip item is preserved. Live producer information will reload when connectivity is restored.
+                {catalogueIsLive === false
+                  ? 'Live catalogue is currently unavailable. Your planned stop remains in this trip.'
+                  : 'Your trip item is preserved. Live producer information will reload when connectivity is restored.'}
               </p>
             </div>
           ) : isStateLoading ? (
@@ -129,10 +163,10 @@ export const TripProducerItem: React.FC<TripProducerItemProps> = ({
             <div className="p-3 rounded-xl bg-stone-950/80 border border-amber-500/20 text-stone-300">
               <div className="flex items-center gap-2 text-xs font-semibold text-amber-200">
                 <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
-                <span>Producer currently unavailable on TerroirTrail.</span>
+                <span>This producer is not currently available on TerroirTrail.</span>
               </div>
               <p className="mt-1 text-[11px] text-stone-400">
-                This point is temporarily not active in the public directory. Your planning reference is retained.
+                Your planning reference is retained in this trip.
               </p>
             </div>
           ) : producer ? (
@@ -164,7 +198,8 @@ export const TripProducerItem: React.FC<TripProducerItemProps> = ({
                     href={producer.googleMapsUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="p-1.5 rounded-xl bg-stone-800 hover:bg-stone-750 text-stone-300 hover:text-amber-300 border border-white/10 transition shrink-0"
+                    onClick={() => onAction('directions', producer.id)}
+                    className="p-1.5 rounded-xl bg-stone-800 hover:bg-stone-750 text-stone-300 hover:text-amber-300 border border-white/10 transition shrink-0 cursor-pointer"
                     title={hasVerifiedStandardRoad ? 'Get directions' : 'Open in Google Maps'}
                     aria-label={`Open ${producer.name} on map`}
                   >
@@ -179,11 +214,93 @@ export const TripProducerItem: React.FC<TripProducerItemProps> = ({
 
               {producer.tagLine && (
                 <p className="text-xs text-stone-300 line-clamp-2 italic">
-                  &ldquo;{producer.tagLine}&rdquo;
+                  “{producer.tagLine}”
                 </p>
               )}
 
-              <TripReadinessSummary producer={producer} compact />
+              {/* Expandable Visit Readiness & Details */}
+              {isExpanded ? (
+                <div className="space-y-2 pt-2 border-t border-white/10">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-[11px] font-bold text-stone-300 uppercase tracking-wider">
+                      Visit Readiness & Details
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setIsExpanded(false)}
+                      className="inline-flex items-center gap-1 text-[11px] font-semibold text-amber-400 hover:text-amber-300 transition-colors cursor-pointer"
+                      aria-expanded={true}
+                      aria-label={`Hide visit readiness for ${producer.name}`}
+                    >
+                      <span>Hide details</span>
+                      <ChevronDown className="w-3 h-3 rotate-180" />
+                    </button>
+                  </div>
+
+                  <TripReadinessSummary producer={producer} compact={false} />
+
+                  {/* Direct Contact Actions */}
+                  <div className="pt-2 border-t border-white/10 flex items-center gap-2 flex-wrap text-xs">
+                    {producer.phone && (
+                      <a
+                        href={`tel:${producer.phone}`}
+                        onClick={() => onAction('phone', producer.id)}
+                        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-stone-800 hover:bg-stone-750 text-stone-200 border border-white/10 hover:border-amber-400/40 text-[11px] font-medium transition cursor-pointer"
+                        aria-label={`Call ${producer.name}`}
+                      >
+                        <Phone className="w-3 h-3 text-amber-400 shrink-0" />
+                        <span>{producer.phone}</span>
+                      </a>
+                    )}
+                    {producer.email && (
+                      <a
+                        href={`mailto:${producer.email}`}
+                        onClick={() => onAction('email', producer.id)}
+                        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-stone-800 hover:bg-stone-750 text-stone-200 border border-white/10 hover:border-amber-400/40 text-[11px] font-medium transition cursor-pointer"
+                        aria-label={`Email ${producer.name}`}
+                      >
+                        <Mail className="w-3 h-3 text-amber-400 shrink-0" />
+                        <span>Email</span>
+                      </a>
+                    )}
+                    {producer.website && (
+                      <a
+                        href={producer.website}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() => onAction('website', producer.id)}
+                        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-stone-800 hover:bg-stone-750 text-stone-200 border border-white/10 hover:border-amber-400/40 text-[11px] font-medium transition cursor-pointer"
+                        aria-label={`Visit website of ${producer.name}`}
+                      >
+                        <Globe className="w-3 h-3 text-amber-400 shrink-0" />
+                        <span>Website</span>
+                      </a>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => onSelectProducer(producer)}
+                      className="inline-flex items-center gap-1 text-[11px] text-stone-400 hover:text-amber-300 transition-colors ml-auto cursor-pointer"
+                    >
+                      <span>Full profile</span>
+                      <ExternalLink className="w-3 h-3" />
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex items-center justify-between gap-2 flex-wrap pt-1">
+                  <TripReadinessSummary producer={producer} compact />
+                  <button
+                    type="button"
+                    onClick={() => setIsExpanded(true)}
+                    className="inline-flex items-center gap-1 text-[11px] font-semibold text-amber-400 hover:text-amber-300 transition-colors cursor-pointer"
+                    aria-expanded={false}
+                    aria-label={`Visit readiness for ${producer.name}`}
+                  >
+                    <span>Visit readiness</span>
+                    <ChevronDown className="w-3 h-3" />
+                  </button>
+                </div>
+              )}
             </div>
           ) : (
             <div className="p-3 rounded-xl bg-stone-800/70 border border-white/10 text-stone-300">
@@ -232,7 +349,11 @@ export const TripProducerItem: React.FC<TripProducerItemProps> = ({
               disabled={disabled}
               className="flex items-center gap-1 px-2 py-1 rounded-lg text-stone-400 hover:text-rose-400 hover:bg-rose-500/10 border border-transparent hover:border-rose-500/20 text-[11px] font-medium transition cursor-pointer disabled:opacity-40"
               title="Remove from trip"
-              aria-label={producer && producerState === 'active' ? `Remove ${producer.name} from trip` : 'Remove producer from trip'}
+              aria-label={
+                producer && producerState === 'active' && catalogueIsLive !== false
+                  ? `Remove ${producer.name} from trip`
+                  : 'Remove producer from trip'
+              }
             >
               <Trash2 className="w-3 h-3" />
               <span>Remove</span>

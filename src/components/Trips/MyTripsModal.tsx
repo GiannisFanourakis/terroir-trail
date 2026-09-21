@@ -25,6 +25,7 @@ interface MyTripsModalProps {
   onClose: () => void;
   onSelectProducer: (producer: Producer) => void;
   publicProducers: Producer[];
+  catalogueIsLive?: boolean;
   initialTripId?: string;
   initialTrips?: TripRecordV1[];
   initialCreating?: boolean;
@@ -60,6 +61,7 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
   onClose,
   onSelectProducer,
   publicProducers,
+  catalogueIsLive = true,
   initialTripId,
   initialTrips,
   initialCreating,
@@ -244,6 +246,7 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
               }}
               onSelectProducer={onSelectProducer}
               publicProducers={publicProducers}
+              catalogueIsLive={catalogueIsLive}
               onTripDeleted={(deletedId) => {
                 setTrips((prev) => prev.filter((t) => t.id !== deletedId));
                 setSelectedTripId(null);
@@ -480,7 +483,7 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
               </div>
 
               <p className="text-xs text-stone-300 leading-relaxed">
-                Are you sure you want to delete <strong className="text-white">&ldquo;{deletingTrip.title}&rdquo;</strong>? All{' '}
+                Are you sure you want to delete <strong className="text-white">“{deletingTrip.title}”</strong>? All{' '}
                 {deletingTrip.itemCount} producer stops in this trip will be permanently removed.
               </p>
 

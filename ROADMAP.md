@@ -895,7 +895,7 @@ Do **not** add in V1:
 - [x] ~~Test event instrumentation.~~
 - [x] ~~Run full quality gate and production smoke.~~
 
-**Phase 14.6 implementation checkpoint — 2026-09-21:** Free My Trips V1 is implemented with trusted Cloud Run state resolution (`GET /api/trips/:tripId/producer-states` via `public.resolve_trip_producer_states_v1`), client-side catalogue fact projection, verified road-access and readiness summaries respecting "UNKNOWN IS NOT FALSE", fail-closed direct navigation, reordering, day assignment, optimistic revision conflict handling (409), copy disambiguation ("Save place" vs "Add to trip"), and guest context preservation across sign-in. Gate 14.6 remains open pending production deployment and smoke verification.
+**Phase 14.6 closeout verification checkpoint — 2026-09-21:** Free My Trips V1 verification gaps closed: fail-closed catalogue offline handling implemented (`catalogueIsLive === false` suppresses fallback facts while preserving structural trip stops), drawer opening from trip workspace correctly attributes `trip_workspace`, directions link clicks instrumented with `directions_click` (`trip_workspace`), expandable visit readiness details expose full audit status and direct producer contact, partial-failure retry in AddToTripModal preserves created trips without duplicate creation, and user-facing HTML entities cleaned. Gate 14.6 remains open pending production deployment and smoke verification.
 
 **Gate 14.6:** Open pending production deployment. My Trips V1 must be useful while entirely free and without route-generation/payment features.
 

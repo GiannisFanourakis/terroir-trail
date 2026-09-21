@@ -31,6 +31,9 @@ interface TripWorkspaceProps {
   onBack: () => void;
   onSelectProducer: (producer: Producer) => void;
   publicProducers: Producer[];
+  catalogueIsLive?: boolean;
+  initialTrip?: TripWithItems;
+  initialProducerStates?: Record<string, TripProducerState>;
   onTripDeleted?: (tripId: string) => void;
 }
 
@@ -64,11 +67,14 @@ export const TripWorkspace: React.FC<TripWorkspaceProps> = ({
   onBack,
   onSelectProducer,
   publicProducers,
+  catalogueIsLive = true,
+  initialTrip,
+  initialProducerStates,
   onTripDeleted,
 }) => {
-  const [trip, setTrip] = useState<TripWithItems | null>(null);
-  const [producerStates, setProducerStates] = useState<Record<string, TripProducerState>>({});
-  const [loading, setLoading] = useState<boolean>(true);
+  const [trip, setTrip] = useState<TripWithItems | null>(initialTrip ?? null);
+  const [producerStates, setProducerStates] = useState<Record<string, TripProducerState>>(initialProducerStates ?? {});
+  const [loading, setLoading] = useState<boolean>(initialTrip !== undefined ? false : true);
   const [statesLoading, setStatesLoading] = useState<boolean>(false);
   const [statesError, setStatesError] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -77,9 +83,9 @@ export const TripWorkspace: React.FC<TripWorkspaceProps> = ({
 
   // Rename / Edit state
   const [isEditing, setIsEditing] = useState<boolean>(false);
-  const [titleDraft, setTitleDraft] = useState<string>('');
-  const [startDateDraft, setStartDateDraft] = useState<string>('');
-  const [endDateDraft, setEndDateDraft] = useState<string>('');
+  const [titleDraft, setTitleDraft] = useState<string>(initialTrip?.title ?? '');
+  const [startDateDraft, setStartDateDraft] = useState<string>(initialTrip?.startDate || '');
+  const [endDateDraft, setEndDateDraft] = useState<string>(initialTrip?.endDate || '');
   const [editError, setEditError] = useState<string | null>(null);
 
   // Delete modal state
@@ -134,8 +140,10 @@ export const TripWorkspace: React.FC<TripWorkspaceProps> = ({
   }, [tripId, loadStates]);
 
   useEffect(() => {
-    void loadTripData(true);
-  }, [loadTripData]);
+    if (initialTrip === undefined) {
+      void loadTripData(true);
+    }
+  }, [loadTripData, initialTrip]);
 
   const tripDurationDays = useMemo(() => {
     if (trip?.startDate && trip?.endDate) {
@@ -494,6 +502,14 @@ export const TripWorkspace: React.FC<TripWorkspaceProps> = ({
         </div>
       )}
 
+      {/* Live catalogue offline / fallback notice */}
+      {!catalogueIsLive && (
+        <div className="p-3 rounded-xl bg-stone-900/90 border border-amber-500/30 text-xs text-amber-200 flex items-center gap-2">
+          <AlertCircle className="w-4 h-4 text-amber-400 shrink-0" />
+          <span>Live catalogue is currently unavailable. Preserved trip items are shown without unverified fallback facts.</span>
+        </div>
+      )}
+
       {/* Filter / Day Buckets Tab Bar */}
       {trip.itemCount > 0 && (
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none text-xs">
@@ -555,7 +571,7 @@ export const TripWorkspace: React.FC<TripWorkspaceProps> = ({
             <div>
               <h3 className="font-bold text-sm text-white">No producers added yet</h3>
               <p className="mt-1 text-xs text-stone-400 max-w-sm mx-auto leading-relaxed">
-                Explore the map or catalogue, open any producer drawer, and tap &ldquo;Add to trip&rdquo; to build your trail.
+                Explore the map or catalogue, open any producer drawer, and tap “Add to trip” to build your trail.
               </p>
             </div>
           </div>
@@ -576,6 +592,7 @@ export const TripWorkspace: React.FC<TripWorkspaceProps> = ({
                 totalCount={trip.itemCount}
                 producerState={state}
                 producer={canonicalProducer}
+                catalogueIsLive={catalogueIsLive}
                 isStateLoading={statesLoading}
                 isStateError={statesError}
                 maxDays={tripDurationDays}
@@ -610,8 +627,7 @@ export const TripWorkspace: React.FC<TripWorkspaceProps> = ({
             </div>
 
             <p className="text-xs text-stone-300 leading-relaxed">
-              Are you sure you want to delete <strong className="text-white">&ldquo;{trip.title}&rdquo;</strong>? All{' '}
-              {trip.itemCount} producer stops in this trip will be permanently removed.
+              {`Are you sure you want to delete “${trip.title}”? All ${trip.itemCount} producer stops in this trip will be permanently removed.`}
             </p>
 
             <div className="flex items-center justify-end gap-2 pt-2">
