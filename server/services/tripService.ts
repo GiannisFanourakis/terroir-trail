@@ -49,6 +49,7 @@ export interface TripWithItems extends TripRecordV1 {
 
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 const PRODUCER_ID_RE = /^[a-z0-9][a-z0-9-]{0,127}$/;
+const TRIP_ID_RE = /^[A-Za-z0-9]{1,64}$/;
 
 const cleanTitle = (value: unknown): string => {
   if (typeof value !== 'string') {
@@ -110,6 +111,13 @@ const requireExpectedRevision = (value: unknown): number => {
     throw new TripServiceError('bad_request', 'expectedRevision must be a positive integer.');
   }
   return Number(value);
+};
+
+const validateTripId = (value: unknown): string => {
+  if (typeof value !== 'string' || !TRIP_ID_RE.test(value)) {
+    throw new TripServiceError('bad_request', 'Trip ID is invalid.');
+  }
+  return value;
 };
 
 const validateProducerId = (value: unknown): string => {
@@ -191,8 +199,9 @@ export async function listTrips(uid: string, db: any = adminDb()): Promise<TripR
 }
 
 export async function getTrip(uid: string, tripId: string, db: any = adminDb()): Promise<TripWithItems> {
-  if (!uid || !tripId) throw new TripServiceError('bad_request', 'Trip ID is required.');
-  const ref = tripsCollection(db, uid).doc(tripId);
+  if (!uid) throw new TripServiceError('bad_request', 'Authenticated user ID is required.');
+  const safeTripId = validateTripId(tripId);
+  const ref = tripsCollection(db, uid).doc(safeTripId);
   const [tripDoc, itemsSnapshot] = await Promise.all([
     ref.get(),
     ref.collection('items').get(),
@@ -252,8 +261,9 @@ export async function updateTrip(
   db: any = adminDb(),
   now = new Date()
 ): Promise<TripRecordV1> {
+  const safeTripId = validateTripId(tripId);
   const expectedRevision = requireExpectedRevision(input.expectedRevision);
-  const ref = tripsCollection(db, uid).doc(tripId);
+  const ref = tripsCollection(db, uid).doc(safeTripId);
   const itemsSnapshot = await ref.collection('items').get();
 
   return db.runTransaction(async (transaction: any) => {
@@ -300,6 +310,7 @@ export async function addProducerToTrip(
   lookupProducer: (producerId: string) => Promise<ProducerLookupRow | null> = lookupCanonicalProducer,
   now = new Date()
 ): Promise<TripWithItems> {
+  const safeTripId = validateTripId(tripId);
   const producerId = validateProducerId(input.producerId);
   const expectedRevision = requireExpectedRevision(input.expectedRevision);
   const producer = await lookupProducer(producerId);
@@ -310,7 +321,7 @@ export async function addProducerToTrip(
     );
   }
 
-  const tripRef = tripsCollection(db, uid).doc(tripId);
+  const tripRef = tripsCollection(db, uid).doc(safeTripId);
   const itemRef = tripRef.collection('items').doc(producerId);
   const occurredAt = now.toISOString();
 
@@ -342,7 +353,7 @@ export async function addProducerToTrip(
     });
   });
 
-  return getTrip(uid, tripId, db);
+  return getTrip(uid, safeTripId, db);
 }
 
 export async function removeProducerFromTrip(
@@ -353,9 +364,10 @@ export async function removeProducerFromTrip(
   db: any = adminDb(),
   now = new Date()
 ): Promise<TripWithItems> {
+  const safeTripId = validateTripId(tripId);
   const producerId = validateProducerId(producerIdInput);
   const expectedRevision = requireExpectedRevision(expectedRevisionInput);
-  const tripRef = tripsCollection(db, uid).doc(tripId);
+  const tripRef = tripsCollection(db, uid).doc(safeTripId);
   const itemsSnapshot = await tripRef.collection('items').get();
   const items = itemsSnapshot.docs
     .map((doc: any) => ({ ref: doc.ref, item: mapItem(doc) }))
@@ -384,7 +396,7 @@ export async function removeProducerFromTrip(
     });
   });
 
-  return getTrip(uid, tripId, db);
+  return getTrip(uid, safeTripId, db);
 }
 
 export async function reorderTripItems(
@@ -395,6 +407,7 @@ export async function reorderTripItems(
   db: any = adminDb(),
   now = new Date()
 ): Promise<TripWithItems> {
+  const safeTripId = validateTripId(tripId);
   const expectedRevision = requireExpectedRevision(expectedRevisionInput);
   if (!Array.isArray(producerIdsInput) || producerIdsInput.length > MAX_TRIP_ITEMS) {
     throw new TripServiceError('bad_request', 'producerIds must be the complete current trip order.');
@@ -404,7 +417,7 @@ export async function reorderTripItems(
     throw new TripServiceError('bad_request', 'producerIds cannot contain duplicates.');
   }
 
-  const tripRef = tripsCollection(db, uid).doc(tripId);
+  const tripRef = tripsCollection(db, uid).doc(safeTripId);
   const snapshot = await tripRef.collection('items').get();
   const current = new Map(snapshot.docs.map((doc: any) => [doc.id, doc.ref]));
   if (
@@ -432,7 +445,7 @@ export async function reorderTripItems(
     });
   });
 
-  return getTrip(uid, tripId, db);
+  return getTrip(uid, safeTripId, db);
 }
 
 export async function assignTripItemDay(
@@ -444,9 +457,10 @@ export async function assignTripItemDay(
   db: any = adminDb(),
   now = new Date()
 ): Promise<TripWithItems> {
+  const safeTripId = validateTripId(tripId);
   const producerId = validateProducerId(producerIdInput);
   const expectedRevision = requireExpectedRevision(expectedRevisionInput);
-  const tripRef = tripsCollection(db, uid).doc(tripId);
+  const tripRef = tripsCollection(db, uid).doc(safeTripId);
   const itemRef = tripRef.collection('items').doc(producerId);
 
   await db.runTransaction(async (transaction: any) => {
@@ -468,7 +482,7 @@ export async function assignTripItemDay(
     });
   });
 
-  return getTrip(uid, tripId, db);
+  return getTrip(uid, safeTripId, db);
 }
 
 export async function deleteTrip(
@@ -477,8 +491,9 @@ export async function deleteTrip(
   expectedRevisionInput: unknown,
   db: any = adminDb()
 ): Promise<{ deleted: true; tripId: string }> {
+  const safeTripId = validateTripId(tripId);
   const expectedRevision = requireExpectedRevision(expectedRevisionInput);
-  const tripRef = tripsCollection(db, uid).doc(tripId);
+  const tripRef = tripsCollection(db, uid).doc(safeTripId);
   const snapshot = await tripRef.collection('items').get();
 
   await db.runTransaction(async (transaction: any) => {
@@ -491,5 +506,5 @@ export async function deleteTrip(
     transaction.delete(tripRef);
   });
 
-  return { deleted: true, tripId };
+  return { deleted: true, tripId: safeTripId };
 }
