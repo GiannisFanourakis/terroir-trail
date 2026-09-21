@@ -605,4 +605,53 @@ describe('Firestore Security Rules Suite', () => {
     await assertFails(getDoc(passRef));
     await assertFails(setDoc(doc(db, 'explorerPasses', 'pass-forged'), { plan: 'annual' }));
   });
+
+  // 21. My Trips owner read / direct client write boundary
+  it('My Trips are owner-readable but trusted-API-write-only', async () => {
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      const adminDb = context.firestore();
+      await setDoc(doc(adminDb, 'users', 'traveler-1', 'trips', 'trip-1'), {
+        id: 'trip-1',
+        ownerUid: 'traveler-1',
+        title: 'Crete',
+        startDate: null,
+        endDate: null,
+        itemCount: 1,
+        revision: 2,
+        schemaVersion: 1,
+        createdAt: '2026-09-21T00:00:00.000Z',
+        updatedAt: '2026-09-21T00:01:00.000Z',
+      });
+      await setDoc(doc(adminDb, 'users', 'traveler-1', 'trips', 'trip-1', 'items', 'producer-a'), {
+        producerId: 'producer-a',
+        position: 0,
+        dayNumber: null,
+        createdAt: '2026-09-21T00:01:00.000Z',
+        updatedAt: '2026-09-21T00:01:00.000Z',
+      });
+    });
+
+    const owner = testEnv.authenticatedContext('traveler-1').firestore();
+    const other = testEnv.authenticatedContext('traveler-2').firestore();
+    const anonymous = testEnv.unauthenticatedContext().firestore();
+
+    const tripRef = doc(owner, 'users', 'traveler-1', 'trips', 'trip-1');
+    const itemRef = doc(owner, 'users', 'traveler-1', 'trips', 'trip-1', 'items', 'producer-a');
+
+    await assertSucceeds(getDoc(tripRef));
+    await assertSucceeds(getDoc(itemRef));
+
+    await assertFails(getDoc(doc(other, 'users', 'traveler-1', 'trips', 'trip-1')));
+    await assertFails(getDoc(doc(anonymous, 'users', 'traveler-1', 'trips', 'trip-1')));
+
+    await assertFails(updateDoc(tripRef, { title: 'Tampered' }));
+    await assertFails(deleteDoc(tripRef));
+    await assertFails(
+      setDoc(doc(owner, 'users', 'traveler-1', 'trips', 'trip-1', 'items', 'producer-b'), {
+        producerId: 'producer-b',
+        position: 1,
+      })
+    );
+  });
+
 });
