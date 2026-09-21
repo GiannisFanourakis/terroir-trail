@@ -77,7 +77,7 @@ for (const [destination, config] of Object.entries(destinationPages) as Array<
     process.exit(1);
   }
 
-  const marker = /(<p class="lead">[\s\S]*?<\/p>)(\s*<section><h2>At a glance<\/h2>)/i;
+  const marker = /(<p class="lead">[\s\S]*?<\/p>)(\s*<section data-aeo="planning-answers">)/i;
   if (!marker.test(html)) {
     console.error(`[SEO Destination Story Enrichment Failed] Could not locate landing-page intro on ${config.path}`);
     process.exit(1);
