@@ -10,7 +10,7 @@ const makeDb = (isAdmin: boolean) => ({
     doc: (_id: string) => ({
       get: async () => ({
         exists: name === 'admin_users' && isAdmin,
-        data: () => isAdmin ? { level: 'admin', status: 'active' } : undefined,
+        data: () => isAdmin ? { userId: 'admin-uid', level: 'admin', status: 'active' } : undefined,
       }),
     }),
     where: () => ({
