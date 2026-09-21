@@ -742,13 +742,15 @@ Prefer aggregate views/materialized summaries where appropriate rather than givi
 
 #### 14.3.6 Production verification
 
-- [ ] Deploy with measurement enabled only after privacy/RLS checks pass.
-- [ ] Perform a controlled production smoke for each event class.
-- [ ] Verify received events in Supabase.
-- [ ] Verify no private note/contact contents are present.
-- [ ] Verify event volumes are plausible rather than duplicated.
+- [x] ~~Deploy with measurement enabled only after privacy/RLS checks pass.~~
+- [x] ~~Perform a controlled production smoke for each event class.~~
+- [x] ~~Verify received events in Supabase.~~
+- [x] ~~Verify no private note/contact contents are present.~~
+- [x] ~~Verify event volumes are plausible rather than duplicated.~~
 
-**Gate 14.3:** collect a baseline before using intent data to redesign affiliate placement or expose producer/regional insights.
+**Phase 14.3 production verification:** completed 2026-09-21. The current Cloud Run analytics API and Firebase Hosting surface passed production health/smoke checks. Controlled live actions confirmed producer view, save/unsave, website/directions, Passport stamp add/remove, region, and affiliate impression/click flows. Supabase verification confirmed valid pseudonymous identity formats, canonical producer-derived dimensions, unique client event IDs, and no raw columns for private notes/contact payload contents. One unusually share-heavy anonymous session contained unique, time-separated events rather than duplicate IDs; treat that session as low-volume/outlier noise when interpreting the Phase 14.4 baseline.
+
+**Gate 14.3:** COMPLETE — production measurement is active and verified. Collect and interpret the baseline in Phase 14.4 before using intent data to redesign affiliate placement or expose producer/regional insights.
 
 ---
 
