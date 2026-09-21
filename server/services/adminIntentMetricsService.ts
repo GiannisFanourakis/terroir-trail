@@ -21,10 +21,18 @@ export interface AdminIntentBaseline {
   start_date: string;
   end_date: string;
   aggregate_data_through: string | null;
+  comparison_policy: {
+    minimum_active_producers: number;
+    minimum_producer_views: number;
+    previous_window_days: number;
+  };
   totals: {
     producer_views: number;
     saves: number;
     trip_additions: number;
+    website_clicks: number;
+    phone_clicks: number;
+    email_clicks: number;
     direct_producer_actions: number;
     directions_clicks: number;
     passport_stamps_added: number;
@@ -40,13 +48,26 @@ export interface AdminIntentBaseline {
     producer_views: number;
     saves: number;
     trip_additions: number;
+    website_clicks: number;
+    phone_clicks: number;
+    email_clicks: number;
     direct_producer_actions: number;
     directions_clicks: number;
     passport_stamps_added: number;
+    previous: {
+      producer_views: number;
+      saves: number;
+      trip_additions: number;
+      website_clicks: number;
+      phone_clicks: number;
+      email_clicks: number;
+      directions_clicks: number;
+    };
   }>;
   regions: Array<{
     destination: string;
     country_code: string | null;
+    producer_count: number;
     region_opens: number;
     region_producers_views: number;
     producer_views: number;
@@ -58,6 +79,7 @@ export interface AdminIntentBaseline {
   }>;
   categories: Array<{
     category: string;
+    producer_count: number;
     producer_views: number;
     saves: number;
     trip_additions: number;
