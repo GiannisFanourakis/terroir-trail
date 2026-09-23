@@ -19,6 +19,8 @@ import { ProducerCategoryIcon } from '../Common/ProducerCategoryIcon';
 import { formatCatalogueReviewedAt } from '../../data/catalogueMetadata';
 import { trackIntent, type SourceSurface } from '../../services/intentAnalytics';
 import { recordPartnerContactIfAttributed } from '../../services/partnerAttribution';
+import { readStorage, STORAGE_KEYS, writeStorage } from '../../services/browserStorage';
+import { AlcoholContentNotice } from '../Common/AlcoholContentNotice';
 
 interface ProducerDetailDrawerProps {
   producer: Producer | null;
@@ -71,6 +73,12 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
   const [activeTab, setActiveTab] = useState<'story' | 'tastings' | 'visit'>(initialTab);
   const [isEditingNote, setIsEditingNote] = useState<boolean>(false);
   const [noteDraft, setNoteDraft] = useState<string>('');
+  const [alcoholNoticeAcknowledged, setAlcoholNoticeAcknowledged] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return true;
+    return readStorage<boolean>(STORAGE_KEYS.ALCOHOL_CONTENT_NOTICE, false, {
+      scope: 'AlcoholContentNotice',
+    });
+  });
 
   const {
     photos,
@@ -122,6 +130,24 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
   }, [onClose]);
 
   if (!producer) return null;
+
+  const effectiveCategoryForNotice = getEffectiveProducerCategory(producer);
+  const isAlcoholProducer = ['winery', 'brewery', 'distillery'].includes(effectiveCategoryForNotice);
+
+  if (isAlcoholProducer && !alcoholNoticeAcknowledged) {
+    return (
+      <AlcoholContentNotice
+        producerName={producer.name}
+        onBack={onClose}
+        onContinue={() => {
+          writeStorage(STORAGE_KEYS.ALCOHOL_CONTENT_NOTICE, true, {
+            scope: 'AlcoholContentNotice',
+          });
+          setAlcoholNoticeAcknowledged(true);
+        }}
+      />
+    );
+  }
 
   const recordDirectAction = (
     event: 'producer_website_click' | 'producer_phone_click' | 'producer_email_click' | 'directions_click',

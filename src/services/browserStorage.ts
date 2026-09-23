@@ -17,6 +17,7 @@ export const STORAGE_KEYS = {
   PRODUCER_OVERRIDES: 'terroir_trail_producer_overrides',
   PRODUCER_REGISTRATIONS: 'terroir_trail_producer_registrations',
   FIRST_RUN_WELCOME: 'terroir_trail_first_run_welcome_v1',
+  ALCOHOL_CONTENT_NOTICE: 'terroir_trail_alcohol_content_notice_v1',
 } as const;
 
 export interface StorageOptions {
@@ -214,10 +215,7 @@ export function writeStorage<T>(
 /**
  * Safely removes a key from storage without throwing.
  */
-export function removeStorage(
-  key: string,
-  options?: StorageOptions
-): boolean {
+export function removeStorage(key: string, options?: StorageOptions): boolean {
   const scope = options?.scope || 'Storage';
   const storage = getLocalStorage(options?.storage);
 

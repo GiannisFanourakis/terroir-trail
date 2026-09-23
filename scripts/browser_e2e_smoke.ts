@@ -533,15 +533,47 @@ async function main(): Promise<void> {
 
     await evaluate(
       cdp,
-      "localStorage.setItem('terroir_trail_first_run_welcome_v1', 'true'); true"
+      "localStorage.setItem('terroir_trail_first_run_welcome_v1', 'true'); localStorage.removeItem('terroir_trail_alcohol_content_notice_v1'); true"
     );
     await navigate(cdp, origin + '/?producer=anoskeli-estate');
     await waitFor(
       cdp,
-      "Boolean([...document.querySelectorAll('[role=dialog]')].find((element) => element.getAttribute('aria-label')?.startsWith('Producer details:')))",
-      'direct producer deep link',
+      "document.body.innerText.includes('Alcohol-related content') && document.body.innerText.includes('legal drinking age in the destination')",
+      'alcohol content notice',
       timeoutMs
     );
+
+    const continuedAlcoholNotice = await evaluate<boolean>(
+      cdp,
+      `(() => {
+        const button = [...document.querySelectorAll('button')].find((candidate) =>
+          candidate.textContent?.trim() === 'Continue'
+        );
+        if (!button) return false;
+        button.click();
+        return true;
+      })()`
+    );
+    if (!continuedAlcoholNotice) {
+      throw new Error('Alcohol content notice Continue button missing.');
+    }
+
+    await waitFor(
+      cdp,
+      "Boolean([...document.querySelectorAll('[role=dialog]')].find((element) => element.getAttribute('aria-label')?.startsWith('Producer details:')))",
+      'direct producer deep link after alcohol notice',
+      timeoutMs
+    );
+
+    const alcoholNoticePersisted = await evaluate<boolean>(
+      cdp,
+      "localStorage.getItem('terroir_trail_alcohol_content_notice_v1') === 'true'"
+    );
+    if (!alcoholNoticePersisted) {
+      throw new Error(
+        'Alcohol content notice acknowledgement was not persisted.'
+      );
+    }
 
     const deepLinkCrash = await evaluate<boolean>(
       cdp,
