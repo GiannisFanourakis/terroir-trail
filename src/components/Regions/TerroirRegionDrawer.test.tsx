@@ -21,6 +21,7 @@ describe('TerroirRegionDrawer - Phase 14.7 Contextual Affiliate Pilot', () => {
         hasExplorerPass={false}
         onClose={vi.fn()}
         onShowProducers={vi.fn()}
+        onOpenProducer={vi.fn()}
       />
     );
 
@@ -61,6 +62,7 @@ describe('TerroirRegionDrawer - Phase 14.7 Contextual Affiliate Pilot', () => {
         hasExplorerPass={true}
         onClose={vi.fn()}
         onShowProducers={vi.fn()}
+        onOpenProducer={vi.fn()}
       />
     );
 
@@ -82,6 +84,7 @@ describe('TerroirRegionDrawer - Phase 14.7 Contextual Affiliate Pilot', () => {
         hasExplorerPass={false}
         onClose={vi.fn()}
         onShowProducers={vi.fn()}
+        onOpenProducer={vi.fn()}
       />
     );
 
