@@ -52,6 +52,8 @@ interface HeaderProps {
   onOpenAccountSettings?: () => void;
   bookingsCount?: number;
   onOpenExplorerPass?: () => void;
+  hasExplorerPass?: boolean;
+  onOpenOptimizeMyDay?: () => void;
   onOpenDigitalPass?: () => void;
   onOpenAbout?: () => void;
   onOpenFaq?: () => void;
@@ -83,6 +85,8 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenAccountSettings,
   bookingsCount = 0,
   onOpenExplorerPass,
+  hasExplorerPass = false,
+  onOpenOptimizeMyDay,
   onOpenDigitalPass,
   onOpenAbout,
   onOpenFaq,
@@ -463,6 +467,18 @@ export const Header: React.FC<HeaderProps> = ({
                 </button>
               )}
 
+              {hasExplorerPass && onOpenOptimizeMyDay && (
+                <button
+                  type="button"
+                  onClick={onOpenOptimizeMyDay}
+                  className="hidden lg:flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-bold rounded-xl border border-emerald-400/30 bg-emerald-500/10 hover:bg-emerald-500/15 hover:border-emerald-300/60 text-emerald-200 transition shrink-0 cursor-pointer"
+                  title="Optimize My Day"
+                >
+                  <Sparkles className="w-3.5 h-3.5 text-emerald-300 shrink-0" />
+                  <span>Optimize My Day</span>
+                </button>
+              )}
+
               {onOpenExplorerPass && (
                 <button
                   onClick={onOpenExplorerPass}
@@ -612,6 +628,20 @@ export const Header: React.FC<HeaderProps> = ({
                 >
                   <BookOpen className="w-4 h-4 text-amber-400" />
                   About & FAQ
+                </button>
+              )}
+
+              {hasExplorerPass && onOpenOptimizeMyDay && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    onOpenOptimizeMyDay();
+                    closeMenu();
+                  }}
+                  className="flex items-center gap-3 w-full px-3 py-3 text-sm font-semibold text-emerald-200 bg-emerald-500/10 rounded-xl border border-emerald-400/25 cursor-pointer"
+                >
+                  <Sparkles className="w-4 h-4 text-emerald-300" />
+                  Optimize My Day
                 </button>
               )}
 

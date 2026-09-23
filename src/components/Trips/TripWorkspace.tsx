@@ -6,23 +6,29 @@ import {
   Crown,
   Download,
   Edit2,
+  Check,
   Layers,
+  Lock,
   MapPin,
   Printer,
   RefreshCw,
+  Sparkles,
   Trash2,
   WifiOff,
   X,
 } from 'lucide-react';
 import {
+  applyOptimizedTripDay,
   assignTripItemDay,
   deleteTrip,
   fetchTripPack,
   getTrip,
   getTripProducerStates,
+  optimizeTripDay,
   removeProducerFromTrip,
   reorderTripItems,
   trackTripOpened,
+  type OptimizationProposalV1,
   type TripProducerState,
   type TripWithItems,
   updateTrip,
@@ -44,6 +50,7 @@ interface TripWorkspaceProps {
   catalogueIsLive?: boolean;
   hasExplorerPass?: boolean;
   onOpenExplorerPass?: () => void;
+  initialOptimizationMode?: boolean;
   initialTrip?: TripWithItems;
   initialProducerStates?: Record<string, TripProducerState>;
   onTripDeleted?: (tripId: string) => void;
@@ -98,6 +105,7 @@ export const TripWorkspace: React.FC<TripWorkspaceProps> = ({
   catalogueIsLive = true,
   hasExplorerPass = false,
   onOpenExplorerPass,
+  initialOptimizationMode = false,
   initialTrip,
   initialProducerStates,
   onTripDeleted,
@@ -139,6 +147,25 @@ export const TripWorkspace: React.FC<TripWorkspaceProps> = ({
   const [selectedDayFilter, setSelectedDayFilter] = useState<
     number | 'all' | 'unassigned'
   >('all');
+
+  // Phase 15.8B Optimize My Day review state.
+  const [optimizationMode, setOptimizationMode] = useState<boolean>(
+    initialOptimizationMode
+  );
+  const [lockedProducerIds, setLockedProducerIds] = useState<Set<string>>(
+    () => new Set()
+  );
+  const [optimizationProposal, setOptimizationProposal] =
+    useState<OptimizationProposalV1 | null>(null);
+  const [optimizationBusy, setOptimizationBusy] = useState<
+    'propose' | 'apply' | null
+  >(null);
+  const [optimizationError, setOptimizationError] = useState<string | null>(
+    null
+  );
+  const [optimizationNotice, setOptimizationNotice] = useState<string | null>(
+    null
+  );
 
   // Producer catalogue map for fast lookup
   const catalogueMap = useMemo(() => {
@@ -231,6 +258,42 @@ export const TripWorkspace: React.FC<TripWorkspaceProps> = ({
     }
     return undefined;
   }, [trip?.startDate, trip?.endDate]);
+
+  const optimizableDays = useMemo(() => {
+    if (!trip) return [];
+    const counts = new Map<number, number>();
+    for (const item of trip.items) {
+      if (typeof item.dayNumber !== 'number') continue;
+      counts.set(item.dayNumber, (counts.get(item.dayNumber) || 0) + 1);
+    }
+    return Array.from(counts.entries())
+      .filter(([, count]) => count >= 2)
+      .map(([day]) => day)
+      .sort((a, b) => a - b);
+  }, [trip]);
+
+  useEffect(() => {
+    if (!initialOptimizationMode) return;
+    setOptimizationMode(true);
+  }, [initialOptimizationMode]);
+
+  useEffect(() => {
+    if (!optimizationMode || !trip || optimizableDays.length === 0) return;
+    if (
+      typeof selectedDayFilter === 'number' &&
+      optimizableDays.includes(selectedDayFilter)
+    ) {
+      return;
+    }
+    const firstDay = optimizableDays[0];
+    if (firstDay !== undefined) setSelectedDayFilter(firstDay);
+  }, [optimizationMode, trip, optimizableDays, selectedDayFilter]);
+
+  useEffect(() => {
+    setOptimizationProposal(null);
+    setLockedProducerIds(new Set());
+    setOptimizationError(null);
+  }, [selectedDayFilter, trip?.revision]);
 
   // Handle reorder
   const handleMove = async (producerId: string, direction: 'up' | 'down') => {
@@ -480,6 +543,112 @@ export const TripWorkspace: React.FC<TripWorkspaceProps> = ({
     }
     return sorted.filter((item) => item.dayNumber === selectedDayFilter);
   }, [trip, selectedDayFilter]);
+
+  const optimizationDayItems = useMemo(() => {
+    if (!trip || typeof selectedDayFilter !== 'number') return [];
+    return [...trip.items]
+      .filter((item) => item.dayNumber === selectedDayFilter)
+      .sort((a, b) => a.position - b.position);
+  }, [trip, selectedDayFilter]);
+
+  const toggleOptimizationLock = (producerId: string) => {
+    if (optimizationBusy || optimizationProposal) return;
+    setLockedProducerIds((current) => {
+      const next = new Set(current);
+      if (next.has(producerId)) next.delete(producerId);
+      else next.add(producerId);
+      return next;
+    });
+  };
+
+  const handleOptimizeSelectedDay = async () => {
+    if (
+      !trip ||
+      typeof selectedDayFilter !== 'number' ||
+      optimizationDayItems.length < 2 ||
+      optimizationBusy
+    ) {
+      return;
+    }
+
+    setOptimizationBusy('propose');
+    setOptimizationError(null);
+    setOptimizationNotice(null);
+    setOptimizationProposal(null);
+
+    try {
+      const proposal = await optimizeTripDay(
+        trip.id,
+        selectedDayFilter,
+        trip.revision,
+        Array.from(lockedProducerIds)
+      );
+      setOptimizationProposal(proposal);
+    } catch (err: any) {
+      if (
+        err instanceof TripApiError &&
+        err.code === 'explorer_pass_required'
+      ) {
+        onOpenExplorerPass?.();
+      } else if (err instanceof TripApiError && err.code === 'conflict') {
+        setConflictMessage(
+          'This trip changed before optimization finished. Reload it and try again.'
+        );
+      } else {
+        setOptimizationError(
+          err instanceof TripApiError
+            ? err.message
+            : 'Unable to optimize this day right now.'
+        );
+      }
+    } finally {
+      setOptimizationBusy(null);
+    }
+  };
+
+  const handleApplyOptimization = async () => {
+    if (!trip || !optimizationProposal || optimizationBusy) return;
+
+    setOptimizationBusy('apply');
+    setOptimizationError(null);
+    setOptimizationNotice(null);
+
+    try {
+      const updated = await applyOptimizedTripDay(
+        trip.id,
+        optimizationProposal.dayNumber,
+        optimizationProposal.basedOnRevision,
+        optimizationProposal.proposedOrder
+      );
+      setTrip(updated);
+      setOptimizationProposal(null);
+      setLockedProducerIds(new Set());
+      setOptimizationNotice('Suggested order applied to this day.');
+    } catch (err: any) {
+      if (
+        err instanceof TripApiError &&
+        err.code === 'explorer_pass_required'
+      ) {
+        onOpenExplorerPass?.();
+      } else if (err instanceof TripApiError && err.code === 'conflict') {
+        setConflictMessage(
+          'This trip changed after the suggestion was created. Recalculate before applying it.'
+        );
+        setOptimizationProposal(null);
+      } else {
+        setOptimizationError(
+          err instanceof TripApiError
+            ? err.message
+            : 'Unable to apply this suggestion right now.'
+        );
+      }
+    } finally {
+      setOptimizationBusy(null);
+    }
+  };
+
+  const optimizationProducerName = (producerId: string) =>
+    catalogueMap.get(producerId)?.name || 'Saved producer';
 
   if (loading) {
     return (
@@ -771,6 +940,22 @@ export const TripWorkspace: React.FC<TripWorkspaceProps> = ({
             {exportError}
           </p>
         )}
+
+        {hasExplorerPass && !optimizationMode && (
+          <button
+            type="button"
+            onClick={() => {
+              setOptimizationMode(true);
+              setOptimizationNotice(null);
+              const firstDay = optimizableDays[0];
+              if (firstDay !== undefined) setSelectedDayFilter(firstDay);
+            }}
+            className="mt-3 flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl border border-emerald-400/25 bg-emerald-500/10 px-3 py-2.5 text-xs font-bold text-emerald-200 transition hover:bg-emerald-500/15"
+          >
+            <Sparkles className="h-4 w-4 text-emerald-300" />
+            Optimize My Day
+          </button>
+        )}
       </section>
 
       {/* Live catalogue offline / fallback notice */}
@@ -857,6 +1042,254 @@ export const TripWorkspace: React.FC<TripWorkspaceProps> = ({
             {trip.items.filter((item) => item.dayNumber == null).length})
           </button>
         </div>
+      )}
+
+      {optimizationMode && hasExplorerPass && (
+        <section className="rounded-2xl border border-emerald-400/25 bg-emerald-500/[0.07] p-4">
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex min-w-0 items-start gap-3">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-emerald-400/25 bg-emerald-500/10">
+                <Sparkles className="h-4 w-4 text-emerald-300" />
+              </span>
+              <div className="min-w-0">
+                <h3 className="text-sm font-bold text-emerald-100">
+                  Optimize My Day
+                </h3>
+                <p className="mt-1 text-[11px] leading-relaxed text-stone-300">
+                  Route estimates only. This does not verify opening hours,
+                  appointments, availability, or final-road suitability.
+                </p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                setOptimizationMode(false);
+                setOptimizationProposal(null);
+                setLockedProducerIds(new Set());
+                setOptimizationError(null);
+              }}
+              className="rounded-lg p-1.5 text-stone-400 transition hover:bg-white/5 hover:text-white"
+              aria-label="Close Optimize My Day"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+
+          {!catalogueIsLive ? (
+            <div className="mt-4 rounded-xl border border-amber-500/25 bg-amber-500/10 p-3 text-xs text-amber-200">
+              Live catalogue data is unavailable, so route optimization is
+              withheld until current producer locations can be verified.
+            </div>
+          ) : optimizableDays.length === 0 ? (
+            <div className="mt-4 rounded-xl border border-white/10 bg-stone-950/50 p-3 text-xs text-stone-300">
+              Assign at least two producers to the same trip day before
+              optimizing.
+            </div>
+          ) : typeof selectedDayFilter !== 'number' ||
+            optimizationDayItems.length < 2 ? (
+            <div className="mt-4 rounded-xl border border-white/10 bg-stone-950/50 p-3 text-xs text-stone-300">
+              Select an assigned day with at least two stops.
+            </div>
+          ) : optimizationDayItems.length > 8 ? (
+            <div className="mt-4 rounded-xl border border-amber-500/25 bg-amber-500/10 p-3 text-xs text-amber-200">
+              Optimize My Day V1 supports up to 8 stops on one day.
+            </div>
+          ) : optimizationProposal ? (
+            <div className="mt-4 space-y-3">
+              {optimizationProposal.proposedOrder.some(
+                (producerId, index) =>
+                  producerId !== optimizationProposal.originalOrder[index]
+              ) ? (
+                <>
+                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+                    <div className="rounded-xl border border-white/10 bg-stone-950/55 p-3">
+                      <div className="text-[9px] font-bold uppercase tracking-wider text-stone-500">
+                        Current drive
+                      </div>
+                      <div className="mt-1 text-sm font-bold text-stone-100">
+                        {optimizationProposal.estimatedDriveMinutesBefore ??
+                          '—'}{' '}
+                        min
+                      </div>
+                    </div>
+                    <div className="rounded-xl border border-white/10 bg-stone-950/55 p-3">
+                      <div className="text-[9px] font-bold uppercase tracking-wider text-stone-500">
+                        Suggested drive
+                      </div>
+                      <div className="mt-1 text-sm font-bold text-emerald-200">
+                        {optimizationProposal.estimatedDriveMinutesAfter ?? '—'}{' '}
+                        min
+                      </div>
+                    </div>
+                    <div className="rounded-xl border border-emerald-400/20 bg-emerald-500/10 p-3">
+                      <div className="text-[9px] font-bold uppercase tracking-wider text-emerald-300/70">
+                        Estimated saving
+                      </div>
+                      <div className="mt-1 text-sm font-bold text-emerald-200">
+                        {optimizationProposal.estimatedMinutesSaved ?? '—'} min
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="rounded-xl border border-white/10 bg-stone-950/55 p-3">
+                    <div className="text-[10px] font-bold uppercase tracking-wider text-stone-500">
+                      Suggested order
+                    </div>
+                    <ol className="mt-2 space-y-2">
+                      {optimizationProposal.proposedOrder.map(
+                        (producerId, index) => (
+                          <li
+                            key={producerId}
+                            className="flex items-center gap-2 text-xs text-stone-200"
+                          >
+                            <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-500/15 text-[10px] font-bold text-emerald-300">
+                              {index + 1}
+                            </span>
+                            <span className="truncate">
+                              {optimizationProducerName(producerId)}
+                            </span>
+                            {lockedProducerIds.has(producerId) && (
+                              <Lock className="ml-auto h-3.5 w-3.5 shrink-0 text-amber-400" />
+                            )}
+                          </li>
+                        )
+                      )}
+                    </ol>
+                  </div>
+
+                  {optimizationProposal.warnings.length > 0 && (
+                    <div className="space-y-1.5">
+                      {optimizationProposal.warnings.map((warning, index) => (
+                        <div
+                          key={warning.code + ':' + index}
+                          className="flex items-start gap-2 rounded-xl border border-amber-500/20 bg-amber-500/[0.07] p-2.5 text-[11px] leading-relaxed text-amber-100"
+                        >
+                          <AlertCircle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-400" />
+                          <span>{warning.message}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  <div className="flex flex-col gap-2 sm:flex-row">
+                    <button
+                      type="button"
+                      onClick={() => void handleApplyOptimization()}
+                      disabled={optimizationBusy !== null}
+                      className="flex min-h-[44px] flex-1 items-center justify-center gap-2 rounded-xl bg-emerald-500 px-4 py-2.5 text-xs font-extrabold text-stone-950 transition hover:bg-emerald-400 disabled:cursor-wait disabled:opacity-50"
+                    >
+                      <Check className="h-4 w-4" />
+                      {optimizationBusy === 'apply'
+                        ? 'Applying…'
+                        : 'Apply suggested order'}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setOptimizationProposal(null)}
+                      disabled={optimizationBusy !== null}
+                      className="min-h-[44px] rounded-xl border border-white/10 bg-stone-950/60 px-4 py-2.5 text-xs font-bold text-stone-300 transition hover:text-white disabled:opacity-50"
+                    >
+                      Keep my order
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <div className="rounded-xl border border-emerald-400/20 bg-emerald-500/10 p-3">
+                  <div className="text-sm font-bold text-emerald-100">
+                    Your current stop order is already reasonable.
+                  </div>
+                  <p className="mt-1 text-[11px] leading-relaxed text-stone-300">
+                    Based on the available route estimates, reordering would not
+                    produce a meaningful driving-time improvement.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setOptimizationProposal(null)}
+                    className="mt-3 min-h-[40px] rounded-xl border border-white/10 bg-stone-950/50 px-3 py-2 text-xs font-bold text-stone-300"
+                  >
+                    Keep my order
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="mt-4 space-y-3">
+              <div>
+                <div className="text-[10px] font-bold uppercase tracking-wider text-stone-500">
+                  {getTripDayLabel(selectedDayFilter, trip.startDate)} ·{' '}
+                  {optimizationDayItems.length} stops
+                </div>
+                <p className="mt-1 text-[11px] text-stone-400">
+                  Lock any stop that must stay in its current position.
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                {optimizationDayItems.map((item, index) => {
+                  const locked = lockedProducerIds.has(item.producerId);
+                  return (
+                    <button
+                      key={item.producerId}
+                      type="button"
+                      onClick={() => toggleOptimizationLock(item.producerId)}
+                      disabled={optimizationBusy !== null}
+                      className={`flex w-full items-center gap-3 rounded-xl border px-3 py-2.5 text-left transition ${
+                        locked
+                          ? 'border-amber-400/30 bg-amber-500/10'
+                          : 'border-white/10 bg-stone-950/50 hover:border-emerald-400/20'
+                      }`}
+                    >
+                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white/5 text-[10px] font-bold text-stone-400">
+                        {index + 1}
+                      </span>
+                      <span className="min-w-0 flex-1 truncate text-xs font-semibold text-stone-200">
+                        {optimizationProducerName(item.producerId)}
+                      </span>
+                      <span
+                        className={`flex items-center gap-1 text-[10px] font-bold ${
+                          locked ? 'text-amber-300' : 'text-stone-500'
+                        }`}
+                      >
+                        <Lock className="h-3.5 w-3.5" />
+                        {locked ? 'Locked' : 'Lock'}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              <button
+                type="button"
+                onClick={() => void handleOptimizeSelectedDay()}
+                disabled={optimizationBusy !== null}
+                className="flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl bg-emerald-500 px-4 py-2.5 text-xs font-extrabold text-stone-950 transition hover:bg-emerald-400 disabled:cursor-wait disabled:opacity-50"
+              >
+                <Sparkles className="h-4 w-4" />
+                {optimizationBusy === 'propose'
+                  ? 'Calculating route…'
+                  : 'Optimize this day'}
+              </button>
+            </div>
+          )}
+
+          {optimizationError && (
+            <p
+              role="alert"
+              className="mt-3 text-[11px] font-medium text-rose-300"
+            >
+              {optimizationError}
+            </p>
+          )}
+          {optimizationNotice && (
+            <p
+              role="status"
+              className="mt-3 text-[11px] font-medium text-emerald-300"
+            >
+              {optimizationNotice}
+            </p>
+          )}
+        </section>
       )}
 
       {/* Producer items list */}

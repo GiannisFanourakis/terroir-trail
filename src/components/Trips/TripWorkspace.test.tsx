@@ -170,5 +170,50 @@ describe('TripWorkspace', () => {
       expect(html).not.toContain('Trip Logistics &amp; Connectivity');
     });
   });
-});
 
+  it('opens the paid Optimize My Day review mode on an assigned multi-stop day', () => {
+    const secondProducer: Producer = {
+      ...mockProducer,
+      id: 'prod-2',
+      name: 'Olive Mill Test',
+      greekName: 'Ελαιοτριβείο Τεστ',
+      category: 'olive_mill',
+      coordinates: [35.28, 25.22],
+    };
+    const multiStopTrip: TripWithItems = {
+      ...mockTrip,
+      itemCount: 2,
+      items: [
+        mockTrip.items[0],
+        {
+          producerId: 'prod-2',
+          position: 1,
+          dayNumber: 1,
+          createdAt: '2026-03-01T00:00:00Z',
+          updatedAt: '2026-03-01T00:00:00Z',
+        },
+      ],
+    } as TripWithItems;
+
+    const html = renderToString(
+      <TripWorkspace
+        tripId="trip-1"
+        onBack={vi.fn()}
+        onSelectProducer={vi.fn()}
+        publicProducers={[mockProducer, secondProducer]}
+        catalogueIsLive={true}
+        hasExplorerPass={true}
+        initialOptimizationMode={true}
+        initialTrip={multiStopTrip}
+        initialProducerStates={{
+          'prod-1': 'active',
+          'prod-2': 'active',
+        }}
+      />
+    );
+
+    expect(html).toContain('Optimize My Day');
+    expect(html).toContain('Route estimates only');
+    expect(html).toContain('Select an assigned day with at least two stops.');
+  });
+});

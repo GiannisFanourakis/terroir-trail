@@ -130,7 +130,11 @@ export type ActiveModal =
   | { type: 'portal' }
   | { type: 'admin' }
   | { type: 'my_bookings' }
-  | { type: 'my_trips'; initialTripId?: string }
+  | {
+      type: 'my_trips';
+      initialTripId?: string;
+      initialMode?: 'default' | 'optimize';
+    }
   | { type: 'add_to_trip'; producer: Producer }
   | { type: 'pass' }
   | { type: 'digital_pass' }
@@ -308,12 +312,15 @@ export const App: React.FC = () => {
     setActiveModal({ type: 'add_to_trip', producer });
   };
 
-  const handleOpenMyTrips = (tripId?: string) => {
+  const handleOpenMyTrips = (
+    tripId?: string,
+    initialMode: 'default' | 'optimize' = 'default'
+  ) => {
     if (!user) {
       setActiveModal({ type: 'auth', initialRole: 'traveler' });
       return;
     }
-    setActiveModal({ type: 'my_trips', initialTripId: tripId });
+    setActiveModal({ type: 'my_trips', initialTripId: tripId, initialMode });
   };
 
   const handleConfirmChauffeurBooking = (booking: ChauffeurBooking) => {
@@ -572,6 +579,12 @@ export const App: React.FC = () => {
         totalProducersCount={producers.length}
         onOpenProducerPortal={() => handleOpenProducerPortal()}
         onOpenExplorerPass={() => setActiveModal({ type: 'pass' })}
+        hasExplorerPass={hasAdFreeTravelerPass}
+        onOpenOptimizeMyDay={
+          hasAdFreeTravelerPass
+            ? () => handleOpenMyTrips(undefined, 'optimize')
+            : undefined
+        }
         isAdmin={Boolean(accountCapabilities?.isAdmin)}
         isPlatformOwner={Boolean(accountCapabilities?.isPlatformOwner)}
         onOpenAdmin={
@@ -893,6 +906,7 @@ export const App: React.FC = () => {
             isOpen
             onClose={closeModal}
             initialTripId={activeModal.initialTripId}
+            initialMode={activeModal.initialMode || 'default'}
             onSelectProducer={(producer) => {
               handleOpenDrawer(producer, 'trip_workspace');
               closeModal();
