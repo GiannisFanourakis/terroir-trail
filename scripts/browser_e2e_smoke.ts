@@ -437,45 +437,92 @@ async function runViewport(
     viewport.name + ' Passes dialog close'
   );
 
-  if (viewport.name === 'ipad-portrait') {
+  if (viewport.name === 'ipad-portrait' || viewport.name === 'ipad-landscape') {
     await evaluate(
       cdp,
       "localStorage.setItem('terroir_trail_alcohol_content_notice_v1', 'true'); true"
     );
 
-    let producerMarkerCount = await evaluate<number>(
+    const countrySelected = await evaluate<boolean>(
       cdp,
-      "document.querySelectorAll('.leaflet-marker-icon[role=button]').length"
+      `(() => {
+        const select = document.querySelector('select[aria-label="Select country"]');
+        if (!select) return false;
+        select.value = 'GR';
+        select.dispatchEvent(new Event('change', { bubbles: true }));
+        return true;
+      })()`
     );
-    for (
-      let attempt = 0;
-      producerMarkerCount < 2 && attempt < 6;
-      attempt += 1
-    ) {
-      const expandedCluster = await evaluate<boolean>(
-        cdp,
-        `(() => {
-          const cluster = document.querySelector('.terroir-map-cluster');
-          if (!cluster) return false;
-          cluster.dispatchEvent(
-            new MouseEvent('click', { bubbles: true, cancelable: true })
-          );
-          return true;
-        })()`
-      );
-      if (!expandedCluster) break;
-      await delay(450);
-      producerMarkerCount = await evaluate<number>(
-        cdp,
-        "document.querySelectorAll('.leaflet-marker-icon[role=button]').length"
-      );
-    }
-    if (producerMarkerCount < 2) {
+    if (!countrySelected) {
       throw new Error(
-        viewport.name +
-          ': unable to expose two producer markers for preview regression.'
+        viewport.name + ': country selector missing for preview regression.'
       );
     }
+
+    await waitFor(
+      cdp,
+      `(() => {
+        const select = document.querySelector('select[aria-label="Select region"]');
+        return Boolean(
+          select &&
+            !select.disabled &&
+            [...select.options].some((option) => option.value === 'santorini')
+        );
+      })()`,
+      viewport.name + ' Santorini region option'
+    );
+
+    const regionSelected = await evaluate<boolean>(
+      cdp,
+      `(() => {
+        const select = document.querySelector('select[aria-label="Select region"]');
+        if (!select) return false;
+        select.value = 'santorini';
+        select.dispatchEvent(new Event('change', { bubbles: true }));
+        return true;
+      })()`
+    );
+    if (!regionSelected) {
+      throw new Error(
+        viewport.name + ': region selector missing for preview regression.'
+      );
+    }
+
+    await waitFor(
+      cdp,
+      `document.querySelector('select[aria-label="Select region"]')?.value === 'santorini'`,
+      viewport.name + ' Santorini selection'
+    );
+    await delay(1200);
+
+    await waitFor(
+      cdp,
+      `Boolean(document.querySelector('.terroir-map-cluster'))`,
+      viewport.name + ' Santorini producer cluster'
+    );
+
+    const expandedSantoriniCluster = await evaluate<boolean>(
+      cdp,
+      `(() => {
+        const cluster = document.querySelector('.terroir-map-cluster');
+        if (!cluster) return false;
+        cluster.dispatchEvent(
+          new MouseEvent('click', { bubbles: true, cancelable: true })
+        );
+        return true;
+      })()`
+    );
+    if (!expandedSantoriniCluster) {
+      throw new Error(
+        viewport.name + ': Santorini producer cluster missing for regression.'
+      );
+    }
+
+    await waitFor(
+      cdp,
+      `document.querySelectorAll('.leaflet-marker-icon[role=button]').length >= 2`,
+      viewport.name + ' two Santorini producer markers'
+    );
 
     const firstMarkerLabel = await evaluate<string>(
       cdp,
@@ -544,7 +591,7 @@ async function runViewport(
     if (!secondMarker?.label) {
       throw new Error(
         viewport.name +
-          ': second producer marker missing for preview regression.'
+          ': second producer marker missing for preview reset regression.'
       );
     }
 
