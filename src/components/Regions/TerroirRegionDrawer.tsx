@@ -12,6 +12,8 @@ import {
 import type { TerroirRegion, TerroirRegionSection } from '../../data/terroirRegions';
 import { trackIntent } from '../../services/intentAnalytics';
 import { ContextualAffiliateSection } from '../Monetization/ContextualAffiliateSection';
+import { PartnerPlacementSlot } from '../Monetization/PartnerPlacement';
+import type { Producer } from '../../types/terroir';
 
 interface TerroirRegionDrawerProps {
   region: TerroirRegion;
@@ -21,6 +23,7 @@ interface TerroirRegionDrawerProps {
   hasExplorerPass?: boolean;
   onClose: () => void;
   onShowProducers: () => void;
+  onOpenProducer: (producer: Producer) => void;
 }
 
 const sectionIcon = (section: TerroirRegionSection) => {
@@ -48,6 +51,7 @@ export const TerroirRegionDrawer: React.FC<TerroirRegionDrawerProps> = ({
   hasExplorerPass = false,
   onClose,
   onShowProducers,
+  onOpenProducer,
 }) => {
   if (!isOpen) return null;
 
@@ -139,6 +143,13 @@ export const TerroirRegionDrawer: React.FC<TerroirRegionDrawerProps> = ({
               </section>
             );
           })}
+
+          <PartnerPlacementSlot
+            placement="region_discovery"
+            destination={region.destination}
+            sourceSurface="region_planning"
+            onOpenProducer={onOpenProducer}
+          />
 
           <section className="rounded-2xl border border-white/10 bg-black/15 p-4">
             <div className="text-[9px] font-bold uppercase tracking-[0.18em] text-stone-500">
