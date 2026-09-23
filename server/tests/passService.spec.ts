@@ -41,8 +41,17 @@ beforeEach(() => {
   records.clear();
   vi.clearAllMocks();
   vi.stubEnv('STRIPE_HOLIDAY_PRICE_ID', 'price_holiday');
+  vi.stubEnv('EXPLORER_PASS_CHECKOUT_ENABLED', 'true');
   vi.stubEnv('APP_URL', 'https://app.example.test');
   retrieve.mockImplementation(async () => paidSession());
+});
+
+it('fails closed when server-side Explorer Pass checkout is not explicitly enabled', async () => {
+  vi.stubEnv('EXPLORER_PASS_CHECKOUT_ENABLED', 'false');
+  await expect(createPassCheckout('alice', 'Alice', 'holiday')).rejects.toThrow(
+    'Explorer Pass checkout is disabled.'
+  );
+  expect(create).not.toHaveBeenCalled();
 });
 
 it('creates checkout with server-controlled price, identity and return URL', async () => {
