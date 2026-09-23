@@ -5,7 +5,7 @@
 > Completion convention: change `- [ ] Step` to `- [x] ~~Step~~` when finished. Do not mark a step complete until it has been implemented, tested, pushed, deployed where applicable, and verified.
 
 **Last updated:** 2026-09-21
-**Current focus:** Phase 14.6A — Organic Discovery Foundation (SEO + AEO + GEO). My Trips V1 is deployed and its final two reviewed contract-edge fixes (delisting precedence during catalogue outage and authoritative add reconciliation) are verified.
+**Current focus:** Phase 14.6B — My Trips Product Closeout. The V1 domain remains frozen while the traveler-facing workspace is being finished with a verified-stop overview map, readiness summary, dated day planning, preparation checklist, and final production QA.
 
 ---
 
@@ -938,6 +938,26 @@ Do **not** add in V1:
 - [x] ~~Establish Search Console page/query/indexation tracking for the new landing clusters.~~
 
 **Gate 14.6A:** implementation must pass the normal quality gate and production deployment. Immediate Google indexing is not a deployment gate because crawling/indexation is asynchronous; success is measured over time by sitemap discovery, indexed pages, non-brand query impressions/clicks and answer-engine referrals/citations.
+
+---
+
+### 14.6B — My Trips Product Closeout
+
+**Purpose:** finish the existing free My Trips experience as a polished traveler product before producer-partner or subscription work begins. Keep the verified V1 persistence/security contract unchanged.
+
+- [ ] Add a trip overview map that plots only current verified producer locations from the live catalogue.
+- [ ] Number/day-label mapped trip stops without drawing routes, estimating drive times, or inferring road suitability.
+- [ ] Add a trip-level readiness summary with explicit `Ready`, `Contact first`, `Information gap`, and unavailable states derived only from current evidence.
+- [ ] Add an expandable preparation checklist explaining the operational reason for each stop state.
+- [ ] Show calendar dates alongside Day 1 / Day 2 labels when the trip has a start date.
+- [ ] Preserve fail-closed behavior during catalogue outages and for delisted/unavailable producers.
+- [ ] Re-verify trip-open, producer-add, direct-contact, and directions analytics without treating planning actions as bookings or visits.
+- [ ] Run the full repository quality gate and responsive browser smoke.
+- [ ] Deploy and verify the completed workspace in production before freezing the free My Trips core.
+
+**Non-goals:** no automatic routing, travel-time estimates, live availability, booking requests, collaboration, paid trip limits, AI itinerary generation, print/export, or advanced offline packs.
+
+**Gate 14.6B:** close only after the full quality gate and production UI verification pass. After closeout, new advanced planning capabilities belong to a later Traveler Plus decision rather than reopening the free V1 domain.
 
 ---
 

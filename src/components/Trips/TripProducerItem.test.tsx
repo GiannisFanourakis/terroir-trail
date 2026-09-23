@@ -67,6 +67,7 @@ describe('TripProducerItem', () => {
         totalCount={3}
         producerState="active"
         producer={sampleProducer}
+        tripStartDate="2026-06-01"
         onMoveUp={vi.fn()}
         onMoveDown={vi.fn()}
         onAssignDay={vi.fn()}
@@ -80,7 +81,7 @@ describe('TripProducerItem', () => {
     expect(html).toContain('Oia');
     expect(html).toContain('winery');
     expect(html).toContain('title="Get directions"');
-    expect(html).toContain('Day 1');
+    expect(html).toContain('Day 1 · 1 Jun');
     expect(html).toContain('aria-label="Remove Domaine Sigalas from trip"');
     // First item: Move Up is disabled
     expect(html).toMatch(/<button[^>]*disabled=""[^>]*aria-label="Move item 1 up"/);

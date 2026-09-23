@@ -18,6 +18,7 @@ import type { Producer } from '../../types/terroir';
 import { trackIntent } from '../../services/intentAnalytics';
 import { ProducerCategoryIcon } from '../Common/ProducerCategoryIcon';
 import { TripReadinessSummary } from './TripReadinessSummary';
+import { getTripDayLabel } from '../../utils/tripReadiness';
 
 export function handleTripProducerAction(
   action: 'directions' | 'phone' | 'email' | 'website',
@@ -46,6 +47,7 @@ interface TripProducerItemProps {
   isStateLoading?: boolean;
   isStateError?: boolean;
   maxDays?: number;
+  tripStartDate?: string | null;
   initialExpanded?: boolean;
   onMoveUp: (producerId: string) => void;
   onMoveDown: (producerId: string) => void;
@@ -66,6 +68,7 @@ export const TripProducerItem: React.FC<TripProducerItemProps> = ({
   isStateLoading = false,
   isStateError = false,
   maxDays,
+  tripStartDate,
   initialExpanded = false,
   onMoveUp,
   onMoveDown,
@@ -334,7 +337,7 @@ export const TripProducerItem: React.FC<TripProducerItemProps> = ({
                     <option value="">Unassigned</option>
                     {Array.from({ length: dayOptionsCount }, (_, i) => i + 1).map((day) => (
                       <option key={day} value={day}>
-                        {`Day ${day}`}
+                        {getTripDayLabel(day, tripStartDate)}
                       </option>
                     ))}
                   </select>

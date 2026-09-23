@@ -80,6 +80,10 @@ describe('TripWorkspace', () => {
     expect(html).toContain('winery');
     expect(html).toContain('Archanes');
     expect(html).toContain('Visit readiness');
+    expect(html).toContain('Trip readiness');
+    expect(html).toContain('Preparation checklist');
+    expect(html).toContain('Trip overview map');
+    expect(html).toContain('Day 1 · 1 Jun');
   });
 
   it('fails closed when catalogueIsLive is false by showing offline notice and withholding fallback facts', () => {
@@ -97,6 +101,7 @@ describe('TripWorkspace', () => {
 
     // Shows catalogue offline banner
     expect(html).toContain('Live catalogue is currently unavailable');
+    expect(html).toContain('current producer locations are withheld');
     // Shows producer details unavailable notice instead of fallback facts
     expect(html).toContain('Producer details are temporarily unavailable');
     // Does not expose live unverified facts

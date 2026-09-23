@@ -25,7 +25,10 @@ import {
 } from '../../services/tripApi';
 import type { Producer } from '../../types/terroir';
 import { TripProducerItem } from './TripProducerItem';
+import { TripOverviewMap } from './TripOverviewMap';
+import { TripPreparationPanel } from './TripPreparationPanel';
 import { ContextualAffiliateSection } from '../Monetization/ContextualAffiliateSection';
+import { getTripDayLabel } from '../../utils/tripReadiness';
 
 interface TripWorkspaceProps {
   tripId: string;
@@ -513,6 +516,26 @@ export const TripWorkspace: React.FC<TripWorkspaceProps> = ({
         </div>
       )}
 
+      {trip.itemCount > 0 && (
+        <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
+          <TripPreparationPanel
+            items={trip.items}
+            producers={publicProducers}
+            producerStates={producerStates}
+            catalogueIsLive={catalogueIsLive}
+            startDate={trip.startDate}
+          />
+          <TripOverviewMap
+            items={trip.items}
+            producers={publicProducers}
+            producerStates={producerStates}
+            catalogueIsLive={catalogueIsLive}
+            startDate={trip.startDate}
+            onSelectProducer={onSelectProducer}
+          />
+        </div>
+      )}
+
       {/* Filter / Day Buckets Tab Bar */}
       {trip.itemCount > 0 && (
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none text-xs">
@@ -542,7 +565,7 @@ export const TripWorkspace: React.FC<TripWorkspaceProps> = ({
                       : 'bg-stone-900 text-stone-400 hover:text-white border border-white/10'
                   }`}
                 >
-                  Day {day} {count > 0 && `(${count})`}
+                  {getTripDayLabel(day, trip.startDate)} {count > 0 && `(${count})`}
                 </button>
               );
             })
@@ -599,6 +622,7 @@ export const TripWorkspace: React.FC<TripWorkspaceProps> = ({
                 isStateLoading={statesLoading}
                 isStateError={statesError}
                 maxDays={tripDurationDays}
+                tripStartDate={trip.startDate}
                 onMoveUp={(id) => void handleMove(id, 'up')}
                 onMoveDown={(id) => void handleMove(id, 'down')}
                 onAssignDay={(id, day) => void handleAssignDay(id, day)}
