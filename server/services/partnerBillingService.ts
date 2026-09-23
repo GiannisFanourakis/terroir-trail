@@ -54,7 +54,7 @@ export const getPartnerBillingAvailability = () => {
   return {
     checkoutEnabled: enabled && configured,
     portalEnabled: configured,
-    planCode: PLAN_CODE as const,
+    planCode: PLAN_CODE,
   };
 };
 
