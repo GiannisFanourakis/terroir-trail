@@ -1062,20 +1062,22 @@ Candidate metrics:
 
 **14.8 internal prototype — 2026-09-21:** deployed at `f82d53c`. The admin view separates discovery signals (views, saves, trip additions) from operational outbound actions (website, phone, email, directions), shows equal-window movement without manufacturing conversion claims, warns on very small producer samples, and suppresses region/category context below the comparison threshold. Supabase reporting remains server-only: `anon` and `authenticated` cannot execute the reporting RPC. Quality Gate `35600911485` and Production Deploy `35601089359` both passed. These metrics are candidate Host-useful signals only; repeatable value still requires 14.8.4 producer validation.
 
-#### 14.8.4 Host validation
+#### 14.8.4 Commercial-role decision
 
-- [ ] Show prototype to a small number of appropriate verified/known producers when ready.
-- [ ] Ask whether the information changes real operational decisions.
-- [ ] Record requested workflows separately from requested vanity metrics.
-- [ ] Do not expose pricing yet.
+- [x] ~~Do not make analytics the primary producer value proposition.~~
+- [x] ~~Retain the internal prototype as the measurement/reporting foundation for future Partner campaigns.~~
+- [x] ~~Move producer-facing willingness-to-pay validation to the real Phase 15 Partner product, where metrics can be shown as proof of paid distribution rather than sold as a standalone dashboard.~~
+- [x] ~~Keep standalone producer workflow software as a later option only if producers demonstrate a separate repeatable need.~~
 
-**Gate 14.8:** do not create an analytics-first Producer Pro product from these metrics alone. Use validated metrics to support future Partner campaign reporting; build standalone producer software only if producers later demonstrate a separate repeatable need.
+**14.8 direction decision — 2026-09-23:** Producer Insights remains internal/supporting infrastructure. The producer commercial core is now paid distribution/visibility; campaign reporting will reuse the existing reach/planning/intent aggregates and dedicated Partner attribution added in Phase 15.
+
+**Gate 14.8:** COMPLETE for Phase 14 — do not create an analytics-first Producer Pro product. Use these metrics to support future Partner campaign reporting.
 
 ---
 
 ### 14.9 — Internal Regional Intelligence prototype
 
-**Purpose:** test the strongest likely B2B opportunity using the data already collected.
+**Purpose:** test an institutional B2B revenue line using the data already collected. Regional Intelligence remains strategically useful, but it is separate from the producer-paid Partner/visibility product.
 
 #### 14.9.1 Supply/readiness metrics
 
@@ -1153,10 +1155,10 @@ Potential future validation audiences include:
 Before closing Phase 14:
 - [ ] Summarize real usage of discovery, saves, trips, direct actions and affiliates.
 - [ ] Summarize My Trips adoption and repeat use.
-- [ ] Summarize Producer Insights validation.
+- [ ] Record the Producer Insights direction decision: supporting campaign/reporting infrastructure, not the primary producer product.
 - [ ] Summarize Regional Intelligence validation.
-- [ ] Identify which proposed paid feature solves a demonstrated problem.
-- [ ] Identify which proposed paid feature has credible willingness-to-pay evidence.
+- [ ] Record the chosen next commercial build: Producer Partner / paid visibility, with actual willingness-to-pay tested through the functioning Phase 15 product.
+- [ ] Keep Regional Intelligence external validation as a parallel institutional workstream rather than a blocker for building the producer Partner foundation.
 - [ ] Explicitly record products **not** being pursued.
 - [ ] Decide whether existing Explorer Pass/Stripe entitlement code should be:
   - retained dormant;
@@ -1502,7 +1504,7 @@ Do not implement levels 3–5 unless they are deliberately chosen.
 
 ## Phase 18 — Monetisation & Scale
 
-**Status:** Strategy defined; paid activation depends on evidence from Phase 14 and any deliberately activated later phases.
+**Status:** Commercial direction defined. Producer Partner / paid visibility is the next producer-side product; scaling still depends on real paid usage and later-phase evidence.
 
 **Objective:** commercialize only validated value while preserving TerroirTrail's independent discovery and trust model.
 
