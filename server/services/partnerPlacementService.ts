@@ -134,8 +134,8 @@ export async function getActivePartnerPlacements(
     .map((campaign: any) => ({
       campaignId: String(campaign.id),
       producerId: String(campaign.producer_id),
-      campaignType: campaign.campaign_type,
-      placement: input.placement,
+      campaignType: campaign.campaign_type as ActivePartnerPlacement['campaignType'],
+      placement: input.placement as PartnerPublicPlacement,
       destination: String(campaign.destination),
       category: String(campaign.category),
       headline: String(campaign.headline),
