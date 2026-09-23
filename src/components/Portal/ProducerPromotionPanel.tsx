@@ -126,6 +126,18 @@ export const ProducerPromotionPanel: React.FC<ProducerPromotionPanelProps> = ({
     return map;
   }, [state?.campaignResults]);
 
+  const checkoutEligible = Boolean(
+    billing?.checkoutEnabled &&
+    (
+      !partner ||
+      (
+        partner.activation_source === 'stripe_subscription' &&
+        partner.status !== 'active' &&
+        (!subscription || subscription.status === 'cancelled' || subscription.status === 'expired')
+      )
+    )
+  );
+
   const redirectToBillingUrl = async (type: 'checkout' | 'portal') => {
     setBillingBusy(type);
     setError(null);
@@ -216,23 +228,31 @@ export const ProducerPromotionPanel: React.FC<ProducerPromotionPanelProps> = ({
         </div>
       </section>
 
+      {checkoutEligible && (
+        <section className="rounded-2xl border border-amber-500/20 bg-amber-500/[0.06] p-4">
+          <div className="text-sm font-bold text-white">TerroirTrail Partner annual subscription</div>
+          <p className="mt-1 text-xs leading-relaxed text-stone-400">
+            Checkout is handled by Stripe. Your free producer listing, verification and factual visitor information remain independent of payment.
+          </p>
+          <button
+            type="button"
+            onClick={() => void redirectToBillingUrl('checkout')}
+            disabled={billingBusy !== null || isReadOnlyPreview}
+            className="mt-3 inline-flex items-center gap-2 rounded-xl bg-amber-500 px-4 py-2.5 text-xs font-bold text-stone-950 hover:bg-amber-400 disabled:opacity-50"
+          >
+            <Megaphone className="h-4 w-4" />
+            {billingBusy === 'checkout' ? 'Opening Checkout…' : 'Start annual Partner checkout'}
+          </button>
+        </section>
+      )}
+
       {!partner ? (
         <section className="rounded-2xl border border-white/10 bg-stone-900/60 p-5">
           <div className="text-sm font-bold text-white">No paid promotion is running.</div>
           <p className="mt-1 text-xs leading-relaxed text-stone-400">
             Your producer remains discoverable through the normal free TerroirTrail catalogue whether or not you subscribe to Partner.
           </p>
-          {billing?.checkoutEnabled ? (
-            <button
-              type="button"
-              onClick={() => void redirectToBillingUrl('checkout')}
-              disabled={billingBusy !== null || isReadOnlyPreview}
-              className="mt-4 inline-flex items-center gap-2 rounded-xl bg-amber-500 px-4 py-2.5 text-xs font-bold text-stone-950 hover:bg-amber-400 disabled:opacity-50"
-            >
-              <Megaphone className="h-4 w-4" />
-              {billingBusy === 'checkout' ? 'Opening Checkout…' : 'Start annual Partner checkout'}
-            </button>
-          ) : (
+          {!billing?.checkoutEnabled && (
             <div className="mt-4 rounded-xl border border-white/10 bg-stone-950/55 px-3 py-2 text-[10px] leading-relaxed text-stone-500">
               Self-service Partner billing is not enabled yet. Your free listing and Host controls remain available.
             </div>
