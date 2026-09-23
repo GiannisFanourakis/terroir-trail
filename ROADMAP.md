@@ -5,7 +5,7 @@
 > Completion convention: change `- [ ] Step` to `- [x] ~~Step~~` when finished. Do not mark a step complete until it has been implemented, tested, pushed, deployed where applicable, and verified.
 
 **Last updated:** 2026-09-23
-**Current focus:** Phase 15 Block D — Producer Partner Stripe subscription integration. Blocks A–C are production-verified; billing code and trusted webhook authority are being completed with live Checkout still intentionally disabled.
+**Current focus:** Phase 15 live Partner activation preparation. Blocks A–D are production-deployed and verified; live Checkout remains intentionally disabled until the V1 annual price is chosen and the Stripe webhook signing secret is configured securely.
 
 ---
 
@@ -1305,7 +1305,7 @@ Do not create a second producer application.
 
 Build real billing, but keep it narrow.
 
-- [ ] Define/create the one initial annual Partner Stripe Product/Price in the connected Stripe account. **Live account activation intentionally remains open until code verification is complete.**
+- [ ] Define/create the one initial annual Partner Stripe Product/Price for V1. **Do not reuse the legacy live Featured Producer Annual Partnership by default: it is €199/year and its old benefits include priority top-3 placement/glowing-pin language that conflicts with the current paid-placement trust model.**
 - [x] ~~Keep campaign add-ons out of the first billing implementation; add them only if real pilot usage justifies them.~~
 - [x] ~~Build hosted Stripe Checkout launch from the verified Host Portal, behind a strict server-side feature gate and configured annual Price ID.~~
 - [x] ~~Keep secret keys, customer IDs, Price authority and privileged Stripe calls server-side.~~
@@ -1319,7 +1319,7 @@ Build real billing, but keep it narrow.
 - [ ] Enable `STRIPE_PARTNER_BILLING_ENABLED=true` in Cloud Run only after live Price/webhook verification.
 - [ ] Verify a real test/sandbox or controlled live checkout end-to-end before producer launch.
 
-**15.8 Block D — 2026-09-23:** trusted Stripe authority migrations `20260923070927_phase15_partner_stripe_authority` and `20260923071920_phase15_partner_stripe_event_ordering` add service-role-only webhook idempotency, entitlement mapping, bounded payment-recovery grace, stale event protection and automatic expiry. Application code uses hosted subscription Checkout, Customer Portal and signed webhook processing. Production checkout remains disabled and no live Partner Product/Price has been created by this implementation yet.
+**15.8 Block D — 2026-09-23:** trusted Stripe authority migrations `20260923070927_phase15_partner_stripe_authority` and `20260923071920_phase15_partner_stripe_event_ordering` add service-role-only webhook idempotency, entitlement mapping, bounded payment-recovery grace, stale event protection and automatic expiry. Application code uses hosted subscription Checkout, Customer Portal and signed webhook processing. PR #29 passed the complete Quality Gate plus responsive browser smoke, merged to `main`, and Production Deploy #47 completed successfully across Cloud Run, Firebase Hosting, public UI smoke and catalogue-hash verification. Production commercial state remained empty after deploy (0 Partner accounts, subscriptions, Stripe events and campaigns). Live Checkout remains disabled. A pre-existing legacy Stripe product/price was discovered at €199/year; it remains quarantined and is not treated as the V1 price decision. The connected GitHub tooling cannot store Actions/Cloud Run secrets, so a new live webhook endpoint must not be created until its signing secret can be configured securely.
 
 ### 15.9 — Controlled production pilot
 
