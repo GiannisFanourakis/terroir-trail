@@ -1,128 +1,311 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Privacy Notice | TerroirTrail</title>
-  <meta name="description" content="TerroirTrail privacy notice covering traveler accounts, producer claims, first-party intent measurement, location use and current third-party services." />
-  <meta name="robots" content="index, follow, max-snippet:-1" />
-  <link rel="canonical" href="https://terroir-trail.web.app/privacy.html" />
-  <link rel="icon" type="image/png" href="/favicon.png" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    body { font-family: 'Plus Jakarta Sans', sans-serif; }
-    h1, h2, h3 { font-family: 'Playfair Display', serif; }
-  </style>
-</head>
-<body class="bg-stone-950 text-stone-200 min-h-screen antialiased selection:bg-amber-500 selection:text-stone-950">
-  <header class="border-b border-white/10 bg-stone-900/80 backdrop-blur sticky top-0 z-30">
-    <div class="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
-      <a href="/" class="flex items-center gap-2.5">
-        <img src="/logo.png" alt="TerroirTrail" class="w-8 h-8 rounded-lg object-cover" />
-        <span class="font-bold text-lg text-amber-400">TerroirTrail</span>
-      </a>
-      <a href="/" class="text-xs font-semibold px-3 py-1.5 rounded-full bg-stone-800 text-stone-300 hover:text-white border border-white/10 transition">
-        &larr; Back to App
-      </a>
-    </div>
-  </header>
-
-  <main class="max-w-4xl mx-auto px-4 py-12">
-    <div class="bg-stone-900/60 border border-white/10 rounded-2xl p-6 sm:p-10 shadow-2xl backdrop-blur-xl">
-      <span class="inline-block px-2.5 py-1 rounded-full text-[11px] font-mono font-bold bg-amber-500/10 text-amber-400 border border-amber-500/30 mb-4">
-        Privacy Notice
-      </span>
-      <h1 class="text-3xl sm:text-4xl font-bold text-white mb-2">TerroirTrail Privacy Notice</h1>
-      <p class="text-xs text-stone-400 mb-8 pb-6 border-b border-white/10">
-        Last updated: September 23, 2026 · Privacy contact:
-        <a href="mailto:terroirtrail@gmail.com" class="text-amber-400 underline">terroirtrail@gmail.com</a>
-      </p>
-
-      <section class="space-y-8 text-stone-300 text-sm leading-relaxed">
-        <div>
-          <h2 class="text-xl font-bold text-stone-100 mb-3">1. What TerroirTrail is</h2>
-          <p>
-            TerroirTrail is an independent discovery platform for authentic producers, agritourism estates, wineries, breweries, distilleries, olive oil mills, and artisan food makers across multiple European destinations. The public application remains discovery-first. Approved producer Hosts may purchase the optional TerroirTrail Partner annual subscription through Stripe for eligibility for clearly labelled paid promotion; direct tasting bookings, consumer Explorer Pass purchases, and third-party display advertising remain dormant or inactive.
-          </p>
-        </div>
-
-        <div>
-          <h2 class="text-xl font-bold text-stone-100 mb-3">2. Information used by the current product</h2>
-          <ul class="list-disc pl-5 space-y-2">
-            <li><strong>Traveler accounts:</strong> authentication identifiers, name, email address, optional profile information, passport stamp IDs and personal tasting notes.</li>
-            <li><strong>Saved favorites:</strong> favorites are stored in the browser on the current device. Signed-in favorites are separated by account on that device.</li>
-            <li><strong>First-party product-intent signals:</strong> narrow pseudonymous interaction events (such as viewing an estate, opening a regional guide, or requesting directions) used to evaluate maker popularity and guide quality. Raw event rows are retained for up to 180 days; non-identifying daily aggregates are retained for up to 24 months.</li>
-            <li><strong>Producer claims:</strong> a claimant may submit their name, account/email, selected estate and optional business evidence such as a tax/VAT identifier, registered business name, address or contact details. Submission does not itself grant host authority.</li>
-            <li><strong>Public producer information:</strong> researched listing information such as producer/project name, location, contact details, visiting information and source-backed access metadata may be displayed publicly.</li>
-            <li><strong>Location:</strong> if you use a browser or device location feature, location is requested for the user-initiated map action. TerroirTrail does not intentionally run background location tracking.</li>
-          </ul>
-        </div>
-
-        <div>
-          <h2 class="text-xl font-bold text-stone-100 mb-3">3. Why information is processed</h2>
-          <p>
-            Account information is used to authenticate users and provide account features such as Passport stamps and private notes. Producer-claim information is used to review whether a claimant is authorized to manage an estate profile. Technical information may also be processed to operate, secure and troubleshoot the service.
-          </p>
-          <p class="mt-2">
-            The appropriate legal basis can depend on the specific processing activity and applicable law. This notice describes the product behavior; it is not a substitute for legal advice.
-          </p>
-        </div>
-
-        <div>
-          <h2 class="text-xl font-bold text-stone-100 mb-3">4. Services and storage</h2>
-          <ul class="list-disc pl-5 space-y-2">
-            <li><strong>Firebase / Google Cloud:</strong> used for authentication, private user-profile storage, operational records, and hosting-related services.</li>
-            <li><strong>Apple:</strong> may be used when Sign in with Apple is enabled and selected.</li>
-            <li><strong>Supabase:</strong> used for the authoritative public producer catalogue and geospatial data.</li>
-            <li><strong>Map/tile providers:</strong> requests for map imagery or tiles (OpenStreetMap, CARTO, Esri) involve standard network communication (such as IP address) with the respective providers.</li>
-            <li><strong>Google Places / Maps Media:</strong> for verified listings, place photo media may be fetched directly from Google Places API or linked to Google Maps.</li>
-            <li><strong>Travel affiliate links (Travelpayouts):</strong> curated outbound links to third-party travel services (car rentals, ferries, transfers, connectivity). TerroirTrail transmits no account, personal profile, or booking data to affiliate partners, and sets no third-party tracking cookies. Pass-holders enjoy an ad-free experience without affiliate banners.</li>
-            <li><strong>First-party intent telemetry:</strong> rotating session identifiers stored in browser session storage; for signed-in users, account identifiers are cryptographically pseudonymized using a server-side HMAC before storage. Raw analytics does not store the Firebase UID, private note text, precise movement coordinates, IP address, or outbound affiliate URL. TerroirTrail employs no third-party behavioral analytics or ad network tracking pixels.</li>
-            <li><strong>Browser local storage:</strong> used for device-local preferences and saved favorites.</li>
-          </ul>
-        </div>
-
-        <div>
-          <h2 class="text-xl font-bold text-stone-100 mb-3">5. Advertising and payment infrastructure</h2>
-          <p>
-            Display advertising infrastructure (Google AdSense) and consumer Explorer Pass checkout remain <strong>disabled/dormant</strong>. After an approved producer claim, a verified Host may purchase the optional TerroirTrail Partner annual subscription through Stripe-hosted Checkout and manage billing through Stripe Customer Portal. Stripe receives and processes payment-card and billing information directly; TerroirTrail does not receive full card numbers or CVCs. TerroirTrail receives and retains the identifiers and subscription/payment status needed to operate Partner entitlement, billing support, audit, renewal, cancellation and expiry.
-          </p>
-        </div>
-
-        <div>
-          <h2 class="text-xl font-bold text-stone-100 mb-3">6. Sharing and public visibility</h2>
-          <p>
-            Private traveler notes and account data are never public or shared with producers. Public producer listings use business information researched from public or producer-controlled sources. A producer claim is reviewed separately from the public listing and does not automatically create a commercial partnership or public Experience.
-          </p>
-        </div>
-
-        <div>
-          <h2 class="text-xl font-bold text-stone-100 mb-3">7. Access, export, and deletion requests</h2>
-          <p>
-            Authenticated users can access self-service account data export (downloading a machine-readable JSON archive) and self-service permanent account deletion directly within the in-app <strong>Account & privacy</strong> settings. The export includes retained account-linked intent events. Account deletion removes retained raw intent events linked to the account; historical non-identifying aggregate statistics remain.
-          </p>
-          <p class="mt-2">
-            You may also contact TerroirTrail to exercise any data protection rights (access, correction, erasure, objection, restriction, or portability) at
-            <a href="mailto:terroirtrail@gmail.com" class="text-amber-400 underline font-mono">terroirtrail@gmail.com</a>.
-          </p>
-        </div>
-
-        <div>
-          <h2 class="text-xl font-bold text-stone-100 mb-3">8. Changes to this notice</h2>
-          <p>
-            This notice may be updated as TerroirTrail adds or removes features, providers or commercial workflows. The date at the top identifies the current version.
-          </p>
-        </div>
-      </section>
-
-      <div class="mt-10 pt-6 border-t border-white/10 flex items-center justify-between gap-4 text-xs text-stone-400">
-        <span>© 2026 TerroirTrail</span>
-        <a href="mailto:terroirtrail@gmail.com" class="hover:text-amber-300 transition">Privacy contact</a>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Privacy Notice | TerroirTrail</title>
+    <meta
+      name="description"
+      content="TerroirTrail privacy notice covering traveler accounts, producer claims, first-party intent measurement, location use and current third-party services."
+    />
+    <meta name="robots" content="index, follow, max-snippet:-1" />
+    <link rel="canonical" href="https://terroir-trail.web.app/privacy.html" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+      }
+      h1,
+      h2,
+      h3 {
+        font-family: 'Playfair Display', serif;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-stone-950 text-stone-200 min-h-screen antialiased selection:bg-amber-500 selection:text-stone-950"
+  >
+    <header
+      class="border-b border-white/10 bg-stone-900/80 backdrop-blur sticky top-0 z-30"
+    >
+      <div
+        class="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between"
+      >
+        <a href="/" class="flex items-center gap-2.5">
+          <img
+            src="/logo.png"
+            alt="TerroirTrail"
+            class="w-8 h-8 rounded-lg object-cover"
+          />
+          <span class="font-bold text-lg text-amber-400">TerroirTrail</span>
+        </a>
+        <a
+          href="/"
+          class="text-xs font-semibold px-3 py-1.5 rounded-full bg-stone-800 text-stone-300 hover:text-white border border-white/10 transition"
+        >
+          &larr; Back to App
+        </a>
       </div>
-    </div>
-  </main>
-</body>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 py-12">
+      <div
+        class="bg-stone-900/60 border border-white/10 rounded-2xl p-6 sm:p-10 shadow-2xl backdrop-blur-xl"
+      >
+        <span
+          class="inline-block px-2.5 py-1 rounded-full text-[11px] font-mono font-bold bg-amber-500/10 text-amber-400 border border-amber-500/30 mb-4"
+        >
+          Privacy Notice
+        </span>
+        <h1 class="text-3xl sm:text-4xl font-bold text-white mb-2">
+          TerroirTrail Privacy Notice
+        </h1>
+        <p class="text-xs text-stone-400 mb-8 pb-6 border-b border-white/10">
+          Last updated: September 23, 2026 · Privacy contact:
+          <a
+            href="mailto:terroirtrail@gmail.com"
+            class="text-amber-400 underline"
+            >terroirtrail@gmail.com</a
+          >
+        </p>
+
+        <section class="space-y-8 text-stone-300 text-sm leading-relaxed">
+          <div>
+            <h2 class="text-xl font-bold text-stone-100 mb-3">
+              1. What TerroirTrail is
+            </h2>
+            <p>
+              TerroirTrail is an independent discovery platform for authentic
+              producers, agritourism estates, wineries, breweries, distilleries,
+              olive oil mills, and artisan food makers across multiple European
+              destinations. The public application remains discovery-first.
+              Travelers may optionally purchase Explorer Pass convenience plans
+              for ad-free planning and trip exports, while approved producer
+              Hosts may separately purchase the optional TerroirTrail Partner
+              annual subscription for eligibility for clearly labelled paid
+              promotion. Direct tasting checkout and third-party display
+              advertising remain dormant or inactive.
+            </p>
+          </div>
+
+          <div>
+            <h2 class="text-xl font-bold text-stone-100 mb-3">
+              2. Information used by the current product
+            </h2>
+            <ul class="list-disc pl-5 space-y-2">
+              <li>
+                <strong>Traveler accounts:</strong> authentication identifiers,
+                name, email address, optional profile information, passport
+                stamp IDs and personal tasting notes.
+              </li>
+              <li>
+                <strong>My Trips and Explorer Pass:</strong> trip titles,
+                optional dates, saved producer IDs, ordering/day assignments,
+                and—where a paid convenience plan is purchased—plan type and
+                entitlement expiry. Trip Pack files are generated at the
+                traveler's request from saved trip data and current public
+                catalogue facts; once downloaded, the local copy is controlled
+                by the traveler and can become outdated.
+              </li>
+              <li>
+                <strong>Saved favorites:</strong> favorites are stored in the
+                browser on the current device. Signed-in favorites are separated
+                by account on that device.
+              </li>
+              <li>
+                <strong>First-party product-intent signals:</strong> narrow
+                pseudonymous interaction events (such as viewing an estate,
+                opening a regional guide, or requesting directions) used to
+                evaluate maker popularity and guide quality. Raw event rows are
+                retained for up to 180 days; non-identifying daily aggregates
+                are retained for up to 24 months.
+              </li>
+              <li>
+                <strong>Producer claims:</strong> a claimant may submit their
+                name, account/email, selected estate and optional business
+                evidence such as a tax/VAT identifier, registered business name,
+                address or contact details. Submission does not itself grant
+                host authority.
+              </li>
+              <li>
+                <strong>Public producer information:</strong> researched listing
+                information such as producer/project name, location, contact
+                details, visiting information and source-backed access metadata
+                may be displayed publicly.
+              </li>
+              <li>
+                <strong>Location:</strong> if you use a browser or device
+                location feature, location is requested for the user-initiated
+                map action. TerroirTrail does not intentionally run background
+                location tracking.
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h2 class="text-xl font-bold text-stone-100 mb-3">
+              3. Why information is processed
+            </h2>
+            <p>
+              Account information is used to authenticate users and provide
+              account features such as Passport stamps and private notes.
+              Producer-claim information is used to review whether a claimant is
+              authorized to manage an estate profile. Technical information may
+              also be processed to operate, secure and troubleshoot the service.
+            </p>
+            <p class="mt-2">
+              The appropriate legal basis can depend on the specific processing
+              activity and applicable law. This notice describes the product
+              behavior; it is not a substitute for legal advice.
+            </p>
+          </div>
+
+          <div>
+            <h2 class="text-xl font-bold text-stone-100 mb-3">
+              4. Services and storage
+            </h2>
+            <ul class="list-disc pl-5 space-y-2">
+              <li>
+                <strong>Firebase / Google Cloud:</strong> used for
+                authentication, private user-profile storage, operational
+                records, and hosting-related services.
+              </li>
+              <li>
+                <strong>Apple:</strong> may be used when Sign in with Apple is
+                enabled and selected.
+              </li>
+              <li>
+                <strong>Supabase:</strong> used for the authoritative public
+                producer catalogue and geospatial data.
+              </li>
+              <li>
+                <strong>Map/tile providers:</strong> requests for map imagery or
+                tiles (OpenStreetMap, CARTO, Esri) involve standard network
+                communication (such as IP address) with the respective
+                providers.
+              </li>
+              <li>
+                <strong>Google Places / Maps Media:</strong> for verified
+                listings, place photo media may be fetched directly from Google
+                Places API or linked to Google Maps.
+              </li>
+              <li>
+                <strong>Travel affiliate links (Travelpayouts):</strong> curated
+                outbound links to third-party travel services (car rentals,
+                ferries, transfers, connectivity). TerroirTrail transmits no
+                account, personal profile, or booking data to affiliate
+                partners, and sets no third-party tracking cookies. Pass-holders
+                enjoy an ad-free experience without affiliate banners.
+              </li>
+              <li>
+                <strong>First-party intent telemetry:</strong> rotating session
+                identifiers stored in browser session storage; for signed-in
+                users, account identifiers are cryptographically pseudonymized
+                using a server-side HMAC before storage. Raw analytics does not
+                store the Firebase UID, private note text, precise movement
+                coordinates, IP address, or outbound affiliate URL. TerroirTrail
+                employs no third-party behavioral analytics or ad network
+                tracking pixels.
+              </li>
+              <li>
+                <strong>Browser local storage:</strong> used for device-local
+                preferences and saved favorites.
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h2 class="text-xl font-bold text-stone-100 mb-3">
+              5. Advertising and payment infrastructure
+            </h2>
+            <p>
+              Display advertising infrastructure (Google AdSense) remains
+              <strong>disabled/dormant</strong>. Verified Hosts may purchase the
+              optional TerroirTrail Partner annual subscription, and travelers
+              may purchase optional Explorer Pass convenience plans, through
+              Stripe-hosted Checkout. Stripe receives and processes
+              payment-card, billing-address and tax information directly;
+              TerroirTrail does not receive full card numbers or CVCs. For
+              Explorer Passes, TerroirTrail receives or stores the authenticated
+              account identifier, Checkout/session identifiers, Pass identifier,
+              selected plan, Stripe customer/subscription identifiers where
+              applicable, payment/subscription status and entitlement expiry
+              needed to provide the paid conveniences, prevent unauthorized
+              access, support billing, and end access after expiry, refund or
+              cancellation. Annual Explorer subscribers can manage billing
+              through a dedicated Stripe Customer Portal.
+            </p>
+          </div>
+
+          <div>
+            <h2 class="text-xl font-bold text-stone-100 mb-3">
+              6. Sharing and public visibility
+            </h2>
+            <p>
+              Private traveler notes and account data are never public or shared
+              with producers. Public producer listings use business information
+              researched from public or producer-controlled sources. A producer
+              claim is reviewed separately from the public listing and does not
+              automatically create a commercial partnership or public
+              Experience.
+            </p>
+          </div>
+
+          <div>
+            <h2 class="text-xl font-bold text-stone-100 mb-3">
+              7. Access, export, and deletion requests
+            </h2>
+            <p>
+              Authenticated users can access self-service account data export
+              (downloading a machine-readable JSON archive) and self-service
+              permanent account deletion directly within the in-app
+              <strong>Account & privacy</strong> settings. The export includes
+              retained account-linked intent events. Account deletion removes
+              retained raw intent events linked to the account; historical
+              non-identifying aggregate statistics remain.
+            </p>
+            <p class="mt-2">
+              You may also contact TerroirTrail to exercise any data protection
+              rights (access, correction, erasure, objection, restriction, or
+              portability) at
+              <a
+                href="mailto:terroirtrail@gmail.com"
+                class="text-amber-400 underline font-mono"
+                >terroirtrail@gmail.com</a
+              >.
+            </p>
+          </div>
+
+          <div>
+            <h2 class="text-xl font-bold text-stone-100 mb-3">
+              8. Changes to this notice
+            </h2>
+            <p>
+              This notice may be updated as TerroirTrail adds or removes
+              features, providers or commercial workflows. The date at the top
+              identifies the current version.
+            </p>
+          </div>
+        </section>
+
+        <div
+          class="mt-10 pt-6 border-t border-white/10 flex items-center justify-between gap-4 text-xs text-stone-400"
+        >
+          <span>© 2026 TerroirTrail</span>
+          <a
+            href="mailto:terroirtrail@gmail.com"
+            class="hover:text-amber-300 transition"
+            >Privacy contact</a
+          >
+        </div>
+      </div>
+    </main>
+  </body>
 </html>

@@ -3,16 +3,21 @@ import {
   AlertCircle,
   ArrowLeft,
   Calendar,
+  Crown,
+  Download,
   Edit2,
   Layers,
   MapPin,
+  Printer,
   RefreshCw,
   Trash2,
+  WifiOff,
   X,
 } from 'lucide-react';
 import {
   assignTripItemDay,
   deleteTrip,
+  fetchTripPack,
   getTrip,
   getTripProducerStates,
   removeProducerFromTrip,
@@ -38,6 +43,7 @@ interface TripWorkspaceProps {
   publicProducers: Producer[];
   catalogueIsLive?: boolean;
   hasExplorerPass?: boolean;
+  onOpenExplorerPass?: () => void;
   initialTrip?: TripWithItems;
   initialProducerStates?: Record<string, TripProducerState>;
   onTripDeleted?: (tripId: string) => void;
@@ -48,15 +54,31 @@ const formatDateSpan = (start: string | null, end: string | null): string => {
   if (start && !end) {
     const [y, m, d] = start.split('-').map(Number);
     const date = new Date(Date.UTC(y, m - 1, d));
-    return new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }).format(date) + ' onwards';
+    return (
+      new Intl.DateTimeFormat('en-GB', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+        timeZone: 'UTC',
+      }).format(date) + ' onwards'
+    );
   }
   if (start && end) {
     const [y1, m1, d1] = start.split('-').map(Number);
     const [y2, m2, d2] = end.split('-').map(Number);
     const dStart = new Date(Date.UTC(y1, m1 - 1, d1));
     const dEnd = new Date(Date.UTC(y2, m2 - 1, d2));
-    const fStart = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' }).format(dStart);
-    const fEnd = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }).format(dEnd);
+    const fStart = new Intl.DateTimeFormat('en-GB', {
+      day: 'numeric',
+      month: 'short',
+      timeZone: 'UTC',
+    }).format(dStart);
+    const fEnd = new Intl.DateTimeFormat('en-GB', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+      timeZone: 'UTC',
+    }).format(dEnd);
     return `${fStart} – ${fEnd}`;
   }
   return '';
@@ -75,31 +97,48 @@ export const TripWorkspace: React.FC<TripWorkspaceProps> = ({
   publicProducers,
   catalogueIsLive = true,
   hasExplorerPass = false,
+  onOpenExplorerPass,
   initialTrip,
   initialProducerStates,
   onTripDeleted,
 }) => {
   const [trip, setTrip] = useState<TripWithItems | null>(initialTrip ?? null);
-  const [producerStates, setProducerStates] = useState<Record<string, TripProducerState>>(initialProducerStates ?? {});
-  const [loading, setLoading] = useState<boolean>(initialTrip !== undefined ? false : true);
+  const [producerStates, setProducerStates] = useState<
+    Record<string, TripProducerState>
+  >(initialProducerStates ?? {});
+  const [loading, setLoading] = useState<boolean>(
+    initialTrip !== undefined ? false : true
+  );
   const [statesLoading, setStatesLoading] = useState<boolean>(false);
   const [statesError, setStatesError] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [conflictMessage, setConflictMessage] = useState<string | null>(null);
   const [mutationPending, setMutationPending] = useState<boolean>(false);
+  const [exportBusy, setExportBusy] = useState<
+    'print' | 'offline' | 'calendar' | null
+  >(null);
+  const [exportError, setExportError] = useState<string | null>(null);
 
   // Rename / Edit state
   const [isEditing, setIsEditing] = useState<boolean>(false);
-  const [titleDraft, setTitleDraft] = useState<string>(initialTrip?.title ?? '');
-  const [startDateDraft, setStartDateDraft] = useState<string>(initialTrip?.startDate || '');
-  const [endDateDraft, setEndDateDraft] = useState<string>(initialTrip?.endDate || '');
+  const [titleDraft, setTitleDraft] = useState<string>(
+    initialTrip?.title ?? ''
+  );
+  const [startDateDraft, setStartDateDraft] = useState<string>(
+    initialTrip?.startDate || ''
+  );
+  const [endDateDraft, setEndDateDraft] = useState<string>(
+    initialTrip?.endDate || ''
+  );
   const [editError, setEditError] = useState<string | null>(null);
 
   // Delete modal state
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<boolean>(false);
 
   // Day filter
-  const [selectedDayFilter, setSelectedDayFilter] = useState<number | 'all' | 'unassigned'>('all');
+  const [selectedDayFilter, setSelectedDayFilter] = useState<
+    number | 'all' | 'unassigned'
+  >('all');
 
   // Producer catalogue map for fast lookup
   const catalogueMap = useMemo(() => {
@@ -117,7 +156,10 @@ export const TripWorkspace: React.FC<TripWorkspaceProps> = ({
     for (const item of trip.items) {
       const producer = catalogueMap.get(item.producerId);
       if (!producer) continue;
-      counts.set(producer.destination, (counts.get(producer.destination) || 0) + 1);
+      counts.set(
+        producer.destination,
+        (counts.get(producer.destination) || 0) + 1
+      );
       if (!firstPosition.has(producer.destination)) {
         firstPosition.set(producer.destination, item.position);
       }
@@ -149,30 +191,33 @@ export const TripWorkspace: React.FC<TripWorkspaceProps> = ({
     }
   }, []);
 
-  const loadTripData = useCallback(async (isInitial = false) => {
-    if (isInitial) setLoading(true);
-    setError(null);
-    setConflictMessage(null);
-    try {
-      const data = await getTrip(tripId);
-      setTrip(data);
-      setTitleDraft(data.title);
-      setStartDateDraft(data.startDate || '');
-      setEndDateDraft(data.endDate || '');
-      if (isInitial) {
-        trackTripOpened('my_trips');
+  const loadTripData = useCallback(
+    async (isInitial = false) => {
+      if (isInitial) setLoading(true);
+      setError(null);
+      setConflictMessage(null);
+      try {
+        const data = await getTrip(tripId);
+        setTrip(data);
+        setTitleDraft(data.title);
+        setStartDateDraft(data.startDate || '');
+        setEndDateDraft(data.endDate || '');
+        if (isInitial) {
+          trackTripOpened('my_trips');
+        }
+        void loadStates(tripId);
+      } catch (err: any) {
+        if (err instanceof TripApiError && err.status === 404) {
+          setError('This trip was deleted or is no longer available.');
+        } else {
+          setError(err.message || 'Failed to load trip.');
+        }
+      } finally {
+        setLoading(false);
       }
-      void loadStates(tripId);
-    } catch (err: any) {
-      if (err instanceof TripApiError && err.status === 404) {
-        setError('This trip was deleted or is no longer available.');
-      } else {
-        setError(err.message || 'Failed to load trip.');
-      }
-    } finally {
-      setLoading(false);
-    }
-  }, [tripId, loadStates]);
+    },
+    [tripId, loadStates]
+  );
 
   useEffect(() => {
     if (initialTrip === undefined) {
@@ -191,9 +236,12 @@ export const TripWorkspace: React.FC<TripWorkspaceProps> = ({
   const handleMove = async (producerId: string, direction: 'up' | 'down') => {
     if (!trip || mutationPending) return;
     const sorted = [...trip.items].sort((a, b) => a.position - b.position);
-    const currentIndex = sorted.findIndex((item) => item.producerId === producerId);
+    const currentIndex = sorted.findIndex(
+      (item) => item.producerId === producerId
+    );
     if (currentIndex === -1) return;
-    const targetIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
+    const targetIndex =
+      direction === 'up' ? currentIndex - 1 : currentIndex + 1;
     if (targetIndex < 0 || targetIndex >= sorted.length) return;
 
     // Swap
@@ -205,11 +253,17 @@ export const TripWorkspace: React.FC<TripWorkspaceProps> = ({
     setMutationPending(true);
     setConflictMessage(null);
     try {
-      const updated = await reorderTripItems(trip.id, newProducerIds, trip.revision);
+      const updated = await reorderTripItems(
+        trip.id,
+        newProducerIds,
+        trip.revision
+      );
       setTrip(updated);
     } catch (err: any) {
       if (err instanceof TripApiError && err.status === 409) {
-        setConflictMessage('This trip changed in another tab or device. Reload it before trying again.');
+        setConflictMessage(
+          'This trip changed in another tab or device. Reload it before trying again.'
+        );
       } else {
         setError(err.message || 'Failed to reorder items.');
       }
@@ -219,16 +273,26 @@ export const TripWorkspace: React.FC<TripWorkspaceProps> = ({
   };
 
   // Handle day assignment
-  const handleAssignDay = async (producerId: string, dayNumber: number | null) => {
+  const handleAssignDay = async (
+    producerId: string,
+    dayNumber: number | null
+  ) => {
     if (!trip || mutationPending) return;
     setMutationPending(true);
     setConflictMessage(null);
     try {
-      const updated = await assignTripItemDay(trip.id, producerId, dayNumber, trip.revision);
+      const updated = await assignTripItemDay(
+        trip.id,
+        producerId,
+        dayNumber,
+        trip.revision
+      );
       setTrip(updated);
     } catch (err: any) {
       if (err instanceof TripApiError && err.status === 409) {
-        setConflictMessage('This trip changed in another tab or device. Reload it before trying again.');
+        setConflictMessage(
+          'This trip changed in another tab or device. Reload it before trying again.'
+        );
       } else {
         setError(err.message || 'Failed to assign day.');
       }
@@ -243,11 +307,17 @@ export const TripWorkspace: React.FC<TripWorkspaceProps> = ({
     setMutationPending(true);
     setConflictMessage(null);
     try {
-      const updated = await removeProducerFromTrip(trip.id, producerId, trip.revision);
+      const updated = await removeProducerFromTrip(
+        trip.id,
+        producerId,
+        trip.revision
+      );
       setTrip(updated);
     } catch (err: any) {
       if (err instanceof TripApiError && err.status === 409) {
-        setConflictMessage('This trip changed in another tab or device. Reload it before trying again.');
+        setConflictMessage(
+          'This trip changed in another tab or device. Reload it before trying again.'
+        );
       } else {
         setError(err.message || 'Failed to remove producer.');
       }
@@ -296,7 +366,9 @@ export const TripWorkspace: React.FC<TripWorkspaceProps> = ({
       setIsEditing(false);
     } catch (err: any) {
       if (err instanceof TripApiError && err.status === 409) {
-        setConflictMessage('This trip changed in another tab or device. Reload it before trying again.');
+        setConflictMessage(
+          'This trip changed in another tab or device. Reload it before trying again.'
+        );
       } else {
         setEditError(err.message || 'Failed to update trip.');
       }
@@ -315,7 +387,9 @@ export const TripWorkspace: React.FC<TripWorkspaceProps> = ({
       onBack();
     } catch (err: any) {
       if (err instanceof TripApiError && err.status === 409) {
-        setConflictMessage('This trip changed in another tab or device. Reload it before trying again.');
+        setConflictMessage(
+          'This trip changed in another tab or device. Reload it before trying again.'
+        );
         setShowDeleteConfirm(false);
       } else {
         setError(err.message || 'Failed to delete trip.');
@@ -323,6 +397,76 @@ export const TripWorkspace: React.FC<TripWorkspaceProps> = ({
       }
     } finally {
       setMutationPending(false);
+    }
+  };
+
+  const downloadBlob = (blob: Blob, filename: string) => {
+    const href = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = href;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.setTimeout(() => URL.revokeObjectURL(href), 1000);
+  };
+
+  const handleExplorerExport = async (
+    action: 'print' | 'offline' | 'calendar'
+  ) => {
+    if (!trip) return;
+    setExportError(null);
+
+    if (!hasExplorerPass) {
+      onOpenExplorerPass?.();
+      return;
+    }
+
+    if (action === 'calendar' && !trip.startDate) {
+      setExportError(
+        'Add a trip start date before exporting to your calendar.'
+      );
+      return;
+    }
+
+    setExportBusy(action);
+    try {
+      const pack = await fetchTripPack(
+        trip.id,
+        action === 'calendar' ? 'ics' : 'html'
+      );
+
+      if (action === 'print') {
+        const html = await pack.blob.text();
+        const frame = document.createElement('iframe');
+        frame.setAttribute('aria-hidden', 'true');
+        frame.style.position = 'fixed';
+        frame.style.width = '1px';
+        frame.style.height = '1px';
+        frame.style.right = '0';
+        frame.style.bottom = '0';
+        frame.style.opacity = '0';
+        frame.style.pointerEvents = 'none';
+        frame.onload = () => {
+          window.setTimeout(() => {
+            frame.contentWindow?.focus();
+            frame.contentWindow?.print();
+            window.setTimeout(() => frame.remove(), 1500);
+          }, 100);
+        };
+        frame.srcdoc = html;
+        document.body.appendChild(frame);
+      } else {
+        downloadBlob(pack.blob, pack.filename);
+      }
+    } catch (err: any) {
+      setExportError(
+        err instanceof TripApiError
+          ? err.message
+          : 'Unable to prepare this Explorer trip tool right now.'
+      );
+    } finally {
+      setExportBusy(null);
     }
   };
 
@@ -419,7 +563,9 @@ export const TripWorkspace: React.FC<TripWorkspaceProps> = ({
           <div className="flex items-start gap-2.5 min-w-0">
             <AlertCircle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
             <div>
-              <span className="font-bold block text-amber-300">Sync Notice</span>
+              <span className="font-bold block text-amber-300">
+                Sync Notice
+              </span>
               <p className="text-[11px] text-stone-300">{conflictMessage}</p>
             </div>
           </div>
@@ -528,20 +674,113 @@ export const TripWorkspace: React.FC<TripWorkspaceProps> = ({
               <span>·</span>
               <span className="flex items-center gap-1.5">
                 <Layers className="w-3.5 h-3.5 text-amber-400" />
-                <span>
-                  {trip.itemCount} / 50 producers
-                </span>
+                <span>{trip.itemCount} / 50 producers</span>
               </span>
             </div>
           </div>
         </div>
       )}
 
+      <section className="rounded-2xl border border-amber-500/20 bg-amber-500/[0.06] p-3.5 sm:p-4">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex min-w-0 items-start gap-3">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-amber-500/20 bg-amber-500/10 text-amber-400">
+              <Crown className="h-4 w-4" />
+            </span>
+            <div className="min-w-0">
+              <div className="flex flex-wrap items-center gap-2">
+                <h3 className="text-xs font-bold text-white">
+                  Explorer trip tools
+                </h3>
+                <span
+                  className={`rounded-full border px-2 py-0.5 text-[9px] font-extrabold uppercase tracking-wider ${
+                    hasExplorerPass
+                      ? 'border-emerald-400/25 bg-emerald-500/10 text-emerald-300'
+                      : 'border-amber-400/20 bg-amber-500/10 text-amber-300'
+                  }`}
+                >
+                  {hasExplorerPass ? 'Active Pass' : 'Pass convenience'}
+                </span>
+              </div>
+              <p className="mt-1 text-[10px] leading-relaxed text-stone-400 sm:text-[11px]">
+                Print or save a PDF, keep an offline trip copy, or export dated
+                stops to your calendar.
+              </p>
+            </div>
+          </div>
+
+          {!hasExplorerPass && onOpenExplorerPass && (
+            <button
+              type="button"
+              onClick={onOpenExplorerPass}
+              className="w-full shrink-0 rounded-xl border border-amber-400/30 bg-amber-500/10 px-3 py-2 text-xs font-bold text-amber-200 transition hover:bg-amber-500/15 sm:w-auto"
+            >
+              View Passes
+            </button>
+          )}
+        </div>
+
+        <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-3">
+          <button
+            type="button"
+            onClick={() => void handleExplorerExport('print')}
+            disabled={exportBusy !== null}
+            className="flex min-h-[44px] items-center justify-center gap-2 rounded-xl border border-white/10 bg-stone-950/70 px-3 py-2.5 text-xs font-bold text-stone-200 transition hover:border-amber-400/30 hover:text-amber-200 disabled:cursor-wait disabled:opacity-50"
+          >
+            <Printer className="h-3.5 w-3.5 text-amber-400" />
+            <span>
+              {exportBusy === 'print' ? 'Preparing…' : 'Print / Save PDF'}
+            </span>
+          </button>
+          <button
+            type="button"
+            onClick={() => void handleExplorerExport('offline')}
+            disabled={exportBusy !== null}
+            className="flex min-h-[44px] items-center justify-center gap-2 rounded-xl border border-white/10 bg-stone-950/70 px-3 py-2.5 text-xs font-bold text-stone-200 transition hover:border-amber-400/30 hover:text-amber-200 disabled:cursor-wait disabled:opacity-50"
+          >
+            <WifiOff className="h-3.5 w-3.5 text-amber-400" />
+            <span>
+              {exportBusy === 'offline' ? 'Preparing…' : 'Offline Copy'}
+            </span>
+          </button>
+          <button
+            type="button"
+            onClick={() => void handleExplorerExport('calendar')}
+            disabled={
+              exportBusy !== null || (hasExplorerPass && !trip.startDate)
+            }
+            className="flex min-h-[44px] items-center justify-center gap-2 rounded-xl border border-white/10 bg-stone-950/70 px-3 py-2.5 text-xs font-bold text-stone-200 transition hover:border-amber-400/30 hover:text-amber-200 disabled:cursor-not-allowed disabled:opacity-45"
+            title={
+              !trip.startDate
+                ? 'Add a trip start date before calendar export'
+                : 'Export calendar'
+            }
+          >
+            <Download className="h-3.5 w-3.5 text-amber-400" />
+            <span>
+              {exportBusy === 'calendar' ? 'Preparing…' : 'Calendar (.ics)'}
+            </span>
+          </button>
+        </div>
+
+        {exportError && (
+          <p
+            role="alert"
+            className="mt-2.5 text-[10px] font-medium text-rose-300 sm:text-[11px]"
+          >
+            {exportError}
+          </p>
+        )}
+      </section>
+
       {/* Live catalogue offline / fallback notice */}
       {!catalogueIsLive && (
         <div className="p-3 rounded-xl bg-stone-900/90 border border-amber-500/30 text-xs text-amber-200 flex items-center gap-2">
           <AlertCircle className="w-4 h-4 text-amber-400 shrink-0" />
-          <span>Live catalogue is currently unavailable. Preserved trip items are shown without unverified fallback facts.</span>
+          <span>
+            Live catalogue is currently unavailable. Preserved trip items are
+            shown without unverified fallback facts.
+          </span>
         </div>
       )}
 
@@ -580,25 +819,30 @@ export const TripWorkspace: React.FC<TripWorkspaceProps> = ({
             All Stops ({trip.itemCount})
           </button>
 
-          {tripDurationDays ? (
-            Array.from({ length: tripDurationDays }, (_, i) => i + 1).map((day) => {
-              const count = trip.items.filter((item) => item.dayNumber === day).length;
-              return (
-                <button
-                  key={day}
-                  type="button"
-                  onClick={() => setSelectedDayFilter(day)}
-                  className={`px-3 py-1.5 rounded-xl font-bold transition whitespace-nowrap cursor-pointer ${
-                    selectedDayFilter === day
-                      ? 'bg-amber-500 text-stone-950'
-                      : 'bg-stone-900 text-stone-400 hover:text-white border border-white/10'
-                  }`}
-                >
-                  {getTripDayLabel(day, trip.startDate)} {count > 0 && `(${count})`}
-                </button>
-              );
-            })
-          ) : null}
+          {tripDurationDays
+            ? Array.from({ length: tripDurationDays }, (_, i) => i + 1).map(
+                (day) => {
+                  const count = trip.items.filter(
+                    (item) => item.dayNumber === day
+                  ).length;
+                  return (
+                    <button
+                      key={day}
+                      type="button"
+                      onClick={() => setSelectedDayFilter(day)}
+                      className={`px-3 py-1.5 rounded-xl font-bold transition whitespace-nowrap cursor-pointer ${
+                        selectedDayFilter === day
+                          ? 'bg-amber-500 text-stone-950'
+                          : 'bg-stone-900 text-stone-400 hover:text-white border border-white/10'
+                      }`}
+                    >
+                      {getTripDayLabel(day, trip.startDate)}{' '}
+                      {count > 0 && `(${count})`}
+                    </button>
+                  );
+                }
+              )
+            : null}
 
           <button
             type="button"
@@ -610,8 +854,7 @@ export const TripWorkspace: React.FC<TripWorkspaceProps> = ({
             }`}
           >
             Unassigned (
-            {trip.items.filter((item) => item.dayNumber == null).length}
-            )
+            {trip.items.filter((item) => item.dayNumber == null).length})
           </button>
         </div>
       )}
@@ -624,9 +867,12 @@ export const TripWorkspace: React.FC<TripWorkspaceProps> = ({
               <MapPin className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="font-bold text-sm text-white">No producers added yet</h3>
+              <h3 className="font-bold text-sm text-white">
+                No producers added yet
+              </h3>
               <p className="mt-1 text-xs text-stone-400 max-w-sm mx-auto leading-relaxed">
-                Explore the map or catalogue, open any producer drawer, and tap “Add to trip” to build your trail.
+                Explore the map or catalogue, open any producer drawer, and tap
+                “Add to trip” to build your trail.
               </p>
             </div>
           </div>

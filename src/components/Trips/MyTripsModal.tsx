@@ -27,6 +27,7 @@ interface MyTripsModalProps {
   publicProducers: Producer[];
   catalogueIsLive?: boolean;
   hasExplorerPass?: boolean;
+  onOpenExplorerPass?: () => void;
   initialTripId?: string;
   initialTrips?: TripRecordV1[];
   initialCreating?: boolean;
@@ -37,15 +38,31 @@ const formatDateSpan = (start: string | null, end: string | null): string => {
   if (start && !end) {
     const [y, m, d] = start.split('-').map(Number);
     const date = new Date(Date.UTC(y, m - 1, d));
-    return new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }).format(date) + ' onwards';
+    return (
+      new Intl.DateTimeFormat('en-GB', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+        timeZone: 'UTC',
+      }).format(date) + ' onwards'
+    );
   }
   if (start && end) {
     const [y1, m1, d1] = start.split('-').map(Number);
     const [y2, m2, d2] = end.split('-').map(Number);
     const dStart = new Date(Date.UTC(y1, m1 - 1, d1));
     const dEnd = new Date(Date.UTC(y2, m2 - 1, d2));
-    const fStart = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' }).format(dStart);
-    const fEnd = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }).format(dEnd);
+    const fStart = new Intl.DateTimeFormat('en-GB', {
+      day: 'numeric',
+      month: 'short',
+      timeZone: 'UTC',
+    }).format(dStart);
+    const fEnd = new Intl.DateTimeFormat('en-GB', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+      timeZone: 'UTC',
+    }).format(dEnd);
     return `${fStart} – ${fEnd}`;
   }
   return '';
@@ -64,17 +81,24 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
   publicProducers,
   catalogueIsLive = true,
   hasExplorerPass = false,
+  onOpenExplorerPass,
   initialTripId,
   initialTrips,
   initialCreating,
 }) => {
-  const [selectedTripId, setSelectedTripId] = useState<string | null>(initialTripId || null);
+  const [selectedTripId, setSelectedTripId] = useState<string | null>(
+    initialTripId || null
+  );
   const [trips, setTrips] = useState<TripRecordV1[]>(initialTrips ?? []);
-  const [loading, setLoading] = useState<boolean>(initialTrips !== undefined ? false : true);
+  const [loading, setLoading] = useState<boolean>(
+    initialTrips !== undefined ? false : true
+  );
   const [error, setError] = useState<string | null>(null);
 
   // Create form state
-  const [isCreating, setIsCreating] = useState<boolean>(initialCreating ?? false);
+  const [isCreating, setIsCreating] = useState<boolean>(
+    initialCreating ?? false
+  );
   const [titleDraft, setTitleDraft] = useState<string>('');
   const [startDateDraft, setStartDateDraft] = useState<string>('');
   const [endDateDraft, setEndDateDraft] = useState<string>('');
@@ -250,6 +274,7 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
               publicProducers={publicProducers}
               catalogueIsLive={catalogueIsLive}
               hasExplorerPass={hasExplorerPass}
+              onOpenExplorerPass={onOpenExplorerPass}
               onTripDeleted={(deletedId) => {
                 setTrips((prev) => prev.filter((t) => t.id !== deletedId));
                 setSelectedTripId(null);
@@ -284,7 +309,8 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
                 <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/25 text-amber-200 text-xs flex items-center gap-2">
                   <AlertCircle className="w-4 h-4 shrink-0 text-amber-400" />
                   <span>
-                    You have reached the maximum of 25 trips per account. Delete an existing trip to create a new one.
+                    You have reached the maximum of 25 trips per account. Delete
+                    an existing trip to create a new one.
                   </span>
                 </div>
               )}
@@ -296,7 +322,9 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
                   className="p-4 rounded-2xl bg-stone-900 border border-amber-500/30 space-y-3 animate-in fade-in"
                 >
                   <div className="flex items-center justify-between pb-1 border-b border-white/10">
-                    <span className="font-bold text-xs text-white">Create New Trip</span>
+                    <span className="font-bold text-xs text-white">
+                      Create New Trip
+                    </span>
                     <button
                       type="button"
                       onClick={() => {
@@ -350,7 +378,9 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
                   </div>
 
                   {formError && (
-                    <p className="text-xs text-rose-400 font-medium">{formError}</p>
+                    <p className="text-xs text-rose-400 font-medium">
+                      {formError}
+                    </p>
                   )}
 
                   <div className="flex items-center justify-end gap-2 pt-1">
@@ -379,7 +409,9 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
               {loading ? (
                 <div className="flex flex-col items-center justify-center p-12 text-stone-400 gap-3">
                   <RefreshCw className="w-6 h-6 animate-spin text-amber-400" />
-                  <span className="text-sm font-semibold">Loading your trips…</span>
+                  <span className="text-sm font-semibold">
+                    Loading your trips…
+                  </span>
                 </div>
               ) : error ? (
                 <div className="p-6 text-center rounded-2xl bg-stone-900 border border-white/10 space-y-3">
@@ -401,9 +433,12 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
                     <MapPin className="w-6 h-6" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-sm text-white">Start planning a producer trail.</h3>
+                    <h3 className="font-bold text-sm text-white">
+                      Start planning a producer trail.
+                    </h3>
                     <p className="mt-1 text-xs text-stone-400 max-w-xs mx-auto leading-relaxed">
-                      Save multiple makers to a dedicated trip, bucket stops by day, and check verified road and visitor readiness.
+                      Save multiple makers to a dedicated trip, bucket stops by
+                      day, and check verified road and visitor readiness.
                     </p>
                   </div>
                   {!isCreating && (
@@ -432,7 +467,9 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
                         <div className="mt-1 flex items-center gap-3 text-xs text-stone-400 flex-wrap">
                           <span className="flex items-center gap-1">
                             <Calendar className="w-3.5 h-3.5 text-amber-400/80" />
-                            <span>{formatDateSpan(trip.startDate, trip.endDate)}</span>
+                            <span>
+                              {formatDateSpan(trip.startDate, trip.endDate)}
+                            </span>
                           </span>
                           <span>·</span>
                           <span className="flex items-center gap-1">
@@ -486,8 +523,10 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
               </div>
 
               <p className="text-xs text-stone-300 leading-relaxed">
-                Are you sure you want to delete <strong className="text-white">“{deletingTrip.title}”</strong>? All{' '}
-                {deletingTrip.itemCount} producer stops in this trip will be permanently removed.
+                Are you sure you want to delete{' '}
+                <strong className="text-white">“{deletingTrip.title}”</strong>?
+                All {deletingTrip.itemCount} producer stops in this trip will be
+                permanently removed.
               </p>
 
               <div className="flex items-center justify-end gap-2 pt-2">

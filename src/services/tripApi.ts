@@ -41,7 +41,8 @@ export class TripApiError extends Error {
 
 async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
   const user = auth?.currentUser;
-  if (!user) throw new TripApiError(401, 'unauthorized', 'Sign in to use My Trips.');
+  if (!user)
+    throw new TripApiError(401, 'unauthorized', 'Sign in to use My Trips.');
 
   const token = await user.getIdToken();
   const response = await fetch(resolveApiBaseUrl() + '/api' + path, {
@@ -69,16 +70,22 @@ export const listTrips = async (): Promise<TripRecordV1[]> =>
   (await request<{ trips: TripRecordV1[] }>('/trips')).trips;
 
 export const getTrip = async (tripId: string): Promise<TripWithItems> =>
-  (await request<{ trip: TripWithItems }>('/trips/' + encodeURIComponent(tripId))).trip;
+  (
+    await request<{ trip: TripWithItems }>(
+      '/trips/' + encodeURIComponent(tripId)
+    )
+  ).trip;
 
 export async function createTrip(
   input: { title: string; startDate?: string | null; endDate?: string | null },
   sourceSurface: 'trip_add_flow' | 'my_trips' | 'profile_menu'
 ): Promise<TripRecordV1> {
-  const trip = (await request<{ trip: TripRecordV1 }>('/trips', {
-    method: 'POST',
-    body: JSON.stringify(input),
-  })).trip;
+  const trip = (
+    await request<{ trip: TripRecordV1 }>('/trips', {
+      method: 'POST',
+      body: JSON.stringify(input),
+    })
+  ).trip;
   void trackIntent({ event: 'trip_created', sourceSurface });
   return trip;
 }
@@ -92,21 +99,32 @@ export async function updateTrip(
     endDate?: string | null;
   }
 ): Promise<TripRecordV1> {
-  const trip = (await request<{ trip: TripRecordV1 }>('/trips/' + encodeURIComponent(tripId), {
-    method: 'PATCH',
-    body: JSON.stringify(input),
-  })).trip;
+  const trip = (
+    await request<{ trip: TripRecordV1 }>(
+      '/trips/' + encodeURIComponent(tripId),
+      {
+        method: 'PATCH',
+        body: JSON.stringify(input),
+      }
+    )
+  ).trip;
   if (input.title !== undefined) {
-    void trackIntent({ event: 'trip_renamed', sourceSurface: 'trip_workspace' });
+    void trackIntent({
+      event: 'trip_renamed',
+      sourceSurface: 'trip_workspace',
+    });
   }
   return trip;
 }
 
 export async function deleteTrip(tripId: string, expectedRevision: number) {
-  return request<{ deleted: true; tripId: string }>('/trips/' + encodeURIComponent(tripId), {
-    method: 'DELETE',
-    body: JSON.stringify({ expectedRevision }),
-  });
+  return request<{ deleted: true; tripId: string }>(
+    '/trips/' + encodeURIComponent(tripId),
+    {
+      method: 'DELETE',
+      body: JSON.stringify({ expectedRevision }),
+    }
+  );
 }
 
 export async function addProducerToTrip(
@@ -115,13 +133,15 @@ export async function addProducerToTrip(
   expectedRevision: number,
   sourceSurface: 'trip_add_flow' | 'producer_drawer' | 'trip_workspace'
 ): Promise<TripWithItems> {
-  const trip = (await request<{ trip: TripWithItems }>(
-    '/trips/' + encodeURIComponent(tripId) + '/items',
-    {
-      method: 'POST',
-      body: JSON.stringify({ producerId, expectedRevision }),
-    }
-  )).trip;
+  const trip = (
+    await request<{ trip: TripWithItems }>(
+      '/trips/' + encodeURIComponent(tripId) + '/items',
+      {
+        method: 'POST',
+        body: JSON.stringify({ producerId, expectedRevision }),
+      }
+    )
+  ).trip;
   void trackIntent({
     event: 'trip_producer_added',
     sourceSurface,
@@ -136,13 +156,18 @@ export async function removeProducerFromTrip(
   producerId: string,
   expectedRevision: number
 ): Promise<TripWithItems> {
-  const trip = (await request<{ trip: TripWithItems }>(
-    '/trips/' + encodeURIComponent(tripId) + '/items/' + encodeURIComponent(producerId),
-    {
-      method: 'DELETE',
-      body: JSON.stringify({ expectedRevision }),
-    }
-  )).trip;
+  const trip = (
+    await request<{ trip: TripWithItems }>(
+      '/trips/' +
+        encodeURIComponent(tripId) +
+        '/items/' +
+        encodeURIComponent(producerId),
+      {
+        method: 'DELETE',
+        body: JSON.stringify({ expectedRevision }),
+      }
+    )
+  ).trip;
   void trackIntent({
     event: 'trip_producer_removed',
     sourceSurface: 'trip_workspace',
@@ -156,14 +181,19 @@ export async function reorderTripItems(
   producerIds: string[],
   expectedRevision: number
 ): Promise<TripWithItems> {
-  const trip = (await request<{ trip: TripWithItems }>(
-    '/trips/' + encodeURIComponent(tripId) + '/reorder',
-    {
-      method: 'POST',
-      body: JSON.stringify({ producerIds, expectedRevision }),
-    }
-  )).trip;
-  void trackIntent({ event: 'trip_item_reordered', sourceSurface: 'trip_workspace' });
+  const trip = (
+    await request<{ trip: TripWithItems }>(
+      '/trips/' + encodeURIComponent(tripId) + '/reorder',
+      {
+        method: 'POST',
+        body: JSON.stringify({ producerIds, expectedRevision }),
+      }
+    )
+  ).trip;
+  void trackIntent({
+    event: 'trip_item_reordered',
+    sourceSurface: 'trip_workspace',
+  });
   return trip;
 }
 
@@ -173,14 +203,23 @@ export async function assignTripItemDay(
   dayNumber: number | null,
   expectedRevision: number
 ): Promise<TripWithItems> {
-  const trip = (await request<{ trip: TripWithItems }>(
-    '/trips/' + encodeURIComponent(tripId) + '/items/' + encodeURIComponent(producerId) + '/day',
-    {
-      method: 'PATCH',
-      body: JSON.stringify({ dayNumber, expectedRevision }),
-    }
-  )).trip;
-  void trackIntent({ event: 'trip_day_assigned', sourceSurface: 'trip_workspace' });
+  const trip = (
+    await request<{ trip: TripWithItems }>(
+      '/trips/' +
+        encodeURIComponent(tripId) +
+        '/items/' +
+        encodeURIComponent(producerId) +
+        '/day',
+      {
+        method: 'PATCH',
+        body: JSON.stringify({ dayNumber, expectedRevision }),
+      }
+    )
+  ).trip;
+  void trackIntent({
+    event: 'trip_day_assigned',
+    sourceSurface: 'trip_workspace',
+  });
   return trip;
 }
 
@@ -202,3 +241,57 @@ export async function getTripProducerStates(
   return data.producerStates;
 }
 
+export type TripPackFormat = 'html' | 'ics';
+
+export interface TripPackDownload {
+  blob: Blob;
+  filename: string;
+  contentType: string;
+}
+
+export async function fetchTripPack(
+  tripId: string,
+  format: TripPackFormat
+): Promise<TripPackDownload> {
+  const user = auth?.currentUser;
+  if (!user) {
+    throw new TripApiError(401, 'unauthorized', 'Sign in to export your trip.');
+  }
+
+  const token = await user.getIdToken();
+  const response = await fetch(
+    resolveApiBaseUrl() +
+      '/api/trips/' +
+      encodeURIComponent(tripId) +
+      '/export?format=' +
+      encodeURIComponent(format),
+    {
+      cache: 'no-store',
+      headers: { Authorization: 'Bearer ' + token },
+    }
+  );
+
+  if (!response.ok) {
+    const body = await response.json().catch(() => ({}));
+    throw new TripApiError(
+      response.status,
+      typeof body?.code === 'string' ? body.code : null,
+      typeof body?.error === 'string'
+        ? body.error
+        : 'Unable to export this trip.'
+    );
+  }
+
+  return {
+    blob: await response.blob(),
+    filename:
+      format === 'ics'
+        ? 'terroirtrail-trip-calendar.ics'
+        : 'terroirtrail-trip-pack.html',
+    contentType:
+      response.headers.get('content-type') ||
+      (format === 'ics'
+        ? 'text/calendar; charset=utf-8'
+        : 'text/html; charset=utf-8'),
+  };
+}

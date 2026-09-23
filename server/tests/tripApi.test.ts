@@ -9,11 +9,11 @@ test('My Trips API requires Firebase auth and passes only authenticated uid to s
   const calls: unknown[][] = [];
   const app = createApp();
   registerTripRoutes(app, {
-    verifyToken: async token => {
+    verifyToken: async (token) => {
       if (token === 'bad') throw new Error('invalid');
       return { uid: token } as any;
     },
-    listTrips: async uid => {
+    listTrips: async (uid) => {
       calls.push(['list', uid]);
       return [];
     },
@@ -36,24 +36,35 @@ test('My Trips API requires Firebase auth and passes only authenticated uid to s
   });
 
   const server = app.listen(0, '127.0.0.1');
-  await new Promise<void>(resolve => server.once('listening', resolve));
+  await new Promise<void>((resolve) => server.once('listening', resolve));
   const base = 'http://127.0.0.1:' + (server.address() as AddressInfo).port;
 
   try {
     assert.equal((await fetch(base + '/api/trips')).status, 401);
-    assert.equal((await fetch(base + '/api/trips', { headers: { Authorization: 'Bearer bad' } })).status, 401);
+    assert.equal(
+      (
+        await fetch(base + '/api/trips', {
+          headers: { Authorization: 'Bearer bad' },
+        })
+      ).status,
+      401
+    );
     assert.deepEqual(calls, []);
 
-    const list = await fetch(base + '/api/trips', { headers: { Authorization: 'Bearer traveler-1' } });
+    const list = await fetch(base + '/api/trips', {
+      headers: { Authorization: 'Bearer traveler-1' },
+    });
     assert.equal(list.status, 200);
     assert.deepEqual(calls[0], ['list', 'traveler-1']);
 
-    const get = await fetch(base + '/api/trips/trip-123', { headers: { Authorization: 'Bearer traveler-1' } });
+    const get = await fetch(base + '/api/trips/trip-123', {
+      headers: { Authorization: 'Bearer traveler-1' },
+    });
     assert.equal(get.status, 200);
     assert.deepEqual(calls[1], ['get', 'traveler-1', 'trip-123']);
   } finally {
     await new Promise<void>((resolve, reject) =>
-      server.close(error => error ? reject(error) : resolve())
+      server.close((error) => (error ? reject(error) : resolve()))
     );
   }
 });
@@ -61,7 +72,7 @@ test('My Trips API requires Firebase auth and passes only authenticated uid to s
 test('My Trips API maps stale revision conflicts without leaking internal errors', async () => {
   const app = createApp();
   registerTripRoutes(app, {
-    verifyToken: async token => ({ uid: token } as any),
+    verifyToken: async (token) => ({ uid: token }) as any,
     updateTrip: async () => {
       throw new TripServiceError(
         'conflict',
@@ -71,7 +82,7 @@ test('My Trips API maps stale revision conflicts without leaking internal errors
   });
 
   const server = app.listen(0, '127.0.0.1');
-  await new Promise<void>(resolve => server.once('listening', resolve));
+  await new Promise<void>((resolve) => server.once('listening', resolve));
   const base = 'http://127.0.0.1:' + (server.address() as AddressInfo).port;
 
   try {
@@ -85,12 +96,12 @@ test('My Trips API maps stale revision conflicts without leaking internal errors
     });
 
     assert.equal(response.status, 409);
-    const body = await response.json() as any;
+    const body = (await response.json()) as any;
     assert.equal(body.code, 'conflict');
     assert.equal(body.error.includes('another device or tab'), true);
   } finally {
     await new Promise<void>((resolve, reject) =>
-      server.close(error => error ? reject(error) : resolve())
+      server.close((error) => (error ? reject(error) : resolve()))
     );
   }
 });
@@ -99,7 +110,7 @@ test('My Trips API rejects caller-supplied ownership and server-managed fields',
   const inputs: any[] = [];
   const app = createApp();
   registerTripRoutes(app, {
-    verifyToken: async token => ({ uid: token } as any),
+    verifyToken: async (token) => ({ uid: token }) as any,
     createTrip: async (uid, input) => {
       inputs.push({ uid, input });
       return {
@@ -118,7 +129,7 @@ test('My Trips API rejects caller-supplied ownership and server-managed fields',
   });
 
   const server = app.listen(0, '127.0.0.1');
-  await new Promise<void>(resolve => server.once('listening', resolve));
+  await new Promise<void>((resolve) => server.once('listening', resolve));
   const base = 'http://127.0.0.1:' + (server.address() as AddressInfo).port;
 
   try {
@@ -137,11 +148,11 @@ test('My Trips API rejects caller-supplied ownership and server-managed fields',
       }),
     });
     assert.equal(response.status, 400);
-    assert.equal((await response.json() as any).code, 'bad_request');
+    assert.equal(((await response.json()) as any).code, 'bad_request');
     assert.deepEqual(inputs, []);
   } finally {
     await new Promise<void>((resolve, reject) =>
-      server.close(error => error ? reject(error) : resolve())
+      server.close((error) => (error ? reject(error) : resolve()))
     );
   }
 });
@@ -150,7 +161,7 @@ test('My Trips producer-states endpoint requires auth and exposes safe mapping',
   const calls: unknown[][] = [];
   const app = createApp();
   registerTripRoutes(app, {
-    verifyToken: async token => {
+    verifyToken: async (token) => {
       if (token === 'bad') throw new Error('invalid');
       return { uid: token } as any;
     },
@@ -160,7 +171,10 @@ test('My Trips producer-states endpoint requires auth and exposes safe mapping',
         throw new TripServiceError('not_found', 'Trip not found.');
       }
       if (tripId === 'trip-broken') {
-        throw new TripServiceError('service_unavailable', 'Producer state resolution is temporarily unavailable.');
+        throw new TripServiceError(
+          'service_unavailable',
+          'Producer state resolution is temporarily unavailable.'
+        );
       }
       return {
         'prod-1': 'active',
@@ -171,7 +185,7 @@ test('My Trips producer-states endpoint requires auth and exposes safe mapping',
   });
 
   const server = app.listen(0, '127.0.0.1');
-  await new Promise<void>(resolve => server.once('listening', resolve));
+  await new Promise<void>((resolve) => server.once('listening', resolve));
   const base = 'http://127.0.0.1:' + (server.address() as AddressInfo).port;
 
   try {
@@ -190,7 +204,7 @@ test('My Trips producer-states endpoint requires auth and exposes safe mapping',
       headers: { Authorization: 'Bearer traveler-1' },
     });
     assert.equal(success.status, 200);
-    const body = await success.json() as any;
+    const body = (await success.json()) as any;
     assert.deepEqual(body, {
       producerStates: {
         'prod-1': 'active',
@@ -203,20 +217,114 @@ test('My Trips producer-states endpoint requires auth and exposes safe mapping',
     assert.equal((body as any).tombstone_type, undefined);
 
     // 4. Missing/unowned trip => 404
-    const notFound = await fetch(base + '/api/trips/trip-missing/producer-states', {
-      headers: { Authorization: 'Bearer traveler-1' },
-    });
+    const notFound = await fetch(
+      base + '/api/trips/trip-missing/producer-states',
+      {
+        headers: { Authorization: 'Bearer traveler-1' },
+      }
+    );
     assert.equal(notFound.status, 404);
 
     // 5. Dependency failure => 503
-    const depFail = await fetch(base + '/api/trips/trip-broken/producer-states', {
-      headers: { Authorization: 'Bearer traveler-1' },
-    });
+    const depFail = await fetch(
+      base + '/api/trips/trip-broken/producer-states',
+      {
+        headers: { Authorization: 'Bearer traveler-1' },
+      }
+    );
     assert.equal(depFail.status, 503);
   } finally {
     await new Promise<void>((resolve, reject) =>
-      server.close(error => error ? reject(error) : resolve())
+      server.close((error) => (error ? reject(error) : resolve()))
     );
   }
 });
 
+test('Trip Pack export is authenticated and requires an active Explorer Pass', async () => {
+  let activePass = false;
+  const exportCalls: unknown[][] = [];
+  const app = createApp();
+
+  registerTripRoutes(app, {
+    verifyToken: async (token) => ({ uid: token }) as any,
+    getExplorerPass: async (_uid) =>
+      activePass
+        ? {
+            passId: 'pass-active',
+            name: 'Explorer',
+            plan: 'holiday' as const,
+            expiresAt: '2099-01-01T00:00:00Z',
+          }
+        : null,
+    createTripPack: async (uid, tripId, format) => {
+      exportCalls.push([uid, tripId, format]);
+      return {
+        body:
+          format === 'ics'
+            ? 'BEGIN:VCALENDAR\r\nEND:VCALENDAR\r\n'
+            : '<!doctype html><title>Trip Pack</title>',
+        contentType:
+          format === 'ics'
+            ? 'text/calendar; charset=utf-8'
+            : 'text/html; charset=utf-8',
+        filename:
+          format === 'ics'
+            ? 'terroirtrail-trip-calendar.ics'
+            : 'terroirtrail-trip-pack.html',
+      };
+    },
+  });
+
+  const server = app.listen(0, '127.0.0.1');
+  await new Promise<void>((resolve) => server.once('listening', resolve));
+  const base = 'http://127.0.0.1:' + (server.address() as AddressInfo).port;
+
+  try {
+    assert.equal(
+      (await fetch(base + '/api/trips/trip-1/export?format=html')).status,
+      401
+    );
+
+    const free = await fetch(base + '/api/trips/trip-1/export?format=html', {
+      headers: { Authorization: 'Bearer traveler-1' },
+    });
+    assert.equal(free.status, 403);
+    assert.equal(((await free.json()) as any).code, 'explorer_pass_required');
+    assert.deepEqual(exportCalls, []);
+
+    activePass = true;
+    const badFormat = await fetch(
+      base + '/api/trips/trip-1/export?format=pdf',
+      {
+        headers: { Authorization: 'Bearer traveler-1' },
+      }
+    );
+    assert.equal(badFormat.status, 400);
+    assert.deepEqual(exportCalls, []);
+
+    const html = await fetch(base + '/api/trips/trip-1/export?format=html', {
+      headers: { Authorization: 'Bearer traveler-1' },
+    });
+    assert.equal(html.status, 200);
+    assert.match(html.headers.get('content-type') || '', /text\/html/);
+    assert.match(
+      html.headers.get('content-disposition') || '',
+      /trip-pack\.html/
+    );
+    assert.match(await html.text(), /Trip Pack/);
+
+    const ics = await fetch(base + '/api/trips/trip-1/export?format=ics', {
+      headers: { Authorization: 'Bearer traveler-1' },
+    });
+    assert.equal(ics.status, 200);
+    assert.match(ics.headers.get('content-type') || '', /text\/calendar/);
+    assert.deepEqual(exportCalls, [
+      ['traveler-1', 'trip-1', 'html'],
+      ['traveler-1', 'trip-1', 'ics'],
+    ]);
+  } finally {
+    await new Promise<void>((resolve, reject) =>
+      server.close((error) => (error ? reject(error) : resolve()))
+    );
+  }
+});

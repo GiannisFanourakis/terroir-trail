@@ -17,15 +17,14 @@ const timeoutMs = Number(process.env.E2E_TIMEOUT_MS || 18_000);
 const productionOrigin = process.argv.includes('--production')
   ? 'https://terroir-trail.web.app'
   : '';
-const externalOrigin = (
-  process.env.E2E_BASE_URL ||
-  productionOrigin
-)
+const externalOrigin = (process.env.E2E_BASE_URL || productionOrigin)
   .trim()
   .replace(/\/+$/, '');
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-async function stopChromeProcess(processHandle: ChildProcess | null): Promise<void> {
+async function stopChromeProcess(
+  processHandle: ChildProcess | null
+): Promise<void> {
   if (!processHandle || processHandle.exitCode !== null) return;
 
   const exited = new Promise<void>((resolve) => {
@@ -108,7 +107,8 @@ function contentType(filePath: string): string {
   if (filePath.endsWith('.json')) return 'application/json; charset=utf-8';
   if (filePath.endsWith('.svg')) return 'image/svg+xml';
   if (filePath.endsWith('.png')) return 'image/png';
-  if (filePath.endsWith('.jpg') || filePath.endsWith('.jpeg')) return 'image/jpeg';
+  if (filePath.endsWith('.jpg') || filePath.endsWith('.jpeg'))
+    return 'image/jpeg';
   if (filePath.endsWith('.webp')) return 'image/webp';
   return 'application/octet-stream';
 }
@@ -119,7 +119,9 @@ async function startStaticServer(): Promise<{
 }> {
   const root = path.resolve(process.cwd(), 'dist');
   if (!fs.existsSync(path.join(root, 'index.html'))) {
-    throw new Error('dist/index.html is missing. Run npm run build before test:browser.');
+    throw new Error(
+      'dist/index.html is missing. Run npm run build before test:browser.'
+    );
   }
 
   const server = http.createServer((req, res) => {
@@ -251,10 +253,7 @@ async function waitFor(
   throw new Error('Timed out waiting for ' + label + '.');
 }
 
-async function evaluate<T>(
-  cdp: CdpClient,
-  expression: string
-): Promise<T> {
+async function evaluate<T>(cdp: CdpClient, expression: string): Promise<T> {
   const result = await cdp.send('Runtime.evaluate', {
     expression,
     returnByValue: true,
@@ -320,7 +319,8 @@ async function runViewport(
     cdp,
     "(() => { const button = [...document.querySelectorAll('button')].find((candidate) => candidate.textContent?.includes('Start exploring')); if (!button) return false; button.click(); return true; })()"
   );
-  if (!clicked) throw new Error(viewport.name + ': Start exploring button missing.');
+  if (!clicked)
+    throw new Error(viewport.name + ': Start exploring button missing.');
 
   await waitFor(
     cdp,
@@ -333,6 +333,92 @@ async function runViewport(
     viewport.name + ' keyboard-accessible producer markers'
   );
 
+  if (viewport.width < 640) {
+    const menuClicked = await evaluate<boolean>(
+      cdp,
+      `(() => { const button = document.querySelector('button[aria-label="Open menu"]'); if (!button) return false; button.click(); return true; })()`
+    );
+    if (!menuClicked) {
+      throw new Error(viewport.name + ': mobile menu button missing.');
+    }
+    await waitFor(
+      cdp,
+      "([...document.querySelectorAll('button')].some((button) => button.textContent?.trim() === 'Passes' && button.getClientRects().length > 0))",
+      viewport.name + ' Passes mobile menu item'
+    );
+  }
+
+  const passesClicked = await evaluate<boolean>(
+    cdp,
+    "(() => { const button = [...document.querySelectorAll('button')].find((candidate) => candidate.textContent?.trim() === 'Passes' && candidate.getClientRects().length > 0); if (!button) return false; button.click(); return true; })()"
+  );
+  if (!passesClicked) {
+    throw new Error(viewport.name + ': Passes entry point missing.');
+  }
+
+  await waitFor(
+    cdp,
+    `Boolean(document.querySelector('[role=dialog][aria-labelledby="terroir-passes-title"]'))`,
+    viewport.name + ' Passes dialog'
+  );
+
+  const passesState = await evaluate<{
+    hasFree: boolean;
+    hasHoliday: boolean;
+    hasAnnual: boolean;
+    hasHolidayPrice: boolean;
+    hasAnnualPrice: boolean;
+    left: number;
+    right: number;
+    top: number;
+    bottom: number;
+    width: number;
+    height: number;
+    overflow: number;
+  }>(
+    cdp,
+    `(() => { const dialog = document.querySelector('[role=dialog][aria-labelledby="terroir-passes-title"]'); if (!dialog) return null; const rect = dialog.getBoundingClientRect(); const text = dialog.textContent || ''; return { hasFree: text.includes('Free'), hasHoliday: text.includes('Holiday Pass'), hasAnnual: text.includes('Annual Explorer Pass'), hasHolidayPrice: text.includes('€9.99'), hasAnnualPrice: text.includes('€24.99'), left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom, width: rect.width, height: rect.height, overflow: dialog.scrollWidth - dialog.clientWidth }; })()`
+  );
+
+  if (
+    !passesState.hasFree ||
+    !passesState.hasHoliday ||
+    !passesState.hasAnnual ||
+    !passesState.hasHolidayPrice ||
+    !passesState.hasAnnualPrice
+  ) {
+    throw new Error(
+      viewport.name + ': Passes comparison is missing a tier or agreed price.'
+    );
+  }
+  if (
+    passesState.left < -1 ||
+    passesState.right > viewport.width + 1 ||
+    passesState.top < -1 ||
+    passesState.bottom > viewport.height + 1 ||
+    passesState.overflow > 2
+  ) {
+    throw new Error(
+      viewport.name +
+        ': Passes dialog exceeds viewport bounds (' +
+        JSON.stringify(passesState) +
+        ').'
+    );
+  }
+
+  const passesClosed = await evaluate<boolean>(
+    cdp,
+    `(() => { const button = document.querySelector('button[aria-label="Close Passes"]'); if (!button) return false; button.click(); return true; })()`
+  );
+  if (!passesClosed) {
+    throw new Error(viewport.name + ': Passes close control missing.');
+  }
+  await waitFor(
+    cdp,
+    `!document.querySelector('[role=dialog][aria-labelledby="terroir-passes-title"]')`,
+    viewport.name + ' Passes dialog close'
+  );
+
   const state = await evaluate<{
     crashed: boolean;
     hasListToggle: boolean;
@@ -343,8 +429,10 @@ async function runViewport(
     "(() => ({ crashed: document.body.innerText.includes('Something went wrong'), hasListToggle: document.body.innerText.includes('Show List') || document.body.innerText.includes('Show Map'), horizontalOverflow: document.documentElement.scrollWidth - window.innerWidth, focusableMarkers: [...document.querySelectorAll('.leaflet-marker-icon[role=button]')].filter((element) => element.tabIndex === 0).length }))()"
   );
 
-  if (state.crashed) throw new Error(viewport.name + ': app error boundary rendered.');
-  if (state.hasListToggle) throw new Error(viewport.name + ': obsolete map/list toggle returned.');
+  if (state.crashed)
+    throw new Error(viewport.name + ': app error boundary rendered.');
+  if (state.hasListToggle)
+    throw new Error(viewport.name + ': obsolete map/list toggle returned.');
   if (state.horizontalOverflow > 2) {
     throw new Error(
       viewport.name +
@@ -354,7 +442,9 @@ async function runViewport(
     );
   }
   if (state.focusableMarkers < 1) {
-    throw new Error(viewport.name + ': no keyboard-focusable producer marker found.');
+    throw new Error(
+      viewport.name + ': no keyboard-focusable producer marker found.'
+    );
   }
 
   console.log(
@@ -373,7 +463,9 @@ async function main(): Promise<void> {
   const origin = externalOrigin || local!.origin;
   const chrome = findChrome();
   const port = 9200 + Math.floor(Math.random() * 500);
-  const profile = fs.mkdtempSync(path.join(os.tmpdir(), 'terroirtrail-browser-'));
+  const profile = fs.mkdtempSync(
+    path.join(os.tmpdir(), 'terroirtrail-browser-')
+  );
   let chromeProcess: ChildProcess | null = null;
   let cdp: CdpClient | null = null;
 
