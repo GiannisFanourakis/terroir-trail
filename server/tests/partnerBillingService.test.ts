@@ -356,11 +356,16 @@ test('failed renewal enters bounded grace and a later paid invoice restores acti
         },
       };
 
+      let retrieveCount = 0;
       const stripeClient = {
         subscriptions: {
           retrieve: async (id: string) => {
             assert.equal(id, 'sub_partner');
-            return subscription;
+            retrieveCount += 1;
+            return {
+              ...subscription,
+              status: retrieveCount === 1 ? 'past_due' : 'active',
+            };
           },
         },
       };
