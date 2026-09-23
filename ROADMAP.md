@@ -5,7 +5,7 @@
 > Completion convention: change `- [ ] Step` to `- [x] ~~Step~~` when finished. Do not mark a step complete until it has been implemented, tested, pushed, deployed where applicable, and verified.
 
 **Last updated:** 2026-09-23
-**Current focus:** Phase 14.7 — Contextual affiliate utility, followed by Phase 15 — Producer Partner & Paid Visibility. My Trips is frozen as the free traveler-planning core; the next producer-side commercial build is distribution/visibility, not an analytics-first Producer Pro product.
+**Current focus:** Phase 15 Block A — Producer Partner commercial authority and data model, while the Phase 14.7 affiliate experiment remains an observation/cleanup item. My Trips is frozen as the free traveler-planning core.
 
 ---
 
@@ -1190,17 +1190,20 @@ Before closing Phase 14:
 
 ### 15.1 — Define Partner, subscription and campaign contracts
 
-- [ ] Define formal relationship states:
+- [x] ~~Define formal relationship states:~~
   1. independent researched listing;
   2. verified Host managing factual/listing content;
   3. commercial Partner with an active/eligible paid distribution entitlement;
   4. Partner with approved Experiences only if Phase 16 is later activated.
-- [ ] Keep commercial Partner state separate from Host ownership, verification and catalogue publication state.
-- [ ] Define Partner lifecycle: `pending → active → past_due/grace → cancelled/expired → suspended` as appropriate to the chosen Stripe subscription contract.
-- [ ] Define promotion campaign lifecycle: `draft → awaiting_review → approved → scheduled → active → paused → completed/withdrawn`.
-- [ ] Define campaign fields: producer ID, campaign ID, campaign type, allowed placement(s), destination/category context, start/end dates, creative/message payload, status and audit timestamps.
-- [ ] Define whether V1 uses a yearly allocation of promotion credits; if credits are used, make them simple fixed entitlements rather than an auction/bidding system.
-- [ ] Define termination/suspension behavior and ensure cancelled commercial status never removes the free producer listing.
+- [x] ~~Keep commercial Partner state separate from Host ownership, verification and catalogue publication state.~~
+- [x] ~~Define Partner lifecycle separately from subscription billing state: `pending → active ↔ suspended → ended`, with `ended → pending` as the deliberate re-entry path.~~
+- [x] ~~Define subscription lifecycle: `pending → active → past_due/grace → cancelled/expired`; exact Stripe webhook transitions remain for 15.8.~~
+- [x] ~~Define promotion campaign lifecycle: `draft → awaiting_review → approved → scheduled/active → paused/completed/withdrawn`, with rejected campaigns allowed back to draft.~~
+- [x] ~~Define campaign fields: producer ID, campaign ID, campaign type, allowed placement(s), canonical destination/category context, start/end dates, creative/message payload, status and audit timestamps.~~
+- [x] ~~Decide V1 will not use a transferable/spendable credit ledger. Any initial annual campaign allowance is a simple plan entitlement/count, defined with Stripe packaging in 15.8 rather than an auction/bidding system.~~
+- [x] ~~Define termination/suspension behavior so commercial state can end without removing or demoting the free producer listing.~~
+
+**15.1 contract — 2026-09-23:** recorded in `docs/phase15-partner-commercial-contract-v1.md`. Firebase/Firestore remains the trusted Host-ownership authority; Supabase stores commercial Partner/subscription/campaign state; the Cloud Run API is the only bridge between them.
 
 ### 15.2 — Define the first paid product
 
@@ -1229,13 +1232,15 @@ Pricing is a hypothesis until real paid usage exists. Initial checkout may use o
 
 ### 15.3 — Build trusted commercial data and entitlement authority
 
-- [ ] Create server-trusted commercial Partner/subscription records; do not reuse legacy client-facing `isProTier` as authority.
-- [ ] Create campaign records with admin-controlled approval/status.
-- [ ] Record Stripe customer/subscription/product/price identifiers only in the trusted commercial layer.
-- [ ] Define entitlement source of truth and cache behavior.
-- [ ] Define idempotent activation/cancellation updates.
-- [ ] Add audit history for Partner, subscription and campaign state changes.
-- [ ] Ensure ordinary producer read paths do not expose payment secrets or unnecessary billing metadata.
+- [x] ~~Create server-trusted commercial Partner/subscription records; do not reuse legacy client-facing `isProTier` as authority.~~
+- [x] ~~Create campaign records with admin-controlled approval/status.~~
+- [x] ~~Reserve Stripe customer/subscription identifiers only in the trusted commercial layer; browser roles have no direct table access.~~
+- [ ] Define the final paid-entitlement source of truth and cache behavior when Stripe Checkout is connected.
+- [ ] Define and implement idempotent Stripe activation/cancellation updates.
+- [ ] Complete subscription-state audit writes when the Stripe webhook lifecycle is implemented; Partner and campaign audit writes are already active.
+- [x] ~~Ensure ordinary producer read paths omit Stripe provider identifiers and other unnecessary billing metadata.~~
+
+**15.3 Block A foundation — 2026-09-23:** Supabase migration `20260923055613_phase15_partner_commercial_authority` created service-role-only RLS-protected Partner, subscription, campaign, placement and audit records plus atomic Partner/campaign lifecycle RPCs. Trusted Host/Admin API routes were added without any public placement or checkout activation.
 
 ### 15.4 — Build first paid distribution surfaces
 
