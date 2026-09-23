@@ -6,6 +6,7 @@ import {
   getOwnedCommercialState,
   setCommercialPartnerStatus,
   transitionCommercialPartnerCampaign,
+  updateCommercialPartnerCampaign,
 } from '../services/commercialPartnerService';
 
 const makeDb = (options?: {
@@ -194,6 +195,7 @@ test('campaign creation is constrained to the producer canonical destination/cat
 
 test('verified Host can read only the commercial state attached to owned producer IDs', async () => {
   const selectedColumns: Record<string, string> = {};
+  const rpcCalls: Array<{ name: string; args: Record<string, unknown> }> = [];
   const supabase = {
     from: (table: string) => ({
       select: (columns: string) => {
@@ -216,6 +218,26 @@ test('verified Host can read only the commercial state attached to owned produce
         };
       },
     }),
+    rpc: async (name: string, args: Record<string, unknown>) => {
+      rpcCalls.push({ name, args });
+      return {
+        data: [{
+          campaign_id: '78e94884-f021-4d06-ae92-1c593c7fe45f',
+          producer_id: 'producer-owned',
+          qualified_impressions: '12',
+          opens: '4',
+          saves: '1',
+          trip_additions: '1',
+          website_clicks: '2',
+          phone_clicks: '0',
+          email_clicks: '0',
+          directions_clicks: '1',
+          first_day: '2026-09-22',
+          data_through: '2026-09-23',
+        }],
+        error: null,
+      };
+    },
   };
 
   const state = await getOwnedCommercialState(
@@ -234,6 +256,12 @@ test('verified Host can read only the commercial state attached to owned produce
   assert.match(selectedColumns.commercial_partner_subscriptions, /plan_code/);
   assert.doesNotMatch(selectedColumns.commercial_partner_subscriptions, /provider_customer_id/);
   assert.doesNotMatch(selectedColumns.commercial_partner_subscriptions, /provider_subscription_id/);
+  assert.deepEqual(rpcCalls, [{
+    name: 'get_partner_campaign_results_v1',
+    args: { p_producer_ids: ['producer-owned'] },
+  }]);
+  assert.equal(state.campaignResults[0].qualified_impressions, 12);
+  assert.equal(state.campaignResults[0].producer_id, 'producer-owned');
 });
 
 test('campaign transition validation fails before RPC for malformed IDs', async () => {
@@ -250,4 +278,67 @@ test('campaign transition validation fails before RPC for malformed IDs', async 
     (error: unknown) =>
       error instanceof CommercialPartnerError && error.code === 'bad_request'
   );
+});
+
+
+test('campaign editing remains Admin-only and uses the trusted draft-edit RPC', async () => {
+  let rpcCalled = false;
+  const deniedSupabase = {
+    rpc: async () => {
+      rpcCalled = true;
+      return { data: null, error: null };
+    },
+  };
+
+  await assert.rejects(
+    updateCommercialPartnerCampaign(
+      'host-uid',
+      '78e94884-f021-4d06-ae92-1c593c7fe45f',
+      { headline: 'Updated copy', placements: ['region_discovery'] },
+      makeDb({
+        ownerships: [{ id: 'producer-1', ownerUid: 'host-uid', status: 'active' }],
+      }) as any,
+      deniedSupabase as any
+    ),
+    (error: unknown) =>
+      error instanceof CommercialPartnerError && error.code === 'forbidden'
+  );
+  assert.equal(rpcCalled, false);
+
+  const calls: Array<{ name: string; args: Record<string, unknown> }> = [];
+  const adminSupabase = {
+    rpc: async (name: string, args: Record<string, unknown>) => {
+      calls.push({ name, args });
+      return {
+        data: {
+          campaign: {
+            id: '78e94884-f021-4d06-ae92-1c593c7fe45f',
+            producer_id: 'producer-1',
+            campaign_type: 'regional_featured',
+            status: 'draft',
+            headline: 'Updated copy',
+          },
+          placements: ['region_discovery'],
+        },
+        error: null,
+      };
+    },
+  };
+
+  const result = await updateCommercialPartnerCampaign(
+    'admin-uid',
+    '78e94884-f021-4d06-ae92-1c593c7fe45f',
+    {
+      headline: 'Updated copy',
+      message: 'Reviewed campaign copy',
+      placements: ['region_discovery'],
+    },
+    makeDb({ admin: true }) as any,
+    adminSupabase as any
+  );
+
+  assert.equal(result.campaign.headline, 'Updated copy');
+  assert.equal(calls[0].name, 'update_commercial_partner_campaign_v1');
+  assert.equal(calls[0].args.p_actor_uid, 'admin-uid');
+  assert.deepEqual(calls[0].args.p_placements, ['region_discovery']);
 });
