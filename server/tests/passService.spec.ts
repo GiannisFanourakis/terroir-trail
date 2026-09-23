@@ -197,6 +197,44 @@ it('a subsequent refund invalidates the QR and account entitlement', async () =>
   expect(await getExplorerPass('alice')).toBeNull();
 });
 
+it('allows the same traveler to repurchase Holiday after expiry', async () => {
+  const firstSession = paidSession();
+  firstSession.id = 'cs_test_first';
+  const secondSession = paidSession();
+  secondSession.id = 'cs_test_second';
+  secondSession.created = firstSession.created + 15 * 86400;
+
+  retrieve.mockImplementation(async (sessionId: string) => {
+    if (sessionId === 'cs_test_first') return firstSession;
+    if (sessionId === 'cs_test_second') return secondSession;
+    throw new Error('unexpected session');
+  });
+
+  const first = await fulfillPass('cs_test_first', 'alice');
+  expect(first?.plan).toBe('holiday');
+
+  // Simulate the first 14-day entitlement reaching its expiry boundary.
+  records.get('cs_test_first')!.expiresAt = '2000-01-01T00:00:00Z';
+  expect(await getExplorerPass('alice')).toBeNull();
+
+  create.mockResolvedValueOnce({
+    url: 'https://checkout.stripe.com/repurchase',
+  });
+  await expect(
+    createPassCheckout('alice', 'Alice', 'holiday', 'alice@example.test')
+  ).resolves.toEqual({ url: 'https://checkout.stripe.com/repurchase' });
+
+  const second = await fulfillPass('cs_test_second', 'alice');
+  expect(second?.plan).toBe('holiday');
+  expect(second?.passId).not.toBe(first?.passId);
+  expect(second!.expiresAt).toBe(
+    new Date((secondSession.created + 14 * 86400) * 1000).toISOString()
+  );
+  expect(Date.parse(second!.expiresAt)).toBeGreaterThan(Date.now());
+  expect(await getExplorerPass('alice')).toEqual(second);
+  expect(records.size).toBe(2);
+});
+
 it('annual checkout uses recurring subscription mode and email', async () => {
   create.mockResolvedValueOnce({ url: 'https://checkout.stripe.com/annual' });
 

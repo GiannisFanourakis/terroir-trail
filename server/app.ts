@@ -613,6 +613,15 @@ export function createApp(overrides: Partial<AppDependencies> = {}) {
     }
     try {
       const identity = res.locals.identity;
+      const activePass = await deps.getExplorerPass(identity.uid);
+      if (activePass) {
+        res.status(409).json({
+          error:
+            'You already have an active Explorer Pass. You can purchase another Holiday Pass after the current pass expires.',
+          code: 'active_explorer_pass',
+        });
+        return;
+      }
       res.json(
         await deps.createPassCheckout(
           identity.uid,
