@@ -19,7 +19,7 @@ function mapRowToProducer(row: any): Producer {
   const prod: Producer = {
     id: row.id,
     name: row.name,
-    greekName: row.greek_name || row.name,
+    greekName: row.local_name || row.greek_name || row.name,
     category: row.category as Category,
     destination: row.destination as Destination,
     country,
