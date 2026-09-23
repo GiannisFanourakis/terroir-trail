@@ -22,7 +22,12 @@ export type IntentEventName =
   | 'passport_stamp_added'
   | 'passport_stamp_removed'
   | 'affiliate_impression'
-  | 'affiliate_click';
+  | 'affiliate_click'
+  | 'partner_impression'
+  | 'partner_open'
+  | 'partner_save'
+  | 'partner_trip_add'
+  | 'partner_contact_action';
 
 export type SourceSurface =
   | 'producer_list_card'
@@ -50,12 +55,18 @@ export type AffiliateCampaignId =
   | 'gettransfer-rides'
   | 'yesim-esim';
 
+export type PartnerPlacement = 'region_discovery' | 'trip_preparation';
+export type PartnerAction = 'website' | 'phone' | 'email' | 'directions';
+
 export interface TrackIntentParams {
   event: IntentEventName;
   sourceSurface: SourceSurface;
   producerId?: string | null;
   destination?: string | null;
   affiliateCampaignId?: AffiliateCampaignId | null;
+  partnerCampaignId?: string | null;
+  partnerPlacement?: PartnerPlacement | null;
+  partnerAction?: PartnerAction | null;
 }
 
 export type IntentEventPayload = TrackIntentParams;
@@ -83,6 +94,12 @@ export function isAllowedIntentSourceSurface(
   if (event === 'trip_opened') return sourceSurface === 'my_trips' || sourceSurface === 'profile_menu';
   if (event === 'region_producers_view') return sourceSurface === 'region_drawer';
   if (event.startsWith('affiliate_')) return 'map_affiliate_banner|trip_preparation|region_planning'.includes(sourceSurface);
+  if (event === 'partner_impression' || event === 'partner_open') {
+    return sourceSurface === 'region_planning' || sourceSurface === 'trip_preparation';
+  }
+  if (event === 'partner_save') return sourceSurface === 'producer_drawer';
+  if (event === 'partner_trip_add') return sourceSurface === 'trip_add_flow';
+  if (event === 'partner_contact_action') return sourceSurface === 'producer_drawer' || sourceSurface === 'trip_workspace';
   if (event.startsWith('passport_')) return sourceSurface === 'producer_drawer' || sourceSurface === 'passport';
   if (event === 'producer_save') return sourceSurface !== 'favorites' && 'producer_drawer|favorites|producer_list_card|map_quick_card'.includes(sourceSurface);
   if (event === 'producer_unsave') return 'producer_drawer|favorites|producer_list_card|map_quick_card'.includes(sourceSurface);
@@ -166,6 +183,9 @@ export async function trackIntent(
     destination: params.destination ?? null,
     sourceSurface: params.sourceSurface,
     affiliateCampaignId: params.affiliateCampaignId ?? null,
+    partnerCampaignId: params.partnerCampaignId ?? null,
+    partnerPlacement: params.partnerPlacement ?? null,
+    partnerAction: params.partnerAction ?? null,
   });
 
   let token: string | null = null;
