@@ -1388,7 +1388,7 @@ Producer Partner infrastructure remains available, but producer outreach is defe
 
 This is the next B2C value phase. It must make an actual road trip easier without moving existing discovery, visitability, road/access or current free Trip Readiness facts behind a paywall.
 
-- [ ] Define **Optimize my day** as a user-requested suggestion within an assigned day; never silently reorder the itinerary and allow important/booking-constrained stops to be locked.
+- [x] ~~Define **Optimize my day** as a user-requested suggestion within an assigned day; never silently reorder the itinerary and allow important/booking-constrained stops to be locked.~~ Contract frozen in `docs/phase15-8b-trip-intelligence-contract-v1.md`.
 - [ ] Add an estimated day timeline using travel-time and visit-duration assumptions with explicit uncertainty labels; never imply unverified opening hours or visit availability.
 - [ ] Add **Navigate next stop** as a simple handoff to the traveler's mapping app.
 - [ ] Design opt-in **Nearby / passing-by producer alerts** using route detour rather than straight-line radius where possible; cap alert frequency and respect visitability/booking/opening confidence. Initial web/PWA behavior may be foreground/active-journey only because background location is platform-constrained.
