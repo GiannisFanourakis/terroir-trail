@@ -28,6 +28,7 @@ import { TripProducerItem } from './TripProducerItem';
 import { TripOverviewMap } from './TripOverviewMap';
 import { TripPreparationPanel } from './TripPreparationPanel';
 import { ContextualAffiliateSection } from '../Monetization/ContextualAffiliateSection';
+import { PartnerPlacementSlot } from '../Monetization/PartnerPlacement';
 import { getTripDayLabel } from '../../utils/tripReadiness';
 
 interface TripWorkspaceProps {
@@ -106,6 +107,34 @@ export const TripWorkspace: React.FC<TripWorkspaceProps> = ({
     for (const p of publicProducers) map.set(p.id, p);
     return map;
   }, [publicProducers]);
+
+  const tripPartnerDestination = useMemo(() => {
+    if (!trip?.items.length) return null;
+
+    const counts = new Map<string, number>();
+    const firstPosition = new Map<string, number>();
+
+    for (const item of trip.items) {
+      const producer = catalogueMap.get(item.producerId);
+      if (!producer) continue;
+      counts.set(producer.destination, (counts.get(producer.destination) || 0) + 1);
+      if (!firstPosition.has(producer.destination)) {
+        firstPosition.set(producer.destination, item.position);
+      }
+    }
+
+    const ranked = Array.from(counts.entries()).sort((a, b) => {
+      if (b[1] !== a[1]) return b[1] - a[1];
+      return (firstPosition.get(a[0]) || 0) - (firstPosition.get(b[0]) || 0);
+    });
+
+    return ranked[0]?.[0] || null;
+  }, [trip?.items, catalogueMap]);
+
+  const tripProducerIds = useMemo(
+    () => trip?.items.map((item) => item.producerId) || [],
+    [trip?.items]
+  );
 
   const loadStates = useCallback(async (currentTripId: string) => {
     setStatesLoading(true);
@@ -632,6 +661,17 @@ export const TripWorkspace: React.FC<TripWorkspaceProps> = ({
               />
             );
           })
+        )}
+
+        {tripPartnerDestination && (
+          <PartnerPlacementSlot
+            placement="trip_preparation"
+            destination={tripPartnerDestination}
+            excludedProducerIds={tripProducerIds}
+            sourceSurface="trip_preparation"
+            onOpenProducer={onSelectProducer}
+            className="mt-4"
+          />
         )}
 
         <ContextualAffiliateSection
