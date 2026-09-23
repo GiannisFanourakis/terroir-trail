@@ -22,7 +22,12 @@ export type IntentEventName =
   | 'passport_stamp_added'
   | 'passport_stamp_removed'
   | 'affiliate_impression'
-  | 'affiliate_click';
+  | 'affiliate_click'
+  | 'partner_impression'
+  | 'partner_open'
+  | 'partner_save'
+  | 'partner_trip_add'
+  | 'partner_contact_action';
 
 export type SourceSurface =
   | 'producer_list_card'
@@ -50,6 +55,9 @@ export type AffiliateCampaignId =
   | 'gettransfer-rides'
   | 'yesim-esim';
 
+export type PartnerPlacement = 'region_discovery' | 'trip_preparation';
+export type PartnerAction = 'website' | 'phone' | 'email' | 'directions';
+
 export const FROZEN_EVENT_NAMES = new Set<IntentEventName>([
   'producer_view',
   'producer_share',
@@ -72,6 +80,11 @@ export const FROZEN_EVENT_NAMES = new Set<IntentEventName>([
   'passport_stamp_removed',
   'affiliate_impression',
   'affiliate_click',
+  'partner_impression',
+  'partner_open',
+  'partner_save',
+  'partner_trip_add',
+  'partner_contact_action',
 ]);
 
 export const FROZEN_SOURCE_SURFACES = new Set<SourceSurface>([
@@ -197,6 +210,24 @@ export const EVENT_ALLOWED_SURFACES: Record<IntentEventName, ReadonlySet<SourceS
     'trip_preparation',
     'region_planning',
   ]),
+  partner_impression: new Set([
+    'region_planning',
+    'trip_preparation',
+  ]),
+  partner_open: new Set([
+    'region_planning',
+    'trip_preparation',
+  ]),
+  partner_save: new Set([
+    'producer_drawer',
+  ]),
+  partner_trip_add: new Set([
+    'trip_add_flow',
+  ]),
+  partner_contact_action: new Set([
+    'producer_drawer',
+    'trip_workspace',
+  ]),
 };
 
 export const AUTH_REQUIRED_EVENTS = new Set<IntentEventName>([
@@ -211,6 +242,8 @@ export const AUTH_REQUIRED_EVENTS = new Set<IntentEventName>([
   'trip_opened',
   'passport_stamp_added',
   'passport_stamp_removed',
+  'partner_save',
+  'partner_trip_add',
 ]);
 
 export const PRODUCER_REQUIRED_EVENTS = new Set<IntentEventName>([
@@ -226,6 +259,11 @@ export const PRODUCER_REQUIRED_EVENTS = new Set<IntentEventName>([
   'trip_producer_removed',
   'passport_stamp_added',
   'passport_stamp_removed',
+  'partner_impression',
+  'partner_open',
+  'partner_save',
+  'partner_trip_add',
+  'partner_contact_action',
 ]);
 
 export const REGION_EVENTS = new Set<IntentEventName>([
@@ -236,6 +274,14 @@ export const REGION_EVENTS = new Set<IntentEventName>([
 export const AFFILIATE_EVENTS = new Set<IntentEventName>([
   'affiliate_impression',
   'affiliate_click',
+]);
+
+export const PARTNER_EVENTS = new Set<IntentEventName>([
+  'partner_impression',
+  'partner_open',
+  'partner_save',
+  'partner_trip_add',
+  'partner_contact_action',
 ]);
 
 export const DESTINATION_COUNTRY_MAP: Record<string, string> = {
@@ -357,6 +403,9 @@ export interface IngestIntentEventParams {
   category: string | null;
   sourceSurface: string;
   affiliateCampaign: string | null;
+  partnerCampaignId?: string | null;
+  partnerPlacement?: PartnerPlacement | null;
+  partnerAction?: PartnerAction | null;
   schemaVersion?: number;
 }
 
@@ -369,15 +418,10 @@ export async function ingestIntentEvent(
   }
 
   try {
-    // Keep this payload exactly aligned with the database function signature:
-    // public.ingest_intent_event_v1(
-    //   p_schema_version, p_client_event_id, p_event_name, p_actor_scope,
-    //   p_actor_key, p_session_key, p_producer_id, p_destination,
-    //   p_source_surface, p_affiliate_campaign
-    // ).
-    // country/category are intentionally NOT sent: the database trigger derives
-    // trusted catalogue dimensions independently from producer/destination context.
-    const { error } = await supabase.rpc('ingest_intent_event_v1', {
+    // V2 extends the established event contract only with Partner campaign
+    // attribution fields. country/category remain database-derived trusted
+    // dimensions and are never accepted from the browser.
+    const { error } = await supabase.rpc('ingest_intent_event_v2', {
       p_schema_version: params.schemaVersion ?? 1,
       p_client_event_id: params.clientEventId,
       p_event_name: params.eventName,
@@ -388,10 +432,13 @@ export async function ingestIntentEvent(
       p_destination: params.destination,
       p_source_surface: params.sourceSurface,
       p_affiliate_campaign: params.affiliateCampaign,
+      p_partner_campaign_id: params.partnerCampaignId ?? null,
+      p_partner_placement: params.partnerPlacement ?? null,
+      p_partner_action: params.partnerAction ?? null,
     });
 
     if (error) {
-      console.error('Supabase ingest_intent_event_v1 error:', error);
+      console.error('Supabase ingest_intent_event_v2 error:', error);
       return { success: false, error: error.message };
     }
 
