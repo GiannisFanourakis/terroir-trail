@@ -137,6 +137,7 @@ jobs:
             --max-instances=3 \
             --cpu=1 \
             --memory=512Mi \
+            --update-env-vars=STRIPE_PARTNER_ANNUAL_PRICE_ID=price_1UIkraPTLRkIE3byfmvTRhAt,STRIPE_PARTNER_BILLING_ENABLED=false \
             --quiet
 
       - name: Verify direct Cloud Run API health
