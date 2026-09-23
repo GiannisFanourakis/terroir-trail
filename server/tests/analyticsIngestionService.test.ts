@@ -7,7 +7,7 @@ import {
   ingestIntentEvent,
 } from '../services/analyticsIngestionService';
 
-test('ingestIntentEvent calls the deployed RPC with the exact Phase 14.2 parameter contract', async () => {
+test('ingestIntentEvent calls the deployed v2 RPC while preserving legacy events', async () => {
   let rpcName = '';
   let rpcArgs: Record<string, unknown> | null = null;
 
@@ -38,7 +38,7 @@ test('ingestIntentEvent calls the deployed RPC with the exact Phase 14.2 paramet
   );
 
   assert.equal(result.success, true);
-  assert.equal(rpcName, 'ingest_intent_event_v1');
+  assert.equal(rpcName, 'ingest_intent_event_v2');
   assert.deepEqual(Object.keys(rpcArgs ?? {}).sort(), [
     'p_actor_key',
     'p_actor_scope',
@@ -46,6 +46,9 @@ test('ingestIntentEvent calls the deployed RPC with the exact Phase 14.2 paramet
     'p_client_event_id',
     'p_destination',
     'p_event_name',
+    'p_partner_action',
+    'p_partner_campaign_id',
+    'p_partner_placement',
     'p_producer_id',
     'p_schema_version',
     'p_session_key',
@@ -57,6 +60,50 @@ test('ingestIntentEvent calls the deployed RPC with the exact Phase 14.2 paramet
   assert.equal(capturedArgs.p_destination, null);
   assert.equal('country_code' in capturedArgs, false);
   assert.equal('category' in capturedArgs, false);
+  assert.equal(capturedArgs.p_partner_campaign_id, null);
+  assert.equal(capturedArgs.p_partner_placement, null);
+  assert.equal(capturedArgs.p_partner_action, null);
+});
+
+test('ingestIntentEvent forwards allowlisted Partner attribution fields to v2', async () => {
+  let rpcName = '';
+  let rpcArgs: Record<string, unknown> | null = null;
+
+  const fakeSupabase = {
+    rpc: async (name: string, args: Record<string, unknown>) => {
+      rpcName = name;
+      rpcArgs = args;
+      return { data: [{ event_id: '00000000-0000-4000-8000-000000000002', inserted: true }], error: null };
+    },
+  } as unknown as SupabaseClient;
+
+  const result = await ingestIntentEvent(
+    {
+      clientEventId: '22222222-2222-4222-8222-222222222222',
+      eventName: 'partner_contact_action',
+      actorScope: 'anonymous',
+      actorKey: null,
+      sessionKey: `v1:${'b'.repeat(64)}`,
+      producerId: 'producer-1',
+      destination: 'crete',
+      countryCode: 'GR',
+      category: 'winery',
+      sourceSurface: 'producer_drawer',
+      affiliateCampaign: null,
+      partnerCampaignId: '33333333-3333-4333-8333-333333333333',
+      partnerPlacement: 'region_discovery',
+      partnerAction: 'website',
+      schemaVersion: 1,
+    },
+    fakeSupabase
+  );
+
+  assert.equal(result.success, true);
+  assert.equal(rpcName, 'ingest_intent_event_v2');
+  const args = rpcArgs as unknown as Record<string, unknown>;
+  assert.equal(args.p_partner_campaign_id, '33333333-3333-4333-8333-333333333333');
+  assert.equal(args.p_partner_placement, 'region_discovery');
+  assert.equal(args.p_partner_action, 'website');
 });
 
 

@@ -8,6 +8,10 @@ import {
   setCommercialPartnerStatus,
   transitionCommercialPartnerCampaign,
 } from './services/commercialPartnerService';
+import {
+  getActivePartnerPlacements,
+  PartnerPlacementError,
+} from './services/partnerPlacementService';
 
 const defaults = {
   verifyToken: (token: string) => adminAuth().verifyIdToken(token, true),
@@ -16,6 +20,7 @@ const defaults = {
   setCommercialPartnerStatus,
   createCommercialPartnerCampaign,
   transitionCommercialPartnerCampaign,
+  getActivePartnerPlacements,
 };
 
 type CommercialPartnerRouteDependencies = typeof defaults;
@@ -56,9 +61,28 @@ export function registerCommercialPartnerRoutes(
       res.status(errorStatus(error)).json({ error: error.message });
       return;
     }
+    if (error instanceof PartnerPlacementError) {
+      res.status(error.code === 'bad_request' ? 400 : 503).json({ error: error.message });
+      return;
+    }
     console.error(fallbackMessage, error);
     res.status(503).json({ error: 'Commercial Partner services are temporarily unavailable.' });
   };
+
+  app.get('/api/commercial/placements', async (req, res) => {
+    try {
+      const placements = await deps.getActivePartnerPlacements({
+        placement: typeof req.query.placement === 'string' ? req.query.placement : '',
+        destination: typeof req.query.destination === 'string' ? req.query.destination : '',
+        category: typeof req.query.category === 'string' ? req.query.category : null,
+        limit: typeof req.query.limit === 'string' ? Number(req.query.limit) : 3,
+      });
+      res.set('Cache-Control', 'no-store');
+      res.json({ placements });
+    } catch (error) {
+      handleError(error, res, 'Public Partner placement lookup unavailable:');
+    }
+  });
 
   app.get('/api/producer/commercial', requireAuth, async (_req, res) => {
     try {

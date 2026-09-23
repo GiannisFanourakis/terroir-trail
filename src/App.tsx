@@ -507,6 +507,10 @@ export const App: React.FC = () => {
                   setIsRegionGuideOpen(false);
                   lastOpenedRegionRef.current = null;
                 }}
+                onOpenProducer={(producer) => {
+                  setIsRegionGuideOpen(false);
+                  handleOpenDrawer(producer, 'region_drawer');
+                }}
               />
             </Suspense>
           )}

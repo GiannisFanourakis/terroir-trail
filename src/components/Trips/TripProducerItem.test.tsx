@@ -6,10 +6,15 @@ import type { Producer } from '../../types/terroir';
 
 const mocks = vi.hoisted(() => ({
   trackIntent: vi.fn(async () => ({ success: true, clientEventId: 'evt-1' })),
+  recordPartnerContactIfAttributed: vi.fn(async () => null),
 }));
 
 vi.mock('../../services/intentAnalytics', () => ({
   trackIntent: mocks.trackIntent,
+}));
+
+vi.mock('../../services/partnerAttribution', () => ({
+  recordPartnerContactIfAttributed: mocks.recordPartnerContactIfAttributed,
 }));
 
 import { TripProducerItem, handleTripProducerAction } from './TripProducerItem';
@@ -116,6 +121,11 @@ describe('TripProducerItem', () => {
       sourceSurface: 'trip_workspace',
       producerId: 'prod-active-1',
     });
+    expect(mocks.recordPartnerContactIfAttributed).toHaveBeenCalledWith(
+      'prod-active-1',
+      'directions',
+      'trip_workspace'
+    );
   });
 
   it('suppresses direct navigation when road access requires 4x4 or high clearance', () => {
@@ -324,5 +334,10 @@ describe('TripProducerItem', () => {
       sourceSurface: 'trip_workspace',
       producerId: 'prod-active-1',
     });
+    expect(mocks.recordPartnerContactIfAttributed).toHaveBeenCalledWith(
+      'prod-active-1',
+      'website',
+      'trip_workspace'
+    );
   });
 });

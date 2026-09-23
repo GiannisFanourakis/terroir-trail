@@ -16,9 +16,12 @@ import {
   lookupCanonicalProducer,
   PRODUCER_REQUIRED_EVENTS,
   REGION_EVENTS,
+  PARTNER_EVENTS,
   type IntentEventName,
   type SourceSurface,
   type AffiliateCampaignId,
+  type PartnerPlacement,
+  type PartnerAction,
 } from './services/analyticsIngestionService';
 
 const UUID_V4_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -33,6 +36,9 @@ const ALLOWED_REQUEST_KEYS = new Set([
   'destination',
   'sourceSurface',
   'affiliateCampaignId',
+  'partnerCampaignId',
+  'partnerPlacement',
+  'partnerAction',
 ]);
 
 const defaults = {
@@ -159,12 +165,49 @@ export function registerAnalyticsRoutes(
     if (rawDestination === '__INVALID__') return;
     const rawAffiliateCampaignId = normalizeOptionalString(body.affiliateCampaignId, 'affiliateCampaignId');
     if (rawAffiliateCampaignId === '__INVALID__') return;
+    const rawPartnerCampaignId = normalizeOptionalString(body.partnerCampaignId, 'partnerCampaignId');
+    if (rawPartnerCampaignId === '__INVALID__') return;
+    const rawPartnerPlacement = normalizeOptionalString(body.partnerPlacement, 'partnerPlacement');
+    if (rawPartnerPlacement === '__INVALID__') return;
+    const rawPartnerAction = normalizeOptionalString(body.partnerAction, 'partnerAction');
+    if (rawPartnerAction === '__INVALID__') return;
+
+    const hasPartnerContext =
+      rawPartnerCampaignId !== null ||
+      rawPartnerPlacement !== null ||
+      rawPartnerAction !== null;
+
+    if (PARTNER_EVENTS.has(eventName)) {
+      if (!rawPartnerCampaignId || !UUID_V4_REGEX.test(rawPartnerCampaignId)) {
+        res.status(400).json({ error: `Valid partnerCampaignId is required for event "${eventName}".` });
+        return;
+      }
+      if (rawPartnerPlacement !== 'region_discovery' && rawPartnerPlacement !== 'trip_preparation') {
+        res.status(400).json({ error: `Valid partnerPlacement is required for event "${eventName}".` });
+        return;
+      }
+      if (eventName === 'partner_contact_action') {
+        if (!rawPartnerAction || !['website', 'phone', 'email', 'directions'].includes(rawPartnerAction)) {
+          res.status(400).json({ error: 'Valid partnerAction is required for partner_contact_action.' });
+          return;
+        }
+      } else if (rawPartnerAction !== null) {
+        res.status(400).json({ error: `partnerAction is not permitted for event "${eventName}".` });
+        return;
+      }
+    } else if (hasPartnerContext) {
+      res.status(400).json({ error: `Partner campaign context is not permitted for event "${eventName}".` });
+      return;
+    }
 
     let derivedProducerId: string | null = null;
     let derivedDestination: string | null = null;
     let derivedCountryCode: string | null = null;
     let derivedCategory: string | null = null;
     let derivedAffiliateCampaign: string | null = null;
+    let derivedPartnerCampaignId: string | null = null;
+    let derivedPartnerPlacement: PartnerPlacement | null = null;
+    let derivedPartnerAction: PartnerAction | null = null;
 
     if (PRODUCER_REQUIRED_EVENTS.has(eventName)) {
       if (!rawProducerId) {
@@ -178,6 +221,12 @@ export function registerAnalyticsRoutes(
       if (rawAffiliateCampaignId !== null) {
         res.status(400).json({ error: `affiliateCampaignId is not permitted for event "${eventName}".` });
         return;
+      }
+
+      if (PARTNER_EVENTS.has(eventName)) {
+        derivedPartnerCampaignId = rawPartnerCampaignId;
+        derivedPartnerPlacement = rawPartnerPlacement as PartnerPlacement;
+        derivedPartnerAction = rawPartnerAction as PartnerAction | null;
       }
 
       // Resolve producer from catalogue
@@ -281,6 +330,9 @@ export function registerAnalyticsRoutes(
       category: derivedCategory,
       sourceSurface,
       affiliateCampaign: derivedAffiliateCampaign,
+      partnerCampaignId: derivedPartnerCampaignId,
+      partnerPlacement: derivedPartnerPlacement,
+      partnerAction: derivedPartnerAction,
       schemaVersion: 1,
     });
 
