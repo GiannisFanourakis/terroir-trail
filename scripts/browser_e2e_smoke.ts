@@ -437,6 +437,169 @@ async function runViewport(
     viewport.name + ' Passes dialog close'
   );
 
+  if (viewport.name === 'ipad-portrait') {
+    await evaluate(
+      cdp,
+      "localStorage.setItem('terroir_trail_alcohol_content_notice_v1', 'true'); true"
+    );
+
+    let producerMarkerCount = await evaluate<number>(
+      cdp,
+      "document.querySelectorAll('.leaflet-marker-icon[role=button]').length"
+    );
+    for (
+      let attempt = 0;
+      producerMarkerCount < 2 && attempt < 6;
+      attempt += 1
+    ) {
+      const expandedCluster = await evaluate<boolean>(
+        cdp,
+        `(() => {
+          const cluster = document.querySelector('.terroir-map-cluster');
+          if (!cluster) return false;
+          cluster.dispatchEvent(
+            new MouseEvent('click', { bubbles: true, cancelable: true })
+          );
+          return true;
+        })()`
+      );
+      if (!expandedCluster) break;
+      await delay(450);
+      producerMarkerCount = await evaluate<number>(
+        cdp,
+        "document.querySelectorAll('.leaflet-marker-icon[role=button]').length"
+      );
+    }
+    if (producerMarkerCount < 2) {
+      throw new Error(
+        viewport.name +
+          ': unable to expose two producer markers for preview regression.'
+      );
+    }
+
+    const firstMarkerLabel = await evaluate<string>(
+      cdp,
+      `(() => {
+        const markers = [...document.querySelectorAll('.leaflet-marker-icon[role=button]')];
+        const marker = markers[0];
+        if (!marker) return '';
+        marker.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+        return marker.getAttribute('aria-label') || '';
+      })()`
+    );
+    if (!firstMarkerLabel) {
+      throw new Error(
+        viewport.name +
+          ': first producer marker missing for preview regression.'
+      );
+    }
+
+    await waitFor(
+      cdp,
+      `[...document.querySelectorAll('button')].some((button) => button.textContent?.includes('Explore Story')) && ![...document.querySelectorAll('[role=dialog]')].some((element) => element.getAttribute('aria-label')?.startsWith('Producer details:'))`,
+      viewport.name + ' first producer quick preview'
+    );
+
+    const exploredStory = await evaluate<boolean>(
+      cdp,
+      `(() => {
+        const button = [...document.querySelectorAll('button')].find((candidate) =>
+          candidate.textContent?.includes('Explore Story')
+        );
+        if (!button) return false;
+        button.click();
+        return true;
+      })()`
+    );
+    if (!exploredStory) {
+      throw new Error(
+        viewport.name + ': Explore Story button missing in quick preview.'
+      );
+    }
+
+    await waitFor(
+      cdp,
+      `[...document.querySelectorAll('[role=dialog]')].some((element) => element.getAttribute('aria-label')?.startsWith('Producer details:'))`,
+      viewport.name + ' first producer drawer'
+    );
+
+    const firstMarkerLabelLiteral = JSON.stringify(firstMarkerLabel);
+    const secondMarker = await evaluate<{ label: string; name: string } | null>(
+      cdp,
+      `(() => {
+        const markers = [...document.querySelectorAll('.leaflet-marker-icon[role=button]')];
+        const marker = markers.find(
+          (candidate) =>
+            candidate.getAttribute('aria-label') !== ${firstMarkerLabelLiteral}
+        );
+        if (!marker) return null;
+        const label = marker.getAttribute('aria-label') || '';
+        marker.dispatchEvent(
+          new MouseEvent('click', { bubbles: true, cancelable: true })
+        );
+        const name = label.replace(/^Open /, '').split(',')[0].trim();
+        return { label, name };
+      })()`
+    );
+    if (!secondMarker?.label) {
+      throw new Error(
+        viewport.name +
+          ': second producer marker missing for preview regression.'
+      );
+    }
+
+    await waitFor(
+      cdp,
+      `(() => {
+        const drawerOpen = [...document.querySelectorAll('[role=dialog]')].some((element) =>
+          element.getAttribute('aria-label')?.startsWith('Producer details:')
+        );
+        const explore = [...document.querySelectorAll('button')].find((button) =>
+          button.textContent?.includes('Explore Story')
+        );
+        return !drawerOpen && Boolean(explore);
+      })()`,
+      viewport.name + ' second producer returns to quick preview'
+    );
+
+    const secondMarkerNameLiteral = JSON.stringify(secondMarker.name);
+    const secondPreviewMatches = await evaluate<boolean>(
+      cdp,
+      `(() => {
+        const button = [...document.querySelectorAll('button')].find((candidate) =>
+          candidate.textContent?.includes('Explore Story')
+        );
+        const panel = button?.closest('.glass-panel');
+        return Boolean(
+          panel &&
+            ${secondMarkerNameLiteral} &&
+            panel.textContent?.includes(${secondMarkerNameLiteral})
+        );
+      })()`
+    );
+    if (!secondPreviewMatches) {
+      throw new Error(
+        viewport.name + ': second producer quick preview did not update.'
+      );
+    }
+
+    const previewClosed = await evaluate<boolean>(
+      cdp,
+      `(() => {
+        const button = document.querySelector('button[aria-label="Close producer preview"]');
+        if (!button) return false;
+        button.click();
+        return true;
+      })()`
+    );
+    if (!previewClosed) {
+      throw new Error(
+        viewport.name +
+          ': quick preview close control missing after regression check.'
+      );
+    }
+  }
+
   const state = await evaluate<{
     crashed: boolean;
     hasListToggle: boolean;
