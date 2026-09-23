@@ -77,7 +77,7 @@ export function registerCommercialPartnerRoutes(
         category: typeof req.query.category === 'string' ? req.query.category : null,
         limit: typeof req.query.limit === 'string' ? Number(req.query.limit) : 3,
       });
-      res.set('Cache-Control', 'public, max-age=60, stale-while-revalidate=120');
+      res.set('Cache-Control', 'no-store');
       res.json({ placements });
     } catch (error) {
       handleError(error, res, 'Public Partner placement lookup unavailable:');
