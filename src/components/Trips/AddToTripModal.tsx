@@ -18,6 +18,7 @@ import {
 } from '../../services/tripApi';
 import type { Producer } from '../../types/terroir';
 import { trackIntent } from '../../services/intentAnalytics';
+import { recordPartnerTripAddIfAttributed } from '../../services/partnerAttribution';
 import { ProducerCategoryIcon } from '../Common/ProducerCategoryIcon';
 
 interface AddToTripModalProps {
@@ -197,6 +198,7 @@ export const AddToTripModal: React.FC<AddToTripModalProps> = ({
           sourceSurface: 'trip_add_flow',
           producerId: producer.id,
         });
+        void recordPartnerTripAddIfAttributed(producer.id);
         setTrips((prev) =>
           prev.map((t) => (t.id === reconciled.trip.id ? reconciled.trip : t))
         );
@@ -246,6 +248,7 @@ export const AddToTripModal: React.FC<AddToTripModalProps> = ({
           sourceSurface: 'trip_add_flow',
           producerId: producer.id,
         });
+        void recordPartnerTripAddIfAttributed(producer.id);
         setTrips((prev) =>
           prev.map((t) => (t.id === reconciled.trip.id ? reconciled.trip : t))
         );
@@ -289,6 +292,7 @@ export const AddToTripModal: React.FC<AddToTripModalProps> = ({
           sourceSurface: 'trip_add_flow',
           producerId: producer.id,
         });
+        void recordPartnerTripAddIfAttributed(producer.id);
         setTrips((prev) => [
           reconciled.trip,
           ...prev.filter((t) => t.id !== reconciled.trip.id),
@@ -390,6 +394,7 @@ export const AddToTripModal: React.FC<AddToTripModalProps> = ({
           sourceSurface: 'trip_add_flow',
           producerId: producer.id,
         });
+        void recordPartnerTripAddIfAttributed(producer.id);
         setTrips((prev) => [
           reconciled.trip,
           ...prev.filter((t) => t.id !== reconciled.trip.id),
