@@ -155,6 +155,12 @@ export function isExplorerPassPurchasesEnabled(
   return getRawEnv('VITE_ENABLE_EXPLORER_PASS_PURCHASES', customEnv) === 'true';
 }
 
+export function isTripOptimizationEnabled(
+  customEnv?: Record<string, string | undefined>
+): boolean {
+  return getRawEnv('VITE_ENABLE_TRIP_OPTIMIZATION', customEnv) === 'true';
+}
+
 /**
  * Advertising is a deliberate launch decision and therefore fails closed.
  * Configured publisher and slot IDs do not enable it without this strict gate.
@@ -296,6 +302,9 @@ export const runtimeConfig = {
   },
   get explorerPass(): ExplorerPassRuntimeConfig {
     return { purchasesEnabled: isExplorerPassPurchasesEnabled() };
+  },
+  get tripOptimization(): { enabled: boolean } {
+    return { enabled: isTripOptimizationEnabled() };
   },
   get advertising(): AdvertisingRuntimeConfig {
     return getAdvertisingConfig();

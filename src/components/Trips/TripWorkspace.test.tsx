@@ -203,6 +203,7 @@ describe('TripWorkspace', () => {
         publicProducers={[mockProducer, secondProducer]}
         catalogueIsLive={true}
         hasExplorerPass={true}
+        tripOptimizationEnabled={true}
         initialOptimizationMode={true}
         initialTrip={multiStopTrip}
         initialProducerStates={{

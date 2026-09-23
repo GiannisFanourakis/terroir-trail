@@ -28,6 +28,7 @@ interface MyTripsModalProps {
   publicProducers: Producer[];
   catalogueIsLive?: boolean;
   hasExplorerPass?: boolean;
+  tripOptimizationEnabled?: boolean;
   onOpenExplorerPass?: () => void;
   initialTripId?: string;
   initialMode?: 'default' | 'optimize';
@@ -83,6 +84,7 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
   publicProducers,
   catalogueIsLive = true,
   hasExplorerPass = false,
+  tripOptimizationEnabled = false,
   onOpenExplorerPass,
   initialTripId,
   initialMode = 'default',
@@ -278,7 +280,10 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
               catalogueIsLive={catalogueIsLive}
               hasExplorerPass={hasExplorerPass}
               onOpenExplorerPass={onOpenExplorerPass}
-              initialOptimizationMode={initialMode === 'optimize'}
+              initialOptimizationMode={
+                initialMode === 'optimize' && tripOptimizationEnabled
+              }
+              tripOptimizationEnabled={tripOptimizationEnabled}
               onTripDeleted={(deletedId) => {
                 setTrips((prev) => prev.filter((t) => t.id !== deletedId));
                 setSelectedTripId(null);
@@ -286,25 +291,28 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
             />
           ) : (
             <div className="space-y-4">
-              {initialMode === 'optimize' && hasExplorerPass && (
-                <div className="rounded-2xl border border-emerald-400/25 bg-emerald-500/10 p-4">
-                  <div className="flex items-start gap-3">
-                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-emerald-400/25 bg-emerald-500/10">
-                      <Sparkles className="h-4 w-4 text-emerald-300" />
-                    </span>
-                    <div>
-                      <h3 className="text-sm font-bold text-emerald-100">
-                        Optimize My Day
-                      </h3>
-                      <p className="mt-1 text-xs leading-relaxed text-stone-300">
-                        Choose a trip, then select an assigned day with at least
-                        two stops. TerroirTrail will suggest a more efficient
-                        route without changing your trip until you approve it.
-                      </p>
+              {initialMode === 'optimize' &&
+                hasExplorerPass &&
+                tripOptimizationEnabled && (
+                  <div className="rounded-2xl border border-emerald-400/25 bg-emerald-500/10 p-4">
+                    <div className="flex items-start gap-3">
+                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-emerald-400/25 bg-emerald-500/10">
+                        <Sparkles className="h-4 w-4 text-emerald-300" />
+                      </span>
+                      <div>
+                        <h3 className="text-sm font-bold text-emerald-100">
+                          Optimize My Day
+                        </h3>
+                        <p className="mt-1 text-xs leading-relaxed text-stone-300">
+                          Choose a trip, then select an assigned day with at
+                          least two stops. TerroirTrail will suggest a more
+                          efficient route without changing your trip until you
+                          approve it.
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              )}
+                )}
 
               {/* Top Action Bar */}
               <div className="flex items-center justify-between gap-3">

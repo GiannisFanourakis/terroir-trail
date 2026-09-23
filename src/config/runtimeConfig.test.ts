@@ -7,6 +7,7 @@ import {
   checkIsSupabaseConfigured,
   getApiConfig,
   isExplorerPassPurchasesEnabled,
+  isTripOptimizationEnabled,
   getAdvertisingConfig,
   isAdvertisingEnabled,
   getPublicAppUrl,
@@ -191,6 +192,21 @@ describe('runtimeConfig - Centralized Configuration Discipline', () => {
           VITE_ENABLE_EXPLORER_PASS_PURCHASES: '',
         })
       ).toBe(false);
+    });
+  });
+
+  describe('Trip optimization rollout gate', () => {
+    it('fails closed unless explicitly set to true', () => {
+      expect(isTripOptimizationEnabled({})).toBe(false);
+      expect(
+        isTripOptimizationEnabled({ VITE_ENABLE_TRIP_OPTIMIZATION: 'false' })
+      ).toBe(false);
+      expect(
+        isTripOptimizationEnabled({ VITE_ENABLE_TRIP_OPTIMIZATION: 'TRUE' })
+      ).toBe(false);
+      expect(
+        isTripOptimizationEnabled({ VITE_ENABLE_TRIP_OPTIMIZATION: 'true' })
+      ).toBe(true);
     });
   });
 

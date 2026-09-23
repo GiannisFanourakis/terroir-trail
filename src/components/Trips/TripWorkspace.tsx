@@ -49,6 +49,7 @@ interface TripWorkspaceProps {
   publicProducers: Producer[];
   catalogueIsLive?: boolean;
   hasExplorerPass?: boolean;
+  tripOptimizationEnabled?: boolean;
   onOpenExplorerPass?: () => void;
   initialOptimizationMode?: boolean;
   initialTrip?: TripWithItems;
@@ -104,6 +105,7 @@ export const TripWorkspace: React.FC<TripWorkspaceProps> = ({
   publicProducers,
   catalogueIsLive = true,
   hasExplorerPass = false,
+  tripOptimizationEnabled = false,
   onOpenExplorerPass,
   initialOptimizationMode = false,
   initialTrip,
@@ -941,7 +943,7 @@ export const TripWorkspace: React.FC<TripWorkspaceProps> = ({
           </p>
         )}
 
-        {hasExplorerPass && !optimizationMode && (
+        {hasExplorerPass && tripOptimizationEnabled && !optimizationMode && (
           <button
             type="button"
             onClick={() => {
@@ -1044,7 +1046,7 @@ export const TripWorkspace: React.FC<TripWorkspaceProps> = ({
         </div>
       )}
 
-      {optimizationMode && hasExplorerPass && (
+      {optimizationMode && hasExplorerPass && tripOptimizationEnabled && (
         <section className="rounded-2xl border border-emerald-400/25 bg-emerald-500/[0.07] p-4">
           <div className="flex items-start justify-between gap-3">
             <div className="flex min-w-0 items-start gap-3">

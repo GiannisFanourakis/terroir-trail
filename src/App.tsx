@@ -36,6 +36,7 @@ import { producerService } from './services/producerService';
 import { CountryScope, setActiveCountryScope } from './config/geography';
 import { usePwaInstall } from './hooks/usePwaInstall';
 import { trackIntent, type SourceSurface } from './services/intentAnalytics';
+import { runtimeConfig } from './config/runtimeConfig';
 
 // Performance optimization: lazy-load modals on demand to shrink initial bundle
 const ProducerDetailDrawer = lazy(() =>
@@ -579,9 +580,11 @@ export const App: React.FC = () => {
         totalProducersCount={producers.length}
         onOpenProducerPortal={() => handleOpenProducerPortal()}
         onOpenExplorerPass={() => setActiveModal({ type: 'pass' })}
-        hasExplorerPass={hasAdFreeTravelerPass}
+        hasExplorerPass={
+          hasAdFreeTravelerPass && runtimeConfig.tripOptimization.enabled
+        }
         onOpenOptimizeMyDay={
-          hasAdFreeTravelerPass
+          hasAdFreeTravelerPass && runtimeConfig.tripOptimization.enabled
             ? () => handleOpenMyTrips(undefined, 'optimize')
             : undefined
         }
@@ -914,6 +917,7 @@ export const App: React.FC = () => {
             publicProducers={publicProducers}
             catalogueIsLive={catalogueIsLive && !catalogueError}
             hasExplorerPass={hasAdFreeTravelerPass}
+            tripOptimizationEnabled={runtimeConfig.tripOptimization.enabled}
             onOpenExplorerPass={() => setActiveModal({ type: 'pass' })}
           />
         )}
