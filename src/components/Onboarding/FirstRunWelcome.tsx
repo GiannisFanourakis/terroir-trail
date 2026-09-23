@@ -3,6 +3,7 @@ import {
   ArrowRight,
   CheckCircle2,
   Compass,
+  Crown,
   Download,
   MapPin,
   Plus,
@@ -16,6 +17,7 @@ import type {
 
 interface FirstRunWelcomeProps {
   onComplete: () => void;
+  onOpenPasses: () => void;
   pwaInstall: PwaInstallController;
 }
 
@@ -34,15 +36,11 @@ const installResultMessage = (result: PwaInstallResult): string | null => {
 
 export const FirstRunWelcome: React.FC<FirstRunWelcomeProps> = ({
   onComplete,
+  onOpenPasses,
   pwaInstall,
 }) => {
-  const {
-    canInstall,
-    isInstalled,
-    isIos,
-    isIosSafari,
-    requestInstall,
-  } = pwaInstall;
+  const { canInstall, isInstalled, isIos, isIosSafari, requestInstall } =
+    pwaInstall;
   const [installMessage, setInstallMessage] = useState<string | null>(null);
   const [isInstalling, setIsInstalling] = useState(false);
 
@@ -94,7 +92,9 @@ export const FirstRunWelcome: React.FC<FirstRunWelcomeProps> = ({
               Welcome to TerroirTrail
             </h1>
             <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-stone-300 sm:text-base sm:leading-7">
-              Explore independent food and drink producers through the map, then open a producer to see their story, visiting status and practical access information.
+              Explore independent food and drink producers through the map, then
+              open a producer to see their story, visiting status and practical
+              access information.
             </p>
           </div>
 
@@ -105,7 +105,8 @@ export const FirstRunWelcome: React.FC<FirstRunWelcomeProps> = ({
               </span>
               <h2 className="text-sm font-bold text-white">Explore the map</h2>
               <p className="mt-1 text-xs leading-5 text-stone-400">
-                Search by region or category and discover makers directly on the interactive map.
+                Search by region or category and discover makers directly on the
+                interactive map.
               </p>
             </div>
 
@@ -115,7 +116,8 @@ export const FirstRunWelcome: React.FC<FirstRunWelcomeProps> = ({
               </span>
               <h2 className="text-sm font-bold text-white">Open a producer</h2>
               <p className="mt-1 text-xs leading-5 text-stone-400">
-                Tap a marker for a quick preview, then open the story for visit and access details.
+                Tap a marker for a quick preview, then open the story for visit
+                and access details.
               </p>
             </div>
 
@@ -123,9 +125,12 @@ export const FirstRunWelcome: React.FC<FirstRunWelcomeProps> = ({
               <span className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500/10 text-amber-400">
                 <Smartphone className="h-5 w-5" aria-hidden="true" />
               </span>
-              <h2 className="text-sm font-bold text-white">Keep it on your device</h2>
+              <h2 className="text-sm font-bold text-white">
+                Keep it on your device
+              </h2>
               <p className="mt-1 text-xs leading-5 text-stone-400">
-                TerroirTrail is a web app, so you can add it to your Home Screen without an app store.
+                TerroirTrail is a web app, so you can add it to your Home Screen
+                without an app store.
               </p>
             </div>
           </div>
@@ -134,13 +139,17 @@ export const FirstRunWelcome: React.FC<FirstRunWelcomeProps> = ({
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between md:gap-6">
               <div className="min-w-0 md:max-w-xl">
                 <div className="flex items-center gap-2">
-                  <Download className="h-4 w-4 shrink-0 text-amber-400" aria-hidden="true" />
+                  <Download
+                    className="h-4 w-4 shrink-0 text-amber-400"
+                    aria-hidden="true"
+                  />
                   <h2 className="text-sm font-bold text-white sm:text-base">
                     Add TerroirTrail to your Home Screen
                   </h2>
                 </div>
                 <p className="mt-1.5 text-xs leading-5 text-stone-400 sm:text-sm">
-                  Launch it full-screen from your phone or tablet while travelling, while still receiving the latest web version.
+                  Launch it full-screen from your phone or tablet while
+                  travelling, while still receiving the latest web version.
                 </p>
               </div>
 
@@ -167,16 +176,22 @@ export const FirstRunWelcome: React.FC<FirstRunWelcomeProps> = ({
               <div className="mt-4 grid grid-cols-1 gap-2.5 sm:grid-cols-2">
                 {!isIosSafari && (
                   <div className="sm:col-span-2 rounded-2xl border border-sky-400/20 bg-sky-500/10 px-3.5 py-3 text-xs leading-5 text-sky-100">
-                    For the most consistent Home Screen install flow on iPhone or iPad, open TerroirTrail in Safari.
+                    For the most consistent Home Screen install flow on iPhone
+                    or iPad, open TerroirTrail in Safari.
                   </div>
                 )}
 
                 <div className="flex min-h-[56px] items-center gap-3 rounded-2xl border border-white/10 bg-stone-950/60 px-3.5 py-3">
                   <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-stone-900">
-                    <Share2 className="h-4 w-4 text-amber-400" aria-hidden="true" />
+                    <Share2
+                      className="h-4 w-4 text-amber-400"
+                      aria-hidden="true"
+                    />
                   </span>
                   <div>
-                    <div className="text-xs font-bold text-white">1. Tap Share</div>
+                    <div className="text-xs font-bold text-white">
+                      1. Tap Share
+                    </div>
                     <div className="mt-0.5 text-[11px] leading-4 text-stone-400">
                       Open Safari’s Share menu.
                     </div>
@@ -185,10 +200,15 @@ export const FirstRunWelcome: React.FC<FirstRunWelcomeProps> = ({
 
                 <div className="flex min-h-[56px] items-center gap-3 rounded-2xl border border-white/10 bg-stone-950/60 px-3.5 py-3">
                   <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-stone-900">
-                    <Plus className="h-4 w-4 text-amber-400" aria-hidden="true" />
+                    <Plus
+                      className="h-4 w-4 text-amber-400"
+                      aria-hidden="true"
+                    />
                   </span>
                   <div>
-                    <div className="text-xs font-bold text-white">2. Add to Home Screen</div>
+                    <div className="text-xs font-bold text-white">
+                      2. Add to Home Screen
+                    </div>
                     <div className="mt-0.5 text-[11px] leading-4 text-stone-400">
                       Choose “Add to Home Screen”, then tap Add.
                     </div>
@@ -199,7 +219,10 @@ export const FirstRunWelcome: React.FC<FirstRunWelcomeProps> = ({
 
             {!isInstalled && !isIos && !canInstall && (
               <div className="mt-4 rounded-2xl border border-white/10 bg-stone-950/60 px-3.5 py-3 text-xs leading-5 text-stone-300">
-                Open your browser menu and choose <strong className="text-white">Install app</strong> or <strong className="text-white">Add to Home Screen</strong> when your browser offers it.
+                Open your browser menu and choose{' '}
+                <strong className="text-white">Install app</strong> or{' '}
+                <strong className="text-white">Add to Home Screen</strong> when
+                your browser offers it.
               </div>
             )}
 
@@ -223,8 +246,22 @@ export const FirstRunWelcome: React.FC<FirstRunWelcomeProps> = ({
               Start exploring
               <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </button>
+
+            <button
+              type="button"
+              onClick={onOpenPasses}
+              className="mt-2.5 flex min-h-[48px] w-full max-w-sm items-center justify-center gap-2 rounded-2xl border border-amber-400/30 bg-amber-500/10 px-5 py-3 text-sm font-bold text-amber-200 transition hover:border-amber-300/50 hover:bg-amber-500/15 active:scale-[0.99]"
+            >
+              <Crown className="h-4 w-4 text-amber-400" aria-hidden="true" />
+              Upgrade your trip
+            </button>
+            <div className="mt-1.5 text-center text-[10px] font-medium text-stone-500">
+              Holiday €9.99 / 14 days · Annual €24.99 / year
+            </div>
+
             <p className="mt-2.5 text-center text-[11px] leading-5 text-stone-500">
-              No account is required to explore. This welcome screen is shown only on your first visit.
+              No account is required to explore. This welcome screen is shown
+              only on your first visit.
             </p>
           </div>
         </div>
