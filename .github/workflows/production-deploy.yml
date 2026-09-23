@@ -21,6 +21,7 @@ jobs:
     timeout-minutes: 45
     env:
       SMOKE_PUBLIC_ORIGIN: https://terroir-trail.web.app
+      STRIPE_PARTNER_BILLING_ENABLED: ${{ vars.STRIPE_PARTNER_BILLING_ENABLED || 'false' }}
       VITE_SUPABASE_URL: https://eoenugkkzmzsrzclvdhl.supabase.co
       VITE_SUPABASE_ANON_KEY: sb_publishable_W01ZB3X4vjEjW1JFPQCzUw_Kh0AMrbH
       VITE_FIREBASE_API_KEY: AIzaSyBodZLWoi5WVkvqZ-4T7z5hhYBCPR6EiAc
@@ -137,7 +138,8 @@ jobs:
             --max-instances=3 \
             --cpu=1 \
             --memory=512Mi \
-            --update-env-vars=STRIPE_PARTNER_ANNUAL_PRICE_ID=price_1UIkraPTLRkIE3byfmvTRhAt,STRIPE_PARTNER_BILLING_ENABLED=false \
+            --update-env-vars=APP_URL=https://terroir-trail.web.app,STRIPE_PARTNER_ANNUAL_PRICE_ID=price_1UIkraPTLRkIE3byfmvTRhAt,STRIPE_PARTNER_BILLING_ENABLED=${STRIPE_PARTNER_BILLING_ENABLED},EXPLORER_PASS_CHECKOUT_ENABLED=false \
+            --update-secrets=STRIPE_SECRET_KEY=STRIPE_SECRET_KEY:latest,STRIPE_WEBHOOK_SECRET=terroirtrail-stripe-webhook-secret:latest \
             --quiet
 
       - name: Verify direct Cloud Run API health
