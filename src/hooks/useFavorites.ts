@@ -11,6 +11,7 @@ import {
 } from '../services/travelerFavoritesCloud';
 import { logger } from '../services/logger';
 import { trackIntent, type SourceSurface } from '../services/intentAnalytics';
+import { recordPartnerSaveIfAttributed } from '../services/partnerAttribution';
 
 const GUEST_FAVORITES_KEY = STORAGE_KEYS.FAVORITES;
 
@@ -108,6 +109,9 @@ export function useFavorites(ownerId?: string | null) {
                 sourceSurface,
                 producerId: id,
               });
+              if (!isFavorited) {
+                void recordPartnerSaveIfAttributed(id);
+              }
             })
             .catch((error) => {
               logger.warn('Favorites', 'cloud_write_failed', {
