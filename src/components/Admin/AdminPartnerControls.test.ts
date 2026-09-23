@@ -11,7 +11,7 @@ describe('Phase 15 Block C Partner controls', () => {
     expect(portal).toContain('<ProducerCommercialPanel producerId={selectedProducer.id}');
     expect(panel).toContain('free organic discovery');
     expect(panel).toContain('do not prove a booking, visit or revenue outcome');
-    expect(panel).toContain('Payment');
+    expect(panel).toContain('does not change TerroirTrail verification');
     expect(panel).not.toContain('isProTier');
   });
 
