@@ -197,7 +197,10 @@ const mapRpcError = (message: string): CommercialPartnerError => {
     message.includes('invalid_campaign_placements') ||
     message.includes('invalid_campaign_placement') ||
     message.includes('invalid_campaign_status') ||
-    message.includes('campaign_not_editable')
+    message.includes('campaign_not_editable') ||
+    message.includes('future_start_required_for_scheduled_campaign') ||
+    message.includes('campaign_not_started') ||
+    message.includes('campaign_already_ended')
   ) {
     return new CommercialPartnerError('bad_request', 'Commercial Partner request failed validation.');
   }
@@ -207,7 +210,8 @@ const mapRpcError = (message: string): CommercialPartnerError => {
   if (
     message.includes('invalid_partner_status_transition') ||
     message.includes('partner_account_required') ||
-    message.includes('invalid_campaign_status_transition')
+    message.includes('invalid_campaign_status_transition') ||
+    message.includes('active_partner_required')
   ) {
     return new CommercialPartnerError('conflict', 'The requested commercial state transition is not allowed.');
   }
