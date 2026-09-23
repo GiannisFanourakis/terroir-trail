@@ -142,7 +142,7 @@ jobs:
             --cpu=1 \
             --memory=512Mi \
             --update-env-vars=APP_URL=https://terroir-trail.web.app,STRIPE_PARTNER_ANNUAL_PRICE_ID=price_1UIkraPTLRkIE3byfmvTRhAt,STRIPE_PARTNER_BILLING_ENABLED=${STRIPE_PARTNER_BILLING_ENABLED},EXPLORER_PASS_CHECKOUT_ENABLED=${EXPLORER_PASS_CHECKOUT_ENABLED},STRIPE_HOLIDAY_PRICE_ID=${STRIPE_EXPLORER_HOLIDAY_PRICE_ID},STRIPE_ANNUAL_PRICE_ID=${STRIPE_EXPLORER_ANNUAL_PRICE_ID},STRIPE_EXPLORER_PORTAL_CONFIGURATION_ID=${STRIPE_EXPLORER_PORTAL_CONFIGURATION_ID} \
-            --update-secrets=STRIPE_SECRET_KEY=STRIPE_SECRET_KEY:latest,STRIPE_WEBHOOK_SECRET=terroirtrail-stripe-webhook-secret:latest \
+            --update-secrets=STRIPE_SECRET_KEY=STRIPE_SECRET_KEY:latest,STRIPE_WEBHOOK_SECRET=terroirtrail-stripe-webhook-secret:latest,MAPBOX_ACCESS_TOKEN=MAPBOX_ACCESS_TOKEN:latest \
             --quiet
 
       - name: Verify direct Cloud Run API health
