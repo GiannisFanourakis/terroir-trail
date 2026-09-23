@@ -322,7 +322,7 @@ export const ProducerPromotionPanel: React.FC<ProducerPromotionPanelProps> = ({
         </div>
       )}
 
-      {subscription?.provider === 'stripe' && subscription.provider_customer_id !== null && billing?.portalEnabled && (
+      {subscription?.provider === 'stripe' && billing?.portalEnabled && (
         <div className="flex justify-end">
           <button
             type="button"
