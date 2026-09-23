@@ -125,11 +125,9 @@ const graceUntil = (now = Date.now()) => {
 
 const mapSubscriptionStatus = (
   status: Stripe.Subscription.Status | string,
-  force?: 'paid' | 'failed' | 'deleted'
+  forceDeleted = false
 ): { status: PartnerBillingStatus; graceUntil: string | null } => {
-  if (force === 'paid') return { status: 'active', graceUntil: null };
-  if (force === 'failed') return { status: 'grace', graceUntil: graceUntil() };
-  if (force === 'deleted') return { status: 'expired', graceUntil: null };
+  if (forceDeleted) return { status: 'expired', graceUntil: null };
 
   switch (status) {
     case 'active':
@@ -278,7 +276,7 @@ export async function createPartnerBillingPortal(
 async function applySubscriptionEvent(
   event: Stripe.Event,
   subscription: Stripe.Subscription,
-  force: 'paid' | 'failed' | 'deleted' | undefined,
+  forceDeleted: boolean,
   client: SupabaseClient | null
 ) {
   const metadata = subscription.metadata || {};
@@ -300,7 +298,7 @@ async function applySubscriptionEvent(
     throw new PartnerBillingError('bad_request', 'Partner subscription is missing its Stripe customer.');
   }
 
-  const { status, graceUntil: nextGraceUntil } = mapSubscriptionStatus(subscription.status, force);
+  const { status, graceUntil: nextGraceUntil } = mapSubscriptionStatus(subscription.status, forceDeleted);
   const period = subscriptionPeriod(subscription);
   const supabase = requireSupabase(client);
   const { data, error } = await supabase.rpc('apply_stripe_partner_subscription_event_v1', {
@@ -360,7 +358,7 @@ export async function processPartnerStripeEvent(
     return applySubscriptionEvent(
       event,
       subscription,
-      event.type === 'customer.subscription.deleted' ? 'deleted' : undefined,
+      event.type === 'customer.subscription.deleted',
       client
     );
   }
@@ -375,7 +373,7 @@ export async function processPartnerStripeEvent(
     return applySubscriptionEvent(
       event,
       subscription,
-      event.type === 'invoice.paid' ? 'paid' : 'failed',
+      false,
       client
     );
   }
