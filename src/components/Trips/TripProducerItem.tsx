@@ -16,6 +16,7 @@ import {
 import type { TripItemRecordV1, TripProducerState } from '../../services/tripApi';
 import type { Producer } from '../../types/terroir';
 import { trackIntent } from '../../services/intentAnalytics';
+import { recordPartnerContactIfAttributed } from '../../services/partnerAttribution';
 import { ProducerCategoryIcon } from '../Common/ProducerCategoryIcon';
 import { TripReadinessSummary } from './TripReadinessSummary';
 import { getTripDayLabel } from '../../utils/tripReadiness';
@@ -35,6 +36,7 @@ export function handleTripProducerAction(
     sourceSurface: 'trip_workspace',
     producerId,
   });
+  void recordPartnerContactIfAttributed(producerId, action, 'trip_workspace');
 }
 
 interface TripProducerItemProps {
