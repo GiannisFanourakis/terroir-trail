@@ -319,6 +319,9 @@ export const AdminCommercialPartnerPanel: React.FC = () => {
   }
 
   const selectedPartner = partnerMap.get(partnerProducerId) || null;
+  const selectedSubscription = (state?.subscriptions || [])
+    .filter((subscription) => subscription.producer_id === partnerProducerId)
+    .sort((a, b) => b.updated_at.localeCompare(a.updated_at))[0];
 
   return (
     <section className="space-y-4 rounded-2xl border border-amber-500/20 bg-amber-500/[0.035] p-4">
@@ -373,11 +376,31 @@ export const AdminCommercialPartnerPanel: React.FC = () => {
               ))}
             </select>
 
-            <div className="flex items-center justify-between gap-3 rounded-lg border border-white/10 bg-stone-900/60 px-3 py-2">
-              <span className="text-[10px] text-stone-500">Current status</span>
-              <span className={`rounded-full border px-2 py-0.5 text-[9px] font-bold uppercase ${statusClass(selectedPartner?.status || 'not_active')}`}>
-                {selectedPartner ? humanize(selectedPartner.status) : 'Not Partner'}
-              </span>
+            <div className="grid gap-2 sm:grid-cols-2">
+              <div className="flex items-center justify-between gap-3 rounded-lg border border-white/10 bg-stone-900/60 px-3 py-2">
+                <span className="text-[10px] text-stone-500">Partner status</span>
+                <span className={`rounded-full border px-2 py-0.5 text-[9px] font-bold uppercase ${statusClass(selectedPartner?.status || 'not_active')}`}>
+                  {selectedPartner ? humanize(selectedPartner.status) : 'Not Partner'}
+                </span>
+              </div>
+              <div className="rounded-lg border border-white/10 bg-stone-900/60 px-3 py-2">
+                <div className="text-[9px] uppercase tracking-wide text-stone-500">Entitlement source</div>
+                <div className="mt-1 text-[10px] font-semibold text-stone-300">
+                  {selectedPartner
+                    ? selectedPartner.activation_source === 'admin_pilot'
+                      ? 'Admin pilot'
+                      : 'Stripe subscription'
+                    : 'None'}
+                </div>
+              </div>
+              <div className="rounded-lg border border-white/10 bg-stone-900/60 px-3 py-2 sm:col-span-2">
+                <div className="text-[9px] uppercase tracking-wide text-stone-500">Subscription state</div>
+                <div className="mt-1 text-[10px] font-semibold text-stone-300">
+                  {selectedSubscription
+                    ? `${humanize(selectedSubscription.status)} · ${selectedSubscription.plan_code}`
+                    : 'No Stripe subscription record'}
+                </div>
+              </div>
             </div>
 
             <input
@@ -492,6 +515,35 @@ export const AdminCommercialPartnerPanel: React.FC = () => {
           )}
         </form>
       </div>
+
+      {(state?.audit || []).length > 0 && (
+        <div className="rounded-xl border border-white/10 bg-stone-950/55">
+          <div className="border-b border-white/10 px-4 py-3">
+            <div className="text-xs font-bold text-white">Recent commercial audit</div>
+            <p className="mt-0.5 text-[10px] text-stone-500">
+              Trusted Partner and campaign state changes. Billing events will join this trail when Stripe is connected.
+            </p>
+          </div>
+          <div className="divide-y divide-white/5">
+            {state!.audit.slice(0, 10).map((entry) => (
+              <div key={entry.id} className="flex flex-col gap-1 px-4 py-2.5 sm:flex-row sm:items-center sm:justify-between">
+                <div className="min-w-0">
+                  <div className="text-[10px] font-semibold text-stone-300">
+                    {humanize(entry.event_type)} · {producerMap.get(entry.producer_id)?.name || entry.producer_id}
+                  </div>
+                  <div className="mt-0.5 text-[9px] text-stone-600">
+                    {entry.from_status ? `${humanize(entry.from_status)} → ` : ''}{entry.to_status ? humanize(entry.to_status) : ''}
+                    {entry.reason ? ` · ${entry.reason}` : ''}
+                  </div>
+                </div>
+                <time className="text-[9px] text-stone-600">
+                  {new Date(entry.occurred_at).toLocaleString()}
+                </time>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="space-y-3">
         {(state?.campaigns || []).length === 0 ? (
