@@ -26,6 +26,7 @@ import {
   type OwnProducerClaimStatus,
 } from '../../services/producerClaimStatus';
 import { ProducerListingContentEditor } from './ProducerListingContentEditor';
+import { ProducerCommercialPanel } from './ProducerCommercialPanel';
 
 interface ProducerPortalModalProps {
   isOpen: boolean;
@@ -61,7 +62,7 @@ interface ProducerPortalModalProps {
   onPassVerified?: (info: any) => void;
 }
 
-type PortalTab = 'overview' | 'notice' | 'content' | 'photos' | 'account';
+type PortalTab = 'overview' | 'notice' | 'content' | 'photos' | 'promotions' | 'account';
 
 const claimBusinessLabel = (claim: OwnProducerClaimStatus) => {
   switch (claim.businessVerificationStatus) {
@@ -588,6 +589,9 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
             Profile Photos {currentImages.length > 0 ? `(${currentImages.length})` : ''}
           </button>
         )}
+        {!isReadOnlyPreview && (
+          <button type="button" onClick={() => setActiveTab('promotions')} className={tabClass('promotions')}>Promotions</button>
+        )}
         <button type="button" onClick={() => setActiveTab('account')} className={tabClass('account')}>Verification & Account</button>
       </div>
 
@@ -791,6 +795,10 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
               </div>
             )}
           </div>
+        )}
+
+        {activeTab === 'promotions' && !isReadOnlyPreview && (
+          <ProducerCommercialPanel producerId={selectedProducer.id} />
         )}
 
         {activeTab === 'account' && (
