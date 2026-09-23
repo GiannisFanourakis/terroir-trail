@@ -34,7 +34,7 @@ test('public Partner placement endpoint requires no login and returns only publi
       base + '/api/commercial/placements?placement=region_discovery&destination=crete'
     );
     assert.equal(response.status, 200);
-    assert.match(response.headers.get('cache-control') || '', /max-age=60/);
+    assert.equal(response.headers.get('cache-control'), 'no-store');
     const body = await response.json() as any;
     assert.equal(body.placements.length, 1);
     assert.equal(body.placements[0].campaignId, '11111111-1111-4111-8111-111111111111');
