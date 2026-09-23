@@ -27,7 +27,7 @@ test('commercial Partner API separates Host read access from Admin mutation rout
   registerCommercialPartnerRoutes(app, {
     verifyToken: async token => {
       if (token === 'invalid') throw new Error('invalid');
-      return { uid: token } as any;
+      return { uid: token, email: `${token}@example.com` } as any;
     },
     getOwnedCommercialState: async uid => {
       calls.push({ type: 'host-read', args: [uid] });
@@ -109,6 +109,21 @@ test('commercial Partner API separates Host read access from Admin mutation rout
         placements: input.placements as any,
       };
     },
+    getPartnerBillingAvailability: () => ({
+      checkoutEnabled: false,
+      portalEnabled: false,
+      planCode: 'partner_annual_v1' as const,
+    }),
+    createPartnerCheckout: async (uid, email, producerId) => {
+      calls.push({ type: 'partner-checkout', args: [uid, email, producerId] });
+      if (uid !== 'host') throw new CommercialPartnerError('forbidden', 'Host required.');
+      return { url: 'https://checkout.stripe.com/test_partner' };
+    },
+    createPartnerBillingPortal: async (uid, producerId) => {
+      calls.push({ type: 'partner-portal', args: [uid, producerId] });
+      if (uid !== 'host') throw new CommercialPartnerError('forbidden', 'Host required.');
+      return { url: 'https://billing.stripe.com/test_partner' };
+    },
     transitionCommercialPartnerCampaign: async (uid, campaignId, input) => {
       calls.push({ type: 'campaign-status', args: [uid, campaignId, input] });
       if (uid !== 'admin') throw new CommercialPartnerError('forbidden', 'Admin required.');
@@ -154,7 +169,30 @@ test('commercial Partner API separates Host read access from Admin mutation rout
 
     const host = await fetch(`${base}/api/producer/commercial`, { headers: headers('host') });
     assert.equal(host.status, 200);
-    assert.deepEqual(await host.json(), { state: emptyState });
+    assert.deepEqual(await host.json(), {
+      state: emptyState,
+      billing: {
+        checkoutEnabled: false,
+        portalEnabled: false,
+        planCode: 'partner_annual_v1',
+      },
+    });
+
+    const checkout = await post(
+      '/api/producer/commercial/producer-1/checkout',
+      'host',
+      {}
+    );
+    assert.equal(checkout.status, 200);
+    assert.deepEqual(await checkout.json(), { url: 'https://checkout.stripe.com/test_partner' });
+
+    const portal = await post(
+      '/api/producer/commercial/producer-1/billing-portal',
+      'host',
+      {}
+    );
+    assert.equal(portal.status, 200);
+    assert.deepEqual(await portal.json(), { url: 'https://billing.stripe.com/test_partner' });
 
     const deniedAdmin = await fetch(`${base}/api/admin/commercial`, { headers: headers('host') });
     assert.equal(deniedAdmin.status, 403);
@@ -221,6 +259,8 @@ test('commercial Partner API separates Host read access from Admin mutation rout
 
     assert.deepEqual(calls.map(call => call.type), [
       'host-read',
+      'partner-checkout',
+      'partner-portal',
       'admin-read',
       'admin-read',
       'partner-status',
