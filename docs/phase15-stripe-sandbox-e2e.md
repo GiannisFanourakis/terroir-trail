@@ -20,8 +20,8 @@ The key is never printed or written into the repository.
 The test refuses any key that is not a Stripe test/sandbox key. Before importing
 TerroirTrail billing modules it sets `STRIPE_SECRET_KEY` to the sandbox key, so
 application Stripe clients cannot fall through to a live key from local `.env`.
-Production configuration is not changed. In particular, the production
-`STRIPE_PARTNER_BILLING_ENABLED` gate remains independent and fail-closed.
+Production configuration is never changed by this test. The production
+`STRIPE_PARTNER_BILLING_ENABLED` gate remains independent of the sandbox harness and is controlled only by the production deploy configuration.
 
 All Stripe resources created by the script are tagged with an E2E run identifier.
 The subscription is cancelled, the open Checkout Session is expired, the customer
@@ -37,7 +37,11 @@ Stripe sandbox, then retrieves the Session and verifies:
 - subscription mode;
 - the exact server-selected annual Price;
 - Partner purpose, producer and Host metadata;
-- the commercial checkout preparation RPC boundary.
+- the commercial checkout preparation RPC boundary;
+- the production Checkout contract requests Stripe Automatic Tax, business tax-ID collection and required billing-address collection.
+
+
+The active general sandbox uses a claimable restricted key that cannot configure its own Stripe Tax head-office settings. To keep the test reproducible without weakening production, the E2E captures and asserts the Tax-related Checkout arguments emitted by TerroirTrail, then strips only those Tax-only fields before creating the disposable sandbox Session. Live Stripe configuration is verified separately: the Partner product uses Stripe tax code `txcd_10701000` (Website Advertising), the account has an active Greek Tax registration, and live Tax settings are active.
 
 The script then creates a real Stripe sandbox Customer, test PaymentMethod and
 annual Subscription carrying the same authoritative Partner metadata.

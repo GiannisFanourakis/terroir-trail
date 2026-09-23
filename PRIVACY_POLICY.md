@@ -1,7 +1,7 @@
 # TerroirTrail Privacy Notice
 
 **Effective Date:** January 1, 2026<br />
-**Last Updated:** September 17, 2026<br />
+**Last Updated:** September 23, 2026<br />
 **Data Controller / Platform Operator:** ΙΩΑΝΝΗΣ ΚΩΝΣΤΑΝΤΙΝΟΣ ΦΑΝΟΥΡΑΚΗΣ, sole proprietorship<br />
 **Contact:** terroirtrail@gmail.com
 
@@ -82,7 +82,7 @@ Personal data may be shared only as needed to operate the platform, including:
 - **Google Places / Google Maps Media:** for audited listings with verified Google Place IDs, the application may fetch and render official place photo media directly from the Google Places API, or link to Google Maps for directions.
 - **Travel affiliate links (Travelpayouts pilot):** the application includes a curated travel-services affiliate carousel (e.g. for car rentals, transfers, experiences, and connectivity). Clicking an affiliate banner sends you to a third-party travel platform via an outbound link that may include an operational campaign SubID. TerroirTrail transmits no account, personal profile, or booking data to affiliate partners, and sets no third-party tracking cookies on your device. Third-party travel services operate entirely under their own terms and privacy notices. Active Explorer Pass holders receive an ad-free experience without these affiliate placements.
 - **Advertising Services (Google AdSense):** display advertising infrastructure is **disabled/dormant** in the production application. No third-party AdSense scripts or trackers are loaded.
-- **Payment Infrastructure (Stripe):** payment and subscription backend infrastructure exists, but public checkout flows remain **disabled/dormant (pilot safety active)**. TerroirTrail does not collect or process live consumer payment cards on the public application at this time.
+- **Payment Infrastructure (Stripe):** after an approved producer claim, a verified Host may purchase the optional TerroirTrail Partner annual subscription through Stripe-hosted Checkout and manage billing through Stripe Customer Portal. Stripe receives and processes payment-card and billing information directly; TerroirTrail does not receive full card numbers or CVCs. TerroirTrail stores or receives the identifiers and subscription/payment status needed to operate Partner entitlement, billing support, audit, renewal, cancellation and expiry. Consumer Explorer Pass checkout remains disabled.
 - **A producer you contact or request a visit with:** when you voluntarily submit a request that requires the producer to receive your contact/visit details.
 - **Professional advisers, authorities, or service providers:** where reasonably necessary for security, legal compliance, dispute resolution, or service operations.
 

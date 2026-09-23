@@ -204,8 +204,8 @@ export const FAQ_DATA: FaqItem[] = [
     categoryLabel: 'For Producers',
     question: 'Does TerroirTrail sell bookings, paid passes, or charge commissions?',
     answer:
-      'TerroirTrail is currently discovery-first. Public tasting Experiences, Explorer Pass sales, Host Pro subscriptions, TerroirTrail checkout, and chauffeur bookings remain inactive. Display advertising remains disabled. Some outbound travel links may be affiliate links. TerroirTrail may receive a referral commission from the third-party provider at no additional cost to the traveler. Affiliate activity is never conflated with producer listing inclusion, and listings are never paid partnerships.',
-    highlight: 'Discovery-first: zero booking commissions, no paid listings, and no display ads.',
+      'TerroirTrail remains discovery-first and does not charge booking commissions. After a producer claim is approved, the verified Host can optionally subscribe to TerroirTrail Partner for €199/year through Stripe to become eligible for clearly labelled, Admin-reviewed paid promotion. Partner payment never buys catalogue inclusion, verification, visitability, road/access facts or organic ranking. Public tasting Experiences, Explorer Pass sales and chauffeur checkout remain inactive, and display advertising remains disabled. Some outbound travel links may be affiliate links that can earn TerroirTrail a referral commission at no additional cost to the traveler.',
+    highlight: 'Discovery-first: zero booking commissions; optional Partner promotion is separate from free listings and trust data.',
   },
 ];
 

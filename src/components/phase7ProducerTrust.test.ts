@@ -30,11 +30,18 @@ describe('Phase 7 producer claim trust boundaries', () => {
     expect(authHook).toContain('isVatVerified: false');
   });
 
-  it('keeps future host commercial workflows quarantined from the Phase 11 portal', () => {
+  it('keeps Partner subscription post-claim while unrelated commerce remains quarantined', () => {
     const portal = read('src/components/Portal/ProducerPortalModal.tsx');
+    const partnerPanel = read('src/components/Portal/ProducerPromotionPanel.tsx');
     const drawer = read('src/components/Drawer/ProducerDetailDrawer.tsx');
 
     expect(portal).toContain("type PortalTab = 'overview' | 'promotions' | 'notice' | 'content' | 'photos' | 'account';");
+    expect(portal).toContain('Admin approval is still required before Host Portal controls');
+    expect(portal).toContain('including the optional Partner subscription');
+    expect(portal).toContain('TerroirTrail Partner — €199/year');
+    expect(portal).toContain('View Partner subscription');
+    expect(partnerPanel).toContain('Annual Partner subscription for approved Hosts');
+    expect(partnerPanel).toContain('Subscribe — €199/year');
     expect(portal).toContain('Visitor Information');
     expect(portal).toContain('Listing Content');
     expect(portal).toContain('Protected TerroirTrail evidence');

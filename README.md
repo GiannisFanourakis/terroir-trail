@@ -95,7 +95,8 @@ This means adding, editing, deactivating, or reactivating a producer in the auth
 
 TerroirTrail is currently **discovery-first**, not an online travel agency or open booking marketplace.
 
-- Public TerroirTrail tasting Experiences, Explorer Pass sales, Host Pro subscriptions, TerroirTrail checkout, open OTA-style booking, and chauffeur bookings remain dormant/quarantined and are not active public products.
+- The producer-facing **TerroirTrail Partner — Annual** subscription is live for approved Hosts at **€199/year** through hosted Stripe Checkout. It unlocks eligibility for clearly labelled, Admin-reviewed paid promotion only; it does not buy listing inclusion, verification, visitability/access facts, or organic ranking.
+- Public TerroirTrail tasting Experiences, Explorer Pass sales, open OTA-style booking, and chauffeur bookings remain dormant/quarantined and are not active public products.
 - Display advertising remains disabled.
 - Some outbound travel links may be affiliate links. TerroirTrail may receive a referral commission from the third-party provider at no additional cost to the traveler.
 - Editorial producer inclusion is independent of affiliate activity and commercial partnership. Published does not mean partnered.
