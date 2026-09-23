@@ -515,3 +515,120 @@ test('Optimize My Day maps fail-closed proposal errors without leaking internals
     );
   }
 });
+
+test('Optimize My Day Apply is Explorer-gated and accepts only the reviewed day order', async () => {
+  let activePass = false;
+  const calls: unknown[][] = [];
+  const app = createApp();
+
+  registerTripRoutes(app, {
+    verifyToken: async (token) => ({ uid: token }) as any,
+    getExplorerPass: async () =>
+      activePass
+        ? ({
+            passId: 'pass-active',
+            name: 'Explorer',
+            plan: 'holiday',
+            expiresAt: '2099-01-01T00:00:00Z',
+          } as any)
+        : null,
+    applyTripOptimizationOrder: async (uid, tripId, body) => {
+      calls.push([uid, tripId, body]);
+      return {
+        id: tripId,
+        ownerUid: uid,
+        title: 'Trip',
+        startDate: null,
+        endDate: null,
+        itemCount: 3,
+        revision: 8,
+        schemaVersion: 1 as const,
+        createdAt: '2026-09-23T00:00:00Z',
+        updatedAt: '2026-09-23T19:00:00Z',
+        items: [
+          {
+            producerId: 'c',
+            position: 0,
+            dayNumber: 2,
+            createdAt: 'x',
+            updatedAt: 'y',
+          },
+          {
+            producerId: 'b',
+            position: 1,
+            dayNumber: 2,
+            createdAt: 'x',
+            updatedAt: 'y',
+          },
+          {
+            producerId: 'a',
+            position: 2,
+            dayNumber: 2,
+            createdAt: 'x',
+            updatedAt: 'y',
+          },
+        ],
+      };
+    },
+  });
+
+  const server = app.listen(0, '127.0.0.1');
+  await new Promise<void>((resolve) => server.once('listening', resolve));
+  const base = 'http://127.0.0.1:' + (server.address() as AddressInfo).port;
+  const body = {
+    contractVersion: 1,
+    dayNumber: 2,
+    expectedRevision: 7,
+    producerIds: ['c', 'b', 'a'],
+  };
+
+  try {
+    const unauth = await fetch(base + '/api/trips/trip-1/optimize-day/apply', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    assert.equal(unauth.status, 401);
+
+    const free = await fetch(base + '/api/trips/trip-1/optimize-day/apply', {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer traveler-1',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    });
+    assert.equal(free.status, 403);
+    assert.equal(((await free.json()) as any).code, 'explorer_pass_required');
+    assert.deepEqual(calls, []);
+
+    const forged = await fetch(base + '/api/trips/trip-1/optimize-day/apply', {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer traveler-1',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ ...body, coordinates: [25, 35] }),
+    });
+    assert.equal(forged.status, 400);
+    assert.deepEqual(calls, []);
+
+    activePass = true;
+    const applied = await fetch(base + '/api/trips/trip-1/optimize-day/apply', {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer traveler-1',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    });
+    assert.equal(applied.status, 200);
+    const payload = (await applied.json()) as any;
+    assert.equal(payload.trip.revision, 8);
+    assert.deepEqual(calls, [['traveler-1', 'trip-1', body]]);
+  } finally {
+    await new Promise<void>((resolve, reject) =>
+      server.close((error) => (error ? reject(error) : resolve()))
+    );
+  }
+});

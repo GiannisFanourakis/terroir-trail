@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
+  applyTripOptimizationOrder,
   createTripOptimizationProposal,
   TripOptimizationServiceError,
   type OptimizationProducerRowV1,
@@ -318,4 +319,124 @@ test('request parser rejects duplicate or malformed locks', async () => {
       error instanceof TripOptimizationServiceError &&
       error.code === 'bad_request'
   );
+});
+
+test('Apply replaces only selected-day slots and delegates one complete revision-safe reorder', async () => {
+  const calls: unknown[][] = [];
+  const updated: TripWithItems = {
+    ...trip,
+    revision: 8,
+    items: [
+      { ...trip.items[2], producerId: 'c', position: 0 },
+      { ...trip.items[1], position: 1 },
+      { ...trip.items[2], position: 2 },
+      { ...trip.items[0], producerId: 'a', position: 3 },
+    ],
+  };
+
+  const result = await applyTripOptimizationOrder(
+    'traveler-1',
+    'trip-1',
+    {
+      contractVersion: 1,
+      dayNumber: 2,
+      expectedRevision: 7,
+      producerIds: ['c', 'b', 'a'],
+    },
+    {
+      loadTrip: async () => trip,
+      reorderTrip: async (uid, tripId, producerIds, expectedRevision) => {
+        calls.push([uid, tripId, producerIds, expectedRevision]);
+        return updated;
+      },
+    }
+  );
+
+  assert.deepEqual(calls, [
+    ['traveler-1', 'trip-1', ['c', 'outside-day', 'b', 'a'], 7],
+  ]);
+  assert.equal(result.revision, 8);
+});
+
+test('Apply rejects a stale proposal before attempting reorder', async () => {
+  let reordered = false;
+
+  await assert.rejects(
+    () =>
+      applyTripOptimizationOrder(
+        'traveler-1',
+        'trip-1',
+        {
+          contractVersion: 1,
+          dayNumber: 2,
+          expectedRevision: 6,
+          producerIds: ['c', 'b', 'a'],
+        },
+        {
+          loadTrip: async () => trip,
+          reorderTrip: async () => {
+            reordered = true;
+            return trip;
+          },
+        }
+      ),
+    (error: unknown) =>
+      error instanceof TripOptimizationServiceError && error.code === 'conflict'
+  );
+
+  assert.equal(reordered, false);
+});
+
+test('Apply rejects changed day membership before attempting reorder', async () => {
+  let reordered = false;
+
+  await assert.rejects(
+    () =>
+      applyTripOptimizationOrder(
+        'traveler-1',
+        'trip-1',
+        {
+          contractVersion: 1,
+          dayNumber: 2,
+          expectedRevision: 7,
+          producerIds: ['a', 'b', 'not-current'],
+        },
+        {
+          loadTrip: async () => trip,
+          reorderTrip: async () => {
+            reordered = true;
+            return trip;
+          },
+        }
+      ),
+    (error: unknown) =>
+      error instanceof TripOptimizationServiceError && error.code === 'conflict'
+  );
+
+  assert.equal(reordered, false);
+});
+
+test('Apply is a no-op when reviewed order already matches the current day', async () => {
+  let reordered = false;
+
+  const result = await applyTripOptimizationOrder(
+    'traveler-1',
+    'trip-1',
+    {
+      contractVersion: 1,
+      dayNumber: 2,
+      expectedRevision: 7,
+      producerIds: ['a', 'b', 'c'],
+    },
+    {
+      loadTrip: async () => trip,
+      reorderTrip: async () => {
+        reordered = true;
+        return trip;
+      },
+    }
+  );
+
+  assert.equal(reordered, false);
+  assert.equal(result.revision, 7);
 });

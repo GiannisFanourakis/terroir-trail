@@ -7,6 +7,7 @@ import {
 } from './services/tripPackService';
 import {
   TripOptimizationServiceError,
+  applyTripOptimizationOrder,
   createTripOptimizationProposal,
 } from './services/tripOptimizationService';
 import {
@@ -38,6 +39,7 @@ const defaults = {
   getExplorerPass,
   createTripPack,
   createTripOptimizationProposal,
+  applyTripOptimizationOrder,
 };
 
 type TripRouteDependencies = typeof defaults;
@@ -209,6 +211,58 @@ export function registerTripRoutes(
       });
     }
   });
+
+  app.post(
+    '/api/trips/:tripId/optimize-day/apply',
+    requireAuth,
+    async (req, res) => {
+      try {
+        assertOnlyKeys(req.body, [
+          'contractVersion',
+          'dayNumber',
+          'expectedRevision',
+          'producerIds',
+        ]);
+
+        const uid = res.locals.identity.uid;
+        const pass = await deps.getExplorerPass(uid);
+        if (!pass) {
+          res.status(403).json({
+            error:
+              'An active Explorer Pass is required to apply an optimized trip day.',
+            code: 'explorer_pass_required',
+          });
+          return;
+        }
+
+        const trip = await deps.applyTripOptimizationOrder(
+          uid,
+          String(req.params.tripId),
+          req.body
+        );
+        res.json({ trip });
+      } catch (error) {
+        if (error instanceof TripOptimizationServiceError) {
+          res.status(statusForOptimization(error)).json({
+            error: error.message,
+            code: error.code,
+          });
+          return;
+        }
+        if (error instanceof TripServiceError) {
+          res
+            .status(statusFor(error))
+            .json({ error: error.message, code: error.code });
+          return;
+        }
+        console.error('Trip optimization apply unavailable:', error);
+        res.status(503).json({
+          error: 'Trip optimization is temporarily unavailable.',
+          code: 'service_unavailable',
+        });
+      }
+    }
+  );
 
   app.get('/api/trips/:tripId/export', requireAuth, async (req, res) => {
     const format = req.query.format;

@@ -12,7 +12,12 @@ import {
   RouteMatrixProviderError,
   type RouteMatrixProvider,
 } from './routeMatrix';
-import { getTrip, TripServiceError, type TripWithItems } from './tripService';
+import {
+  getTrip,
+  reorderTripItems,
+  TripServiceError,
+  type TripWithItems,
+} from './tripService';
 
 export type TripOptimizationErrorCode =
   | 'bad_request'
@@ -47,6 +52,13 @@ export interface OptimizeTripDayRequestV1 {
   constraints: TripStopConstraintV1[];
 }
 
+export interface ApplyTripDayOrderRequestV1 {
+  contractVersion: 1;
+  dayNumber: number;
+  expectedRevision: number;
+  producerIds: string[];
+}
+
 export interface OptimizationProducerRowV1 {
   id: string;
   lat: number | null;
@@ -59,10 +71,17 @@ type LoadTrip = (uid: string, tripId: string) => Promise<TripWithItems>;
 type LoadProducers = (
   producerIds: string[]
 ) => Promise<OptimizationProducerRowV1[]>;
+type ReorderTrip = (
+  uid: string,
+  tripId: string,
+  producerIds: unknown,
+  expectedRevision: unknown
+) => Promise<TripWithItems>;
 
 interface TripOptimizationDependencies {
   loadTrip: LoadTrip;
   loadProducers: LoadProducers;
+  reorderTrip: ReorderTrip;
   routeMatrixProvider: RouteMatrixProvider;
   optimizationEngine: DayOptimizationEngine;
 }
@@ -153,6 +172,74 @@ export const parseOptimizeTripDayRequest = (
     constraints,
   };
 };
+export const parseApplyTripDayOrderRequest = (
+  input: unknown
+): ApplyTripDayOrderRequestV1 => {
+  if (!input || typeof input !== 'object' || Array.isArray(input)) {
+    throw new TripOptimizationServiceError(
+      'bad_request',
+      'Apply request must be a JSON object.'
+    );
+  }
+
+  const body = input as Record<string, unknown>;
+  if (body.contractVersion !== 1) {
+    throw new TripOptimizationServiceError(
+      'bad_request',
+      'Unsupported optimization contract version.'
+    );
+  }
+  if (!Number.isInteger(body.dayNumber) || Number(body.dayNumber) < 1) {
+    throw new TripOptimizationServiceError(
+      'bad_request',
+      'dayNumber must be a positive integer.'
+    );
+  }
+  if (
+    !Number.isInteger(body.expectedRevision) ||
+    Number(body.expectedRevision) < 1
+  ) {
+    throw new TripOptimizationServiceError(
+      'bad_request',
+      'expectedRevision must be a positive integer.'
+    );
+  }
+  if (
+    !Array.isArray(body.producerIds) ||
+    body.producerIds.length < 2 ||
+    body.producerIds.length > MAX_OPTIMIZE_DAY_STOPS_V1
+  ) {
+    throw new TripOptimizationServiceError(
+      'bad_request',
+      'producerIds must contain the complete reviewed day order.'
+    );
+  }
+
+  const producerIds = body.producerIds.map((value) => {
+    if (typeof value !== 'string' || !PRODUCER_ID_RE.test(value)) {
+      throw new TripOptimizationServiceError(
+        'bad_request',
+        'producerIds contains an invalid producer ID.'
+      );
+    }
+    return value;
+  });
+
+  if (new Set(producerIds).size !== producerIds.length) {
+    throw new TripOptimizationServiceError(
+      'bad_request',
+      'producerIds cannot contain duplicates.'
+    );
+  }
+
+  return {
+    contractVersion: 1,
+    dayNumber: Number(body.dayNumber),
+    expectedRevision: Number(body.expectedRevision),
+    producerIds,
+  };
+};
+
 export async function loadOptimizationProducers(
   producerIds: string[]
 ): Promise<OptimizationProducerRowV1[]> {
@@ -245,6 +332,8 @@ const warningRows = (rows: OptimizationProducerRowV1[]) => {
 const defaultDependencies: TripOptimizationDependencies = {
   loadTrip: (uid, tripId) => getTrip(uid, tripId),
   loadProducers: loadOptimizationProducers,
+  reorderTrip: (uid, tripId, producerIds, expectedRevision) =>
+    reorderTripItems(uid, tripId, producerIds, expectedRevision),
   routeMatrixProvider: mapboxRouteMatrixProvider,
   optimizationEngine: tsV1DayOptimizationEngine,
 };
@@ -409,4 +498,97 @@ export async function createTripOptimizationProposal(
     ...proposal,
     warnings: [...proposal.warnings, ...warningRows(rows)],
   };
+}
+
+export async function applyTripOptimizationOrder(
+  uid: string,
+  tripId: string,
+  rawRequest: unknown,
+  overrides: Partial<TripOptimizationDependencies> = {}
+): Promise<TripWithItems> {
+  if (!uid || !tripId) {
+    throw new TripOptimizationServiceError(
+      'bad_request',
+      'Authenticated trip context is required.'
+    );
+  }
+
+  const request = parseApplyTripDayOrderRequest(rawRequest);
+  const deps = { ...defaultDependencies, ...overrides };
+
+  let trip: TripWithItems;
+  try {
+    trip = await deps.loadTrip(uid, tripId);
+  } catch (error) {
+    if (error instanceof TripServiceError) translateTripError(error);
+    if (error instanceof TripOptimizationServiceError) throw error;
+    throw new TripOptimizationServiceError(
+      'service_unavailable',
+      'Trip planning is temporarily unavailable.'
+    );
+  }
+
+  if (trip.revision !== request.expectedRevision) {
+    throw new TripOptimizationServiceError(
+      'conflict',
+      'This trip changed after the suggestion was created. Recalculate before applying it.'
+    );
+  }
+
+  const sortedItems = trip.items
+    .slice()
+    .sort((a, b) => a.position - b.position);
+  const currentDayOrder = sortedItems
+    .filter((item) => item.dayNumber === request.dayNumber)
+    .map((item) => item.producerId);
+
+  if (
+    currentDayOrder.length !== request.producerIds.length ||
+    currentDayOrder.some(
+      (producerId) => !request.producerIds.includes(producerId)
+    )
+  ) {
+    throw new TripOptimizationServiceError(
+      'conflict',
+      'This trip day changed after the suggestion was created. Recalculate before applying it.'
+    );
+  }
+
+  if (
+    currentDayOrder.every(
+      (producerId, index) => producerId === request.producerIds[index]
+    )
+  ) {
+    return trip;
+  }
+
+  let dayIndex = 0;
+  const completeOrder = sortedItems.map((item) => {
+    if (item.dayNumber !== request.dayNumber) return item.producerId;
+    const producerId = request.producerIds[dayIndex];
+    dayIndex += 1;
+    if (!producerId) {
+      throw new TripOptimizationServiceError(
+        'conflict',
+        'This trip day changed after the suggestion was created. Recalculate before applying it.'
+      );
+    }
+    return producerId;
+  });
+
+  try {
+    return await deps.reorderTrip(
+      uid,
+      tripId,
+      completeOrder,
+      request.expectedRevision
+    );
+  } catch (error) {
+    if (error instanceof TripServiceError) translateTripError(error);
+    if (error instanceof TripOptimizationServiceError) throw error;
+    throw new TripOptimizationServiceError(
+      'service_unavailable',
+      'Trip planning is temporarily unavailable.'
+    );
+  }
 }
