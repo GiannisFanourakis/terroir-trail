@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
-  Activity,
   AlertCircle,
   BarChart3,
   CalendarDays,
@@ -39,7 +38,7 @@ const formatDate = (value: string | null) => {
 const label = (value: string) =>
   value
     .replaceAll('_', ' ')
-    .replace(/w/g, (character) => character.toUpperCase());
+    .replace(/\b\w/g, (character) => character.toUpperCase());
 
 const statusClass = (status: string) => {
   if (status === 'active') return 'border-emerald-500/30 bg-emerald-500/10 text-emerald-300';
