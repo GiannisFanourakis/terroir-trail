@@ -7,6 +7,7 @@ import {
   getOwnedCommercialState,
   setCommercialPartnerStatus,
   transitionCommercialPartnerCampaign,
+  updateCommercialPartnerCampaign,
 } from './services/commercialPartnerService';
 import {
   getActivePartnerPlacements,
@@ -20,6 +21,7 @@ const defaults = {
   setCommercialPartnerStatus,
   createCommercialPartnerCampaign,
   transitionCommercialPartnerCampaign,
+  updateCommercialPartnerCampaign,
   getActivePartnerPlacements,
 };
 
@@ -143,6 +145,27 @@ export function registerCommercialPartnerRoutes(
       res.status(201).json(result);
     } catch (error) {
       handleError(error, res, 'Partner campaign creation unavailable:');
+    }
+  });
+
+  app.patch('/api/admin/commercial/campaigns/:campaignId', requireAuth, async (req, res) => {
+    try {
+      const result = await deps.updateCommercialPartnerCampaign(
+        res.locals.identity.uid,
+        String(req.params.campaignId || ''),
+        {
+          headline: typeof req.body?.headline === 'string' ? req.body.headline : '',
+          message: typeof req.body?.message === 'string' ? req.body.message : null,
+          startsAt: typeof req.body?.startsAt === 'string' ? req.body.startsAt : null,
+          endsAt: typeof req.body?.endsAt === 'string' ? req.body.endsAt : null,
+          placements: Array.isArray(req.body?.placements)
+            ? req.body.placements.filter((value: unknown): value is string => typeof value === 'string')
+            : [],
+        }
+      );
+      res.json(result);
+    } catch (error) {
+      handleError(error, res, 'Partner campaign update unavailable:');
     }
   });
 
