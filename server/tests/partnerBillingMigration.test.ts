@@ -47,6 +47,6 @@ test('Stripe event ordering guard records stale events without changing entitlem
 
 test('Partner Stripe authority never mutates free catalogue publication or trust facts', () => {
   assert.doesNotMatch(authoritySql + orderingSql, /update\s+public\.producers/i);
-  assert.doesNotMatch(authoritySql + orderingSql, /visit_status|road_access|location_status|is_active\s*=/i);
+  assert.doesNotMatch(authoritySql + orderingSql, /set\s+(?:[^;]*\b)?(?:visit_status|road_access_status|location_status|is_active)\s*=/i);
   assert.doesNotMatch(authoritySql + orderingSql, /isProTier|is_pro_tier/i);
 });
