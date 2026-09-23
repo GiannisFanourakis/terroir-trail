@@ -26,6 +26,7 @@ import {
   type OwnProducerClaimStatus,
 } from '../../services/producerClaimStatus';
 import { ProducerListingContentEditor } from './ProducerListingContentEditor';
+import { ProducerPromotionPanel } from './ProducerPromotionPanel';
 
 interface ProducerPortalModalProps {
   isOpen: boolean;
@@ -61,7 +62,7 @@ interface ProducerPortalModalProps {
   onPassVerified?: (info: any) => void;
 }
 
-type PortalTab = 'overview' | 'notice' | 'content' | 'photos' | 'account';
+type PortalTab = 'overview' | 'promotions' | 'notice' | 'content' | 'photos' | 'account';
 
 const claimBusinessLabel = (claim: OwnProducerClaimStatus) => {
   switch (claim.businessVerificationStatus) {
@@ -581,6 +582,7 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
 
       <div className="flex border-b border-white/10 px-5 sm:px-6 overflow-x-auto shrink-0">
         <button type="button" onClick={() => setActiveTab('overview')} className={tabClass('overview')}>Overview</button>
+        <button type="button" onClick={() => setActiveTab('promotions')} className={tabClass('promotions')}>Promotions</button>
         <button type="button" onClick={() => setActiveTab('notice')} className={tabClass('notice')}>Visitor Information</button>
         <button type="button" onClick={() => setActiveTab('content')} className={tabClass('content')}>Listing Content</button>
         {runtimeConfig.hostMediaPrototype.enabled && (
@@ -629,6 +631,13 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
               </div>
             </div>
           </div>
+        )}
+
+        {activeTab === 'promotions' && (
+          <ProducerPromotionPanel
+            producerId={selectedProducer.id}
+            isReadOnlyPreview={isReadOnlyPreview}
+          />
         )}
 
         {activeTab === 'notice' && (

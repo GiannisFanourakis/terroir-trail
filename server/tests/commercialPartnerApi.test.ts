@@ -13,6 +13,7 @@ test('commercial Partner API separates Host read access from Admin mutation rout
     subscriptions: [],
     campaigns: [],
     placements: [],
+    campaignResults: [],
   };
   const adminState = {
     partners: [],
@@ -79,6 +80,33 @@ test('commercial Partner API separates Host read access from Admin mutation rout
           updated_at: '2026-09-23T06:00:00Z',
         },
         placements: ['region_discovery'],
+      };
+    },
+    updateCommercialPartnerCampaign: async (uid, campaignId, input) => {
+      calls.push({ type: 'campaign-update', args: [uid, campaignId, input] });
+      if (uid !== 'admin') throw new CommercialPartnerError('forbidden', 'Admin required.');
+      return {
+        campaign: {
+          id: campaignId,
+          producer_id: 'producer-1',
+          campaign_type: 'regional_featured',
+          status: 'draft',
+          destination: 'crete',
+          category: 'winery',
+          headline: input.headline,
+          message: input.message || null,
+          starts_at: input.startsAt || null,
+          ends_at: input.endsAt || null,
+          created_by_uid: uid,
+          reviewed_by_uid: null,
+          review_note: null,
+          approved_at: null,
+          paused_at: null,
+          completed_at: null,
+          created_at: '2026-09-23T06:00:00Z',
+          updated_at: '2026-09-23T06:01:00Z',
+        },
+        placements: input.placements as any,
       };
     },
     transitionCommercialPartnerCampaign: async (uid, campaignId, input) => {
@@ -161,6 +189,29 @@ test('commercial Partner API separates Host read access from Admin mutation rout
     );
     assert.equal(campaign.status, 201);
 
+    const deniedEdit = await fetch(
+      base + '/api/admin/commercial/campaigns/78e94884-f021-4d06-ae92-1c593c7fe45f',
+      {
+        method: 'PATCH',
+        headers: { ...headers('host'), 'Content-Type': 'application/json' },
+        body: JSON.stringify({ headline: 'Nope', placements: ['region_discovery'] }),
+      }
+    );
+    assert.equal(deniedEdit.status, 403);
+
+    const edited = await fetch(
+      base + '/api/admin/commercial/campaigns/78e94884-f021-4d06-ae92-1c593c7fe45f',
+      {
+        method: 'PATCH',
+        headers: { ...headers('admin'), 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          headline: 'Updated harvest visits',
+          placements: ['region_discovery'],
+        }),
+      }
+    );
+    assert.equal(edited.status, 200);
+
     const transitioned = await post(
       '/api/admin/commercial/campaigns/78e94884-f021-4d06-ae92-1c593c7fe45f/status',
       'admin',
@@ -175,6 +226,8 @@ test('commercial Partner API separates Host read access from Admin mutation rout
       'partner-status',
       'partner-status',
       'campaign-create',
+      'campaign-update',
+      'campaign-update',
       'campaign-status',
     ]);
   } finally {

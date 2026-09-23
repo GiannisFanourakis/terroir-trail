@@ -36,6 +36,7 @@ import {
 import { ProducerOwnershipAdmin } from './ProducerOwnershipAdmin';
 import { AdminIntentBaseline } from './AdminIntentBaseline';
 import { AdminRegionalIntelligence } from './AdminRegionalIntelligence';
+import { AdminCommercialPartnerPanel } from './AdminCommercialPartnerPanel';
 
 interface AdminPanelModalProps {
   isOpen: boolean;
@@ -373,6 +374,7 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
 
           <AdminIntentBaseline />
           <AdminRegionalIntelligence />
+          <AdminCommercialPartnerPanel />
 
           <section>
             <div className="flex items-center justify-between gap-3 mb-3">

@@ -5,7 +5,7 @@
 > Completion convention: change `- [ ] Step` to `- [x] ~~Step~~` when finished. Do not mark a step complete until it has been implemented, tested, pushed, deployed where applicable, and verified.
 
 **Last updated:** 2026-09-23
-**Current focus:** Phase 15 Block A — Producer Partner commercial authority and data model, while the Phase 14.7 affiliate experiment remains an observation/cleanup item. My Trips is frozen as the free traveler-planning core.
+**Current focus:** Phase 15 Block C — Host Portal reporting and Admin Partner campaign controls. Block A authority and Block B paid-distribution/attribution are production-verified; Stripe Checkout and real Partner activation remain intentionally disabled.
 
 ---
 
@@ -1247,61 +1247,59 @@ Pricing is a hypothesis until real paid usage exists. Initial checkout may use o
 V1 should use only a small number of useful surfaces.
 
 #### Regional discovery
-- [ ] Add a clearly labelled `Featured Partner` module in appropriate destination/region discovery.
-- [ ] Keep the normal producer ordering/list/map unchanged.
-- [ ] Show a Partner only where the campaign's region/category context is relevant.
+- [x] ~~Add a clearly labelled `Featured Partner · Paid placement` module in appropriate destination/region discovery.~~
+- [x] ~~Keep the normal producer ordering/list/map unchanged.~~
+- [x] ~~Show a Partner only where the campaign's canonical destination/category context is relevant.~~
 
 #### My Trips
-- [ ] Add a clearly labelled contextual Partner suggestion inside My Trips/trip preparation.
-- [ ] Use trip destination/category context rather than behavioral profiling unrelated to the trip.
-- [ ] Never insert paid content into or between safety/access warnings and their evidence.
-- [ ] Do not imply the suggested Partner is required, safer or editorially preferred.
+- [x] ~~Add a clearly labelled contextual Partner suggestion inside My Trips/trip preparation.~~
+- [x] ~~Use trip destination context rather than behavioral profiling unrelated to the trip.~~
+- [x] ~~Keep paid placement outside safety/access warnings and their evidence.~~
+- [x] ~~Do not imply the suggested Partner is required, safer or editorially preferred.~~
 
 #### Seasonal / temporary promotion
-- [ ] Support a small approved campaign type for real producer announcements such as open days, harvest periods or temporary visitor availability.
-- [ ] Require factual/admin review before distribution.
-- [ ] Keep campaign copy separate from canonical visitability truth.
+- [x] ~~Support a small approved `seasonal_notice` campaign type for real producer announcements such as open days or harvest periods.~~
+- [x] ~~Require campaign review/approval before public activation.~~
+- [x] ~~Keep campaign copy separate from canonical visitability truth.~~
+
+**15.4 Block B — 2026-09-23:** regional and My Trips placements are live in code with explicit paid disclosure, fail-closed active-campaign serving, no organic-rank mutation and no real campaign rows seeded.
 
 ### 15.5 — Add campaign attribution to first-party analytics
 
 Do not misuse affiliate events.
 
-- [ ] Extend the event contract with dedicated Partner promotion events such as:
-  - `partner_impression`;
-  - `partner_open`;
-  - `partner_save`;
-  - `partner_trip_add`;
-  - `partner_contact_action` where appropriate.
-- [ ] Include allowlisted campaign ID, producer ID, placement/source surface and relevant destination/category context.
-- [ ] Preserve privacy rules: no private trip notes, message contents, PII or precise background location.
-- [ ] Deduplicate qualified impressions consistently with the existing analytics approach.
-- [ ] Distinguish paid-distribution actions from organic producer discovery in reporting.
+- [x] ~~Extend the event contract with dedicated Partner promotion events: `partner_impression`, `partner_open`, `partner_save`, `partner_trip_add`, and `partner_contact_action`.~~
+- [x] ~~Include validated campaign ID, producer ID, placement/source surface and database-derived destination/category context.~~
+- [x] ~~Preserve privacy rules: no private trip notes, message contents, PII or precise background location.~~
+- [x] ~~Deduplicate qualified impressions by pseudonymous session in the Partner daily aggregate.~~
+- [x] ~~Keep paid-distribution actions in a separate Partner aggregate instead of inflating organic producer metrics.~~
+
+**15.5 Block B — 2026-09-23:** production migration `20260923062004_phase15_partner_campaign_attribution` added the dedicated attribution fields, active-campaign validation, hourly Partner aggregate and v2 ingestion bridge while preserving legacy event traffic.
 
 ### 15.6 — Extend the existing Host Portal
 
 Do not create a second producer application.
 
-- [ ] Add a commercial/Promotion tab or section to the existing trusted Host Portal.
-- [ ] Show Partner/subscription state.
-- [ ] Show active/scheduled/completed campaigns.
-- [ ] Show remaining campaign credits if the V1 product uses credits.
-- [ ] Show simple campaign results:
-  - qualified impressions;
-  - profile opens;
-  - saves;
-  - trip additions;
-  - website/phone/email/directions actions attributed to the paid campaign.
-- [ ] Label low-volume results and avoid implying an action equals a booking or visit.
-- [ ] Keep factual listing/visitor information controls available without Partner status.
+- [x] ~~Add a Promotions tab to the existing trusted Host Portal.~~
+- [x] ~~Show Partner and subscription state without exposing Stripe provider identifiers.~~
+- [x] ~~Show campaign lifecycle state for the selected owned producer.~~
+- [x] ~~Keep V1 credits absent for now; the product contract deliberately does not use a transferable/spendable credit ledger.~~
+- [x] ~~Show simple campaign results: qualified impressions, profile opens, saves, trip additions and attributed website/phone/email/directions actions.~~
+- [x] ~~Label low-volume results and state explicitly that intent actions are not confirmed bookings, visits or revenue.~~
+- [x] ~~Keep factual listing/visitor information controls available without Partner status.~~
+
+**15.6 Block C — 2026-09-23:** Host reporting is read-only and ownership-scoped through the trusted Cloud Run API. Results are sourced from the separate Partner aggregate.
 
 ### 15.7 — Build admin campaign controls
 
-- [ ] Let trusted Admin create/edit/review/schedule/pause/end Partner campaigns.
-- [ ] Let Admin inspect campaign eligibility and subscription state.
-- [ ] Require approval before a producer promotion can become public.
-- [ ] Prevent promotion of unsupported visitor availability or misleading claims.
-- [ ] Provide an audit trail for commercial state changes.
-- [ ] Add safe campaign preview before activation.
+- [x] ~~Let trusted Admin create/edit/review/schedule/activate/pause/complete/withdraw Partner campaigns.~~
+- [x] ~~Let Admin inspect Partner eligibility, activation source and subscription state.~~
+- [x] ~~Require the campaign lifecycle to pass through approval before public activation.~~
+- [x] ~~Require Admin review context and show an explicit warning to compare promotional copy with canonical visitor facts before activation.~~
+- [x] ~~Expose the trusted commercial audit trail in Admin controls.~~
+- [x] ~~Add paid-placement preview before activation; editing is restricted to draft/rejected states.~~
+
+**15.7 Block C — 2026-09-23:** production migration `20260923064747_phase15_partner_host_admin_commercial` added service-role Host reporting and pre-public campaign editing. Admin/Host UI remains separate from verification and organic ranking.
 
 ### 15.8 — Stripe Checkout V1
 
