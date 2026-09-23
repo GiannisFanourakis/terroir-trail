@@ -280,6 +280,15 @@ export const AdminPartnerCampaigns: React.FC = () => {
     reason?: string
   ) => {
     let cleanReason = reason || '';
+
+    if (status === 'approved') {
+      const reviewed = window.confirm(
+        'Confirm this campaign copy has been checked against the producer’s current canonical visitability, booking/access and safety facts, and does not override or contradict them.'
+      );
+      if (!reviewed) return;
+      cleanReason = 'Admin reviewed campaign copy against canonical visitability, booking/access and safety facts.';
+    }
+
     if (status === 'rejected') {
       cleanReason = window.prompt('Reason for rejecting this campaign?')?.trim() || '';
       if (cleanReason.length < 3) {
