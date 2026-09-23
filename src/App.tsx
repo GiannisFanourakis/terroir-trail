@@ -979,6 +979,10 @@ export const App: React.FC = () => {
         <FirstRunWelcome
           pwaInstall={pwaInstall}
           onComplete={completeFirstRunWelcome}
+          onOpenPasses={() => {
+            completeFirstRunWelcome();
+            setActiveModal({ type: 'pass' });
+          }}
         />
       )}
     </div>

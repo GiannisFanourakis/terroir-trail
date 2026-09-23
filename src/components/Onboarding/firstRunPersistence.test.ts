@@ -10,6 +10,8 @@ describe('first-run onboarding persistence', () => {
     expect(app).toContain('writeStorage(STORAGE_KEYS.FIRST_RUN_WELCOME, true');
     expect(app).toContain('const pwaInstall = usePwaInstall();');
     expect(app).toContain('pwaInstall={pwaInstall}');
+    expect(app).toContain('onOpenPasses={() => {');
+    expect(app).toContain("setActiveModal({ type: 'pass' });");
     expect(header).not.toContain('usePwaInstall();');
   });
 });

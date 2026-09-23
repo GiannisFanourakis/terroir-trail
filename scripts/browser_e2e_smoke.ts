@@ -315,6 +315,24 @@ async function runViewport(
     );
   }
 
+  const upgradeOfferVisible = await evaluate<boolean>(
+    cdp,
+    `(() => {
+      const button = [...document.querySelectorAll('button')].find((candidate) =>
+        candidate.textContent?.includes('Upgrade your trip')
+      );
+      const text = document.body.innerText;
+      return Boolean(button) &&
+        text.includes('Holiday €9.99 / 14 days') &&
+        text.includes('Annual €24.99 / year');
+    })()`
+  );
+  if (!upgradeOfferVisible) {
+    throw new Error(
+      viewport.name + ': first-run Upgrade your trip offer missing.'
+    );
+  }
+
   const clicked = await evaluate<boolean>(
     cdp,
     "(() => { const button = [...document.querySelectorAll('button')].find((candidate) => candidate.textContent?.includes('Start exploring')); if (!button) return false; button.click(); return true; })()"

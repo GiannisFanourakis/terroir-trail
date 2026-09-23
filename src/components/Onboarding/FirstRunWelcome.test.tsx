@@ -2,7 +2,10 @@ import { describe, expect, it, vi } from 'vitest';
 import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { FirstRunWelcome } from './FirstRunWelcome';
-import type { PwaInstallController, PwaInstallResult } from '../../hooks/usePwaInstall';
+import type {
+  PwaInstallController,
+  PwaInstallResult,
+} from '../../hooks/usePwaInstall';
 
 const controller = (
   overrides: Partial<PwaInstallController> = {}
@@ -21,6 +24,7 @@ describe('FirstRunWelcome', () => {
       React.createElement(FirstRunWelcome, {
         pwaInstall: controller(),
         onComplete: () => {},
+        onOpenPasses: () => {},
       })
     );
 
@@ -30,6 +34,9 @@ describe('FirstRunWelcome', () => {
     expect(html).toContain('Add TerroirTrail to your Home Screen');
     expect(html).toContain('Install TerroirTrail');
     expect(html).toContain('Start exploring');
+    expect(html).toContain('Upgrade your trip');
+    expect(html).toContain('Holiday €9.99 / 14 days');
+    expect(html).toContain('Annual €24.99 / year');
     expect(html).toContain('shown only on your first visit');
   });
 
@@ -42,6 +49,7 @@ describe('FirstRunWelcome', () => {
           canInstall: true,
         }),
         onComplete: () => {},
+        onOpenPasses: () => {},
       })
     );
 
@@ -58,6 +66,7 @@ describe('FirstRunWelcome', () => {
           canInstall: false,
         }),
         onComplete: () => {},
+        onOpenPasses: () => {},
       })
     );
 

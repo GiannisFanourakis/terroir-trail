@@ -715,7 +715,7 @@ export const TripWorkspace: React.FC<TripWorkspaceProps> = ({
               onClick={onOpenExplorerPass}
               className="w-full shrink-0 rounded-xl border border-amber-400/30 bg-amber-500/10 px-3 py-2 text-xs font-bold text-amber-200 transition hover:bg-amber-500/15 sm:w-auto"
             >
-              View Passes
+              Upgrade your trip
             </button>
           )}
         </div>
