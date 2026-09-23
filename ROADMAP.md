@@ -1367,6 +1367,7 @@ Producer Partner infrastructure remains available, but producer outreach is defe
 - [x] Surface **Passes** in the primary app header/mobile menu with a Free/Holiday/Annual comparison.
 - [x] Keep core map/directory discovery, My Trips, visitability, road/access facts, directions and direct producer contact free.
 - [x] Add paid convenience tools: ad-free planning, printable/save-to-PDF Trip Pack, calendar export and downloadable offline trip snapshot.
+- [x] Guarantee Holiday Pass expiry/repurchase semantics: active passes block accidental duplicate checkout; at the exact 14-day expiry the traveler returns to Free; the same account can then purchase a new Holiday Pass with a new pass ID and fresh 14-day entitlement.
 - [x] Protect Trip Pack/calendar export server-side with the active Explorer entitlement rather than frontend visibility alone.
 - [x] Make Annual entitlement follow the live Stripe subscription period/status and provide a dedicated Stripe Customer Portal for cancellation/payment management.
 - [x] Validate the Passes dialog at phone 390×844, iPad portrait 834×1194, iPad landscape 1194×834 and desktop 1440×900.

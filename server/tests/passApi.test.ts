@@ -7,8 +7,15 @@ import { handleWebhookEvent } from '../services/webhookService';
 
 test('pass API authenticates identity and ignores client prices', async () => {
   let checkoutArgs: unknown[] = [];
+  let checkoutCallCount = 0;
   let confirmArgs: unknown[] = [];
   let portalArgs: unknown[] = [];
+  let activePass: {
+    passId: string;
+    name: string;
+    plan: 'holiday';
+    expiresAt: string;
+  } | null = null;
   const server = createApp({
     verifyToken: async (token) => {
       if (token !== 'valid') throw new Error('invalid token');
@@ -19,6 +26,7 @@ test('pass API authenticates identity and ignores client prices', async () => {
       } as any;
     },
     createPassCheckout: async (...args) => {
+      checkoutCallCount += 1;
       checkoutArgs = args;
       return { url: 'https://checkout.stripe.com/test' };
     },
@@ -30,7 +38,7 @@ test('pass API authenticates identity and ignores client prices', async () => {
       confirmArgs = args;
       throw new Error('unpaid');
     },
-    getExplorerPass: async () => null,
+    getExplorerPass: async () => activePass,
     isActiveProducerOwner: async () => false,
     verifyExplorerPass: async () => null,
     handleWebhookEvent,
@@ -81,6 +89,34 @@ test('pass API authenticates identity and ignores client prices', async () => {
       'holiday',
       'alice@example.test',
     ]);
+    assert.equal(checkoutCallCount, 1);
+
+    activePass = {
+      passId: 'active-pass',
+      name: 'Alice',
+      plan: 'holiday',
+      expiresAt: '2099-01-01T00:00:00Z',
+    };
+    const duplicate = await post(
+      '/api/passes/checkout',
+      { plan: 'holiday' },
+      'valid'
+    );
+    assert.equal(duplicate.status, 409);
+    assert.equal(
+      ((await duplicate.json()) as any).code,
+      'active_explorer_pass'
+    );
+    assert.equal(checkoutCallCount, 1);
+
+    // Once entitlement resolution says the old pass has expired, repurchase is allowed.
+    activePass = null;
+    assert.equal(
+      (await post('/api/passes/checkout', { plan: 'holiday' }, 'valid')).status,
+      200
+    );
+    assert.equal(checkoutCallCount, 2);
+
     assert.equal((await post('/api/passes/portal', {}, 'valid')).status, 200);
     assert.deepEqual(portalArgs, ['alice']);
     assert.equal(

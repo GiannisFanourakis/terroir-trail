@@ -77,7 +77,7 @@ const planDetails: Record<
     price: '€9.99',
     duration: '14 days',
     billing: 'one-time',
-    description: 'For one holiday or road trip.',
+    description: 'For one holiday or road trip. Buy another after it expires.',
   },
   annual: {
     name: 'Annual Explorer Pass',
