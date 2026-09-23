@@ -1,5 +1,8 @@
 import { adminDb } from '../firebaseAdmin';
-import { getSupabaseAdmin, type ProducerLookupRow } from './analyticsIngestionService';
+import {
+  getSupabaseAdmin,
+  type ProducerLookupRow,
+} from './analyticsIngestionService';
 
 export const MAX_TRIPS_PER_ACCOUNT = 25;
 export const MAX_TRIP_ITEMS = 50;
@@ -9,6 +12,7 @@ export const MAX_TRIP_DAYS = 365;
 export type TripServiceErrorCode =
   | 'bad_request'
   | 'not_found'
+  | 'forbidden'
   | 'conflict'
   | 'service_unavailable';
 
@@ -77,7 +81,10 @@ const parseDateOnly = (value: unknown, field: string): string | null => {
     date.getUTCMonth() !== month - 1 ||
     date.getUTCDate() !== day
   ) {
-    throw new TripServiceError('bad_request', `${field} is not a valid calendar date.`);
+    throw new TripServiceError(
+      'bad_request',
+      `${field} is not a valid calendar date.`
+    );
   }
   return value;
 };
@@ -97,10 +104,16 @@ const validateDates = (startInput: unknown, endInput: unknown) => {
   if (startDate && endDate) {
     const days = dateSpanDays(startDate, endDate);
     if (days < 1) {
-      throw new TripServiceError('bad_request', 'endDate cannot be before startDate.');
+      throw new TripServiceError(
+        'bad_request',
+        'endDate cannot be before startDate.'
+      );
     }
     if (days > MAX_TRIP_DAYS) {
-      throw new TripServiceError('bad_request', `Trip date range cannot exceed ${MAX_TRIP_DAYS} days.`);
+      throw new TripServiceError(
+        'bad_request',
+        `Trip date range cannot exceed ${MAX_TRIP_DAYS} days.`
+      );
     }
   }
   return { startDate, endDate };
@@ -108,7 +121,10 @@ const validateDates = (startInput: unknown, endInput: unknown) => {
 
 const requireExpectedRevision = (value: unknown): number => {
   if (!Number.isInteger(value) || Number(value) < 1) {
-    throw new TripServiceError('bad_request', 'expectedRevision must be a positive integer.');
+    throw new TripServiceError(
+      'bad_request',
+      'expectedRevision must be a positive integer.'
+    );
   }
   return Number(value);
 };
@@ -131,14 +147,31 @@ const validateProducerId = (value: unknown): string => {
   return producerId;
 };
 
-const validateDayNumber = (value: unknown, trip: TripRecordV1): number | null => {
+const validateDayNumber = (
+  value: unknown,
+  trip: TripRecordV1
+): number | null => {
   if (value == null) return null;
-  if (!Number.isInteger(value) || Number(value) < 1 || Number(value) > MAX_TRIP_DAYS) {
-    throw new TripServiceError('bad_request', `dayNumber must be an integer from 1 to ${MAX_TRIP_DAYS}.`);
+  if (
+    !Number.isInteger(value) ||
+    Number(value) < 1 ||
+    Number(value) > MAX_TRIP_DAYS
+  ) {
+    throw new TripServiceError(
+      'bad_request',
+      `dayNumber must be an integer from 1 to ${MAX_TRIP_DAYS}.`
+    );
   }
   const dayNumber = Number(value);
-  if (trip.startDate && trip.endDate && dayNumber > dateSpanDays(trip.startDate, trip.endDate)) {
-    throw new TripServiceError('bad_request', 'dayNumber exceeds this trip date range.');
+  if (
+    trip.startDate &&
+    trip.endDate &&
+    dayNumber > dateSpanDays(trip.startDate, trip.endDate)
+  ) {
+    throw new TripServiceError(
+      'bad_request',
+      'dayNumber exceeds this trip date range.'
+    );
   }
   return dayNumber;
 };
@@ -173,7 +206,8 @@ const mapItem = (doc: any): TripItemRecordV1 => {
 const requireOwnedTrip = (doc: any, uid: string): TripRecordV1 => {
   if (!doc.exists) throw new TripServiceError('not_found', 'Trip not found.');
   const trip = mapTrip(doc);
-  if (trip.ownerUid !== uid) throw new TripServiceError('not_found', 'Trip not found.');
+  if (trip.ownerUid !== uid)
+    throw new TripServiceError('not_found', 'Trip not found.');
   return trip;
 };
 
@@ -189,10 +223,15 @@ const assertRevision = (trip: TripRecordV1, expectedRevision: number) => {
 const tripsCollection = (db: any, uid: string) =>
   db.collection('users').doc(uid).collection('trips');
 
-async function lookupActiveTripProducer(producerId: string): Promise<ProducerLookupRow | null> {
+async function lookupActiveTripProducer(
+  producerId: string
+): Promise<ProducerLookupRow | null> {
   const supabase = getSupabaseAdmin();
   if (!supabase) {
-    throw new TripServiceError('service_unavailable', 'Producer verification is temporarily unavailable.');
+    throw new TripServiceError(
+      'service_unavailable',
+      'Producer verification is temporarily unavailable.'
+    );
   }
 
   try {
@@ -204,26 +243,49 @@ async function lookupActiveTripProducer(producerId: string): Promise<ProducerLoo
       .maybeSingle();
 
     if (error) {
-      throw new TripServiceError('service_unavailable', 'Producer verification is temporarily unavailable.');
+      throw new TripServiceError(
+        'service_unavailable',
+        'Producer verification is temporarily unavailable.'
+      );
     }
-    return data ? data as ProducerLookupRow : null;
+    return data ? (data as ProducerLookupRow) : null;
   } catch (error) {
     if (error instanceof TripServiceError) throw error;
-    throw new TripServiceError('service_unavailable', 'Producer verification is temporarily unavailable.');
+    throw new TripServiceError(
+      'service_unavailable',
+      'Producer verification is temporarily unavailable.'
+    );
   }
 }
 
-export async function listTrips(uid: string, db: any = adminDb()): Promise<TripRecordV1[]> {
-  if (!uid) throw new TripServiceError('bad_request', 'Authenticated user ID is required.');
+export async function listTrips(
+  uid: string,
+  db: any = adminDb()
+): Promise<TripRecordV1[]> {
+  if (!uid)
+    throw new TripServiceError(
+      'bad_request',
+      'Authenticated user ID is required.'
+    );
   const snapshot = await tripsCollection(db, uid).get();
   return snapshot.docs
     .map((doc: any) => mapTrip(doc))
     .filter((trip: TripRecordV1) => trip.ownerUid === uid)
-    .sort((a: TripRecordV1, b: TripRecordV1) => b.updatedAt.localeCompare(a.updatedAt));
+    .sort((a: TripRecordV1, b: TripRecordV1) =>
+      b.updatedAt.localeCompare(a.updatedAt)
+    );
 }
 
-export async function getTrip(uid: string, tripId: string, db: any = adminDb()): Promise<TripWithItems> {
-  if (!uid) throw new TripServiceError('bad_request', 'Authenticated user ID is required.');
+export async function getTrip(
+  uid: string,
+  tripId: string,
+  db: any = adminDb()
+): Promise<TripWithItems> {
+  if (!uid)
+    throw new TripServiceError(
+      'bad_request',
+      'Authenticated user ID is required.'
+    );
   const safeTripId = validateTripId(tripId);
   const ref = tripsCollection(db, uid).doc(safeTripId);
   const [tripDoc, itemsSnapshot] = await Promise.all([
@@ -233,9 +295,14 @@ export async function getTrip(uid: string, tripId: string, db: any = adminDb()):
   const trip = requireOwnedTrip(tripDoc, uid);
   const items = itemsSnapshot.docs
     .map((doc: any) => mapItem(doc))
-    .sort((a: TripItemRecordV1, b: TripItemRecordV1) => a.position - b.position);
+    .sort(
+      (a: TripItemRecordV1, b: TripItemRecordV1) => a.position - b.position
+    );
   if (items.length !== trip.itemCount) {
-    throw new TripServiceError('service_unavailable', 'Trip item integrity check failed.');
+    throw new TripServiceError(
+      'service_unavailable',
+      'Trip item integrity check failed.'
+    );
   }
   return { ...trip, items };
 }
@@ -246,7 +313,11 @@ export async function createTrip(
   db: any = adminDb(),
   now = new Date()
 ): Promise<TripRecordV1> {
-  if (!uid) throw new TripServiceError('bad_request', 'Authenticated user ID is required.');
+  if (!uid)
+    throw new TripServiceError(
+      'bad_request',
+      'Authenticated user ID is required.'
+    );
   const title = cleanTitle(input.title);
   const { startDate, endDate } = validateDates(input.startDate, input.endDate);
   const collection = tripsCollection(db, uid);
@@ -268,7 +339,10 @@ export async function createTrip(
   await db.runTransaction(async (transaction: any) => {
     const existing = await transaction.get(collection);
     if (existing.docs.length >= MAX_TRIPS_PER_ACCOUNT) {
-      throw new TripServiceError('conflict', `An account can have up to ${MAX_TRIPS_PER_ACCOUNT} trips.`);
+      throw new TripServiceError(
+        'conflict',
+        `An account can have up to ${MAX_TRIPS_PER_ACCOUNT} trips.`
+      );
     }
     transaction.set(ref, trip);
   });
@@ -297,7 +371,8 @@ export async function updateTrip(
     const trip = requireOwnedTrip(await transaction.get(ref), uid);
     assertRevision(trip, expectedRevision);
 
-    const title = input.title === undefined ? trip.title : cleanTitle(input.title);
+    const title =
+      input.title === undefined ? trip.title : cleanTitle(input.title);
     const dates = validateDates(
       input.startDate === undefined ? trip.startDate : input.startDate,
       input.endDate === undefined ? trip.endDate : input.endDate
@@ -342,7 +417,9 @@ export async function addProducerToTrip(
   tripId: string,
   input: { producerId: unknown; expectedRevision: unknown },
   db: any = adminDb(),
-  lookupProducer: (producerId: string) => Promise<ProducerLookupRow | null> = lookupActiveTripProducer,
+  lookupProducer: (
+    producerId: string
+  ) => Promise<ProducerLookupRow | null> = lookupActiveTripProducer,
   now = new Date()
 ): Promise<TripWithItems> {
   const safeTripId = validateTripId(tripId);
@@ -353,7 +430,10 @@ export async function addProducerToTrip(
     producer = await lookupProducer(producerId);
   } catch (error) {
     if (error instanceof TripServiceError) throw error;
-    throw new TripServiceError('service_unavailable', 'Producer verification is temporarily unavailable.');
+    throw new TripServiceError(
+      'service_unavailable',
+      'Producer verification is temporarily unavailable.'
+    );
   }
   if (!producer) {
     throw new TripServiceError(
@@ -374,10 +454,16 @@ export async function addProducerToTrip(
     const trip = requireOwnedTrip(tripDoc, uid);
     assertRevision(trip, expectedRevision);
     if (itemDoc.exists) {
-      throw new TripServiceError('conflict', 'This producer is already in the trip.');
+      throw new TripServiceError(
+        'conflict',
+        'This producer is already in the trip.'
+      );
     }
     if (trip.itemCount >= MAX_TRIP_ITEMS) {
-      throw new TripServiceError('conflict', `A trip can contain up to ${MAX_TRIP_ITEMS} producers.`);
+      throw new TripServiceError(
+        'conflict',
+        `A trip can contain up to ${MAX_TRIP_ITEMS} producers.`
+      );
     }
 
     transaction.set(itemRef, {
@@ -413,14 +499,19 @@ export async function removeProducerFromTrip(
   const items = itemsSnapshot.docs
     .map((doc: any) => ({ ref: doc.ref, item: mapItem(doc) }))
     .sort((a: any, b: any) => a.item.position - b.item.position);
-  const target = items.find((entry: any) => entry.item.producerId === producerId);
+  const target = items.find(
+    (entry: any) => entry.item.producerId === producerId
+  );
   if (!target) throw new TripServiceError('not_found', 'Trip item not found.');
 
   await db.runTransaction(async (transaction: any) => {
     const trip = requireOwnedTrip(await transaction.get(tripRef), uid);
     assertRevision(trip, expectedRevision);
     if (trip.itemCount !== items.length) {
-      throw new TripServiceError('service_unavailable', 'Trip item integrity check failed.');
+      throw new TripServiceError(
+        'service_unavailable',
+        'Trip item integrity check failed.'
+      );
     }
 
     transaction.delete(target.ref);
@@ -450,12 +541,21 @@ export async function reorderTripItems(
 ): Promise<TripWithItems> {
   const safeTripId = validateTripId(tripId);
   const expectedRevision = requireExpectedRevision(expectedRevisionInput);
-  if (!Array.isArray(producerIdsInput) || producerIdsInput.length > MAX_TRIP_ITEMS) {
-    throw new TripServiceError('bad_request', 'producerIds must be the complete current trip order.');
+  if (
+    !Array.isArray(producerIdsInput) ||
+    producerIdsInput.length > MAX_TRIP_ITEMS
+  ) {
+    throw new TripServiceError(
+      'bad_request',
+      'producerIds must be the complete current trip order.'
+    );
   }
   const producerIds = producerIdsInput.map(validateProducerId);
   if (new Set(producerIds).size !== producerIds.length) {
-    throw new TripServiceError('bad_request', 'producerIds cannot contain duplicates.');
+    throw new TripServiceError(
+      'bad_request',
+      'producerIds cannot contain duplicates.'
+    );
   }
 
   const tripRef = tripsCollection(db, uid).doc(safeTripId);
@@ -465,14 +565,20 @@ export async function reorderTripItems(
     current.size !== producerIds.length ||
     producerIds.some((producerId) => !current.has(producerId))
   ) {
-    throw new TripServiceError('conflict', 'Reload the trip before reordering its producers.');
+    throw new TripServiceError(
+      'conflict',
+      'Reload the trip before reordering its producers.'
+    );
   }
 
   await db.runTransaction(async (transaction: any) => {
     const trip = requireOwnedTrip(await transaction.get(tripRef), uid);
     assertRevision(trip, expectedRevision);
     if (trip.itemCount !== producerIds.length) {
-      throw new TripServiceError('service_unavailable', 'Trip item integrity check failed.');
+      throw new TripServiceError(
+        'service_unavailable',
+        'Trip item integrity check failed.'
+      );
     }
     producerIds.forEach((producerId, position) => {
       transaction.update(current.get(producerId), {
@@ -511,7 +617,8 @@ export async function assignTripItemDay(
     ]);
     const trip = requireOwnedTrip(tripDoc, uid);
     assertRevision(trip, expectedRevision);
-    if (!itemDoc.exists) throw new TripServiceError('not_found', 'Trip item not found.');
+    if (!itemDoc.exists)
+      throw new TripServiceError('not_found', 'Trip item not found.');
 
     transaction.update(itemRef, {
       dayNumber: validateDayNumber(dayNumberInput, trip),
@@ -541,7 +648,10 @@ export async function deleteTrip(
     const trip = requireOwnedTrip(await transaction.get(tripRef), uid);
     assertRevision(trip, expectedRevision);
     if (trip.itemCount !== snapshot.docs.length) {
-      throw new TripServiceError('service_unavailable', 'Trip item integrity check failed.');
+      throw new TripServiceError(
+        'service_unavailable',
+        'Trip item integrity check failed.'
+      );
     }
     for (const item of snapshot.docs) transaction.delete(item.ref);
     transaction.delete(tripRef);
@@ -595,7 +705,11 @@ export async function getTripProducerStates(
   const returnedMap = new Map<string, string>();
   if (Array.isArray(data)) {
     for (const row of data) {
-      if (row && typeof row.producer_id === 'string' && typeof row.state === 'string') {
+      if (
+        row &&
+        typeof row.producer_id === 'string' &&
+        typeof row.state === 'string'
+      ) {
         returnedMap.set(row.producer_id, row.state);
       }
     }
@@ -615,4 +729,3 @@ export async function getTripProducerStates(
 
   return states;
 }
-

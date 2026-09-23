@@ -72,6 +72,7 @@ describe('Phase 7 public prototype and direct-entry quarantine', () => {
     // Does not auto-trigger host verification from query strings
     expect(app).not.toContain('verify_pass');
     expect(app).not.toContain('verifyExplorerPass');
-    expect(app).toContain("onPassVerified={(info) => setActiveModal({ type: 'host_verify', guestInfo: info })}");
+    expect(app).toContain('onPassVerified={(info) =>');
+    expect(app).toContain("setActiveModal({ type: 'host_verify', guestInfo: info })");
   });
 });

@@ -96,7 +96,8 @@ This means adding, editing, deactivating, or reactivating a producer in the auth
 TerroirTrail is currently **discovery-first**, not an online travel agency or open booking marketplace.
 
 - The producer-facing **TerroirTrail Partner — Annual** subscription is live for approved Hosts at **€199/year** through hosted Stripe Checkout. It unlocks eligibility for clearly labelled, Admin-reviewed paid promotion only; it does not buy listing inclusion, verification, visitability/access facts, or organic ranking.
-- Public TerroirTrail tasting Experiences, Explorer Pass sales, open OTA-style booking, and chauffeur bookings remain dormant/quarantined and are not active public products.
+- Traveler-facing **TerroirTrail Passes** add optional planning conveniences without paywalling producer discovery or trust facts: **Holiday Pass €9.99 / 14 days (one-time)** and **Annual Explorer Pass €24.99/year (recurring)**. Paid conveniences are ad-free planning, printable/save-to-PDF Trip Packs, calendar export and downloadable offline trip snapshots.
+- Public TerroirTrail tasting checkout, Explorer venue-perk/QR redemption, open OTA-style booking, and chauffeur bookings remain dormant/quarantined and are not active public products.
 - Display advertising remains disabled.
 - Some outbound travel links may be affiliate links. TerroirTrail may receive a referral commission from the third-party provider at no additional cost to the traveler.
 - Editorial producer inclusion is independent of affiliate activity and commercial partnership. Published does not mean partnered.
@@ -141,21 +142,21 @@ Use the Host Portal to submit a producer claim. Management privileges are grante
 
 ### Install
 
-~~~bash
+```bash
 npm install
-~~~
+```
 
 ### Run locally
 
-~~~bash
+```bash
 npm run dev
-~~~
+```
 
 ### Full quality gate
 
-~~~bash
+```bash
 npm run check
-~~~
+```
 
 The quality gate covers TypeScript, ESLint, formatting, frontend and server tests, Firebase rules tests, production build generation, SEO/AEO verification, and build budgets.
 
@@ -163,24 +164,24 @@ The quality gate covers TypeScript, ESLint, formatting, frontend and server test
 
 Requires the public Supabase URL and publishable/anon key used by the application:
 
-~~~bash
+```bash
 npm run sync:seo-catalogue
 npm run verify:live-catalogue
-~~~
+```
 
 ### Production-oriented live build
 
-~~~bash
+```bash
 npm run build:live
-~~~
+```
 
 ### Automatic production deploy
 
 Normal production releases are triggered by a successful push to `main`:
 
-~~~bash
+```bash
 git push origin main
-~~~
+```
 
 GitHub Actions runs the Quality Gate first. When it passes, `Production Deploy`:
 
@@ -196,9 +197,9 @@ GitHub Actions runs the Quality Gate first. When it passes, `Production Deploy`:
 
 Google Cloud authentication is keyless through GitHub OIDC / Workload Identity Federation. One-time project bootstrap:
 
-~~~powershell
+```powershell
 powershell -ExecutionPolicy Bypass -File .\scripts\setup_github_deploy_wif.ps1
-~~~
+```
 
 The manual commands below remain recovery/fallback tools only.
 
@@ -206,27 +207,27 @@ The manual commands below remain recovery/fallback tools only.
 
 From the repository root, update local `main` first:
 
-~~~bash
+```bash
 git pull origin main
-~~~
+```
 
 **Frontend / Firebase Hosting only:**
 
-~~~bash
+```bash
 npm run deploy
-~~~
+```
 
 **API / Cloud Run after server-side changes:**
 
-~~~bash
+```bash
 gcloud run deploy terroirtrail-api --source . --project=terroir-trail --region=europe-west1 --allow-unauthenticated --min-instances=0 --max-instances=3 --cpu=1 --memory=512Mi
-~~~
+```
 
 **Firestore rules/indexes only:**
 
-~~~bash
+```bash
 npm run deploy:firestore
-~~~
+```
 
 If a change touches Firestore rules, deploy them with `npm run deploy:firestore`. If a change touches API and frontend, deploy Cloud Run first, then run `npm run deploy`.
 
@@ -234,18 +235,18 @@ The Cloud Run command updates the existing `terroirtrail-api` service. Do not cr
 
 Before a manual production redeploy, prefer:
 
-~~~bash
+```bash
 npm run check
-~~~
+```
 
 The automated **Production Reconcile** workflow deploys Firebase Hosting, but it does **not** deploy Cloud Run server changes.
 
 ### Additional checks
 
-~~~bash
+```bash
 npm run test:python
 npm run mobile:preflight -- all
-~~~
+```
 
 ---
 

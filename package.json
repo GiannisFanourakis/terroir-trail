@@ -43,7 +43,8 @@
     "sync:seo-catalogue": "tsx scripts/sync_seo_catalogue.ts",
     "build:live": "npm run sync:seo-catalogue && npm run verify:live-catalogue && npm run build",
     "verify:live-catalogue": "tsx scripts/verify_live_catalogue_sync.ts",
-    "stripe:e2e:sandbox": "tsx scripts/stripe_partner_sandbox_e2e.ts"
+    "stripe:e2e:sandbox": "tsx scripts/stripe_partner_sandbox_e2e.ts",
+    "stripe:e2e:explorer": "tsx scripts/stripe_explorer_sandbox_e2e.ts"
   },
   "devDependencies": {
     "@capacitor/cli": "^8.5.1",

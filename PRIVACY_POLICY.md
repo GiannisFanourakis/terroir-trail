@@ -25,9 +25,11 @@ Depending on the features you use, we may process:
 - Profile image supplied by your authentication provider, if available.
 - Optional hometown and optional discovery interests.
 - Terroir Passport visits/stamps and personal tasting notes stored with your account.
+- My Trips records, including trip titles, optional trip dates, saved producer IDs, ordering and day assignments.
+- Explorer Pass entitlement information where you purchase a paid convenience plan, including plan type and expiry.
 - Authentication and account-security information managed through Firebase Authentication.
 
-Saved/favorite producer IDs are currently stored in browser local storage for the relevant account/device rather than being treated as a public profile.
+Saved/favorite producer IDs are currently stored in browser local storage for the relevant account/device rather than being treated as a public profile. Explorer Trip Pack files are generated at your request from your saved trip and current public catalogue facts; once downloaded, the copy is stored and controlled on your device or chosen destination.
 
 ### B. Reservations and visit requests
 
@@ -82,7 +84,7 @@ Personal data may be shared only as needed to operate the platform, including:
 - **Google Places / Google Maps Media:** for audited listings with verified Google Place IDs, the application may fetch and render official place photo media directly from the Google Places API, or link to Google Maps for directions.
 - **Travel affiliate links (Travelpayouts pilot):** the application includes a curated travel-services affiliate carousel (e.g. for car rentals, transfers, experiences, and connectivity). Clicking an affiliate banner sends you to a third-party travel platform via an outbound link that may include an operational campaign SubID. TerroirTrail transmits no account, personal profile, or booking data to affiliate partners, and sets no third-party tracking cookies on your device. Third-party travel services operate entirely under their own terms and privacy notices. Active Explorer Pass holders receive an ad-free experience without these affiliate placements.
 - **Advertising Services (Google AdSense):** display advertising infrastructure is **disabled/dormant** in the production application. No third-party AdSense scripts or trackers are loaded.
-- **Payment Infrastructure (Stripe):** after an approved producer claim, a verified Host may purchase the optional TerroirTrail Partner annual subscription through Stripe-hosted Checkout and manage billing through Stripe Customer Portal. Stripe receives and processes payment-card and billing information directly; TerroirTrail does not receive full card numbers or CVCs. TerroirTrail stores or receives the identifiers and subscription/payment status needed to operate Partner entitlement, billing support, audit, renewal, cancellation and expiry. Consumer Explorer Pass checkout remains disabled.
+- **Payment Infrastructure (Stripe):** verified Hosts may purchase the optional TerroirTrail Partner annual subscription, and travelers may purchase optional Explorer Pass convenience plans, through Stripe-hosted Checkout. Stripe receives and processes payment-card, billing-address and tax information directly; TerroirTrail does not receive full card numbers or CVCs. For Explorer Passes, TerroirTrail receives or stores the authenticated account identifier, Checkout/session identifiers, Pass identifier, selected plan, Stripe customer/subscription identifiers where applicable, payment/subscription status and entitlement expiry needed to provide the paid conveniences, prevent unauthorized access, support billing, and end access after expiry, refund or cancellation. Annual Explorer subscribers can manage billing through a dedicated Stripe Customer Portal.
 - **A producer you contact or request a visit with:** when you voluntarily submit a request that requires the producer to receive your contact/visit details.
 - **Professional advisers, authorities, or service providers:** where reasonably necessary for security, legal compliance, dispute resolution, or service operations.
 

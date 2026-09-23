@@ -484,6 +484,7 @@ This phase adds a geographic discovery layer above individual producer pins so t
 **Primary objective:** turn the existing verified catalogue and operational travel data into measurable traveler utility, reusable planning workflows, producer intelligence, and regional intelligence **before** deciding what should become a paid product.
 
 **Non-goals for Phase 14:**
+
 - no catalogue expansion;
 - no generic AI itinerary generator;
 - no automatic route optimization;
@@ -499,6 +500,7 @@ This phase adds a geographic discovery layer above individual producer pins so t
 ### Phase 14 ownership boundary
 
 **Supabase / data-side work**
+
 - event schema and aggregation model;
 - RLS, analytics retention/deletion and reporting behavior;
 - privacy-preserving internal reporting views;
@@ -506,12 +508,14 @@ This phase adds a geographic discovery layer above individual producer pins so t
 - database-side verification and integrity checks.
 
 **Firebase / Firestore traveler-state work**
+
 - account-owned My Trips persistence;
 - trip items referencing canonical producer IDs;
 - trip ownership, deletion and account-export behavior;
 - consistency with existing Firebase Auth / Firestore traveler state.
 
 **Application / codebase work**
+
 - trusted analytics ingestion endpoint and Firebase-token validation;
 - event instrumentation in React/TypeScript;
 - My Trips UI and account integration;
@@ -559,22 +563,26 @@ Do not duplicate routine operational/data migrations into the repository unless 
 Define canonical events, initially limited to meaningful actions:
 
 **Discovery**
+
 - [x] ~~`producer_view`~~
 - [x] ~~`producer_share`~~
 - [x] ~~`region_open`~~
 - [x] ~~`region_producers_view`~~
 
 **Saved intent**
+
 - [x] ~~`producer_save`~~
 - [x] ~~`producer_unsave`~~
 
 **Direct producer intent**
+
 - [x] ~~`producer_website_click`~~
 - [x] ~~`producer_phone_click`~~
 - [x] ~~`producer_email_click`~~
 - [x] ~~`directions_click`~~
 
 **Trip intent**
+
 - [x] ~~`trip_created`~~
 - [x] ~~`trip_renamed`~~
 - [x] ~~`trip_producer_added`~~
@@ -584,10 +592,12 @@ Define canonical events, initially limited to meaningful actions:
 - [x] ~~`trip_opened`~~
 
 **Post-visit**
+
 - [x] ~~`passport_stamp_added`~~
 - [x] ~~`passport_stamp_removed`~~
 
 **Affiliate**
+
 - [x] ~~`affiliate_impression`~~
 - [x] ~~`affiliate_click`~~
 
@@ -611,6 +621,7 @@ Do not add events merely because they are easy to track. Every event must answer
 #### 14.1.3 Prohibited event content
 
 Explicitly prohibit:
+
 - [x] ~~tasting-note text;~~
 - [x] ~~personal trip-note text;~~
 - [x] ~~email addresses;~~
@@ -669,6 +680,7 @@ Explicitly prohibit:
 #### 14.2.4 Aggregation layer
 
 Create internal aggregates for:
+
 - [x] ~~producer views;~~
 - [x] ~~producer saves;~~
 - [x] ~~trip additions;~~
@@ -873,6 +885,7 @@ For each producer, derive a readiness summary only from verified/current Terroir
 #### 14.6.5 V1 scope control
 
 Do **not** add in V1:
+
 - [x] ~~checkout;~~
 - [x] ~~paid trip limits;~~
 - [x] ~~AI itinerary generation;~~
@@ -906,6 +919,7 @@ Do **not** add in V1:
 **Purpose:** make the existing verified catalogue discoverable through non-brand search and usable as a source for answer/generative engines before expanding monetisation.
 
 **Baseline — 2026-09-21**
+
 - Search Console, last 28 settled days: **7 clicks / 29 impressions**, with current page visibility attributable to the homepage.
 - Live sitemap: **234 URLs**.
 - Sitemap URLs with Search Console visibility in the baseline window: **1 / 234**.
@@ -913,6 +927,7 @@ Do **not** add in V1:
 - Sitemap was newly submitted and pending with **0 warnings / 0 errors** at baseline.
 
 #### 14.6A.1 Discovery/indexation foundation
+
 - [x] ~~Keep the normal app `#root` empty until React mounts; retain discovery through the sitemap, canonical static landing pages, rendered app navigation and the genuine no-JavaScript fallback without a visible preload SEO page.~~
 - [x] ~~Preserve canonical producer, destination, category, region and country pages.~~
 - [x] ~~Add a build-time internal-link graph check so important sitemap URLs cannot become orphans.~~
@@ -920,12 +935,14 @@ Do **not** add in V1:
 - [x] ~~Publish a public verification methodology page and link it throughout the entity graph.~~
 
 #### 14.6A.2 Search-intent landing pages
+
 - [x] ~~Align destination/category page titles and H1s with natural intents such as **Wineries in Crete**, **Olive mills in Crete**, and **Dairies / cheesemakers in Crete** where real catalogue depth supports them.~~
 - [x] ~~Keep the existing minimum catalogue thresholds; do not manufacture thin keyword permutations.~~
 - [x] ~~Add direct catalogue-derived planning answers and per-producer planning snapshots for visitability, booking, walk-ins, location confidence and road-access evidence.~~
 - [x] ~~Reuse human-written terroir context instead of generic generated travel copy.~~
 
 #### 14.6A.3 AEO/GEO trust layer
+
 - [x] ~~Make answer-first content visible in canonical HTML.~~
 - [x] ~~Preserve **UNKNOWN != FALSE** in all aggregate and per-producer answers.~~
 - [x] ~~Keep structured data aligned with visible facts; do not invent producer logos or special “AI SEO” schema.~~
@@ -933,6 +950,7 @@ Do **not** add in V1:
 - [x] ~~Keep major search/answer-engine crawlers allowed.~~
 
 #### 14.6A.4 Distribution readiness
+
 - [x] ~~Publish an IndexNow verification key file without adding long-lived secrets.~~
 - [x] ~~Configure IndexNow after production verification: submit only a small priority URL batch after successful SEO/catalogue-relevant production changes, never all sitemap URLs on every deploy.~~
 - [x] ~~Establish Search Console page/query/indexation tracking for the new landing clusters.~~
@@ -978,12 +996,14 @@ Do **not** add in V1:
 #### 14.7.2 Define allowed contextual surfaces
 
 Candidate contexts:
+
 - [x] ~~trip preparation;~~
 - [x] ~~destination/region planning;~~
 - [x] ~~transport preparation;~~
 - [x] ~~connectivity preparation.~~
 
 Potential categories:
+
 - [x] ~~car rental;~~
 - [x] ~~transfers;~~
 - [x] ~~eSIM/connectivity.~~
@@ -1018,6 +1038,7 @@ Treat generic third-party activity marketplaces separately because they may conf
 #### 14.8.1 Define producer metrics
 
 Candidate metrics:
+
 - [x] ~~profile views;~~
 - [x] ~~saves;~~
 - [x] ~~trip additions;~~
@@ -1030,8 +1051,8 @@ Candidate metrics:
 
 **Metric contract — 2026-09-21:** producer metrics use first-party intent aggregates only. Time trend means the selected reporting window versus the immediately preceding equal-length window. Region/category context is descriptive, never a ranking, and is withheld unless the comparison contains at least **5 active producers and 100 producer views**.
 
-
 **Founder Insights V1 required metric set — 2026-09-21:**
+
 - **Reach:** profile views and unique visitor sessions.
 - **Audience:** visitor country (coarse country-level only) and interface/browser language.
 - **Acquisition:** how the producer was discovered, using coarse source/channel categories rather than raw referral URLs.
@@ -1082,6 +1103,7 @@ Candidate metrics:
 #### 14.9.1 Supply/readiness metrics
 
 Build regional aggregates for:
+
 - [x] ~~audited producer count;~~
 - [x] ~~category coverage;~~
 - [x] ~~verified-location coverage;~~
@@ -1098,6 +1120,7 @@ Build regional aggregates for:
 #### 14.9.2 Demand/intent metrics
 
 Once enough Stage 14.3 data exists:
+
 - [x] ~~producer views by region;~~
 - [x] ~~saves by region;~~
 - [x] ~~trip additions by region;~~
@@ -1123,6 +1146,7 @@ Demand/category comparisons are withheld below **100 regional producer views**. 
 #### 14.9.4 External validation
 
 Potential future validation audiences include:
+
 - regional/municipal tourism bodies;
 - local development organizations;
 - producer associations;
@@ -1153,6 +1177,7 @@ Potential future validation audiences include:
 #### Required decision package
 
 Before closing Phase 14:
+
 - [ ] Summarize real usage of discovery, saves, trips, direct actions and affiliates.
 - [ ] Summarize My Trips adoption and repeat use.
 - [ ] Record the Producer Insights direction decision: supporting campaign/reporting infrastructure, not the primary producer product.
@@ -1182,6 +1207,7 @@ Before closing Phase 14:
 > **Free to be discovered. Pay to reach more relevant travelers.**
 
 **Commercial boundary:**
+
 - organic catalogue/map/search visibility remains independent of payment;
 - paid status never changes verification, location confidence, visitability, road/access evidence or editorial ranking;
 - paid placement is always visually distinguishable from organic/editorial discovery;
@@ -1212,6 +1238,7 @@ Start deliberately narrow:
 **TerroirTrail Partner — annual subscription**
 
 V1 value may include:
+
 - [ ] eligibility for approved Featured Partner distribution;
 - [ ] a fixed annual allocation of promotion credits or campaigns;
 - [ ] regional discovery placement;
@@ -1221,6 +1248,7 @@ V1 value may include:
 - [ ] future Experience-publishing eligibility only after Phase 16 activation.
 
 Do **not** include:
+
 - [ ] paid organic ranking;
 - [ ] paid verification;
 - [ ] paid access/safety facts;
@@ -1247,17 +1275,20 @@ Pricing is a hypothesis until real paid usage exists. Initial checkout may use o
 V1 should use only a small number of useful surfaces.
 
 #### Regional discovery
+
 - [x] ~~Add a clearly labelled `Featured Partner · Paid placement` module in appropriate destination/region discovery.~~
 - [x] ~~Keep the normal producer ordering/list/map unchanged.~~
 - [x] ~~Show a Partner only where the campaign's canonical destination/category context is relevant.~~
 
 #### My Trips
+
 - [x] ~~Add a clearly labelled contextual Partner suggestion inside My Trips/trip preparation.~~
 - [x] ~~Use trip destination context rather than behavioral profiling unrelated to the trip.~~
 - [x] ~~Keep paid placement outside safety/access warnings and their evidence.~~
 - [x] ~~Do not imply the suggested Partner is required, safer or editorially preferred.~~
 
 #### Seasonal / temporary promotion
+
 - [x] ~~Support a small approved `seasonal_notice` campaign type for real producer announcements such as open days or harvest periods.~~
 - [x] ~~Require campaign review/approval before public activation.~~
 - [x] ~~Keep campaign copy separate from canonical visitability truth.~~
@@ -1328,9 +1359,28 @@ Build real billing, but keep it narrow.
 
 **Legacy payment quarantine follow-up — 2026-09-23:** live Stripe audit found three active legacy Payment Links despite the corresponding products being dormant in TerroirTrail: the €199/year Featured Producer partnership, the €29.99/year Explorer Pass, and the €14.99 one-time Explorer Pass. All three Payment Links were deactivated; Stripe reported zero subscriptions. A second trust gap was found in the server API: `POST /api/passes/checkout` could still create Explorer Pass Checkout Sessions for authenticated callers even while the UI feature flag was false. The checkout service now requires the separate server-only `EXPLORER_PASS_CHECKOUT_ENABLED=true` gate and otherwise fails closed. Historical pass lookup/verification remains available.
 
-### 15.9 — Controlled production pilot
+### 15.8A — Traveler convenience passes and B2C commercial validation
 
-The product should exist before producer outreach; the first pilot can still be deliberately small and manually curated.
+Producer Partner infrastructure remains available, but producer outreach is deferred until TerroirTrail can demonstrate meaningful traveler utility and intent. The immediate commercial product is therefore an optional traveler convenience layer that never paywalls producer discovery or trust/safety facts.
+
+- [x] Define a free core plus **Holiday Pass €9.99 / 14 days (one-time)** and **Annual Explorer Pass €24.99/year (recurring)**.
+- [x] Surface **Passes** in the primary app header/mobile menu with a Free/Holiday/Annual comparison.
+- [x] Keep core map/directory discovery, My Trips, visitability, road/access facts, directions and direct producer contact free.
+- [x] Add paid convenience tools: ad-free planning, printable/save-to-PDF Trip Pack, calendar export and downloadable offline trip snapshot.
+- [x] Protect Trip Pack/calendar export server-side with the active Explorer entitlement rather than frontend visibility alone.
+- [x] Make Annual entitlement follow the live Stripe subscription period/status and provide a dedicated Stripe Customer Portal for cancellation/payment management.
+- [x] Validate the Passes dialog at phone 390×844, iPad portrait 834×1194, iPad landscape 1194×834 and desktop 1440×900.
+- [x] Create a clean live Stripe Explorer Product with tax-inclusive €9.99 one-time and €24.99/year recurring Prices; leave public checkout fail-closed until release validation completes.
+- [x] ~~Verify both Checkout contracts against a Stripe sandbox.~~ `npm run stripe:e2e:explorer` creates real sandbox Holiday and Annual hosted Checkout Sessions with the same service function, verifies the server-selected €9.99 payment / €24.99 yearly subscription contracts, and proves Annual active → cancel-at-period-end → canceled entitlement behavior without live money.
+- [x] ~~Run the complete local release gate and responsive browser smoke.~~ Typecheck, lint (0 errors), 674 frontend tests, 132 Node server tests, 17 service specs, Firestore rules, production build/SEO/budget checks and the real-browser smoke all passed; the browser smoke covers phone, iPad portrait, iPad landscape and desktop.
+- [ ] Verify the merged build with the production deployment/smoke while Explorer checkout remains fail-closed.
+- [ ] Enable the repository-controlled Explorer checkout gate only after that production verification and an explicit launch decision.
+- [ ] Treat the first genuine traveler purchase as monitored production validation; do not create a sacrificial live self-purchase.
+- [ ] Measure Pass popup → Checkout → paid entitlement → Trip Pack/calendar use before changing price or adding more paid features.
+
+### 15.9 — Controlled production pilot (producer side, deferred behind B2C validation)
+
+The Partner product already exists technically, but broad producer outreach should wait until traveler usage provides a meaningful audience/value proposition. The eventual first producer pilot can still be deliberately small and manually curated.
 
 - [ ] Seed a small number of internal/test Partner campaigns first.
 - [ ] Verify organic producer ranking/order is unchanged.
@@ -1374,6 +1424,7 @@ Only after the production loop works end-to-end:
 **Objective:** create accurate, producer-approved activity records without turning the producer catalogue itself into a booking marketplace.
 
 **Prerequisites:**
+
 - explicit partner agreement;
 - producer-approved activity;
 - trusted producer ownership;
@@ -1383,6 +1434,7 @@ Only after the production loop works end-to-end:
 ### 16.1 — Define the Experience contract
 
 For each Experience define:
+
 - [ ] producer ID;
 - [ ] canonical title;
 - [ ] factual description;
@@ -1403,7 +1455,7 @@ For each Experience define:
 ### 16.2 — Lifecycle and approval
 
 - [ ] Enforce lifecycle:
-  `draft → awaiting producer approval → approved → published → paused/withdrawn`.
+      `draft → awaiting producer approval → approved → published → paused/withdrawn`.
 - [ ] Require explicit producer approval before publication.
 - [ ] Keep admin authority over publication state.
 - [ ] Record approval/version history.
@@ -1444,6 +1496,7 @@ For each Experience define:
 **Objective:** decide whether TerroirTrail should become transactionally responsible at all, and if so implement the smallest safe commercial model.
 
 **Prerequisites:**
+
 - real approved Phase 16 Experiences;
 - demonstrated booking demand;
 - producers willing to operate under defined commercial terms;
@@ -1566,6 +1619,7 @@ Only after a paid product is chosen:
 ### 18.4 — Product-specific scale gates
 
 **B2B Regional Intelligence**
+
 - [ ] validate report cadence;
 - [ ] validate export/data needs;
 - [ ] define contract scope;
@@ -1573,6 +1627,7 @@ Only after a paid product is chosen:
 - [ ] ensure non-exhaustive coverage is represented honestly.
 
 **Producer Partner / paid visibility**
+
 - [ ] validate Partner subscription conversion and renewal;
 - [ ] validate which regional/My Trips/seasonal placements produce qualified engagement;
 - [ ] preserve organic ranking and free factual/safety corrections;
@@ -1580,11 +1635,13 @@ Only after a paid product is chosen:
 - [ ] expand campaign inventory only when existing surfaces demonstrate value.
 
 **Producer workflow software**
+
 - [ ] build only when producers demonstrate a separate workflow problem worth paying for;
 - [ ] do not use existing analytics availability as justification by itself;
 - [ ] preserve the free Host factual-management boundary.
 
 **Traveler premium planning**
+
 - [ ] validate repeat My Trips use;
 - [ ] identify advanced workflow users ask for;
 - [ ] potential paid features may include collaboration, exports, offline packs, alerts and richer organization;
@@ -1610,6 +1667,7 @@ Only after a paid product is chosen:
 ### 18.7 — Scale decision
 
 Before scaling any paid product:
+
 - [ ] confirm real customer value;
 - [ ] confirm operational support;
 - [ ] confirm privacy/security;

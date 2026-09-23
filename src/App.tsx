@@ -1,4 +1,11 @@
-import React, { useState, useMemo, useEffect, useRef, Suspense, lazy } from 'react';
+import React, {
+  useState,
+  useMemo,
+  useEffect,
+  useRef,
+  Suspense,
+  lazy,
+} from 'react';
 import { useProducers } from './hooks/useProducers';
 import { Producer, FilterState, Destination } from './types/terroir';
 import type { UserProfile } from './types/auth';
@@ -18,7 +25,11 @@ import { useProducerPortal } from './hooks/useProducerPortal';
 import { SponsorBanner } from './components/Monetization/SponsorBanner';
 import { ChauffeurBooking } from './types/monetization';
 import type { VerifiedPassInfo } from './components/Monetization/HostVerificationModal';
-import { readStorage, writeStorage, STORAGE_KEYS } from './services/browserStorage';
+import {
+  readStorage,
+  writeStorage,
+  STORAGE_KEYS,
+} from './services/browserStorage';
 import { saveUserProfileToCloud } from './services/firebase';
 import { filterProducers } from './utils/filterProducers';
 import { producerService } from './services/producerService';
@@ -28,30 +39,88 @@ import { trackIntent, type SourceSurface } from './services/intentAnalytics';
 
 // Performance optimization: lazy-load modals on demand to shrink initial bundle
 const ProducerDetailDrawer = lazy(() =>
-  import('./components/Drawer/ProducerDetailDrawerWithReviews').then(m => ({
+  import('./components/Drawer/ProducerDetailDrawerWithReviews').then((m) => ({
     default: m.ProducerDetailDrawerWithReviews,
   }))
 );
 const TerroirRegionDrawer = lazy(() =>
-  import('./components/Regions/TerroirRegionDrawer').then(m => ({
+  import('./components/Regions/TerroirRegionDrawer').then((m) => ({
     default: m.TerroirRegionDrawer,
   }))
 );
-const AuthModal = lazy(() => import('./components/Auth/AuthModal').then(m => ({ default: m.AuthModal })));
-const PassportModal = lazy(() => import('./components/Auth/PassportModal').then(m => ({ default: m.PassportModal })));
-const AccountSettingsModal = lazy(() => import('./components/Auth/AccountSettingsModal').then(m => ({ default: m.AccountSettingsModal })));
-const BookingModal = lazy(() => import('./components/Bookings/BookingModal').then(m => ({ default: m.BookingModal })));
-const ProducerPortalModal = lazy(() => import('./components/Portal/ProducerPortalModal').then(m => ({ default: m.ProducerPortalModal })));
-const AdminPanelModal = lazy(() => import('./components/Admin/AdminPanelModal').then(m => ({ default: m.AdminPanelModal })));
-const MyBookingsModal = lazy(() => import('./components/Bookings/MyBookingsModal').then(m => ({ default: m.MyBookingsModal })));
-const ExplorerPassModal = lazy(() => import('./components/Monetization/ExplorerPassModal').then(m => ({ default: m.ExplorerPassModal })));
-const DigitalPassModal = lazy(() => import('./components/Monetization/DigitalPassModal').then(m => ({ default: m.DigitalPassModal })));
-const HostVerificationModal = lazy(() => import('./components/Monetization/HostVerificationModal').then(m => ({ default: m.HostVerificationModal })));
-const ChauffeurBookingModal = lazy(() => import('./components/Monetization/ChauffeurBookingModal').then(m => ({ default: m.ChauffeurBookingModal })));
-const AboutFaqModal = lazy(() => import('./components/About/AboutFaqModal').then(m => ({ default: m.AboutFaqModal })));
-const LegalModal = lazy(() => import('./components/Legal/LegalModal').then(m => ({ default: m.LegalModal })));
-const MyTripsModal = lazy(() => import('./components/Trips/MyTripsModal').then(m => ({ default: m.MyTripsModal })));
-const AddToTripModal = lazy(() => import('./components/Trips/AddToTripModal').then(m => ({ default: m.AddToTripModal })));
+const AuthModal = lazy(() =>
+  import('./components/Auth/AuthModal').then((m) => ({ default: m.AuthModal }))
+);
+const PassportModal = lazy(() =>
+  import('./components/Auth/PassportModal').then((m) => ({
+    default: m.PassportModal,
+  }))
+);
+const AccountSettingsModal = lazy(() =>
+  import('./components/Auth/AccountSettingsModal').then((m) => ({
+    default: m.AccountSettingsModal,
+  }))
+);
+const BookingModal = lazy(() =>
+  import('./components/Bookings/BookingModal').then((m) => ({
+    default: m.BookingModal,
+  }))
+);
+const ProducerPortalModal = lazy(() =>
+  import('./components/Portal/ProducerPortalModal').then((m) => ({
+    default: m.ProducerPortalModal,
+  }))
+);
+const AdminPanelModal = lazy(() =>
+  import('./components/Admin/AdminPanelModal').then((m) => ({
+    default: m.AdminPanelModal,
+  }))
+);
+const MyBookingsModal = lazy(() =>
+  import('./components/Bookings/MyBookingsModal').then((m) => ({
+    default: m.MyBookingsModal,
+  }))
+);
+const ExplorerPassModal = lazy(() =>
+  import('./components/Monetization/ExplorerPassModal').then((m) => ({
+    default: m.ExplorerPassModal,
+  }))
+);
+const DigitalPassModal = lazy(() =>
+  import('./components/Monetization/DigitalPassModal').then((m) => ({
+    default: m.DigitalPassModal,
+  }))
+);
+const HostVerificationModal = lazy(() =>
+  import('./components/Monetization/HostVerificationModal').then((m) => ({
+    default: m.HostVerificationModal,
+  }))
+);
+const ChauffeurBookingModal = lazy(() =>
+  import('./components/Monetization/ChauffeurBookingModal').then((m) => ({
+    default: m.ChauffeurBookingModal,
+  }))
+);
+const AboutFaqModal = lazy(() =>
+  import('./components/About/AboutFaqModal').then((m) => ({
+    default: m.AboutFaqModal,
+  }))
+);
+const LegalModal = lazy(() =>
+  import('./components/Legal/LegalModal').then((m) => ({
+    default: m.LegalModal,
+  }))
+);
+const MyTripsModal = lazy(() =>
+  import('./components/Trips/MyTripsModal').then((m) => ({
+    default: m.MyTripsModal,
+  }))
+);
+const AddToTripModal = lazy(() =>
+  import('./components/Trips/AddToTripModal').then((m) => ({
+    default: m.AddToTripModal,
+  }))
+);
 
 export type ActiveModal =
   | { type: 'auth'; initialRole?: 'traveler' | 'producer' }
@@ -68,7 +137,10 @@ export type ActiveModal =
   | { type: 'host_verify'; guestInfo: VerifiedPassInfo }
   | { type: 'chauffeur'; producer?: Producer | null }
   | { type: 'about_faq'; initialTab?: 'about' | 'faq' }
-  | { type: 'legal'; initialTab?: 'privacy' | 'terms' | 'producers' | 'licenses' }
+  | {
+      type: 'legal';
+      initialTab?: 'privacy' | 'terms' | 'producers' | 'licenses';
+    }
   | null;
 
 const applyApprovedListingOverride = (
@@ -79,28 +151,50 @@ const applyApprovedListingOverride = (
   return {
     ...producer,
     ...(override.tagLine !== undefined ? { tagLine: override.tagLine } : {}),
-    ...(override.description !== undefined ? { description: override.description } : {}),
+    ...(override.description !== undefined
+      ? { description: override.description }
+      : {}),
     ...(override.story !== undefined ? { story: override.story } : {}),
-    ...(override.tastingHighlights !== undefined ? { tastingHighlights: override.tastingHighlights } : {}),
-    ...(override.website !== undefined ? { website: override.website || undefined } : {}),
-    ...(override.foodOption !== undefined ? { foodOption: override.foodOption || undefined } : {}),
-    ...(override.dogFriendly !== undefined ? { dogFriendly: override.dogFriendly } : {}),
-    ...(override.kidFriendly !== undefined ? { kidFriendly: override.kidFriendly } : {}),
-    ...(override.walkIn !== undefined ? { walkInFriendly: override.walkIn } : {}),
-    ...(override.campervanFriendly !== undefined ? { campervanFriendly: override.campervanFriendly } : {}),
+    ...(override.tastingHighlights !== undefined
+      ? { tastingHighlights: override.tastingHighlights }
+      : {}),
+    ...(override.website !== undefined
+      ? { website: override.website || undefined }
+      : {}),
+    ...(override.foodOption !== undefined
+      ? { foodOption: override.foodOption || undefined }
+      : {}),
+    ...(override.dogFriendly !== undefined
+      ? { dogFriendly: override.dogFriendly }
+      : {}),
+    ...(override.kidFriendly !== undefined
+      ? { kidFriendly: override.kidFriendly }
+      : {}),
+    ...(override.walkIn !== undefined
+      ? { walkInFriendly: override.walkIn }
+      : {}),
+    ...(override.campervanFriendly !== undefined
+      ? { campervanFriendly: override.campervanFriendly }
+      : {}),
   };
 };
 
 export const App: React.FC = () => {
-  const [selectedProducer, setSelectedProducer] = useState<Producer | null>(null);
+  const [selectedProducer, setSelectedProducer] = useState<Producer | null>(
+    null
+  );
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
   const [isRegionGuideOpen, setIsRegionGuideOpen] = useState<boolean>(false);
   const [activeModal, setActiveModal] = useState<ActiveModal>(null);
-  const [adminPortalPreviewProducerId, setAdminPortalPreviewProducerId] = useState<string | null>(null);
+  const [adminPortalPreviewProducerId, setAdminPortalPreviewProducerId] =
+    useState<string | null>(null);
   const lastViewedProducerRef = useRef<string | null>(null);
   const lastOpenedRegionRef = useRef<string | null>(null);
 
-  const handleSelectProducer = (producer: Producer | null, surface: SourceSurface = 'map_marker') => {
+  const handleSelectProducer = (
+    producer: Producer | null,
+    surface: SourceSurface = 'map_marker'
+  ) => {
     setSelectedProducer(producer);
     if (producer) {
       setIsRegionGuideOpen(false);
@@ -117,7 +211,10 @@ export const App: React.FC = () => {
     }
   };
 
-  const handleOpenDrawer = (producer: Producer, surface: SourceSurface = 'map_quick_card') => {
+  const handleOpenDrawer = (
+    producer: Producer,
+    surface: SourceSurface = 'map_quick_card'
+  ) => {
     setSelectedProducer(producer);
     setIsRegionGuideOpen(false);
     setIsDrawerOpen(true);
@@ -135,11 +232,12 @@ export const App: React.FC = () => {
     setIsDrawerOpen(false);
     lastViewedProducerRef.current = null;
   };
-  const [showFirstRunWelcome, setShowFirstRunWelcome] = useState<boolean>(() =>
-    !readStorage<boolean>(STORAGE_KEYS.FIRST_RUN_WELCOME, false, {
-      scope: 'Onboarding',
-      validator: (value) => typeof value === 'boolean',
-    })
+  const [showFirstRunWelcome, setShowFirstRunWelcome] = useState<boolean>(
+    () =>
+      !readStorage<boolean>(STORAGE_KEYS.FIRST_RUN_WELCOME, false, {
+        scope: 'Onboarding',
+        validator: (value) => typeof value === 'boolean',
+      })
   );
   const pwaInstall = usePwaInstall();
 
@@ -181,10 +279,13 @@ export const App: React.FC = () => {
   // explorerPassPlan identifies the plan; hasExplorerPass remains the active/expiry-aware gate.
   const hasAdFreeTravelerPass = Boolean(user?.hasExplorerPass);
 
-  const { capabilities: accountCapabilities } = useAccountCapabilities(user?.id);
+  const { capabilities: accountCapabilities } = useAccountCapabilities(
+    user?.id
+  );
   const { favorites, toggleFavorite, isFavorite } = useFavorites(user?.id);
 
-  const [pendingAddToTripProducer, setPendingAddToTripProducer] = useState<Producer | null>(null);
+  const [pendingAddToTripProducer, setPendingAddToTripProducer] =
+    useState<Producer | null>(null);
 
   useEffect(() => {
     if (user && pendingAddToTripProducer) {
@@ -212,11 +313,17 @@ export const App: React.FC = () => {
   };
 
   const handleConfirmChauffeurBooking = (booking: ChauffeurBooking) => {
-    const existing = readStorage<ChauffeurBooking[]>(STORAGE_KEYS.CHAUFFEUR_BOOKINGS, [], {
+    const existing = readStorage<ChauffeurBooking[]>(
+      STORAGE_KEYS.CHAUFFEUR_BOOKINGS,
+      [],
+      {
+        scope: 'App',
+        validator: (data) => Array.isArray(data),
+      }
+    );
+    writeStorage(STORAGE_KEYS.CHAUFFEUR_BOOKINGS, [booking, ...existing], {
       scope: 'App',
-      validator: (data) => Array.isArray(data),
     });
-    writeStorage(STORAGE_KEYS.CHAUFFEUR_BOOKINGS, [booking, ...existing], { scope: 'App' });
   };
 
   const {
@@ -231,11 +338,7 @@ export const App: React.FC = () => {
     trustedProducerIds: accountCapabilities?.producerIds || [],
   });
 
-  const {
-    overrides,
-    getOverride,
-    updateOverride,
-  } = useProducerPortal();
+  const { overrides, getOverride, updateOverride } = useProducerPortal();
 
   const initialFilters: FilterState = {
     category: 'all',
@@ -263,39 +366,56 @@ export const App: React.FC = () => {
   });
 
   const publicProducers = useMemo(
-    () => producers.map(producer => applyApprovedListingOverride(producer, overrides[producer.id])),
+    () =>
+      producers.map((producer) =>
+        applyApprovedListingOverride(producer, overrides[producer.id])
+      ),
     [producers, overrides]
   );
 
   const publicSelectedProducer = useMemo(
-    () => selectedProducer
-      ? applyApprovedListingOverride(selectedProducer, overrides[selectedProducer.id])
-      : null,
+    () =>
+      selectedProducer
+        ? applyApprovedListingOverride(
+            selectedProducer,
+            overrides[selectedProducer.id]
+          )
+        : null,
     [selectedProducer, overrides]
   );
 
   const selectedTerroirRegion = useMemo(() => {
     if (filters.destination === 'all') return null;
-    const region = TERROIR_REGIONS.find((candidate) => candidate.destination === filters.destination);
+    const region = TERROIR_REGIONS.find(
+      (candidate) => candidate.destination === filters.destination
+    );
     return region ? withTerroirRegionStory(region) : null;
   }, [filters.destination]);
 
   const regionGuideProducers = useMemo(
-    () => selectedTerroirRegion
-      ? publicProducers.filter((producer) => producer.destination === selectedTerroirRegion.destination)
-      : [],
+    () =>
+      selectedTerroirRegion
+        ? publicProducers.filter(
+            (producer) =>
+              producer.destination === selectedTerroirRegion.destination
+          )
+        : [],
     [publicProducers, selectedTerroirRegion]
   );
 
   const regionGuideCategoryCount = useMemo(
-    () => new Set(regionGuideProducers.map((producer) => producer.category)).size,
+    () =>
+      new Set(regionGuideProducers.map((producer) => producer.category)).size,
     [regionGuideProducers]
   );
 
   const adminPortalPreviewProducer = useMemo(
-    () => adminPortalPreviewProducerId
-      ? producers.find((producer) => producer.id === adminPortalPreviewProducerId) || null
-      : null,
+    () =>
+      adminPortalPreviewProducerId
+        ? producers.find(
+            (producer) => producer.id === adminPortalPreviewProducerId
+          ) || null
+        : null,
     [adminPortalPreviewProducerId, producers]
   );
 
@@ -317,7 +437,11 @@ export const App: React.FC = () => {
 
   const handleOpenProducerPortal = (producer?: Producer | null) => {
     const previewTarget = producer || selectedProducer || producers[0] || null;
-    if (accountCapabilities?.isAdmin && !accountCapabilities.canManageOwnedListings && previewTarget) {
+    if (
+      accountCapabilities?.isAdmin &&
+      !accountCapabilities.canManageOwnedListings &&
+      previewTarget
+    ) {
       setAdminPortalPreviewProducerId(previewTarget.id);
     } else {
       setAdminPortalPreviewProducerId(null);
@@ -325,7 +449,10 @@ export const App: React.FC = () => {
     setActiveModal({ type: 'portal' });
   };
 
-  const handleFilterChange = <K extends keyof FilterState>(key: K, value: FilterState[K]) => {
+  const handleFilterChange = <K extends keyof FilterState>(
+    key: K,
+    value: FilterState[K]
+  ) => {
     setFilters((prev) => ({ ...prev, [key]: value }));
     if (key === 'destination') {
       setIsRegionGuideOpen(false);
@@ -339,7 +466,9 @@ export const App: React.FC = () => {
   };
 
   const handleExploreRegion = (destination: Destination) => {
-    const hasStory = TERROIR_REGIONS.some((region) => region.destination === destination);
+    const hasStory = TERROIR_REGIONS.some(
+      (region) => region.destination === destination
+    );
     setFilters((prev) => ({
       ...prev,
       destination,
@@ -413,27 +542,48 @@ export const App: React.FC = () => {
       <OfflineStatus />
       <Header
         selectedDestination={filters.destination}
-        onSelectDestination={(dest: Destination | 'all') => handleFilterChange('destination', dest)}
+        onSelectDestination={(dest: Destination | 'all') =>
+          handleFilterChange('destination', dest)
+        }
         searchQuery={filters.searchQuery}
-        onSearchChange={(query: string) => handleFilterChange('searchQuery', query)}
+        onSearchChange={(query: string) =>
+          handleFilterChange('searchQuery', query)
+        }
         totalFilteredCount={filteredProducers.length}
         savedCount={favorites.length}
         favoritesOnly={filters.favoritesOnly}
-        onToggleFavoritesOnly={() => handleFilterChange('favoritesOnly', !filters.favoritesOnly)}
+        onToggleFavoritesOnly={() =>
+          handleFilterChange('favoritesOnly', !filters.favoritesOnly)
+        }
         user={user}
-        onOpenAuth={(role) => setActiveModal({ type: 'auth', initialRole: role || 'traveler' })}
+        onOpenAuth={(role) =>
+          setActiveModal({ type: 'auth', initialRole: role || 'traveler' })
+        }
         onOpenPassport={() => setActiveModal({ type: 'passport' })}
         onOpenMyTrips={() => handleOpenMyTrips()}
-        onOpenAccountSettings={user ? () => setActiveModal({ type: 'account_settings' }) : undefined}
+        onOpenAccountSettings={
+          user ? () => setActiveModal({ type: 'account_settings' }) : undefined
+        }
         onLogout={logout}
         totalProducersCount={producers.length}
         onOpenProducerPortal={() => handleOpenProducerPortal()}
+        onOpenExplorerPass={() => setActiveModal({ type: 'pass' })}
         isAdmin={Boolean(accountCapabilities?.isAdmin)}
         isPlatformOwner={Boolean(accountCapabilities?.isPlatformOwner)}
-        onOpenAdmin={accountCapabilities?.isAdmin ? () => setActiveModal({ type: 'admin' }) : undefined}
-        onOpenAbout={() => setActiveModal({ type: 'about_faq', initialTab: 'about' })}
-        onOpenFaq={() => setActiveModal({ type: 'about_faq', initialTab: 'faq' })}
-        onOpenLegal={(tab) => setActiveModal({ type: 'legal', initialTab: tab || 'privacy' })}
+        onOpenAdmin={
+          accountCapabilities?.isAdmin
+            ? () => setActiveModal({ type: 'admin' })
+            : undefined
+        }
+        onOpenAbout={() =>
+          setActiveModal({ type: 'about_faq', initialTab: 'about' })
+        }
+        onOpenFaq={() =>
+          setActiveModal({ type: 'about_faq', initialTab: 'faq' })
+        }
+        onOpenLegal={(tab) =>
+          setActiveModal({ type: 'legal', initialTab: tab || 'privacy' })
+        }
         pwaInstall={pwaInstall}
       />
 
@@ -457,13 +607,16 @@ export const App: React.FC = () => {
         >
           {catalogueLoading
             ? 'Refreshing producer catalogue…'
-            : catalogueError || 'Offline catalogue active — showing the audited bundled regional catalogue.'}
+            : catalogueError ||
+              'Offline catalogue active — showing the audited bundled regional catalogue.'}
         </div>
       )}
 
       <main className="relative flex-1 flex overflow-hidden min-h-0">
         <div className="flex-1 h-full w-full relative">
-          <div className={`absolute top-2.5 left-0 right-0 z-20 pointer-events-none justify-center px-3 ${selectedProducer ? 'hidden sm:flex' : 'flex'}`}>
+          <div
+            className={`absolute top-2.5 left-0 right-0 z-20 pointer-events-none justify-center px-3 ${selectedProducer ? 'hidden sm:flex' : 'flex'}`}
+          >
             <div className="pointer-events-auto w-full max-w-2xl">
               <SponsorBanner hasExplorerPass={hasAdFreeTravelerPass} />
             </div>
@@ -472,8 +625,12 @@ export const App: React.FC = () => {
           <MapCanvas
             producers={filteredProducers}
             selectedProducer={publicSelectedProducer}
-            onSelectProducer={(producer) => handleSelectProducer(producer, 'map_marker')}
-            onOpenDrawer={(producer) => handleOpenDrawer(producer, 'map_quick_card')}
+            onSelectProducer={(producer) =>
+              handleSelectProducer(producer, 'map_marker')
+            }
+            onOpenDrawer={(producer) =>
+              handleOpenDrawer(producer, 'map_quick_card')
+            }
             selectedDestination={filters.destination}
             isFavorite={isFavorite}
             onToggleFavorite={toggleFavorite}
@@ -483,7 +640,7 @@ export const App: React.FC = () => {
 
           {selectedTerroirRegion && (
             <Suspense
-              fallback={(
+              fallback={
                 <div
                   role="status"
                   aria-live="polite"
@@ -491,7 +648,7 @@ export const App: React.FC = () => {
                 >
                   Loading region guide…
                 </div>
-              )}
+              }
             >
               <TerroirRegionDrawer
                 region={selectedTerroirRegion}
@@ -518,7 +675,7 @@ export const App: React.FC = () => {
 
         {isDrawerOpen && (
           <Suspense
-            fallback={(
+            fallback={
               <div
                 role="status"
                 aria-live="polite"
@@ -526,35 +683,61 @@ export const App: React.FC = () => {
               >
                 Loading producer…
               </div>
-            )}
+            }
           >
             <ProducerDetailDrawer
               producer={publicSelectedProducer}
               onClose={handleCloseDrawer}
               user={user}
-              onOpenProducerPortal={() => handleOpenProducerPortal(selectedProducer)}
-              isFavorite={selectedProducer ? isFavorite(selectedProducer.id) : false}
+              onOpenProducerPortal={() =>
+                handleOpenProducerPortal(selectedProducer)
+              }
+              isFavorite={
+                selectedProducer ? isFavorite(selectedProducer.id) : false
+              }
               onToggleFavorite={toggleFavorite}
-              isVisited={selectedProducer ? isVisited(selectedProducer.id) : false}
+              isVisited={
+                selectedProducer ? isVisited(selectedProducer.id) : false
+              }
               onToggleVisited={toggleVisited}
-              tastingNote={selectedProducer ? getTastingNote(selectedProducer.id) : ''}
+              tastingNote={
+                selectedProducer ? getTastingNote(selectedProducer.id) : ''
+              }
               onSaveTastingNote={saveTastingNote}
               isAuthenticated={isAuthenticated}
-              onOpenAuth={(role) => setActiveModal({ type: 'auth', initialRole: role || 'traveler' })}
-              customNotice={selectedProducer ? getOverride(selectedProducer.id)?.customNotice : undefined}
-              producerOverride={selectedProducer ? getOverride(selectedProducer.id) : undefined}
+              onOpenAuth={(role) =>
+                setActiveModal({
+                  type: 'auth',
+                  initialRole: role || 'traveler',
+                })
+              }
+              customNotice={
+                selectedProducer
+                  ? getOverride(selectedProducer.id)?.customNotice
+                  : undefined
+              }
+              producerOverride={
+                selectedProducer ? getOverride(selectedProducer.id) : undefined
+              }
               onAddToTrip={handleAddToTrip}
             />
           </Suspense>
         )}
       </main>
 
-      <Suspense fallback={(
-        <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/60 backdrop-blur-sm" role="status" aria-live="polite">
-          <div className="rounded-2xl border border-white/10 bg-stone-900 px-4 py-3 text-xs font-semibold text-stone-200 shadow-2xl">Loading…</div>
-        </div>
-      )}>
-
+      <Suspense
+        fallback={
+          <div
+            className="fixed inset-0 z-[80] flex items-center justify-center bg-black/60 backdrop-blur-sm"
+            role="status"
+            aria-live="polite"
+          >
+            <div className="rounded-2xl border border-white/10 bg-stone-900 px-4 py-3 text-xs font-semibold text-stone-200 shadow-2xl">
+              Loading…
+            </div>
+          </div>
+        }
+      >
         {activeModal?.type === 'auth' && (
           <AuthModal
             isOpen
@@ -568,9 +751,15 @@ export const App: React.FC = () => {
             onResetPassword={sendPasswordResetLink}
             onLoginWithGoogle={loginWithGoogle}
             onLoginWithApple={loginWithApple}
-            onOpenPrivacyNotice={() => setActiveModal({ type: 'legal', initialTab: 'privacy' })}
-            onOpenTerms={() => setActiveModal({ type: 'legal', initialTab: 'terms' })}
-            onOpenLicenses={() => setActiveModal({ type: 'legal', initialTab: 'licenses' })}
+            onOpenPrivacyNotice={() =>
+              setActiveModal({ type: 'legal', initialTab: 'privacy' })
+            }
+            onOpenTerms={() =>
+              setActiveModal({ type: 'legal', initialTab: 'terms' })
+            }
+            onOpenLicenses={() =>
+              setActiveModal({ type: 'legal', initialTab: 'licenses' })
+            }
             isLoading={isAuthLoading}
             authError={authError}
             isFirebaseConfigured={isFirebaseConfigured}
@@ -612,7 +801,9 @@ export const App: React.FC = () => {
             user={user}
             initialExperienceId={activeModal.experienceId}
             onBookTasting={bookTasting}
-            onOpenAuth={() => setActiveModal({ type: 'auth', initialRole: 'traveler' })}
+            onOpenAuth={() =>
+              setActiveModal({ type: 'auth', initialRole: 'traveler' })
+            }
           />
         )}
 
@@ -620,29 +811,53 @@ export const App: React.FC = () => {
           <>
             {adminPortalPreviewProducer && (
               <div className="fixed top-20 left-1/2 -translate-x-1/2 z-[70] pointer-events-none max-w-[calc(100%-2rem)] rounded-full border border-sky-400/30 bg-sky-950/95 px-3 py-1.5 text-[10px] sm:text-xs font-bold text-sky-200 shadow-xl backdrop-blur-md text-center">
-                Admin preview · {adminPortalPreviewProducer.name} · UI only — producer writes are disabled
+                Admin preview · {adminPortalPreviewProducer.name} · UI only —
+                producer writes are disabled
               </div>
             )}
             <ProducerPortalModal
               isOpen
               onClose={closeModal}
               user={producerPortalUser}
-              trustedProducerIds={adminPortalPreviewProducer ? [adminPortalPreviewProducer.id] : (accountCapabilities?.producerIds || [])}
+              trustedProducerIds={
+                adminPortalPreviewProducer
+                  ? [adminPortalPreviewProducer.id]
+                  : accountCapabilities?.producerIds || []
+              }
               isReadOnlyPreview={Boolean(adminPortalPreviewProducer)}
-              onOpenAuth={(role) => setActiveModal({ type: 'auth', initialRole: role || 'producer' })}
+              onOpenAuth={(role) =>
+                setActiveModal({
+                  type: 'auth',
+                  initialRole: role || 'producer',
+                })
+              }
               onLoginWithGoogle={loginWithGoogle}
               onLoginWithApple={loginWithApple}
               producers={producers}
               bookings={adminPortalPreviewProducer ? [] : hostBookings}
-              onUpdateBookingStatus={adminPortalPreviewProducer ? async () => undefined : setHostStatus}
-              onSaveProducerOverride={adminPortalPreviewProducer ? async () => undefined : updateOverride}
+              onUpdateBookingStatus={
+                adminPortalPreviewProducer
+                  ? async () => undefined
+                  : setHostStatus
+              }
+              onSaveProducerOverride={
+                adminPortalPreviewProducer
+                  ? async () => undefined
+                  : updateOverride
+              }
               getProducerOverride={getOverride}
-              onUpdateProducerTaxDetails={adminPortalPreviewProducer ? async () => undefined : updateProducerTaxDetails}
+              onUpdateProducerTaxDetails={
+                adminPortalPreviewProducer
+                  ? async () => undefined
+                  : updateProducerTaxDetails
+              }
               onSelectProducerForDrawer={(producer) => {
                 handleOpenDrawer(producer, 'profile_menu');
                 closeModal();
               }}
-              onPassVerified={(info) => setActiveModal({ type: 'host_verify', guestInfo: info })}
+              onPassVerified={(info) =>
+                setActiveModal({ type: 'host_verify', guestInfo: info })
+              }
             />
           </>
         )}
@@ -681,6 +896,7 @@ export const App: React.FC = () => {
             publicProducers={publicProducers}
             catalogueIsLive={catalogueIsLive && !catalogueError}
             hasExplorerPass={hasAdFreeTravelerPass}
+            onOpenExplorerPass={() => setActiveModal({ type: 'pass' })}
           />
         )}
 
@@ -700,8 +916,9 @@ export const App: React.FC = () => {
             isOpen
             onClose={closeModal}
             user={user}
-            onOpenAuth={() => setActiveModal({ type: 'auth', initialRole: 'traveler' })}
-            onOpenDigitalPass={() => setActiveModal({ type: 'digital_pass' })}
+            onOpenAuth={() =>
+              setActiveModal({ type: 'auth', initialRole: 'traveler' })
+            }
           />
         )}
 
@@ -728,7 +945,9 @@ export const App: React.FC = () => {
             onClose={closeModal}
             initialProducer={activeModal.producer}
             user={user}
-            onOpenAuth={() => setActiveModal({ type: 'auth', initialRole: 'traveler' })}
+            onOpenAuth={() =>
+              setActiveModal({ type: 'auth', initialRole: 'traveler' })
+            }
             onBookChauffeur={handleConfirmChauffeurBooking}
           />
         )}
@@ -738,9 +957,13 @@ export const App: React.FC = () => {
             isOpen
             onClose={closeModal}
             initialTab={activeModal.initialTab || 'about'}
-            onOpenAuth={(role) => setActiveModal({ type: 'auth', initialRole: role || 'traveler' })}
+            onOpenAuth={(role) =>
+              setActiveModal({ type: 'auth', initialRole: role || 'traveler' })
+            }
             onOpenProducerPortal={() => handleOpenProducerPortal()}
-            onOpenLegal={(tab) => setActiveModal({ type: 'legal', initialTab: tab })}
+            onOpenLegal={(tab) =>
+              setActiveModal({ type: 'legal', initialTab: tab })
+            }
           />
         )}
 
