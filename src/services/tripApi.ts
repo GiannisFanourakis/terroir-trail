@@ -28,6 +28,32 @@ export interface TripWithItems extends TripRecordV1 {
   items: TripItemRecordV1[];
 }
 
+export interface OptimizationWarningV1 {
+  code: string;
+  message: string;
+  producerId?: string;
+}
+
+export interface OptimizationProposalV1 {
+  contractVersion: 1;
+  proposalId: string;
+  tripId: string;
+  dayNumber: number;
+  basedOnRevision: number;
+  originalOrder: string[];
+  proposedOrder: string[];
+  estimatedDriveMinutesBefore: number | null;
+  estimatedDriveMinutesAfter: number | null;
+  estimatedMinutesSaved: number | null;
+  estimatedDistanceKmBefore: number | null;
+  estimatedDistanceKmAfter: number | null;
+  warnings: OptimizationWarningV1[];
+  unresolvedConstraints: string[];
+  routingProvider: string;
+  engineVersion: string;
+  generatedAt: string;
+}
+
 export class TripApiError extends Error {
   constructor(
     public readonly status: number,
@@ -221,6 +247,54 @@ export async function assignTripItemDay(
     sourceSurface: 'trip_workspace',
   });
   return trip;
+}
+
+export async function optimizeTripDay(
+  tripId: string,
+  dayNumber: number,
+  expectedRevision: number,
+  lockedProducerIds: string[]
+): Promise<OptimizationProposalV1> {
+  const proposal = (
+    await request<{ proposal: OptimizationProposalV1 }>(
+      '/trips/' + encodeURIComponent(tripId) + '/optimize-day',
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          contractVersion: 1,
+          dayNumber,
+          expectedRevision,
+          constraints: lockedProducerIds.map((producerId) => ({
+            producerId,
+            locked: true,
+          })),
+        }),
+      }
+    )
+  ).proposal;
+  return proposal;
+}
+
+export async function applyOptimizedTripDay(
+  tripId: string,
+  dayNumber: number,
+  expectedRevision: number,
+  producerIds: string[]
+): Promise<TripWithItems> {
+  return (
+    await request<{ trip: TripWithItems }>(
+      '/trips/' + encodeURIComponent(tripId) + '/optimize-day/apply',
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          contractVersion: 1,
+          dayNumber,
+          expectedRevision,
+          producerIds,
+        }),
+      }
+    )
+  ).trip;
 }
 
 export const trackTripOpened = (sourceSurface: 'my_trips' | 'profile_menu') =>
