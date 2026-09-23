@@ -211,9 +211,29 @@ async function main() {
       processPartnerStripeEvent
     );
 
+  let capturedCheckoutArgs: any = null;
+  const checkoutStripeClient = {
+    checkout: {
+      sessions: {
+        create: async (args: any) => {
+          capturedCheckoutArgs = args;
+          // Claimable general-sandbox keys cannot configure the Tax head office. Keep the
+          // production Tax contract in captured args, but strip Tax-only fields from the
+          // disposable sandbox Session so the rest of the real Stripe boundary is exercised.
+          const sandboxArgs = { ...args };
+          delete sandboxArgs.automatic_tax;
+          delete sandboxArgs.tax_id_collection;
+          delete sandboxArgs.billing_address_collection;
+          return stripe.checkout.sessions.create(sandboxArgs);
+        },
+      },
+    },
+  };
+
   try {
     product = await stripe.products.create({
       name: 'TerroirTrail Partner - Annual E2E',
+      tax_code: 'txcd_10701000',
       metadata: { e2eRunId: runId, purpose: 'producer_partner_e2e' },
     });
     price = await stripe.prices.create({
@@ -231,7 +251,7 @@ async function main() {
       producerId,
       makeDb(producerId) as any,
       store as any,
-      stripe
+      checkoutStripeClient as any
     );
     const sessionMatch = checkout.url.match(/cs_test_[A-Za-z0-9_]+/);
     assert.ok(sessionMatch, 'Checkout URL did not contain a test session ID.');
@@ -244,6 +264,9 @@ async function main() {
     assert.equal(session.metadata?.producerId, producerId);
     assert.equal(session.metadata?.hostUid, actorUid);
     assert.equal(session.line_items?.data[0]?.price?.id, price.id);
+    assert.deepEqual(capturedCheckoutArgs?.automatic_tax, { enabled: true });
+    assert.deepEqual(capturedCheckoutArgs?.tax_id_collection, { enabled: true });
+    assert.equal(capturedCheckoutArgs?.billing_address_collection, 'required');
     assert.equal(store.prepareCalls, 1);
     console.log('[partner sandbox e2e] real Checkout Session creation ✓');
 

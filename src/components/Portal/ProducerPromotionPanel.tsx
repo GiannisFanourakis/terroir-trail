@@ -230,9 +230,9 @@ export const ProducerPromotionPanel: React.FC<ProducerPromotionPanelProps> = ({
 
       {checkoutEligible && (
         <section className="rounded-2xl border border-amber-500/20 bg-amber-500/[0.06] p-4">
-          <div className="text-sm font-bold text-white">TerroirTrail Partner annual subscription</div>
+          <div className="text-sm font-bold text-white">TerroirTrail Partner — €199/year</div>
           <p className="mt-1 text-xs leading-relaxed text-stone-400">
-            Checkout is handled by Stripe. Your free producer listing, verification and factual visitor information remain independent of payment.
+            Annual Partner subscription for approved Hosts, billed at €199/year through Stripe. Stripe calculates applicable VAT and can collect a business tax ID during Checkout. Your free producer listing, verification, factual visitor information, road/access facts and organic discovery remain independent of payment.
           </p>
           <button
             type="button"
@@ -241,7 +241,7 @@ export const ProducerPromotionPanel: React.FC<ProducerPromotionPanelProps> = ({
             className="mt-3 inline-flex items-center gap-2 rounded-xl bg-amber-500 px-4 py-2.5 text-xs font-bold text-stone-950 hover:bg-amber-400 disabled:opacity-50"
           >
             <Megaphone className="h-4 w-4" />
-            {billingBusy === 'checkout' ? 'Opening Checkout…' : 'Start annual Partner checkout'}
+            {billingBusy === 'checkout' ? 'Opening Checkout…' : 'Subscribe — €199/year'}
           </button>
         </section>
       )}

@@ -148,7 +148,9 @@ test('Partner Checkout is ownership-scoped and pins the configured server-side a
       assert.deepEqual(checkoutArgs.subscription_data.billing_mode, { type: 'flexible' });
       assert.equal(checkoutArgs.customer_email, 'host@example.com');
       assert.equal('payment_method_types' in checkoutArgs, false);
-      assert.equal('automatic_tax' in checkoutArgs, false);
+      assert.deepEqual(checkoutArgs.automatic_tax, { enabled: true });
+      assert.deepEqual(checkoutArgs.tax_id_collection, { enabled: true });
+      assert.equal(checkoutArgs.billing_address_collection, 'required');
       assert.match(checkoutArgs.integration_identifier, /^terroirtrail_partner_[A-Za-z]{8}$/);
       assert.match(checkoutArgs.success_url, /partnerCheckout=success/);
       assert.match(checkoutArgs.cancel_url, /partnerCheckout=cancelled/);

@@ -85,10 +85,10 @@ describe('LegalModal and Legal Documentation Synchronization', () => {
     expect(readmeMd).not.toContain('TerroirTrail is an open-source');
     expect(readmeMd).not.toContain('MIT. See [`LICENSE`](LICENSE)');
 
-    // Confirm September 17, 2026 dates
-    expect(privacyPolicyMd).toContain('September 17, 2026');
-    expect(termsOfServiceMd).toContain('September 17, 2026');
-    expect(privacyHtml).toContain('September 17, 2026');
+    // Confirm September 23, 2026 dates
+    expect(privacyPolicyMd).toContain('September 23, 2026');
+    expect(termsOfServiceMd).toContain('September 23, 2026');
+    expect(privacyHtml).toContain('September 23, 2026');
 
     // Confirm Travelpayouts and in-app account deletion
     expect(privacyPolicyMd).toContain('Travelpayouts');

@@ -222,8 +222,14 @@ export async function createPartnerCheckout(
       description: 'TerroirTrail Partner annual subscription',
       billing_mode: { type: 'flexible' },
     },
+    automatic_tax: { enabled: true },
+    tax_id_collection: { enabled: true },
+    billing_address_collection: 'required',
     ...(existingCustomerId
-      ? { customer: existingCustomerId }
+      ? {
+          customer: existingCustomerId,
+          customer_update: { address: 'auto', name: 'auto' },
+        }
       : actorEmail
         ? { customer_email: actorEmail }
         : {}),

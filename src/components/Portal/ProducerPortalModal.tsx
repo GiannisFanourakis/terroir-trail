@@ -425,7 +425,7 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
                     )}
                   </div>
                   <p className="text-xs text-stone-300 mt-1 leading-relaxed">
-                    Your claim for <strong>{claim.tradeBrandName}</strong> is recorded. Automated checks support the review, but TerroirTrail Admin approval is still required before Host Portal controls unlock.
+                    Your claim for <strong>{claim.tradeBrandName}</strong> is recorded. Automated checks support the review, but TerroirTrail Admin approval is still required before Host Portal controls — including the optional Partner subscription — unlock.
                   </p>
                 </div>
               </div>
@@ -582,7 +582,7 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
 
       <div className="flex border-b border-white/10 px-5 sm:px-6 overflow-x-auto shrink-0">
         <button type="button" onClick={() => setActiveTab('overview')} className={tabClass('overview')}>Overview</button>
-        <button type="button" onClick={() => setActiveTab('promotions')} className={tabClass('promotions')}>Promotions</button>
+        <button type="button" onClick={() => setActiveTab('promotions')} className={tabClass('promotions')}>Partner</button>
         <button type="button" onClick={() => setActiveTab('notice')} className={tabClass('notice')}>Visitor Information</button>
         <button type="button" onClick={() => setActiveTab('content')} className={tabClass('content')}>Listing Content</button>
         {runtimeConfig.hostMediaPrototype.enabled && (
@@ -615,6 +615,22 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
                   Verified location, road access, visitor-access classification, audited Google Place identity, PDO evidence and TerroirTrail verification remain protected and cannot be self-declared by a host.
                 </p>
               </div>
+            </div>
+
+            <div className="rounded-2xl border border-amber-500/20 bg-amber-500/[0.06] p-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <h3 className="text-sm font-bold text-white">TerroirTrail Partner — €199/year</h3>
+                <p className="mt-1 text-xs text-stone-400 leading-relaxed">
+                  Your approved Host claim unlocks the optional annual Partner subscription for clearly labelled paid promotion. Subscription never changes listing inclusion, verification, visitability, road/access facts or organic ordering.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setActiveTab('promotions')}
+                className="shrink-0 rounded-xl border border-amber-400/30 bg-amber-500/10 px-3.5 py-2.5 text-xs font-bold text-amber-300 hover:bg-amber-500/15"
+              >
+                View Partner subscription
+              </button>
             </div>
 
             <div className="rounded-2xl border border-white/10 bg-stone-900/60 p-4">

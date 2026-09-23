@@ -1,7 +1,7 @@
 # TerroirTrail Terms of Service
 
 **Effective Date:** January 1, 2026<br />
-**Last Updated:** September 17, 2026<br />
+**Last Updated:** September 23, 2026<br />
 **Platform Operator:** ΙΩΑΝΝΗΣ ΚΩΝΣΤΑΝΤΙΝΟΣ ΦΑΝΟΥΡΑΚΗΣ, sole proprietorship<br />
 **Contact:** terroirtrail@gmail.com
 
@@ -124,7 +124,8 @@ TerroirTrail may feature links to third-party travel services (such as car renta
 - **Independent Providers:** Third-party travel services are offered, operated, and fulfilled entirely by independent commercial providers under their own respective terms, conditions, and privacy policies. TerroirTrail is not an online travel agency (OTA), transportation carrier, tour operator, or party to any booking made with external partners.
 - **Affiliate Commission:** If you follow an outbound affiliate link and complete a qualifying booking, TerroirTrail may earn a referral commission at no additional cost to you.
 - **Pass-Holder Experience:** Active TerroirTrail Explorer Pass holders enjoy an ad-free discovery environment and do not see promotional travel-affiliate carousels.
-- **Dormant Commercial Infrastructure:** Live consumer payment processing for digital passes (via Stripe) and third-party display advertising (via Google AdSense) remain dormant/inactive in this production release.
+- **Producer Partner Subscription:** After a producer claim is approved and trusted Host ownership is assigned, the Host may purchase the optional recurring TerroirTrail Partner annual subscription through Stripe at the price shown in the Host Portal and Stripe Checkout. Partner status provides eligibility for clearly labelled paid promotional placements that remain subject to TerroirTrail review and activation. Payment does not purchase catalogue inclusion, verification, visitability classification, road/access facts, organic ranking, or approval of any factual claim. Billing, renewal and cancellation are handled through Stripe Checkout and the Stripe Customer Portal where available. Applicable VAT/tax treatment, including supported business tax-ID handling and reverse-charge determination where relevant, is calculated and displayed by Stripe from the billing information supplied at Checkout.
+- **Dormant Commercial Infrastructure:** Live consumer payment processing for Explorer Passes and third-party display advertising (via Google AdSense) remain dormant/inactive in this production release.
 
 ---
 
