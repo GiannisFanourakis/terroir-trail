@@ -42,7 +42,8 @@
     "smoke:production-ui": "tsx scripts/browser_e2e_smoke.ts --production",
     "sync:seo-catalogue": "tsx scripts/sync_seo_catalogue.ts",
     "build:live": "npm run sync:seo-catalogue && npm run verify:live-catalogue && npm run build",
-    "verify:live-catalogue": "tsx scripts/verify_live_catalogue_sync.ts"
+    "verify:live-catalogue": "tsx scripts/verify_live_catalogue_sync.ts",
+    "stripe:e2e:sandbox": "tsx scripts/stripe_partner_sandbox_e2e.ts"
   },
   "devDependencies": {
     "@capacitor/cli": "^8.5.1",
