@@ -6,6 +6,7 @@ import {
   getOwnedCommercialState,
   setCommercialPartnerStatus,
   transitionCommercialPartnerCampaign,
+  updateCommercialPartnerCampaign,
 } from '../services/commercialPartnerService';
 
 const makeDb = (options?: {
@@ -216,6 +217,29 @@ test('verified Host can read only the commercial state attached to owned produce
         };
       },
     }),
+    rpc: async (name: string, args: Record<string, unknown>) => {
+      assert.equal(name, 'get_partner_campaign_report_v1');
+      assert.deepEqual(args, { p_producer_ids: ['producer-owned'] });
+      return {
+        data: {
+          campaigns: [{
+            campaign_id: 'campaign-1',
+            producer_id: 'producer-owned',
+            qualified_impressions: 12,
+            opens: 3,
+            saves: 1,
+            trip_additions: 1,
+            website_clicks: 1,
+            phone_clicks: 0,
+            email_clicks: 0,
+            directions_clicks: 1,
+            first_activity_day: '2026-09-20',
+            last_activity_day: '2026-09-23',
+          }],
+        },
+        error: null,
+      };
+    },
   };
 
   const state = await getOwnedCommercialState(
@@ -231,6 +255,7 @@ test('verified Host can read only the commercial state attached to owned produce
 
   assert.deepEqual(state.producerIds, ['producer-owned']);
   assert.equal(state.partners.length, 1);
+  assert.equal(state.campaignMetrics[0].qualified_impressions, 12);
   assert.match(selectedColumns.commercial_partner_subscriptions, /plan_code/);
   assert.doesNotMatch(selectedColumns.commercial_partner_subscriptions, /provider_customer_id/);
   assert.doesNotMatch(selectedColumns.commercial_partner_subscriptions, /provider_subscription_id/);
@@ -250,4 +275,57 @@ test('campaign transition validation fails before RPC for malformed IDs', async 
     (error: unknown) =>
       error instanceof CommercialPartnerError && error.code === 'bad_request'
   );
+});
+
+
+test('admin can edit only draft/rejected campaign content through the trusted RPC', async () => {
+  const calls: Array<{ name: string; args: Record<string, unknown> }> = [];
+  const supabase = {
+    rpc: async (name: string, args: Record<string, unknown>) => {
+      calls.push({ name, args });
+      return {
+        data: {
+          campaign: {
+            id: '78e94884-f021-4d06-ae92-1c593c7fe45f',
+            producer_id: 'producer-1',
+            campaign_type: 'regional_featured',
+            status: 'draft',
+            destination: 'crete',
+            category: 'winery',
+            headline: 'Edited harvest visits',
+          },
+          placements: ['region_discovery', 'trip_preparation'],
+        },
+        error: null,
+      };
+    },
+  };
+
+  const result = await updateCommercialPartnerCampaign(
+    'admin-uid',
+    '78e94884-f021-4d06-ae92-1c593c7fe45f',
+    {
+      headline: 'Edited harvest visits',
+      message: 'Factual seasonal update.',
+      startsAt: '2026-09-24T09:00:00Z',
+      endsAt: '2026-09-30T17:00:00Z',
+      placements: ['region_discovery', 'trip_preparation'],
+    },
+    makeDb({ admin: true }) as any,
+    supabase as any
+  );
+
+  assert.equal(result.campaign.headline, 'Edited harvest visits');
+  assert.deepEqual(calls, [{
+    name: 'update_commercial_partner_campaign_v1',
+    args: {
+      p_campaign_id: '78e94884-f021-4d06-ae92-1c593c7fe45f',
+      p_headline: 'Edited harvest visits',
+      p_message: 'Factual seasonal update.',
+      p_starts_at: '2026-09-24T09:00:00.000Z',
+      p_ends_at: '2026-09-30T17:00:00.000Z',
+      p_placements: ['region_discovery', 'trip_preparation'],
+      p_actor_uid: 'admin-uid',
+    },
+  }]);
 });
