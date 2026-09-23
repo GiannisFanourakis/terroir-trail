@@ -100,6 +100,12 @@ export interface HostCommercialState {
   campaignResults: CommercialCampaignResult[];
 }
 
+export interface PartnerBillingAvailability {
+  checkoutEnabled: boolean;
+  portalEnabled: boolean;
+  planCode: 'partner_annual_v1';
+}
+
 export interface CommercialAuditEntry {
   id: string;
   producer_id: string;
@@ -145,7 +151,19 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
 }
 
 export const fetchHostCommercialState = () =>
-  request<{ state: HostCommercialState }>('/producer/commercial');
+  request<{ state: HostCommercialState; billing: PartnerBillingAvailability }>('/producer/commercial');
+
+export const startPartnerCheckout = (producerId: string) =>
+  request<{ url: string }>(
+    `/producer/commercial/${encodeURIComponent(producerId)}/checkout`,
+    { method: 'POST', body: JSON.stringify({}) }
+  );
+
+export const openPartnerBillingPortal = (producerId: string) =>
+  request<{ url: string }>(
+    `/producer/commercial/${encodeURIComponent(producerId)}/billing-portal`,
+    { method: 'POST', body: JSON.stringify({}) }
+  );
 
 export const fetchAdminCommercialState = () =>
   request<{ state: AdminCommercialState }>('/admin/commercial');
