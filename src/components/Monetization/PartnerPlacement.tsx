@@ -170,6 +170,7 @@ export const PartnerPlacementSlot: React.FC<PartnerPlacementSlotProps> = ({
     campaign: ActivePartnerPlacement;
     producer: Producer;
   } | null>(null);
+  const excludedKey = excludedProducerIds.join('|');
 
   useEffect(() => {
     let cancelled = false;
@@ -186,7 +187,7 @@ export const PartnerPlacementSlot: React.FC<PartnerPlacementSlotProps> = ({
       });
       if (cancelled) return;
 
-      const excluded = new Set(excludedProducerIds);
+      const excluded = new Set(excludedKey ? excludedKey.split('|') : []);
       for (const campaign of campaigns) {
         if (excluded.has(campaign.producerId)) continue;
         const producer = await producerService.getProducerById(campaign.producerId);
@@ -201,7 +202,7 @@ export const PartnerPlacementSlot: React.FC<PartnerPlacementSlotProps> = ({
     return () => {
       cancelled = true;
     };
-  }, [placement, destination, category, excludedProducerIds.join('|')]);
+  }, [placement, destination, category, excludedKey]);
 
   if (!selection) return null;
 
