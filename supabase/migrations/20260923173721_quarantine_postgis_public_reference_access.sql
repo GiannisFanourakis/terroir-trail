@@ -1,0 +1,8 @@
+-- Production migration history record.
+--
+-- An attempt was made to revoke anon/authenticated access to extension-owned
+-- PostGIS objects in public. The objects are owned by supabase_admin, so the
+-- project postgres role cannot make those ACL/RLS changes effectively.
+--
+-- Intentionally no-op in source control. Full remediation requires
+-- Supabase-admin relocation of PostGIS out of the public schema.
