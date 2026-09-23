@@ -279,14 +279,14 @@ async function applySubscriptionEvent(
   event: Stripe.Event,
   subscription: Stripe.Subscription,
   force: 'paid' | 'failed' | 'deleted' | undefined,
-  client: SupabaseClient
+  client: SupabaseClient | null
 ) {
-  const expectedPriceId = configuredPriceId();
   const metadata = subscription.metadata || {};
   if (metadata.purpose !== PURPOSE || metadata.planCode !== PLAN_CODE) {
     return { processed: false, eventType: event.type, reason: 'not_partner_subscription' };
   }
 
+  const expectedPriceId = configuredPriceId();
   const producerId = metadata.producerId?.trim();
   if (!producerId) {
     throw new PartnerBillingError('bad_request', 'Partner subscription metadata is missing producerId.');
@@ -302,7 +302,8 @@ async function applySubscriptionEvent(
 
   const { status, graceUntil: nextGraceUntil } = mapSubscriptionStatus(subscription.status, force);
   const period = subscriptionPeriod(subscription);
-  const { data, error } = await client.rpc('apply_stripe_partner_subscription_event_v1', {
+  const supabase = requireSupabase(client);
+  const { data, error } = await supabase.rpc('apply_stripe_partner_subscription_event_v1', {
     p_event_id: event.id,
     p_event_type: event.type,
     p_provider_created_at: timestampIso(event.created),
@@ -350,8 +351,6 @@ export async function processPartnerStripeEvent(
   producerId?: string;
   subscriptionStatus?: PartnerBillingStatus;
 }> {
-  const supabase = requireSupabase(client);
-
   if (
     event.type === 'customer.subscription.created' ||
     event.type === 'customer.subscription.updated' ||
@@ -362,7 +361,7 @@ export async function processPartnerStripeEvent(
       event,
       subscription,
       event.type === 'customer.subscription.deleted' ? 'deleted' : undefined,
-      supabase
+      client
     );
   }
 
@@ -377,7 +376,7 @@ export async function processPartnerStripeEvent(
       event,
       subscription,
       event.type === 'invoice.paid' ? 'paid' : 'failed',
-      supabase
+      client
     );
   }
 
