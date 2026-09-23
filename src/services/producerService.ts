@@ -72,7 +72,7 @@ export function mapRowToProducer(row: any): Producer {
   return {
     id: row.id,
     name: row.name,
-    greekName: row.greek_name || row.name,
+    greekName: row.local_name || row.greek_name || row.name,
     category: row.category as Category,
     destination: row.destination as Destination,
     country,
@@ -247,7 +247,7 @@ export const producerService = {
         }
         if (searchQuery && searchQuery.trim()) {
           const q = searchQuery.trim();
-          query = query.or(`name.ilike.%${q}%,greek_name.ilike.%${q}%,village.ilike.%${q}%,region.ilike.%${q}%`);
+          query = query.or(`name.ilike.%${q}%,local_name.ilike.%${q}%,village.ilike.%${q}%,region.ilike.%${q}%`);
         }
 
         query = query.range(offset, offset + limit - 1);
