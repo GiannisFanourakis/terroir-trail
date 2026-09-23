@@ -97,6 +97,21 @@ export interface CommercialCampaignPlacement {
   created_at?: string;
 }
 
+export interface CommercialCampaignResult {
+  campaign_id: string;
+  producer_id: string;
+  qualified_impressions: number;
+  opens: number;
+  saves: number;
+  trip_additions: number;
+  website_clicks: number;
+  phone_clicks: number;
+  email_clicks: number;
+  directions_clicks: number;
+  first_day: string | null;
+  data_through: string | null;
+}
+
 export interface CommercialAuditEntry {
   id: string;
   producer_id: string;
@@ -117,6 +132,7 @@ export interface HostCommercialState {
   subscriptions: Array<Omit<CommercialPartnerSubscription, 'provider_customer_id' | 'provider_subscription_id'>>;
   campaigns: CommercialPartnerCampaign[];
   placements: CommercialCampaignPlacement[];
+  campaignResults: CommercialCampaignResult[];
 }
 
 export interface AdminCommercialState {
@@ -189,7 +205,8 @@ const mapRpcError = (message: string): CommercialPartnerError => {
   if (
     message.includes('invalid_partner_status_transition') ||
     message.includes('partner_account_required') ||
-    message.includes('invalid_campaign_status_transition')
+    message.includes('invalid_campaign_status_transition') ||
+    message.includes('campaign_not_editable')
   ) {
     return new CommercialPartnerError('conflict', 'The requested commercial state transition is not allowed.');
   }
@@ -243,16 +260,17 @@ export async function getOwnedCommercialState(
   const client = requireSupabase(supabase);
   const producerIds = capabilities.producerIds;
 
-  const [partnersResult, subscriptionsResult, campaignsResult] = await Promise.all([
+  const [partnersResult, subscriptionsResult, campaignsResult, resultsResult] = await Promise.all([
     client.from('commercial_partner_accounts').select('*').in('producer_id', producerIds),
     client
       .from('commercial_partner_subscriptions')
       .select('id, producer_id, plan_code, provider, status, current_period_start, current_period_end, grace_until, cancel_at_period_end, created_at, updated_at')
       .in('producer_id', producerIds),
     client.from('commercial_partner_campaigns').select('*').in('producer_id', producerIds),
+    client.rpc('get_partner_campaign_results_v1', { p_producer_ids: producerIds }),
   ]);
 
-  for (const result of [partnersResult, subscriptionsResult, campaignsResult]) {
+  for (const result of [partnersResult, subscriptionsResult, campaignsResult, resultsResult]) {
     if (result.error) {
       throw new CommercialPartnerError('service_unavailable', 'Commercial Partner data is temporarily unavailable.');
     }
@@ -279,6 +297,20 @@ export async function getOwnedCommercialState(
     subscriptions: (subscriptionsResult.data || []) as HostCommercialState['subscriptions'],
     campaigns,
     placements,
+    campaignResults: (resultsResult.data || []).map((row: any) => ({
+      campaign_id: String(row.campaign_id),
+      producer_id: String(row.producer_id),
+      qualified_impressions: Number(row.qualified_impressions || 0),
+      opens: Number(row.opens || 0),
+      saves: Number(row.saves || 0),
+      trip_additions: Number(row.trip_additions || 0),
+      website_clicks: Number(row.website_clicks || 0),
+      phone_clicks: Number(row.phone_clicks || 0),
+      email_clicks: Number(row.email_clicks || 0),
+      directions_clicks: Number(row.directions_clicks || 0),
+      first_day: row.first_day ? String(row.first_day) : null,
+      data_through: row.data_through ? String(row.data_through) : null,
+    })),
   };
 }
 
@@ -472,5 +504,70 @@ export async function transitionCommercialPartnerCampaign(
   if (!result.campaign || !Array.isArray(result.placements)) {
     throw new CommercialPartnerError('service_unavailable', 'Partner campaign transition returned an invalid response.');
   }
+  return { campaign: result.campaign, placements: result.placements };
+}
+
+
+export async function updateCommercialPartnerCampaign(
+  actorUid: string,
+  campaignId: string,
+  input: {
+    headline: string;
+    message?: string | null;
+    startsAt?: string | null;
+    endsAt?: string | null;
+    placements: string[];
+  },
+  db = adminDb(),
+  supabase: SupabaseClient | null = getSupabaseAdmin()
+): Promise<{ campaign: CommercialPartnerCampaign; placements: CommercialPlacement[] }> {
+  await requireAdmin(actorUid, db);
+  const client = requireSupabase(supabase);
+
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(campaignId)) {
+    throw new CommercialPartnerError('bad_request', 'A valid campaign ID is required.');
+  }
+
+  const headline = input.headline.trim();
+  if (!headline || headline.length > 120) {
+    throw new CommercialPartnerError('bad_request', 'Campaign headline must be between 1 and 120 characters.');
+  }
+  const message = normalizeOptionalText(input.message, 500);
+  const startsAt = toDateOrNull(input.startsAt, 'startsAt');
+  const endsAt = toDateOrNull(input.endsAt, 'endsAt');
+  if (startsAt && endsAt && Date.parse(endsAt) <= Date.parse(startsAt)) {
+    throw new CommercialPartnerError('bad_request', 'Campaign end must be after its start.');
+  }
+
+  const placements = Array.from(new Set(input.placements || []));
+  if (!placements.length || placements.length > COMMERCIAL_PLACEMENTS.length) {
+    throw new CommercialPartnerError('bad_request', 'Choose at least one valid Partner placement.');
+  }
+  for (const placement of placements) {
+    if (!includes(COMMERCIAL_PLACEMENTS, placement)) {
+      throw new CommercialPartnerError('bad_request', 'Invalid Partner placement.');
+    }
+  }
+
+  const { data, error } = await client.rpc('update_commercial_partner_campaign_v1', {
+    p_campaign_id: campaignId,
+    p_headline: headline,
+    p_message: message,
+    p_starts_at: startsAt,
+    p_ends_at: endsAt,
+    p_placements: placements,
+    p_actor_uid: actorUid,
+  });
+
+  assertNoError(error);
+  if (!data || typeof data !== 'object' || Array.isArray(data)) {
+    throw new CommercialPartnerError('service_unavailable', 'Partner campaign update could not be confirmed.');
+  }
+
+  const result = data as { campaign?: CommercialPartnerCampaign; placements?: CommercialPlacement[] };
+  if (!result.campaign || !Array.isArray(result.placements)) {
+    throw new CommercialPartnerError('service_unavailable', 'Partner campaign update returned an invalid response.');
+  }
+
   return { campaign: result.campaign, placements: result.placements };
 }
