@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
-  AlertCircle,
   CalendarDays,
   CheckCircle2,
   Edit2,
@@ -140,14 +139,14 @@ export const AdminCommercialPartnerPanel: React.FC = () => {
     if (producerResult.status === 'fulfilled') {
       const sorted = [...producerResult.value].sort((a, b) => a.name.localeCompare(b.name));
       setProducers(sorted);
-      if (!partnerProducerId && sorted[0]) setPartnerProducerId(sorted[0].id);
+      setPartnerProducerId((current) => current || sorted[0]?.id || '');
     }
     setLoading(false);
-  }, [partnerProducerId]);
+  }, []);
 
   useEffect(() => {
     void load();
-  }, []);
+  }, [load]);
 
   const producerMap = useMemo(
     () => new Map(producers.map((producer) => [producer.id, producer])),
