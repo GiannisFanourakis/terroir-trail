@@ -5,7 +5,7 @@
 > Completion convention: change `- [ ] Step` to `- [x] ~~Step~~` when finished. Do not mark a step complete until it has been implemented, tested, pushed, deployed where applicable, and verified.
 
 **Last updated:** 2026-09-23
-**Current focus:** Phase 15 live Partner activation preparation. Blocks A–D are production-deployed and verified; live Checkout remains intentionally disabled until the V1 annual price is chosen and the Stripe webhook signing secret is configured securely.
+**Current focus:** Phase 15.8A Explorer is live; immediate work is B2C validation plus planned Phase 15.8B Trip Intelligence/Journey Mode. Producer Partner outreach remains deferred behind traveler evidence.
 
 ---
 
@@ -1374,10 +1374,29 @@ Producer Partner infrastructure remains available, but producer outreach is defe
 - [x] Create a clean live Stripe Explorer Product with tax-inclusive €9.99 one-time and €24.99/year recurring Prices; leave public checkout fail-closed until release validation completes.
 - [x] ~~Verify both Checkout contracts against a Stripe sandbox.~~ `npm run stripe:e2e:explorer` creates real sandbox Holiday and Annual hosted Checkout Sessions with the same service function, verifies the server-selected €9.99 payment / €24.99 yearly subscription contracts, and proves Annual active → cancel-at-period-end → canceled entitlement behavior without live money.
 - [x] ~~Run the complete local release gate and responsive browser smoke.~~ Typecheck, lint (0 errors), 674 frontend tests, 132 Node server tests, 17 service specs, Firestore rules, production build/SEO/budget checks and the real-browser smoke all passed; the browser smoke covers phone, iPad portrait, iPad landscape and desktop.
-- [ ] Verify the merged build with the production deployment/smoke while Explorer checkout remains fail-closed.
-- [ ] Enable the repository-controlled Explorer checkout gate only after that production verification and an explicit launch decision.
+- [x] ~~Verify the merged build with the production deployment/smoke while Explorer checkout remains fail-closed.~~ Main Quality Gate `35862102825` and Production Deploy `35862313736` passed before launch; the serving revision was `terroirtrail-api-00055-8tb` with Explorer checkout still disabled.
+- [x] ~~Enable the repository-controlled Explorer checkout gate only after that production verification and an explicit launch decision.~~ Explicit launch approval was given on 2026-09-23. `EXPLORER_PASS_CHECKOUT_ENABLED=true` was set in the repository and deployed successfully; later production verification continues to show the gate enabled in Cloud Run and the public frontend.
+- [x] ~~Add clearer paid-layer discovery without turning the app into a paywall.~~ `Upgrade your trip` now appears in My Trips and as a secondary first-run welcome CTA with the Holiday/Annual prices; PR #38 merged as `83af1d6` and production responsive smoke passed.
+- [x] ~~Add a one-time alcohol-content notice without collecting age/DOB data.~~ Winery, brewery and distillery detail flows now show a legal-drinking-age notice with Continue / Back to discovery; only a local acknowledgement flag is stored. PR #39 merged as `e1b289a` and production verification passed.
+- [x] ~~Fix tablet/iPad producer-detail state so each newly selected map listing returns to quick preview and requires `Explore Story` again.~~ PR #40 merged as `31e4c6e`; PR #41 (`c7c953c`) stabilized an exact two-producer iPad portrait/landscape regression. Production Deploy `35879251207` and a direct live production browser smoke both passed.
 - [ ] Treat the first genuine traveler purchase as monitored production validation; do not create a sacrificial live self-purchase.
-- [ ] Measure Pass popup → Checkout → paid entitlement → Trip Pack/calendar use before changing price or adding more paid features.
+- [ ] Measure Pass popup -> Checkout -> paid entitlement -> Trip Pack/calendar use before changing price or adding more paid features.
+
+**15.8A Explorer production launch - 2026-09-23:** Explorer checkout is live. The live traveler products remain Holiday Pass EUR 9.99 / 14 days (one-time) and Annual Explorer Pass EUR 24.99/year (recurring), both tax-inclusive. Current production after the post-launch UX fixes is `main` commit `c7c953c`, Cloud Run revision `terroirtrail-api-00059-nrs`, with `EXPLORER_PASS_CHECKOUT_ENABLED=true`. No sacrificial live self-purchase was made; the first genuine traveler purchase remains the monitored production-validation event.
+
+### 15.8B - Explorer Trip Intelligence and Journey Mode (planned)
+
+This is the next B2C value phase. It must make an actual road trip easier without moving existing discovery, visitability, road/access or current free Trip Readiness facts behind a paywall.
+
+- [ ] Define **Optimize my day** as a user-requested suggestion within an assigned day; never silently reorder the itinerary and allow important/booking-constrained stops to be locked.
+- [ ] Add an estimated day timeline using travel-time and visit-duration assumptions with explicit uncertainty labels; never imply unverified opening hours or visit availability.
+- [ ] Add **Navigate next stop** as a simple handoff to the traveler's mapping app.
+- [ ] Design opt-in **Nearby / passing-by producer alerts** using route detour rather than straight-line radius where possible; cap alert frequency and respect visitability/booking/opening confidence. Initial web/PWA behavior may be foreground/active-journey only because background location is platform-constrained.
+- [ ] Decide the **unlimited trips** packaging before implementation. Candidate model: a small Free active-trip allowance, unlimited active trips while Holiday/Annual is active, and unlimited annual archive/history. Never delete or hide trips a traveler already created when a pass expires.
+- [ ] Preserve already-generated paid outputs after expiry: optimized order, downloaded Trip Pack/calendar files and existing itinerary state remain the traveler's; only running new premium computations/exports requires an active entitlement.
+- [ ] Evaluate later Journey Mode additions only after the core planner is useful: route-gap suggestions, trip-change alerts, shared trips, travel journal/Passport history and journey recap.
+- [ ] Keep paid placement completely separate from route optimization, nearby-alert eligibility, visitability, road/access facts and organic relevance.
+- [ ] Run server-side entitlement checks for privileged/premium computations and add phone/iPad/desktop production regression coverage before launch.
 
 ### 15.9 — Controlled production pilot (producer side, deferred behind B2C validation)
 
@@ -1573,20 +1592,22 @@ Do not implement levels 3–5 unless they are deliberately chosen.
 
 ## Phase 18 — Monetisation & Scale
 
-**Status:** Commercial direction defined. Producer Partner / paid visibility is the next producer-side product; scaling still depends on real paid usage and later-phase evidence.
+**Status:** Traveler Explorer is live as the first B2C paid product. Producer Partner infrastructure is production-ready, but broad producer outreach remains deferred behind traveler evidence. Scaling still depends on real paid usage and later-phase evidence.
 
 **Objective:** commercialize only validated value while preserving TerroirTrail's independent discovery and trust model.
 
 ### Commercial priority order
 
-1. contextual affiliate utility;
-2. Producer Partner / paid visibility and campaign distribution;
-3. B2B Regional Intelligence / regional contracts;
-4. Traveler premium planning;
+1. Traveler Explorer B2C validation and useful trip-planning intelligence;
+2. contextual affiliate utility;
+3. Producer Partner / paid visibility and campaign distribution after traveler evidence improves the producer value proposition;
+4. B2B Regional Intelligence / regional contracts;
 5. standalone producer workflow software only if separately validated;
 6. booking/payment commission only if Phase 17 proves viable.
 
-### 18.1 — Select the first validated paid product
+### 18.1 - Validate the first live paid product
+
+Phase 15.8A selected and launched Traveler Explorer as the first live B2C commercial experiment. The remaining Phase 18 work is therefore validation/scale discipline, not another product-selection exercise.
 
 - [ ] Review Phase 14 evidence.
 - [ ] State the paying customer clearly.
@@ -1641,12 +1662,13 @@ Only after a paid product is chosen:
 - [ ] do not use existing analytics availability as justification by itself;
 - [ ] preserve the free Host factual-management boundary.
 
-**Traveler premium planning**
+**Traveler Explorer / premium planning**
 
-- [ ] validate repeat My Trips use;
-- [ ] identify advanced workflow users ask for;
-- [ ] potential paid features may include collaboration, exports, offline packs, alerts and richer organization;
-- [ ] never hide safety/access facts behind the paid tier.
+- [ ] validate first genuine paid conversion and entitlement fulfillment;
+- [ ] validate actual use of the live Trip Pack, offline snapshot and calendar export;
+- [ ] validate repeat Holiday Pass purchase / Annual conversion behavior before changing price;
+- [ ] validate repeat My Trips use and whether users ask for the planned 15.8B Trip Intelligence/Journey Mode features;
+- [ ] never hide discovery, current Trip Readiness, visitability, road/access or other safety facts behind the paid tier.
 
 ### 18.5 — Affiliate scale
 
@@ -1706,7 +1728,7 @@ Before scaling any paid product:
 18. **Crete remains the reference-quality regional implementation standard.**
 19. **Regional discovery layers are contextual tools, not evidence of exhaustive coverage, administrative endorsement, route safety or commercial partnership.**
 20. **Intent analytics must be privacy-conscious and must never collect private tasting-note contents, personal trip-note contents, message contents or unnecessary PII.**
-21. **Existing Explorer Pass / Stripe code is infrastructure optionality, not proof that Explorer Pass is the product TerroirTrail should sell.**
+21. **Explorer is now a live commercial experiment, not proof of product-market fit.** Keep pricing, packaging and future paid features evidence-driven; do not interpret infrastructure readiness or a live checkout as willingness-to-pay evidence.
 22. **Before starting a major new feature, place it against this roadmap first.**
 23. **Every completed roadmap item is crossed out in this file only after implementation, testing and any required production verification.**
 
