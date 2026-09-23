@@ -187,7 +187,9 @@ async function replaySignedPartnerEvent(
 async function main() {
   const store = new MemoryPartnerStore();
   let product: Stripe.Product | null = null;
+  let price: Stripe.Price | null = null;
   let checkoutSessionId: string | null = null;
+  let paymentMethod: Stripe.PaymentMethod | null = null;
   let customer: Stripe.Customer | null = null;
   let subscription: Stripe.Subscription | null = null;
   const startedAt = Math.floor(Date.now() / 1000);
@@ -214,7 +216,7 @@ async function main() {
       name: 'TerroirTrail Partner - Annual E2E',
       metadata: { e2eRunId: runId, purpose: 'producer_partner_e2e' },
     });
-    const price = await stripe.prices.create({
+    price = await stripe.prices.create({
       product: product.id,
       currency: 'eur',
       unit_amount: 19900,
@@ -245,7 +247,7 @@ async function main() {
     assert.equal(store.prepareCalls, 1);
     console.log('[partner sandbox e2e] real Checkout Session creation ✓');
 
-    const paymentMethod = await stripe.paymentMethods.create({
+    paymentMethod = await stripe.paymentMethods.create({
       type: 'card',
       card: { token: 'tok_visa' },
     } as any);
@@ -253,7 +255,7 @@ async function main() {
       email: actorEmail,
       metadata: { e2eRunId: runId, producerId },
     });
-    await stripe.paymentMethods.attach(paymentMethod.id, {
+    paymentMethod = await stripe.paymentMethods.attach(paymentMethod.id, {
       customer: customer.id,
     });
     await stripe.customers.update(customer.id, {
@@ -354,8 +356,18 @@ async function main() {
           .catch(() => undefined);
       }
     }
+    if (paymentMethod) {
+      await stripe.paymentMethods
+        .detach(paymentMethod.id)
+        .catch(() => undefined);
+    }
     if (customer) {
       await stripe.customers.del(customer.id).catch(() => undefined);
+    }
+    if (price) {
+      await stripe.prices
+        .update(price.id, { active: false })
+        .catch(() => undefined);
     }
     if (product) {
       await stripe.products
