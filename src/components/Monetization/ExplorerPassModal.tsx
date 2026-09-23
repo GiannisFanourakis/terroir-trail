@@ -7,11 +7,13 @@ import {
   Crown,
   Download,
   Lock,
+  Route,
   ShieldCheck,
   Sparkles,
   WifiOff,
   X,
 } from 'lucide-react';
+import { runtimeConfig } from '../../config/runtimeConfig';
 import type { UserProfile } from '../../types/auth';
 import {
   isExplorerPassPurchasesEnabled,
@@ -29,6 +31,16 @@ interface ExplorerPassModalProps {
 
 type PassPlan = 'holiday' | 'annual';
 const paidConveniences = [
+  ...(runtimeConfig.tripOptimization.enabled
+    ? [
+        {
+          icon: Route,
+          title: 'Optimize My Day',
+          description:
+            'Reorder the stops already in your trip day using real road-route estimates. Lock important stops, review the suggestion, and apply it only when you choose.',
+        },
+      ]
+    : []),
   {
     icon: Sparkles,
     title: 'Ad-free trip planning',
@@ -281,9 +293,8 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
                 What the paid Pass actually adds
               </h3>
               <p className="mt-1 text-[11px] leading-relaxed text-stone-400">
-                These are convenience tools around your free My Trips plan. They
-                do not unlock better producer rankings or different safety
-                information.
+                Plan smarter and carry your trip with you — optimize your day,
+                export it, save it offline, and travel without distractions.
               </p>
             </div>
             <div className="grid gap-3 sm:grid-cols-2">
