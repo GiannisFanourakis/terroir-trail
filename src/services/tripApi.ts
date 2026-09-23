@@ -1,6 +1,7 @@
 import { auth } from './firebase';
 import { resolveApiBaseUrl } from './apiOrigin';
 import { trackIntent } from './intentAnalytics';
+import { recordPartnerTripAddIfAttributed } from './partnerAttribution';
 
 export interface TripRecordV1 {
   id: string;
@@ -126,6 +127,7 @@ export async function addProducerToTrip(
     sourceSurface,
     producerId,
   });
+  void recordPartnerTripAddIfAttributed(producerId);
   return trip;
 }
 
