@@ -5,7 +5,7 @@
 > Completion convention: change `- [ ] Step` to `- [x] ~~Step~~` when finished. Do not mark a step complete until it has been implemented, tested, pushed, deployed where applicable, and verified.
 
 **Last updated:** 2026-09-23
-**Current focus:** Phase 15 Block A — Producer Partner commercial authority and data model, while the Phase 14.7 affiliate experiment remains an observation/cleanup item. My Trips is frozen as the free traveler-planning core.
+**Current focus:** Phase 15 Block C — Host/Admin Partner controls and campaign reporting. Blocks A-B are production-verified; no real paid Partner or campaign has been seeded yet.
 
 ---
 
@@ -1173,7 +1173,7 @@ Before closing Phase 14:
 
 ## Phase 15 — Producer Partner & Paid Visibility
 
-**Status:** Next commercial build after the short Phase 14.7 affiliate decision.
+**Status:** Active. Blocks A-B are production-verified; Block C is building Host/Admin commercial controls and campaign reporting before Stripe or producer outreach.
 
 **Objective:** create a real producer-paid distribution product inside TerroirTrail. Independent producers remain discoverable for free; verified Hosts may enter an explicit commercial Partner relationship that buys additional clearly labelled distribution to relevant travelers without changing organic ranking, verification, visitability or safety/access truth.
 
@@ -1247,35 +1247,34 @@ Pricing is a hypothesis until real paid usage exists. Initial checkout may use o
 V1 should use only a small number of useful surfaces.
 
 #### Regional discovery
-- [ ] Add a clearly labelled `Featured Partner` module in appropriate destination/region discovery.
-- [ ] Keep the normal producer ordering/list/map unchanged.
-- [ ] Show a Partner only where the campaign's region/category context is relevant.
+- [x] ~~Add a clearly labelled `Featured Partner` module in appropriate destination/region discovery.~~
+- [x] ~~Keep the normal producer ordering/list/map unchanged.~~
+- [x] ~~Show a Partner only where the campaign's canonical destination/category context is relevant.~~
 
 #### My Trips
-- [ ] Add a clearly labelled contextual Partner suggestion inside My Trips/trip preparation.
-- [ ] Use trip destination/category context rather than behavioral profiling unrelated to the trip.
-- [ ] Never insert paid content into or between safety/access warnings and their evidence.
-- [ ] Do not imply the suggested Partner is required, safer or editorially preferred.
+- [x] ~~Add a clearly labelled contextual Partner suggestion inside My Trips/trip preparation.~~
+- [x] ~~Use trip destination context rather than behavioral profiling unrelated to the trip.~~
+- [x] ~~Never insert paid content into or between safety/access warnings and their evidence.~~
+- [x] ~~Do not imply the suggested Partner is required, safer or editorially preferred.~~
 
 #### Seasonal / temporary promotion
-- [ ] Support a small approved campaign type for real producer announcements such as open days, harvest periods or temporary visitor availability.
-- [ ] Require factual/admin review before distribution.
-- [ ] Keep campaign copy separate from canonical visitability truth.
+- [x] ~~Support an approved `seasonal_notice` campaign type for real producer announcements such as open days, harvest periods or temporary visitor availability.~~
+- [x] ~~Require Admin-controlled campaign review/status before distribution.~~
+- [x] ~~Keep campaign copy separate from canonical visitability truth.~~
+
+**15.4 Block B production checkpoint — 2026-09-23:** regional and My Trips placements are live in the product but return nothing until a trusted active Partner campaign exists. Public serving fails closed on Partner status, producer publication, campaign status/window and allowed placement, uses `no-store` so a pause is immediate, and leaves organic producer ordering untouched. No real Partner campaign has been seeded.
 
 ### 15.5 — Add campaign attribution to first-party analytics
 
 Do not misuse affiliate events.
 
-- [ ] Extend the event contract with dedicated Partner promotion events such as:
-  - `partner_impression`;
-  - `partner_open`;
-  - `partner_save`;
-  - `partner_trip_add`;
-  - `partner_contact_action` where appropriate.
-- [ ] Include allowlisted campaign ID, producer ID, placement/source surface and relevant destination/category context.
-- [ ] Preserve privacy rules: no private trip notes, message contents, PII or precise background location.
-- [ ] Deduplicate qualified impressions consistently with the existing analytics approach.
-- [ ] Distinguish paid-distribution actions from organic producer discovery in reporting.
+- [x] ~~Extend the event contract with dedicated `partner_impression`, `partner_open`, `partner_save`, `partner_trip_add` and `partner_contact_action` events.~~
+- [x] ~~Include allowlisted campaign ID, producer ID, placement/source surface and trusted canonical destination/category context.~~
+- [x] ~~Preserve privacy rules: no private trip notes, message contents, PII or precise background location.~~
+- [x] ~~Deduplicate qualified impressions by pseudonymous session in the separate Partner daily aggregate.~~
+- [x] ~~Distinguish paid-distribution actions from organic producer discovery in storage and reporting.~~
+
+**15.5 Block B production checkpoint — 2026-09-23:** migration `20260923062004_phase15_partner_campaign_attribution` added service-validated Partner attribution and a separate two-year daily aggregate. A qualified impression requires the placement to be at least 50% visible for 1 second; downstream campaign attribution is session-scoped for 30 minutes after a Partner open. Production verification completed with zero real Partner, campaign or Partner-event rows.
 
 ### 15.6 — Extend the existing Host Portal
 
