@@ -36,6 +36,7 @@ import {
 import { ProducerOwnershipAdmin } from './ProducerOwnershipAdmin';
 import { AdminIntentBaseline } from './AdminIntentBaseline';
 import { AdminRegionalIntelligence } from './AdminRegionalIntelligence';
+import { AdminPartnerCampaigns } from './AdminPartnerCampaigns';
 
 interface AdminPanelModalProps {
   isOpen: boolean;
@@ -349,7 +350,7 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
               <div className="space-y-2 text-[11px]">
                 <div className="flex items-center justify-between gap-3 rounded-lg bg-stone-950/70 px-3 py-2"><span className="text-stone-400">Admin API</span><span className={dashboardMetrics ? 'text-emerald-300 font-bold' : 'text-amber-300 font-bold'}>{dashboardMetrics ? 'Operational' : 'Unavailable'}</span></div>
                 <div className="flex items-center justify-between gap-3 rounded-lg bg-stone-950/70 px-3 py-2"><span className="text-stone-400">Catalogue source</span><span className="text-white font-bold">{catalogueProvenance === 'live' ? 'Live Supabase' : catalogueProvenance === 'fallback' ? 'Audited fallback' : '—'}</span></div>
-                <div className="rounded-lg bg-stone-950/70 px-3 py-2"><div className="flex items-center justify-between gap-3"><span className="text-stone-400">Engagement telemetry</span><span className="text-stone-300 font-bold">Not instrumented</span></div><p className="text-stone-600 mt-1">Producer-interest scores are intentionally not shown until real first-party events are collected.</p></div>
+                <div className="rounded-lg bg-stone-950/70 px-3 py-2"><div className="flex items-center justify-between gap-3"><span className="text-stone-400">First-party intent analytics</span><span className="text-emerald-300 font-bold">Active</span></div><p className="text-stone-600 mt-1">Organic, affiliate and paid Partner events remain separately attributed; no opaque producer-interest score is used.</p></div>
               </div>
             </div>
           </section>
@@ -373,6 +374,7 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
 
           <AdminIntentBaseline />
           <AdminRegionalIntelligence />
+          <AdminPartnerCampaigns />
 
           <section>
             <div className="flex items-center justify-between gap-3 mb-3">
