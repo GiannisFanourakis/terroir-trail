@@ -1,11 +1,13 @@
 import type Stripe from 'stripe';
 import { stripe } from '../stripeClient';
 import { fulfillPass } from './passService';
+import { processPartnerStripeEvent } from './partnerBillingService';
 
 export async function handleWebhookEvent(
   rawBody: Buffer | string,
   signatureHeader?: string,
   fulfill = fulfillPass,
+  processPartner = processPartnerStripeEvent,
 ) {
   const secret = process.env.STRIPE_WEBHOOK_SECRET;
   if (!secret || !signatureHeader) throw new Error('Webhook signature and secret are required.');
@@ -17,5 +19,10 @@ export async function handleWebhookEvent(
       return { processed: true, eventType: event.type };
     }
   }
-  return { processed: false, eventType: event.type };
+
+  const partnerResult = await processPartner(event);
+  return {
+    processed: partnerResult.processed,
+    eventType: event.type,
+  };
 }

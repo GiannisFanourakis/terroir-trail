@@ -12,9 +12,12 @@ import {
 } from 'lucide-react';
 import {
   fetchHostCommercialState,
+  openPartnerBillingPortal,
+  startPartnerCheckout,
   type CommercialCampaignResult,
   type CommercialPartnerCampaign,
   type HostCommercialState,
+  type PartnerBillingAvailability,
 } from '../../services/commercialPartnerApi';
 
 interface ProducerPromotionPanelProps {
@@ -67,7 +70,9 @@ export const ProducerPromotionPanel: React.FC<ProducerPromotionPanelProps> = ({
   isReadOnlyPreview = false,
 }) => {
   const [state, setState] = useState<HostCommercialState | null>(null);
+  const [billing, setBilling] = useState<PartnerBillingAvailability | null>(null);
   const [loading, setLoading] = useState(true);
+  const [billingBusy, setBillingBusy] = useState<'checkout' | 'portal' | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
@@ -76,8 +81,10 @@ export const ProducerPromotionPanel: React.FC<ProducerPromotionPanelProps> = ({
     try {
       const response = await fetchHostCommercialState();
       setState(response.state);
+      setBilling(response.billing);
     } catch (err) {
       setState(null);
+      setBilling(null);
       setError(err instanceof Error ? err.message : 'Unable to load Partner status.');
     } finally {
       setLoading(false);
@@ -118,6 +125,33 @@ export const ProducerPromotionPanel: React.FC<ProducerPromotionPanelProps> = ({
     }
     return map;
   }, [state?.campaignResults]);
+
+  const checkoutEligible = Boolean(
+    billing?.checkoutEnabled &&
+    (
+      !partner ||
+      (
+        partner.activation_source === 'stripe_subscription' &&
+        partner.status !== 'active' &&
+        (!subscription || subscription.status === 'cancelled' || subscription.status === 'expired')
+      )
+    )
+  );
+
+  const redirectToBillingUrl = async (type: 'checkout' | 'portal') => {
+    setBillingBusy(type);
+    setError(null);
+    try {
+      const result =
+        type === 'checkout'
+          ? await startPartnerCheckout(producerId)
+          : await openPartnerBillingPortal(producerId);
+      window.location.assign(result.url);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Partner billing is temporarily unavailable.');
+      setBillingBusy(null);
+    }
+  };
 
   if (loading) {
     return (
@@ -194,12 +228,35 @@ export const ProducerPromotionPanel: React.FC<ProducerPromotionPanelProps> = ({
         </div>
       </section>
 
+      {checkoutEligible && (
+        <section className="rounded-2xl border border-amber-500/20 bg-amber-500/[0.06] p-4">
+          <div className="text-sm font-bold text-white">TerroirTrail Partner annual subscription</div>
+          <p className="mt-1 text-xs leading-relaxed text-stone-400">
+            Checkout is handled by Stripe. Your free producer listing, verification and factual visitor information remain independent of payment.
+          </p>
+          <button
+            type="button"
+            onClick={() => void redirectToBillingUrl('checkout')}
+            disabled={billingBusy !== null || isReadOnlyPreview}
+            className="mt-3 inline-flex items-center gap-2 rounded-xl bg-amber-500 px-4 py-2.5 text-xs font-bold text-stone-950 hover:bg-amber-400 disabled:opacity-50"
+          >
+            <Megaphone className="h-4 w-4" />
+            {billingBusy === 'checkout' ? 'Opening Checkout…' : 'Start annual Partner checkout'}
+          </button>
+        </section>
+      )}
+
       {!partner ? (
         <section className="rounded-2xl border border-white/10 bg-stone-900/60 p-5">
           <div className="text-sm font-bold text-white">No paid promotion is running.</div>
           <p className="mt-1 text-xs leading-relaxed text-stone-400">
-            Your producer remains discoverable through the normal free TerroirTrail catalogue. Partner billing is not yet self-service in this build.
+            Your producer remains discoverable through the normal free TerroirTrail catalogue whether or not you subscribe to Partner.
           </p>
+          {!billing?.checkoutEnabled && (
+            <div className="mt-4 rounded-xl border border-white/10 bg-stone-950/55 px-3 py-2 text-[10px] leading-relaxed text-stone-500">
+              Self-service Partner billing is not enabled yet. Your free listing and Host controls remain available.
+            </div>
+          )}
         </section>
       ) : campaigns.length === 0 ? (
         <section className="rounded-2xl border border-white/10 bg-stone-900/60 p-5">
@@ -282,6 +339,19 @@ export const ProducerPromotionPanel: React.FC<ProducerPromotionPanelProps> = ({
               </section>
             );
           })}
+        </div>
+      )}
+
+      {subscription?.provider === 'stripe' && billing?.portalEnabled && (
+        <div className="flex justify-end">
+          <button
+            type="button"
+            onClick={() => void redirectToBillingUrl('portal')}
+            disabled={billingBusy !== null || isReadOnlyPreview}
+            className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-stone-900 px-3 py-2 text-xs font-semibold text-stone-300 hover:text-white disabled:opacity-50"
+          >
+            {billingBusy === 'portal' ? 'Opening billing…' : 'Manage Stripe billing'}
+          </button>
         </div>
       )}
 

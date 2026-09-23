@@ -13,6 +13,12 @@ import {
   getActivePartnerPlacements,
   PartnerPlacementError,
 } from './services/partnerPlacementService';
+import {
+  createPartnerBillingPortal,
+  createPartnerCheckout,
+  getPartnerBillingAvailability,
+  PartnerBillingError,
+} from './services/partnerBillingService';
 
 const defaults = {
   verifyToken: (token: string) => adminAuth().verifyIdToken(token, true),
@@ -23,6 +29,9 @@ const defaults = {
   transitionCommercialPartnerCampaign,
   updateCommercialPartnerCampaign,
   getActivePartnerPlacements,
+  createPartnerCheckout,
+  createPartnerBillingPortal,
+  getPartnerBillingAvailability,
 };
 
 type CommercialPartnerRouteDependencies = typeof defaults;
@@ -67,6 +76,14 @@ export function registerCommercialPartnerRoutes(
       res.status(error.code === 'bad_request' ? 400 : 503).json({ error: error.message });
       return;
     }
+    if (error instanceof PartnerBillingError) {
+      const status =
+        error.code === 'bad_request' ? 400 :
+        error.code === 'forbidden' ? 403 :
+        error.code === 'conflict' ? 409 : 503;
+      res.status(status).json({ error: error.message });
+      return;
+    }
     console.error(fallbackMessage, error);
     res.status(503).json({ error: 'Commercial Partner services are temporarily unavailable.' });
   };
@@ -89,9 +106,37 @@ export function registerCommercialPartnerRoutes(
   app.get('/api/producer/commercial', requireAuth, async (_req, res) => {
     try {
       const state = await deps.getOwnedCommercialState(res.locals.identity.uid);
-      res.json({ state });
+      res.json({
+        state,
+        billing: deps.getPartnerBillingAvailability(),
+      });
     } catch (error) {
       handleError(error, res, 'Host commercial state unavailable:');
+    }
+  });
+
+  app.post('/api/producer/commercial/:producerId/checkout', requireAuth, async (req, res) => {
+    try {
+      const result = await deps.createPartnerCheckout(
+        res.locals.identity.uid,
+        typeof res.locals.identity.email === 'string' ? res.locals.identity.email : null,
+        String(req.params.producerId || '')
+      );
+      res.json(result);
+    } catch (error) {
+      handleError(error, res, 'Partner Checkout unavailable:');
+    }
+  });
+
+  app.post('/api/producer/commercial/:producerId/billing-portal', requireAuth, async (req, res) => {
+    try {
+      const result = await deps.createPartnerBillingPortal(
+        res.locals.identity.uid,
+        String(req.params.producerId || '')
+      );
+      res.json(result);
+    } catch (error) {
+      handleError(error, res, 'Partner billing portal unavailable:');
     }
   });
 

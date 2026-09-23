@@ -134,6 +134,32 @@ test('webhooks require valid signatures and process paid sessions only', async (
   const unpaidHeader = stripe.webhooks.generateTestHeaderString({ payload: unpaid, secret: process.env.STRIPE_WEBHOOK_SECRET });
   assert.equal((await handleWebhookEvent(unpaid, unpaidHeader, fulfill)).processed, false);
   assert.equal(calls, 1);
+
+  const partnerPayload = JSON.stringify({
+    id: 'evt_partner',
+    type: 'customer.subscription.updated',
+    data: { object: { id: 'sub_partner' } },
+  });
+  const partnerHeader = stripe.webhooks.generateTestHeaderString({
+    payload: partnerPayload,
+    secret: process.env.STRIPE_WEBHOOK_SECRET,
+  });
+  let partnerCalls = 0;
+  const processPartner = async (event: any) => {
+    partnerCalls += 1;
+    assert.equal(event.id, 'evt_partner');
+    return { processed: true, eventType: event.type };
+  };
+  const partnerResult = await handleWebhookEvent(
+    partnerPayload,
+    partnerHeader,
+    fulfill,
+    processPartner as any
+  );
+  assert.equal(partnerResult.processed, true);
+  assert.equal(partnerCalls, 1);
+  assert.equal(calls, 1);
+
   delete process.env.STRIPE_WEBHOOK_SECRET;
   await assert.rejects(handleWebhookEvent(payload, header, fulfill));
 });

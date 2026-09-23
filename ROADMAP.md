@@ -5,7 +5,7 @@
 > Completion convention: change `- [ ] Step` to `- [x] ~~Step~~` when finished. Do not mark a step complete until it has been implemented, tested, pushed, deployed where applicable, and verified.
 
 **Last updated:** 2026-09-23
-**Current focus:** Phase 15 Block C — Host Portal reporting and Admin Partner campaign controls. Block A authority and Block B paid-distribution/attribution are production-verified; Stripe Checkout and real Partner activation remain intentionally disabled.
+**Current focus:** Phase 15 Block D — Producer Partner Stripe subscription integration. Blocks A–C are production-verified; billing code and trusted webhook authority are being completed with live Checkout still intentionally disabled.
 
 ---
 
@@ -1305,16 +1305,21 @@ Do not create a second producer application.
 
 Build real billing, but keep it narrow.
 
-- [ ] Define one initial annual Partner Stripe product/price.
-- [ ] Optionally define one or two fixed campaign add-ons only if needed for the first pilot.
-- [ ] Launch Stripe Checkout from the verified Host Portal.
-- [ ] Keep secret keys and privileged Stripe calls server-side.
-- [ ] Process subscription state from verified Stripe webhooks, never browser assertions.
-- [ ] Implement idempotent webhook handling.
-- [ ] Handle success, cancellation, renewal, payment failure, grace/expiry and refund/admin override behavior.
-- [ ] Provide a billing-management path appropriate to the Stripe integration.
-- [ ] Verify that failed/cancelled payment removes paid entitlement but does not remove or demote the producer's free listing.
-- [ ] Do not build bidding, per-impression auctions, advertiser audiences or a general-purpose ad manager.
+- [ ] Define/create the one initial annual Partner Stripe Product/Price in the connected Stripe account. **Live account activation intentionally remains open until code verification is complete.**
+- [x] ~~Keep campaign add-ons out of the first billing implementation; add them only if real pilot usage justifies them.~~
+- [x] ~~Build hosted Stripe Checkout launch from the verified Host Portal, behind a strict server-side feature gate and configured annual Price ID.~~
+- [x] ~~Keep secret keys, customer IDs, Price authority and privileged Stripe calls server-side.~~
+- [x] ~~Process subscription state from verified Stripe webhooks, never browser assertions or checkout redirects.~~
+- [x] ~~Implement webhook idempotency and stale/out-of-order event rejection in trusted Supabase authority.~~
+- [x] ~~Handle activation, cancellation/expiry, renewal failure grace and successful payment recovery; hourly grace expiry ends paid entitlement automatically.~~
+- [x] ~~Provide Stripe Customer Portal billing management from the existing Host Portal without exposing customer IDs to the browser.~~
+- [x] ~~Ensure ended Stripe entitlement transitions the commercial Partner relationship to `ended`, which triggers automatic paid-campaign withdrawal while leaving the free producer listing untouched.~~
+- [x] ~~Keep bidding, per-impression auctions, advertiser audiences and a general-purpose ad manager out of V1.~~
+- [ ] Configure and verify live webhook event subscriptions for Partner Billing after the annual Product/Price is created.
+- [ ] Enable `STRIPE_PARTNER_BILLING_ENABLED=true` in Cloud Run only after live Price/webhook verification.
+- [ ] Verify a real test/sandbox or controlled live checkout end-to-end before producer launch.
+
+**15.8 Block D — 2026-09-23:** trusted Stripe authority migrations `20260923070927_phase15_partner_stripe_authority` and `20260923071920_phase15_partner_stripe_event_ordering` add service-role-only webhook idempotency, entitlement mapping, bounded payment-recovery grace, stale event protection and automatic expiry. Application code uses hosted subscription Checkout, Customer Portal and signed webhook processing. Production checkout remains disabled and no live Partner Product/Price has been created by this implementation yet.
 
 ### 15.9 — Controlled production pilot
 
