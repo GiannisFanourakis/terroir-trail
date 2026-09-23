@@ -13,12 +13,14 @@ test('commercial Partner API separates Host read access from Admin mutation rout
     subscriptions: [],
     campaigns: [],
     placements: [],
+    campaignMetrics: [],
   };
   const adminState = {
     partners: [],
     subscriptions: [],
     campaigns: [],
     placements: [],
+    campaignMetrics: [],
     audit: [],
   };
 
@@ -81,6 +83,33 @@ test('commercial Partner API separates Host read access from Admin mutation rout
         placements: ['region_discovery'],
       };
     },
+    updateCommercialPartnerCampaign: async (uid, campaignId, input) => {
+      calls.push({ type: 'campaign-edit', args: [uid, campaignId, input] });
+      if (uid !== 'admin') throw new CommercialPartnerError('forbidden', 'Admin required.');
+      return {
+        campaign: {
+          id: campaignId,
+          producer_id: 'producer-1',
+          campaign_type: 'regional_featured',
+          status: 'draft',
+          destination: 'crete',
+          category: 'winery',
+          headline: input.headline,
+          message: input.message || null,
+          starts_at: input.startsAt || null,
+          ends_at: input.endsAt || null,
+          created_by_uid: uid,
+          reviewed_by_uid: null,
+          review_note: null,
+          approved_at: null,
+          paused_at: null,
+          completed_at: null,
+          created_at: '2026-09-23T06:00:00Z',
+          updated_at: '2026-09-23T06:01:00Z',
+        },
+        placements: input.placements as any,
+      };
+    },
     transitionCommercialPartnerCampaign: async (uid, campaignId, input) => {
       calls.push({ type: 'campaign-status', args: [uid, campaignId, input] });
       if (uid !== 'admin') throw new CommercialPartnerError('forbidden', 'Admin required.');
@@ -115,11 +144,13 @@ test('commercial Partner API separates Host read access from Admin mutation rout
   const base = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
   const headers = (token?: string): Record<string, string> =>
     token ? { Authorization: `Bearer ${token}` } : {};
-  const post = (path: string, token: string, body: object) => fetch(base + path, {
-    method: 'POST',
+  const send = (method: 'POST' | 'PATCH', path: string, token: string, body: object) => fetch(base + path, {
+    method,
     headers: { ...headers(token), 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
   });
+  const post = (path: string, token: string, body: object) => send('POST', path, token, body);
+  const patch = (path: string, token: string, body: object) => send('PATCH', path, token, body);
 
   try {
     assert.equal((await fetch(`${base}/api/producer/commercial`)).status, 401);
@@ -161,6 +192,19 @@ test('commercial Partner API separates Host read access from Admin mutation rout
     );
     assert.equal(campaign.status, 201);
 
+    const edited = await patch(
+      '/api/admin/commercial/campaigns/78e94884-f021-4d06-ae92-1c593c7fe45f',
+      'admin',
+      {
+        headline: 'Edited harvest visits',
+        message: 'Seasonal note',
+        startsAt: '2026-09-24T09:00:00Z',
+        endsAt: '2026-09-30T17:00:00Z',
+        placements: ['region_discovery', 'trip_preparation'],
+      }
+    );
+    assert.equal(edited.status, 200);
+
     const transitioned = await post(
       '/api/admin/commercial/campaigns/78e94884-f021-4d06-ae92-1c593c7fe45f/status',
       'admin',
@@ -175,6 +219,7 @@ test('commercial Partner API separates Host read access from Admin mutation rout
       'partner-status',
       'partner-status',
       'campaign-create',
+      'campaign-edit',
       'campaign-status',
     ]);
   } finally {
