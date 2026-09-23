@@ -580,7 +580,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
   {
     "id": "argogal-koromichi-kefalari",
     "name": "ARGOGAL / Koromichi Family",
-    "greekName": "ARGOGAL / Koromichi Family",
+    "greekName": "ΑΡΓΟΓΑΛ",
     "category": "cheese_dairy",
     "destination": "peloponnese",
     "country": "Greece",
@@ -643,7 +643,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
   {
     "id": "arvanitis-dairy-neochorouda",
     "name": "Arvanitis Dairy",
-    "greekName": "Arvanitis Dairy",
+    "greekName": "Τυροκομείο Αρβανίτη",
     "category": "cheese_dairy",
     "destination": "northern_greece",
     "country": "Greece",
@@ -710,7 +710,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
   {
     "id": "assuli-winery-sicily",
     "name": "Assuli Winery",
-    "greekName": "Assuli Winery",
+    "greekName": "Assuli",
     "category": "winery",
     "destination": "sicily",
     "country": "Italy",
@@ -774,7 +774,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
   {
     "id": "baladinos-dairy-varipetro",
     "name": "Baladinos & Sons",
-    "greekName": "Baladinos & Sons",
+    "greekName": "Μπαλαντίνος",
     "category": "cheese_dairy",
     "destination": "crete",
     "country": "Greece",
@@ -1792,7 +1792,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
   {
     "id": "christakis-patria-feta-proastio",
     "name": "Christakis / Patria Feta",
-    "greekName": "Christakis / Patria Feta",
+    "greekName": "ΧΡΙΣΤΑΚΗΣ Α.Β.Ε.Ε.",
     "category": "cheese_dairy",
     "destination": "northern_greece",
     "country": "Greece",
@@ -2282,7 +2282,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
   {
     "id": "domaine-d-migas-thessaly",
     "name": "Domaine D. Migas",
-    "greekName": "Domaine D. Migas",
+    "greekName": "Κτήμα Δ. Μίγας",
     "category": "winery",
     "destination": "thessaly",
     "country": "Greece",
@@ -2536,7 +2536,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
   {
     "id": "domaine-zafeirakis-thessaly",
     "name": "Domaine Zafeirakis",
-    "greekName": "Domaine Zafeirakis",
+    "greekName": "Κτήμα Ζαφειράκη",
     "category": "winery",
     "destination": "thessaly",
     "country": "Greece",
@@ -2665,7 +2665,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
   {
     "id": "elatos-kapetanou-schinochori",
     "name": "ELATOS / Kapetanou Bros",
-    "greekName": "ELATOS / Kapetanou Bros",
+    "greekName": "ΕΛΑΤΟΣ Γαλακτοκομικά",
     "category": "cheese_dairy",
     "destination": "peloponnese",
     "country": "Greece",
@@ -3499,7 +3499,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
   {
     "id": "grubic-olive-oil-istria",
     "name": "Grubić Olive Oil",
-    "greekName": "Grubić Olive Oil",
+    "greekName": "GRUBIĆ Uljara",
     "category": "olive_mill",
     "destination": "istria",
     "country": "Croatia",
@@ -4266,7 +4266,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
   {
     "id": "kozlovic-winery-istria",
     "name": "Kozlović Winery",
-    "greekName": "Kozlović Winery",
+    "greekName": "Vinarija Kozlović",
     "category": "winery",
     "destination": "istria",
     "country": "Croatia",
@@ -4705,7 +4705,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
   {
     "id": "lahnerhof-distillery-south-tyrol",
     "name": "Lahnerhof Distillery",
-    "greekName": "Lahnerhof Distillery",
+    "greekName": "Bauernbrennerei Lahnerhof",
     "category": "distillery",
     "destination": "south_tyrol",
     "country": "Italy",
@@ -5347,7 +5347,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
   {
     "id": "moarhof-cheese-dairy-south-tyrol",
     "name": "Moarhof Cheese Dairy",
-    "greekName": "Moarhof Cheese Dairy",
+    "greekName": "Hofkäserei Moarhof",
     "category": "cheese_dairy",
     "destination": "south_tyrol",
     "country": "Italy",
@@ -6366,7 +6366,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
   {
     "id": "psiloritis-cheese-dairy-livadia",
     "name": "Psiloritis Cheese Dairy",
-    "greekName": "Psiloritis Cheese Dairy",
+    "greekName": "Τυροκομείο Ψηλορείτης",
     "category": "cheese_dairy",
     "destination": "crete",
     "country": "Greece",
@@ -7370,7 +7370,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
   {
     "id": "stamatogiorgis-dairy-smari",
     "name": "Stamatogiorgis Dairy",
-    "greekName": "Stamatogiorgis Dairy",
+    "greekName": "Τυροκομείο Σταματογιώργης",
     "category": "cheese_dairy",
     "destination": "crete",
     "country": "Greece",
@@ -7439,7 +7439,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
   {
     "id": "stankovic-honey-garden-southeast-slovenia",
     "name": "Stankovič Honey Garden / Zavod Čebela",
-    "greekName": "Stankovič Honey Garden / Zavod Čebela",
+    "greekName": "Zavod Čebela",
     "category": "apiary",
     "destination": "southeast_slovenia",
     "country": "Slovenia",
@@ -7920,7 +7920,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
   {
     "id": "trnulja-estate-central-slovenia",
     "name": "Trnulja Estate",
-    "greekName": "Trnulja Estate",
+    "greekName": "Ekološka kmetija Trnulja",
     "category": "farm",
     "destination": "central_slovenia",
     "country": "Slovenia",
@@ -7971,7 +7971,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
   {
     "id": "tsililis-theopetra-thessaly",
     "name": "K. Tsililis / Theopetra Estate",
-    "greekName": "K. Tsililis / Theopetra Estate",
+    "greekName": "Κ. Τσιλιλής Α.Ε. / Κτήμα Θεόπετρα",
     "category": "winery",
     "destination": "thessaly",
     "country": "Greece",
@@ -8028,7 +8028,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
   {
     "id": "tyrnavos-winery-cooperative-thessaly",
     "name": "Agricultural Cooperative Winery & Distillery of Tyrnavos",
-    "greekName": "Agricultural Cooperative Winery & Distillery of Tyrnavos",
+    "greekName": "Αγροτικός Οινοποιητικός Συνεταιρισμός Τυρνάβου",
     "category": "winery",
     "destination": "thessaly",
     "country": "Greece",
@@ -8347,7 +8347,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
   {
     "id": "voliotis-family-olive-mill-thessaly",
     "name": "Voliotis Family Olive Mill",
-    "greekName": "Voliotis Family Olive Mill",
+    "greekName": "Ελαιοτριβείο Οικογένειας Βολιώτη",
     "category": "olive_mill",
     "destination": "thessaly",
     "country": "Greece",
