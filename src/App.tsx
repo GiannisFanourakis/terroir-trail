@@ -195,6 +195,10 @@ export const App: React.FC = () => {
     producer: Producer | null,
     surface: SourceSurface = 'map_marker'
   ) => {
+    // Map selection always returns to the quick-preview state. This prevents
+    // an already-open producer drawer from silently swapping to the next
+    // producer when a tablet user taps another map listing.
+    setIsDrawerOpen(false);
     setSelectedProducer(producer);
     if (producer) {
       setIsRegionGuideOpen(false);

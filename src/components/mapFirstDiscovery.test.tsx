@@ -18,6 +18,7 @@ describe('map-first discovery layout', () => {
   });
 
   it('keeps tablet map preview and producer drawer touch-friendly', () => {
+    const app = readFileSync('src/App.tsx', 'utf8');
     const map = readFileSync('src/components/Map/MapCanvas.tsx', 'utf8');
     const drawer = readFileSync(
       'src/components/Drawer/ProducerDetailDrawer.tsx',
@@ -33,6 +34,9 @@ describe('map-first discovery layout', () => {
     expect(drawer).toContain('md:w-[560px]');
     expect(drawer).toContain('w-11 h-11 sm:w-10 sm:h-10');
     expect(filters).toContain('min-h-[44px] lg:min-h-[32px]');
+    expect(app).toMatch(
+      /setIsDrawerOpen\(false\);\s+setSelectedProducer\(producer\);/
+    );
   });
 
   it('keeps obsolete map/list mode plumbing removed', () => {
