@@ -5,7 +5,7 @@
 > Completion convention: change `- [ ] Step` to `- [x] ~~Step~~` when finished. Do not mark a step complete until it has been implemented, tested, pushed, deployed where applicable, and verified.
 
 **Last updated:** 2026-09-23
-**Current focus:** Phase 14.7 — Contextual affiliate utility. My Trips Product Closeout (14.6B) is deployed and verified; the free My Trips core is now frozen pending any later Traveler Plus decision.
+**Current focus:** Phase 14.7 — Contextual affiliate utility, followed by Phase 15 — Producer Partner & Paid Visibility. My Trips is frozen as the free traveler-planning core; the next producer-side commercial build is distribution/visibility, not an analytics-first Producer Pro product.
 
 ---
 
@@ -1013,7 +1013,7 @@ Treat generic third-party activity marketplaces separately because they may conf
 
 ### 14.8 — Internal Producer Insights prototype
 
-**Purpose:** determine whether TerroirTrail can provide useful producer software before creating Producer Pro.
+**Purpose:** validate which producer-facing intent signals are useful as campaign proof and operational context. Producer Insights is supporting infrastructure for paid distribution/visibility, not the primary producer product unless later evidence proves otherwise.
 
 #### 14.8.1 Define producer metrics
 
@@ -1069,7 +1069,7 @@ Candidate metrics:
 - [ ] Record requested workflows separately from requested vanity metrics.
 - [ ] Do not expose pricing yet.
 
-**Gate 14.8:** Producer Pro is not created unless the prototype demonstrates repeatable operational value to actual producers.
+**Gate 14.8:** do not create an analytics-first Producer Pro product from these metrics alone. Use validated metrics to support future Partner campaign reporting; build standalone producer software only if producers later demonstrate a separate repeatable need.
 
 ---
 
@@ -1139,13 +1139,14 @@ Potential future validation audiences include:
 
 **Purpose:** decide what deserves commercial development based on evidence collected in Phase 14.
 
-#### Validation order
+#### Validation / build order
 
-1. **Contextual affiliates**
-2. **B2B Regional Intelligence / regional contracts**
-3. **Producer Insights / producer workflow software**
-4. **Traveler premium planning**
-5. **Booking/transaction commission much later, if ever**
+1. **Contextual affiliates** — finish the current placement experiment and decide whether the generic map banner should remain.
+2. **Producer Partner / paid visibility** — build the controlled commercial-partnership and campaign-distribution layer on top of existing Host ownership, My Trips and first-party intent analytics.
+3. **B2B Regional Intelligence / regional contracts** — continue external validation as an institutional revenue line.
+4. **Traveler premium planning** — only after free My Trips usage demonstrates demand for advanced convenience.
+5. **Standalone producer workflow software** — only if producer validation identifies a problem beyond visibility/distribution.
+6. **Booking/transaction commission** — much later, if ever, and only after explicit Experiences/booking activation.
 
 #### Required decision package
 
@@ -1164,68 +1165,188 @@ Before closing Phase 14:
 - [ ] Keep essential safety/access data outside any paid boundary.
 - [ ] Update Phase 18 commercial priorities from evidence rather than assumptions.
 
-**Phase 14 definition of done:** TerroirTrail has a secure first-party intent-measurement layer, a production-quality free My Trips workflow, measured/contextual affiliate utility, validated internal Producer Insights and Regional Intelligence prototypes, and enough real evidence to choose the next commercial product without weakening the trust layer.
+**Phase 14 definition of done:** TerroirTrail has a secure first-party intent-measurement layer, a production-quality free My Trips workflow, measured/contextual affiliate utility, internal Producer Insights and Regional Intelligence foundations, and a documented commercial direction: producer-paid distribution/visibility is the next product to build without weakening the trust layer.
 
 ---
 
-## Phase 15 — Producer Partnerships & Deals
+## Phase 15 — Producer Partner & Paid Visibility
 
-**Status:** Deferred until Phase 14 evidence demonstrates a concrete reason to formalize producer commercial relationships.
+**Status:** Next commercial build after the short Phase 14.7 affiliate decision.
 
-**Objective:** create a controlled relationship model for producers who explicitly choose to work commercially with TerroirTrail, without changing the status or value of independent researched listings.
+**Objective:** create a real producer-paid distribution product inside TerroirTrail. Independent producers remain discoverable for free; verified Hosts may enter an explicit commercial Partner relationship that buys additional clearly labelled distribution to relevant travelers without changing organic ranking, verification, visitability or safety/access truth.
 
-**Prerequisites:**
-- Phase 11 Host ownership/security remains production-valid.
-- Phase 14 Producer Insights has identified real producer value or another explicit partnership use case exists.
-- Independent researched listings remain fully separate from partnership status.
+**Core proposition:**
 
-### 15.1 — Define the partnership model
+> **Free to be discovered. Pay to reach more relevant travelers.**
+
+**Commercial boundary:**
+- organic catalogue/map/search visibility remains independent of payment;
+- paid status never changes verification, location confidence, visitability, road/access evidence or editorial ranking;
+- paid placement is always visually distinguishable from organic/editorial discovery;
+- factual Host corrections remain free;
+- Partner reporting measures campaign exposure and downstream intent, not bookings/visits unless those are later explicitly measured.
+
+### 15.1 — Define Partner, subscription and campaign contracts
 
 - [ ] Define formal relationship states:
   1. independent researched listing;
   2. verified Host managing factual/listing content;
-  3. commercial partner accepting defined TerroirTrail workflows;
-  4. partner with approved Experiences, only if Phase 16 is later activated.
-- [ ] Define exactly what partnership changes and what it does not change.
-- [ ] Ensure partnership never changes verification evidence or editorial ranking.
-- [ ] Define termination/suspension behavior.
+  3. commercial Partner with an active/eligible paid distribution entitlement;
+  4. Partner with approved Experiences only if Phase 16 is later activated.
+- [ ] Keep commercial Partner state separate from Host ownership, verification and catalogue publication state.
+- [ ] Define Partner lifecycle: `pending → active → past_due/grace → cancelled/expired → suspended` as appropriate to the chosen Stripe subscription contract.
+- [ ] Define promotion campaign lifecycle: `draft → awaiting_review → approved → scheduled → active → paused → completed/withdrawn`.
+- [ ] Define campaign fields: producer ID, campaign ID, campaign type, allowed placement(s), destination/category context, start/end dates, creative/message payload, status and audit timestamps.
+- [ ] Define whether V1 uses a yearly allocation of promotion credits; if credits are used, make them simple fixed entitlements rather than an auction/bidding system.
+- [ ] Define termination/suspension behavior and ensure cancelled commercial status never removes the free producer listing.
 
-### 15.2 — Define permissions and rights
+### 15.2 — Define the first paid product
 
-- [ ] Define authorized representative verification.
-- [ ] Define permitted contact/inquiry routing.
-- [ ] Define image/content rights where producer material is used.
-- [ ] Define data-processing responsibilities.
-- [ ] Define brand/logo usage.
-- [ ] Define any response-time or operational expectations.
-- [ ] Keep safety/access truth under TerroirTrail's controlled evidence model.
+Start deliberately narrow:
 
-### 15.3 — Build onboarding workflow
+**TerroirTrail Partner — annual subscription**
 
-- [ ] Reuse trusted Host identity/ownership.
-- [ ] Create explicit partnership application/offer state.
-- [ ] Record agreement version/date/status.
-- [ ] Prevent self-upgrading from Host to Partner.
-- [ ] Require trusted admin activation.
-- [ ] Add audit history for status changes.
+V1 value may include:
+- [ ] eligibility for approved Featured Partner distribution;
+- [ ] a fixed annual allocation of promotion credits or campaigns;
+- [ ] regional discovery placement;
+- [ ] contextual My Trips placement;
+- [ ] seasonal/open-day promotion eligibility;
+- [ ] campaign result reporting;
+- [ ] future Experience-publishing eligibility only after Phase 16 activation.
 
-### 15.4 — Pilot
+Do **not** include:
+- [ ] paid organic ranking;
+- [ ] paid verification;
+- [ ] paid access/safety facts;
+- [ ] arbitrary demographic targeting;
+- [ ] self-serve bidding/CPM/CPC controls;
+- [ ] unsupported claims about visits, bookings or revenue.
 
-- [ ] Select a deliberately small pilot.
-- [ ] Verify every pilot participant's authority.
-- [ ] Test onboarding and offboarding.
-- [ ] Test content/contact permissions.
-- [ ] Test that non-partner listings remain unaffected.
-- [ ] Gather producer feedback before scaling.
+Pricing is a hypothesis until real paid usage exists. Initial checkout may use one annual Partner price plus a small number of fixed campaign add-ons; do not build a complex ad-rate card first.
 
-### 15.5 — Exit gate
+### 15.3 — Build trusted commercial data and entitlement authority
 
-- [ ] Formalize partnership documentation.
-- [ ] Confirm audit/security behavior.
-- [ ] Confirm there is a real workflow worth partnering for.
-- [ ] Do not activate Experiences automatically.
+- [ ] Create server-trusted commercial Partner/subscription records; do not reuse legacy client-facing `isProTier` as authority.
+- [ ] Create campaign records with admin-controlled approval/status.
+- [ ] Record Stripe customer/subscription/product/price identifiers only in the trusted commercial layer.
+- [ ] Define entitlement source of truth and cache behavior.
+- [ ] Define idempotent activation/cancellation updates.
+- [ ] Add audit history for Partner, subscription and campaign state changes.
+- [ ] Ensure ordinary producer read paths do not expose payment secrets or unnecessary billing metadata.
 
-**Phase 15 definition of done:** TerroirTrail can establish, operate and terminate explicit producer partnerships without confusing partnership with verification, public visitability, Host ownership or editorial inclusion.
+### 15.4 — Build first paid distribution surfaces
+
+V1 should use only a small number of useful surfaces.
+
+#### Regional discovery
+- [ ] Add a clearly labelled `Featured Partner` module in appropriate destination/region discovery.
+- [ ] Keep the normal producer ordering/list/map unchanged.
+- [ ] Show a Partner only where the campaign's region/category context is relevant.
+
+#### My Trips
+- [ ] Add a clearly labelled contextual Partner suggestion inside My Trips/trip preparation.
+- [ ] Use trip destination/category context rather than behavioral profiling unrelated to the trip.
+- [ ] Never insert paid content into or between safety/access warnings and their evidence.
+- [ ] Do not imply the suggested Partner is required, safer or editorially preferred.
+
+#### Seasonal / temporary promotion
+- [ ] Support a small approved campaign type for real producer announcements such as open days, harvest periods or temporary visitor availability.
+- [ ] Require factual/admin review before distribution.
+- [ ] Keep campaign copy separate from canonical visitability truth.
+
+### 15.5 — Add campaign attribution to first-party analytics
+
+Do not misuse affiliate events.
+
+- [ ] Extend the event contract with dedicated Partner promotion events such as:
+  - `partner_impression`;
+  - `partner_open`;
+  - `partner_save`;
+  - `partner_trip_add`;
+  - `partner_contact_action` where appropriate.
+- [ ] Include allowlisted campaign ID, producer ID, placement/source surface and relevant destination/category context.
+- [ ] Preserve privacy rules: no private trip notes, message contents, PII or precise background location.
+- [ ] Deduplicate qualified impressions consistently with the existing analytics approach.
+- [ ] Distinguish paid-distribution actions from organic producer discovery in reporting.
+
+### 15.6 — Extend the existing Host Portal
+
+Do not create a second producer application.
+
+- [ ] Add a commercial/Promotion tab or section to the existing trusted Host Portal.
+- [ ] Show Partner/subscription state.
+- [ ] Show active/scheduled/completed campaigns.
+- [ ] Show remaining campaign credits if the V1 product uses credits.
+- [ ] Show simple campaign results:
+  - qualified impressions;
+  - profile opens;
+  - saves;
+  - trip additions;
+  - website/phone/email/directions actions attributed to the paid campaign.
+- [ ] Label low-volume results and avoid implying an action equals a booking or visit.
+- [ ] Keep factual listing/visitor information controls available without Partner status.
+
+### 15.7 — Build admin campaign controls
+
+- [ ] Let trusted Admin create/edit/review/schedule/pause/end Partner campaigns.
+- [ ] Let Admin inspect campaign eligibility and subscription state.
+- [ ] Require approval before a producer promotion can become public.
+- [ ] Prevent promotion of unsupported visitor availability or misleading claims.
+- [ ] Provide an audit trail for commercial state changes.
+- [ ] Add safe campaign preview before activation.
+
+### 15.8 — Stripe Checkout V1
+
+Build real billing, but keep it narrow.
+
+- [ ] Define one initial annual Partner Stripe product/price.
+- [ ] Optionally define one or two fixed campaign add-ons only if needed for the first pilot.
+- [ ] Launch Stripe Checkout from the verified Host Portal.
+- [ ] Keep secret keys and privileged Stripe calls server-side.
+- [ ] Process subscription state from verified Stripe webhooks, never browser assertions.
+- [ ] Implement idempotent webhook handling.
+- [ ] Handle success, cancellation, renewal, payment failure, grace/expiry and refund/admin override behavior.
+- [ ] Provide a billing-management path appropriate to the Stripe integration.
+- [ ] Verify that failed/cancelled payment removes paid entitlement but does not remove or demote the producer's free listing.
+- [ ] Do not build bidding, per-impression auctions, advertiser audiences or a general-purpose ad manager.
+
+### 15.9 — Controlled production pilot
+
+The product should exist before producer outreach; the first pilot can still be deliberately small and manually curated.
+
+- [ ] Seed a small number of internal/test Partner campaigns first.
+- [ ] Verify organic producer ranking/order is unchanged.
+- [ ] Verify Partner labels on mobile and desktop.
+- [ ] Verify attribution from impression → profile open → save/trip add → direct action where it occurs.
+- [ ] Verify campaign expiry removes paid placement automatically.
+- [ ] Verify subscription cancellation/expiry does not affect free discovery.
+- [ ] Verify Host Portal reporting matches aggregate analytics.
+- [ ] Verify no campaign can bypass factual/admin review.
+- [ ] Run full quality gate and production smoke.
+
+### 15.10 — Producer launch and commercial validation
+
+Only after the production loop works end-to-end:
+
+- [ ] Offer the real Partner product to a deliberately small number of appropriate producers.
+- [ ] Measure actual paid conversion/willingness to pay rather than survey interest alone.
+- [ ] Record which visibility surfaces/campaign types producers value.
+- [ ] Record whether producers understand the separation between paid promotion and verification/editorial discovery.
+- [ ] Review renewal intent after meaningful usage.
+- [ ] Adjust price/credits/campaign packaging from real usage rather than assumptions.
+- [ ] Stop or revise surfaces that do not produce useful qualified engagement.
+
+### 15.11 — Exit gate
+
+- [ ] Partner/subscription/campaign authority is server-trusted and audited.
+- [ ] Stripe Checkout/webhooks are production-verified.
+- [ ] At least one paid placement works end-to-end with attribution/reporting.
+- [ ] Non-partner producers remain unaffected in organic discovery.
+- [ ] Verification, visitability and safety/access truth remain independent of payment.
+- [ ] There is real paid producer usage or clear evidence to revise/stop before scaling.
+
+**Phase 15 definition of done:** TerroirTrail has a production-grade Producer Partner product: a verified Host can subscribe, receive approved clearly labelled paid distribution in relevant traveler contexts, see campaign results in the existing Host Portal, and cancel/expire without affecting the free trusted listing.
 
 ---
 
@@ -1388,10 +1509,11 @@ Do not implement levels 3–5 unless they are deliberately chosen.
 ### Commercial priority order
 
 1. contextual affiliate utility;
-2. B2B Regional Intelligence / regional contracts;
-3. Producer Insights / producer workflow software;
+2. Producer Partner / paid visibility and campaign distribution;
+3. B2B Regional Intelligence / regional contracts;
 4. Traveler premium planning;
-5. booking/payment commission only if Phase 17 proves viable.
+5. standalone producer workflow software only if separately validated;
+6. booking/payment commission only if Phase 17 proves viable.
 
 ### 18.1 — Select the first validated paid product
 
@@ -1433,11 +1555,17 @@ Only after a paid product is chosen:
 - [ ] define data freshness commitment;
 - [ ] ensure non-exhaustive coverage is represented honestly.
 
-**Producer Insights**
-- [ ] validate sufficient traffic volume;
-- [ ] define free Host vs paid software boundary;
-- [ ] preserve free factual/safety corrections;
-- [ ] add multi-user/workflow features only when demanded.
+**Producer Partner / paid visibility**
+- [ ] validate Partner subscription conversion and renewal;
+- [ ] validate which regional/My Trips/seasonal placements produce qualified engagement;
+- [ ] preserve organic ranking and free factual/safety corrections;
+- [ ] keep campaign reporting descriptive and attribution-based;
+- [ ] expand campaign inventory only when existing surfaces demonstrate value.
+
+**Producer workflow software**
+- [ ] build only when producers demonstrate a separate workflow problem worth paying for;
+- [ ] do not use existing analytics availability as justification by itself;
+- [ ] preserve the free Host factual-management boundary.
 
 **Traveler premium planning**
 - [ ] validate repeat My Trips use;
@@ -1474,7 +1602,7 @@ Before scaling any paid product:
 
 ### Product principle
 
-> **Monetise convenience, workflow and intelligence — not trust or safety.**
+> **Monetise convenience, distribution, workflow and intelligence — not trust or safety.**
 
 **Phase 18 definition of done:** TerroirTrail has one or more validated commercial products with clear economics, entitlement boundaries and operating processes, while independent discovery, factual correction, visitability and safety/access information remain useful without payment.
 
@@ -1490,9 +1618,9 @@ Before scaling any paid product:
 6. **Direct producer contact is acceptable without a partnership only through producer-controlled public channels.**
 7. **Admin and producer authority must be server-trusted.**
 8. **Essential location, visitability, road/access and other safety-relevant information remains free and fail-closed.**
-9. **Monetise convenience, workflow and intelligence — not trust or safety.**
+9. **Monetise convenience, distribution, workflow and intelligence — not trust or safety.**
 10. **Producer factual corrections and trust/safety updates must not require a paid producer plan.**
-11. **Paid tiers must never buy editorial ranking, verification status or the appearance of being more trustworthy.**
+11. **Paid tiers must never buy organic/editorial ranking, verification status or the appearance of being more trustworthy; paid distribution must use clearly labelled commercial surfaces.**
 12. **The first traveler-planning product organizes verified facts; it does not generate unsupported AI routes, opening times, drive times or road-safety claims.**
 13. **Booking, public Experiences, chauffeur workflows, QR partner-pass benefits and transaction/commission complexity remain dormant until explicitly reactivated by roadmap decision.**
 14. **Contextual affiliates must be clearly disclosed and should migrate toward relevant planning/preparation contexts rather than dominate the primary discovery surface.**
