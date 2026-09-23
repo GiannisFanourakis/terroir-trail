@@ -42,7 +42,7 @@ const placementOptions: Array<{ value: CommercialPlacement; label: string }> = [
 ];
 
 const humanize = (value: string) =>
-  value.replaceAll('_', ' ').replace(/w/g, (c) => c.toUpperCase());
+  value.replaceAll('_', ' ').replace(/\b\w/g, (c) => c.toUpperCase());
 
 const statusClass = (status: string) => {
   if (status === 'active') return 'border-emerald-500/30 bg-emerald-500/10 text-emerald-300';
@@ -575,7 +575,14 @@ export const AdminCommercialPartnerPanel: React.FC = () => {
                   {(campaign.status === 'draft' || campaign.status === 'rejected') && (
                     <button
                       type="button"
-                      onClick={() => isEditing ? (setEditingId(null), setEditDraft(null)) : beginEdit(campaign)}
+                      onClick={() => {
+                        if (isEditing) {
+                          setEditingId(null);
+                          setEditDraft(null);
+                        } else {
+                          beginEdit(campaign);
+                        }
+                      }}
                       className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-stone-900 px-2.5 py-1.5 text-[10px] font-bold text-stone-300 hover:text-white"
                     >
                       <Edit2 className="h-3.5 w-3.5" />
