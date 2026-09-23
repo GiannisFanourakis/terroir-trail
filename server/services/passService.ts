@@ -5,6 +5,10 @@ import { getPassPlan, isPassActive, publicPass, validatePassPayment, type PassRe
 
 const passes = () => adminDb().collection('explorerPasses');
 
+function explorerPassCheckoutEnabled() {
+  return process.env.EXPLORER_PASS_CHECKOUT_ENABLED === 'true';
+}
+
 function appUrl() {
   const url = new URL(process.env.APP_URL || 'http://localhost:5173');
   if (url.protocol !== 'https:' && !(url.protocol === 'http:' && url.hostname === 'localhost')) {
@@ -16,6 +20,9 @@ function appUrl() {
 }
 
 export async function createPassCheckout(userId: string, name: string, requestedPlan: unknown) {
+  if (!explorerPassCheckoutEnabled()) {
+    throw new Error('Explorer Pass checkout is disabled.');
+  }
   const { plan, priceId } = getPassPlan(requestedPlan);
   const success = appUrl();
   success.search = '?checkout_session_id={CHECKOUT_SESSION_ID}';
