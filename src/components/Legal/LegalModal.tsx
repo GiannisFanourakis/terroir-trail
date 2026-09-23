@@ -180,6 +180,9 @@ export const LegalModal: React.FC<LegalModalProps> = ({
                 <p>
                   TerroirTrail may feature outbound affiliate links for travel services (car hire, transfers, ferries, connectivity via Travelpayouts). TerroirTrail is not an online travel agency or transportation provider; third-party bookings are fulfilled directly by independent providers under their own terms.
                 </p>
+                <p className="text-[11px] text-stone-400">
+                  The fuller public Terms of Service are available at <a href="/terms.html" className="text-amber-400 underline">/terms.html</a>.
+                </p>
               </section>
             </div>
           )}
