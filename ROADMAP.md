@@ -5,7 +5,7 @@
 > Completion convention: change `- [ ] Step` to `- [x] ~~Step~~` when finished. Do not mark a step complete until it has been implemented, tested, pushed, deployed where applicable, and verified.
 
 **Last updated:** 2026-09-21
-**Current focus:** Phase 14.6B — My Trips Product Closeout. The V1 domain remains frozen while the traveler-facing workspace is being finished with a verified-stop overview map, readiness summary, dated day planning, preparation checklist, and final production QA.
+**Current focus:** Phase 14.7 — Contextual affiliate utility. My Trips Product Closeout (14.6B) is deployed and verified; the free My Trips core is now frozen pending any later Traveler Plus decision.
 
 ---
 
@@ -945,19 +945,21 @@ Do **not** add in V1:
 
 **Purpose:** finish the existing free My Trips experience as a polished traveler product before producer-partner or subscription work begins. Keep the verified V1 persistence/security contract unchanged.
 
-- [ ] Add a trip overview map that plots only current verified producer locations from the live catalogue.
-- [ ] Number/day-label mapped trip stops without drawing routes, estimating drive times, or inferring road suitability.
-- [ ] Add a trip-level readiness summary with explicit `Ready`, `Contact first`, `Information gap`, and unavailable states derived only from current evidence.
-- [ ] Add an expandable preparation checklist explaining the operational reason for each stop state.
-- [ ] Show calendar dates alongside Day 1 / Day 2 labels when the trip has a start date.
-- [ ] Preserve fail-closed behavior during catalogue outages and for delisted/unavailable producers.
-- [ ] Re-verify trip-open, producer-add, direct-contact, and directions analytics without treating planning actions as bookings or visits.
-- [ ] Run the full repository quality gate and responsive browser smoke.
-- [ ] Deploy and verify the completed workspace in production before freezing the free My Trips core.
+- [x] ~~Add a trip overview map that plots only current verified producer locations from the live catalogue.~~
+- [x] ~~Number/day-label mapped trip stops without drawing routes, estimating drive times, or inferring road suitability.~~
+- [x] ~~Add a trip-level readiness summary with explicit `Ready`, `Contact first`, `Information gap`, and unavailable states derived only from current evidence.~~
+- [x] ~~Add an expandable preparation checklist explaining the operational reason for each stop state.~~
+- [x] ~~Show calendar dates alongside Day 1 / Day 2 labels when the trip has a start date.~~
+- [x] ~~Preserve fail-closed behavior during catalogue outages and for delisted/unavailable producers.~~
+- [x] ~~Re-verify trip-open, producer-add, direct-contact, and directions analytics without treating planning actions as bookings or visits.~~
+- [x] ~~Run the full repository quality gate and responsive browser smoke.~~
+- [x] ~~Deploy and verify the completed workspace in production before freezing the free My Trips core.~~
 
 **Non-goals:** no automatic routing, travel-time estimates, live availability, booking requests, collaboration, paid trip limits, AI itinerary generation, print/export, or advanced offline packs.
 
-**Gate 14.6B:** close only after the full quality gate and production UI verification pass. After closeout, new advanced planning capabilities belong to a later Traveler Plus decision rather than reopening the free V1 domain.
+**14.6B production verification — 2026-09-23:** merged in commit `b13429e` via PR #23. Main Quality Gate run **753** passed. Production Deploy run **31** passed synchronized catalogue verification, the full repository gate, responsive browser smoke, final frontend build, Firestore deployment, Cloud Run deployment/health, Firebase Hosting deployment, Firebase API rewrite health, public production smoke, production UI smoke, and deployed catalogue-hash verification. The trip persistence/security contract was not changed.
+
+**Gate 14.6B:** COMPLETE — the free My Trips core is frozen. Advanced collaboration, export/offline packs, premium planning, or other paid trip capabilities require a later Traveler Plus decision rather than reopening V1.
 
 ---
 
