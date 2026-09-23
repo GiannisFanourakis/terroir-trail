@@ -18,6 +18,7 @@ import { GooglePlaceMedia } from '../GooglePlaces/GooglePlaceMedia';
 import { ProducerCategoryIcon } from '../Common/ProducerCategoryIcon';
 import { formatCatalogueReviewedAt } from '../../data/catalogueMetadata';
 import { trackIntent, type SourceSurface } from '../../services/intentAnalytics';
+import { recordPartnerContactIfAttributed } from '../../services/partnerAttribution';
 
 interface ProducerDetailDrawerProps {
   producer: Producer | null;
@@ -121,6 +122,14 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
   }, [onClose]);
 
   if (!producer) return null;
+
+  const recordDirectAction = (
+    event: 'producer_website_click' | 'producer_phone_click' | 'producer_email_click' | 'directions_click',
+    action: 'website' | 'phone' | 'email' | 'directions'
+  ) => {
+    void trackIntent({ event, sourceSurface: 'producer_drawer', producerId: producer.id });
+    void recordPartnerContactIfAttributed(producer.id, action, 'producer_drawer');
+  };
 
   const handleShare = async () => {
     if (!producer) return;
@@ -1285,7 +1294,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                       href={producer.website}
                       target="_blank"
                       rel="noopener noreferrer"
-                      onClick={() => void trackIntent({ event: 'producer_website_click', sourceSurface: 'producer_drawer', producerId: producer.id })}
+                      onClick={() => recordDirectAction('producer_website_click', 'website')}
                       className="flex-1 py-2.5 px-3 rounded-xl bg-stone-800 hover:bg-stone-750 border border-white/10 text-stone-200 hover:text-white font-medium text-xs transition flex items-center justify-center gap-1.5 active:scale-98"
                     >
                       <Globe className="w-3.5 h-3.5 text-sky-400" />
@@ -1295,7 +1304,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                   {effectivePhone && (
                     <a
                       href={`tel:${effectivePhone}`}
-                      onClick={() => void trackIntent({ event: 'producer_phone_click', sourceSurface: 'producer_drawer', producerId: producer.id })}
+                      onClick={() => recordDirectAction('producer_phone_click', 'phone')}
                       className="flex-1 py-2.5 px-3 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 font-bold text-xs transition flex items-center justify-center gap-1.5 active:scale-98"
                     >
                       <Phone className="w-3.5 h-3.5" />
@@ -1305,7 +1314,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                   {effectiveEmail && (
                     <a
                       href={`mailto:${effectiveEmail}`}
-                      onClick={() => void trackIntent({ event: 'producer_email_click', sourceSurface: 'producer_drawer', producerId: producer.id })}
+                      onClick={() => recordDirectAction('producer_email_click', 'email')}
                       className="flex-1 py-2.5 px-3 rounded-xl bg-sky-500/15 hover:bg-sky-500/25 border border-sky-500/30 text-sky-200 font-bold text-xs transition flex items-center justify-center gap-1.5 active:scale-98"
                     >
                       <Mail className="w-3.5 h-3.5" />
@@ -1484,7 +1493,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
             href={producer.googleMapsUrl}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => void trackIntent({ event: 'directions_click', sourceSurface: 'producer_drawer', producerId: producer.id })}
+            onClick={() => recordDirectAction('directions_click', 'directions')}
             className="flex-1 min-w-0 flex items-center justify-center gap-1.5 py-3 px-2.5 sm:px-3.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-stone-950 font-bold text-xs rounded-2xl shadow-xl shadow-amber-500/20 transition transform active:scale-98 whitespace-nowrap"
             title={roadWarning}
           >
@@ -1502,7 +1511,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
         {effectivePhone ? (
           <a
             href={`tel:${effectivePhone}`}
-            onClick={() => void trackIntent({ event: 'producer_phone_click', sourceSurface: 'producer_drawer', producerId: producer.id })}
+            onClick={() => recordDirectAction('producer_phone_click', 'phone')}
             className="flex-1 min-w-0 flex items-center justify-center gap-1.5 py-3 px-2.5 sm:px-3.5 bg-stone-800 hover:bg-stone-750 text-stone-100 font-bold text-xs rounded-2xl border border-white/10 transition transform active:scale-98 whitespace-nowrap"
             title={`Call ${effectivePhone}`}
           >
@@ -1512,7 +1521,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
         ) : effectiveEmail ? (
           <a
             href={`mailto:${effectiveEmail}`}
-            onClick={() => void trackIntent({ event: 'producer_email_click', sourceSurface: 'producer_drawer', producerId: producer.id })}
+            onClick={() => recordDirectAction('producer_email_click', 'email')}
             className="flex-1 min-w-0 flex items-center justify-center gap-1.5 py-3 px-2.5 sm:px-3.5 bg-stone-800 hover:bg-stone-750 text-stone-100 font-bold text-xs rounded-2xl border border-white/10 transition transform active:scale-98 whitespace-nowrap"
             title={`Email ${effectiveEmail}`}
           >
@@ -1524,7 +1533,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
             href={producer.website}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => void trackIntent({ event: 'producer_website_click', sourceSurface: 'producer_drawer', producerId: producer.id })}
+            onClick={() => recordDirectAction('producer_website_click', 'website')}
             className="flex-1 min-w-0 flex items-center justify-center gap-1.5 py-3 px-2.5 sm:px-3.5 bg-stone-800 hover:bg-stone-750 text-stone-100 font-bold text-xs rounded-2xl border border-white/10 transition transform active:scale-98 whitespace-nowrap"
             title="Visit Website"
           >
@@ -1550,7 +1559,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
             href={producer.website}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => void trackIntent({ event: 'producer_website_click', sourceSurface: 'producer_drawer', producerId: producer.id })}
+            onClick={() => recordDirectAction('producer_website_click', 'website')}
             className="p-3 rounded-2xl bg-stone-800 hover:bg-stone-750 border border-white/10 text-stone-200 transition shrink-0"
             title="Visit Official Website"
           >
