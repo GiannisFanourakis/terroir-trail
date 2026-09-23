@@ -6,6 +6,10 @@ import {
   type TripPackFormat,
 } from './services/tripPackService';
 import {
+  TripOptimizationServiceError,
+  createTripOptimizationProposal,
+} from './services/tripOptimizationService';
+import {
   TripServiceError,
   addProducerToTrip,
   assignTripItemDay,
@@ -33,6 +37,7 @@ const defaults = {
   assignTripItemDay,
   getExplorerPass,
   createTripPack,
+  createTripOptimizationProposal,
 };
 
 type TripRouteDependencies = typeof defaults;
@@ -47,6 +52,15 @@ const statusFor = (error: TripServiceError) =>
         : error.code === 'conflict'
           ? 409
           : 503;
+
+const statusForOptimization = (error: TripOptimizationServiceError) =>
+  error.code === 'bad_request'
+    ? 400
+    : error.code === 'not_found'
+      ? 404
+      : error.code === 'service_unavailable'
+        ? 503
+        : 409;
 
 const assertOnlyKeys = (body: unknown, allowed: readonly string[]) => {
   if (!body || typeof body !== 'object' || Array.isArray(body)) {
@@ -148,6 +162,53 @@ export function registerTripRoutes(
       }));
     }
   );
+
+  app.post('/api/trips/:tripId/optimize-day', requireAuth, async (req, res) => {
+    try {
+      assertOnlyKeys(req.body, [
+        'contractVersion',
+        'dayNumber',
+        'expectedRevision',
+        'constraints',
+      ]);
+
+      const uid = res.locals.identity.uid;
+      const pass = await deps.getExplorerPass(uid);
+      if (!pass) {
+        res.status(403).json({
+          error: 'An active Explorer Pass is required to optimize a trip day.',
+          code: 'explorer_pass_required',
+        });
+        return;
+      }
+
+      const proposal = await deps.createTripOptimizationProposal(
+        uid,
+        String(req.params.tripId),
+        req.body
+      );
+      res.json({ proposal });
+    } catch (error) {
+      if (error instanceof TripOptimizationServiceError) {
+        res.status(statusForOptimization(error)).json({
+          error: error.message,
+          code: error.code,
+        });
+        return;
+      }
+      if (error instanceof TripServiceError) {
+        res
+          .status(statusFor(error))
+          .json({ error: error.message, code: error.code });
+        return;
+      }
+      console.error('Trip optimization unavailable:', error);
+      res.status(503).json({
+        error: 'Trip optimization is temporarily unavailable.',
+        code: 'service_unavailable',
+      });
+    }
+  });
 
   app.get('/api/trips/:tripId/export', requireAuth, async (req, res) => {
     const format = req.query.format;

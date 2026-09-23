@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import type { AddressInfo } from 'node:net';
 import { createApp } from '../app';
 import { registerTripRoutes } from '../tripRoutes';
+import { TripOptimizationServiceError } from '../services/tripOptimizationService';
 import { TripServiceError } from '../services/tripService';
 
 test('My Trips API requires Firebase auth and passes only authenticated uid to services', async () => {
@@ -322,6 +323,192 @@ test('Trip Pack export is authenticated and requires an active Explorer Pass', a
       ['traveler-1', 'trip-1', 'html'],
       ['traveler-1', 'trip-1', 'ics'],
     ]);
+  } finally {
+    await new Promise<void>((resolve, reject) =>
+      server.close((error) => (error ? reject(error) : resolve()))
+    );
+  }
+});
+
+test('Optimize My Day proposal is authenticated, Explorer-gated, and strict about input authority', async () => {
+  let activePass = false;
+  const calls: unknown[][] = [];
+  const app = createApp();
+
+  registerTripRoutes(app, {
+    verifyToken: async (token) => {
+      if (token === 'bad') throw new Error('invalid');
+      return { uid: token } as any;
+    },
+    getExplorerPass: async () =>
+      activePass
+        ? ({
+            passId: 'pass-active',
+            name: 'Explorer',
+            plan: 'holiday',
+            expiresAt: '2099-01-01T00:00:00Z',
+          } as any)
+        : null,
+    createTripOptimizationProposal: async (uid, tripId, body) => {
+      calls.push([uid, tripId, body]);
+      return {
+        contractVersion: 1,
+        proposalId: 'proposal-1',
+        tripId,
+        dayNumber: 2,
+        basedOnRevision: 7,
+        originalOrder: ['a', 'b', 'c'],
+        proposedOrder: ['c', 'b', 'a'],
+        estimatedDriveMinutesBefore: 40,
+        estimatedDriveMinutesAfter: 25,
+        estimatedMinutesSaved: 15,
+        estimatedDistanceKmBefore: 30,
+        estimatedDistanceKmAfter: 20,
+        warnings: [],
+        unresolvedConstraints: [],
+        routingProvider: 'mapbox',
+        engineVersion: 'ts-v1',
+        generatedAt: '2026-09-23T18:30:00Z',
+      };
+    },
+  });
+
+  const server = app.listen(0, '127.0.0.1');
+  await new Promise<void>((resolve) => server.once('listening', resolve));
+  const base = 'http://127.0.0.1:' + (server.address() as AddressInfo).port;
+  const body = {
+    contractVersion: 1,
+    dayNumber: 2,
+    expectedRevision: 7,
+    constraints: [{ producerId: 'b', locked: true }],
+  };
+
+  try {
+    const unauth = await fetch(base + '/api/trips/trip-1/optimize-day', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    assert.equal(unauth.status, 401);
+
+    const badToken = await fetch(base + '/api/trips/trip-1/optimize-day', {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer bad',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    });
+    assert.equal(badToken.status, 401);
+    assert.deepEqual(calls, []);
+
+    const free = await fetch(base + '/api/trips/trip-1/optimize-day', {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer traveler-1',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    });
+    assert.equal(free.status, 403);
+    assert.equal(((await free.json()) as any).code, 'explorer_pass_required');
+    assert.deepEqual(calls, []);
+
+    const forged = await fetch(base + '/api/trips/trip-1/optimize-day', {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer traveler-1',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        ...body,
+        coordinates: [25.1, 35.1],
+        proposedOrder: ['c', 'b', 'a'],
+      }),
+    });
+    assert.equal(forged.status, 400);
+    assert.equal(((await forged.json()) as any).code, 'bad_request');
+    assert.deepEqual(calls, []);
+
+    activePass = true;
+    const success = await fetch(base + '/api/trips/trip-1/optimize-day', {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer traveler-1',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    });
+    assert.equal(success.status, 200);
+    const payload = (await success.json()) as any;
+    assert.equal(payload.proposal.proposalId, 'proposal-1');
+    assert.equal(payload.proposal.engineVersion, 'ts-v1');
+    assert.deepEqual(calls, [['traveler-1', 'trip-1', body]]);
+  } finally {
+    await new Promise<void>((resolve, reject) =>
+      server.close((error) => (error ? reject(error) : resolve()))
+    );
+  }
+});
+
+test('Optimize My Day maps fail-closed proposal errors without leaking internals', async () => {
+  let mode: 'route' | 'service' = 'route';
+  const app = createApp();
+
+  registerTripRoutes(app, {
+    verifyToken: async (token) => ({ uid: token }) as any,
+    getExplorerPass: async () =>
+      ({
+        passId: 'pass-active',
+        name: 'Explorer',
+        plan: 'holiday',
+        expiresAt: '2099-01-01T00:00:00Z',
+      }) as any,
+    createTripOptimizationProposal: async () => {
+      if (mode === 'route') {
+        throw new TripOptimizationServiceError(
+          'route_unavailable',
+          "We couldn't reliably calculate this day's route."
+        );
+      }
+      throw new TripOptimizationServiceError(
+        'service_unavailable',
+        'Route calculation is temporarily unavailable.'
+      );
+    },
+  });
+
+  const server = app.listen(0, '127.0.0.1');
+  await new Promise<void>((resolve) => server.once('listening', resolve));
+  const base = 'http://127.0.0.1:' + (server.address() as AddressInfo).port;
+  const request = {
+    method: 'POST',
+    headers: {
+      Authorization: 'Bearer traveler-1',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      contractVersion: 1,
+      dayNumber: 2,
+      expectedRevision: 7,
+      constraints: [],
+    }),
+  };
+
+  try {
+    const route = await fetch(base + '/api/trips/trip-1/optimize-day', request);
+    assert.equal(route.status, 409);
+    assert.equal(((await route.json()) as any).code, 'route_unavailable');
+
+    mode = 'service';
+    const unavailable = await fetch(
+      base + '/api/trips/trip-1/optimize-day',
+      request
+    );
+    assert.equal(unavailable.status, 503);
+    const body = (await unavailable.json()) as any;
+    assert.equal(body.code, 'service_unavailable');
+    assert.equal(body.error.includes('temporarily unavailable'), true);
   } finally {
     await new Promise<void>((resolve, reject) =>
       server.close((error) => (error ? reject(error) : resolve()))
