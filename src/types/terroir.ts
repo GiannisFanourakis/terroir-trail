@@ -134,6 +134,7 @@ export type VisitorHours = Record<string, unknown> | unknown[];
 export interface Producer {
   id: string;
   name: string;
+  /** Legacy frontend alias for the producer's local-language name. Persistence uses public.producers.local_name. */
   greekName: string;
   category: Category;
   destination: Destination;
