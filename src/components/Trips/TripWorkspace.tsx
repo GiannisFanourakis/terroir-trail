@@ -565,7 +565,7 @@ export const TripWorkspace: React.FC<TripWorkspaceProps> = ({
                       : 'bg-stone-900 text-stone-400 hover:text-white border border-white/10'
                   }`}
                 >
-                  Day {day} {count > 0 && `(${count})`}
+                  {getTripDayLabel(day, trip.startDate)} {count > 0 && `(${count})`}
                 </button>
               );
             })
