@@ -551,3 +551,126 @@ test('analytics API enforces authenticated and context-free My Trips events', as
     );
   }
 });
+
+
+test('analytics API validates Partner campaign attribution and auth boundaries', async () => {
+  const calls: IngestIntentEventParams[] = [];
+  const app = createApp();
+  registerAnalyticsRoutes(app, {
+    getHmacSecret: () => TEST_HMAC_SECRET,
+    verifyToken: async token => {
+      if (token === 'partner-user') return { uid: 'partner-traveler-1' } as any;
+      throw new Error('invalid token');
+    },
+    lookupProducer: async id => ({
+      id,
+      destination: 'crete',
+      country: 'greece',
+      category: 'winery',
+    }),
+    ingestEvent: async params => {
+      calls.push(params);
+      return { success: true };
+    },
+  });
+
+  const server = app.listen(0, '127.0.0.1');
+  await new Promise<void>(resolve => server.once('listening', resolve));
+  const base = 'http://127.0.0.1:' + (server.address() as AddressInfo).port;
+  const campaignId = '33333333-3333-4333-8333-333333333333';
+
+  try {
+    const impression = await fetch(base + '/api/analytics/events', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        schemaVersion: 1,
+        event: 'partner_impression',
+        clientEventId: '44444444-4444-4444-8444-444444444444',
+        sessionId: VALID_SESSION_ID,
+        producerId: 'prod-1',
+        sourceSurface: 'region_planning',
+        partnerCampaignId: campaignId,
+        partnerPlacement: 'region_discovery',
+      }),
+    });
+    assert.equal(impression.status, 200);
+    assert.equal(calls[0].eventName, 'partner_impression');
+    assert.equal(calls[0].producerId, 'prod-1');
+    assert.equal(calls[0].partnerCampaignId, campaignId);
+    assert.equal(calls[0].partnerPlacement, 'region_discovery');
+    assert.equal(calls[0].partnerAction, null);
+
+    const contactWithoutAction = await fetch(base + '/api/analytics/events', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        schemaVersion: 1,
+        event: 'partner_contact_action',
+        clientEventId: '55555555-5555-4555-8555-555555555555',
+        sessionId: VALID_SESSION_ID,
+        producerId: 'prod-1',
+        sourceSurface: 'producer_drawer',
+        partnerCampaignId: campaignId,
+        partnerPlacement: 'region_discovery',
+      }),
+    });
+    assert.equal(contactWithoutAction.status, 400);
+
+    const anonymousSave = await fetch(base + '/api/analytics/events', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        schemaVersion: 1,
+        event: 'partner_save',
+        clientEventId: '66666666-6666-4666-8666-666666666666',
+        sessionId: VALID_SESSION_ID,
+        producerId: 'prod-1',
+        sourceSurface: 'producer_drawer',
+        partnerCampaignId: campaignId,
+        partnerPlacement: 'region_discovery',
+      }),
+    });
+    assert.equal(anonymousSave.status, 401);
+
+    const authenticatedSave = await fetch(base + '/api/analytics/events', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer partner-user',
+      },
+      body: JSON.stringify({
+        schemaVersion: 1,
+        event: 'partner_save',
+        clientEventId: '77777777-7777-4777-8777-777777777777',
+        sessionId: VALID_SESSION_ID,
+        producerId: 'prod-1',
+        sourceSurface: 'producer_drawer',
+        partnerCampaignId: campaignId,
+        partnerPlacement: 'region_discovery',
+      }),
+    });
+    assert.equal(authenticatedSave.status, 200);
+    assert.equal(calls[1].eventName, 'partner_save');
+    assert.equal(calls[1].actorScope, 'authenticated');
+
+    const leakedContext = await fetch(base + '/api/analytics/events', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        schemaVersion: 1,
+        event: 'producer_view',
+        clientEventId: '88888888-8888-4888-8888-888888888888',
+        sessionId: VALID_SESSION_ID,
+        producerId: 'prod-1',
+        sourceSurface: 'map_quick_card',
+        partnerCampaignId: campaignId,
+      }),
+    });
+    assert.equal(leakedContext.status, 400);
+  } finally {
+    await new Promise<void>((resolve, reject) =>
+      server.close(error => error ? reject(error) : resolve())
+    );
+  }
+});
