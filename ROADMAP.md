@@ -4,7 +4,7 @@
 >
 > Completion convention: change `- [ ] Step` to `- [x] ~~Step~~` when finished. Do not mark a step complete until it has been implemented, tested, pushed, deployed where applicable, and verified.
 
-**Last updated:** 2026-09-21
+**Last updated:** 2026-09-23
 **Current focus:** Phase 14.7 — Contextual affiliate utility. My Trips Product Closeout (14.6B) is deployed and verified; the free My Trips core is now frozen pending any later Traveler Plus decision.
 
 ---
