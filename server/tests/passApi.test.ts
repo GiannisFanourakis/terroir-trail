@@ -45,6 +45,11 @@ test('pass API authenticates identity and ignores client prices', async () => {
   }).listen(0, '127.0.0.1');
   await new Promise<void>((resolve) => server.once('listening', resolve));
   const base = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
+  const consumerConsent = {
+    ageConfirmed: true,
+    termsAccepted: true,
+    immediatePerformanceRequested: true,
+  };
   const post = (path: string, body: object, token?: string) =>
     fetch(base + path, {
       method: 'POST',
@@ -68,12 +73,25 @@ test('pass API authenticates identity and ignores client prices', async () => {
       (await post('/api/passes/checkout', { plan: 'fake' }, 'valid')).status,
       400
     );
+    const missingConsent = await post(
+      '/api/passes/checkout',
+      { plan: 'holiday' },
+      'valid'
+    );
+    assert.equal(missingConsent.status, 400);
+    assert.equal(
+      ((await missingConsent.json()) as any).code,
+      'consumer_consent_required'
+    );
+    assert.equal(checkoutCallCount, 0);
+
     assert.equal(
       (
         await post(
           '/api/passes/checkout',
           {
             plan: 'holiday',
+            consumerConsent,
             userId: 'bob',
             priceId: 'cheap',
             successUrl: 'https://evil.test',
@@ -88,6 +106,7 @@ test('pass API authenticates identity and ignores client prices', async () => {
       'Alice',
       'holiday',
       'alice@example.test',
+      consumerConsent,
     ]);
     assert.equal(checkoutCallCount, 1);
 
@@ -99,7 +118,7 @@ test('pass API authenticates identity and ignores client prices', async () => {
     };
     const duplicate = await post(
       '/api/passes/checkout',
-      { plan: 'holiday' },
+      { plan: 'holiday', consumerConsent },
       'valid'
     );
     assert.equal(duplicate.status, 409);
@@ -112,7 +131,13 @@ test('pass API authenticates identity and ignores client prices', async () => {
     // Once entitlement resolution says the old pass has expired, repurchase is allowed.
     activePass = null;
     assert.equal(
-      (await post('/api/passes/checkout', { plan: 'holiday' }, 'valid')).status,
+      (
+        await post(
+          '/api/passes/checkout',
+          { plan: 'holiday', consumerConsent },
+          'valid'
+        )
+      ).status,
       200
     );
     assert.equal(checkoutCallCount, 2);

@@ -611,6 +611,19 @@ export function createApp(overrides: Partial<AppDependencies> = {}) {
       res.status(400).json({ error: 'Choose a holiday or annual pass.' });
       return;
     }
+    const consumerConsent = req.body?.consumerConsent;
+    if (
+      consumerConsent?.ageConfirmed !== true ||
+      consumerConsent?.termsAccepted !== true ||
+      consumerConsent?.immediatePerformanceRequested !== true
+    ) {
+      res.status(400).json({
+        error:
+          'Confirm that you are 18+, accept the Terms, and request immediate activation before checkout.',
+        code: 'consumer_consent_required',
+      });
+      return;
+    }
     try {
       const identity = res.locals.identity;
       const activePass = await deps.getExplorerPass(identity.uid);
@@ -627,7 +640,8 @@ export function createApp(overrides: Partial<AppDependencies> = {}) {
           identity.uid,
           identity.name || 'Explorer',
           req.body.plan,
-          typeof identity.email === 'string' ? identity.email : null
+          typeof identity.email === 'string' ? identity.email : null,
+          consumerConsent
         )
       );
     } catch (error) {

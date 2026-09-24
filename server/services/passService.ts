@@ -13,6 +13,30 @@ import {
 
 const passes = () => adminDb().collection('explorerPasses');
 
+export const EXPLORER_CONSUMER_TERMS_VERSION = '2026-09-24';
+
+export interface ExplorerPassConsumerConsent {
+  ageConfirmed: boolean;
+  termsAccepted: boolean;
+  immediatePerformanceRequested: boolean;
+}
+
+function requireConsumerConsent(
+  consent: ExplorerPassConsumerConsent | undefined
+): ExplorerPassConsumerConsent {
+  if (
+    !consent ||
+    consent.ageConfirmed !== true ||
+    consent.termsAccepted !== true ||
+    consent.immediatePerformanceRequested !== true
+  ) {
+    throw new Error(
+      'Explorer Pass checkout requires age, Terms, and immediate-activation confirmation.'
+    );
+  }
+  return consent;
+}
+
 function explorerPassCheckoutEnabled() {
   return process.env.EXPLORER_PASS_CHECKOUT_ENABLED === 'true';
 }
@@ -50,13 +74,16 @@ export async function createPassCheckout(
   name: string,
   requestedPlan: unknown,
   email?: string | null,
+  consumerConsent?: ExplorerPassConsumerConsent,
   stripeClient: Stripe = stripe
 ) {
   if (!explorerPassCheckoutEnabled()) {
     throw new Error('Explorer Pass checkout is disabled.');
   }
 
+  const consent = requireConsumerConsent(consumerConsent);
   const config = getPassPlan(requestedPlan);
+  const consentAt = new Date().toISOString();
   const success = appUrl();
   success.search = '?explorerCheckout=success';
   const cancel = appUrl();
@@ -66,6 +93,13 @@ export async function createPassCheckout(
     userId,
     name: name.slice(0, 100),
     plan: config.plan,
+    consumerTermsVersion: EXPLORER_CONSUMER_TERMS_VERSION,
+    consumerConsentAt: consentAt,
+    consumerAge18Plus: String(consent.ageConfirmed),
+    consumerTermsAccepted: String(consent.termsAccepted),
+    consumerImmediatePerformance: String(
+      consent.immediatePerformanceRequested
+    ),
   };
   const session = await stripeClient.checkout.sessions.create({
     mode: config.checkoutMode,
@@ -157,6 +191,12 @@ export async function fulfillPass(sessionId: string, expectedUserId?: string) {
       name: session.metadata!.name || 'Explorer',
       plan: config.plan,
       expiresAt,
+      ...(session.metadata?.consumerConsentAt
+        ? { consumerConsentAt: session.metadata.consumerConsentAt }
+        : {}),
+      ...(session.metadata?.consumerTermsVersion
+        ? { consumerTermsVersion: session.metadata.consumerTermsVersion }
+        : {}),
     };
     transaction.create(ref, record);
     return record;

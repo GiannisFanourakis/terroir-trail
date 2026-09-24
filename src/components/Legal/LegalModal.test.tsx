@@ -16,7 +16,8 @@ describe('LegalModal and Legal Documentation Synchronization', () => {
     );
 
     expect(html).toContain('Privacy at the current launch stage');
-    expect(html).toContain('Crete, Santorini, Peloponnese, Macedonia, Greece, and Tuscany');
+    expect(html).toContain('live optional Explorer Pass purchases');
+    expect(html).toContain('approved Host Partner billing');
     expect(html).toContain('Travelpayouts');
     expect(html).toContain('Explorer Pass holders enjoy an ad-free experience');
     expect(html).toContain('Account &amp; privacy');
@@ -24,7 +25,7 @@ describe('LegalModal and Legal Documentation Synchronization', () => {
     expect(html).toContain('terroirtrail@gmail.com');
     expect(html).not.toContain('legal@terroirtrail.com');
     expect(html).not.toContain('There is not yet an in-app account deletion control');
-    expect(html).toContain('17 Sep 2026');
+    expect(html).toContain('24 Sep 2026');
   });
 
   it('renders terms tab with affiliate disclosures and no OTA status', () => {
@@ -39,6 +40,23 @@ describe('LegalModal and Legal Documentation Synchronization', () => {
     expect(html).toContain('Travel affiliate links');
     expect(html).toContain('Travelpayouts');
     expect(html).toContain('not an online travel agency');
+    expect(html).toContain('Explorer Pass purchases');
+    expect(html).toContain('18 or older');
+    expect(html).toContain('withdrawal rights');
+  });
+
+  it('renders the independent listing and free-correction policy', () => {
+    const html = renderToString(
+      React.createElement(LegalModal, {
+        isOpen: true,
+        onClose: () => {},
+        initialTab: 'producers',
+      })
+    );
+
+    expect(html).toContain('without a commercial relationship or prior claim');
+    expect(html).toContain('Corrections and legal/privacy requests are free');
+    expect(html).toContain('does not automatically remove accurate');
   });
 
   it('renders licenses tab declaring proprietary software and open-source/geospatial third-party attributions', () => {
@@ -85,10 +103,16 @@ describe('LegalModal and Legal Documentation Synchronization', () => {
     expect(readmeMd).not.toContain('TerroirTrail is an open-source');
     expect(readmeMd).not.toContain('MIT. See [`LICENSE`](LICENSE)');
 
-    // Confirm September 23, 2026 dates
-    expect(privacyPolicyMd).toContain('September 23, 2026');
-    expect(termsOfServiceMd).toContain('September 23, 2026');
-    expect(privacyHtml).toContain('September 23, 2026');
+    // Confirm September 24, 2026 legal-hardening dates
+    expect(privacyPolicyMd).toContain('September 24, 2026');
+    expect(termsOfServiceMd).toContain('September 24, 2026');
+    expect(privacyHtml).toContain('September 24, 2026');
+
+    // Confirm operator disclosures are present in the public legal documents
+    expect(privacyPolicyMd).toContain('Amazonon 31A, 71303 Heraklion');
+    expect(privacyPolicyMd).toContain('170253478');
+    expect(termsOfServiceMd).toContain('+30 6955962508');
+    expect(privacyHtml).toContain('FANOURAKIS IOANNIS KONSTANTINOS');
 
     // Confirm Travelpayouts and in-app account deletion
     expect(privacyPolicyMd).toContain('Travelpayouts');

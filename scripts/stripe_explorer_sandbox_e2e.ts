@@ -103,11 +103,18 @@ async function main() {
     },
   } as unknown as Stripe;
 
+  const consumerConsent = {
+    ageConfirmed: true,
+    termsAccepted: true,
+    immediatePerformanceRequested: true,
+  };
+
   const holidayResult = await createPassCheckout(
     userId,
     'Explorer E2E',
     'holiday',
     'explorer-e2e@example.invalid',
+    consumerConsent,
     checkoutClient
   );
   assert.match(holidayResult.url, /^https:\/\/checkout\.stripe\.com\//);
@@ -135,6 +142,7 @@ async function main() {
     'Explorer E2E',
     'annual',
     'explorer-e2e@example.invalid',
+    consumerConsent,
     checkoutClient
   );
   assert.match(annualResult.url, /^https:\/\/checkout\.stripe\.com\//);

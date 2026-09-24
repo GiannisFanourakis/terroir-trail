@@ -15,6 +15,12 @@ vi.mock('./firebase', () => ({
   isFirebaseConfigured: true,
 }));
 
+const consumerConsent = {
+  ageConfirmed: true,
+  termsAccepted: true,
+  immediatePerformanceRequested: true,
+};
+
 describe('Explorer Pass Mobile Parity & Safety Enforcement', () => {
   beforeEach(() => {
     vi.stubEnv('VITE_ENABLE_EXPLORER_PASS_PURCHASES', 'false');
@@ -26,7 +32,7 @@ describe('Explorer Pass Mobile Parity & Safety Enforcement', () => {
   });
 
   it('rejects any attempt to initiate pass checkout when purchases are disabled', async () => {
-    await expect(startPassCheckout('holiday')).rejects.toThrow(
+    await expect(startPassCheckout('holiday', consumerConsent)).rejects.toThrow(
       'Explorer Pass purchases are currently in private pilot and closed to new public orders.'
     );
   });

@@ -589,6 +589,24 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
     producerOverride?.contactEmail !== undefined
       ? producerOverride.contactEmail.trim()
       : '';
+  const listingCorrectionHref = `mailto:terroirtrail@gmail.com?subject=${encodeURIComponent(
+    `TerroirTrail listing correction · ${producer.name}`
+  )}&body=${encodeURIComponent(
+    [
+      `Listing: ${producer.name}`,
+      `Listing ID: ${producer.id}`,
+      '',
+      'Issue type (factual correction / rights / privacy / safety / other):',
+      '',
+      'Requested correction or restriction:',
+      '',
+      'Source or evidence URL:',
+      '',
+      'Additional context:',
+      '',
+      'I confirm that this report is submitted in good faith and that the information above is accurate to the best of my knowledge.',
+    ].join('\n')
+  )}`;
 
   const bookingRequirementLabel =
     producer.visitBookingRequirement === 'required'
@@ -819,6 +837,13 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
               {producer.greekName}
             </p>
           )}
+          <div
+            className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-black/55 px-2.5 py-1 text-[9px] font-semibold text-stone-200 backdrop-blur-sm"
+            title="Independent editorial listing. Inclusion does not imply sponsorship, partnership or payment."
+          >
+            <Building2 className="h-3 w-3 text-amber-400" aria-hidden="true" />
+            <span>Independent TerroirTrail listing</span>
+          </div>
         </div>
       </div>
 
@@ -1452,6 +1477,18 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                 <p className="mt-1">
                   The snapshot date describes the catalogue review cycle; individual visit and access claims retain their own source links where available.
                 </p>
+                <div className="mt-2 border-t border-white/5 pt-2">
+                  <a
+                    href={listingCorrectionHref}
+                    className="inline-flex items-center gap-1.5 font-semibold text-amber-300 underline underline-offset-2 hover:text-amber-200"
+                  >
+                    <Mail className="h-3.5 w-3.5" aria-hidden="true" />
+                    Report or correct this listing
+                  </a>
+                  <p className="mt-1 text-[9px] text-stone-500">
+                    Corrections and legal/privacy requests are free. Claiming or Partner status is not required.
+                  </p>
+                </div>
               </div>
             </div>
 

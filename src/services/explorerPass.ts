@@ -8,6 +8,12 @@ export interface ExplorerPass {
   expiresAt: string;
 }
 
+export interface ExplorerPassConsumerConsent {
+  ageConfirmed: boolean;
+  termsAccepted: boolean;
+  immediatePerformanceRequested: boolean;
+}
+
 async function request<T>(
   path: string,
   options: RequestInit = {},
@@ -46,7 +52,10 @@ import { isExplorerPassPurchasesEnabled } from '../config/runtimeConfig';
 
 export { isExplorerPassPurchasesEnabled };
 
-export const startPassCheckout = async (plan: ExplorerPass['plan']) => {
+export const startPassCheckout = async (
+  plan: ExplorerPass['plan'],
+  consumerConsent: ExplorerPassConsumerConsent
+) => {
   if (!isExplorerPassPurchasesEnabled()) {
     throw new Error(
       'Explorer Pass purchases are currently in private pilot and closed to new public orders.'
@@ -54,7 +63,7 @@ export const startPassCheckout = async (plan: ExplorerPass['plan']) => {
   }
   return request<{ url: string }>('/checkout', {
     method: 'POST',
-    body: JSON.stringify({ plan }),
+    body: JSON.stringify({ plan, consumerConsent }),
   });
 };
 

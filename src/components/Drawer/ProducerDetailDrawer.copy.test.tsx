@@ -102,4 +102,19 @@ describe('ProducerDetailDrawer copy and action disambiguation', () => {
     expect(html).not.toContain('aria-label="Add to trip"');
     expect(html).not.toContain('<span>Add to trip</span>');
   });
+
+  it('labels independent listings and exposes a free correction channel', () => {
+    const html = renderToString(
+      <ProducerDetailDrawer
+        producer={mockProducer}
+        onClose={vi.fn()}
+        initialTab="visit"
+      />
+    );
+
+    expect(html).toContain('Independent TerroirTrail listing');
+    expect(html).toContain('Report or correct this listing');
+    expect(html).toContain('Corrections and legal/privacy requests are free');
+    expect(html).toContain('mailto:terroirtrail@gmail.com');
+  });
 });

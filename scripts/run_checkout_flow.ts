@@ -10,7 +10,17 @@ async function run() {
   const token = process.env.TEST_FIREBASE_ID_TOKEN;
   if (!token) throw new Error('Set TEST_FIREBASE_ID_TOKEN to a Firebase ID token for your test account.');
   const identity = await adminAuth().verifyIdToken(token, true);
-  const result = await createPassCheckout(identity.uid, identity.name || 'Explorer', process.env.TEST_PASS_PLAN || 'holiday');
+  const result = await createPassCheckout(
+    identity.uid,
+    identity.name || 'Explorer',
+    process.env.TEST_PASS_PLAN || 'holiday',
+    typeof identity.email === 'string' ? identity.email : undefined,
+    {
+      ageConfirmed: true,
+      termsAccepted: true,
+      immediatePerformanceRequested: true,
+    }
+  );
   console.log('Complete payment using Stripe test details at: ' + result.url);
   console.log('The signed webhook or authenticated return flow will verify payment and issue the pass.');
 }

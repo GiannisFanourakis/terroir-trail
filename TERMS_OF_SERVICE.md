@@ -1,9 +1,12 @@
 # TerroirTrail Terms of Service
 
 **Effective Date:** January 1, 2026<br />
-**Last Updated:** September 23, 2026<br />
-**Platform Operator:** ΙΩΑΝΝΗΣ ΚΩΝΣΤΑΝΤΙΝΟΣ ΦΑΝΟΥΡΑΚΗΣ, sole proprietorship<br />
-**Contact:** terroirtrail@gmail.com
+**Last Updated:** September 24, 2026<br />
+**Platform Operator:** ΦΑΝΟΥΡΑΚΗΣ ΙΩΑΝΝΗΣ ΚΩΝΣΤΑΝΤΙΝΟΣ (FANOURAKIS IOANNIS KONSTANTINOS), sole proprietorship<br />
+**Business address:** Amazonon 31A, 71303 Heraklion, Crete, Greece<br />
+**VAT / AFM:** 170253478<br />
+**Phone:** +30 6955962508<br />
+**Email:** terroirtrail@gmail.com
 
 ---
 
@@ -65,6 +68,10 @@ Identity-sensitive or location-sensitive fields, including producer identity/nam
 
 Producer photos may be submitted by authorized Hosts but are subject to moderation before public approval.
 
+TerroirTrail may also publish an independent, source-backed factual listing without a commercial relationship with, or prior claim by, the producer. Inclusion does not by itself imply sponsorship, endorsement, booking permission, partnership, or payment.
+
+Factual corrections are free and do not require a producer claim, Host access, or Partner payment. A producer or other affected person may request correction, provide evidence, raise a rights/privacy/safety concern, or dispute specific content at any time. A request not to be listed does not automatically result in removal of accurate, lawfully obtained factual information. TerroirTrail may nevertheless restrict, correct, quarantine, or remove a listing or particular information where required by law, where rights are infringed, where identity or location cannot be substantiated, or where continued publication creates a material privacy, safety, or legal concern.
+
 ---
 
 ## 6. Producer Responsibilities
@@ -125,6 +132,9 @@ TerroirTrail may feature links to third-party travel services (such as car renta
 - **Affiliate Commission:** If you follow an outbound affiliate link and complete a qualifying booking, TerroirTrail may earn a referral commission at no additional cost to you.
 - **Explorer Pass Convenience Plans:** Core producer discovery, My Trips planning, visitability information, road/access facts, directions and direct producer contact remain available without purchasing a Pass. The optional **Holiday Pass** is a one-time 14-day convenience upgrade priced as shown in the Passes screen and Stripe Checkout (currently €9.99). The optional **Annual Explorer Pass** is a recurring yearly convenience subscription priced as shown in the Passes screen and Stripe Checkout (currently €24.99/year). Paid conveniences include an ad-free planning experience, printable Trip Pack / save-to-PDF support, calendar export, and downloadable offline trip snapshots.
 - **Annual Explorer Renewal and Cancellation:** The Annual Explorer Pass renews automatically for successive annual billing periods unless cancelled before renewal. Annual subscribers can manage payment details, invoice history and cancellation through the dedicated Stripe Customer Portal. Cancellation is configured to take effect at the end of the then-current paid billing period. The 14-day Holiday Pass is a one-time purchase and does not auto-renew. After it expires, the traveler returns to the Free tier and may purchase another Holiday Pass for a new 14-day period.
+- **Age for Paid Purchases:** Explorer Pass purchases are available only to users who confirm that they are at least 18 years old. Browsing the public catalogue does not require an Explorer Pass.
+- **Immediate Activation and Withdrawal Rights:** Explorer Pass conveniences are intended to activate immediately after verified payment. Before checkout, the purchaser must expressly request performance to begin during the statutory withdrawal period. Immediate activation does not by itself waive mandatory consumer rights. Where applicable law permits it, a consumer who withdraws after requesting immediate performance may be required to pay a proportionate amount for the service supplied before the withdrawal request. Any statutory exception or loss of a withdrawal right applies only where the legal conditions for that exception are met.
+- **How to Exercise Withdrawal:** Where a statutory right of withdrawal applies, the consumer may exercise it within the applicable period by sending an unambiguous statement to **terroirtrail@gmail.com** identifying the account email, Pass plan, purchase date and the request to withdraw. The consumer may use this optional wording: “I hereby give notice that I withdraw from my TerroirTrail Explorer Pass contract purchased on [date]. Name: [name]. Account email: [email]. Plan: [Holiday / Annual]. Date: [date].” This is not the only valid way to exercise a statutory right.
 - **Trip Pack Snapshot Limitation:** Printable and offline Trip Packs are generated from the traveler's saved trip and the current public catalogue facts available when the export is created. A downloaded copy can become outdated. Travelers must re-check the live TerroirTrail listing and, where important, confirm directly with the producer before travel. Paying for a Pass never changes TerroirTrail verification, visitability, road/access or safety-related facts.
 - **Producer Partner Subscription:** After a producer claim is approved and trusted Host ownership is assigned, the Host may purchase the optional recurring TerroirTrail Partner annual subscription through Stripe at the price shown in the Host Portal and Stripe Checkout. Partner status provides eligibility for clearly labelled paid promotional placements that remain subject to TerroirTrail review and activation. Payment does not purchase catalogue inclusion, verification, visitability classification, road/access facts, organic ranking, or approval of any factual claim. Billing, renewal and cancellation are handled through Stripe Checkout and the Stripe Customer Portal where available. Applicable VAT/tax treatment, including supported business tax-ID handling and reverse-charge determination where relevant, is calculated and displayed by Stripe from the billing information supplied at Checkout.
 - **Dormant Commercial Infrastructure:** Third-party display advertising (via Google AdSense), public tasting checkout, Explorer venue-perk/QR redemption, and chauffeur checkout remain dormant/inactive unless explicitly shown as active in the application.
@@ -187,6 +197,10 @@ These Terms may be updated as TerroirTrail develops. The current version will sh
 
 Questions about these Terms may be sent to:
 
-**ΙΩΑΝΝΗΣ ΚΩΝΣΤΑΝΤΙΝΟΣ ΦΑΝΟΥΡΑΚΗΣ**  
-Sole proprietorship / TerroirTrail operator  
-**terroirtrail@gmail.com**
+**ΦΑΝΟΥΡΑΚΗΣ ΙΩΑΝΝΗΣ ΚΩΝΣΤΑΝΤΙΝΟΣ**<br />
+**FANOURAKIS IOANNIS KONSTANTINOS**<br />
+Sole proprietorship / TerroirTrail platform operator<br />
+Amazonon 31A, 71303 Heraklion, Crete, Greece<br />
+VAT / AFM: **170253478**<br />
+Phone: **+30 6955962508**<br />
+Email: **terroirtrail@gmail.com**

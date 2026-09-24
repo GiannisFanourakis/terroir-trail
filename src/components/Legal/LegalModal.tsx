@@ -78,7 +78,7 @@ export const LegalModal: React.FC<LegalModalProps> = ({
                 <div>
                   <h3 className="font-bold text-white text-sm">Privacy at the current launch stage</h3>
                   <p className="text-[11px] text-stone-300 mt-1">
-                    TerroirTrail is currently a discovery-first product across Greece and Italy (Crete, Santorini, Peloponnese, Macedonia, Greece, and Tuscany). Public tasting reservations, consumer Explorer Pass purchases via Stripe, and display advertising are dormant or inactive in this release.
+                    TerroirTrail is a discovery-first platform with live optional Explorer Pass purchases and approved Host Partner billing through Stripe. Public tasting checkout and third-party display advertising remain dormant or inactive.
                   </p>
                 </div>
               </div>
@@ -106,7 +106,7 @@ export const LegalModal: React.FC<LegalModalProps> = ({
                   User-initiated device location can be used to support map features; TerroirTrail does not intentionally run background location tracking. Browser local storage is used for device-local preferences such as favorites.
                 </p>
                 <p>
-                  Outbound links to third-party travel services (such as car rentals, transfers, or ferries via Travelpayouts) do not transmit personal profile data or set tracking cookies. Explorer Pass holders enjoy an ad-free experience. Display advertising (Google AdSense) and live consumer pass purchases (Stripe) are currently disabled/dormant.
+                  Outbound links to third-party travel services (such as car rentals, transfers, or ferries via Travelpayouts) do not transmit personal profile data or set tracking cookies. Explorer Pass holders enjoy an ad-free experience. Display advertising (Google AdSense) remains disabled/dormant; optional Explorer Pass purchases use Stripe-hosted Checkout.
                 </p>
               </section>
 
@@ -176,6 +176,16 @@ export const LegalModal: React.FC<LegalModalProps> = ({
               </section>
 
               <section className="space-y-2">
+                <h4 className="font-bold text-white">Explorer Pass purchases</h4>
+                <p>
+                  Paid Explorer Pass purchases are restricted to users who confirm they are 18 or older. Pass conveniences activate after verified payment only after the purchaser expressly requests immediate performance. Mandatory statutory withdrawal rights are not waived merely because access starts immediately.
+                </p>
+                <p className="text-[11px] text-stone-400">
+                  Full pricing, renewal, cancellation and withdrawal information is available in the <a href="/terms.html#explorer-pass-consumer-rights" className="text-amber-400 underline">Terms of Service</a>.
+                </p>
+              </section>
+
+              <section className="space-y-2">
                 <h4 className="font-bold text-white">Travel affiliate links</h4>
                 <p>
                   TerroirTrail may feature outbound affiliate links for travel services (car hire, transfers, ferries, connectivity via Travelpayouts). TerroirTrail is not an online travel agency or transportation provider; third-party bookings are fulfilled directly by independent providers under their own terms.
@@ -202,7 +212,7 @@ export const LegalModal: React.FC<LegalModalProps> = ({
               <section className="space-y-2">
                 <h4 className="font-bold text-white">Researched listings</h4>
                 <p>
-                  TerroirTrail may include an independent producer or rural project using source-backed public information. Inclusion is editorial discovery coverage and does not imply sponsorship, endorsement, booking permission or a paid relationship.
+                  TerroirTrail may include an independent producer or rural project using source-backed public information without a commercial relationship or prior claim by that producer. Inclusion is editorial discovery coverage and does not imply sponsorship, endorsement, booking permission, partnership or payment.
                 </p>
               </section>
 
@@ -216,10 +226,10 @@ export const LegalModal: React.FC<LegalModalProps> = ({
               <section className="space-y-2">
                 <h4 className="font-bold text-white">Corrections and disputes</h4>
                 <p>
-                  Producers may request factual corrections, provide updated official information or dispute a listing by contacting{' '}
+                  Producers and other affected persons may request factual corrections, provide evidence, raise a rights/privacy/safety concern or dispute specific content by contacting{' '}
                   <a href="mailto:terroirtrail@gmail.com" className="text-amber-400 underline">
                     terroirtrail@gmail.com
-                  </a>. TerroirTrail may correct, quarantine or remove unsupported content while a dispute is reviewed.
+                  </a>. Corrections and legal/privacy requests are free and never require a claim or Partner payment. An ordinary request not to be listed does not automatically remove accurate, lawfully obtained factual information; TerroirTrail may restrict, correct or remove content where required by law or where continued publication creates a material rights, privacy, safety or legal concern.
                 </p>
               </section>
 
@@ -261,7 +271,7 @@ export const LegalModal: React.FC<LegalModalProps> = ({
               <section className="space-y-2">
                 <h4 className="font-bold text-white">Producer images and editorial content</h4>
                 <p>
-                  A software license does not automatically grant rights to third-party photographs, producer logos or editorial source material. Official producer photos may also be loaded via verified Google Places media.
+                  A software license does not automatically grant rights to third-party photographs, producer logos or editorial source material. Uncredited legacy listing imagery is quarantined from the public media resolver; producer-submitted media is shown only after approval, and other listing imagery requires explicit provenance. Google Places media is loaded only when the audited media feature is enabled.
                 </p>
               </section>
             </div>
@@ -269,7 +279,7 @@ export const LegalModal: React.FC<LegalModalProps> = ({
         </div>
 
         <div className="px-5 sm:px-7 py-3 border-t border-white/10 bg-stone-900/50 text-[10px] text-stone-500 flex items-center justify-between gap-3 shrink-0">
-          <span>Last product-alignment review: 17 Sep 2026</span>
+          <span>Last legal/product alignment review: 24 Sep 2026</span>
           <a href="mailto:terroirtrail@gmail.com" className="text-amber-400 hover:text-amber-300 underline">
             Contact TerroirTrail
           </a>

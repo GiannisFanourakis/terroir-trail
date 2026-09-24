@@ -9,6 +9,11 @@ import { startPassCheckout, fetchExplorerPass, confirmExplorerPass, verifyExplor
 
 const passId = '78e4a766-e771-4f50-9f7b-b367e027f507';
 const pass = { passId, name: 'Verified Explorer', plan: 'holiday', expiresAt: '2099-01-01T00:00:00Z' };
+const consumerConsent = {
+  ageConfirmed: true,
+  termsAccepted: true,
+  immediatePerformanceRequested: true,
+};
 const fetchMock = vi.fn();
 
 beforeEach(() => {
@@ -30,7 +35,7 @@ describe('explorer pass purchase gating', () => {
 
   it('blocks startPassCheckout when purchases are disabled without a network request', async () => {
     vi.stubEnv('VITE_ENABLE_EXPLORER_PASS_PURCHASES', 'false');
-    await expect(startPassCheckout('holiday')).rejects.toThrow('private pilot');
+    await expect(startPassCheckout('holiday', consumerConsent)).rejects.toThrow('private pilot');
     expect(fetchMock).not.toHaveBeenCalled();
   });
 });
@@ -38,17 +43,20 @@ describe('explorer pass purchase gating', () => {
 describe('authenticated pass requests', () => {
   it('sends only the chosen plan with a Firebase bearer token', async () => {
     fetchMock.mockResolvedValueOnce(Response.json({ url: 'https://checkout.stripe.com/test' }));
-    await expect(startPassCheckout('holiday')).resolves.toEqual({ url: 'https://checkout.stripe.com/test' });
+    await expect(startPassCheckout('holiday', consumerConsent)).resolves.toEqual({ url: 'https://checkout.stripe.com/test' });
     const [url, options] = fetchMock.mock.calls[0];
     expect(url).toBe('https://api.example.test/api/passes/checkout');
     expect(options.headers.get('Authorization')).toBe('Bearer firebase-token');
-    expect(JSON.parse(options.body)).toEqual({ plan: 'holiday' });
+    expect(JSON.parse(options.body)).toEqual({
+      plan: 'holiday',
+      consumerConsent,
+    });
     expect(options.cache).toBe('no-store');
   });
 
   it('rejects demo or signed-out purchases without a network request', async () => {
     auth.currentUser = null;
-    await expect(startPassCheckout('annual')).rejects.toThrow('real account');
+    await expect(startPassCheckout('annual', consumerConsent)).rejects.toThrow('real account');
     expect(fetchMock).not.toHaveBeenCalled();
   });
 

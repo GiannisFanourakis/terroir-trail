@@ -1,9 +1,12 @@
 # TerroirTrail Privacy Notice
 
 **Effective Date:** January 1, 2026<br />
-**Last Updated:** September 23, 2026<br />
-**Data Controller / Platform Operator:** ΙΩΑΝΝΗΣ ΚΩΝΣΤΑΝΤΙΝΟΣ ΦΑΝΟΥΡΑΚΗΣ, sole proprietorship<br />
-**Contact:** terroirtrail@gmail.com
+**Last Updated:** September 24, 2026<br />
+**Data Controller / Platform Operator:** ΦΑΝΟΥΡΑΚΗΣ ΙΩΑΝΝΗΣ ΚΩΝΣΤΑΝΤΙΝΟΣ (FANOURAKIS IOANNIS KONSTANTINOS), sole proprietorship<br />
+**Business address:** Amazonon 31A, 71303 Heraklion, Crete, Greece<br />
+**VAT / AFM:** 170253478<br />
+**Phone:** +30 6955962508<br />
+**Email:** terroirtrail@gmail.com
 
 ---
 
@@ -59,6 +62,12 @@ Our infrastructure and service providers may process ordinary technical informat
 
 If you choose to use a device-location feature, your browser or device may provide your current coordinates so the map can respond to your request. TerroirTrail does not require background location tracking for ordinary catalogue use.
 
+### G. Public producer and business information
+
+TerroirTrail may research and publish factual information about producers and rural projects, including business/trading name, public business contact details, location, website, visiting information, category, and source-backed access information. Where a sole trader or identifiable representative uses public business contact details, some of that information may also be personal data.
+
+This information may be obtained from public or producer-controlled sources such as official business websites, official public profiles, public registers, mapping/business listings, producer-controlled social pages, and information supplied directly by the producer or an authorized representative. TerroirTrail does not intentionally publish private contact details that are not presented for business/public use.
+
 ---
 
 ## 3. Why We Process Personal Data
@@ -67,8 +76,10 @@ Depending on the feature and circumstances, processing may rely on one or more l
 
 - **Performance of a contract or steps at your request:** for account functionality, requested reservation/visit features, and services you choose to use.
 - **Consent:** for optional information or device permissions where consent is the appropriate basis.
-- **Legitimate interests:** for platform security, fraud/impersonation prevention, producer-ownership verification, moderation, service reliability, and protecting users and producers.
+- **Legitimate interests:** for platform security, fraud/impersonation prevention, producer-ownership verification, moderation, service reliability, protecting users and producers, and maintaining an independent factual producer-discovery catalogue. For public business information that is personal data, TerroirTrail's interests include providing useful source-backed discovery coverage, maintaining catalogue accuracy, and enabling travelers to identify or contact businesses; those interests are balanced against the rights and reasonable expectations of the affected person.
 - **Legal obligations:** where records must be retained or disclosed to comply with applicable law.
+
+Where personal data in a researched listing was not obtained directly from the person concerned, this Privacy Notice identifies the categories and general sources used. Where GDPR Article 14 requires individual notice, TerroirTrail will provide it unless an applicable legal exception applies. Affected persons may request correction or object to processing based on legitimate interests without paying or purchasing any TerroirTrail product.
 
 ---
 
@@ -110,6 +121,8 @@ Account and private profile data are generally retained while the account remain
 
 Producer claim and moderation records may be retained for an appropriate period to document ownership decisions, prevent repeated fraudulent claims, and maintain platform integrity.
 
+Listing-correction, rights, privacy, safety, or legal-dispute correspondence may be retained only as long as reasonably needed to investigate the request, document the resulting decision, comply with legal obligations, and prevent repeated abuse or conflicting changes. Public-source provenance may be retained while a listing or factual claim remains active and for a reasonable audit period afterward.
+
 ---
 
 ## 7. Your Data Protection Rights
@@ -125,7 +138,7 @@ Subject to the conditions and exceptions in applicable law, you may have rights 
 - Withdrawal of consent where processing is based on consent.
 - The right to lodge a complaint with the competent data-protection supervisory authority.
 
-To exercise a privacy right or ask a privacy question, contact **terroirtrail@gmail.com**.
+To exercise a privacy right or ask a privacy question, contact **terroirtrail@gmail.com**. Where processing relies on legitimate interests, you may object on grounds relating to your particular situation. You also have the right to lodge a complaint with the Hellenic Data Protection Authority or another competent supervisory authority.
 
 ---
 
@@ -161,6 +174,10 @@ We may update this Privacy Notice as TerroirTrail develops or when legal, techni
 
 For privacy requests or questions about this Notice:
 
-**ΙΩΑΝΝΗΣ ΚΩΝΣΤΑΝΤΙΝΟΣ ΦΑΝΟΥΡΑΚΗΣ**  
-Sole proprietorship / TerroirTrail operator  
-**terroirtrail@gmail.com**
+**ΦΑΝΟΥΡΑΚΗΣ ΙΩΑΝΝΗΣ ΚΩΝΣΤΑΝΤΙΝΟΣ**<br />
+**FANOURAKIS IOANNIS KONSTANTINOS**<br />
+Sole proprietorship / TerroirTrail platform operator<br />
+Amazonon 31A, 71303 Heraklion, Crete, Greece<br />
+VAT / AFM: **170253478**<br />
+Phone: **+30 6955962508**<br />
+Email: **terroirtrail@gmail.com**

@@ -11,6 +11,8 @@ export interface PassRecord {
   name: string;
   plan: PassPlan;
   expiresAt: string;
+  consumerConsentAt?: string;
+  consumerTermsVersion?: string;
 }
 
 export interface PassPlanConfig {

@@ -119,6 +119,12 @@ function annualSession() {
   return session;
 }
 
+const consumerConsent = {
+  ageConfirmed: true,
+  termsAccepted: true,
+  immediatePerformanceRequested: true,
+};
+
 beforeEach(() => {
   records.clear();
   vi.clearAllMocks();
@@ -140,14 +146,34 @@ it('fails closed when server-side Explorer Pass checkout is not explicitly enabl
   expect(create).not.toHaveBeenCalled();
 });
 
+it('rejects Explorer checkout without the required consumer confirmations', async () => {
+  await expect(
+    createPassCheckout('alice', 'Alice', 'holiday')
+  ).rejects.toThrow('age, Terms, and immediate-activation confirmation');
+  expect(create).not.toHaveBeenCalled();
+});
+
 it('creates checkout with server-controlled price, identity and return URL', async () => {
   create.mockResolvedValueOnce({ url: 'https://checkout.stripe.com/test' });
-  await createPassCheckout('alice', 'Alice', 'holiday');
+  await createPassCheckout(
+    'alice',
+    'Alice',
+    'holiday',
+    undefined,
+    consumerConsent
+  );
   expect(create.mock.calls[0][0]).toMatchObject({
     mode: 'payment',
     line_items: [{ price: 'price_holiday', quantity: 1 }],
     client_reference_id: 'alice',
-    metadata: { userId: 'alice', plan: 'holiday' },
+    metadata: {
+      userId: 'alice',
+      plan: 'holiday',
+      consumerTermsVersion: '2026-09-24',
+      consumerAge18Plus: 'true',
+      consumerTermsAccepted: 'true',
+      consumerImmediatePerformance: 'true',
+    },
     automatic_tax: { enabled: true },
     billing_address_collection: 'required',
     success_url: 'https://app.example.test/?explorerCheckout=success',
@@ -221,7 +247,13 @@ it('allows the same traveler to repurchase Holiday after expiry', async () => {
     url: 'https://checkout.stripe.com/repurchase',
   });
   await expect(
-    createPassCheckout('alice', 'Alice', 'holiday', 'alice@example.test')
+    createPassCheckout(
+      'alice',
+      'Alice',
+      'holiday',
+      'alice@example.test',
+      consumerConsent
+    )
   ).resolves.toEqual({ url: 'https://checkout.stripe.com/repurchase' });
 
   const second = await fulfillPass('cs_test_second', 'alice');
@@ -238,7 +270,13 @@ it('allows the same traveler to repurchase Holiday after expiry', async () => {
 it('annual checkout uses recurring subscription mode and email', async () => {
   create.mockResolvedValueOnce({ url: 'https://checkout.stripe.com/annual' });
 
-  await createPassCheckout('alice', 'Alice', 'annual', 'alice@example.test');
+  await createPassCheckout(
+    'alice',
+    'Alice',
+    'annual',
+    'alice@example.test',
+    consumerConsent
+  );
 
   expect(create.mock.calls[0][0]).toMatchObject({
     mode: 'subscription',

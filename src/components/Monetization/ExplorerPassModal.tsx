@@ -111,7 +111,13 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
   const [isProcessing, setIsProcessing] = useState(false);
   const [billingProcessing, setBillingProcessing] = useState(false);
   const [purchaseError, setPurchaseError] = useState<string | null>(null);
+  const [ageConfirmed, setAgeConfirmed] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [immediatePerformanceRequested, setImmediatePerformanceRequested] =
+    useState(false);
   const purchasesEnabled = isExplorerPassPurchasesEnabled();
+  const consumerConsentComplete =
+    ageConfirmed && termsAccepted && immediatePerformanceRequested;
 
   if (!isOpen) return null;
 
@@ -124,10 +130,21 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
       return;
     }
 
+    if (!consumerConsentComplete) {
+      setPurchaseError(
+        'Confirm the age, Terms, and immediate-activation statements before continuing to checkout.'
+      );
+      return;
+    }
+
     setPurchaseError(null);
     setIsProcessing(true);
     try {
-      const { url } = await startPassCheckout(selectedPlan);
+      const { url } = await startPassCheckout(selectedPlan, {
+        ageConfirmed,
+        termsAccepted,
+        immediatePerformanceRequested,
+      });
       window.location.assign(url);
     } catch (error) {
       setPurchaseError(
@@ -382,10 +399,95 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
                   </p>
                 </div>
               )}{' '}
+              {user && (
+                <div className="mb-3 space-y-2.5 rounded-2xl border border-white/10 bg-stone-900/60 p-4">
+                  <div className="rounded-xl border border-amber-500/20 bg-amber-500/10 px-3 py-2 text-[10px] leading-relaxed text-stone-300">
+                    {selectedPlan === 'annual' ? (
+                      <>
+                        <strong className="text-amber-200">
+                          €24.99/year · recurring.
+                        </strong>{' '}
+                        Renews annually until cancelled. Manage cancellation from
+                        the Stripe billing portal.
+                      </>
+                    ) : (
+                      <>
+                        <strong className="text-amber-200">
+                          €9.99 one-time · 14 days.
+                        </strong>{' '}
+                        No automatic renewal.
+                      </>
+                    )}
+                  </div>
+
+                  <label className="flex cursor-pointer items-start gap-2.5 text-[10px] leading-relaxed text-stone-300">
+                    <input
+                      type="checkbox"
+                      checked={ageConfirmed}
+                      onChange={(event) => setAgeConfirmed(event.target.checked)}
+                      className="mt-0.5 h-4 w-4 shrink-0 accent-amber-500"
+                    />
+                    <span>I confirm that I am at least 18 years old.</span>
+                  </label>
+
+                  <label className="flex cursor-pointer items-start gap-2.5 text-[10px] leading-relaxed text-stone-300">
+                    <input
+                      type="checkbox"
+                      checked={termsAccepted}
+                      onChange={(event) => setTermsAccepted(event.target.checked)}
+                      className="mt-0.5 h-4 w-4 shrink-0 accent-amber-500"
+                    />
+                    <span>
+                      I agree to the{' '}
+                      <a
+                        href="/terms.html#explorer-pass-consumer-rights"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-semibold text-amber-300 underline"
+                      >
+                        Terms of Service
+                      </a>{' '}
+                      and acknowledge the{' '}
+                      <a
+                        href="/privacy.html"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-semibold text-amber-300 underline"
+                      >
+                        Privacy Notice
+                      </a>
+                      .
+                    </span>
+                  </label>
+
+                  <label className="flex cursor-pointer items-start gap-2.5 text-[10px] leading-relaxed text-stone-300">
+                    <input
+                      type="checkbox"
+                      checked={immediatePerformanceRequested}
+                      onChange={(event) =>
+                        setImmediatePerformanceRequested(event.target.checked)
+                      }
+                      className="mt-0.5 h-4 w-4 shrink-0 accent-amber-500"
+                    />
+                    <span>
+                      I expressly request immediate activation before the
+                      statutory withdrawal period ends. I understand that this
+                      does not by itself waive mandatory withdrawal rights and
+                      that a proportionate charge may apply where permitted by
+                      law for service already supplied.
+                    </span>
+                  </label>
+                </div>
+              )}
+
               <button
                 type="button"
                 onClick={() => void handlePurchase()}
-                disabled={isProcessing || !purchasesEnabled}
+                disabled={
+                  isProcessing ||
+                  !purchasesEnabled ||
+                  Boolean(user && !consumerConsentComplete)
+                }
                 className="flex w-full items-center justify-center gap-2 rounded-2xl bg-amber-500 px-4 py-3.5 text-xs font-extrabold text-stone-950 transition hover:bg-amber-400 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {!purchasesEnabled ? (
@@ -400,7 +502,8 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
                 ) : (
                   <>
                     <span>
-                      Choose {selected.name} · {selected.price}
+                      Continue to secure checkout · {selected.price}
+                      {selectedPlan === 'annual' ? '/year' : ''}
                     </span>
                     <ArrowRight className="h-4 w-4" />
                   </>
