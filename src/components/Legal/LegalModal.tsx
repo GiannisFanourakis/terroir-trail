@@ -178,7 +178,7 @@ export const LegalModal: React.FC<LegalModalProps> = ({
               <section className="space-y-2">
                 <h4 className="font-bold text-white">Explorer Pass purchases</h4>
                 <p>
-                  Paid Explorer Pass purchases are restricted to users who confirm they are 18 or older. Pass conveniences activate after verified payment only after the purchaser expressly requests immediate performance. Mandatory statutory withdrawal rights are not waived merely because access starts immediately.
+                  Paid Explorer Pass purchases are restricted to users who confirm they are 18 or older. Where the statutory EU/EEA withdrawal right applies, the ordinary period is 14 days from the distance contract. Pass conveniences activate after verified payment only after the purchaser expressly requests immediate performance. Mandatory withdrawal rights are not waived merely because access starts immediately.
                 </p>
                 <p className="text-[11px] text-stone-400">
                   Full pricing, renewal, cancellation and withdrawal information is available in the <a href="/terms.html#explorer-pass-consumer-rights" className="text-amber-400 underline">Terms of Service</a>.

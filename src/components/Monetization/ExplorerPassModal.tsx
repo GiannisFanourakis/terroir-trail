@@ -471,10 +471,11 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
                     />
                     <span>
                       I expressly request immediate activation before the
-                      statutory withdrawal period ends. I understand that this
-                      does not by itself waive mandatory withdrawal rights and
-                      that a proportionate charge may apply where permitted by
-                      law for service already supplied.
+                      14-day statutory withdrawal period ends (where that right
+                      applies). I understand that this does not by itself waive
+                      mandatory withdrawal rights and that a proportionate charge
+                      may apply where permitted by law for service already
+                      supplied.
                     </span>
                   </label>
                 </div>
