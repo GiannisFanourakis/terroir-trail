@@ -46,6 +46,19 @@ describe('session acquisition analytics', () => {
     });
   });
 
+  it('keeps known social sources on the social channel even with generic paid media labels', () => {
+    expect(
+      deriveSessionAcquisition(
+        'https://terroir-trail.web.app/?utm_source=instagram&utm_medium=cpc&utm_campaign=launch'
+      )
+    ).toEqual({
+      source: 'instagram',
+      channel: 'social',
+      campaign: 'launch',
+      attributionMethod: 'utm',
+    });
+  });
+
   it('classifies known referrers without retaining raw referrer data', () => {
     expect(
       deriveSessionAcquisition(
