@@ -6,10 +6,12 @@ import { AppErrorBoundary } from './components/System/AppErrorBoundary';
 import { installAccountCachePrivacyGuard } from './services/accountCachePrivacy';
 import { initGlobalErrorHandlers } from './services/globalErrorHandlers';
 import { installAppUpdateManager } from './services/appUpdate';
+import { captureSessionAcquisition } from './services/sessionAcquisition';
 import './index.css';
 
 initGlobalErrorHandlers();
 installAccountCachePrivacyGuard();
+void captureSessionAcquisition();
 
 if (
   import.meta.env.PROD &&
