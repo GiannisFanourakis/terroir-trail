@@ -68,7 +68,7 @@
           TerroirTrail Privacy Notice
         </h1>
         <p class="text-xs text-stone-400 mb-4">
-          Last updated: September 24, 2026 · Privacy contact:
+          Last updated: September 25, 2026 · Privacy contact:
           <a
             href="mailto:terroirtrail@gmail.com"
             class="text-amber-400 underline"
@@ -141,10 +141,12 @@
               <li>
                 <strong>First-party product-intent signals:</strong> narrow
                 pseudonymous interaction events (such as viewing an estate,
-                opening a regional guide, or requesting directions) used to
-                evaluate maker popularity and guide quality. Raw event rows are
-                retained for up to 180 days; non-identifying daily aggregates
-                are retained for up to 24 months.
+                opening a regional guide, or requesting directions), together
+                with coarse session-acquisition attribution such as
+                Instagram/social or Google/search and a bounded campaign label
+                supplied in a TerroirTrail link. Raw event and acquisition rows
+                are retained for up to 180 days; non-identifying daily
+                aggregates are retained for up to 24 months.
               </li>
               <li>
                 <strong>Producer claims:</strong> a claimant may submit their
@@ -259,11 +261,13 @@
                 <strong>First-party intent telemetry:</strong> rotating session
                 identifiers stored in browser session storage; for signed-in
                 users, account identifiers are cryptographically pseudonymized
-                using a server-side HMAC before storage. Raw analytics does not
-                store the Firebase UID, private note text, precise movement
-                coordinates, IP address, or outbound affiliate URL. TerroirTrail
-                employs no third-party behavioral analytics or ad network
-                tracking pixels.
+                using a server-side HMAC before storage. Acquisition source and
+                channel are reduced to an allowlisted coarse category before
+                storage. Raw referrer URLs and arbitrary URL parameters are not
+                persisted. Raw analytics does not store the Firebase UID,
+                private note text, precise movement coordinates, IP address, or
+                outbound affiliate URL. TerroirTrail employs no third-party
+                behavioral analytics or ad network tracking pixels.
               </li>
               <li>
                 <strong>Browser local storage:</strong> used for device-local

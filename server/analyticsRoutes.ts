@@ -65,10 +65,9 @@ export function registerAnalyticsRoutes(
 
   app.post('/api/analytics/events', async (req: Request, res: Response): Promise<void> => {
     // 1. In-memory abuse prevention
-    // Firebase Hosting/Cloud Run forwards the originating address in X-Forwarded-For.
-    // This value is used transiently for abuse control only and is never persisted.
-    const forwardedFor = req.get('x-forwarded-for')?.split(',')[0]?.trim();
-    const ip = forwardedFor || req.ip || req.socket.remoteAddress || 'unknown';
+    // Use the transport peer for abuse control. Do not trust a caller-supplied
+    // X-Forwarded-For value; forwarding metadata is not persisted as analytics.
+    const ip = req.ip || req.socket.remoteAddress || 'unknown';
     const now = Date.now();
     const bucket = rateLimitBuckets.get(ip);
     if (!bucket || bucket.resetAt <= now) {

@@ -25,7 +25,7 @@ describe('LegalModal and Legal Documentation Synchronization', () => {
     expect(html).toContain('terroirtrail@gmail.com');
     expect(html).not.toContain('legal@terroirtrail.com');
     expect(html).not.toContain('There is not yet an in-app account deletion control');
-    expect(html).toContain('24 Sep 2026');
+    expect(html).toContain('25 Sep 2026');
   });
 
   it('renders terms tab with affiliate disclosures and no OTA status', () => {
@@ -103,10 +103,10 @@ describe('LegalModal and Legal Documentation Synchronization', () => {
     expect(readmeMd).not.toContain('TerroirTrail is an open-source');
     expect(readmeMd).not.toContain('MIT. See [`LICENSE`](LICENSE)');
 
-    // Confirm September 24, 2026 legal-hardening dates
-    expect(privacyPolicyMd).toContain('September 24, 2026');
+    // Confirm current legal-document dates
+    expect(privacyPolicyMd).toContain('September 25, 2026');
     expect(termsOfServiceMd).toContain('September 24, 2026');
-    expect(privacyHtml).toContain('September 24, 2026');
+    expect(privacyHtml).toContain('September 25, 2026');
 
     // Confirm operator disclosures are present in the public legal documents
     expect(privacyPolicyMd).toContain('Amazonon 31A, 71303 Heraklion');

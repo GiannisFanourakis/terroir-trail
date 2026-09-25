@@ -113,10 +113,10 @@ export const LegalModal: React.FC<LegalModalProps> = ({
               <section className="space-y-2">
                 <h4 className="font-bold text-white">First-party intent analytics</h4>
                 <p>
-                  TerroirTrail records narrow first-party interactions to improve the guide. Pseudonymous events are kept up to 180 days; aggregates up to 24 months.
+                  TerroirTrail records narrow first-party interactions and coarse session-acquisition attribution to improve the guide. Pseudonymous event and acquisition rows are kept up to 180 days; aggregates up to 24 months.
                 </p>
                 <p>
-                  Session IDs rotate; account IDs are HMAC-pseudonymized server-side. Exports include events; deletion removes them. No third-party trackers or ad pixels.
+                  Session IDs rotate; account IDs are HMAC-pseudonymized server-side. Raw referrer URLs and arbitrary URL parameters are not stored. Exports include account-linked events; deletion removes them. No third-party trackers or ad pixels.
                 </p>
               </section>
 
@@ -279,7 +279,7 @@ export const LegalModal: React.FC<LegalModalProps> = ({
         </div>
 
         <div className="px-5 sm:px-7 py-3 border-t border-white/10 bg-stone-900/50 text-[10px] text-stone-500 flex items-center justify-between gap-3 shrink-0">
-          <span>Last legal/product alignment review: 24 Sep 2026</span>
+          <span>Last legal/product alignment review: 25 Sep 2026</span>
           <a href="mailto:terroirtrail@gmail.com" className="text-amber-400 hover:text-amber-300 underline">
             Contact TerroirTrail
           </a>
