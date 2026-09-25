@@ -1,7 +1,7 @@
 # TerroirTrail Privacy Notice
 
 **Effective Date:** January 1, 2026<br />
-**Last Updated:** September 24, 2026<br />
+**Last Updated:** September 25, 2026<br />
 **Data Controller / Platform Operator:** ΦΑΝΟΥΡΑΚΗΣ ΙΩΑΝΝΗΣ ΚΩΝΣΤΑΝΤΙΝΟΣ (FANOURAKIS IOANNIS KONSTANTINOS), sole proprietorship<br />
 **Business address:** Amazonon 31A, 71303 Heraklion, Crete, Greece<br />
 **VAT / AFM:** 170253478<br />
@@ -56,7 +56,7 @@ If a verified producer representative uploads photos, TerroirTrail may process t
 
 ### E. Technical and security data
 
-Our infrastructure and service providers may process ordinary technical information needed to deliver and secure the service, such as IP address, browser/app information, timestamps, authentication events, and error/security logs.
+Our infrastructure and service providers may process ordinary technical information needed to deliver and secure the service, such as IP address, browser/app information, timestamps, authentication events, and error/security logs.\n\nTerroirTrail also uses narrow first-party product analytics to understand how the discovery experience is used. This may include a pseudonymous session identifier, coarse acquisition source/channel (for example, Instagram/social or Google/search), a bounded campaign label supplied in a TerroirTrail link, and interaction events such as producer views, saves, trip additions, directions, contact actions, and affiliate interactions. The analytics dataset is designed not to store raw referrer URLs, arbitrary URL parameters, raw Firebase user IDs, private note text, precise personal location, or payment data.
 
 ### F. Location
 
@@ -119,7 +119,7 @@ Records that are genuinely necessary for legal, security, fraud-prevention, or a
 
 Account and private profile data are generally retained while the account remains active and then deleted or minimized in accordance with the deletion process described above, subject to any limited legal/security retention requirement.
 
-Producer claim and moderation records may be retained for an appropriate period to document ownership decisions, prevent repeated fraudulent claims, and maintain platform integrity.
+Producer claim and moderation records may be retained for an appropriate period to document ownership decisions, prevent repeated fraudulent claims, and maintain platform integrity.\n\nRaw first-party product-analytics events and session-acquisition records are retained for up to 180 days. Non-identifying daily analytics aggregates may be retained for up to 24 months.
 
 Listing-correction, rights, privacy, safety, or legal-dispute correspondence may be retained only as long as reasonably needed to investigate the request, document the resulting decision, comply with legal obligations, and prevent repeated abuse or conflicting changes. Public-source provenance may be retained while a listing or factual claim remains active and for a reasonable audit period afterward.
 
