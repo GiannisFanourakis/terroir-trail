@@ -10,6 +10,7 @@ import { registerProducerListingChangeRoutes } from './producerListingChangeRout
 import { registerProducerMediaRoutes } from './producerMediaRoutes';
 import { registerReviewRoutes } from './reviewRoutes';
 import { registerAnalyticsRoutes } from './analyticsRoutes';
+import { registerSessionAcquisitionRoutes } from './sessionAcquisitionRoutes';
 import { registerTripRoutes } from './tripRoutes';
 import { registerCommercialPartnerRoutes } from './commercialPartnerRoutes';
 
@@ -23,6 +24,7 @@ registerProducerListingChangeRoutes(app);
 registerReviewRoutes(app);
 registerAccountSelfRoutes(app);
 registerAnalyticsRoutes(app);
+registerSessionAcquisitionRoutes(app);
 registerTripRoutes(app);
 registerCommercialPartnerRoutes(app);
 
