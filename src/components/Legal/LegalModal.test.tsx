@@ -25,7 +25,7 @@ describe('LegalModal and Legal Documentation Synchronization', () => {
     expect(html).toContain('terroirtrail@gmail.com');
     expect(html).not.toContain('legal@terroirtrail.com');
     expect(html).not.toContain('There is not yet an in-app account deletion control');
-    expect(html).toContain('24 Sep 2026');
+    expect(html).toContain('25 Sep 2026');
   });
 
   it('renders terms tab with affiliate disclosures and no OTA status', () => {
