@@ -104,6 +104,13 @@ function deriveUtmChannel(
 ): AcquisitionChannel {
   const medium = (mediumValue || '').trim().toLowerCase();
 
+  // Known sources determine the coarse channel first. This keeps attribution
+  // internally consistent even when a campaign uses generic media labels such
+  // as "cpc" for a paid social placement.
+  if (SOCIAL_SOURCES.has(source)) return 'social';
+  if (SEARCH_SOURCES.has(source)) return 'search';
+  if (source === 'email') return 'email';
+
   if (
     ['social', 'social-organic', 'organic_social', 'organic-social', 'paid_social', 'paid-social'].includes(
       medium
@@ -114,10 +121,6 @@ function deriveUtmChannel(
   if (['email', 'newsletter'].includes(medium)) return 'email';
   if (medium === 'referral') return 'referral';
   if (['organic', 'search', 'cpc', 'ppc', 'sem'].includes(medium)) return 'search';
-
-  if (SOCIAL_SOURCES.has(source)) return 'social';
-  if (SEARCH_SOURCES.has(source)) return 'search';
-  if (source === 'email') return 'email';
 
   return 'other';
 }
