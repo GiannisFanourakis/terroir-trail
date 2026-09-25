@@ -50,8 +50,11 @@ export function registerSessionAcquisitionRoutes(
   app.post(
     '/api/analytics/session-acquisition',
     async (req: Request, res: Response): Promise<void> => {
-      const forwardedFor = req.get('x-forwarded-for')?.split(',')[0]?.trim();
-      const ip = forwardedFor || req.ip || req.socket.remoteAddress || 'unknown';
+      // Rate-limit by the transport peer Express has actually accepted.
+      // Do not trust a caller-supplied X-Forwarded-For value here; Cloud Run /
+      // hosting proxies may append forwarding metadata, while arbitrary clients
+      // can also send that header themselves.
+      const ip = req.ip || req.socket.remoteAddress || 'unknown';
       const now = Date.now();
       const bucket = rateLimitBuckets.get(ip);
 
