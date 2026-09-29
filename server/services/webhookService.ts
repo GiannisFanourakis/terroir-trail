@@ -16,7 +16,7 @@ export async function handleWebhookEvent(
     const session = event.data.object as Stripe.Checkout.Session;
     if (session.metadata?.purpose === 'explorer_pass' && session.payment_status === 'paid') {
       await fulfill(session.id);
-      return { processed: true, eventType: event.type };
+      return { processed: true, eventType: event.type, eventId: event.id, purpose: 'explorer_pass' as const };
     }
   }
 
@@ -24,5 +24,9 @@ export async function handleWebhookEvent(
   return {
     processed: partnerResult.processed,
     eventType: event.type,
+    eventId: event.id,
+    purpose: partnerResult.processed ? 'producer_partner' as const : undefined,
+    producerId: partnerResult.producerId,
+    subscriptionStatus: partnerResult.subscriptionStatus,
   };
 }

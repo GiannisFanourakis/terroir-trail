@@ -6,6 +6,7 @@ import { registerReviewRoutes } from '../reviewRoutes';
 
 test('review API exposes public sanitized reads and authenticates all community mutations', async () => {
   const calls: Array<{ type: string; args: unknown[] }> = [];
+  const notifications: any[] = [];
   const review = {
     id: 'review-1',
     producerId: 'producer-a',
@@ -55,6 +56,10 @@ test('review API exposes public sanitized reads and authenticates all community 
       const typedReviewId = String(reviewId);
       calls.push({ type: 'report', args: [uid, typedReviewId, reason] });
       return { reported: true as const, reviewId: typedReviewId };
+    },
+    notifyAdmins: async (input) => {
+      notifications.push(input);
+      return { status: 'sent' as const, recipients: ['admin@example.com'], occurredAt: 'now' };
     },
   });
 
@@ -130,6 +135,9 @@ test('review API exposes public sanitized reads and authenticates all community 
       { type: 'report', args: ['traveler-b', 'review-1', 'privacy'] },
       { type: 'delete', args: ['traveler-a', 'producer-a'] },
     ]);
+    assert.equal(notifications.length, 2);
+    assert.equal(notifications[0].eventType, 'traveler_review_published');
+    assert.equal(notifications[1].eventType, 'review_report_submitted');
   } finally {
     await new Promise<void>((resolve, reject) =>
       server.close(error => error ? reject(error) : resolve())

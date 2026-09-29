@@ -8,6 +8,7 @@ import {
   upsertHostReviewReply,
   upsertTravelerReview,
 } from './services/reviewService';
+import { notifyAdmins } from './services/adminNotificationService';
 
 const defaults = {
   verifyToken: (token: string) => adminAuth().verifyIdToken(token, true),
@@ -16,6 +17,7 @@ const defaults = {
   deleteTravelerReview,
   upsertHostReviewReply,
   reportProducerReview,
+  notifyAdmins,
 };
 
 type ReviewRouteDependencies = typeof defaults;
@@ -85,6 +87,22 @@ export function registerReviewRoutes(
         req.body?.rating,
         req.body?.comment
       );
+      await deps.notifyAdmins({
+        eventType: 'traveler_review_published',
+        idempotencyKey: `review:${review.id}:${review.updatedAt}`,
+        subject: `New review for ${review.producerId}`,
+        summary: 'A traveler published or updated a review on TerroirTrail.',
+        details: [
+          ['Producer', review.producerId],
+          ['Traveler', review.travelerName],
+          ['Rating', `${review.rating}/5`],
+          ['Verified visit', review.verifiedVisit],
+          ['Comment', review.comment.slice(0, 500)],
+        ],
+        actorUid: res.locals.identity.uid,
+        producerId: review.producerId,
+        actionUrl: process.env.APP_URL || 'https://terroir-trail.web.app',
+      });
       res.json({ review });
     } catch (error) {
       if (error instanceof ProducerReviewError) {
@@ -138,6 +156,19 @@ export function registerReviewRoutes(
         String(req.params.reviewId),
         req.body?.reason
       );
+      await deps.notifyAdmins({
+        eventType: 'review_report_submitted',
+        idempotencyKey: `review-report:${report.reviewId}:${res.locals.identity.uid}`,
+        subject: 'Review reported for moderation',
+        summary: 'A TerroirTrail community review was reported and needs Admin attention.',
+        details: [
+          ['Review ID', report.reviewId],
+          ['Reason', typeof req.body?.reason === 'string' ? req.body.reason : 'other'],
+          ['Reporter user ID', res.locals.identity.uid],
+        ],
+        actorUid: res.locals.identity.uid,
+        actionUrl: process.env.APP_URL || 'https://terroir-trail.web.app',
+      });
       res.status(201).json({ report });
     } catch (error) {
       if (error instanceof ProducerReviewError) {

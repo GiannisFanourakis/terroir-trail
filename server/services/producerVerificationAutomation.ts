@@ -1,5 +1,6 @@
 import { adminDb } from '../firebaseAdmin';
 import { runProducerVerification, type ProducerVerificationResult } from './producerVerificationService';
+import { notifyAdmins } from './adminNotificationService';
 
 /**
  * A producer claim is written before the existing welcome-email request runs.
@@ -30,6 +31,22 @@ export async function runPendingProducerVerificationsForUser(
     }
 
     const producerId = String(data.producerId || doc.id);
+    await notifyAdmins({
+      eventType: 'producer_claim_submitted',
+      idempotencyKey: `claim:${producerId}:${String(data.submittedAt || data.updatedAt || '')}`,
+      subject: `New producer claim: ${String(data.tradeBrandName || data.producerName || producerId)}`,
+      summary: 'A producer has submitted a request to manage an existing TerroirTrail listing.',
+      details: [
+        ['Producer', String(data.tradeBrandName || data.producerName || producerId)],
+        ['Producer ID', producerId],
+        ['Representative', data.representativeName],
+        ['Official email', data.officialEmail],
+        ['Submitted at', data.submittedAt],
+      ],
+      actorUid: uid,
+      producerId,
+      actionUrl: process.env.APP_URL || 'https://terroir-trail.web.app',
+    }, db);
     results.push(await runProducerVerification(uid, producerId, db));
   }
   return results;

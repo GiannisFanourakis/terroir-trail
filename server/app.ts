@@ -44,6 +44,7 @@ import {
   sendTravelerWelcomeEmail,
 } from './services/transactionalEmailTransport';
 import { handleWebhookEvent } from './services/webhookService';
+import { notifyAdmins } from './services/adminNotificationService';
 
 const defaults = {
   verifyToken: (token: string) => adminAuth().verifyIdToken(token, true),
@@ -67,6 +68,7 @@ const defaults = {
   getExplorerPass,
   verifyExplorerPass,
   handleWebhookEvent,
+  notifyAdmins,
 };
 
 type AppDependencies = typeof defaults;
@@ -96,6 +98,26 @@ export function createApp(overrides: Partial<AppDependencies> = {}) {
           req.body,
           req.get('stripe-signature')
         );
+        if (result.processed && result.eventId) {
+          await deps.notifyAdmins({
+            eventType: 'stripe_event',
+            idempotencyKey: `stripe:${result.eventId}`,
+            subject: result.purpose === 'explorer_pass'
+              ? 'Explorer Pass payment received'
+              : 'Partner billing event processed',
+            summary: result.purpose === 'explorer_pass'
+              ? 'A paid Explorer Pass checkout was processed successfully.'
+              : 'A producer Partner billing event changed trusted subscription state.',
+            details: [
+              ['Stripe event', result.eventType],
+              ['Purpose', result.purpose],
+              ['Producer', result.producerId],
+              ['Subscription status', result.subscriptionStatus],
+            ],
+            producerId: result.producerId,
+            actionUrl: process.env.APP_URL || 'https://terroir-trail.web.app',
+          });
+        }
         res.json({ received: true, ...result });
       } catch (error) {
         console.error('Webhook rejected:', error);
@@ -279,6 +301,22 @@ export function createApp(overrides: Partial<AppDependencies> = {}) {
         preferredName:
           typeof req.body?.name === 'string' ? req.body.name.trim() : undefined,
       });
+      if (delivery.status !== 'not_new_account') {
+        await deps.notifyAdmins({
+          eventType: 'new_account',
+          idempotencyKey: `account:${res.locals.identity.uid}`,
+          subject: 'New TerroirTrail account',
+          summary: 'A new user account has been created on TerroirTrail.',
+          details: [
+            ['Name', typeof req.body?.name === 'string' ? req.body.name.trim() : undefined],
+            ['Email', typeof res.locals.identity.email === 'string' ? res.locals.identity.email : undefined],
+            ['User ID', res.locals.identity.uid],
+            ['Welcome email', delivery.status],
+          ],
+          actorUid: res.locals.identity.uid,
+          actionUrl: process.env.APP_URL || 'https://terroir-trail.web.app',
+        });
+      }
       res.json({ delivery });
     } catch (error) {
       console.error('Traveler welcome email unavailable:', error);
@@ -297,6 +335,24 @@ export function createApp(overrides: Partial<AppDependencies> = {}) {
           res.locals.identity.uid,
           String(req.params.producerId)
         );
+        await deps.notifyAdmins({
+          eventType: 'producer_claim_verification',
+          idempotencyKey: `claim-verification:${verification.producerId}:${verification.business.checkedAt}`,
+          subject: `Producer claim: ${verification.producerId}`,
+          summary: verification.readyForAdminReview
+            ? 'A producer claim has completed verification and is ready for Admin review.'
+            : 'A producer claim was submitted and its automated verification status was updated.',
+          details: [
+            ['Producer', verification.producerId],
+            ['Business verification', verification.business.status],
+            ['Contact verification', verification.contact.status],
+            ['Ready for Admin review', verification.readyForAdminReview],
+            ['Official contact', verification.contact.email],
+          ],
+          actorUid: res.locals.identity.uid,
+          producerId: verification.producerId,
+          actionUrl: process.env.APP_URL || 'https://terroir-trail.web.app',
+        });
         res.json({ verification });
       } catch (error) {
         if (error instanceof ProducerVerificationError) {
@@ -320,6 +376,18 @@ export function createApp(overrides: Partial<AppDependencies> = {}) {
     const token = typeof req.query.token === 'string' ? req.query.token : '';
     try {
       const result = await deps.completeProducerContactVerification(token);
+      await deps.notifyAdmins({
+        eventType: 'producer_contact_verified',
+        idempotencyKey: `producer-contact:${result.producerId}:${result.verifiedAt}`,
+        subject: `Producer email verified: ${result.producerId}`,
+        summary: 'A producer has verified control of the official contact email for its claim.',
+        details: [
+          ['Producer', result.producerId],
+          ['Verified at', result.verifiedAt],
+        ],
+        producerId: result.producerId,
+        actionUrl: publicAppUrl,
+      });
       res.redirect(
         303,
         `${publicAppUrl}/?producerVerification=success&producer=${encodeURIComponent(result.producerId)}`

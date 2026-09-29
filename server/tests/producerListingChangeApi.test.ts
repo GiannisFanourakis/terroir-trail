@@ -7,6 +7,7 @@ import { ProducerListingChangeError } from '../services/producerListingChangeSer
 
 test('producer listing change API requires auth and preserves trusted service authorization', async () => {
   const calls: Array<{ type: string; args: unknown[] }> = [];
+  const notifications: any[] = [];
   const pending = {
     id: 'request-1',
     producerId: 'producer-a',
@@ -33,6 +34,10 @@ test('producer listing change API requires auth and preserves trusted service au
       calls.push({ type: 'submit', args: [uid, email, producerId, changes] });
       if (uid === 'traveler') throw new ProducerListingChangeError('forbidden', 'Not an owner.');
       return pending;
+    },
+    notifyAdmins: async (input) => {
+      notifications.push(input);
+      return { status: 'sent' as const, recipients: ['admin@example.com'], occurredAt: 'now' };
     },
   });
 
@@ -62,6 +67,9 @@ test('producer listing change API requires auth and preserves trusted service au
       { type: 'get', args: ['host', 'producer-a'] },
       { type: 'submit', args: ['host', 'host@example.com', 'producer-a', { tagLine: 'A reviewed tagline' }] },
     ]);
+    assert.equal(notifications.length, 1);
+    assert.equal(notifications[0].eventType, 'producer_listing_change_submitted');
+    assert.equal(notifications[0].idempotencyKey, 'listing-change:request-1');
   } finally {
     await new Promise<void>((resolve, reject) => server.close(error => error ? reject(error) : resolve()));
   }

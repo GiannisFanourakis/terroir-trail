@@ -5,6 +5,7 @@ import { createApp } from '../app';
 
 test('welcome email API requires auth and derives the target uid from the verified session', async () => {
   const calls: any[] = [];
+  const adminNotifications: any[] = [];
   const server = createApp({
     verifyToken: async (token) => {
       if (token === 'bad') throw new Error('bad token');
@@ -13,6 +14,10 @@ test('welcome email API requires auth and derives the target uid from the verifi
     sendTravelerWelcomeEmail: async (input) => {
       calls.push(input);
       return { status: 'sent' as const, occurredAt: 'now', messageId: 'welcome-1' };
+    },
+    notifyAdmins: async (input) => {
+      adminNotifications.push(input);
+      return { status: 'sent' as const, recipients: ['admin@example.com'], occurredAt: 'now' };
     },
   }).listen(0, '127.0.0.1');
 
@@ -38,6 +43,9 @@ test('welcome email API requires auth and derives the target uid from the verifi
 
     assert.equal(response.status, 200);
     assert.deepEqual(calls, [{ uid: 'traveler-uid', preferredName: 'Nikos Traveler' }]);
+    assert.equal(adminNotifications.length, 1);
+    assert.equal(adminNotifications[0].eventType, 'new_account');
+    assert.equal(adminNotifications[0].idempotencyKey, 'account:traveler-uid');
   } finally {
     await new Promise<void>((resolve, reject) =>
       server.close((error) => (error ? reject(error) : resolve()))

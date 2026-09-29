@@ -5,11 +5,13 @@ import {
   ProducerListingChangeError,
   submitProducerListingChanges,
 } from './services/producerListingChangeService';
+import { notifyAdmins } from './services/adminNotificationService';
 
 const defaults = {
   verifyToken: (token: string) => adminAuth().verifyIdToken(token, true),
   getLatestProducerListingChange,
   submitProducerListingChanges,
+  notifyAdmins,
 };
 
 type ProducerListingChangeRouteDependencies = typeof defaults;
@@ -64,6 +66,22 @@ export function registerProducerListingChangeRoutes(
         String(req.params.producerId),
         req.body?.changes
       );
+      await deps.notifyAdmins({
+        eventType: 'producer_listing_change_submitted',
+        idempotencyKey: `listing-change:${request.id}`,
+        subject: `Listing update requested: ${request.producerName}`,
+        summary: 'A verified Host submitted public listing changes that require Admin review.',
+        details: [
+          ['Producer', request.producerName],
+          ['Producer ID', request.producerId],
+          ['Requester', request.requesterEmail || request.requesterUid],
+          ['Changed fields', Object.keys(request.changes).join(', ')],
+          ['Submitted at', request.submittedAt],
+        ],
+        actorUid: request.requesterUid,
+        producerId: request.producerId,
+        actionUrl: process.env.APP_URL || 'https://terroir-trail.web.app',
+      });
       res.status(201).json({ request });
     } catch (error) {
       if (error instanceof ProducerListingChangeError) {

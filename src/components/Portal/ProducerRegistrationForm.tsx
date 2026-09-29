@@ -19,6 +19,7 @@ import {
   isFirebaseConfigured,
   saveProducerRegistrationToCloud,
 } from '../../services/firebase';
+import { requestProducerClaimVerification } from '../../services/producerVerificationApi';
 import { checkVatAgainstVies, ViesCheckResult } from '../../services/viesService';
 import { validateVatNumber } from '../../utils/vatValidator';
 import { getEffectiveProducerCategory } from '../../utils/producerCategory';
@@ -207,6 +208,11 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
     try {
       setIsSubmitting(true);
       const saved = await saveProducerRegistrationToCloud(payload);
+      try {
+        await requestProducerClaimVerification(saved.producerId);
+      } catch (verificationError) {
+        console.warn('Producer claim verification could not start automatically:', verificationError);
+      }
       setSubmitSuccess(saved);
       onSaved?.(saved);
     } catch (error) {
