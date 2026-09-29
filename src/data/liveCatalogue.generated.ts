@@ -6,7 +6,7 @@ import type { Producer } from '../types/terroir';
  *
  * Runtime Supabase remains authoritative. This file is shared by runtime fallback
  * and SEO/AEO generation and is refreshed automatically; do not hand-edit it.
- * Latest active source row update: 2026-09-20T11:03:08.900442+00:00
+ * Latest active source row update: 2026-09-29T12:25:48.344925+00:00
  */
 export const LIVE_CATALOGUE_PRODUCERS = [
   {
@@ -8405,48 +8405,6 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     },
     "seasonalVisitNotes": "Maximum indoor group size published as 20 people.",
     "visitabilityReviewedAt": "2026-09-19T17:29:00+00:00"
-  },
-  {
-    "id": "wild-herbs-kallikratis",
-    "name": "Wild Herbs of Crete",
-    "greekName": "Άγρια Βότανα Κρήτης - Καλλικράτης",
-    "category": "apiary",
-    "destination": "crete",
-    "country": "Greece",
-    "countryCode": "GR",
-    "region": "Chania",
-    "village": "Kallikratis (Sfakia)",
-    "locality": "Kallikratis (Sfakia)",
-    "coordinates": [
-      35.2378367,
-      24.2565003
-    ],
-    "coverImage": "https://images.unsplash.com/photo-1515694346937-94d85e41e6f0?auto=format&fit=crop&w=1000&q=80",
-    "gallery": [
-      "https://images.unsplash.com/photo-1515694346937-94d85e41e6f0?auto=format&fit=crop&w=1000&q=80"
-    ],
-    "tagLine": "Janina and Babis among the wild aromatic plants of Sfakia",
-    "description": "Wild Herbs of Crete grew from Janina and Babis Psaroudakis's work collecting and distilling aromatic plants around Kallikratis and the mountains of Sfakia. Their archive documents herbs, essential oils, hydrolates, soaps and the practical knowledge of working with plants in a rugged landscape.",
-    "story": "Their old field notes make the work tangible: collecting wild dittany meant climbing carefully on rocky slopes and taking only leaves so the perennial roots remained alive. In 2011 they also documented opening a tiny mountain café in Kallikratis where herbs, soaps and essential oils sat alongside coffee and homemade lemonade.",
-    "indigenousVarieties": [],
-    "tastingHighlights": [],
-    "openingHours": "",
-    "phone": "+30 6949092073",
-    "website": "https://wildherbsofcrete.com",
-    "googleMapsUrl": "https://www.google.com/maps/place/Wild+Herbs+of+Crete/@35.2376928,24.2562818,21z/data=!4m22!1m15!4m14!1m6!1m2!1s0x149b64897e85fdbf:0x23fbfa93da44674!2zV2lsZCBIZXJicyBvZiBDcmV0ZSwgzprOsc67zrvOuc66z4HOrM-EzrfPgiA3MzAgMTE!2m2!1d24.2565003!2d35.2378367!1m6!1m2!1s0x149a586bd068e13f:0x400bd2ce2b9b6f0!2zzpfPgc6szrrOu861zrnOvw!2m2!1d25.1421291!2d35.3386746!3m5!1s0x149b64897e85fdbf:0x23fbfa93da44674!8m2!3d35.2378367!4d24.2565003!16s%2Fg%2F1q5glqyf8?entry=ttu&g_ep=EgoyMDI2MDkwOS4wIKXMDSoASAFQAw%3D%3D",
-    "googlePlaceId": "ChIJv_2FfolkmxQRdEakPam_PwI",
-    "roadAccess": "narrow_paved",
-    "roadAccessStatus": "verified",
-    "roadAccessSourceUrl": "https://cretazine.com/en/crete/travel-explore/crete-360/item/1269-herbal-sanctuaries-of-crete",
-    "roadAccessNotes": "Manual operator road review of the Kallikratis approach: narrow paved mountain/village road. This supersedes the prior road-surface uncertainty note; road classification still does not establish rental-car suitability or guarantee temporary conditions.",
-    "ethos": [],
-    "locationStatus": "verified_location",
-    "locationSourceUrl": "https://www.google.com/maps/place/Wild+Herbs+of+Crete/@35.2376928,24.2562818,21z/data=!4m22!1m15!4m14!1m6!1m2!1s0x149b64897e85fdbf:0x23fbfa93da44674!2zV2lsZCBIZXJicyBvZiBDcmV0ZSwgzprOsc67zrvOuc66z4HOrM-EzrfPgiA3MzAgMTE!2m2!1d24.2565003!2d35.2378367!1m6!1m2!1s0x149a586bd068e13f:0x400bd2ce2b9b6f0!2zzpfPgc6szrrOu861zrnOvw!2m2!1d25.1421291!2d35.3386746!3m5!1s0x149b64897e85fdbf:0x23fbfa93da44674!8m2!3d35.2378367!4d24.2565003!16s%2Fg%2F1q5glqyf8?entry=ttu&g_ep=EgoyMDI2MDkwOS4wIKXMDSoASAFQAw%3D%3D",
-    "locationNotes": "Current Wild Herbs of Crete Google Maps business pin in Kallikratis supplied by the TerroirTrail project owner. Location verified; entrance-level precision has not been separately established.",
-    "visitStatus": "not_publicly_confirmed",
-    "visitSourceUrl": "https://www.facebook.com/wildherbsofcrete/",
-    "visitNotes": "The producer-controlled Facebook page states that the Kallikratis shop is now closed and thanks visitors for their company over the years. The previously stored website no longer resolves. No current first-party visitor programme, opening hours, booking flow, or walk-in access could be verified in 2026. Keep the producer record, but do not present it as currently visitable.",
-    "visitabilityReviewedAt": "2026-09-19T16:05:00+00:00"
   },
   {
     "id": "zacharioudakis-winery",

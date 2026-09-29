@@ -3,7 +3,7 @@
  * Do not hand-edit. Production catalogue synchronization rewrites this file.
  */
 export const CATALOGUE_SUMMARY = {
-  "producers": 147,
+  "producers": 146,
   "destinations": 22,
   "countries": 8,
   "regions": 38,

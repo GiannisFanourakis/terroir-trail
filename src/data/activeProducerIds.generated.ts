@@ -148,6 +148,5 @@ export const ACTIVE_PRODUCER_IDS = [
   "vina-gustin-goriska",
   "vina-laguna-istria",
   "voliotis-family-olive-mill-thessaly",
-  "wild-herbs-kallikratis",
   "zacharioudakis-winery"
 ] as const;
