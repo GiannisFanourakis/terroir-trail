@@ -266,7 +266,9 @@ const renderTravelerQuestions = (page: LandingPage): string => {
   const areaAnswer = areas.length
     ? `The current audited catalogue includes records in ${areas.join(', ')}.`
     : 'The current catalogue does not publish a narrower geographic grouping.';
+  const discoveryAnswer = `TerroirTrail currently lists ${page.producers.length} audited ${page.answerSubject}. Open each producer profile for the available visit, booking, location and road-access evidence.`;
   return `<section data-aeo="traveler-questions"><h2>Questions travelers ask</h2><dl>
+        <div><dt>Where can I discover ${escapeHtml(page.answerSubject)}?</dt><dd>${escapeHtml(discoveryAnswer)}</dd></div>
         <div><dt>Which ${escapeHtml(page.answerSubject)} can I visit?</dt><dd>${escapeHtml(visitSummary(page.producers))}</dd></div>
         <div><dt>Do ${escapeHtml(page.answerSubject)} require booking?</dt><dd>${escapeHtml(bookingSummary(page.producers))}</dd></div>
         <div><dt>Can I visit ${escapeHtml(page.answerSubject)} without an appointment?</dt><dd>${escapeHtml(walkInSummary(page.producers))}</dd></div>
@@ -469,9 +471,9 @@ const buildLandingPages = (): { pages: LandingPage[]; categoryGroups: Map<Produc
     }
     pages.push({
       path: countryCategoryPath(countrySlug, categoryKey),
-      title: `${category.plural} in ${country.label} | TerroirTrail`,
+      title: `${category.plural} in ${country.label} — Visit & Travel Guide | TerroirTrail`,
       heading: `${category.plural} in ${country.label}`,
-      description: truncate(`Explore ${producers.length} audited ${category.plural.toLowerCase()} in ${country.label} with current visitability, booking, location and road-access context for independent travel.`, 158),
+      description: truncate(`Discover ${producers.length} audited ${category.plural.toLowerCase()} in ${country.label} to plan independent visits, with booking, location and road-access context.`, 158),
       eyebrow: `${country.label} · ${category.plural}`,
       producers,
       breadcrumbs: [{ name: 'TerroirTrail', path: '/' }, { name: country.label, path: `/${countrySlug}/` }, { name: category.plural, path: countryCategoryPath(countrySlug, categoryKey) }],
@@ -489,8 +491,8 @@ const buildLandingPages = (): { pages: LandingPage[]; categoryGroups: Map<Produc
     const destination = destinationConfig[destinationKey];
     const category = categoryConfig[categoryKey];
     pages.push({
-      path: destinationCategoryPath(destinationKey, categoryKey), title: `${category.plural} in ${destination.label} | TerroirTrail`, heading: `${category.plural} in ${destination.label}`,
-      description: truncate(`Explore ${producers.length} audited ${category.plural.toLowerCase()} in ${destination.label} with current visitability, booking, location and road-access context.`, 158),
+      path: destinationCategoryPath(destinationKey, categoryKey), title: `${category.plural} in ${destination.label} — Visit & Travel Guide | TerroirTrail`, heading: `${category.plural} in ${destination.label}`,
+      description: truncate(`Discover ${producers.length} audited ${category.plural.toLowerCase()} in ${destination.label} to plan visits, with current booking, location and road-access context.`, 158),
       eyebrow: `${destination.label} · ${category.plural}`, producers,
       breadcrumbs: [{ name: 'TerroirTrail', path: '/' }, { name: destination.countryLabel, path: `/${destination.countrySlug}/` }, { name: destination.label, path: destinationPath(destinationKey) }, { name: category.plural, path: destinationCategoryPath(destinationKey, categoryKey) }],
       relatedLinks: [

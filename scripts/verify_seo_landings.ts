@@ -357,6 +357,7 @@ function verifySeo(): void {
     const label = `Country/category planning page ${urlPath}`;
     const content = requireFile(fileForUrlPath(urlPath), label);
     requireIncludes(content, 'data-aeo="traveler-questions"', label);
+    requireIncludes(content, 'Where can I discover', label);
     requireIncludes(content, 'not a numerical or paid ranking', label);
     requireIncludes(content, 'data-seo="visit-planning-table"', label);
     requireIncludes(content, 'Current audited status by producer', label);
@@ -375,6 +376,7 @@ function verifySeo(): void {
     const label = `Destination/category planning page ${urlPath}`;
     const content = requireFile(fileForUrlPath(urlPath), label);
     requireIncludes(content, 'data-aeo="traveler-questions"', label);
+    requireIncludes(content, 'Where can I discover', label);
     requireIncludes(content, 'not a numerical or paid ranking', label);
     requireIncludes(content, 'data-seo="visit-planning-table"', label);
     requireIncludes(content, 'Current audited status by producer', label);
