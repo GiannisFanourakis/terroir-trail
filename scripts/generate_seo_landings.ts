@@ -11,7 +11,7 @@ const PRODUCERS: Producer[] = SEO_PRODUCERS;
 
 type CategoryConfig = { slug: string; singular: string; plural: string };
 type DestinationConfig = { label: string; slug: string; countryLabel: string; countrySlug: string };
-type LandingKind = 'country' | 'destination' | 'category' | 'destination_category' | 'region';
+type LandingKind = 'country' | 'destination' | 'category' | 'country_category' | 'destination_category' | 'region';
 
 type LandingPage = {
   path: string;
@@ -31,6 +31,7 @@ type LandingPage = {
 
 const MIN_CATEGORY_RECORDS = 2;
 const MIN_REGION_RECORDS = 2;
+const MIN_COUNTRY_CATEGORY_RECORDS = 3;
 const MIN_DESTINATION_CATEGORY_RECORDS = 3;
 
 const categoryConfig: Record<Producer['category'], CategoryConfig> = {
@@ -95,6 +96,7 @@ const destinationPath = (destination: Producer['destination']): string => {
   return `/${config.countrySlug}/${config.slug}/`;
 };
 const categoryPath = (category: Producer['category']): string => `/producers/${categoryConfig[category].slug}/`;
+const countryCategoryPath = (countrySlug: string, category: Producer['category']): string => `/${countrySlug}/${categoryConfig[category].slug}/`;
 const regionPath = (destination: Producer['destination'], region: string): string => `${destinationPath(destination)}regions/${slugify(region)}/`;
 const destinationCategoryPath = (destination: Producer['destination'], category: Producer['category']): string => `${destinationPath(destination)}${categoryConfig[category].slug}/`;
 const countryForProducer = (producer: Producer): { label: string; slug: string } => {
@@ -118,6 +120,8 @@ const representedCategories = (producers: Producer[]): string[] =>
   [...new Set(producers.map((producer) => producer.category))].map((category) => categoryConfig[category].plural).sort((a, b) => a.localeCompare(b));
 const representedDestinations = (producers: Producer[]): string[] =>
   [...new Set(producers.map((producer) => producer.destination))].map((destination) => destinationConfig[destination].label).sort((a, b) => a.localeCompare(b));
+const representedRegions = (producers: Producer[]): string[] =>
+  [...new Set(producers.map((producer) => producer.region).filter(Boolean))].sort((a, b) => a.localeCompare(b));
 const visitSummary = (producers: Producer[]): string => {
   const publicVisits = producers.filter((producer) => producer.visitStatus === 'public_visits').length;
   const seasonal = producers.filter((producer) => producer.visitStatus === 'seasonal_public').length;
@@ -235,7 +239,7 @@ const renderProducerList = (producers: Producer[]): string =>
     return `<li><a href="${producerPath(producer)}"><strong>${escapeHtml(producer.name)}</strong><small>${escapeHtml(category)} · ${escapeHtml(producer.village)}, ${escapeHtml(producer.region)}</small></a></li>`;
   }).join('\n')}</ul>`;
 const renderVisitPlanningTable = (page: LandingPage): string => {
-  if (page.kind !== 'destination_category') return '';
+  if (page.kind !== 'destination_category' && page.kind !== 'country_category') return '';
   const rows = sortProducers(page.producers).map((producer) =>
     `<tr data-producer-planning-row="${escapeHtml(producer.id)}"><td><a href="${producerPath(producer)}"><strong>${escapeHtml(producer.name)}</strong></a></td><td>${escapeHtml(producer.village)}, ${escapeHtml(producer.region)}</td><td>${escapeHtml(visitStatusLabel(producer))}</td><td>${escapeHtml(bookingLabel(producer))}<br><span>${escapeHtml(walkInLabel(producer))}</span></td><td>${escapeHtml(locationLabel(producer))}<br><span>${escapeHtml(roadAccessLabel(producer))}</span></td></tr>`
   ).join('\n');
@@ -254,6 +258,21 @@ const renderTerroirContext = (page: LandingPage): string => {
   if (!story) return '';
   const destination = destinationConfig[page.destination];
   return `<section><h2>${escapeHtml(destination.label)} context</h2><p>${escapeHtml(story.summary)}</p><p><a href="${destinationPath(page.destination)}">Explore the full ${escapeHtml(destination.label)} producer guide</a>.</p></section>`;
+};
+
+const renderTravelerQuestions = (page: LandingPage): string => {
+  if (page.kind !== 'category' && page.kind !== 'country_category' && page.kind !== 'destination_category') return '';
+  const areas = page.kind === 'destination_category' ? representedRegions(page.producers) : representedDestinations(page.producers);
+  const areaAnswer = areas.length
+    ? `The current audited catalogue includes records in ${areas.join(', ')}.`
+    : 'The current catalogue does not publish a narrower geographic grouping.';
+  return `<section data-aeo="traveler-questions"><h2>Questions travelers ask</h2><dl>
+        <div><dt>Which ${escapeHtml(page.answerSubject)} can I visit?</dt><dd>${escapeHtml(visitSummary(page.producers))}</dd></div>
+        <div><dt>Do ${escapeHtml(page.answerSubject)} require booking?</dt><dd>${escapeHtml(bookingSummary(page.producers))}</dd></div>
+        <div><dt>Can I visit ${escapeHtml(page.answerSubject)} without an appointment?</dt><dd>${escapeHtml(walkInSummary(page.producers))}</dd></div>
+        <div><dt>Where are these ${escapeHtml(page.answerSubject)} located?</dt><dd>${escapeHtml(areaAnswer)}</dd></div>
+        <div><dt>How does TerroirTrail decide what appears here?</dt><dd>TerroirTrail is a curated discovery guide, not a numerical or paid ranking. This page is built from audited catalogue records and helps travelers compare independent producers using the information currently available for each listing.</dd></div>
+      </dl></section>`;
 };
 
 const renderLandingPage = (page: LandingPage): string => {
@@ -293,12 +312,13 @@ const renderLandingPage = (page: LandingPage): string => {
       <section data-aeo="planning-answers"><h2>Planning answers</h2><dl>
         <div><dt>How many audited records are included?</dt><dd>${page.producers.length} producer/project records.</dd></div>
         <div><dt>What is represented?</dt><dd>${escapeHtml(representation || 'No additional grouping is published.')}</dd></div>
-        <div><dt>${page.kind === 'destination_category' ? `Can you visit ${page.answerSubject}?` : 'Are visits confirmed?'}</dt><dd>${escapeHtml(visitSummary(page.producers))}</dd></div>
+        <div><dt>${page.kind === 'destination_category' || page.kind === 'country_category' ? `Can you visit ${page.answerSubject}?` : 'Are visits confirmed?'}</dt><dd>${escapeHtml(visitSummary(page.producers))}</dd></div>
         <div><dt>What do current booking requirements show?</dt><dd>${escapeHtml(bookingSummary(page.producers))}</dd></div>
         <div><dt>Are walk-ins confirmed?</dt><dd>${escapeHtml(walkInSummary(page.producers))}</dd></div>
         <div><dt>How confident are the listed locations?</dt><dd>${escapeHtml(locationSummary(page.producers))}</dd></div>
         <div><dt>What is known about road access?</dt><dd>${escapeHtml(roadSummary(page.producers))}</dd></div>
       </dl></section>
+      ${renderTravelerQuestions(page)}
       ${renderVisitPlanningTable(page)}
       ${renderTerroirContext(page)}
       <section><h2>Producer directory</h2>${renderProducerList(page.producers)}</section>
@@ -358,17 +378,22 @@ const replaceRequired = (html: string, from: string, to: string, label: string):
   return html.replace(from, to);
 };
 
-const buildLandingPages = (): { pages: LandingPage[]; categoryGroups: Map<Producer['category'], Producer[]>; regionGroups: Map<string, Producer[]>; comboGroups: Map<string, Producer[]> } => {
+const buildLandingPages = (): { pages: LandingPage[]; categoryGroups: Map<Producer['category'], Producer[]>; regionGroups: Map<string, Producer[]>; countryCategoryGroups: Map<string, Producer[]>; comboGroups: Map<string, Producer[]> } => {
   const pages: LandingPage[] = [];
   const categoryGroups = groupBy(PRODUCERS, (producer) => producer.category);
   const regionGroups = groupBy(PRODUCERS, (producer) => `${producer.destination}::${producer.region}`);
+  const countryCategoryGroups = groupBy(PRODUCERS, (producer) => `${countryForProducer(producer).slug}::${producer.category}`);
   const comboGroups = groupBy(PRODUCERS, (producer) => `${producer.destination}::${producer.category}`);
   const countryGroups = groupBy(PRODUCERS, (producer) => countryForProducer(producer).slug);
   const destinationGroups = groupBy(PRODUCERS, (producer) => producer.destination);
 
   for (const [countrySlug, producers] of countryGroups) {
     const country = countryForProducer(producers[0]);
-    const relatedLinks = [...new Set(producers.map((producer) => producer.destination))].map((destination) => ({ label: destinationConfig[destination].label, path: destinationPath(destination) }));
+    const relatedLinks: LandingPage['relatedLinks'] = [...new Set(producers.map((producer) => producer.destination))].map((destination) => ({ label: destinationConfig[destination].label, path: destinationPath(destination) }));
+    for (const category of [...new Set(producers.map((producer) => producer.category))]) {
+      const countryCategory = countryCategoryGroups.get(`${countrySlug}::${category}`) || [];
+      if (countryCategory.length >= MIN_COUNTRY_CATEGORY_RECORDS) relatedLinks.push({ label: `${categoryConfig[category].plural} in ${country.label}`, path: countryCategoryPath(countrySlug, category) });
+    }
     pages.push({
       path: `/${countrySlug}/`, title: `Independent Producers in ${country.label} | TerroirTrail`, heading: `Independent producers in ${country.label}`,
       description: truncate(`Browse ${producers.length} audited TerroirTrail producer/project records in ${country.label}, grouped into source-backed destinations and producer categories.`, 158),
@@ -403,6 +428,14 @@ const buildLandingPages = (): { pages: LandingPage[]; categoryGroups: Map<Produc
     if (producers.length < MIN_CATEGORY_RECORDS) continue;
     const config = categoryConfig[category];
     const relatedLinks: LandingPage['relatedLinks'] = [];
+    const representedCountries = [...new Map(producers.map((producer) => {
+      const country = countryForProducer(producer);
+      return [country.slug, country] as const;
+    })).values()];
+    for (const country of representedCountries) {
+      const countryCategory = countryCategoryGroups.get(`${country.slug}::${category}`) || [];
+      if (countryCategory.length >= MIN_COUNTRY_CATEGORY_RECORDS) relatedLinks.push({ label: `${config.plural} in ${country.label}`, path: countryCategoryPath(country.slug, category) });
+    }
     for (const destination of [...new Set(producers.map((producer) => producer.destination))]) {
       const combo = comboGroups.get(`${destination}::${category}`) || [];
       if (combo.length >= MIN_DESTINATION_CATEGORY_RECORDS) relatedLinks.push({ label: `${destinationConfig[destination].label} ${config.plural}`, path: destinationCategoryPath(destination, category) });
@@ -417,6 +450,39 @@ const buildLandingPages = (): { pages: LandingPage[]; categoryGroups: Map<Produc
     });
   }
 
+  for (const [key, producers] of countryCategoryGroups) {
+    if (producers.length < MIN_COUNTRY_CATEGORY_RECORDS) continue;
+    const [countrySlug, categoryKey] = key.split('::') as [string, Producer['category']];
+    const country = countryForProducer(producers[0]);
+    const category = categoryConfig[categoryKey];
+    const relatedLinks: LandingPage['relatedLinks'] = [
+      { label: `All producers in ${country.label}`, path: `/${countrySlug}/` },
+      { label: `All ${category.plural}`, path: categoryPath(categoryKey) },
+    ];
+    for (const destinationKey of [...new Set(producers.map((producer) => producer.destination))]) {
+      const destinationCombo = comboGroups.get(`${destinationKey}::${categoryKey}`) || [];
+      if (destinationCombo.length >= MIN_DESTINATION_CATEGORY_RECORDS) {
+        relatedLinks.push({ label: `${category.plural} in ${destinationConfig[destinationKey].label}`, path: destinationCategoryPath(destinationKey, categoryKey) });
+      } else {
+        relatedLinks.push({ label: destinationConfig[destinationKey].label, path: destinationPath(destinationKey) });
+      }
+    }
+    pages.push({
+      path: countryCategoryPath(countrySlug, categoryKey),
+      title: `${category.plural} in ${country.label} | TerroirTrail`,
+      heading: `${category.plural} in ${country.label}`,
+      description: truncate(`Explore ${producers.length} audited ${category.plural.toLowerCase()} in ${country.label} with current visitability, booking, location and road-access context for independent travel.`, 158),
+      eyebrow: `${country.label} · ${category.plural}`,
+      producers,
+      breadcrumbs: [{ name: 'TerroirTrail', path: '/' }, { name: country.label, path: `/${countrySlug}/` }, { name: category.plural, path: countryCategoryPath(countrySlug, categoryKey) }],
+      relatedLinks,
+      answerLabel: 'category',
+      kind: 'country_category',
+      answerSubject: `${category.plural.toLowerCase()} in ${country.label}`,
+      category: categoryKey,
+    });
+  }
+
   for (const [key, producers] of comboGroups) {
     if (producers.length < MIN_DESTINATION_CATEGORY_RECORDS) continue;
     const [destinationKey, categoryKey] = key.split('::') as [Producer['destination'], Producer['category']];
@@ -427,7 +493,13 @@ const buildLandingPages = (): { pages: LandingPage[]; categoryGroups: Map<Produc
       description: truncate(`Explore ${producers.length} audited ${category.plural.toLowerCase()} in ${destination.label} with current visitability, booking, location and road-access context.`, 158),
       eyebrow: `${destination.label} · ${category.plural}`, producers,
       breadcrumbs: [{ name: 'TerroirTrail', path: '/' }, { name: destination.countryLabel, path: `/${destination.countrySlug}/` }, { name: destination.label, path: destinationPath(destinationKey) }, { name: category.plural, path: destinationCategoryPath(destinationKey, categoryKey) }],
-      relatedLinks: [{ label: `All ${destination.label} producers`, path: destinationPath(destinationKey) }, { label: `All ${category.plural}`, path: categoryPath(categoryKey) }],
+      relatedLinks: [
+        { label: `All ${destination.label} producers`, path: destinationPath(destinationKey) },
+        { label: `All ${category.plural}`, path: categoryPath(categoryKey) },
+        ...((countryCategoryGroups.get(`${destination.countrySlug}::${categoryKey}`) || []).length >= MIN_COUNTRY_CATEGORY_RECORDS
+          ? [{ label: `${category.plural} in ${destination.countryLabel}`, path: countryCategoryPath(destination.countrySlug, categoryKey) }]
+          : []),
+      ],
       answerLabel: 'category', kind: 'destination_category', answerSubject: `${category.plural.toLowerCase()} in ${destination.label}`, destination: destinationKey, category: categoryKey,
     });
   }
@@ -457,10 +529,10 @@ const buildLandingPages = (): { pages: LandingPage[]; categoryGroups: Map<Produc
     }
     pathSet.add(page.path);
   }
-  return { pages, categoryGroups, regionGroups, comboGroups };
+  return { pages, categoryGroups, regionGroups, countryCategoryGroups, comboGroups };
 };
 
-const updateProducerPages = (categoryGroups: Map<Producer['category'], Producer[]>, regionGroups: Map<string, Producer[]>, comboGroups: Map<string, Producer[]>): void => {
+const updateProducerPages = (categoryGroups: Map<Producer['category'], Producer[]>, regionGroups: Map<string, Producer[]>, countryCategoryGroups: Map<string, Producer[]>, comboGroups: Map<string, Producer[]>): void => {
   for (const producer of PRODUCERS) {
     const pagePath = path.join(distDir, 'producers', producer.id, 'index.html');
     if (!fs.existsSync(pagePath)) {
@@ -470,6 +542,8 @@ const updateProducerPages = (categoryGroups: Map<Producer['category'], Producer[
     let html = fs.readFileSync(pagePath, 'utf-8');
     const links: Array<{ label: string; path: string }> = [{ label: destinationConfig[producer.destination].label, path: destinationPath(producer.destination) }];
     if ((categoryGroups.get(producer.category) || []).length >= MIN_CATEGORY_RECORDS) links.push({ label: categoryConfig[producer.category].plural, path: categoryPath(producer.category) });
+    const country = countryForProducer(producer);
+    if ((countryCategoryGroups.get(`${country.slug}::${producer.category}`) || []).length >= MIN_COUNTRY_CATEGORY_RECORDS) links.push({ label: `${categoryConfig[producer.category].plural} in ${country.label}`, path: countryCategoryPath(country.slug, producer.category) });
     if ((regionGroups.get(`${producer.destination}::${producer.region}`) || []).length >= MIN_REGION_RECORDS) links.push({ label: producer.region, path: regionPath(producer.destination, producer.region) });
     if ((comboGroups.get(`${producer.destination}::${producer.category}`) || []).length >= MIN_DESTINATION_CATEGORY_RECORDS) links.push({ label: `${destinationConfig[producer.destination].label} ${categoryConfig[producer.category].plural}`, path: destinationCategoryPath(producer.destination, producer.category) });
     links.push({ label: 'Verification methodology', path: '/methodology/' });
@@ -521,7 +595,7 @@ function generateSeoLandings(): void {
     console.error(`[SEO Landing Generation Failed] ${distDir} is missing. Run the base build first.`);
     process.exit(1);
   }
-  const { pages, categoryGroups, regionGroups, comboGroups } = buildLandingPages();
+  const { pages, categoryGroups, regionGroups, countryCategoryGroups, comboGroups } = buildLandingPages();
   const destinations = [...new Set(PRODUCERS.map((producer) => producer.destination))];
   const destinationIndexGroups = destinations.map((destination) => {
     const config = destinationConfig[destination];
@@ -534,14 +608,15 @@ function generateSeoLandings(): void {
   writeHtmlPage('/categories/', renderIndexPage('/categories/', 'Producer Categories | TerroirTrail', 'Producer categories', `Browse producer categories with at least ${MIN_CATEGORY_RECORDS} audited records. Thin categories and keyword-only pages are intentionally withheld until the catalogue supports them.`, categoryIndexGroups));
   for (const page of pages) writeHtmlPage(page.path, renderLandingPage(page));
 
-  updateProducerPages(categoryGroups, regionGroups, comboGroups);
+  updateProducerPages(categoryGroups, regionGroups, countryCategoryGroups, comboGroups);
   updateProducerDirectory();
   updateHomepage();
   updateSitemap(['/methodology/', '/destinations/', '/categories/', ...pages.map((page) => page.path)]);
 
-  const regionCount = pages.filter((page) => page.eyebrow.endsWith(' region')).length;
-  const comboCount = pages.filter((page) => page.eyebrow.includes(' · ')).length;
-  const categoryCount = pages.filter((page) => page.eyebrow === 'Producer category').length;
+  const regionCount = pages.filter((page) => page.kind === 'region').length;
+  const countryCategoryCount = pages.filter((page) => page.kind === 'country_category').length;
+  const comboCount = pages.filter((page) => page.kind === 'destination_category').length;
+  const categoryCount = pages.filter((page) => page.kind === 'category').length;
   const destinationCount = pages.filter((page) => page.eyebrow.endsWith(' destination')).length;
   const countryCount = pages.filter((page) => page.eyebrow === 'Country catalogue').length;
   console.log(`SEO/AEO landing generation complete (${PRODUCERS.length} audited producer/project records):`);
@@ -549,6 +624,7 @@ function generateSeoLandings(): void {
   console.log(`  - ${destinationCount} destination pages`);
   console.log(`  - ${regionCount} region pages (minimum ${MIN_REGION_RECORDS} records)`);
   console.log(`  - ${categoryCount} category pages (minimum ${MIN_CATEGORY_RECORDS} records)`);
+  console.log(`  - ${countryCategoryCount} country/category pages (minimum ${MIN_COUNTRY_CATEGORY_RECORDS} records)`);
   console.log(`  - ${comboCount} destination/category pages (minimum ${MIN_DESTINATION_CATEGORY_RECORDS} records)`);
   console.log('  - producer pages, directory, homepage and sitemap linked into the current entity architecture');
 }

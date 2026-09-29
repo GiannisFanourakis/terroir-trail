@@ -13,6 +13,7 @@ const PRODUCER_DIRECTORY_URL = `${CANONICAL_HOST}/producers/`;
 const distDir = path.resolve(process.cwd(), 'dist');
 const MIN_CATEGORY_RECORDS = 2;
 const MIN_REGION_RECORDS = 2;
+const MIN_COUNTRY_CATEGORY_RECORDS = 3;
 const MIN_DESTINATION_CATEGORY_RECORDS = 3;
 
 const PRODUCERS: Producer[] = SEO_PRODUCERS;
@@ -87,6 +88,7 @@ const destinationPath = (destination: Producer['destination']): string => {
   return `/${config.countrySlug}/${config.slug}/`;
 };
 const categoryPath = (category: Producer['category']): string => `/producers/${categorySlugs[category]}/`;
+const countryCategoryPath = (countrySlug: string, category: Producer['category']): string => `/${countrySlug}/${categorySlugs[category]}/`;
 const regionPath = (destination: Producer['destination'], region: string): string => `${destinationPath(destination)}regions/${slugify(region)}/`;
 const comboPath = (destination: Producer['destination'], category: Producer['category']): string => `${destinationPath(destination)}${categorySlugs[category]}/`;
 const fileForUrlPath = (urlPath: string): string => path.join(distDir, urlPath.replace(/^\//, '').replace(/\/$/, ''), 'index.html');
@@ -169,6 +171,7 @@ function verifySeo(): void {
   const destinationGroups = groupBy(PRODUCERS, (producer) => producer.destination);
   const categoryGroups = groupBy(PRODUCERS, (producer) => producer.category);
   const regionGroups = groupBy(PRODUCERS, (producer) => `${producer.destination}::${producer.region}`);
+  const countryCategoryGroups = groupBy(PRODUCERS, (producer) => `${destinationConfig[producer.destination].countrySlug}::${producer.category}`);
   const comboGroups = groupBy(PRODUCERS, (producer) => `${producer.destination}::${producer.category}`);
   const countryGroups = groupBy(PRODUCERS, (producer) => destinationConfig[producer.destination].countrySlug);
 
@@ -179,6 +182,11 @@ function verifySeo(): void {
   for (const [key, producers] of regionGroups) {
     const [destination, region] = key.split('::') as [Producer['destination'], string];
     if (producers.length >= MIN_REGION_RECORDS) expectedLandingPaths.set(regionPath(destination, region), producers.length);
+  }
+  for (const [key, producers] of countryCategoryGroups) {
+    const [countrySlug, category] = key.split('::') as [string, Producer['category']];
+    if (producers.length >= MIN_COUNTRY_CATEGORY_RECORDS) expectedLandingPaths.set(countryCategoryPath(countrySlug, category), producers.length);
+    else if (fs.existsSync(fileForUrlPath(countryCategoryPath(countrySlug, category)))) fail(`Thin country/category page was generated despite having only ${producers.length} records: ${countryCategoryPath(countrySlug, category)}`);
   }
   for (const [key, producers] of comboGroups) {
     const [destination, category] = key.split('::') as [Producer['destination'], Producer['category']];
@@ -319,6 +327,8 @@ function verifySeo(): void {
     requireIncludes(pageContent, 'href="/methodology/"', `Producer methodology link ${producer.id}`);
     requireIncludes(pageContent, `href="${destinationPath(producer.destination)}"`, `Producer destination link ${producer.id}`);
     if ((categoryGroups.get(producer.category) || []).length >= MIN_CATEGORY_RECORDS) requireIncludes(pageContent, `href="${categoryPath(producer.category)}"`, `Producer category link ${producer.id}`);
+    const producerCountrySlug = destinationConfig[producer.destination].countrySlug;
+    if ((countryCategoryGroups.get(`${producerCountrySlug}::${producer.category}`) || []).length >= MIN_COUNTRY_CATEGORY_RECORDS) requireIncludes(pageContent, `href="${countryCategoryPath(producerCountrySlug, producer.category)}"`, `Producer country/category link ${producer.id}`);
     if ((regionGroups.get(`${producer.destination}::${producer.region}`) || []).length >= MIN_REGION_RECORDS) requireIncludes(pageContent, `href="${regionPath(producer.destination, producer.region)}"`, `Producer region link ${producer.id}`);
     if ((comboGroups.get(`${producer.destination}::${producer.category}`) || []).length >= MIN_DESTINATION_CATEGORY_RECORDS) requireIncludes(pageContent, `href="${comboPath(producer.destination, producer.category)}"`, `Producer destination/category link ${producer.id}`);
     if (!producer.description && !producer.story && !producer.tagLine) fail(`Producer ${producer.id} has no narrative source for an entity page.`);
@@ -340,12 +350,32 @@ function verifySeo(): void {
   verifyIndexPage('/categories/', eligibleCategories.length, eligibleCategories.map(([category]) => categoryPath(category)), 'Categories index');
   for (const [urlPath, count] of expectedLandingPaths) verifyLandingPage(urlPath, count, `Landing page ${urlPath}`);
 
+  for (const [key, producers] of countryCategoryGroups) {
+    if (producers.length < MIN_COUNTRY_CATEGORY_RECORDS) continue;
+    const [countrySlug, category] = key.split('::') as [string, Producer['category']];
+    const urlPath = countryCategoryPath(countrySlug, category);
+    const label = `Country/category planning page ${urlPath}`;
+    const content = requireFile(fileForUrlPath(urlPath), label);
+    requireIncludes(content, 'data-aeo="traveler-questions"', label);
+    requireIncludes(content, 'not a numerical or paid ranking', label);
+    requireIncludes(content, 'data-seo="visit-planning-table"', label);
+    requireIncludes(content, 'Current audited status by producer', label);
+    const rowCount = (content.match(/data-producer-planning-row="/g) || []).length;
+    if (rowCount !== producers.length) fail(`${label} has ${rowCount} planning rows; expected ${producers.length}.`);
+    for (const producer of producers) {
+      requireIncludes(content, `data-producer-planning-row="${escapeHtml(producer.id)}"`, `${label} row ${producer.id}`);
+      requireIncludes(content, `href="${producerPath(producer)}"`, `${label} producer link ${producer.id}`);
+    }
+  }
+
   for (const [key, producers] of comboGroups) {
     if (producers.length < MIN_DESTINATION_CATEGORY_RECORDS) continue;
     const [destination, category] = key.split('::') as [Producer['destination'], Producer['category']];
     const urlPath = comboPath(destination, category);
     const label = `Destination/category planning page ${urlPath}`;
     const content = requireFile(fileForUrlPath(urlPath), label);
+    requireIncludes(content, 'data-aeo="traveler-questions"', label);
+    requireIncludes(content, 'not a numerical or paid ranking', label);
     requireIncludes(content, 'data-seo="visit-planning-table"', label);
     requireIncludes(content, 'Current audited status by producer', label);
     requireIncludes(content, 'Unknown or not publicly confirmed does not mean unavailable', label);
@@ -360,9 +390,10 @@ function verifySeo(): void {
   console.log('SEO/AEO landing verification passed:');
   console.log(`  - ${PRODUCERS.length} canonical producer entities retain metadata, factual answers and JSON-LD`);
   console.log(`  - ${expectedLandingPaths.size + 2} country/destination/region/category/index pages verified`);
-  console.log(`  - thin destination/category combinations remain withheld below ${MIN_DESTINATION_CATEGORY_RECORDS} records`);
-  console.log('  - eligible destination/category pages expose per-producer visit, booking, walk-in, location and road-access evidence');
-  console.log('  - all producer pages link into applicable destination/category/region entities');
+  console.log(`  - thin country/category and destination/category combinations remain withheld below ${MIN_COUNTRY_CATEGORY_RECORDS}/${MIN_DESTINATION_CATEGORY_RECORDS} records`);
+  console.log('  - eligible country/category and destination/category pages expose traveler questions plus per-producer visit, booking, walk-in, location and road-access evidence');
+  console.log('  - category discovery pages explicitly remain curated guides rather than numerical or paid rankings');
+  console.log('  - all producer pages link into applicable country/category/destination/region entities');
   console.log(`  - final sitemap contains exactly ${expectedSitemapUrls.length} canonical URLs with no duplicates or legacy producer-query URLs`);
   console.log(`  - robots.txt advertises ${CANONICAL_SITEMAP_URL}, llms.txt and explicit search/answer-engine crawler access`);
   console.log('  - homepage/llms state, stale-claim bans and monetization quarantine remain enforced');
