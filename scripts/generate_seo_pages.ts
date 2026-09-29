@@ -206,7 +206,6 @@ const buildJsonLd = (producer: Producer, canonicalUrl: string, pageTitle: string
   if (producer.website) entity.sameAs = [producer.website];
   if (producer.phone) entity.telephone = producer.phone;
   if (producer.email) entity.email = producer.email;
-  if (/^https?:\/\//i.test(producer.coverImage || '')) entity.image = producer.coverImage;
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -252,7 +251,6 @@ const renderProducerPage = (producer: Producer): string => {
   const location = publicPointAnswer(producer);
   const visiting = visitAnswer(producer);
   const access = accessAnswer(producer);
-  const socialImage = /^https?:\/\//i.test(producer.coverImage || '') ? producer.coverImage : `${CANONICAL_HOST}/logo.png`;
   const jsonLd = buildJsonLd(producer, canonicalUrl, title, description);
   const sourceLinks = [
     renderSourceLink('Official producer website', producer.website),
@@ -286,12 +284,12 @@ const renderProducerPage = (producer: Producer): string => {
     <meta property="og:url" content="${canonicalUrl}" />
     <meta property="og:title" content="${escapeHtml(title)}" />
     <meta property="og:description" content="${escapeHtml(description)}" />
-    <meta property="og:image" content="${escapeHtml(socialImage)}" />
+    <meta property="og:image" content="${CANONICAL_HOST}/logo.png" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:url" content="${canonicalUrl}" />
     <meta name="twitter:title" content="${escapeHtml(title)}" />
     <meta name="twitter:description" content="${escapeHtml(description)}" />
-    <meta name="twitter:image" content="${escapeHtml(socialImage)}" />
+    <meta name="twitter:image" content="${CANONICAL_HOST}/logo.png" />
     <script type="application/ld+json">${jsonLd}</script>
     <style>${pageStyles}</style>
   </head>
