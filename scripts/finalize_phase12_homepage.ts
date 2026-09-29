@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { LIVE_CATALOGUE_METRICS, SEO_PRODUCERS } from './seoCatalogue';
+import { LIVE_CATALOGUE_METRICS, SEO_DESTINATION_LABELS, SEO_PRODUCERS } from './seoCatalogue';
 
 const CANONICAL_HOST = 'https://terroir-trail.web.app';
 const indexPath = path.resolve(process.cwd(), 'dist', 'index.html');
@@ -14,6 +14,10 @@ const destinationCounts = {
   tuscany: SEO_PRODUCERS.filter((producer) => producer.destination === 'tuscany').length,
   piedmont: SEO_PRODUCERS.filter((producer) => producer.destination === 'piedmont').length,
 };
+
+const activeDestinationNames = (Object.keys(SEO_DESTINATION_LABELS) as Array<keyof typeof SEO_DESTINATION_LABELS>)
+  .filter((destination) => (LIVE_CATALOGUE_METRICS.destinationCounts[destination] ?? 0) > 0)
+  .map((destination) => SEO_DESTINATION_LABELS[destination]);
 
 const pageTitle = 'TerroirTrail — Independent Agritourism & Producer Guide';
 const pageDescription =
@@ -80,6 +84,7 @@ const structuredData = {
       url: `${CANONICAL_HOST}/`,
       description: pageDescription,
       inLanguage: 'en',
+      dateModified: LIVE_CATALOGUE_METRICS.verifiedAt,
       publisher: { '@id': `${CANONICAL_HOST}/#organization` },
     },
     {
@@ -88,6 +93,15 @@ const structuredData = {
       name: 'TerroirTrail',
       url: `${CANONICAL_HOST}/`,
       logo: `${CANONICAL_HOST}/logo.png`,
+      email: 'terroirtrail@gmail.com',
+      sameAs: ['https://www.instagram.com/terroirtrail/'],
+      knowsAbout: ['Agritourism', 'Culinary travel', 'Independent food and drink producers', 'Wine tourism', 'Craft beer', 'Olive oil', 'Cheese and dairy', 'Beekeeping', 'Cider', 'Local food', 'Road access'],
+      contactPoint: {
+        '@type': 'ContactPoint',
+        email: 'terroirtrail@gmail.com',
+        contactType: 'producer listing and project enquiries',
+        availableLanguage: ['en', 'el'],
+      },
       founder: {
         '@type': 'Person',
         '@id': `${CANONICAL_HOST}/#founder`,
@@ -103,6 +117,7 @@ const structuredData = {
       operatingSystem: 'Web, Android, iOS',
       description: pageDescription,
       inLanguage: 'en',
+      dateModified: LIVE_CATALOGUE_METRICS.verifiedAt,
       publisher: { '@id': `${CANONICAL_HOST}/#organization` },
     },
     {
@@ -112,14 +127,9 @@ const structuredData = {
       url: `${CANONICAL_HOST}/`,
       description: homepageSummary,
       inLanguage: 'en',
+      dateModified: LIVE_CATALOGUE_METRICS.verifiedAt,
       touristType: ['Agritourism', 'Culinary Travel', 'Wine Tourism', 'Slow Travel'],
-      about: [
-        { '@type': 'Place', name: 'Crete', url: `${CANONICAL_HOST}/greece/crete/` },
-        { '@type': 'Place', name: 'Santorini', url: `${CANONICAL_HOST}/greece/santorini/` },
-        { '@type': 'Place', name: 'Peloponnese', url: `${CANONICAL_HOST}/greece/peloponnese/` },
-        { '@type': 'Place', name: 'Macedonia, Greece', url: `${CANONICAL_HOST}/greece/northern-greece/` },
-        { '@type': 'Place', name: 'Tuscany', url: `${CANONICAL_HOST}/italy/tuscany/` },
-      ],
+      about: activeDestinationNames.map((name) => ({ '@type': 'Place', name })),
     },
   ],
 };

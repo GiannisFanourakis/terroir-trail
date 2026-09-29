@@ -26,6 +26,19 @@ const categoryLabels: Record<Producer['category'], string> = {
   farm: 'Farm',
 };
 
+const schemaTypeForProducer = (producer: Producer): string => {
+  switch (producer.category) {
+    case 'winery':
+      return 'Winery';
+    case 'brewery':
+      return 'Brewery';
+    case 'distillery':
+      return 'Distillery';
+    default:
+      return 'Organization';
+  }
+};
+
 const destinationLabels: Record<Producer['destination'], string> = {
   crete: 'Crete',
   santorini: 'Santorini',
@@ -179,10 +192,12 @@ const buildJsonLd = (producer: Producer, canonicalUrl: string, pageTitle: string
   }
 
   const entity: Record<string, unknown> = {
-    '@type': 'Organization',
+    '@type': schemaTypeForProducer(producer),
     '@id': `${canonicalUrl}#entity`,
     name: producer.name,
+    url: producer.website || canonicalUrl,
     description: normalizeText(producer.description || producer.tagLine || description),
+    disambiguatingDescription: `${categoryLabels[producer.category]} in ${[locality, producer.region, country].filter(Boolean).join(', ')}`,
     mainEntityOfPage: { '@id': canonicalUrl },
     location,
   };
@@ -190,6 +205,8 @@ const buildJsonLd = (producer: Producer, canonicalUrl: string, pageTitle: string
   if (producer.greekName && producer.greekName !== producer.name) entity.alternateName = producer.greekName;
   if (producer.website) entity.sameAs = [producer.website];
   if (producer.phone) entity.telephone = producer.phone;
+  if (producer.email) entity.email = producer.email;
+  if (/^https?:\/\//i.test(producer.coverImage || '')) entity.image = producer.coverImage;
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -201,6 +218,7 @@ const buildJsonLd = (producer: Producer, canonicalUrl: string, pageTitle: string
         name: pageTitle,
         description,
         inLanguage: 'en',
+        dateModified: LIVE_CATALOGUE_METRICS.verifiedAt,
         isPartOf: {
           '@type': 'WebSite',
           '@id': `${CANONICAL_HOST}/#website`,
@@ -234,6 +252,7 @@ const renderProducerPage = (producer: Producer): string => {
   const location = publicPointAnswer(producer);
   const visiting = visitAnswer(producer);
   const access = accessAnswer(producer);
+  const socialImage = /^https?:\/\//i.test(producer.coverImage || '') ? producer.coverImage : `${CANONICAL_HOST}/logo.png`;
   const jsonLd = buildJsonLd(producer, canonicalUrl, title, description);
   const sourceLinks = [
     renderSourceLink('Official producer website', producer.website),
@@ -267,12 +286,12 @@ const renderProducerPage = (producer: Producer): string => {
     <meta property="og:url" content="${canonicalUrl}" />
     <meta property="og:title" content="${escapeHtml(title)}" />
     <meta property="og:description" content="${escapeHtml(description)}" />
-    <meta property="og:image" content="${CANONICAL_HOST}/logo.png" />
+    <meta property="og:image" content="${escapeHtml(socialImage)}" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:url" content="${canonicalUrl}" />
     <meta name="twitter:title" content="${escapeHtml(title)}" />
     <meta name="twitter:description" content="${escapeHtml(description)}" />
-    <meta name="twitter:image" content="${CANONICAL_HOST}/logo.png" />
+    <meta name="twitter:image" content="${escapeHtml(socialImage)}" />
     <script type="application/ld+json">${jsonLd}</script>
     <style>${pageStyles}</style>
   </head>

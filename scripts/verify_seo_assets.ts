@@ -101,7 +101,7 @@ function verifySeoAssets(): void {
   if (!sitemapDirectivePattern.test(robotsContent)) {
     fail(`dist/robots.txt does not advertise Sitemap: ${CANONICAL_SITEMAP_URL}`);
   }
-  for (const crawler of ['Googlebot', 'Bingbot', 'OAI-SearchBot', 'ChatGPT-User', 'GPTBot', 'PerplexityBot', 'ClaudeBot', 'Applebot-Extended', 'Google-Extended']) {
+  for (const crawler of ['Googlebot', 'Bingbot', 'OAI-SearchBot', 'ChatGPT-User', 'GPTBot', 'PerplexityBot', 'ClaudeBot', 'Applebot-Extended', 'Google-Extended', 'CCBot', 'Amazonbot']) {
     requireIncludes(robotsContent, `User-agent: ${crawler}`, 'dist/robots.txt');
   }
   requireIncludes(robotsContent, 'https://terroir-trail.web.app/llms.txt', 'dist/robots.txt');
@@ -119,14 +119,19 @@ function verifySeoAssets(): void {
     '/producers/<producer-id>/',
     'Sitemap: https://terroir-trail.web.app/sitemap.xml',
     'Producer directory: https://terroir-trail.web.app/producers/',
+    'Destinations index: https://terroir-trail.web.app/destinations/',
+    'Categories index: https://terroir-trail.web.app/categories/',
+    `Catalogue review date: ${LIVE_CATALOGUE_METRICS.verifiedAt}`,
     'Robots policy: https://terroir-trail.web.app/robots.txt',
     '## Search and answer-engine discovery',
+    '## Preferred citation targets',
     '## Answer-engine interpretation rules',
     'does not represent Santorini as a UNESCO Global Geopark',
     'Greek cheese and dairy expansion is now included in the audited catalogue',
   ];
   for (const claim of requiredLlmsClaims) requireIncludes(llmsContent, claim, 'dist/llms.txt');
   banIncludes(llmsContent, '{{LIVE_', 'dist/llms.txt');
+  banIncludes(llmsContent, '{{CATALOGUE_', 'dist/llms.txt');
 
   const staleLlmsClaims = [
     '36 producer/project records',

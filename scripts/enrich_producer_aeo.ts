@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import type { Producer } from '../src/types/terroir';
-import { SEO_PRODUCERS } from './seoCatalogue';
+import { LIVE_CATALOGUE_METRICS, SEO_PRODUCERS } from './seoCatalogue';
 
 const CANONICAL_HOST = 'https://terroir-trail.web.app';
 const distDir = path.resolve(process.cwd(), 'dist');
@@ -105,6 +105,7 @@ const quickFacts = (producer: Producer): string => {
     ['Location', locationSummary(producer)],
     ['Visitor access', visitSummary(producer)],
     ['Road access', roadSummary(producer)],
+    ['Catalogue review', LIVE_CATALOGUE_METRICS.verifiedAt],
   ];
 
   if (mappedPoint) facts.push(['Mapped public point', mappedPoint]);

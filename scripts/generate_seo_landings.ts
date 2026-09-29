@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import type { Producer } from '../src/types/terroir';
-import { SEO_PRODUCERS } from './seoCatalogue';
+import { LIVE_CATALOGUE_METRICS, SEO_PRODUCERS } from './seoCatalogue';
 import { TERROIR_REGION_STORIES } from '../src/data/terroirRegionStories';
 
 const CANONICAL_HOST = 'https://terroir-trail.web.app';
@@ -212,7 +212,7 @@ const buildJsonLd = (page: LandingPage, canonicalUrl: string): string => {
     '@context': 'https://schema.org',
     '@graph': [
       {
-        '@type': 'CollectionPage', '@id': canonicalUrl, url: canonicalUrl, name: page.title, description: page.description, inLanguage: 'en',
+        '@type': 'CollectionPage', '@id': canonicalUrl, url: canonicalUrl, name: page.title, description: page.description, inLanguage: 'en', dateModified: LIVE_CATALOGUE_METRICS.verifiedAt,
         isPartOf: { '@type': 'WebSite', '@id': `${CANONICAL_HOST}/#website`, name: 'TerroirTrail', url: `${CANONICAL_HOST}/` },
         mainEntity: {
           '@type': 'ItemList', numberOfItems: page.producers.length,
@@ -312,7 +312,7 @@ const renderLandingPage = (page: LandingPage): string => {
 const renderIndexPage = (pathValue: string, title: string, heading: string, description: string, groups: Array<{ label: string; path: string; count: number; detail: string }>): string => {
   const canonicalUrl = `${CANONICAL_HOST}${pathValue}`;
   const jsonLd = JSON.stringify({
-    '@context': 'https://schema.org', '@type': 'CollectionPage', '@id': canonicalUrl, url: canonicalUrl, name: title, description,
+    '@context': 'https://schema.org', '@type': 'CollectionPage', '@id': canonicalUrl, url: canonicalUrl, name: title, description, dateModified: LIVE_CATALOGUE_METRICS.verifiedAt,
     mainEntity: { '@type': 'ItemList', numberOfItems: groups.length, itemListElement: groups.map((group, index) => ({ '@type': 'ListItem', position: index + 1, url: `${CANONICAL_HOST}${group.path}`, name: group.label })) },
   }, null, 2).replace(/</g, '\\u003c');
   return `<!doctype html>

@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import type { Producer } from '../src/types/terroir';
-import { SEO_PRODUCERS } from './seoCatalogue';
+import { LIVE_CATALOGUE_METRICS, SEO_PRODUCERS } from './seoCatalogue';
 
 const CANONICAL_HOST = 'https://terroir-trail.web.app';
 const distDir = path.resolve(process.cwd(), 'dist');
@@ -51,6 +51,8 @@ function verifyProducerAeo(): void {
     requireIncludes(html, '<dt>Location</dt>', producer);
     requireIncludes(html, '<dt>Visitor access</dt>', producer);
     requireIncludes(html, '<dt>Road access</dt>', producer);
+    requireIncludes(html, '<dt>Catalogue review</dt>', producer);
+    requireIncludes(html, LIVE_CATALOGUE_METRICS.verifiedAt, producer);
     requireIncludes(html, 'data-aeo="direct-answers"', producer);
     requireIncludes(html, `<dt>What is ${name}?</dt>`, producer);
     requireIncludes(html, `<dt>Where is ${name}?</dt>`, producer);
@@ -89,6 +91,16 @@ function verifyProducerAeo(): void {
       typeof node === 'object' && node !== null && (node as Record<string, unknown>)['@type'] === 'WebPage'
     ) as Record<string, unknown> | undefined;
     if (!webPage) fail(`Producer ${producer.id} JSON-LD is missing its WebPage node.`);
+    if (webPage.dateModified !== LIVE_CATALOGUE_METRICS.verifiedAt) {
+      fail(`Producer ${producer.id} WebPage dateModified must match the catalogue review date.`);
+    }
+
+    const entity = graph.find((node) =>
+      typeof node === 'object' && node !== null && (node as Record<string, unknown>)['@id'] === `${canonicalUrl}#entity`
+    ) as Record<string, unknown> | undefined;
+    if (!entity) fail(`Producer ${producer.id} JSON-LD is missing its producer entity.`);
+    const expectedEntityType = producer.category === 'winery' ? 'Winery' : producer.category === 'brewery' ? 'Brewery' : producer.category === 'distillery' ? 'Distillery' : 'Organization';
+    if (entity['@type'] !== expectedEntityType) fail(`Producer ${producer.id} entity type should be ${expectedEntityType}.`);
 
     const mainEntity = webPage.mainEntity as Record<string, unknown> | undefined;
     if (!mainEntity || mainEntity['@id'] !== `${canonicalUrl}#entity`) {

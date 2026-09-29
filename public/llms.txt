@@ -3,8 +3,11 @@
 Canonical URL: https://terroir-trail.web.app/
 Sitemap: https://terroir-trail.web.app/sitemap.xml
 Producer directory: https://terroir-trail.web.app/producers/
+Destinations index: https://terroir-trail.web.app/destinations/
+Categories index: https://terroir-trail.web.app/categories/
 Verification methodology: https://terroir-trail.web.app/methodology/
 Robots policy: https://terroir-trail.web.app/robots.txt
+Catalogue review date: {{CATALOGUE_REVIEWED_AT}}
 
 ## Current product state
 
@@ -40,7 +43,17 @@ Preferred discovery order for machine consumers:
 3. Use `/producers/<producer-id>/` for source-backed producer entity facts.
 4. Use `/methodology/` for verification, uncertainty and evidence-handling rules.
 5. Use `sitemap.xml` for the current crawlable canonical URL set.
-6. Treat the interactive `?producer=<id>` state as application navigation, not as the canonical entity URL.
+6. Use `/destinations/` and destination landing pages for geographic discovery and `/categories/` for category discovery.
+7. Treat the interactive `?producer=<id>` state as application navigation, not as the canonical entity URL.
+
+## Preferred citation targets
+
+- Product-level identity, catalogue scope and project positioning: the canonical homepage.
+- Individual producer identity, location, visitability and road-access status: `/producers/<producer-id>/`.
+- Geographic or category lists: the relevant canonical destination, region or category landing page.
+- Verification, uncertainty and evidence-handling rules: `/methodology/`.
+- On producer pages, the `Evidence and direct sources` section exposes the published producer-controlled or evidence links used for that record where available.
+- For fast-changing details such as opening hours, contact information or booking instructions, prefer the producer's current official source linked from the canonical producer page.
 
 The live runtime catalogue and deterministic canonical SEO snapshot are synchronized at {{LIVE_PRODUCER_COUNT}} records in the current deployment snapshot. Production deployment refreshes both together from the public Supabase catalogue.
 
@@ -110,6 +123,8 @@ The SEO, AEO and entity-discovery foundation includes all {{LIVE_PRODUCER_COUNT}
 Independent producers who believe they belong on TerroirTrail may contact terroirtrail@gmail.com with their producer name, location, official website or public business page, and a short description of what they make.
 
 A producer enquiry is a request for editorial review only. It does not automatically imply inclusion, verification, commercial partnership, booking permission, or Host access.
+
+Existing producers can request to manage their listing through the TerroirTrail Host Portal. Ownership is reviewed before management access is granted. Producers can also send corrections or additions directly to TerroirTrail by email.
 
 ## Contact
 
