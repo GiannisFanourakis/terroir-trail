@@ -4,10 +4,12 @@ import {
   ProducerMediaSubmissionError,
   replaceOwnedProducerMedia,
 } from './services/producerMediaSubmissionService';
+import { notifyAdmins } from './services/adminNotificationService';
 
 const defaults = {
   verifyToken: (token: string) => adminAuth().verifyIdToken(token, true),
   replaceOwnedProducerMedia,
+  notifyAdmins,
 };
 
 type ProducerMediaRouteDependencies = typeof defaults;
@@ -43,6 +45,23 @@ export function registerProducerMediaRoutes(
         String(req.params.producerId),
         Array.isArray(req.body?.images) ? req.body.images : req.body?.images
       );
+      const pendingReviewCount = result.images.filter((image: any) => image.status === 'pending_review').length;
+      if (pendingReviewCount > 0) {
+        await deps.notifyAdmins({
+          eventType: 'producer_media_submitted',
+          idempotencyKey: `producer-media:${result.producerId}:${result.occurredAt}`,
+          subject: `Producer photos submitted: ${result.producerId}`,
+          summary: 'A Host submitted producer photos that need Admin review.',
+          details: [
+            ['Producer', result.producerId],
+            ['Images submitted', result.images.length],
+            ['Pending review', pendingReviewCount],
+          ],
+          actorUid: res.locals.identity.uid,
+          producerId: result.producerId,
+          actionUrl: process.env.APP_URL || 'https://terroir-trail.web.app',
+        });
+      }
       res.json({ media: result });
     } catch (error) {
       if (error instanceof ProducerMediaSubmissionError) {
