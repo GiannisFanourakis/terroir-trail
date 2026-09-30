@@ -28,6 +28,7 @@ interface MyTripsModalProps {
   publicProducers: Producer[];
   catalogueIsLive?: boolean;
   hasExplorerPass?: boolean;
+  adminQaAccess?: boolean;
   tripOptimizationEnabled?: boolean;
   onOpenExplorerPass?: () => void;
   initialTripId?: string;
@@ -84,6 +85,7 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
   publicProducers,
   catalogueIsLive = true,
   hasExplorerPass = false,
+  adminQaAccess = false,
   tripOptimizationEnabled = false,
   onOpenExplorerPass,
   initialTripId,
@@ -279,6 +281,7 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
               publicProducers={publicProducers}
               catalogueIsLive={catalogueIsLive}
               hasExplorerPass={hasExplorerPass}
+              adminQaAccess={adminQaAccess}
               onOpenExplorerPass={onOpenExplorerPass}
               initialOptimizationMode={
                 initialMode === 'optimize' && tripOptimizationEnabled

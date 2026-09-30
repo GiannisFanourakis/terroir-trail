@@ -35,7 +35,11 @@ import { filterProducers } from './utils/filterProducers';
 import { producerService } from './services/producerService';
 import { CountryScope, setActiveCountryScope } from './config/geography';
 import { usePwaInstall } from './hooks/usePwaInstall';
-import { trackIntent, type SourceSurface } from './services/intentAnalytics';
+import {
+  setIntentAnalyticsSuppressed,
+  trackIntent,
+  type SourceSurface,
+} from './services/intentAnalytics';
 import { runtimeConfig } from './config/runtimeConfig';
 
 // Performance optimization: lazy-load modals on demand to shrink initial bundle
@@ -291,6 +295,14 @@ export const App: React.FC = () => {
   const { capabilities: accountCapabilities } = useAccountCapabilities(
     user?.id
   );
+  const hasAdminQaAccess = Boolean(accountCapabilities?.isAdmin);
+  const hasExplorerFeatureAccess = hasAdFreeTravelerPass || hasAdminQaAccess;
+
+  useEffect(() => {
+    setIntentAnalyticsSuppressed(hasAdminQaAccess);
+    return () => setIntentAnalyticsSuppressed(false);
+  }, [hasAdminQaAccess]);
+
   const { favorites, toggleFavorite, isFavorite } = useFavorites(user?.id);
 
   const [pendingAddToTripProducer, setPendingAddToTripProducer] =
@@ -581,11 +593,16 @@ export const App: React.FC = () => {
         onOpenProducerPortal={() => handleOpenProducerPortal()}
         onOpenExplorerPass={() => setActiveModal({ type: 'pass' })}
         hasExplorerPass={
-          hasAdFreeTravelerPass && runtimeConfig.tripOptimization.enabled
+          hasExplorerFeatureAccess && runtimeConfig.tripOptimization.enabled
         }
         onOpenOptimizeMyDay={
-          hasAdFreeTravelerPass && runtimeConfig.tripOptimization.enabled
+          hasExplorerFeatureAccess && runtimeConfig.tripOptimization.enabled
             ? () => handleOpenMyTrips(undefined, 'optimize')
+            : undefined
+        }
+        onOpenDigitalPass={
+          hasAdminQaAccess
+            ? () => setActiveModal({ type: 'digital_pass' })
             : undefined
         }
         isAdmin={Boolean(accountCapabilities?.isAdmin)}
@@ -638,7 +655,7 @@ export const App: React.FC = () => {
             className={`absolute top-2.5 left-0 right-0 z-20 pointer-events-none justify-center px-3 ${selectedProducer ? 'hidden sm:flex' : 'flex'}`}
           >
             <div className="pointer-events-auto w-full max-w-2xl">
-              <SponsorBanner hasExplorerPass={hasAdFreeTravelerPass} />
+              <SponsorBanner hasExplorerPass={hasExplorerFeatureAccess} />
             </div>
           </div>
 
@@ -675,7 +692,7 @@ export const App: React.FC = () => {
                 producerCount={regionGuideProducers.length}
                 categoryCount={regionGuideCategoryCount}
                 isOpen={isRegionGuideOpen}
-                hasExplorerPass={hasAdFreeTravelerPass}
+                hasExplorerPass={hasExplorerFeatureAccess}
                 onClose={() => {
                   setIsRegionGuideOpen(false);
                   lastOpenedRegionRef.current = null;
@@ -916,7 +933,8 @@ export const App: React.FC = () => {
             }}
             publicProducers={publicProducers}
             catalogueIsLive={catalogueIsLive && !catalogueError}
-            hasExplorerPass={hasAdFreeTravelerPass}
+            hasExplorerPass={hasExplorerFeatureAccess}
+            adminQaAccess={hasAdminQaAccess}
             tripOptimizationEnabled={runtimeConfig.tripOptimization.enabled}
             onOpenExplorerPass={() => setActiveModal({ type: 'pass' })}
           />
@@ -941,6 +959,12 @@ export const App: React.FC = () => {
             onOpenAuth={() =>
               setActiveModal({ type: 'auth', initialRole: 'traveler' })
             }
+            adminQaAccess={hasAdminQaAccess}
+            onOpenDigitalPass={
+              hasAdminQaAccess
+                ? () => setActiveModal({ type: 'digital_pass' })
+                : undefined
+            }
           />
         )}
 
@@ -949,6 +973,7 @@ export const App: React.FC = () => {
             isOpen
             onClose={closeModal}
             user={user}
+            adminQaMode={hasAdminQaAccess && !user?.hasExplorerPass}
             onOpenExplorerPass={() => setActiveModal({ type: 'pass' })}
           />
         )}

@@ -245,9 +245,11 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
                 type="button"
                 onClick={() =>
                   runAndClose(
-                    user.hasExplorerPass && onOpenDigitalPass
+                    isAdmin && onOpenDigitalPass
                       ? onOpenDigitalPass
-                      : onOpenExplorerPass
+                      : user.hasExplorerPass && onOpenDigitalPass
+                        ? onOpenDigitalPass
+                        : onOpenExplorerPass
                   )
                 }
                 className="w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-stone-300 hover:text-amber-300 hover:bg-amber-500/10 transition cursor-pointer"
@@ -256,11 +258,15 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
                   <Crown className="w-3.5 h-3.5 text-amber-400" />
                   Explorer Pass
                 </span>
-                {user.hasExplorerPass && (
+                {isAdmin && onOpenDigitalPass ? (
+                  <span className="text-[9px] font-bold text-sky-300">
+                    Admin QA
+                  </span>
+                ) : user.hasExplorerPass ? (
                   <span className="text-[9px] font-bold text-emerald-300">
                     Active
                   </span>
-                )}
+                ) : null}
               </button>
             )}
 

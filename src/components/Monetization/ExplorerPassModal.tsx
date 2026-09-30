@@ -26,6 +26,7 @@ interface ExplorerPassModalProps {
   onClose: () => void;
   user: UserProfile | null;
   onOpenAuth: (role?: 'traveler' | 'producer') => void;
+  adminQaAccess?: boolean;
   onOpenDigitalPass?: () => void;
 }
 
@@ -105,6 +106,7 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
   onClose,
   user,
   onOpenAuth,
+  adminQaAccess = false,
   onOpenDigitalPass,
 }) => {
   const [selectedPlan, setSelectedPlan] = useState<PassPlan>('holiday');
@@ -376,6 +378,33 @@ export const ExplorerPassModal: React.FC<ExplorerPassModalProps> = ({
                       </button>
                     )}
                   </div>
+                </div>
+              </div>
+            </section>
+          ) : adminQaAccess ? (
+            <section className="mt-5 rounded-2xl border border-sky-400/25 bg-sky-500/10 p-4">
+              <div className="flex items-start gap-3">
+                <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-sky-300" />
+                <div className="flex-1">
+                  <h3 className="text-sm font-bold text-white">
+                    Admin QA access is active
+                  </h3>
+                  <p className="mt-1 text-[11px] leading-relaxed text-stone-300">
+                    Premium traveler tools are unlocked for testing without
+                    creating a Stripe purchase or Explorer Pass entitlement.
+                  </p>
+                  {onOpenDigitalPass && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        onClose();
+                        onOpenDigitalPass();
+                      }}
+                      className="mt-3 rounded-xl border border-sky-400/25 bg-sky-500/15 px-3 py-2 text-xs font-bold text-sky-200"
+                    >
+                      Open Digital Pass QA preview
+                    </button>
+                  )}
                 </div>
               </div>
             </section>

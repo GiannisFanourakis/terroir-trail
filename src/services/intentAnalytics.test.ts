@@ -3,6 +3,7 @@ import {
   trackIntent,
   getAnalyticsSessionId,
   rotateAnalyticsSessionId,
+  setIntentAnalyticsSuppressed,
   SESSION_ID_STORAGE_KEY,
 } from './intentAnalytics';
 
@@ -21,6 +22,7 @@ describe('intentAnalytics client', () => {
 
   beforeEach(() => {
     mockStorage = new MockStorage();
+    setIntentAnalyticsSuppressed(false);
   });
 
   describe('session management', () => {
@@ -41,6 +43,27 @@ describe('intentAnalytics client', () => {
       expect(mockStorage.getItem(SESSION_ID_STORAGE_KEY)).toBe(rotatedSid);
       expect(getAnalyticsSessionId(mockStorage)).toBe(rotatedSid);
     });
+  });
+
+  it('suppresses QA analytics without sending a network request', async () => {
+    const mockFetch = vi.fn();
+    setIntentAnalyticsSuppressed(true);
+
+    const result = await trackIntent(
+      {
+        event: 'producer_view',
+        sourceSurface: 'map_marker',
+        producerId: 'producer-1',
+      },
+      {
+        fetchImpl: mockFetch as unknown as typeof fetch,
+        storage: mockStorage,
+        apiBaseUrl: 'http://localhost:4242',
+      }
+    );
+
+    expect(result.success).toBe(false);
+    expect(mockFetch).not.toHaveBeenCalled();
   });
 
   describe('trackIntent', () => {

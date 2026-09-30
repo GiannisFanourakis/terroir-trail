@@ -12,6 +12,7 @@ interface DigitalPassModalProps {
   isOpen: boolean;
   onClose: () => void;
   user: UserProfile | null;
+  adminQaMode?: boolean;
   onOpenExplorerPass?: () => void;
 }
 
@@ -19,6 +20,7 @@ export const DigitalPassModal: React.FC<DigitalPassModalProps> = ({
   isOpen,
   onClose,
   user,
+  adminQaMode = false,
   onOpenExplorerPass,
 }) => {
   const [qrDataUrl, setQrDataUrl] = useState<string>('');
@@ -40,15 +42,19 @@ export const DigitalPassModal: React.FC<DigitalPassModalProps> = ({
     return () => clearInterval(interval);
   }, [isOpen]);
 
-  // Determine pass tier, expiry, and unique ID
-  const passId = user?.explorerPassId || '';
+  // Admin QA previews never create or impersonate a real paid pass.
+  const passId = adminQaMode ? 'ADMIN-QA-PREVIEW' : user?.explorerPassId || '';
 
-  const isVip = !!user?.hasExplorerPass && !!passId && Date.parse(user.explorerPassUntil || '') > Date.now();
+  const isVip =
+    adminQaMode ||
+    (!!user?.hasExplorerPass &&
+      !!passId &&
+      Date.parse(user.explorerPassUntil || '') > Date.now());
 
   // Calculate validity period
-  let expiryDateString = 'Active (14 Days)';
-  const isAnnual = user?.explorerPassPlan === 'annual';
-  if (user?.explorerPassUntil) {
+  let expiryDateString = adminQaMode ? 'QA preview only' : 'Active (14 Days)';
+  const isAnnual = !adminQaMode && user?.explorerPassPlan === 'annual';
+  if (!adminQaMode && user?.explorerPassUntil) {
     const expiryDate = new Date(user.explorerPassUntil);
     expiryDateString = expiryDate.toLocaleDateString(undefined, { 
       year: 'numeric', 
@@ -59,11 +65,14 @@ export const DigitalPassModal: React.FC<DigitalPassModalProps> = ({
 
   const passWebUrl = runtimeConfig.app.publicUrl;
   const verificationUrl = `${passWebUrl}/?verify_pass=${encodeURIComponent(passId)}`;
+  const qrPayload = adminQaMode
+    ? 'TERROIRTRAIL_ADMIN_QA_DIGITAL_PASS_PREVIEW_NOT_VALID'
+    : verificationUrl;
 
   // Generate crisp QR code on mount / user change
   useEffect(() => {
     if (!isOpen || !isVip) { setQrDataUrl(''); return; }
-    QRCode.toDataURL(verificationUrl, {
+    QRCode.toDataURL(qrPayload, {
       width: 280,
       margin: 1.5,
       color: {
@@ -74,13 +83,13 @@ export const DigitalPassModal: React.FC<DigitalPassModalProps> = ({
     })
       .then((url) => setQrDataUrl(url))
       .catch((err) => logger.error('ExplorerPass', 'qr_generation_failed', err));
-  }, [isOpen, isVip, verificationUrl]);
+  }, [isOpen, isVip, qrPayload]);
 
   if (!isOpen) return null;
 
   const handleCopyLink = async () => {
     try {
-      await navigator.clipboard.writeText(verificationUrl);
+      await navigator.clipboard.writeText(qrPayload);
       setIsCopied(true);
       setTimeout(() => setIsCopied(false), 2000);
     } catch {
@@ -91,11 +100,18 @@ export const DigitalPassModal: React.FC<DigitalPassModalProps> = ({
   const handleShare = async () => {
     if (navigator.share) {
       try {
-        await navigator.share({
-          title: 'TerroirTrail VIP Explorer Pass',
-          text: `TerroirTrail VIP Pass for ${user?.name || 'Explorer'} (Pass ID: ${passId})`,
-          url: verificationUrl,
-        });
+        await navigator.share(
+          adminQaMode
+            ? {
+                title: 'TerroirTrail Digital Pass QA Preview',
+                text: 'Admin QA preview only — not a valid Explorer Pass.',
+              }
+            : {
+                title: 'TerroirTrail VIP Explorer Pass',
+                text: `TerroirTrail VIP Pass for ${user?.name || 'Explorer'} (Pass ID: ${passId})`,
+                url: verificationUrl,
+              }
+        );
       } catch (e) {
         console.error('Error sharing pass:', e);
       }
@@ -138,7 +154,15 @@ export const DigitalPassModal: React.FC<DigitalPassModalProps> = ({
 
       ctx.fillStyle = '#ffffff';
       ctx.font = '28px sans-serif';
-      ctx.fillText(isAnnual ? 'ANNUAL EXPLORER PASS' : '14-DAY HOLIDAY PASS', 60, 145);
+      ctx.fillText(
+        adminQaMode
+          ? 'ADMIN QA DIGITAL PASS PREVIEW'
+          : isAnnual
+            ? 'ANNUAL EXPLORER PASS'
+            : '14-DAY HOLIDAY PASS',
+        60,
+        145
+      );
 
       // Passholder Box
       ctx.fillStyle = '#292524';
@@ -174,12 +198,19 @@ export const DigitalPassModal: React.FC<DigitalPassModalProps> = ({
           ctx.font = 'bold 28px sans-serif';
           ctx.fillText('EXPLORER PASS PRIVILEGES', 60, 900);
 
-          const perksText = [
-            'Server-verified digital pass QR',
-            'Account-linked pass entitlement',
-            'Cellar door check-in verification',
-            'Eligible for pilot partner benefits'
-          ];
+          const perksText = adminQaMode
+            ? [
+                'Admin-only UI preview',
+                'No paid entitlement created',
+                'QR intentionally does not verify',
+                'Not valid for partner benefits',
+              ]
+            : [
+                'Server-verified digital pass QR',
+                'Account-linked pass entitlement',
+                'Cellar door check-in verification',
+                'Eligible for pilot partner benefits',
+              ];
           ctx.font = '24px sans-serif';
           ctx.fillStyle = '#e7e5e4';
           perksText.forEach((p, i) => {
@@ -189,11 +220,19 @@ export const DigitalPassModal: React.FC<DigitalPassModalProps> = ({
           // Security seal
           ctx.fillStyle = '#78716c';
           ctx.font = '20px monospace';
-          ctx.fillText('AUTHENTIC CELLAR PASS  ·  HTTPS://TERROIR-TRAIL.WEB.APP', 60, 1260);
+          ctx.fillText(
+            adminQaMode
+              ? 'ADMIN QA PREVIEW  ·  NOT VALID FOR BENEFITS'
+              : 'AUTHENTIC CELLAR PASS  ·  HTTPS://TERROIR-TRAIL.WEB.APP',
+            60,
+            1260
+          );
 
           // Trigger download
           const link = document.createElement('a');
-          link.download = `TerroirTrail-Explorer-Pass-${user?.name?.replace(/\\s+/g, '_') || 'Explorer'}.png`;
+          link.download = adminQaMode
+            ? 'TerroirTrail-Admin-QA-Digital-Pass-Preview.png'
+            : `TerroirTrail-Explorer-Pass-${user?.name?.replace(/\\s+/g, '_') || 'Explorer'}.png`;
           link.href = canvas.toDataURL('image/png');
           link.click();
           setIsDownloading(false);
@@ -221,13 +260,13 @@ export const DigitalPassModal: React.FC<DigitalPassModalProps> = ({
             </div>
             <div>
               <h2 className="font-serif-title text-sm sm:text-base font-bold text-white flex items-center gap-1.5">
-                <span>Digital Explorer Pass</span>
+                <span>{adminQaMode ? 'Digital Pass QA Preview' : 'Digital Explorer Pass'}</span>
                 <span className="text-[9px] px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30 font-mono font-bold">
-                  {isAnnual ? '365 DAYS' : '14 DAYS'}
+                  {adminQaMode ? 'ADMIN QA' : isAnnual ? '365 DAYS' : '14 DAYS'}
                 </span>
               </h2>
               <p className="text-[10px] text-stone-400">
-                TerroirTrail Digital Explorer Pass
+                {adminQaMode ? 'Admin-only preview · no paid entitlement' : 'TerroirTrail Digital Explorer Pass'}
               </p>
             </div>
           </div>
@@ -271,7 +310,7 @@ export const DigitalPassModal: React.FC<DigitalPassModalProps> = ({
                     Terroir<span className="text-amber-400 font-sans font-light">Trail</span>
                   </div>
                   <div className="text-[10px] text-amber-300 font-semibold tracking-wider uppercase">
-                    {isAnnual ? 'Annual Explorer Pass' : '14-Day Holiday Pass'}
+                    {adminQaMode ? 'Admin QA Preview' : isAnnual ? 'Annual Explorer Pass' : '14-Day Holiday Pass'}
                   </div>
                 </div>
               </div>
@@ -279,7 +318,7 @@ export const DigitalPassModal: React.FC<DigitalPassModalProps> = ({
               {/* Status Badge */}
               <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-[10px] font-bold">
                 <span className="w-2 h-2 rounded-full bg-emerald-400 shrink-0" />
-                <span>ACTIVE PASS</span>
+                <span>{adminQaMode ? 'QA PREVIEW' : 'ACTIVE PASS'}</span>
               </div>
             </div>
 
@@ -305,7 +344,7 @@ export const DigitalPassModal: React.FC<DigitalPassModalProps> = ({
                   {expiryDateString}
                 </span>
                 <span className="text-[9px] text-stone-400 block">
-                  Where available during partner pilots
+                  {adminQaMode ? 'Not valid for partner benefits' : 'Where available during partner pilots'}
                 </span>
               </div>
             </div>
@@ -324,7 +363,7 @@ export const DigitalPassModal: React.FC<DigitalPassModalProps> = ({
                 </div>
               )}
               <span className="text-[9px] font-bold uppercase tracking-wider text-stone-600 mt-1">
-                Scan to Verify Pass
+                {adminQaMode ? 'QA QR · intentionally non-verifying' : 'Scan to Verify Pass'}
               </span>
             </div>
 
@@ -336,7 +375,7 @@ export const DigitalPassModal: React.FC<DigitalPassModalProps> = ({
               </div>
               <div className="flex items-center gap-1 text-stone-400">
                 <ShieldCheck className="w-3 h-3 text-amber-400" />
-                <span>Server-Verified Pass</span>
+                <span>{adminQaMode ? 'Admin QA Preview' : 'Server-Verified Pass'}</span>
               </div>
             </div>
 
@@ -346,38 +385,38 @@ export const DigitalPassModal: React.FC<DigitalPassModalProps> = ({
           <div className="p-3.5 rounded-2xl bg-stone-900/60 border border-white/10 space-y-2 text-left">
             <span className="text-xs font-bold text-white flex items-center gap-1.5">
               <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-              <span>Passholder Capabilities & Pilot Benefits</span>
+              <span>{adminQaMode ? 'Admin QA Preview Coverage' : 'Passholder Capabilities & Pilot Benefits'}</span>
             </span>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 text-[11px]">
               <div className="p-2 rounded-xl bg-stone-850/80 border border-white/5 flex items-start gap-2">
                 <Ticket className="w-4 h-4 text-amber-400 shrink-0" aria-hidden="true" />
                 <div>
-                  <strong className="text-white block">Digital Pass Entitlement</strong>
-                  <span className="text-stone-400 text-[10px]">{isAnnual ? '365-day annual pass' : '14-day holiday pass'}</span>
+                  <strong className="text-white block">{adminQaMode ? 'QA Access State' : 'Digital Pass Entitlement'}</strong>
+                  <span className="text-stone-400 text-[10px]">{adminQaMode ? 'No paid pass is created' : isAnnual ? '365-day annual pass' : '14-day holiday pass'}</span>
                 </div>
               </div>
 
               <div className="p-2 rounded-xl bg-stone-850/80 border border-white/5 flex items-start gap-2">
                 <ShieldCheck className="w-4 h-4 text-amber-400 shrink-0" aria-hidden="true" />
                 <div>
-                  <strong className="text-white block">Server-Verified QR</strong>
-                  <span className="text-stone-400 text-[10px]">Secure check-in at cellar doors</span>
+                  <strong className="text-white block">{adminQaMode ? 'QR Layout Preview' : 'Server-Verified QR'}</strong>
+                  <span className="text-stone-400 text-[10px]">{adminQaMode ? 'QR deliberately does not verify' : 'Secure check-in at cellar doors'}</span>
                 </div>
               </div>
 
               <div className="p-2 rounded-xl bg-stone-850/80 border border-white/5 flex items-start gap-2">
                 <Smartphone className="w-4 h-4 text-amber-400 shrink-0" aria-hidden="true" />
                 <div>
-                  <strong className="text-white block">Cross-Device Sync</strong>
-                  <span className="text-stone-400 text-[10px]">Linked to your verified account</span>
+                  <strong className="text-white block">{adminQaMode ? 'Admin Account Access' : 'Cross-Device Sync'}</strong>
+                  <span className="text-stone-400 text-[10px]">{adminQaMode ? 'Granted by trusted admin authority' : 'Linked to your verified account'}</span>
                 </div>
               </div>
 
               <div className="p-2 rounded-xl bg-stone-850/80 border border-white/5 flex items-start gap-2">
                 <Award className="w-4 h-4 text-amber-400 shrink-0" aria-hidden="true" />
                 <div>
-                  <strong className="text-white block">Pilot Partner Benefits</strong>
-                  <span className="text-stone-400 text-[10px]">Where available during partner pilots</span>
+                  <strong className="text-white block">{adminQaMode ? 'Partner Benefits Preview' : 'Pilot Partner Benefits'}</strong>
+                  <span className="text-stone-400 text-[10px]">{adminQaMode ? 'No partner benefit is activated' : 'Where available during partner pilots'}</span>
                 </div>
               </div>
             </div>
@@ -412,7 +451,7 @@ export const DigitalPassModal: React.FC<DigitalPassModalProps> = ({
               {isCopied ? (
                 <>
                   <Check className="w-3.5 h-3.5 text-emerald-400" />
-                  <span className="text-emerald-300">Link Copied!</span>
+                  <span className="text-emerald-300">{adminQaMode ? 'Preview Copied!' : 'Link Copied!'}</span>
                 </>
               ) : (
                 <>
@@ -436,7 +475,7 @@ export const DigitalPassModal: React.FC<DigitalPassModalProps> = ({
         {/* Modal Footer */}
         <div className="p-3 bg-stone-900/90 border-t border-white/10 flex items-center justify-between text-xs shrink-0">
           <span className="text-stone-400 text-[10px]">
-            Show this pass where available during partner pilots
+            {adminQaMode ? 'Admin QA preview only · not valid for use' : 'Show this pass where available during partner pilots'}
           </span>
           <button
             onClick={onClose}

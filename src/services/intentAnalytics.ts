@@ -76,6 +76,12 @@ export interface TrackIntentResult {
   clientEventId: string;
 }
 
+let qaSuppressed = false;
+
+export function setIntentAnalyticsSuppressed(suppressed: boolean): void {
+  qaSuppressed = suppressed;
+}
+
 export const SESSION_ID_STORAGE_KEY = 'terroir_analytics_session_id';
 
 const UUID_V4_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -164,6 +170,10 @@ export async function trackIntent(
   options: IntentAnalyticsOptions = {}
 ): Promise<TrackIntentResult> {
   const clientEventId = generateUuidV4();
+
+  if (qaSuppressed) {
+    return { success: false, clientEventId };
+  }
 
   if (!isAllowedIntentSourceSurface(params.event, params.sourceSurface)) {
     return { success: false, clientEventId };

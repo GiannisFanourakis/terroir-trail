@@ -1,6 +1,6 @@
 import type { Express, NextFunction, Request, Response } from 'express';
 import { adminAuth } from './firebaseAdmin';
-import { getExplorerPass } from './services/passService';
+import { getTravelerFeatureAccess } from './services/travelerFeatureAccess';
 import {
   createTripPack,
   type TripPackFormat,
@@ -36,7 +36,7 @@ const defaults = {
   removeProducerFromTrip,
   reorderTripItems,
   assignTripItemDay,
-  getExplorerPass,
+  getTravelerFeatureAccess,
   createTripPack,
   createTripOptimizationProposal,
   applyTripOptimizationOrder,
@@ -175,8 +175,8 @@ export function registerTripRoutes(
       ]);
 
       const uid = res.locals.identity.uid;
-      const pass = await deps.getExplorerPass(uid);
-      if (!pass) {
+      const access = await deps.getTravelerFeatureAccess(uid);
+      if (!access.granted) {
         res.status(403).json({
           error: 'An active Explorer Pass is required to optimize a trip day.',
           code: 'explorer_pass_required',
@@ -225,8 +225,8 @@ export function registerTripRoutes(
         ]);
 
         const uid = res.locals.identity.uid;
-        const pass = await deps.getExplorerPass(uid);
-        if (!pass) {
+        const access = await deps.getTravelerFeatureAccess(uid);
+        if (!access.granted) {
           res.status(403).json({
             error:
               'An active Explorer Pass is required to apply an optimized trip day.',
@@ -276,8 +276,8 @@ export function registerTripRoutes(
 
     try {
       const uid = res.locals.identity.uid;
-      const pass = await deps.getExplorerPass(uid);
-      if (!pass) {
+      const access = await deps.getTravelerFeatureAccess(uid);
+      if (!access.granted) {
         res.status(403).json({
           error: 'An active Explorer Pass is required for Trip Pack exports.',
           code: 'explorer_pass_required',

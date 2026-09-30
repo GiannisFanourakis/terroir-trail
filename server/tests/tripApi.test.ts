@@ -248,15 +248,11 @@ test('Trip Pack export is authenticated and requires an active Explorer Pass', a
 
   registerTripRoutes(app, {
     verifyToken: async (token) => ({ uid: token }) as any,
-    getExplorerPass: async (_uid) =>
-      activePass
-        ? {
-            passId: 'pass-active',
-            name: 'Explorer',
-            plan: 'holiday' as const,
-            expiresAt: '2099-01-01T00:00:00Z',
-          }
-        : null,
+    getTravelerFeatureAccess: async (_uid) => ({
+      granted: activePass,
+      source: activePass ? 'paid_pass' : 'none',
+      pass: null,
+    }),
     createTripPack: async (uid, tripId, format) => {
       exportCalls.push([uid, tripId, format]);
       return {
@@ -340,15 +336,11 @@ test('Optimize My Day proposal is authenticated, Explorer-gated, and strict abou
       if (token === 'bad') throw new Error('invalid');
       return { uid: token } as any;
     },
-    getExplorerPass: async () =>
-      activePass
-        ? ({
-            passId: 'pass-active',
-            name: 'Explorer',
-            plan: 'holiday',
-            expiresAt: '2099-01-01T00:00:00Z',
-          } as any)
-        : null,
+    getTravelerFeatureAccess: async () => ({
+      granted: activePass,
+      source: activePass ? 'paid_pass' : 'none',
+      pass: null,
+    }),
     createTripOptimizationProposal: async (uid, tripId, body) => {
       calls.push([uid, tripId, body]);
       return {
@@ -457,13 +449,11 @@ test('Optimize My Day maps fail-closed proposal errors without leaking internals
 
   registerTripRoutes(app, {
     verifyToken: async (token) => ({ uid: token }) as any,
-    getExplorerPass: async () =>
-      ({
-        passId: 'pass-active',
-        name: 'Explorer',
-        plan: 'holiday',
-        expiresAt: '2099-01-01T00:00:00Z',
-      }) as any,
+    getTravelerFeatureAccess: async () => ({
+      granted: true,
+      source: 'paid_pass',
+      pass: null,
+    }),
     createTripOptimizationProposal: async () => {
       if (mode === 'route') {
         throw new TripOptimizationServiceError(
@@ -523,15 +513,11 @@ test('Optimize My Day Apply is Explorer-gated and accepts only the reviewed day 
 
   registerTripRoutes(app, {
     verifyToken: async (token) => ({ uid: token }) as any,
-    getExplorerPass: async () =>
-      activePass
-        ? ({
-            passId: 'pass-active',
-            name: 'Explorer',
-            plan: 'holiday',
-            expiresAt: '2099-01-01T00:00:00Z',
-          } as any)
-        : null,
+    getTravelerFeatureAccess: async () => ({
+      granted: activePass,
+      source: activePass ? 'paid_pass' : 'none',
+      pass: null,
+    }),
     applyTripOptimizationOrder: async (uid, tripId, body) => {
       calls.push([uid, tripId, body]);
       return {

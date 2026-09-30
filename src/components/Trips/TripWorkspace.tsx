@@ -49,6 +49,7 @@ interface TripWorkspaceProps {
   publicProducers: Producer[];
   catalogueIsLive?: boolean;
   hasExplorerPass?: boolean;
+  adminQaAccess?: boolean;
   tripOptimizationEnabled?: boolean;
   onOpenExplorerPass?: () => void;
   initialOptimizationMode?: boolean;
@@ -105,6 +106,7 @@ export const TripWorkspace: React.FC<TripWorkspaceProps> = ({
   publicProducers,
   catalogueIsLive = true,
   hasExplorerPass = false,
+  adminQaAccess = false,
   tripOptimizationEnabled = false,
   onOpenExplorerPass,
   initialOptimizationMode = false,
@@ -870,7 +872,11 @@ export const TripWorkspace: React.FC<TripWorkspaceProps> = ({
                       : 'border-amber-400/20 bg-amber-500/10 text-amber-300'
                   }`}
                 >
-                  {hasExplorerPass ? 'Active Pass' : 'Pass convenience'}
+                  {adminQaAccess
+                    ? 'Admin QA'
+                    : hasExplorerPass
+                      ? 'Active Pass'
+                      : 'Pass convenience'}
                 </span>
               </div>
               <p className="mt-1 text-[10px] leading-relaxed text-stone-400 sm:text-[11px]">
