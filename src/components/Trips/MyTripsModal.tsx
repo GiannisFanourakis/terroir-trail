@@ -309,9 +309,10 @@ export const MyTripsModal: React.FC<MyTripsModalProps> = ({
                         </h3>
                         <p className="mt-1 text-xs leading-relaxed text-stone-300">
                           Choose a trip, then select an assigned day with at
-                          least two stops. TerroirTrail will suggest a more
-                          efficient route without changing your trip until you
-                          approve it.
+                          least two stops. TerroirTrail combines road-route
+                          estimates with published visit durations and flags
+                          booking or timed-visit constraints before you approve
+                          any route change.
                         </p>
                       </div>
                     </div>

@@ -239,7 +239,7 @@ describe('TripWorkspace', () => {
     );
 
     expect(html).toContain('Optimize My Day');
-    expect(html).toContain('Route estimates only');
+    expect(html).toContain('published typical visit');
     expect(html).toContain('Select an assigned day with at least two stops.');
   });
 });

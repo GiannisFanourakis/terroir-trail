@@ -59,6 +59,12 @@ export interface OptimizationWarningV1 {
   producerId?: string;
 }
 
+export interface OptimizationVisitDurationV1 {
+  producerId: string;
+  minutes: number | null;
+  source: VisitDurationSourceV1 | null;
+}
+
 export interface OptimizationProposalV1 {
   contractVersion: 1;
   proposalId: string;
@@ -72,6 +78,12 @@ export interface OptimizationProposalV1 {
   estimatedMinutesSaved: number | null;
   estimatedDistanceKmBefore: number | null;
   estimatedDistanceKmAfter: number | null;
+  visitDurations: OptimizationVisitDurationV1[];
+  estimatedKnownVisitMinutes: number;
+  visitDurationKnownStops: number;
+  visitDurationUnknownStops: number;
+  estimatedKnownDayMinutesBefore: number;
+  estimatedKnownDayMinutesAfter: number;
   warnings: OptimizationWarningV1[];
   unresolvedConstraints: string[];
   routingProvider: string;
@@ -159,6 +171,22 @@ const validateInput = (input: DayOptimizationInputV1) => {
         'bad_request',
         'Time-window constraints are not supported in Optimize My Day V1.'
       );
+    }
+
+    if (stop.visitDurationMinutes === null) {
+      if (stop.visitDurationSource !== null) {
+        fail(
+          'bad_request',
+          'Visit duration source cannot be set without a visit duration.'
+        );
+      }
+    } else if (
+      !Number.isInteger(stop.visitDurationMinutes) ||
+      stop.visitDurationMinutes <= 0 ||
+      stop.visitDurationMinutes > 1440 ||
+      stop.visitDurationSource === null
+    ) {
+      fail('bad_request', 'Visit duration information is invalid.');
     }
 
     if (stop.lockedPosition !== null) {
@@ -347,6 +375,16 @@ export class TsV1DayOptimizationEngine implements DayOptimizationEngine {
       }
     }
 
+    const knownVisitMinutes = input.stops.reduce(
+      (sum, stop) => sum + (stop.visitDurationMinutes ?? 0),
+      0
+    );
+    const visitDurationKnownStops = input.stops.filter(
+      (stop) => stop.visitDurationMinutes !== null
+    ).length;
+    const visitDurationUnknownStops =
+      input.stops.length - visitDurationKnownStops;
+
     const secondsSaved = before.durationSeconds - best.durationSeconds;
     if (secondsSaved < MIN_MEANINGFUL_SAVINGS_SECONDS_V1) {
       bestOrder = originalOrder.slice();
@@ -368,6 +406,18 @@ export class TsV1DayOptimizationEngine implements DayOptimizationEngine {
       ),
       estimatedDistanceKmBefore: kilometers(before.distanceMeters),
       estimatedDistanceKmAfter: kilometers(best.distanceMeters),
+      visitDurations: input.stops.map((stop) => ({
+        producerId: stop.producerId,
+        minutes: stop.visitDurationMinutes,
+        source: stop.visitDurationSource,
+      })),
+      estimatedKnownVisitMinutes: knownVisitMinutes,
+      visitDurationKnownStops,
+      visitDurationUnknownStops,
+      estimatedKnownDayMinutesBefore:
+        minutes(before.durationSeconds) + knownVisitMinutes,
+      estimatedKnownDayMinutesAfter:
+        minutes(best.durationSeconds) + knownVisitMinutes,
       warnings: [],
       unresolvedConstraints: [],
       routingProvider: matrix.provider,

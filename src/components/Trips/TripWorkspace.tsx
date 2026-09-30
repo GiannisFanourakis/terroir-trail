@@ -728,6 +728,18 @@ export const TripWorkspace: React.FC<TripWorkspaceProps> = ({
   const optimizationProducerName = (producerId: string) =>
     catalogueMap.get(producerId)?.name || 'Saved producer';
 
+  const optimizationVisitMinutes = (producerId: string) =>
+    optimizationProposal?.visitDurations.find(
+      (entry) => entry.producerId === producerId
+    )?.minutes ?? null;
+
+  const formatPlanningDuration = (minutes: number) => {
+    if (minutes < 60) return `${minutes} min`;
+    const hours = Math.floor(minutes / 60);
+    const remainder = minutes % 60;
+    return remainder > 0 ? `${hours}h ${remainder}m` : `${hours}h`;
+  };
+
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center p-12 text-stone-400 gap-3">
@@ -1200,8 +1212,9 @@ export const TripWorkspace: React.FC<TripWorkspaceProps> = ({
                   Optimize My Day
                 </h3>
                 <p className="mt-1 text-[11px] leading-relaxed text-stone-300">
-                  Route estimates only. This does not verify opening hours,
-                  appointments, availability, or final-road suitability.
+                  Uses live road estimates plus published typical visit
+                  durations. Booking, availability and exact opening-time
+                  feasibility still need confirmation.
                 </p>
               </div>
             </div>
@@ -1241,41 +1254,65 @@ export const TripWorkspace: React.FC<TripWorkspaceProps> = ({
             </div>
           ) : optimizationProposal ? (
             <div className="mt-4 space-y-3">
+              <div className="grid grid-cols-2 gap-2">
+                <div className="min-w-0 rounded-xl border border-white/10 bg-stone-950/55 p-3">
+                  <div className="text-[9px] font-bold uppercase tracking-wider text-stone-500">
+                    Drive
+                  </div>
+                  <div className="mt-1 text-sm font-bold text-stone-100">
+                    {optimizationProposal.estimatedDriveMinutesBefore ?? '—'}
+                    <span className="mx-1 text-stone-600">→</span>
+                    <span className="text-emerald-200">
+                      {optimizationProposal.estimatedDriveMinutesAfter ?? '—'} min
+                    </span>
+                  </div>
+                </div>
+                <div className="min-w-0 rounded-xl border border-white/10 bg-stone-950/55 p-3">
+                  <div className="text-[9px] font-bold uppercase tracking-wider text-stone-500">
+                    Visit time
+                  </div>
+                  <div className="mt-1 text-sm font-bold text-stone-100">
+                    {formatPlanningDuration(
+                      optimizationProposal.estimatedKnownVisitMinutes
+                    )}
+                    {optimizationProposal.visitDurationUnknownStops > 0 ? '+' : ''}
+                  </div>
+                  <div className="mt-0.5 text-[9px] leading-tight text-stone-500">
+                    {optimizationProposal.visitDurationKnownStops}/
+                    {optimizationProposal.visitDurations.length} durations known
+                  </div>
+                </div>
+                <div className="min-w-0 rounded-xl border border-amber-400/20 bg-amber-500/[0.07] p-3">
+                  <div className="text-[9px] font-bold uppercase tracking-wider text-amber-300/70">
+                    {optimizationProposal.visitDurationUnknownStops > 0
+                      ? 'Known day minimum'
+                      : 'Estimated day'}
+                  </div>
+                  <div className="mt-1 text-sm font-bold text-amber-100">
+                    {formatPlanningDuration(
+                      optimizationProposal.estimatedKnownDayMinutesAfter
+                    )}
+                    {optimizationProposal.visitDurationUnknownStops > 0 ? '+' : ''}
+                  </div>
+                  <div className="mt-0.5 text-[9px] leading-tight text-stone-500">
+                    driving + published visit durations
+                  </div>
+                </div>
+                <div className="min-w-0 rounded-xl border border-emerald-400/20 bg-emerald-500/10 p-3">
+                  <div className="text-[9px] font-bold uppercase tracking-wider text-emerald-300/70">
+                    Drive saved
+                  </div>
+                  <div className="mt-1 text-sm font-bold text-emerald-200">
+                    {optimizationProposal.estimatedMinutesSaved ?? '—'} min
+                  </div>
+                </div>
+              </div>
+
               {optimizationProposal.proposedOrder.some(
                 (producerId, index) =>
                   producerId !== optimizationProposal.originalOrder[index]
               ) ? (
                 <>
-                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
-                    <div className="rounded-xl border border-white/10 bg-stone-950/55 p-3">
-                      <div className="text-[9px] font-bold uppercase tracking-wider text-stone-500">
-                        Current drive
-                      </div>
-                      <div className="mt-1 text-sm font-bold text-stone-100">
-                        {optimizationProposal.estimatedDriveMinutesBefore ??
-                          '—'}{' '}
-                        min
-                      </div>
-                    </div>
-                    <div className="rounded-xl border border-white/10 bg-stone-950/55 p-3">
-                      <div className="text-[9px] font-bold uppercase tracking-wider text-stone-500">
-                        Suggested drive
-                      </div>
-                      <div className="mt-1 text-sm font-bold text-emerald-200">
-                        {optimizationProposal.estimatedDriveMinutesAfter ?? '—'}{' '}
-                        min
-                      </div>
-                    </div>
-                    <div className="rounded-xl border border-emerald-400/20 bg-emerald-500/10 p-3">
-                      <div className="text-[9px] font-bold uppercase tracking-wider text-emerald-300/70">
-                        Estimated saving
-                      </div>
-                      <div className="mt-1 text-sm font-bold text-emerald-200">
-                        {optimizationProposal.estimatedMinutesSaved ?? '—'} min
-                      </div>
-                    </div>
-                  </div>
-
                   <div className="rounded-xl border border-white/10 bg-stone-950/55 p-3">
                     <div className="text-[10px] font-bold uppercase tracking-wider text-stone-500">
                       Suggested order
@@ -1290,8 +1327,23 @@ export const TripWorkspace: React.FC<TripWorkspaceProps> = ({
                             <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-500/15 text-[10px] font-bold text-emerald-300">
                               {index + 1}
                             </span>
-                            <span className="truncate">
-                              {optimizationProducerName(producerId)}
+                            <span className="min-w-0 flex-1">
+                              <span className="block truncate">
+                                {optimizationProducerName(producerId)}
+                              </span>
+                              <span
+                                className={`mt-0.5 block text-[10px] ${
+                                  optimizationVisitMinutes(producerId) === null
+                                    ? 'text-amber-300'
+                                    : 'text-stone-500'
+                                }`}
+                              >
+                                {optimizationVisitMinutes(producerId) === null
+                                  ? 'Visit duration unknown'
+                                  : `${formatPlanningDuration(
+                                      optimizationVisitMinutes(producerId) as number
+                                    )} visit`}
+                              </span>
                             </span>
                             {lockedProducerIds.has(producerId) && (
                               <Lock className="ml-auto h-3.5 w-3.5 shrink-0 text-amber-400" />
@@ -1310,7 +1362,12 @@ export const TripWorkspace: React.FC<TripWorkspaceProps> = ({
                           className="flex items-start gap-2 rounded-xl border border-amber-500/20 bg-amber-500/[0.07] p-2.5 text-[11px] leading-relaxed text-amber-100"
                         >
                           <AlertCircle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-400" />
-                          <span>{warning.message}</span>
+                          <span>
+                            {warning.producerId
+                              ? `${optimizationProducerName(warning.producerId)}: `
+                              : ''}
+                            {warning.message}
+                          </span>
                         </div>
                       ))}
                     </div>
@@ -1339,22 +1396,82 @@ export const TripWorkspace: React.FC<TripWorkspaceProps> = ({
                   </div>
                 </>
               ) : (
-                <div className="rounded-xl border border-emerald-400/20 bg-emerald-500/10 p-3">
-                  <div className="text-sm font-bold text-emerald-100">
-                    Your current stop order is already reasonable.
+                <>
+                  <div className="rounded-xl border border-emerald-400/20 bg-emerald-500/10 p-3">
+                    <div className="text-sm font-bold text-emerald-100">
+                      Your current stop order is already reasonable.
+                    </div>
+                    <p className="mt-1 text-[11px] leading-relaxed text-stone-300">
+                      Reordering would not meaningfully reduce driving time. The
+                      visit-time estimate below still applies to this day.
+                    </p>
                   </div>
-                  <p className="mt-1 text-[11px] leading-relaxed text-stone-300">
-                    Based on the available route estimates, reordering would not
-                    produce a meaningful driving-time improvement.
-                  </p>
+
+                  <div className="rounded-xl border border-white/10 bg-stone-950/55 p-3">
+                    <div className="text-[10px] font-bold uppercase tracking-wider text-stone-500">
+                      Current order & visit time
+                    </div>
+                    <ol className="mt-2 space-y-2">
+                      {optimizationProposal.proposedOrder.map(
+                        (producerId, index) => (
+                          <li
+                            key={producerId}
+                            className="flex items-center gap-2 text-xs text-stone-200"
+                          >
+                            <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-500/15 text-[10px] font-bold text-emerald-300">
+                              {index + 1}
+                            </span>
+                            <span className="min-w-0 flex-1">
+                              <span className="block truncate">
+                                {optimizationProducerName(producerId)}
+                              </span>
+                              <span
+                                className={`mt-0.5 block text-[10px] ${
+                                  optimizationVisitMinutes(producerId) === null
+                                    ? 'text-amber-300'
+                                    : 'text-stone-500'
+                                }`}
+                              >
+                                {optimizationVisitMinutes(producerId) === null
+                                  ? 'Visit duration unknown'
+                                  : `${formatPlanningDuration(
+                                      optimizationVisitMinutes(producerId) as number
+                                    )} visit`}
+                              </span>
+                            </span>
+                          </li>
+                        )
+                      )}
+                    </ol>
+                  </div>
+
+                  {optimizationProposal.warnings.length > 0 && (
+                    <div className="space-y-1.5">
+                      {optimizationProposal.warnings.map((warning, index) => (
+                        <div
+                          key={warning.code + ':' + index}
+                          className="flex items-start gap-2 rounded-xl border border-amber-500/20 bg-amber-500/[0.07] p-2.5 text-[11px] leading-relaxed text-amber-100"
+                        >
+                          <AlertCircle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-400" />
+                          <span>
+                            {warning.producerId
+                              ? `${optimizationProducerName(warning.producerId)}: `
+                              : ''}
+                            {warning.message}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
                   <button
                     type="button"
                     onClick={() => setOptimizationProposal(null)}
-                    className="mt-3 min-h-[40px] rounded-xl border border-white/10 bg-stone-950/50 px-3 py-2 text-xs font-bold text-stone-300"
+                    className="min-h-[40px] rounded-xl border border-white/10 bg-stone-950/50 px-3 py-2 text-xs font-bold text-stone-300"
                   >
                     Keep my order
                   </button>
-                </div>
+                </>
               )}
             </div>
           ) : (

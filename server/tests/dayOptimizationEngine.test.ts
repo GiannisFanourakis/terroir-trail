@@ -56,8 +56,12 @@ const engine = () =>
     now: () => new Date('2026-09-23T18:30:00Z'),
     proposalId: () => 'proposal-fixed',
   });
-test('ts-v1 finds the lowest-drive-time order without mutating input order', () => {
+test('ts-v1 finds the lowest-drive-time order and carries visit durations into the day estimate', () => {
   const stops = [stop('a'), stop('b'), stop('c')];
+  stops[0].visitDurationMinutes = 60;
+  stops[0].visitDurationSource = 'producer_verified_duration';
+  stops[1].visitDurationMinutes = 120;
+  stops[1].visitDurationSource = 'producer_verified_duration';
   const routeMatrix = matrix(
     ['a', 'b', 'c'],
     [
@@ -80,6 +84,16 @@ test('ts-v1 finds the lowest-drive-time order without mutating input order', () 
   assert.equal(result.estimatedMinutesSaved, 17);
   assert.equal(result.estimatedDistanceKmBefore, 12);
   assert.equal(result.estimatedDistanceKmAfter, 2);
+  assert.equal(result.estimatedKnownVisitMinutes, 180);
+  assert.equal(result.visitDurationKnownStops, 2);
+  assert.equal(result.visitDurationUnknownStops, 1);
+  assert.equal(result.estimatedKnownDayMinutesBefore, 200);
+  assert.equal(result.estimatedKnownDayMinutesAfter, 183);
+  assert.deepEqual(result.visitDurations, [
+    { producerId: 'a', minutes: 60, source: 'producer_verified_duration' },
+    { producerId: 'b', minutes: 120, source: 'producer_verified_duration' },
+    { producerId: 'c', minutes: null, source: null },
+  ]);
   assert.equal(result.proposalId, 'proposal-fixed');
   assert.equal(result.basedOnRevision, 7);
   assert.equal(result.routingProvider, 'test-routing');

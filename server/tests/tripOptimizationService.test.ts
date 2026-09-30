@@ -64,6 +64,7 @@ const rows: OptimizationProducerRowV1[] = [
     lng: 25.1,
     location_status: 'verified',
     road_access_status: 'verified',
+    typical_visit_minutes: 60,
   },
   {
     id: 'b',
@@ -72,6 +73,10 @@ const rows: OptimizationProducerRowV1[] = [
     location_status: 'verified',
     visit_booking_requirement: 'required',
     road_access_status: 'verified',
+    typical_visit_minutes: 120,
+    visitor_hours: {
+      guided_farm_tour: { daily_start_times: ['11:00', '13:00'] },
+    },
   },
   {
     id: 'c',
@@ -79,6 +84,7 @@ const rows: OptimizationProducerRowV1[] = [
     lng: 25.3,
     location_status: 'verified',
     road_access_status: 'unreviewed',
+    typical_visit_minutes: null,
   },
 ];
 
@@ -155,6 +161,32 @@ test('proposal resolves current-day authoritative coordinates and derives locked
     proposal.warnings.some(
       (warning) =>
         warning.code === 'road_access_unverified' && warning.producerId === 'c'
+    ),
+    true
+  );
+  assert.equal(proposal.estimatedKnownVisitMinutes, 180);
+  assert.equal(proposal.visitDurationKnownStops, 2);
+  assert.equal(proposal.visitDurationUnknownStops, 1);
+  assert.equal(proposal.estimatedKnownDayMinutesAfter, 183);
+  assert.deepEqual(proposal.visitDurations, [
+    { producerId: 'a', minutes: 60, source: 'producer_verified_duration' },
+    { producerId: 'b', minutes: 120, source: 'producer_verified_duration' },
+    { producerId: 'c', minutes: null, source: null },
+  ]);
+  assert.equal(
+    proposal.warnings.some(
+      (warning) =>
+        warning.code === 'timed_visit_published' &&
+        warning.producerId === 'b' &&
+        warning.message.includes('11:00, 13:00')
+    ),
+    true
+  );
+  assert.equal(
+    proposal.warnings.some(
+      (warning) =>
+        warning.code === 'visit_duration_unknown' &&
+        warning.producerId === 'c'
     ),
     true
   );

@@ -65,6 +65,9 @@ export interface OptimizationProducerRowV1 {
   lng: number | null;
   location_status: string | null;
   visit_booking_requirement?: string | null;
+  visit_status?: string | null;
+  typical_visit_minutes?: number | null;
+  visitor_hours?: unknown;
   road_access_status?: string | null;
 }
 type LoadTrip = (uid: string, tripId: string) => Promise<TripWithItems>;
@@ -255,7 +258,7 @@ export async function loadOptimizationProducers(
     const { data, error } = await supabase
       .from('producers')
       .select(
-        'id, lat, lng, location_status, visit_booking_requirement, road_access_status'
+        'id, lat, lng, location_status, visit_booking_requirement, visit_status, typical_visit_minutes, visitor_hours, road_access_status'
       )
       .in('id', producerIds)
       .eq('is_active', true);
@@ -308,6 +311,47 @@ const translateEngineError = (error: DayOptimizationError): never => {
   );
 };
 
+const CLOCK_TIME_RE = /^(?:[01]\d|2[0-3]):[0-5]\d$/;
+
+const publishedVisitStartTimes = (value: unknown): string[] => {
+  const found = new Set<string>();
+
+  const walk = (node: unknown, keyHint = '') => {
+    if (found.size >= 6 || node === null || node === undefined) return;
+
+    if (typeof node === 'string') {
+      if (keyHint.toLowerCase().includes('start') && CLOCK_TIME_RE.test(node)) {
+        found.add(node);
+      }
+      return;
+    }
+
+    if (Array.isArray(node)) {
+      node.forEach((entry) => walk(entry, keyHint));
+      return;
+    }
+
+    if (typeof node === 'object') {
+      Object.entries(node as Record<string, unknown>).forEach(([key, entry]) =>
+        walk(entry, key)
+      );
+    }
+  };
+
+  walk(value);
+  return [...found].sort();
+};
+
+const verifiedVisitDurationMinutes = (
+  row: OptimizationProducerRowV1
+): number | null =>
+  typeof row.typical_visit_minutes === 'number' &&
+  Number.isInteger(row.typical_visit_minutes) &&
+  row.typical_visit_minutes > 0 &&
+  row.typical_visit_minutes <= 1440
+    ? row.typical_visit_minutes
+    : null;
+
 const warningRows = (rows: OptimizationProducerRowV1[]) => {
   const warnings: OptimizationProposalV1['warnings'] = [];
   for (const row of rows) {
@@ -317,7 +361,34 @@ const warningRows = (rows: OptimizationProducerRowV1[]) => {
         producerId: row.id,
         message: 'Booking or direct confirmation is required for this stop.',
       });
+    } else if (row.visit_status === 'appointment_only') {
+      warnings.push({
+        code: 'appointment_only',
+        producerId: row.id,
+        message: 'This stop is appointment-only; confirm directly before travel.',
+      });
     }
+
+    const startTimes = publishedVisitStartTimes(row.visitor_hours);
+    if (startTimes.length > 0) {
+      warnings.push({
+        code: 'timed_visit_published',
+        producerId: row.id,
+        message: `Published visit start time${startTimes.length === 1 ? '' : 's'}: ${startTimes.join(
+          ', '
+        )}. Confirm the applicable session before travel.`,
+      });
+    }
+
+    if (verifiedVisitDurationMinutes(row) === null) {
+      warnings.push({
+        code: 'visit_duration_unknown',
+        producerId: row.id,
+        message:
+          'A typical visit duration is not published for this stop, so the day-time estimate is a known minimum.',
+      });
+    }
+
     if (row.road_access_status !== 'verified') {
       warnings.push({
         code: 'road_access_unverified',
@@ -442,8 +513,11 @@ export async function createTripOptimizationProposal(
       confirmedArrivalTime: null,
       earliestArrival: null,
       latestArrival: null,
-      visitDurationMinutes: null,
-      visitDurationSource: null,
+      visitDurationMinutes: verifiedVisitDurationMinutes(row),
+      visitDurationSource:
+        verifiedVisitDurationMinutes(row) === null
+          ? null
+          : 'producer_verified_duration',
     };
   });
 

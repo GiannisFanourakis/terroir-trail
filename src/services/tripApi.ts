@@ -34,6 +34,17 @@ export interface OptimizationWarningV1 {
   producerId?: string;
 }
 
+export interface OptimizationVisitDurationV1 {
+  producerId: string;
+  minutes: number | null;
+  source:
+    | 'producer_verified_duration'
+    | 'experience_duration'
+    | 'category_default_estimate'
+    | 'traveler_override'
+    | null;
+}
+
 export interface OptimizationProposalV1 {
   contractVersion: 1;
   proposalId: string;
@@ -47,6 +58,12 @@ export interface OptimizationProposalV1 {
   estimatedMinutesSaved: number | null;
   estimatedDistanceKmBefore: number | null;
   estimatedDistanceKmAfter: number | null;
+  visitDurations: OptimizationVisitDurationV1[];
+  estimatedKnownVisitMinutes: number;
+  visitDurationKnownStops: number;
+  visitDurationUnknownStops: number;
+  estimatedKnownDayMinutesBefore: number;
+  estimatedKnownDayMinutesAfter: number;
   warnings: OptimizationWarningV1[];
   unresolvedConstraints: string[];
   routingProvider: string;

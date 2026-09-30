@@ -38,7 +38,7 @@ const paidConveniences = [
           icon: Route,
           title: 'Optimize My Day',
           description:
-            'Reorder the stops already in your trip day using real road-route estimates. Lock important stops, review the suggestion, and apply it only when you choose.',
+            'Plan a realistic producer day using live road-route estimates plus published typical visit durations. Booking and timed-visit constraints are surfaced for review before you apply any route change.',
         },
       ]
     : []),
