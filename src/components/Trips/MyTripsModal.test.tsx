@@ -126,7 +126,8 @@ describe('MyTripsModal', () => {
 
     expect(html).toContain('Create New Trip');
     expect(html).toContain('placeholder="e.g. Nemea Wine &amp; Olive Trail"');
-    expect(html).toContain('Start Date (optional)');
-    expect(html).toContain('End Date (optional)');
+    expect(html).toContain('Start date');
+    expect(html).toContain('End date');
+    expect(html).toContain('Choose date');
   });
 });

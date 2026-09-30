@@ -115,16 +115,18 @@ export const TripPreparationPanel: React.FC<TripPreparationPanelProps> = ({
         </span>
       </div>
 
-      <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
+      <div className="mt-3 grid grid-cols-2 gap-2">
         {(['ready', 'contact', 'gap', 'unavailable'] as TripReadinessBucket[]).map(
           (bucket) => (
             <div
               key={bucket}
-              className={`rounded-xl border px-3 py-2 ${bucketMeta[bucket].className}`}
+              className={`min-w-0 rounded-xl border px-3 py-2.5 ${bucketMeta[bucket].className}`}
             >
-              <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wide">
-                {bucketMeta[bucket].icon}
-                <span>{bucketMeta[bucket].label}</span>
+              <div className="flex min-w-0 items-start gap-1.5 text-[9px] font-bold uppercase leading-tight tracking-wide sm:text-[10px]">
+                <span className="shrink-0">{bucketMeta[bucket].icon}</span>
+                <span className="min-w-0 whitespace-normal break-words">
+                  {bucketMeta[bucket].label}
+                </span>
               </div>
               <div className="mt-1 text-lg font-bold">{counts[bucket]}</div>
             </div>

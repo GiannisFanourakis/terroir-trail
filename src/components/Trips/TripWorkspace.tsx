@@ -38,6 +38,7 @@ import type { Producer } from '../../types/terroir';
 import { TripProducerItem } from './TripProducerItem';
 import { TripOverviewMap } from './TripOverviewMap';
 import { TripPreparationPanel } from './TripPreparationPanel';
+import { TripDatePickerField } from './TripDatePickerField';
 import { ContextualAffiliateSection } from '../Monetization/ContextualAffiliateSection';
 import { PartnerPlacementSlot } from '../Monetization/PartnerPlacement';
 import { getTripDayLabel } from '../../utils/tripReadiness';
@@ -130,6 +131,16 @@ export const TripWorkspace: React.FC<TripWorkspaceProps> = ({
     'print' | 'offline' | 'calendar' | null
   >(null);
   const [exportError, setExportError] = useState<string | null>(null);
+  const [calendarDatePrompt, setCalendarDatePrompt] = useState<boolean>(false);
+  const [calendarStartDateDraft, setCalendarStartDateDraft] = useState<string>(
+    initialTrip?.startDate || ''
+  );
+  const [calendarEndDateDraft, setCalendarEndDateDraft] = useState<string>(
+    initialTrip?.endDate || ''
+  );
+  const [calendarDateError, setCalendarDateError] = useState<string | null>(
+    null
+  );
 
   // Rename / Edit state
   const [isEditing, setIsEditing] = useState<boolean>(false);
@@ -478,6 +489,68 @@ export const TripWorkspace: React.FC<TripWorkspaceProps> = ({
     window.setTimeout(() => URL.revokeObjectURL(href), 1000);
   };
 
+  const handleCalendarDateSaveAndExport = async () => {
+    if (!trip || mutationPending || exportBusy !== null) return;
+
+    setCalendarDateError(null);
+    setExportError(null);
+
+    const cleanStart = calendarStartDateDraft.trim();
+    const cleanEnd = calendarEndDateDraft.trim() || null;
+
+    if (!cleanStart) {
+      setCalendarDateError('Choose a start date to export this trip to your calendar.');
+      return;
+    }
+
+    if (cleanEnd) {
+      const days = dateSpanDays(cleanStart, cleanEnd);
+      if (days < 1) {
+        setCalendarDateError('End date cannot be before start date.');
+        return;
+      }
+      if (days > 365) {
+        setCalendarDateError('Trip span cannot exceed 365 days.');
+        return;
+      }
+    }
+
+    setMutationPending(true);
+    setExportBusy('calendar');
+
+    try {
+      const updated = await updateTrip(trip.id, {
+        expectedRevision: trip.revision,
+        title: trip.title,
+        startDate: cleanStart,
+        endDate: cleanEnd,
+      });
+      const nextTrip = { ...trip, ...updated };
+      setTrip(nextTrip);
+      setStartDateDraft(cleanStart);
+      setEndDateDraft(cleanEnd || '');
+
+      const pack = await fetchTripPack(trip.id, 'ics');
+      downloadBlob(pack.blob, pack.filename);
+      setCalendarDatePrompt(false);
+    } catch (err: any) {
+      if (err instanceof TripApiError && err.status === 409) {
+        setConflictMessage(
+          'This trip changed in another tab or device. Reload it before trying again.'
+        );
+      } else {
+        setCalendarDateError(
+          err instanceof TripApiError
+            ? err.message
+            : 'Unable to save trip dates and prepare the calendar export.'
+        );
+      }
+    } finally {
+      setMutationPending(false);
+      setExportBusy(null);
+    }
+  };
+
   const handleExplorerExport = async (
     action: 'print' | 'offline' | 'calendar'
   ) => {
@@ -490,9 +563,10 @@ export const TripWorkspace: React.FC<TripWorkspaceProps> = ({
     }
 
     if (action === 'calendar' && !trip.startDate) {
-      setExportError(
-        'Add a trip start date before exporting to your calendar.'
-      );
+      setCalendarStartDateDraft('');
+      setCalendarEndDateDraft('');
+      setCalendarDateError(null);
+      setCalendarDatePrompt(true);
       return;
     }
 
@@ -769,29 +843,18 @@ export const TripWorkspace: React.FC<TripWorkspaceProps> = ({
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-[11px] font-bold text-stone-400 mb-1">
-                Start Date (optional)
-              </label>
-              <input
-                type="date"
-                value={startDateDraft}
-                onChange={(e) => setStartDateDraft(e.target.value)}
-                className="w-full bg-stone-950 border border-white/15 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400"
-              />
-            </div>
-            <div>
-              <label className="block text-[11px] font-bold text-stone-400 mb-1">
-                End Date (optional)
-              </label>
-              <input
-                type="date"
-                value={endDateDraft}
-                onChange={(e) => setEndDateDraft(e.target.value)}
-                className="w-full bg-stone-950 border border-white/15 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400"
-              />
-            </div>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <TripDatePickerField
+              label="Start date"
+              value={startDateDraft}
+              onChange={setStartDateDraft}
+            />
+            <TripDatePickerField
+              label="End date"
+              value={endDateDraft}
+              onChange={setEndDateDraft}
+              min={startDateDraft || undefined}
+            />
           </div>
 
           {editError && (
@@ -923,22 +986,95 @@ export const TripWorkspace: React.FC<TripWorkspaceProps> = ({
           <button
             type="button"
             onClick={() => void handleExplorerExport('calendar')}
-            disabled={
-              exportBusy !== null || (hasExplorerPass && !trip.startDate)
-            }
-            className="flex min-h-[44px] items-center justify-center gap-2 rounded-xl border border-white/10 bg-stone-950/70 px-3 py-2.5 text-xs font-bold text-stone-200 transition hover:border-amber-400/30 hover:text-amber-200 disabled:cursor-not-allowed disabled:opacity-45"
+            disabled={exportBusy !== null || mutationPending}
+            className="flex min-h-[44px] min-w-0 items-center justify-center gap-2 rounded-xl border border-white/10 bg-stone-950/70 px-3 py-2.5 text-xs font-bold text-stone-200 transition hover:border-amber-400/30 hover:text-amber-200 disabled:cursor-wait disabled:opacity-45"
             title={
               !trip.startDate
-                ? 'Add a trip start date before calendar export'
+                ? 'Choose trip dates and export calendar'
                 : 'Export calendar'
             }
           >
             <Download className="h-3.5 w-3.5 text-amber-400" />
-            <span>
+            <span className="min-w-0 text-center leading-tight">
               {exportBusy === 'calendar' ? 'Preparing…' : 'Calendar (.ics)'}
             </span>
           </button>
         </div>
+
+        {calendarDatePrompt && (
+          <div className="mt-3 rounded-xl border border-amber-400/25 bg-stone-950/75 p-3">
+            <div className="flex items-start gap-2.5">
+              <Calendar className="mt-0.5 h-4 w-4 shrink-0 text-amber-400" />
+              <div className="min-w-0">
+                <h4 className="text-xs font-bold text-stone-100">
+                  Choose trip dates
+                </h4>
+                <p className="mt-0.5 text-[10px] leading-relaxed text-stone-400 sm:text-[11px]">
+                  Pick the trip start date here. TerroirTrail will save it and
+                  immediately create the calendar file.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <TripDatePickerField
+                label="Start date"
+                value={calendarStartDateDraft}
+                onChange={(value) => {
+                  setCalendarStartDateDraft(value);
+                  setCalendarDateError(null);
+                }}
+                optional={false}
+              />
+              <TripDatePickerField
+                label="End date"
+                value={calendarEndDateDraft}
+                onChange={(value) => {
+                  setCalendarEndDateDraft(value);
+                  setCalendarDateError(null);
+                }}
+                min={calendarStartDateDraft || undefined}
+              />
+            </div>
+
+            {calendarDateError && (
+              <p
+                role="alert"
+                className="mt-2.5 text-[10px] font-medium text-rose-300 sm:text-[11px]"
+              >
+                {calendarDateError}
+              </p>
+            )}
+
+            <div className="mt-3 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+              <button
+                type="button"
+                onClick={() => {
+                  setCalendarDatePrompt(false);
+                  setCalendarDateError(null);
+                }}
+                disabled={mutationPending || exportBusy !== null}
+                className="min-h-[40px] rounded-xl border border-white/10 bg-stone-900 px-3 py-2 text-xs font-bold text-stone-300 transition hover:text-white disabled:opacity-50 sm:min-w-[90px]"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => void handleCalendarDateSaveAndExport()}
+                disabled={
+                  mutationPending ||
+                  exportBusy !== null ||
+                  !calendarStartDateDraft
+                }
+                className="min-h-[40px] rounded-xl bg-amber-500 px-4 py-2 text-xs font-bold text-stone-950 transition hover:bg-amber-400 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {exportBusy === 'calendar'
+                  ? 'Saving & exporting…'
+                  : 'Save dates & export'}
+              </button>
+            </div>
+          </div>
+        )}
 
         {exportError && (
           <p

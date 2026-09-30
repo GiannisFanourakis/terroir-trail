@@ -20,6 +20,7 @@ import type { Producer } from '../../types/terroir';
 import { trackIntent } from '../../services/intentAnalytics';
 import { recordPartnerTripAddIfAttributed } from '../../services/partnerAttribution';
 import { ProducerCategoryIcon } from '../Common/ProducerCategoryIcon';
+import { TripDatePickerField } from './TripDatePickerField';
 
 interface AddToTripModalProps {
   isOpen: boolean;
@@ -548,31 +549,24 @@ export const AddToTripModal: React.FC<AddToTripModalProps> = ({
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="block text-[11px] font-bold text-stone-400 mb-1">
-                  Start Date (opt)
-                </label>
-                <input
-                  type="date"
-                  value={createdTrip ? (createdTrip.startDate || '') : startDateDraft}
-                  onChange={(e) => setStartDateDraft(e.target.value)}
-                  disabled={Boolean(createdTrip)}
-                  className="w-full bg-stone-900 border border-white/15 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400 disabled:opacity-60"
-                />
-              </div>
-              <div>
-                <label className="block text-[11px] font-bold text-stone-400 mb-1">
-                  End Date (opt)
-                </label>
-                <input
-                  type="date"
-                  value={createdTrip ? (createdTrip.endDate || '') : endDateDraft}
-                  onChange={(e) => setEndDateDraft(e.target.value)}
-                  disabled={Boolean(createdTrip)}
-                  className="w-full bg-stone-900 border border-white/15 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400 disabled:opacity-60"
-                />
-              </div>
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <TripDatePickerField
+                label="Start date"
+                value={createdTrip ? (createdTrip.startDate || '') : startDateDraft}
+                onChange={setStartDateDraft}
+                disabled={Boolean(createdTrip)}
+              />
+              <TripDatePickerField
+                label="End date"
+                value={createdTrip ? (createdTrip.endDate || '') : endDateDraft}
+                onChange={setEndDateDraft}
+                min={
+                  createdTrip
+                    ? createdTrip.startDate || undefined
+                    : startDateDraft || undefined
+                }
+                disabled={Boolean(createdTrip)}
+              />
             </div>
 
             {createError && !isAmbiguousCreate && (

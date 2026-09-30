@@ -171,6 +171,31 @@ describe('TripWorkspace', () => {
     });
   });
 
+  it('keeps Calendar export available for undated trips so dates can be chosen in place', () => {
+    const undatedTrip: TripWithItems = {
+      ...mockTrip,
+      startDate: null,
+      endDate: null,
+    };
+
+    const html = renderToString(
+      <TripWorkspace
+        tripId="trip-1"
+        onBack={vi.fn()}
+        onSelectProducer={vi.fn()}
+        publicProducers={[mockProducer]}
+        catalogueIsLive={true}
+        hasExplorerPass={true}
+        initialTrip={undatedTrip}
+        initialProducerStates={{ 'prod-1': mockProducerState }}
+      />
+    );
+
+    expect(html).toContain('Calendar (.ics)');
+    expect(html).toContain('Choose trip dates and export calendar');
+    expect(html).not.toContain('Add a trip start date before calendar export');
+  });
+
   it('opens the paid Optimize My Day review mode on an assigned multi-stop day', () => {
     const secondProducer: Producer = {
       ...mockProducer,
