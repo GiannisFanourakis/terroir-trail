@@ -16,7 +16,6 @@ export interface TripPackProducerRow {
   destination: string | null;
   region: string | null;
   village: string | null;
-  locality: string | null;
   phone: string | null;
   website: string | null;
   google_maps_url: string | null;
@@ -34,14 +33,13 @@ export interface TripPackProducerRow {
   visitability_reviewed_at: string | null;
 }
 
-const PRODUCER_FIELDS = [
+export const TRIP_PACK_PRODUCER_FIELDS = [
   'id',
   'name',
   'category',
   'destination',
   'region',
   'village',
-  'locality',
   'phone',
   'website',
   'google_maps_url',
@@ -147,7 +145,7 @@ function buildHtml(
         producer.visitor_languages.length
           ? producer.visitor_languages.join(', ')
           : null;
-      const location = [producer.locality || producer.village, producer.region]
+      const location = [producer.village, producer.region]
         .filter(Boolean)
         .join(', ');
       return `<section class="stop">
@@ -275,7 +273,7 @@ function buildIcs(
     const date = dayDate(trip.startDate, item.dayNumber);
     if (!date) continue;
     const nextDate = addDays(date, 1);
-    const location = [producer.locality || producer.village, producer.region]
+    const location = [producer.village, producer.region]
       .filter(Boolean)
       .join(', ');
     const url =
@@ -353,7 +351,7 @@ export async function createTripPack(
   }
   const { data, error } = await supabase
     .from('producers')
-    .select(PRODUCER_FIELDS)
+    .select(TRIP_PACK_PRODUCER_FIELDS)
     .in('id', producerIds)
     .eq('is_active', true);
   if (error) {

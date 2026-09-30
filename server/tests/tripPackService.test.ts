@@ -2,6 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
   buildTripPackFromData,
+  TRIP_PACK_PRODUCER_FIELDS,
   type TripPackProducerRow,
 } from '../services/tripPackService';
 import type { TripWithItems } from '../services/tripService';
@@ -35,7 +36,6 @@ const producer: TripPackProducerRow = {
   destination: 'crete',
   region: 'Heraklion',
   village: 'Archanes',
-  locality: 'Archanes',
   phone: '+30 2810 000000',
   website: 'javascript:alert(1)',
   google_maps_url: 'https://maps.example.test/estate',
@@ -52,6 +52,11 @@ const producer: TripPackProducerRow = {
   road_access_notes: 'Narrow village approach.',
   visitability_reviewed_at: '2026-09-20T00:00:00Z',
 };
+
+test('Trip Pack producer query excludes removed locality column', () => {
+  assert.equal(TRIP_PACK_PRODUCER_FIELDS.includes('village'), true);
+  assert.equal(TRIP_PACK_PRODUCER_FIELDS.includes('locality'), false);
+});
 
 test('HTML Trip Pack is printable, escaped and carries trust warnings', () => {
   const pack = buildTripPackFromData(
