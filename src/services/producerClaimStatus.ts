@@ -33,17 +33,17 @@ export interface OwnProducerClaimStatus {
   verificationReadyForAdminReview?: boolean;
 }
 
-export async function fetchOwnProducerClaimStatus(): Promise<OwnProducerClaimStatus | null> {
-  if (!isFirebaseConfigured || !db) return null;
+export async function fetchOwnProducerClaimStatuses(): Promise<OwnProducerClaimStatus[]> {
+  if (!isFirebaseConfigured || !db) return [];
   await auth?.authStateReady();
   const uid = auth?.currentUser?.uid;
-  if (!uid) return null;
+  if (!uid) return [];
 
   const snapshot = await getDocs(
     query(collection(db, 'producer_registrations'), where('userId', '==', uid))
   );
 
-  if (snapshot.empty) return null;
+  if (snapshot.empty) return [];
 
   const registrations = snapshot.docs
     .map(document => {
@@ -69,5 +69,10 @@ export async function fetchOwnProducerClaimStatus(): Promise<OwnProducerClaimSta
     })
     .sort((a, b) => String(b.submittedAt || '').localeCompare(String(a.submittedAt || '')));
 
+  return registrations;
+}
+
+export async function fetchOwnProducerClaimStatus(): Promise<OwnProducerClaimStatus | null> {
+  const registrations = await fetchOwnProducerClaimStatuses();
   return registrations[0] || null;
 }

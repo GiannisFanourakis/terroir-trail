@@ -22,11 +22,12 @@ import { UserProfile, ProducerTaxDetails } from '../../types/auth';
 import { ProducerUploadedImage, validateImageUpload } from '../../types/producerMedia';
 import { runtimeConfig } from '../../config/runtimeConfig';
 import {
-  fetchOwnProducerClaimStatus,
+  fetchOwnProducerClaimStatuses,
   type OwnProducerClaimStatus,
 } from '../../services/producerClaimStatus';
 import { ProducerListingContentEditor } from './ProducerListingContentEditor';
 import { ProducerPromotionPanel } from './ProducerPromotionPanel';
+import { ProducerRegistrationForm } from './ProducerRegistrationForm';
 
 interface ProducerPortalModalProps {
   isOpen: boolean;
@@ -158,9 +159,12 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
   );
 
   const [activeTab, setActiveTab] = useState<PortalTab>('overview');
-  const [claim, setClaim] = useState<OwnProducerClaimStatus | null>(null);
+  const [claims, setClaims] = useState<OwnProducerClaimStatus[]>([]);
+  const claim = claims[0] || null;
   const [claimLoading, setClaimLoading] = useState(false);
   const [claimError, setClaimError] = useState<string | null>(null);
+  const [claimAnotherOpen, setClaimAnotherOpen] = useState(false);
+  const [claimSubmitNotice, setClaimSubmitNotice] = useState<string | null>(null);
   const [customNotice, setCustomNotice] = useState('');
   const [customHours, setCustomHours] = useState('');
   const [contactEmail, setContactEmail] = useState('');
@@ -172,6 +176,21 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
   const [mediaError, setMediaError] = useState<string | null>(null);
   const [mediaSaved, setMediaSaved] = useState(false);
 
+  const unavailableClaimIds = useMemo(
+    () =>
+      new Set([
+        ...managedProducerIds,
+        ...claims
+          .filter((item) => item.status !== 'rejected')
+          .map((item) => item.producerId),
+      ]),
+    [claims, managedProducerIds]
+  );
+  const claimableProducers = useMemo(
+    () => producers.filter((producer) => !unavailableClaimIds.has(producer.id)),
+    [producers, unavailableClaimIds]
+  );
+
   const currentOverride = selectedProducer
     ? getProducerOverride(selectedProducer.id)
     : undefined;
@@ -181,6 +200,8 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
   useEffect(() => {
     if (!isOpen) return;
     setActiveTab('overview');
+    setClaimAnotherOpen(false);
+    setClaimSubmitNotice(null);
     setVisitorInfoSaved(false);
     setVisitorInfoError(null);
     setMediaSaved(false);
@@ -212,17 +233,17 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
     selectedProducer?.phone,
   ]);
 
-  const loadClaim = async () => {
-    if (!user || isProducerAuthenticated) {
-      setClaim(null);
+  const loadClaims = async () => {
+    if (!user) {
+      setClaims([]);
       return;
     }
     setClaimLoading(true);
     setClaimError(null);
     try {
-      setClaim(await fetchOwnProducerClaimStatus());
+      setClaims(await fetchOwnProducerClaimStatuses());
     } catch (error) {
-      setClaim(null);
+      setClaims([]);
       setClaimError(
         error instanceof Error
           ? error.message
@@ -234,8 +255,8 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
   };
 
   useEffect(() => {
-    if (isOpen) void loadClaim();
-  }, [isOpen, user?.id, isProducerAuthenticated]);
+    if (isOpen) void loadClaims();
+  }, [isOpen, user?.id]);
 
   if (!isOpen) return null;
 
@@ -402,6 +423,44 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
     );
   }
 
+  if (claimAnotherOpen) {
+    return shell(
+      <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+        {claimableProducers.length > 0 ? (
+          <ProducerRegistrationForm
+            userId={user.id}
+            producersList={claimableProducers}
+            initialRepresentativeName={user.name}
+            initialOfficialEmail={user.email}
+            onCancel={() => setClaimAnotherOpen(false)}
+            onSaved={(record) => {
+              setClaimSubmitNotice(
+                `Claim submitted for ${record.tradeBrandName}. It will remain separate from your other listings until TerroirTrail approves it.`
+              );
+              setClaimAnotherOpen(false);
+              void loadClaims();
+            }}
+          />
+        ) : (
+          <div className="mx-auto max-w-xl py-12 text-center">
+            <Building2 className="mx-auto mb-3 h-10 w-10 text-stone-500" />
+            <h3 className="text-lg font-bold text-white">No additional listing available</h3>
+            <p className="mt-2 text-sm leading-relaxed text-stone-400">
+              Every current producer listing is already owned or has an active claim from this account.
+            </p>
+            <button
+              type="button"
+              onClick={() => setClaimAnotherOpen(false)}
+              className="mt-5 rounded-xl border border-white/10 bg-stone-900 px-4 py-2.5 text-xs font-bold text-stone-200"
+            >
+              Back to Host Portal
+            </button>
+          </div>
+        )}
+      </div>
+    );
+  }
+
   if (!isProducerAuthenticated) {
     return shell(
       <div className="flex-1 overflow-y-auto p-5 sm:p-8">
@@ -467,12 +526,22 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
               </div>
             )}
 
-            <div className="flex justify-end">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+              {claimableProducers.length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => setClaimAnotherOpen(true)}
+                  className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-amber-500 px-3 py-2 text-xs font-bold text-stone-950 hover:bg-amber-400"
+                >
+                  <Building2 className="h-3.5 w-3.5" />
+                  Claim another listing
+                </button>
+              )}
               <button
                 type="button"
-                onClick={() => void loadClaim()}
+                onClick={() => void loadClaims()}
                 disabled={claimLoading}
-                className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-stone-900 px-3 py-2 text-xs font-semibold text-stone-300 hover:text-white cursor-pointer disabled:opacity-50"
+                className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-white/10 bg-stone-900 px-3 py-2 text-xs font-semibold text-stone-300 hover:text-white cursor-pointer disabled:opacity-50"
               >
                 <RefreshCw className="w-3.5 h-3.5" />
                 Refresh verification status
@@ -489,11 +558,9 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
             {claimError && <p className="mt-2 text-xs text-rose-300">{claimError}</p>}
             <button
               type="button"
-              onClick={() => {
-                onClose();
-                onOpenAuth?.('producer');
-              }}
-              className="mt-5 inline-flex items-center gap-2 rounded-xl bg-amber-500 px-4 py-2.5 text-xs font-bold text-stone-950 hover:bg-amber-400 cursor-pointer"
+              onClick={() => setClaimAnotherOpen(true)}
+              disabled={claimableProducers.length === 0}
+              className="mt-5 inline-flex items-center gap-2 rounded-xl bg-amber-500 px-4 py-2.5 text-xs font-bold text-stone-950 hover:bg-amber-400 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
             >
               Claim a producer listing
             </button>
@@ -564,6 +631,17 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
             </label>
           )}
 
+          {!isReadOnlyPreview && claimableProducers.length > 0 && (
+            <button
+              type="button"
+              onClick={() => setClaimAnotherOpen(true)}
+              className="inline-flex items-center gap-1.5 rounded-lg bg-amber-500 px-3 py-2 text-xs font-bold text-stone-950 hover:bg-amber-400"
+            >
+              <Building2 className="h-3.5 w-3.5" />
+              Claim another listing
+            </button>
+          )}
+
           {onSelectProducerForDrawer && (
             <button
               type="button"
@@ -596,6 +674,14 @@ export const ProducerPortalModal: React.FC<ProducerPortalModalProps> = ({
       <div className="flex-1 overflow-y-auto p-5 sm:p-6">
         {activeTab === 'overview' && (
           <div className="space-y-4">
+            {claimSubmitNotice && (
+              <div
+                role="status"
+                className="rounded-xl border border-emerald-500/25 bg-emerald-500/10 px-4 py-3 text-xs leading-relaxed text-emerald-200"
+              >
+                {claimSubmitNotice}
+              </div>
+            )}
             <div className="grid md:grid-cols-2 gap-3">
               <div className="rounded-2xl border border-white/10 bg-stone-900/60 p-4">
                 <div className="flex items-center gap-2 text-white font-bold text-sm">

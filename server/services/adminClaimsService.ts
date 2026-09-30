@@ -132,16 +132,6 @@ export async function approveProducerClaim(
       throw new AdminClaimError('conflict', 'This producer already has an active owner.');
     }
 
-    const existingApplicantOwnerships = await transaction.get(
-      db.collection('producer_owners')
-        .where('ownerUid', '==', registration.userId)
-        .where('status', '==', 'active')
-    );
-    const conflicting = existingApplicantOwnerships.docs.find((doc: any) => doc.id !== producerId);
-    if (conflicting) {
-      throw new AdminClaimError('conflict', 'This applicant already owns another active producer listing.');
-    }
-
     const occurredAt = new Date().toISOString();
     transaction.set(ownerRef, {
       producerId,

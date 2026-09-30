@@ -268,8 +268,19 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         true
       );
       onClose();
-    } catch (error) {
-      setLocalError(formatAuthError(error));
+    } catch (error: any) {
+      const code = error?.code || '';
+      const message = error?.message || '';
+      if (
+        code === 'auth/email-already-in-use' ||
+        String(message).includes('email-already-in-use')
+      ) {
+        setLocalError(
+          'This email already has a TerroirTrail account. Sign in as Host, open the Host Portal, and choose “Claim another listing”.'
+        );
+      } else {
+        setLocalError(formatAuthError(error));
+      }
     } finally {
       setLocalLoading(null);
     }

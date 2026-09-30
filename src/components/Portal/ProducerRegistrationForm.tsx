@@ -28,6 +28,8 @@ interface ProducerRegistrationFormProps {
   initialProducerId?: string;
   userId?: string;
   producersList?: Producer[];
+  initialRepresentativeName?: string;
+  initialOfficialEmail?: string;
   onSaved?: (record: ProducerRegistrationRecord) => void;
   onCancel?: () => void;
 }
@@ -68,6 +70,8 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
   initialProducerId,
   userId,
   producersList,
+  initialRepresentativeName = '',
+  initialOfficialEmail = '',
   onSaved,
   onCancel,
 }) => {
@@ -81,9 +85,9 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
   );
 
   const [tradeBrandName, setTradeBrandName] = useState(initialProducer?.name || '');
-  const [representativeName, setRepresentativeName] = useState('');
+  const [representativeName, setRepresentativeName] = useState(initialRepresentativeName);
   const [representativeRole, setRepresentativeRole] = useState('');
-  const [officialEmail, setOfficialEmail] = useState('');
+  const [officialEmail, setOfficialEmail] = useState(initialOfficialEmail);
   const [countryCode, setCountryCode] = useState(producerCountryCode(initialProducer));
   const [legalBusinessName, setLegalBusinessName] = useState('');
   const [vatNumber, setVatNumber] = useState('');
@@ -111,9 +115,9 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
       if (!active) return;
 
       setTradeBrandName(existing?.tradeBrandName || producer?.name || '');
-      setRepresentativeName(existing?.representativeName || '');
+      setRepresentativeName(existing?.representativeName || initialRepresentativeName);
       setRepresentativeRole(existing?.representativeRole || '');
-      setOfficialEmail(existing?.officialEmail || '');
+      setOfficialEmail(existing?.officialEmail || initialOfficialEmail);
       setCountryCode(existing?.countryCode || producerCountryCode(producer));
       setLegalBusinessName(existing?.legalBusinessName || '');
       setVatNumber(existing?.vatNumber || '');
@@ -128,7 +132,7 @@ export const ProducerRegistrationForm: React.FC<ProducerRegistrationFormProps> =
     return () => {
       active = false;
     };
-  }, [allProducers, selectedProducerId]);
+  }, [allProducers, initialOfficialEmail, initialRepresentativeName, selectedProducerId]);
 
   const normalizedCountryCode = countryCode.trim().toUpperCase();
   const vatValidation = vatNumber.trim()

@@ -270,6 +270,17 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
               </button>
             )}
 
+            {!isAdmin && !isHost && onOpenProducerPortal && (
+              <button
+                type="button"
+                onClick={() => runAndClose(onOpenProducerPortal)}
+                className="w-full flex items-center gap-2 px-2.5 py-2 rounded-xl border border-white/10 bg-stone-900/80 text-stone-300 hover:text-amber-300 hover:border-amber-500/30 transition cursor-pointer"
+              >
+                <Building2 className="w-4 h-4 text-amber-400" />
+                Producer claims & Host Portal
+              </button>
+            )}
+
             {isAdmin && onOpenAdmin && (
               <button
                 type="button"

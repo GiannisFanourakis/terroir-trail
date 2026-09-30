@@ -83,6 +83,30 @@ describe('Host-Managed Producer Imagery Integration', () => {
     });
   });
 
+  describe('ProducerPortalModal — Multi-listing Host claims', () => {
+    it('keeps additional claims on the already authenticated account', () => {
+      const portalSource = readFileSync(
+        'src/components/Portal/ProducerPortalModal.tsx',
+        'utf8'
+      );
+
+      expect(portalSource).toContain('Claim another listing');
+      expect(portalSource).toContain('userId={user.id}');
+      expect(portalSource).toContain('fetchOwnProducerClaimStatuses');
+      expect(portalSource).toContain('producersList={claimableProducers}');
+    });
+
+    it('uses the trusted producerIds array when identifying a host in the public drawer', () => {
+      const drawerSource = readFileSync(
+        'src/components/Drawer/ProducerDetailDrawer.tsx',
+        'utf8'
+      );
+
+      expect(drawerSource).toContain('user?.producerIds?.includes(producer.id)');
+      expect(drawerSource).toContain('isHostForProducer');
+    });
+  });
+
   describe('ProducerDetailDrawer — Public Host Visitor Information', () => {
     it('renders current host-supplied hours, phone and email instead of stale catalogue contact values', () => {
       const hostOverride: ProducerOverride = {

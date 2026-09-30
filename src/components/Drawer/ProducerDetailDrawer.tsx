@@ -69,6 +69,11 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
   producerOverride,
   onAddToTrip,
 }) => {
+  const isHostForProducer = Boolean(
+    producer &&
+      (user?.producerIds?.includes(producer.id) ||
+        user?.claimedProducerId === producer.id)
+  );
   const [copiedLink, setCopiedLink] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<'story' | 'tastings' | 'visit'>(initialTab);
   const [isEditingNote, setIsEditingNote] = useState<boolean>(false);
@@ -847,7 +852,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
         </div>
       </div>
 
-      {user?.isProducer && user.claimedProducerId === producer.id && (
+      {isHostForProducer && (
         <div className="mx-4 mt-3 p-3 rounded-2xl bg-amber-500/15 border border-amber-500/40 flex items-center justify-between gap-3 shadow-inner">
           <div className="flex items-center gap-2.5 min-w-0">
             <Building2 className="w-5 h-5 text-amber-400 shrink-0" aria-hidden="true" />
@@ -1198,15 +1203,23 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
               </a>
             )}
 
-            {(!user?.isProducer || user.claimedProducerId !== producer.id) && (
+            {!isHostForProducer && (
               <div className="pt-3 border-t border-white/10 text-center">
                 <button
                   type="button"
-                  onClick={() => onOpenAuth && onOpenAuth('producer')}
+                  onClick={() => {
+                    if (user && onOpenProducerPortal) {
+                      onOpenProducerPortal();
+                      return;
+                    }
+                    onOpenAuth?.('producer');
+                  }}
                   className="text-[11px] text-stone-400 hover:text-amber-300 transition cursor-pointer inline-flex items-center gap-1.5 hover:underline"
                 >
                   <Building2 className="w-3.5 h-3.5 text-amber-400/80" />
-                  <span>Represent {producer.name}? Sign in to claim or manage this producer profile</span>
+                  <span>
+                    Represent {producer.name}? {user ? 'Open the Host Portal to claim this listing' : 'Sign in to claim or manage this producer profile'}
+                  </span>
                 </button>
               </div>
             )}

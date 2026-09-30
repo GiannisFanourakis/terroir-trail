@@ -136,6 +136,35 @@ test('admin approval creates trusted ownership and audit trail', async () => {
   assert.equal(getCollection('admin_audit').size, 1);
 });
 
+test('admin approval allows one verified account to own multiple producer listings', async () => {
+  const { db, getCollection, seedAdmin } = makeHarness();
+  seedAdmin('admin-uid');
+  getCollection('producer_owners').set('producer-existing', {
+    producerId: 'producer-existing',
+    ownerUid: 'applicant-uid',
+    status: 'active',
+  });
+  getCollection('producer_registrations').set('producer-new', {
+    producerId: 'producer-new',
+    userId: 'applicant-uid',
+    tradeBrandName: 'Producer New',
+    officialEmail: 'group@example.com',
+    status: 'pending_verification',
+  });
+
+  const result = await approveProducerClaim('admin-uid', 'producer-new', db as any);
+
+  assert.equal(result.status, 'verified_active');
+  assert.equal(
+    getCollection('producer_owners').get('producer-existing')?.ownerUid,
+    'applicant-uid'
+  );
+  assert.equal(
+    getCollection('producer_owners').get('producer-new')?.ownerUid,
+    'applicant-uid'
+  );
+});
+
 test('admin rejection records reason and does not grant ownership', async () => {
   const { db, getCollection, seedAdmin } = makeHarness();
   seedAdmin('admin-uid');
