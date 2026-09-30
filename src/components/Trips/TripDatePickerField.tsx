@@ -72,16 +72,16 @@ export const TripDatePickerField: React.FC<TripDatePickerFieldProps> = ({
           disabled={disabled}
           onChange={(event) => onChange(event.target.value)}
           aria-label={label}
-          className="peer absolute inset-0 z-10 h-full w-full cursor-pointer opacity-0 disabled:cursor-not-allowed"
+          tabIndex={-1}
+          className="pointer-events-none absolute h-px w-px opacity-0"
         />
 
         <button
           type="button"
           onClick={openPicker}
           disabled={disabled}
-          tabIndex={-1}
-          aria-hidden="true"
-          className="flex min-h-[42px] w-full min-w-0 items-center gap-2 rounded-xl border border-white/15 bg-stone-950 py-2 pl-3 pr-10 text-left text-xs text-white transition hover:border-amber-400/40 peer-focus:border-amber-400/40 peer-focus:ring-2 peer-focus:ring-amber-400/30 disabled:cursor-not-allowed disabled:opacity-60"
+          aria-label={`${label}: ${value ? formatChosenDate(value) : 'choose date'}`}
+          className="flex min-h-[42px] w-full min-w-0 items-center gap-2 rounded-xl border border-white/15 bg-stone-950 py-2 pl-3 pr-10 text-left text-xs text-white transition hover:border-amber-400/40 focus:outline-none focus:ring-2 focus:ring-amber-400/30 disabled:cursor-not-allowed disabled:opacity-60"
         >
           <CalendarDays className="h-3.5 w-3.5 shrink-0 text-amber-400" />
           <span className={`min-w-0 flex-1 truncate ${value ? 'font-semibold text-stone-100' : 'text-stone-500'}`}>
