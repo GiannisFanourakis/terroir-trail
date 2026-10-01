@@ -628,3 +628,91 @@ test('Optimize My Day Apply is Explorer-gated and accepts only the reviewed day 
     );
   }
 });
+
+
+test('Trip sharing creates owner-controlled links and exposes public reads without auth', async () => {
+  const calls: unknown[][] = [];
+  const app = createApp();
+  registerTripRoutes(app, {
+    verifyToken: async (token) => ({ uid: token }) as any,
+    getTripShareState: async (uid, tripId) => {
+      calls.push(['state', uid, tripId]);
+      return { enabled: false, shareId: null, sharedAt: null };
+    },
+    enableTripShare: async (uid, tripId) => {
+      calls.push(['enable', uid, tripId]);
+      return {
+        enabled: true,
+        shareId: 'share_abcdefghijklmnopqrstu',
+        sharedAt: '2026-10-01T18:00:00Z',
+      };
+    },
+    disableTripShare: async (uid, tripId) => {
+      calls.push(['disable', uid, tripId]);
+      return { enabled: false, shareId: null, sharedAt: null };
+    },
+    getPublicTripShare: async (shareId) => {
+      calls.push(['public', shareId]);
+      return {
+        shareId,
+        title: 'Crete harvest',
+        startDate: '2026-10-04',
+        endDate: '2026-10-06',
+        itemCount: 2,
+        updatedAt: '2026-10-01T18:00:00Z',
+        items: [
+          {
+            producerId: 'producer-one',
+            position: 0,
+            dayNumber: 1,
+            state: 'active',
+          },
+          {
+            producerId: null,
+            position: 1,
+            dayNumber: 2,
+            state: 'unavailable',
+          },
+        ],
+      };
+    },
+  });
+
+  const server = app.listen(0, '127.0.0.1');
+  await new Promise<void>((resolve) => server.once('listening', resolve));
+  const base = 'http://127.0.0.1:' + (server.address() as AddressInfo).port;
+  try {
+    assert.equal((await fetch(base + '/api/trips/trip-1/share')).status, 401);
+
+    const enabled = await fetch(base + '/api/trips/trip-1/share', {
+      method: 'POST',
+      headers: { Authorization: 'Bearer traveler-1' },
+    });
+    assert.equal(enabled.status, 200);
+    assert.equal(((await enabled.json()) as any).share.enabled, true);
+
+    const publicRead = await fetch(
+      base + '/api/trip-shares/share_abcdefghijklmnopqrstu'
+    );
+    assert.equal(publicRead.status, 200);
+    const publicBody = (await publicRead.json()) as any;
+    assert.equal(publicBody.trip.title, 'Crete harvest');
+    assert.equal(publicBody.trip.ownerUid, undefined);
+    assert.equal(publicBody.trip.items[1].producerId, null);
+
+    const disabled = await fetch(base + '/api/trips/trip-1/share', {
+      method: 'DELETE',
+      headers: { Authorization: 'Bearer traveler-1' },
+    });
+    assert.equal(disabled.status, 200);
+    assert.deepEqual(calls, [
+      ['enable', 'traveler-1', 'trip-1'],
+      ['public', 'share_abcdefghijklmnopqrstu'],
+      ['disable', 'traveler-1', 'trip-1'],
+    ]);
+  } finally {
+    await new Promise<void>((resolve, reject) =>
+      server.close((error) => (error ? reject(error) : resolve()))
+    );
+  }
+});

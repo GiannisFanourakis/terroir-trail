@@ -13,6 +13,7 @@ import { useProducerPhotos } from '../../services/googlePlacesPhotos';
 import { getCategoryFallbackImage } from '../../utils/imageFallbacks';
 import { getEffectiveProducerCategory } from '../../utils/producerCategory';
 import { getProducerRoadAccessWarning } from '../../utils/producerAccess';
+import { getProducerDisplaySpecialties } from '../../utils/producerSpecialties';
 import { resolveProducerCover, resolveProducerGallery } from '../../utils/producerMediaResolver';
 import { GooglePlaceMedia } from '../GooglePlaces/GooglePlaceMedia';
 import { ProducerCategoryIcon } from '../Common/ProducerCategoryIcon';
@@ -581,6 +582,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
     getEffectiveProducerCategory(producer),
     producer.name
   );
+  const displaySpecialties = getProducerDisplaySpecialties(producer);
   const visitDetails = getVisitStatusDetails(producer.visitStatus, producer);
   const effectiveOpeningHours =
     producerOverride?.customHours !== undefined
@@ -1155,7 +1157,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                 {term.specialtiesLabel}
               </h4>
               <div className="flex flex-wrap gap-2">
-                {producer.indigenousVarieties.map((v, i) => (
+                {displaySpecialties.map((v, i) => (
                   <span
                     key={i}
                     className="px-3 py-1.5 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-300 font-semibold text-xs"

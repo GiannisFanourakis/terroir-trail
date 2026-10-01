@@ -126,7 +126,6 @@ const AddToTripModal = lazy(() =>
     default: m.AddToTripModal,
   }))
 );
-
 export type ActiveModal =
   | { type: 'auth'; initialRole?: 'traveler' | 'producer' }
   | { type: 'passport' }
@@ -378,6 +377,37 @@ export const App: React.FC = () => {
   };
 
   const [filters, setFilters] = useState<FilterState>(initialFilters);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const params = new URLSearchParams(window.location.search);
+    const requestedDestination = params.get('destination');
+    const requestedCategory = params.get('category');
+
+    const validDestinations = new Set<string>([
+      'crete', 'santorini', 'peloponnese', 'thessaly', 'northern_greece',
+      'tuscany', 'piedmont', 'puglia', 'sicily', 'south_tyrol', 'provence',
+      'catalonia', 'alentejo', 'istria', 'pomurska', 'southeast_slovenia',
+      'central_slovenia', 'goriska', 'trondelag', 'more_og_romsdal',
+      'buskerud', 'vestland',
+    ]);
+    const validCategories = new Set<string>([
+      'winery', 'distillery', 'cidery', 'brewery', 'olive_mill',
+      'olive_oil_producer', 'oil_mill', 'cheese_dairy', 'apiary',
+      'confectionery', 'herb_farm', 'mushroom_farm', 'farm',
+    ]);
+
+    if (!requestedDestination && !requestedCategory) return;
+    setFilters((prev) => ({
+      ...prev,
+      ...(requestedDestination && validDestinations.has(requestedDestination)
+        ? { destination: requestedDestination as Destination }
+        : {}),
+      ...(requestedCategory && validCategories.has(requestedCategory)
+        ? { category: requestedCategory as FilterState['category'] }
+        : {}),
+    }));
+  }, []);
 
   const {
     producers,
@@ -673,6 +703,10 @@ export const App: React.FC = () => {
             onToggleFavorite={toggleFavorite}
             onExploreCountry={handleExploreCountry}
             onExploreRegion={handleExploreRegion}
+            autoLocate={
+              typeof window !== 'undefined' &&
+              new URLSearchParams(window.location.search).get('locate') === '1'
+            }
           />
 
           {selectedTerroirRegion && (

@@ -12,6 +12,7 @@ import {
   MapPin,
   Printer,
   RefreshCw,
+  Share2,
   Sparkles,
   Trash2,
   WifiOff,
@@ -21,6 +22,8 @@ import {
   applyOptimizedTripDay,
   assignTripItemDay,
   deleteTrip,
+  disableTripShare,
+  enableTripShare,
   fetchTripPack,
   getTrip,
   getTripProducerStates,
@@ -30,6 +33,7 @@ import {
   trackTripOpened,
   type OptimizationProposalV1,
   type TripProducerState,
+  type TripShareStateV1,
   type TripWithItems,
   updateTrip,
   TripApiError,
@@ -42,6 +46,7 @@ import { TripDatePickerField } from './TripDatePickerField';
 import { ContextualAffiliateSection } from '../Monetization/ContextualAffiliateSection';
 import { PartnerPlacementSlot } from '../Monetization/PartnerPlacement';
 import { getTripDayLabel } from '../../utils/tripReadiness';
+import { getPublicAppUrl } from '../../config/runtimeConfig';
 
 interface TripWorkspaceProps {
   tripId: string;
@@ -131,6 +136,10 @@ export const TripWorkspace: React.FC<TripWorkspaceProps> = ({
     'print' | 'offline' | 'calendar' | null
   >(null);
   const [exportError, setExportError] = useState<string | null>(null);
+  const [shareState, setShareState] = useState<TripShareStateV1 | null>(null);
+  const [shareBusy, setShareBusy] = useState<boolean>(false);
+  const [shareError, setShareError] = useState<string | null>(null);
+  const [shareNotice, setShareNotice] = useState<string | null>(null);
   const [calendarDatePrompt, setCalendarDatePrompt] = useState<boolean>(false);
   const [calendarStartDateDraft, setCalendarStartDateDraft] = useState<string>(
     initialTrip?.startDate || ''
@@ -611,6 +620,52 @@ export const TripWorkspace: React.FC<TripWorkspaceProps> = ({
     }
   };
 
+  const handleShareTrip = async () => {
+    if (!trip || shareBusy) return;
+    setShareBusy(true);
+    setShareError(null);
+    setShareNotice(null);
+    try {
+      const next = await enableTripShare(trip.id);
+      setShareState(next);
+      if (!next.shareId) throw new Error('missing share id');
+      const url = `${getPublicAppUrl()}/trip/${encodeURIComponent(next.shareId)}`;
+      if (navigator.share) {
+        await navigator.share({ title: trip.title, url });
+        setShareNotice('Trip shared.');
+      } else {
+        await navigator.clipboard.writeText(url);
+        setShareNotice('Public trip link copied.');
+      }
+    } catch (err: any) {
+      if (err?.name !== 'AbortError') {
+        setShareError(
+          err instanceof TripApiError
+            ? err.message
+            : 'Unable to share this trip right now.'
+        );
+      }
+    } finally {
+      setShareBusy(false);
+    }
+  };
+
+  const handleDisableShare = async () => {
+    if (!trip || shareBusy) return;
+    setShareBusy(true);
+    setShareError(null);
+    try {
+      setShareState(await disableTripShare(trip.id));
+      setShareNotice('Public link disabled.');
+    } catch (err: any) {
+      setShareError(
+        err instanceof TripApiError ? err.message : 'Unable to disable the link.'
+      );
+    } finally {
+      setShareBusy(false);
+    }
+  };
+
   // Filter items for display
   const displayedItems = useMemo(() => {
     if (!trip) return [];
@@ -797,6 +852,20 @@ export const TripWorkspace: React.FC<TripWorkspaceProps> = ({
         <div className="flex items-center gap-2">
           <button
             type="button"
+            onClick={() => void handleShareTrip()}
+            disabled={shareBusy}
+            className="p-2 rounded-xl bg-stone-900 hover:bg-stone-850 text-stone-300 hover:text-white border border-white/10 transition cursor-pointer disabled:opacity-50"
+            title="Share trip"
+            aria-label="Share trip"
+          >
+            {shareBusy ? (
+              <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+            ) : (
+              <Share2 className="w-3.5 h-3.5" />
+            )}
+          </button>
+          <button
+            type="button"
             onClick={() => void loadTripData()}
             className="p-2 rounded-xl bg-stone-900 hover:bg-stone-850 text-stone-300 hover:text-white border border-white/10 transition cursor-pointer"
             title="Reload authoritative state"
@@ -815,6 +884,24 @@ export const TripWorkspace: React.FC<TripWorkspaceProps> = ({
           </button>
         </div>
       </div>
+
+      {(shareNotice || shareError || shareState?.enabled) && (
+        <div className="flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-stone-900/70 px-3 py-2 text-[11px]">
+          <span className={shareError ? 'text-rose-300' : 'text-emerald-300'}>
+            {shareError || shareNotice || 'Public link active.'}
+          </span>
+          {shareState?.enabled && (
+            <button
+              type="button"
+              onClick={() => void handleDisableShare()}
+              disabled={shareBusy}
+              className="shrink-0 font-bold text-stone-400 hover:text-rose-300 disabled:opacity-50"
+            >
+              Disable link
+            </button>
+          )}
+        </div>
+      )}
 
       {/* 409 Stale Revision Conflict Banner */}
       {conflictMessage && (

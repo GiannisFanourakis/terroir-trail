@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import { Producer, Destination } from '../../types/terroir';
 import {
@@ -29,6 +29,7 @@ interface MapCanvasProps {
   onToggleFavorite: (id: string, sourceSurface?: SourceSurface) => void;
   onExploreCountry?: (country: Exclude<CountryScope, 'all'>) => void;
   onExploreRegion?: (destination: Destination) => void;
+  autoLocate?: boolean;
 }
 
 export interface MapMotionOptions {
@@ -195,6 +196,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
   isFavorite,
   onToggleFavorite,
   onExploreRegion,
+  autoLocate = false,
 }) => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
@@ -203,6 +205,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
   const markerRenderModesRef = useRef<{ [id: string]: ProducerMarkerRenderMode }>({});
   const clusterMarkersRef = useRef<{ [id: string]: L.Marker }>({});
   const tileLayerRef = useRef<L.TileLayer | null>(null);
+  const autoLocateAttemptedRef = useRef(false);
 
   type MapTheme = 'topo' | 'voyager' | 'dark' | 'satellite';
   const [mapTheme, setMapTheme] = useState<MapTheme>('topo');
@@ -850,7 +853,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     onExploreRegion?.(activeTerroirRegion.destination);
   };
 
-  const handleLocateMe = async () => {
+  const handleLocateMe = useCallback(async () => {
     if (!mapInstanceRef.current || isLocating) return;
     setIsLocating(true);
     setLocationError(null);
@@ -879,7 +882,17 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     } finally {
       setIsLocating(false);
     }
-  };
+  }, [isLocating]);
+
+  useEffect(() => {
+    if (!autoLocate || autoLocateAttemptedRef.current) return;
+    const timer = window.setTimeout(() => {
+      if (autoLocateAttemptedRef.current) return;
+      autoLocateAttemptedRef.current = true;
+      void handleLocateMe();
+    }, 250);
+    return () => window.clearTimeout(timer);
+  }, [autoLocate, handleLocateMe]);
 
   const formatCategoryName = (producer: Producer) => {
     switch (getEffectiveProducerCategory(producer)) {

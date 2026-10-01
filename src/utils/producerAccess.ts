@@ -10,6 +10,8 @@ export function getProducerRoadAccessWarning(producer: Producer): string | undef
     return 'Current road access is uncertain. Confirm conditions with the producer before driving.';
   }
   if (producer.roadAccessStatus === 'not_publicly_confirmed') {
+    const sourceBackedNote = producer.roadAccessSourceUrl && producer.roadAccessNotes?.trim();
+    if (sourceBackedNote) return sourceBackedNote;
     return 'Road conditions were reviewed but are not publicly confirmed. Use the producer’s official directions and confirm access if needed.';
   }
   if (producer.roadAccessStatus !== 'verified' || !producer.roadAccess) {

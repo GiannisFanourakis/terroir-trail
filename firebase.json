@@ -30,6 +30,10 @@
         }
       },
       {
+        "source": "/trip/**",
+        "destination": "/trip/index.html"
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }
@@ -57,6 +61,19 @@
           {
             "key": "Content-Security-Policy-Report-Only",
             "value": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; script-src 'self' 'unsafe-inline' https://maps.googleapis.com https://maps.gstatic.com https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; connect-src 'self' https: wss:; frame-src 'self' https://js.stripe.com https://*.google.com; worker-src 'self' blob:; form-action 'self' https://*.stripe.com"
+          }
+        ]
+      },
+      {
+        "source": "/trip/**",
+        "headers": [
+          {
+            "key": "X-Robots-Tag",
+            "value": "noindex, nofollow"
+          },
+          {
+            "key": "Cache-Control",
+            "value": "no-cache, no-store, must-revalidate"
           }
         ]
       },

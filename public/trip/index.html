@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex,nofollow" />
+  <meta name="theme-color" content="#0C0A09" />
+  <title>Shared trip | TerroirTrail</title>
+  <meta name="description" content="A read-only trip shared from TerroirTrail." />
+  <meta property="og:title" content="A TerroirTrail trip" />
+  <meta property="og:description" content="Open this shared trip and discover its current local producer stops." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="/logo.png" />
+  <style>
+    :root { color-scheme: dark; --bg:#0c0a09; --card:#1c1917; --line:rgba(255,255,255,.10); --amber:#f59e0b; --muted:#a8a29e; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; background:var(--bg); color:#f5f5f4; }
+    a { color:inherit; }
+    .shell { max-width:900px; margin:0 auto; padding:0 18px 56px; }
+    .top { position:sticky; top:0; z-index:5; backdrop-filter:blur(12px); background:rgba(12,10,9,.92); border-bottom:1px solid var(--line); }
+    .top-inner { max-width:900px; margin:0 auto; padding:13px 18px; display:flex; align-items:center; justify-content:space-between; gap:14px; }
+    .brand { display:flex; align-items:center; gap:10px; text-decoration:none; }
+    .brand img { width:38px; height:38px; object-fit:contain; border-radius:11px; }
+    .brand strong { display:block; font-size:14px; }
+    .brand small { display:block; margin-top:1px; color:#78716c; font-size:10px; }
+    .cta { text-decoration:none; padding:9px 12px; border-radius:12px; background:rgba(245,158,11,.12); border:1px solid rgba(245,158,11,.28); color:#fcd34d; font-size:12px; font-weight:800; }
+    .hero { margin-top:28px; padding:24px; border-radius:24px; background:linear-gradient(145deg,rgba(245,158,11,.10),rgba(28,25,23,.75)); border:1px solid rgba(245,158,11,.20); }
+    .eyebrow { color:#fbbf24; font-size:10px; font-weight:900; letter-spacing:.16em; text-transform:uppercase; }
+    h1 { margin:8px 0 0; font-size:clamp(25px,5vw,38px); line-height:1.08; }
+    .meta { margin-top:13px; display:flex; flex-wrap:wrap; gap:9px; color:var(--muted); font-size:12px; }
+    .meta span { display:inline-flex; align-items:center; gap:5px; }
+    .intro { margin:16px 0 0; color:#a8a29e; font-size:12px; line-height:1.6; max-width:660px; }
+    .state { margin-top:26px; padding:36px 20px; text-align:center; border:1px solid var(--line); border-radius:22px; background:rgba(28,25,23,.55); color:var(--muted); }
+    .spinner { width:24px; height:24px; margin:0 auto 12px; border:3px solid #44403c; border-top-color:var(--amber); border-radius:50%; animation:spin .8s linear infinite; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    .days { margin-top:18px; display:grid; gap:14px; }
+    .day { border:1px solid var(--line); background:rgba(28,25,23,.58); border-radius:20px; padding:16px; }
+    .day-head { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:10px; }
+    .day-head h2 { margin:0; font-size:14px; }
+    .count { border:1px solid var(--line); background:#0c0a09; color:#78716c; border-radius:999px; padding:4px 8px; font-size:10px; }
+    .stops { display:grid; gap:8px; }
+    .stop { display:flex; align-items:center; gap:11px; min-height:58px; padding:10px 12px; border:1px solid var(--line); background:rgba(12,10,9,.72); border-radius:14px; text-decoration:none; transition:.16s ease; }
+    a.stop:hover { border-color:rgba(245,158,11,.35); transform:translateY(-1px); }
+    .num { flex:0 0 auto; width:29px; height:29px; display:grid; place-items:center; border-radius:50%; background:var(--amber); color:#1c1917; font-size:10px; font-weight:900; }
+    .unavailable .num { background:#292524; color:#78716c; }
+    .stop-copy { min-width:0; flex:1; }
+    .stop-name { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-size:12px; font-weight:800; }
+    .unavailable .stop-name { color:#78716c; }
+    .stop-meta { margin-top:3px; color:#78716c; font-size:10px; }
+    .arrow { color:#57534e; font-size:15px; }
+    .footer-card { margin-top:20px; padding:22px; text-align:center; border:1px solid rgba(245,158,11,.20); border-radius:22px; background:rgba(245,158,11,.06); }
+    .footer-card h2 { margin:0; font-size:17px; }
+    .footer-card p { max-width:500px; margin:7px auto 15px; color:var(--muted); font-size:12px; line-height:1.55; }
+    .primary { display:inline-block; text-decoration:none; border-radius:12px; background:var(--amber); color:#1c1917; padding:10px 15px; font-size:12px; font-weight:900; }
+    .fine { margin-top:18px; color:#57534e; text-align:center; font-size:10px; line-height:1.5; }
+    @media (max-width:560px) { .hero{padding:20px}.top-inner{padding:11px 14px}.shell{padding-left:14px;padding-right:14px}.cta{font-size:11px;padding:8px 10px} }
+  </style>
+</head>
+<body>
+  <header class="top">
+    <div class="top-inner">
+      <a class="brand" href="/">
+        <img src="/logo.png" alt="TerroirTrail" />
+        <span><strong>TerroirTrail</strong><small>Travel deeper. Taste local.</small></span>
+      </a>
+      <a class="cta" href="/explore/">Build your own trip</a>
+    </div>
+  </header>
+  <main class="shell">
+    <section id="loading" class="state"><div class="spinner"></div>Loading shared trip…</section>
+    <section id="error" class="state" hidden>
+      <strong style="color:#f5f5f4">Shared trip unavailable</strong>
+      <p id="error-copy" style="margin:8px 0 16px"></p>
+      <a class="primary" href="/explore/">Explore TerroirTrail</a>
+    </section>
+    <div id="content" hidden>
+      <section class="hero">
+        <div class="eyebrow">Shared TerroirTrail trip</div>
+        <h1 id="title"></h1>
+        <div class="meta"><span id="dates"></span><span>•</span><span id="stops"></span></div>
+        <p class="intro">A read-only plan shared by a TerroirTrail traveler. Stop details stay connected to the current public catalogue, so places that are no longer publicly listed are withheld.</p>
+      </section>
+      <section id="days" class="days"></section>
+      <section class="footer-card">
+        <h2>Plan your own route</h2>
+        <p>Discover local food, drink and craft producers, check current visitor information and organise your own trip.</p>
+        <a class="primary" href="/explore/">Explore the map</a>
+      </section>
+      <p class="fine">Shared trips are planning snapshots. Opening hours, visitability, booking requirements and access information can change. Check the live listing before travel.</p>
+    </div>
+  </main>
+  <script>
+    (() => {
+      const match = location.pathname.match(/^\/trip\/([A-Za-z0-9_-]{20,48})\/?$/);
+      const loading = document.getElementById('loading');
+      const error = document.getElementById('error');
+      const content = document.getElementById('content');
+      const fail = (message) => {
+        loading.hidden = true;
+        content.hidden = true;
+        error.hidden = false;
+        document.getElementById('error-copy').textContent = message;
+      };
+      if (!match) { fail('This trip link is invalid.'); return; }
+
+      const formatDates = (start, end) => {
+        if (!start) return 'Dates not set';
+        const fmt = (v, year) => new Intl.DateTimeFormat('en-GB', {
+          day:'numeric', month:'short', ...(year ? {year:'numeric'} : {}), timeZone:'UTC'
+        }).format(new Date(v + 'T00:00:00Z'));
+        if (!end) return 'From ' + fmt(start, true);
+        return fmt(start, false) + ' – ' + fmt(end, true);
+      };
+      const label = (value) => value ? String(value).replaceAll('_',' ').replace(/\b\w/g, c => c.toUpperCase()) : '';
+      const dayLabel = (day, start) => {
+        if (day == null) return 'Unassigned stops';
+        if (!start) return 'Day ' + day;
+        const d = new Date(start + 'T00:00:00Z');
+        d.setUTCDate(d.getUTCDate() + day - 1);
+        return 'Day ' + day + ' · ' + new Intl.DateTimeFormat('en-GB', {
+          weekday:'short', day:'numeric', month:'short', timeZone:'UTC'
+        }).format(d);
+      };
+      const make = (tag, cls, text) => {
+        const el = document.createElement(tag);
+        if (cls) el.className = cls;
+        if (text != null) el.textContent = text;
+        return el;
+      };
+      const render = (trip) => {
+        document.title = trip.title + ' | TerroirTrail';
+        document.getElementById('title').textContent = trip.title;
+        document.getElementById('dates').textContent = formatDates(trip.startDate, trip.endDate);
+        document.getElementById('stops').textContent = trip.itemCount + (trip.itemCount === 1 ? ' planned stop' : ' planned stops');
+
+        const grouped = new Map();
+        [...trip.items].sort((a,b) => a.position-b.position).forEach(item => {
+          const key = item.dayNumber == null ? 'u' : String(item.dayNumber);
+          if (!grouped.has(key)) grouped.set(key, []);
+          grouped.get(key).push(item);
+        });
+        const entries = [...grouped.entries()].sort(([a],[b]) => a === 'u' ? 1 : b === 'u' ? -1 : Number(a)-Number(b));
+        const days = document.getElementById('days');
+        days.replaceChildren();
+
+        entries.forEach(([key, items]) => {
+          const day = make('section','day');
+          const head = make('div','day-head');
+          const dayNum = key === 'u' ? null : Number(key);
+          head.append(make('h2','',dayLabel(dayNum, trip.startDate)));
+          head.append(make('span','count',items.length + (items.length === 1 ? ' stop' : ' stops')));
+          day.append(head);
+          const stops = make('div','stops');
+
+          items.forEach((item, idx) => {
+            const active = item.state === 'active' && item.producerId && item.producerName;
+            const row = make(active ? 'a' : 'div', 'stop' + (active ? '' : ' unavailable'));
+            if (active) row.href = '/?producer=' + encodeURIComponent(item.producerId);
+            row.append(make('span','num',String(idx + 1)));
+            const copy = make('div','stop-copy');
+            copy.append(make('div','stop-name',active ? item.producerName : 'Stop details currently unavailable'));
+            if (active) {
+              const parts = [label(item.category), label(item.destination)].filter(Boolean);
+              copy.append(make('div','stop-meta',parts.join(' · ')));
+            }
+            row.append(copy);
+            if (active) row.append(make('span','arrow','›'));
+            stops.append(row);
+          });
+          day.append(stops);
+          days.append(day);
+        });
+
+        loading.hidden = true;
+        error.hidden = true;
+        content.hidden = false;
+      };
+
+      fetch('/api/trip-shares/' + encodeURIComponent(match[1]), {
+        headers: { Accept:'application/json' }, cache:'no-store'
+      }).then(async res => {
+        const body = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(res.status === 404 ? 'This shared trip is no longer available.' : (body.error || 'Unable to load this shared trip.'));
+        render(body.trip);
+      }).catch(err => fail(err.message || 'Unable to load this shared trip.'));
+    })();
+  </script>
+</body>
+</html>

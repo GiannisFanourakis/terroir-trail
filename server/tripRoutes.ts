@@ -23,6 +23,12 @@ import {
   reorderTripItems,
   updateTrip,
 } from './services/tripService';
+import {
+  disableTripShare,
+  enableTripShare,
+  getPublicTripShare,
+  getTripShareState,
+} from './services/tripShareService';
 
 const defaults = {
   verifyToken: (token: string) => adminAuth().verifyIdToken(token, true),
@@ -40,6 +46,10 @@ const defaults = {
   createTripPack,
   createTripOptimizationProposal,
   applyTripOptimizationOrder,
+  getTripShareState,
+  enableTripShare,
+  disableTripShare,
+  getPublicTripShare,
 };
 
 type TripRouteDependencies = typeof defaults;
@@ -149,6 +159,39 @@ export function registerTripRoutes(
         res.locals.identity.uid,
         String(req.params.tripId)
       ),
+    }));
+  });
+
+  app.get('/api/trips/:tripId/share', requireAuth, async (req, res) => {
+    await run(res, async () => ({
+      share: await deps.getTripShareState(
+        res.locals.identity.uid,
+        String(req.params.tripId)
+      ),
+    }));
+  });
+
+  app.post('/api/trips/:tripId/share', requireAuth, async (req, res) => {
+    await run(res, async () => ({
+      share: await deps.enableTripShare(
+        res.locals.identity.uid,
+        String(req.params.tripId)
+      ),
+    }));
+  });
+
+  app.delete('/api/trips/:tripId/share', requireAuth, async (req, res) => {
+    await run(res, async () => ({
+      share: await deps.disableTripShare(
+        res.locals.identity.uid,
+        String(req.params.tripId)
+      ),
+    }));
+  });
+
+  app.get('/api/trip-shares/:shareId', async (req, res) => {
+    await run(res, async () => ({
+      trip: await deps.getPublicTripShare(String(req.params.shareId)),
     }));
   });
 

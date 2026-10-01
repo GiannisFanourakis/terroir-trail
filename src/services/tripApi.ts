@@ -28,6 +28,32 @@ export interface TripWithItems extends TripRecordV1 {
   items: TripItemRecordV1[];
 }
 
+export interface TripShareStateV1 {
+  enabled: boolean;
+  shareId: string | null;
+  sharedAt: string | null;
+}
+
+export interface PublicTripShareItemV1 {
+  producerId: string | null;
+  producerName?: string | null;
+  category?: string | null;
+  destination?: string | null;
+  position: number;
+  dayNumber: number | null;
+  state: 'active' | 'unavailable';
+}
+
+export interface PublicTripShareV1 {
+  shareId: string;
+  title: string;
+  startDate: string | null;
+  endDate: string | null;
+  itemCount: number;
+  updatedAt: string;
+  items: PublicTripShareItemV1[];
+}
+
 export interface OptimizationWarningV1 {
   code: string;
   message: string;
@@ -109,6 +135,22 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
   return body as T;
 }
 
+async function publicRequest<T>(path: string): Promise<T> {
+  const response = await fetch(resolveApiBaseUrl() + '/api' + path, {
+    cache: 'no-store',
+    headers: { Accept: 'application/json' },
+  });
+  const body = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    throw new TripApiError(
+      response.status,
+      typeof body?.code === 'string' ? body.code : null,
+      typeof body?.error === 'string' ? body.error : 'Shared trip request failed.'
+    );
+  }
+  return body as T;
+}
+
 export const listTrips = async (): Promise<TripRecordV1[]> =>
   (await request<{ trips: TripRecordV1[] }>('/trips')).trips;
 
@@ -116,6 +158,44 @@ export const getTrip = async (tripId: string): Promise<TripWithItems> =>
   (
     await request<{ trip: TripWithItems }>(
       '/trips/' + encodeURIComponent(tripId)
+    )
+  ).trip;
+
+export const getTripShareState = async (
+  tripId: string
+): Promise<TripShareStateV1> =>
+  (
+    await request<{ share: TripShareStateV1 }>(
+      '/trips/' + encodeURIComponent(tripId) + '/share'
+    )
+  ).share;
+
+export const enableTripShare = async (
+  tripId: string
+): Promise<TripShareStateV1> =>
+  (
+    await request<{ share: TripShareStateV1 }>(
+      '/trips/' + encodeURIComponent(tripId) + '/share',
+      { method: 'POST', body: '{}' }
+    )
+  ).share;
+
+export const disableTripShare = async (
+  tripId: string
+): Promise<TripShareStateV1> =>
+  (
+    await request<{ share: TripShareStateV1 }>(
+      '/trips/' + encodeURIComponent(tripId) + '/share',
+      { method: 'DELETE', body: '{}' }
+    )
+  ).share;
+
+export const getPublicTripShare = async (
+  shareId: string
+): Promise<PublicTripShareV1> =>
+  (
+    await publicRequest<{ trip: PublicTripShareV1 }>(
+      '/trip-shares/' + encodeURIComponent(shareId)
     )
   ).trip;
 

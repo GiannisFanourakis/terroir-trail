@@ -6,7 +6,7 @@ import type { Producer } from '../types/terroir';
  *
  * Runtime Supabase remains authoritative. This file is shared by runtime fallback
  * and SEO/AEO generation and is refreshed automatically; do not hand-edit it.
- * Latest active source row update: 2026-09-29T12:25:48.344925+00:00
+ * Latest active source row update: 2026-10-01T07:39:09.29602+00:00
  */
 export const LIVE_CATALOGUE_PRODUCERS = [
   {
@@ -3449,9 +3449,9 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     ],
     "coverImage": "",
     "gallery": [],
-    "tagLine": "A family Barolo estate farming high-elevation Langhe vineyards with an early commitment to organic methods",
-    "description": "G.D. Vajra is a family winery above Barolo in the hamlet of Vergne. The estate produces Barolo and a broad range of Langhe wines while farming high-elevation vineyards with a long-standing emphasis on soil health and careful vineyard work.",
-    "story": "Aldo Vaira began the modern estate in the 1970s and became an early advocate of organic farming in the Langhe. Today the family continues to work vineyards across Barolo and neighboring areas, with Nebbiolo at the centre of the cellar alongside Barbera, Dolcetto and other Piedmont varieties. Visits remain intentionally reservation-led and family-focused.",
+    "tagLine": "Family-owned Barolo estate rooted in Bricco delle Viole, combining high-elevation vineyards, organic farming and pioneering work with native Piedmont varieties",
+    "description": "G.D. Vajra is an independent, family-owned winery in Barolo. The Vajra family has farmed Bricco delle Viole, the highest cru in the Comune di Barolo, since the 17th century. Aldo Vajra took over the estate in 1968 and went on to obtain the region's first organic certification in 1971. High-elevation vineyards remain central to the estate's style, with a focus on finesse, complexity and careful vineyard work.",
+    "story": "Aldo Vajra took over his family estate in 1968 at the age of fifteen, beginning the modern chapter of G.D. Vajra. He later developed private massal selections of Nebbiolo and Dolcetto, helped revive Freisa in 1980 and pioneered the cultivation of Rhine Riesling in Piemonte in 1985. Today Aldo and Milena are joined by their children Giuseppe, Francesca and Isidoro and a young team, while the winery remains independent and entirely family-owned.",
     "indigenousVarieties": [
       "Nebbiolo",
       "Barbera",
@@ -6098,55 +6098,62 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "country": "Slovenia",
     "countryCode": "SI",
     "region": "Pomurska",
-    "village": "Stara Gora / Sveti Jurij ob Ščavnici",
-    "locality": "Stara Gora / Sveti Jurij ob Ščavnici",
+    "village": "Stara Gora 1, 9244 Sveti Jurij ob Ščavnici",
+    "locality": "Stara Gora 1, 9244 Sveti Jurij ob Ščavnici",
     "coordinates": [
       46.5557109,
       16.0324758
     ],
-    "coverImage": "",
-    "gallery": [],
-    "tagLine": "A third-generation Slovenian mill carrying more than ninety years of pumpkin-seed-oil tradition",
-    "description": "Oljarna Kocbek is a family oil mill in northeastern Slovenia specialising in pumpkin seed oil and pumpkin-based products. The historic mill combines traditional processing knowledge with guided culinary experiences built around the journey from seed to oil.",
-    "story": "The Kocbek family has maintained pumpkin-oil production at Stara Gora for more than ninety years, and the tradition is now in its third generation. The mill has turned that working heritage into an educational visitor experience in which guests follow pumpkins from field and seed preparation through milling, pressing and tasting.",
+    "coverImage": "/images/estates/oljarna-kocbek.jpg",
+    "gallery": [
+      "/images/estates/oljarna-kocbek.jpg"
+    ],
+    "tagLine": "Pumpkin seed oil craftsmanship in Prlekija since 1929",
+    "description": "A family oil mill in Prlekija, Slovenia, preserving pumpkin seed oil craftsmanship since 1929 and sharing it through personal hospitality and culinary experiences.",
+    "story": "Founded by Alojz Kocbek in 1929, Oljarna Kocbek is today led by the third generation of the family. In Stara Gora near Sveti Jurij ob Ščavnici, traditional craftsmanship remains at the heart of the mill. The family preserves knowledge passed down through generations, bringing together local ingredients, care for quality and a passion for pumpkin seed oil.\n\nGuided visits invite guests into this living family story. Through tours and tastings, visitors learn how pumpkins and seeds become oil, explore its flavours and discover its place in local cuisine. The production stages available to view depend on the selected programme and the work taking place that day.\n\nThe experience extends to Kocbek Homestead, where boutique accommodation offers a peaceful base for a longer stay and exploration of Prlekija.",
     "indigenousVarieties": [],
     "productSpecialties": [
-      "Pumpkin seed oil",
+      "Štajersko prekmursko bučno olje Slovenija (PGI)",
       "Cold-pressed pumpkin seed oil",
+      "Organic pumpkin seed oil",
       "Pumpkin seeds",
-      "Pumpkin-oil delicacies",
-      "Pumpkin-based gift products"
+      "Pumpkin pesto",
+      "Pumpkin seed snacks",
+      "Kocbek chocolates",
+      "Selected culinary gift sets"
     ],
     "tastingHighlights": [
-      "Guided oil-mill tour",
-      "Pumpkin-seed-oil tasting",
-      "Multisensory oil experience",
-      "Hands-on team experience"
+      "Naše Najboljše (Our Best) — guided oil mill visit and tasting with a personal tasting board featuring a selection of pumpkin seed oil products",
+      "Slovenia Unique Experiences 5* — a multisensory experience exploring pumpkin seed oil heritage, traditional craftsmanship and local culinary flavours",
+      "Group visits — guided presentations, oil mill tours and tastings organised by prior arrangement",
+      "Team building — a participatory programme combining traditional oil mill work and tasting, organised by prior arrangement"
     ],
-    "openingHours": "Guided mill experiences: Mon-Sat mornings by prior arrangement.",
+    "openingHours": "Guided tours, tastings and team-building programmes require advance booking. Morning group visits are offered Monday to Saturday by prior arrangement. For shop opening hours and product purchases, consult the official Kocbek website or contact the oil mill directly.",
     "phone": "+386 2 568 90 26",
     "website": "https://kocbek.si/en/",
     "googleMapsUrl": "https://www.google.com/maps/place/Oljarna+Kocbek+Gorazd+Kocbek+s.p./@46.5557109,16.0324758,17z/data=!3m1!4b1!4m6!3m5!1s0x476f41fe2fd6c72b:0xe5d098e81b68c18e!8m2!3d46.5557109!4d16.0324758!16s%2Fg%2F1vxvgp16?entry=ttu&g_ep=EgoyMDI2MDkxNS4wIKXMDSoASAFQAw%3D%3D",
     "googlePlaceId": "ChIJK8fWL_5Bb0cRjsFoG-iY0OU",
     "roadAccessStatus": "not_publicly_confirmed",
-    "roadAccessNotes": "Road surface, width, condition and rental-car suitability were not independently confirmed; no positive road classification is published.",
+    "roadAccessSourceUrl": "https://kocbek.si/en/about-us",
+    "roadAccessNotes": "Oljarna Kocbek is located in Stara Gora on the main road along the Gornja Radgona - Radenci - Kapela - Sveti Jurij ob Ščavnici - Ptuj route. Use the official address and map directions when planning your journey. Contact the oil mill for specific arrival and parking requirements.",
     "ethos": [],
     "locationStatus": "verified_location",
-    "locationSourceUrl": "https://www.google.com/maps/place/Oljarna+Kocbek+Gorazd+Kocbek+s.p./@46.5557109,16.0324758,17z/data=!3m1!4b1!4m6!3m5!1s0x476f41fe2fd6c72b:0xe5d098e81b68c18e!8m2!3d46.5557109!4d16.0324758!16s%2Fg%2F1vxvgp16?entry=ttu&g_ep=EgoyMDI2MDkxNS4wIKXMDSoASAFQAw%3D%3D",
-    "locationNotes": "Exact Google Maps producer point verified against the frozen 2026-09-18 expansion audit and current producer identity sources.",
+    "locationSourceUrl": "https://kocbek.si/en/about-us",
+    "locationNotes": "Producer-confirmed address: Stara Gora 1, 9244 Sveti Jurij ob Ščavnici, Slovenia.",
     "publicPointType": "production_site",
-    "visitStatus": "appointment_only",
+    "visitStatus": "public_visits",
     "visitSourceUrl": "https://kocbek.si/en/kocbek-oil-mill-tasting-dosivettes-and-tours",
-    "visitNotes": "Current first-party Kocbek experience page publishes guided oil-mill tours, tastings and culinary experiences and explicitly states that groups are accepted Monday-Saturday mornings by prior arrangement. Booking is required by phone or email. General business hours on the contact page are kept separate from the tour schedule.",
-    "visitBookingRequirement": "required",
-    "walkInStatus": "not_accepted",
+    "visitNotes": "Guided tours, tastings and team-building programmes require advance booking. Morning group visits are offered Monday to Saturday by prior arrangement. For shop opening hours and product purchases, consult the official Kocbek website or contact the oil mill directly.",
     "visitorHours": {
+      "shop": {
+        "hours": "confirm_with_producer_or_official_website"
+      },
       "guided_experiences": {
         "booking": "required",
         "monday_saturday": "morning"
       }
     },
-    "visitabilityReviewedAt": "2026-09-20T03:40:20.298222+00:00"
+    "visitabilityReviewedAt": "2026-10-01T07:39:09.29602+00:00"
   },
   {
     "id": "parasiris-olive-mill",
