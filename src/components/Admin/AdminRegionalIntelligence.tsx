@@ -4,8 +4,9 @@ import {
   type AdminRegionalIntelligence as RegionalReport,
 } from '../../services/adminApi';
 import {
-  buildRegionalEvidenceMarkdown,
-  downloadEvidenceMarkdown,
+  downloadRegionalEvidenceCsv,
+  downloadRegionalEvidenceExcel,
+  printRegionalEvidencePdf,
 } from '../../utils/adminEvidenceExport';
 
 const WINDOWS = [7, 30, 90, 180] as const;
@@ -51,12 +52,18 @@ export const AdminRegionalIntelligence: React.FC = () => {
 
   useEffect(() => { void load(); }, [load]);
 
-  const exportEvidence = useCallback(() => {
+  const exportPdf = useCallback(() => {
+    if (report) printRegionalEvidencePdf(report);
+  }, [report]);
+
+  const exportCsv = useCallback(() => {
     if (!report) return;
-    downloadEvidenceMarkdown(
-      `terroirtrail-regional-evidence-${report.end_date}-${days}d.md`,
-      buildRegionalEvidenceMarkdown(report)
-    );
+    downloadRegionalEvidenceCsv(`terroirtrail-regional-evidence-${report.end_date}-${days}d.csv`, report);
+  }, [days, report]);
+
+  const exportExcel = useCallback(() => {
+    if (!report) return;
+    downloadRegionalEvidenceExcel(`terroirtrail-regional-evidence-${report.end_date}-${days}d.xls`, report);
   }, [days, report]);
 
   useEffect(() => {
@@ -100,13 +107,18 @@ export const AdminRegionalIntelligence: React.FC = () => {
               {window}d
             </button>
           ))}
-          <button
-            type="button"
-            onClick={exportEvidence}
-            disabled={!report}
-            className="px-2 py-1.5 rounded-lg border border-violet-400/25 bg-violet-400/5 text-[10px] font-bold text-violet-200 disabled:opacity-40"
-          >
-            Export evidence
+          <button type="button" onClick={exportPdf} disabled={!report}
+            title="Open the browser print dialog and choose Save as PDF"
+            className="px-2 py-1.5 rounded-lg border border-violet-400/25 bg-violet-400/5 text-[10px] font-bold text-violet-200 disabled:opacity-40">
+            PDF
+          </button>
+          <button type="button" onClick={exportCsv} disabled={!report}
+            className="px-2 py-1.5 rounded-lg border border-violet-400/25 bg-violet-400/5 text-[10px] font-bold text-violet-200 disabled:opacity-40">
+            CSV
+          </button>
+          <button type="button" onClick={exportExcel} disabled={!report}
+            className="px-2 py-1.5 rounded-lg border border-violet-400/25 bg-violet-400/5 text-[10px] font-bold text-violet-200 disabled:opacity-40">
+            Excel
           </button>
           <button
             type="button"

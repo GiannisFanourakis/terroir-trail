@@ -1,53 +1,34 @@
+import fs from 'node:fs';
+import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import {
-  buildIntentEvidenceMarkdown,
-  buildRegionalEvidenceMarkdown,
+  downloadIntentEvidenceCsv,
+  downloadRegionalEvidenceCsv,
+  downloadIntentEvidenceExcel,
+  downloadRegionalEvidenceExcel,
+  printIntentEvidencePdf,
+  printRegionalEvidencePdf,
 } from './adminEvidenceExport';
-import type {
-  AdminIntentMetrics,
-  AdminRegionalIntelligence,
-} from '../services/adminApi';
 
 describe('admin evidence export', () => {
-  it('creates an auditable intent snapshot without turning intent into bookings', () => {
-    const metrics = {
-      generated_at: '2026-10-03T08:00:00Z',
-      start_date: '2026-09-03',
-      end_date: '2026-10-03',
-      aggregate_data_through: '2026-10-02',
-      comparison_policy: {
-        minimum_active_producers: 3,
-        minimum_producer_views: 20,
-        previous_window_days: 30,
-      },
-      totals: {
-        producer_views: 12, saves: 2, trip_additions: 1,
-        website_clicks: 3, phone_clicks: 1, email_clicks: 0,
-        direct_producer_actions: 4, directions_clicks: 2,
-        passport_stamps_added: 1, affiliate_impressions: 0, affiliate_clicks: 0,
-      },
-      producers: [], regions: [], categories: [], affiliates: [],
-    } satisfies AdminIntentMetrics;
-
-    const markdown = buildIntentEvidenceMarkdown(metrics);
-    expect(markdown).toContain('Producer views | 12');
-    expect(markdown).toContain('not bookings, visits or purchases');
+  it('exposes the three human-readable formats for both evidence reports', () => {
+    expect(downloadIntentEvidenceCsv).toBeTypeOf('function');
+    expect(downloadRegionalEvidenceCsv).toBeTypeOf('function');
+    expect(downloadIntentEvidenceExcel).toBeTypeOf('function');
+    expect(downloadRegionalEvidenceExcel).toBeTypeOf('function');
+    expect(printIntentEvidencePdf).toBeTypeOf('function');
+    expect(printRegionalEvidencePdf).toBeTypeOf('function');
   });
-  it('creates a regional readiness snapshot with the non-exhaustive coverage warning', () => {
-    const report = {
-      generated_at: '2026-10-03T08:00:00Z',
-      start_date: '2026-09-03',
-      end_date: '2026-10-03',
-      aggregate_data_through: '2026-10-02',
-      freshness_days: 180,
-      demand_minimum_views: 20,
-      affiliate_minimum_impressions: 50,
-      coverage_note: 'Curated and non-exhaustive coverage.',
-      regions: [],
-    } satisfies AdminRegionalIntelligence;
 
-    const markdown = buildRegionalEvidenceMarkdown(report);
-    expect(markdown).toContain('Curated and non-exhaustive coverage.');
-    expect(markdown).toContain('Curated, non-exhaustive coverage.');
+  it('ships the on-demand export module with readable report sections and caveats', () => {
+    const source = fs.readFileSync(
+      path.resolve(process.cwd(), 'public', 'admin-evidence-export.js'),
+      'utf8'
+    );
+    expect(source).toContain('Producer intent');
+    expect(source).toContain('Regional readiness');
+    expect(source).toContain('Traveler demand');
+    expect(source).toContain('not bookings, visits or purchases');
+    expect(source).toContain('Curated, non-exhaustive coverage');
   });
 });
