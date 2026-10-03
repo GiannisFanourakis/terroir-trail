@@ -219,9 +219,10 @@ export const AdminIntentBaseline: React.FC = () => {
               </div>
             )}
 
-            <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-7 gap-2">
+            <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-8 gap-2">
               {[
                 ['Views', totals?.producer_views || 0],
+                ['Unique sessions', totals?.unique_view_sessions || 0],
                 ['Saves', totals?.saves || 0],
                 ['Trip adds', totals?.trip_additions || 0],
                 ['Website', totals?.website_clicks || 0],
@@ -277,14 +278,31 @@ export const AdminIntentBaseline: React.FC = () => {
                       </div>
                     )}
 
-                    <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-7 gap-2">
+                    <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-8 gap-2">
                       <InsightMetric labelText="Profile views" value={selectedProducer.producer_views} previous={selectedProducer.previous.producer_views} days={metrics.comparison_policy.previous_window_days} />
+                      <InsightMetric labelText="Unique sessions" value={selectedProducer.unique_view_sessions} previous={selectedProducer.previous.unique_view_sessions} days={metrics.comparison_policy.previous_window_days} />
                       <InsightMetric labelText="Saves" value={selectedProducer.saves} previous={selectedProducer.previous.saves} days={metrics.comparison_policy.previous_window_days} />
                       <InsightMetric labelText="Trip adds" value={selectedProducer.trip_additions} previous={selectedProducer.previous.trip_additions} days={metrics.comparison_policy.previous_window_days} />
                       <InsightMetric labelText="Website clicks" value={selectedProducer.website_clicks} previous={selectedProducer.previous.website_clicks} days={metrics.comparison_policy.previous_window_days} />
                       <InsightMetric labelText="Phone actions" value={selectedProducer.phone_clicks} previous={selectedProducer.previous.phone_clicks} days={metrics.comparison_policy.previous_window_days} />
                       <InsightMetric labelText="Email actions" value={selectedProducer.email_clicks} previous={selectedProducer.previous.email_clicks} days={metrics.comparison_policy.previous_window_days} />
                       <InsightMetric labelText="Directions" value={selectedProducer.directions_clicks} previous={selectedProducer.previous.directions_clicks} days={metrics.comparison_policy.previous_window_days} />
+                    </div>
+
+                    <div className="rounded-lg border border-white/5 bg-stone-950/45 p-3">
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
+                        <div className="text-[10px] font-bold uppercase tracking-[0.12em] text-stone-300">First-touch acquisition</div>
+                        <div className="text-[9px] text-stone-500">
+                          {format(selectedProducer.attributed_view_sessions)}/{format(selectedProducer.unique_view_sessions)} attributed · from {metrics.acquisition_coverage_start || '—'}
+                        </div>
+                      </div>
+                      <div className="mt-2 flex flex-wrap gap-1.5">
+                        {selectedProducer.acquisition.map((row) => (
+                          <span key={`${row.source}-${row.channel}`} className="rounded-md border border-white/10 bg-stone-950 px-2 py-1 text-[9px] text-stone-300">
+                            {label(row.source)} · {label(row.channel)} · {format(row.sessions)}
+                          </span>
+                        ))}
+                      </div>
                     </div>
 
                     <div className="grid md:grid-cols-2 gap-2">
@@ -308,9 +326,6 @@ export const AdminIntentBaseline: React.FC = () => {
                       )}
                     </div>
 
-                    <div className="rounded-lg border border-white/5 bg-stone-950/45 px-3 py-2 text-[9px] leading-relaxed text-stone-500">
-                      Definitions: profile views are producer-detail views; saves are successful save actions; trip adds are successful additions to My Trips; website, phone, email and directions are outbound intent actions. These signals do not establish that a booking, visit or purchase occurred. Producer payment or partnership status does not affect these metrics or producer ordering.
-                    </div>
                   </>
                 )}
               </div>

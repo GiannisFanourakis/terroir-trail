@@ -47,6 +47,7 @@ export interface AdminIntentBaseline {
   start_date: string;
   end_date: string;
   aggregate_data_through: string | null;
+  acquisition_coverage_start: string | null;
   reliability: AdminAnalyticsReliability;
   reporting_policy: {
     basis: 'completed_utc_days';
@@ -62,6 +63,9 @@ export interface AdminIntentBaseline {
   };
   totals: {
     producer_views: number;
+    unique_view_sessions: number;
+    attributed_view_sessions: number;
+    unattributed_view_sessions: number;
     saves: number;
     trip_additions: number;
     website_clicks: number;
@@ -80,6 +84,14 @@ export interface AdminIntentBaseline {
     country_code: string | null;
     category: string;
     producer_views: number;
+    unique_view_sessions: number;
+    attributed_view_sessions: number;
+    unattributed_view_sessions: number;
+    acquisition: Array<{
+      source: string;
+      channel: string;
+      sessions: number;
+    }>;
     saves: number;
     trip_additions: number;
     website_clicks: number;
@@ -90,6 +102,7 @@ export interface AdminIntentBaseline {
     passport_stamps_added: number;
     previous: {
       producer_views: number;
+      unique_view_sessions: number;
       saves: number;
       trip_additions: number;
       website_clicks: number;
@@ -164,7 +177,7 @@ export async function getAdminIntentMetrics(
     p_end_date: isoDate(end),
   };
   const [baselineResult, reliabilityResult] = await Promise.all([
-    supabase.rpc('get_intent_baseline_v1', range),
+    supabase.rpc('get_intent_baseline_v2', range),
     supabase.rpc('get_analytics_reliability_v1', range),
   ]);
 

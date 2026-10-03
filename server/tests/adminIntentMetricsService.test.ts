@@ -55,6 +55,7 @@ test('admin intent metrics use the aggregate reporting RPC with the selected win
           start_date: '2026-08-22',
           end_date: '2026-09-20',
           aggregate_data_through: '2026-09-20',
+          acquisition_coverage_start: '2026-09-18',
           comparison_policy: {
             minimum_active_producers: 5,
             minimum_producer_views: 100,
@@ -62,6 +63,9 @@ test('admin intent metrics use the aggregate reporting RPC with the selected win
           },
           totals: {
             producer_views: 12,
+            unique_view_sessions: 9,
+            attributed_view_sessions: 6,
+            unattributed_view_sessions: 3,
             saves: 2,
             trip_additions: 0,
             website_clicks: 1,
@@ -80,6 +84,13 @@ test('admin intent metrics use the aggregate reporting RPC with the selected win
             country_code: 'GR',
             category: 'winery',
             producer_views: 12,
+            unique_view_sessions: 9,
+            attributed_view_sessions: 6,
+            unattributed_view_sessions: 3,
+            acquisition: [
+              { source: 'google', channel: 'search', sessions: 4 },
+              { source: 'instagram', channel: 'social', sessions: 2 },
+            ],
             saves: 2,
             trip_additions: 0,
             website_clicks: 1,
@@ -90,6 +101,7 @@ test('admin intent metrics use the aggregate reporting RPC with the selected win
             passport_stamps_added: 1,
             previous: {
               producer_views: 5,
+              unique_view_sessions: 4,
               saves: 1,
               trip_additions: 0,
               website_clicks: 0,
@@ -116,8 +128,14 @@ test('admin intent metrics use the aggregate reporting RPC with the selected win
   );
 
   assert.equal(result.totals.producer_views, 12);
+  assert.equal(result.totals.unique_view_sessions, 9);
   assert.equal(result.totals.website_clicks, 1);
   assert.equal(result.producers[0].previous.producer_views, 5);
+  assert.equal(result.producers[0].previous.unique_view_sessions, 4);
+  assert.deepEqual(result.producers[0].acquisition, [
+    { source: 'google', channel: 'search', sessions: 4 },
+    { source: 'instagram', channel: 'social', sessions: 2 },
+  ]);
   assert.equal(result.comparison_policy.minimum_producer_views, 100);
   assert.deepEqual(result.reporting_policy, {
     basis: 'completed_utc_days',
@@ -130,7 +148,7 @@ test('admin intent metrics use the aggregate reporting RPC with the selected win
   assert.equal(result.reliability.aggregates_match, true);
   assert.deepEqual(calls, [
     {
-      name: 'get_intent_baseline_v1',
+      name: 'get_intent_baseline_v2',
       args: {
         p_start_date: '2026-08-22',
         p_end_date: '2026-09-20',

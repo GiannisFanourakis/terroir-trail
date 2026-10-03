@@ -136,6 +136,7 @@ export interface AdminIntentMetrics {
   start_date: string;
   end_date: string;
   aggregate_data_through: string | null;
+  acquisition_coverage_start: string | null;
   reliability: AdminAnalyticsReliability;
   reporting_policy: {
     basis: 'completed_utc_days';
@@ -151,6 +152,9 @@ export interface AdminIntentMetrics {
   };
   totals: {
     producer_views: number;
+    unique_view_sessions: number;
+    attributed_view_sessions: number;
+    unattributed_view_sessions: number;
     saves: number;
     trip_additions: number;
     website_clicks: number;
@@ -169,6 +173,14 @@ export interface AdminIntentMetrics {
     country_code: string | null;
     category: string;
     producer_views: number;
+    unique_view_sessions: number;
+    attributed_view_sessions: number;
+    unattributed_view_sessions: number;
+    acquisition: Array<{
+      source: string;
+      channel: string;
+      sessions: number;
+    }>;
     saves: number;
     trip_additions: number;
     website_clicks: number;
@@ -179,6 +191,7 @@ export interface AdminIntentMetrics {
     passport_stamps_added: number;
     previous: {
       producer_views: number;
+      unique_view_sessions: number;
       saves: number;
       trip_additions: number;
       website_clicks: number;
