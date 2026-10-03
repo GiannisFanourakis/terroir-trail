@@ -1,5 +1,10 @@
 import { Producer } from '../types/terroir';
 
+export function getProducerRoadAccessSourceUrl(producer: Producer): string | undefined {
+  return producer.roadAccessSourceUrl ||
+    (producer.roadAccessStatus === 'verified' ? producer.googleMapsUrl : undefined);
+}
+
 /**
  * Individual producer links remain location links, not a road-safety promise.
  * This helper is used to decide whether an explicit road-access warning should
@@ -10,7 +15,7 @@ export function getProducerRoadAccessWarning(producer: Producer): string | undef
     return 'Current road access is uncertain. Confirm conditions with the producer before driving.';
   }
   if (producer.roadAccessStatus === 'not_publicly_confirmed') {
-    const sourceBackedNote = producer.roadAccessSourceUrl && producer.roadAccessNotes?.trim();
+    const sourceBackedNote = getProducerRoadAccessSourceUrl(producer) && producer.roadAccessNotes?.trim();
     if (sourceBackedNote) return sourceBackedNote;
     return 'Road conditions were reviewed but are not publicly confirmed. Use the producer’s official directions and confirm access if needed.';
   }

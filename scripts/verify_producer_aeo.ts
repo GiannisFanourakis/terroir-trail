@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import type { Producer } from '../src/types/terroir';
 import { LIVE_CATALOGUE_METRICS, SEO_PRODUCERS } from './seoCatalogue';
+import { getProducerRoadAccessSourceUrl } from '../src/utils/producerAccess';
 
 const CANONICAL_HOST = 'https://terroir-trail.web.app';
 const distDir = path.resolve(process.cwd(), 'dist');
@@ -75,7 +76,7 @@ function verifyProducerAeo(): void {
     }
 
     const hasPublishedSource = Boolean(
-      producer.website || producer.visitSourceUrl || producer.locationSourceUrl || producer.roadAccessSourceUrl
+      producer.website || producer.visitSourceUrl || producer.locationSourceUrl || getProducerRoadAccessSourceUrl(producer)
     );
     if (hasPublishedSource) {
       requireIncludes(html, 'data-aeo="evidence"', producer);

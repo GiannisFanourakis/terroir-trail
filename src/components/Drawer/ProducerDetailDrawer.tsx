@@ -12,7 +12,10 @@ import {
 import { useProducerPhotos } from '../../services/googlePlacesPhotos';
 import { getCategoryFallbackImage } from '../../utils/imageFallbacks';
 import { getEffectiveProducerCategory } from '../../utils/producerCategory';
-import { getProducerRoadAccessWarning } from '../../utils/producerAccess';
+import {
+  getProducerRoadAccessSourceUrl,
+  getProducerRoadAccessWarning,
+} from '../../utils/producerAccess';
 import { getProducerDisplaySpecialties } from '../../utils/producerSpecialties';
 import { resolveProducerCover, resolveProducerGallery } from '../../utils/producerMediaResolver';
 import { GooglePlaceMedia } from '../GooglePlaces/GooglePlaceMedia';
@@ -231,7 +234,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
     return {
       ...labels[p.roadAccess],
       desc: p.roadAccessNotes,
-      sourceUrl: p.roadAccessSourceUrl,
+      sourceUrl: getProducerRoadAccessSourceUrl(p),
     };
   };
 

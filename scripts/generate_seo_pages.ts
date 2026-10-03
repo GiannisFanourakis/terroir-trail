@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import type { Producer } from '../src/types/terroir';
 import { DESTINATION_GEOGRAPHY } from '../src/config/geography';
+import { getProducerRoadAccessSourceUrl } from '../src/utils/producerAccess';
 import { LIVE_CATALOGUE_METRICS, SEO_PRODUCERS } from './seoCatalogue';
 
 const CANONICAL_HOST = 'https://terroir-trail.web.app';
@@ -256,7 +257,7 @@ const renderProducerPage = (producer: Producer): string => {
     renderSourceLink('Official producer website', producer.website),
     renderSourceLink('Visiting source', producer.visitSourceUrl),
     renderSourceLink('Location source', producer.locationSourceUrl),
-    renderSourceLink('Road-access source', producer.roadAccessSourceUrl),
+    renderSourceLink('Road-access source', getProducerRoadAccessSourceUrl(producer)),
   ].filter(Boolean).join('\n            ');
   const publishedProducts = producer.productSpecialties?.length
     ? producer.productSpecialties

@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import { SEO_PRODUCERS } from './seoCatalogue';
 import { getDestinationCountry } from '../src/config/geography';
+import { getProducerRoadAccessSourceUrl } from '../src/utils/producerAccess';
 
 type AuditLevel = 'error' | 'warning';
 type Finding = { level: AuditLevel; producerId?: string; message: string };
@@ -54,7 +55,7 @@ for (const producer of SEO_PRODUCERS) {
     ['googleMapsUrl', producer.googleMapsUrl],
     ['locationSourceUrl', producer.locationSourceUrl],
     ['visitSourceUrl', producer.visitSourceUrl],
-    ['roadAccessSourceUrl', producer.roadAccessSourceUrl],
+    ['roadAccessSourceUrl', getProducerRoadAccessSourceUrl(producer)],
     ['photoCredit.url', producer.photoCredit?.url],
   ] as const) {
     if (!isHttpUrl(value)) {
@@ -86,7 +87,7 @@ for (const producer of SEO_PRODUCERS) {
 
   if (
     producer.roadAccessStatus === 'verified' &&
-    (!producer.roadAccess || !producer.roadAccessSourceUrl)
+    (!producer.roadAccess || !getProducerRoadAccessSourceUrl(producer))
   ) {
     warn(
       'Verified road access should include both a classification and a source URL.',

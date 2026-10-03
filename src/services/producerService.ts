@@ -97,7 +97,10 @@ export function mapRowToProducer(row: any): Producer {
     googlePlaceId,
     roadAccess: verifiedRoadAccess,
     roadAccessStatus: row.road_access_status || 'unreviewed',
-    roadAccessSourceUrl: row.road_access_source_url || undefined,
+    roadAccessSourceUrl:
+      row.road_access_source_url && row.road_access_source_url !== googleMapsUrl
+        ? row.road_access_source_url
+        : undefined,
     roadAccessNotes: row.road_access_notes || undefined,
     ethos: Array.isArray(row.ethos) ? (row.ethos as Ethos[]) : [],
     foodOption: row.food_option ? (row.food_option as FoodOption) : undefined,
