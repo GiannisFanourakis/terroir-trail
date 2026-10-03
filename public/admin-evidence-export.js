@@ -27,6 +27,13 @@ const csv = (rows) => '\uFEFF' + rows
 const section = (title, headers, rows) => ({ title, headers, rows });
 
 const intentSections = (m) => [
+  section('Analytics reliability', ['Check', 'Result'], [
+    ['Status', m.reliability?.status === 'healthy' ? 'Healthy' : 'Needs attention'],
+    ['Raw events checked', m.reliability?.raw_event_count ?? '—'],
+    ['Aggregate reconciliation', m.reliability?.aggregates_match ? 'All checks match' : 'Mismatch detected'],
+    ['Integrity validation', m.reliability?.integrity_clean ? 'No integrity issues' : 'Integrity issue detected'],
+    ['Audit window', m.reliability ? `${m.reliability.start_date} to ${m.reliability.end_date}` : '—'],
+  ]),
   section('Summary', ['Metric', 'Count'], [
     ['Producer views', m.totals.producer_views],
     ['Saves', m.totals.saves],
@@ -54,6 +61,13 @@ const intentSections = (m) => [
 ];
 
 const regionalSections = (r) => [
+  section('Analytics reliability', ['Check', 'Result'], [
+    ['Status', r.reliability?.status === 'healthy' ? 'Healthy' : 'Needs attention'],
+    ['Raw events checked', r.reliability?.raw_event_count ?? '—'],
+    ['Aggregate reconciliation', r.reliability?.aggregates_match ? 'All checks match' : 'Mismatch detected'],
+    ['Integrity validation', r.reliability?.integrity_clean ? 'No integrity issues' : 'Integrity issue detected'],
+    ['Audit window', r.reliability ? `${r.reliability.start_date} to ${r.reliability.end_date}` : '—'],
+  ]),
   section('Regional readiness',
     ['Destination', 'Producers', 'Categories', 'Location verified', 'Booking policy',
       'Visitor hours', 'Road reviewed', 'Fresh review', 'Direct contact'],
@@ -135,6 +149,7 @@ export const downloadIntentEvidenceCsv = (filename, m) => download(
     ['Completed UTC window', `${m.start_date} to ${m.end_date}`],
     ['Aggregate watermark', m.aggregate_data_through],
     ['Reporting basis', 'Completed UTC days only; the current UTC day is excluded so evidence snapshots remain stable.'],
+    ['Analytics reliability', m.reliability?.status === 'healthy' ? 'Healthy — raw events reconcile with reporting aggregates and integrity checks are clean.' : 'Needs attention — do not use this window as proposal evidence until resolved.'],
     ['Important', 'First-party intent signals are not bookings, visits or purchases.'],
   ], intentSections(m)),
   'text/csv;charset=utf-8'
@@ -147,6 +162,7 @@ export const downloadRegionalEvidenceCsv = (filename, r) => download(
     ['Completed UTC demand window', `${r.start_date} to ${r.end_date}`],
     ['Aggregate watermark', r.aggregate_data_through],
     ['Reporting basis', 'Completed UTC days only; the current UTC day is excluded so evidence snapshots remain stable.'],
+    ['Analytics reliability', r.reliability?.status === 'healthy' ? 'Healthy — raw events reconcile with reporting aggregates and integrity checks are clean.' : 'Needs attention — do not use this demand window as proposal evidence until resolved.'],
     ['Coverage note', r.coverage_note],
     ['Important', 'Curated, non-exhaustive coverage. Intent signals are not bookings, visits or purchases.'],
   ], regionalSections(r)),

@@ -137,6 +137,7 @@ export const AdminIntentBaseline: React.FC = () => {
   const affiliateCtr = totals?.affiliate_impressions
     ? ((totals.affiliate_clicks / totals.affiliate_impressions) * 100).toFixed(2)
     : '—';
+  const reliabilityMatchCount = metrics?.reliability.checks.filter((check) => check.matches).length || 0;
 
   const regionContext = selectedProducer
     ? metrics?.regions.find((row) => row.destination === selectedProducer.destination) ?? null
@@ -202,11 +203,15 @@ export const AdminIntentBaseline: React.FC = () => {
               Reporting basis: {days} completed UTC days. The current UTC day is excluded so a saved evidence snapshot does not drift as hourly aggregates refresh.
             </div>
 
-            {!metrics.reporting_policy.aggregate_watermark_current && (
-              <div className="rounded-lg border border-amber-500/25 bg-amber-500/10 px-3 py-2 text-[10px] text-amber-100">
-                Aggregate watermark is {metrics.aggregate_data_through || 'not available'}; expected through {metrics.reporting_policy.expected_data_through}. Treat this window as potentially incomplete until aggregation catches up.
-              </div>
-            )}
+            <div className={`rounded-lg border px-3 py-2 text-[10px] ${
+              metrics.reliability.status === 'healthy'
+                ? 'border-emerald-500/25 bg-emerald-500/10 text-emerald-100'
+                : 'border-rose-500/30 bg-rose-500/10 text-rose-100'
+            }`}>
+              <strong>Analytics reliability: {metrics.reliability.status === 'healthy' ? 'Healthy' : 'Needs attention'}</strong>
+              {' · '}{metrics.reliability.raw_event_count} raw events · {reliabilityMatchCount}/{metrics.reliability.checks.length} aggregate checks · {metrics.reliability.integrity_clean ? 'integrity clean' : 'integrity issue'}.
+              {metrics.reliability.status !== 'healthy' && ' Do not use this window as proposal evidence until resolved.'}
+            </div>
 
             {(totals?.producer_views || 0) < metrics.comparison_policy.minimum_producer_views && (
               <div className="rounded-lg border border-amber-500/25 bg-amber-500/10 px-3 py-2 text-[11px] text-amber-100">

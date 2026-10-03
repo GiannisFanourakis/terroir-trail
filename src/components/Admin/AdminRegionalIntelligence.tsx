@@ -144,12 +144,6 @@ export const AdminRegionalIntelligence: React.FC = () => {
               Demand reporting uses {days} completed UTC days. The current UTC day is excluded so evidence snapshots stay stable while hourly aggregates refresh.
             </div>
 
-            {!report.reporting_policy.aggregate_watermark_current && (
-              <div className="rounded-lg border border-amber-500/25 bg-amber-500/10 px-3 py-2 text-[10px] text-amber-100">
-                Aggregate watermark is {report.aggregate_data_through || 'not available'}; expected through {report.reporting_policy.expected_data_through}. Treat current demand counts as potentially incomplete until aggregation catches up.
-              </div>
-            )}
-
             {report.regions.length > 0 ? (
               <>
                 <label className="block text-[10px] text-stone-400 max-w-sm">

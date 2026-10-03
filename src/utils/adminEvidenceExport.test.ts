@@ -25,6 +25,7 @@ describe('admin evidence export', () => {
       path.resolve(process.cwd(), 'public', 'admin-evidence-export.js'),
       'utf8'
     );
+    expect(source).toContain('Analytics reliability');
     expect(source).toContain('Producer intent');
     expect(source).toContain('Regional readiness');
     expect(source).toContain('Traveler demand');

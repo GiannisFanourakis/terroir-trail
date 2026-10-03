@@ -105,11 +105,38 @@ export interface ActiveProducerOwnership {
   assignedAt?: string;
 }
 
+export interface AdminAnalyticsReliability {
+  checked_at: string;
+  start_date: string;
+  end_date: string;
+  status: 'healthy' | 'attention';
+  closed_day_reporting: boolean;
+  raw_event_count: number;
+  aggregates_match: boolean;
+  integrity_clean: boolean;
+  checks: Array<{
+    metric: string;
+    raw: number;
+    aggregate: number;
+    matches: boolean;
+  }>;
+  integrity: {
+    duplicate_client_event_ids: number;
+    missing_session_key: number;
+    authenticated_missing_actor_key: number;
+    anonymous_with_actor_key: number;
+    producer_event_missing_dimensions: number;
+    unexpected_event_name: number;
+  };
+  note: string;
+}
+
 export interface AdminIntentMetrics {
   generated_at: string;
   start_date: string;
   end_date: string;
   aggregate_data_through: string | null;
+  reliability: AdminAnalyticsReliability;
   reporting_policy: {
     basis: 'completed_utc_days';
     timezone: 'UTC';
@@ -198,6 +225,7 @@ export interface AdminRegionalIntelligence {
   start_date: string;
   end_date: string;
   aggregate_data_through: string | null;
+  reliability: AdminAnalyticsReliability;
   reporting_policy: AdminIntentMetrics['reporting_policy'];
   freshness_days: number;
   demand_minimum_views: number;

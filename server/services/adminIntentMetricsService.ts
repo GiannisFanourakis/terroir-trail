@@ -16,11 +16,38 @@ export class AdminIntentMetricsError extends Error {
   }
 }
 
+export interface AdminAnalyticsReliability {
+  checked_at: string;
+  start_date: string;
+  end_date: string;
+  status: 'healthy' | 'attention';
+  closed_day_reporting: boolean;
+  raw_event_count: number;
+  aggregates_match: boolean;
+  integrity_clean: boolean;
+  checks: Array<{
+    metric: string;
+    raw: number;
+    aggregate: number;
+    matches: boolean;
+  }>;
+  integrity: {
+    duplicate_client_event_ids: number;
+    missing_session_key: number;
+    authenticated_missing_actor_key: number;
+    anonymous_with_actor_key: number;
+    producer_event_missing_dimensions: number;
+    unexpected_event_name: number;
+  };
+  note: string;
+}
+
 export interface AdminIntentBaseline {
   generated_at: string;
   start_date: string;
   end_date: string;
   aggregate_data_through: string | null;
+  reliability: AdminAnalyticsReliability;
   reporting_policy: {
     basis: 'completed_utc_days';
     timezone: 'UTC';
@@ -132,22 +159,34 @@ export async function getAdminIntentMetrics(
   const start = new Date(end);
   start.setUTCDate(start.getUTCDate() - (days - 1));
 
-  const { data, error } = await supabase.rpc('get_intent_baseline_v1', {
+  const range = {
     p_start_date: isoDate(start),
     p_end_date: isoDate(end),
-  });
+  };
+  const [baselineResult, reliabilityResult] = await Promise.all([
+    supabase.rpc('get_intent_baseline_v1', range),
+    supabase.rpc('get_analytics_reliability_v1', range),
+  ]);
 
-  if (error || !data || typeof data !== 'object' || Array.isArray(data)) {
+  const data = baselineResult.data;
+  const reliability = reliabilityResult.data;
+  if (
+    baselineResult.error || reliabilityResult.error ||
+    !data || typeof data !== 'object' || Array.isArray(data) ||
+    !reliability || typeof reliability !== 'object' || Array.isArray(reliability)
+  ) {
     throw new AdminIntentMetricsError(
       'service_unavailable',
-      error?.message || 'Intent analytics report is unavailable.'
+      baselineResult.error?.message || reliabilityResult.error?.message ||
+      'Intent analytics report is unavailable.'
     );
   }
 
-  const report = data as Omit<AdminIntentBaseline, 'reporting_policy'>;
+  const report = data as Omit<AdminIntentBaseline, 'reporting_policy' | 'reliability'>;
   const expectedDataThrough = isoDate(end);
   return {
     ...report,
+    reliability: reliability as AdminAnalyticsReliability,
     reporting_policy: {
       basis: 'completed_utc_days',
       timezone: 'UTC',

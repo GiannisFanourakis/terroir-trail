@@ -24,6 +24,31 @@ test('admin intent metrics use the aggregate reporting RPC with the selected win
   const supabase = {
     rpc: async (name: string, args: Record<string, unknown>) => {
       calls.push({ name, args });
+      if (name === 'get_analytics_reliability_v1') {
+        return {
+          data: {
+            checked_at: '2026-09-21T00:10:00Z',
+            start_date: '2026-08-22',
+            end_date: '2026-09-20',
+            status: 'healthy',
+            closed_day_reporting: true,
+            raw_event_count: 20,
+            aggregates_match: true,
+            integrity_clean: true,
+            checks: [],
+            integrity: {
+              duplicate_client_event_ids: 0,
+              missing_session_key: 0,
+              authenticated_missing_actor_key: 0,
+              anonymous_with_actor_key: 0,
+              producer_event_missing_dimensions: 0,
+              unexpected_event_name: 0,
+            },
+            note: 'closed day audit',
+          },
+          error: null,
+        };
+      }
       return {
         data: {
           generated_at: '2026-09-21T00:00:00Z',
@@ -101,13 +126,24 @@ test('admin intent metrics use the aggregate reporting RPC with the selected win
     expected_data_through: '2026-09-20',
     aggregate_watermark_current: true,
   });
-  assert.deepEqual(calls, [{
-    name: 'get_intent_baseline_v1',
-    args: {
-      p_start_date: '2026-08-22',
-      p_end_date: '2026-09-20',
+  assert.equal(result.reliability.status, 'healthy');
+  assert.equal(result.reliability.aggregates_match, true);
+  assert.deepEqual(calls, [
+    {
+      name: 'get_intent_baseline_v1',
+      args: {
+        p_start_date: '2026-08-22',
+        p_end_date: '2026-09-20',
+      },
     },
-  }]);
+    {
+      name: 'get_analytics_reliability_v1',
+      args: {
+        p_start_date: '2026-08-22',
+        p_end_date: '2026-09-20',
+      },
+    },
+  ]);
 });
 
 test('non-admin accounts cannot read intent metrics', async () => {
