@@ -363,7 +363,7 @@ export const Header: React.FC<HeaderProps> = ({
               <button
                 type="button"
                 onClick={() => setMobileSearchOpen(true)}
-                className={`w-11 h-11 flex items-center justify-center rounded-xl border transition cursor-pointer min-h-[44px] min-w-[44px] ${
+                className={`hidden w-11 h-11 items-center justify-center rounded-xl border transition cursor-pointer min-h-[44px] min-w-[44px] ${
                   searchQuery
                     ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
                     : 'bg-stone-900 text-stone-300 border-white/10 hover:text-white'
@@ -574,7 +574,7 @@ export const Header: React.FC<HeaderProps> = ({
               </label>
             </div>
 
-            <div className="relative flex-1 min-w-[160px] max-w-sm sm:max-w-md">
+            <div className="hidden relative flex-1 min-w-[160px] max-w-sm sm:max-w-md">
               <Search className="w-3.5 h-3.5 text-stone-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none shrink-0" />
               <input
                 type="text"
