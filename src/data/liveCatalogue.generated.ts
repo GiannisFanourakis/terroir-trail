@@ -6,7 +6,7 @@ import type { Producer } from '../types/terroir';
  *
  * Runtime Supabase remains authoritative. This file is shared by runtime fallback
  * and SEO/AEO generation and is refreshed automatically; do not hand-edit it.
- * Latest active source row update: 2026-10-02T13:30:42.325067+00:00
+ * Latest active source row update: 2026-10-03T12:21:54.092831+00:00
  */
 export const LIVE_CATALOGUE_PRODUCERS = [
   {
