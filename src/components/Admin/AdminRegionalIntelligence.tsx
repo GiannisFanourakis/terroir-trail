@@ -3,6 +3,10 @@ import {
   fetchAdminRegionalIntelligence,
   type AdminRegionalIntelligence as RegionalReport,
 } from '../../services/adminApi';
+import {
+  buildRegionalEvidenceMarkdown,
+  downloadEvidenceMarkdown,
+} from '../../utils/adminEvidenceExport';
 
 const WINDOWS = [7, 30, 90, 180] as const;
 type WindowDays = (typeof WINDOWS)[number];
@@ -47,6 +51,14 @@ export const AdminRegionalIntelligence: React.FC = () => {
 
   useEffect(() => { void load(); }, [load]);
 
+  const exportEvidence = useCallback(() => {
+    if (!report) return;
+    downloadEvidenceMarkdown(
+      `terroirtrail-regional-evidence-${report.end_date}-${days}d.md`,
+      buildRegionalEvidenceMarkdown(report)
+    );
+  }, [days, report]);
+
   useEffect(() => {
     if (!report?.regions.length) {
       setSelectedDestination(null);
@@ -88,6 +100,14 @@ export const AdminRegionalIntelligence: React.FC = () => {
               {window}d
             </button>
           ))}
+          <button
+            type="button"
+            onClick={exportEvidence}
+            disabled={!report}
+            className="px-2 py-1.5 rounded-lg border border-violet-400/25 bg-violet-400/5 text-[10px] font-bold text-violet-200 disabled:opacity-40"
+          >
+            Export evidence
+          </button>
           <button
             type="button"
             onClick={() => void load()}

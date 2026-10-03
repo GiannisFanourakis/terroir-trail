@@ -6,7 +6,7 @@ import type { Producer } from '../types/terroir';
  *
  * Runtime Supabase remains authoritative. This file is shared by runtime fallback
  * and SEO/AEO generation and is refreshed automatically; do not hand-edit it.
- * Latest active source row update: 2026-10-01T07:39:09.29602+00:00
+ * Latest active source row update: 2026-10-02T13:30:42.325067+00:00
  */
 export const LIVE_CATALOGUE_PRODUCERS = [
   {
@@ -4125,8 +4125,25 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "tagLine": "Five generations of natural and organic wine in Kounavoi",
     "description": "Stilianou is a small family winery in the historic wine country around Kounavoi and Archanes, producing natural and organically grown wines with a strong emphasis on indigenous Cretan grapes. Olive oil is part of the same family agricultural landscape.",
     "story": "The family dates its domain to 1922 and describes five generations of winemakers. The continuity is less about reproducing the past unchanged than keeping native varieties, vineyards and family-scale production at the centre while working in a contemporary natural-wine style.",
-    "indigenousVarieties": [],
-    "tastingHighlights": [],
+    "indigenousVarieties": [
+      "Vidiano",
+      "Thrapsathiri",
+      "Vilana",
+      "Kotsifali",
+      "Mandilari"
+    ],
+    "productSpecialties": [
+      "Natural and bio-organic wines",
+      "Cretan indigenous grape varieties",
+      "Organic extra virgin olive oil"
+    ],
+    "tastingHighlights": [
+      "4-wine tasting (€10 per person)",
+      "6-wine tasting (€12 per person)",
+      "Organic olive oil tasting (€3 per person)",
+      "Cheese platter available",
+      "Local pies platter available"
+    ],
     "openingHours": "Daily 11:00-19:00. Nov-Mar: contact/book before visiting.",
     "phone": "+30 6940784329",
     "website": "https://stilianouwinery.com",
@@ -4137,12 +4154,13 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "roadAccessSourceUrl": "https://stilianouwinery.com",
     "roadAccessNotes": "Manual operator road review: narrow paved approach. Road classification only; does not establish rental-car suitability or guarantee current conditions.",
     "ethos": [],
+    "foodOption": "tasting_board",
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://stilianouwinery.com/",
     "locationNotes": "Current winery identity, visitor operation and phone verified on the producer site. Closing time varies between current producer pages, so users should check the booking page.",
     "visitStatus": "public_visits",
     "visitSourceUrl": "https://stilianouwinery.com/",
-    "visitNotes": "The current Stilianou Winery homepage publishes daily opening hours of 11:00-19:00 and presents visitor tastings under an explicit “On booking / Contact us for appointment” instruction with a “Book your visit” calendar. This supports advance booking as required for the visitor tasting experience. The source does not explicitly state a general walk-in rejection rule, so walk_in_status remains unknown.",
+    "visitNotes": "Current first-party Stilianou Winery site lists daily opening hours of 11:00-19:00 and presents visits/tastings with a booking calendar. The current tasting menu publishes a 4-wine tasting at €10 per person, a 6-wine tasting at €12 per person, organic olive-oil tasting at €3 per person, a cheese platter at €17 per plate (for two), and a local-pies platter at €12 per plate (for two). Winter access from November through March is stated as on booking. No current public email address is published on the present website; use the official booking/contact route or current phone number.",
     "visitBookingRequirement": "required",
     "visitorHours": {
       "current_daily": "11:00-19:00",
@@ -4151,7 +4169,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       }
     },
     "seasonalVisitNotes": "An older first-party tasting page still shows an 18:00 closing time; the newer homepage publishes 19:00 and is used as the current value.",
-    "visitabilityReviewedAt": "2026-09-20T10:30:11.413816+00:00"
+    "visitabilityReviewedAt": "2026-10-02T13:11:35.641374+00:00"
   },
   {
     "id": "kir-yianni-naoussa",
@@ -7741,25 +7759,38 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "indigenousVarieties": [
       "Xinomavro"
     ],
-    "tastingHighlights": [],
-    "openingHours": "",
+    "tastingHighlights": [
+      "Xinomavro",
+      "Naoussa vineyard sites",
+      "Different tasting experiences",
+      "Optional local cheese and cured-meat accompaniment"
+    ],
+    "openingHours": "Visits by prior reservation only: Mon-Fri 10:00-14:30. Last visit starts at 14:30; winery closes at 16:00.",
     "phone": "+30 2331 093 604",
     "website": "https://thymiopoulosvineyards.gr",
     "googleMapsUrl": "https://www.google.com/maps/place/?q=place_id:ChIJS3in-tOTVxMRPLSA3w4amOQ",
     "googlePlaceId": "ChIJS3in-tOTVxMRPLSA3w4amOQ",
-    "roadAccess": "paved",
-    "roadAccessStatus": "verified",
-    "roadAccessNotes": "Operator-confirmed from prior one-by-one map review: normal paved approach. Road classification only; does not establish rental-car suitability or guarantee current conditions.",
+    "roadAccessStatus": "not_publicly_confirmed",
+    "roadAccessNotes": "Phase 10B road-evidence review completed. No sufficiently specific current public evidence was found to classify the mapped public-point approach road. No road-surface or normal-rental-car suitability claim is exposed.",
     "ethos": [
       "indigenous_only"
     ],
+    "foodOption": "tasting_board",
+    "walkInFriendly": false,
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://www.thymiopoulosvineyards.gr/contact",
     "locationNotes": "Producer-controlled contact page links directly to the Thymiopoulos Vineyards Google Maps point in Trilofos. Business location verified; entrance and road access remain unverified.",
-    "visitStatus": "not_publicly_confirmed",
+    "visitStatus": "appointment_only",
     "visitSourceUrl": "https://www.thymiopoulosvineyards.gr/contact/",
-    "visitNotes": "Current first-party Thymiopoulos Vineyards site verifies the active Trilofos winery and publishes direct contact details, but the current navigation and indexed first-party pages do not publish a visitor programme, winery tour, tasting procedure, visitor timetable, booking rule, or walk-in policy. Keep public visitability unconfirmed.",
-    "visitabilityReviewedAt": "2026-09-19T17:29:00+00:00"
+    "visitNotes": "Producer-confirmed by Nicholas Kyriakidis, Brand Ambassador, by email on 2 October 2026. Visits are available only by prior reservation, Monday-Friday 10:00-14:30, with the latest visit starting at 14:30; the winery closes at 16:00. Visitors can choose among different tasting experiences focused on Xinomavro, the area's vineyard sites and the philosophy of Thymiopoulos Vineyards. Tastings may be accompanied by selected local cheeses and cured meats. The winery does not operate a restaurant and does not provide a full meal.",
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "visitorHours": {
+      "monday_friday": "10:00-14:30",
+      "winery_closes": "16:00",
+      "last_visit_start": "14:30"
+    },
+    "visitabilityReviewedAt": "2026-10-02T11:12:28+00:00"
   },
   {
     "id": "tingvollost-more-og-romsdal",

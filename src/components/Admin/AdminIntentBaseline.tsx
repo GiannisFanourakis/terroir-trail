@@ -3,6 +3,10 @@ import {
   fetchAdminIntentMetrics,
   type AdminIntentMetrics,
 } from '../../services/adminApi';
+import {
+  buildIntentEvidenceMarkdown,
+  downloadEvidenceMarkdown,
+} from '../../utils/adminEvidenceExport';
 
 const WINDOWS = [7, 30, 90, 180] as const;
 type WindowDays = (typeof WINDOWS)[number];
@@ -97,6 +101,14 @@ export const AdminIntentBaseline: React.FC = () => {
 
   useEffect(() => { void load(); }, [load]);
 
+  const exportEvidence = useCallback(() => {
+    if (!metrics) return;
+    downloadEvidenceMarkdown(
+      `terroirtrail-intent-evidence-${metrics.end_date}-${days}d.md`,
+      buildIntentEvidenceMarkdown(metrics)
+    );
+  }, [days, metrics]);
+
   useEffect(() => {
     if (!metrics?.producers.length) {
       setSelectedProducerId(null);
@@ -150,6 +162,14 @@ export const AdminIntentBaseline: React.FC = () => {
               {window}d
             </button>
           ))}
+          <button
+            type="button"
+            onClick={exportEvidence}
+            disabled={!metrics}
+            className="px-2 py-1.5 rounded-lg border border-cyan-400/25 bg-cyan-400/5 text-[10px] font-bold text-cyan-200 disabled:opacity-40"
+          >
+            Export evidence
+          </button>
           <button
             type="button"
             onClick={() => void load()}
