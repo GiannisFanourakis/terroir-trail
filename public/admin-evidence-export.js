@@ -132,8 +132,9 @@ export const downloadIntentEvidenceCsv = (filename, m) => download(
   filename,
   csvReport('TerroirTrail Intent Evidence Snapshot', [
     ['Generated', m.generated_at],
-    ['Window', `${m.start_date} to ${m.end_date}`],
-    ['Data through', m.aggregate_data_through],
+    ['Completed UTC window', `${m.start_date} to ${m.end_date}`],
+    ['Aggregate watermark', m.aggregate_data_through],
+    ['Reporting basis', 'Completed UTC days only; the current UTC day is excluded so evidence snapshots remain stable.'],
     ['Important', 'First-party intent signals are not bookings, visits or purchases.'],
   ], intentSections(m)),
   'text/csv;charset=utf-8'
@@ -143,8 +144,9 @@ export const downloadRegionalEvidenceCsv = (filename, r) => download(
   filename,
   csvReport('TerroirTrail Regional Readiness Evidence Snapshot', [
     ['Generated', r.generated_at],
-    ['Demand window', `${r.start_date} to ${r.end_date}`],
-    ['Data through', r.aggregate_data_through],
+    ['Completed UTC demand window', `${r.start_date} to ${r.end_date}`],
+    ['Aggregate watermark', r.aggregate_data_through],
+    ['Reporting basis', 'Completed UTC days only; the current UTC day is excluded so evidence snapshots remain stable.'],
     ['Coverage note', r.coverage_note],
     ['Important', 'Curated, non-exhaustive coverage. Intent signals are not bookings, visits or purchases.'],
   ], regionalSections(r)),

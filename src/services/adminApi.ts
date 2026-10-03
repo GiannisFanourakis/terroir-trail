@@ -110,6 +110,13 @@ export interface AdminIntentMetrics {
   start_date: string;
   end_date: string;
   aggregate_data_through: string | null;
+  reporting_policy: {
+    basis: 'completed_utc_days';
+    timezone: 'UTC';
+    current_day_excluded: true;
+    expected_data_through: string;
+    aggregate_watermark_current: boolean;
+  };
   comparison_policy: {
     minimum_active_producers: number;
     minimum_producer_views: number;
@@ -191,6 +198,7 @@ export interface AdminRegionalIntelligence {
   start_date: string;
   end_date: string;
   aggregate_data_through: string | null;
+  reporting_policy: AdminIntentMetrics['reporting_policy'];
   freshness_days: number;
   demand_minimum_views: number;
   affiliate_minimum_impressions: number;

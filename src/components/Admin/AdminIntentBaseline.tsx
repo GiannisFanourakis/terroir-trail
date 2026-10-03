@@ -198,6 +198,16 @@ export const AdminIntentBaseline: React.FC = () => {
 
         {metrics && (
           <>
+            <div className="rounded-lg border border-cyan-400/20 bg-cyan-400/5 px-3 py-2 text-[10px] text-cyan-100">
+              Reporting basis: {days} completed UTC days. The current UTC day is excluded so a saved evidence snapshot does not drift as hourly aggregates refresh.
+            </div>
+
+            {!metrics.reporting_policy.aggregate_watermark_current && (
+              <div className="rounded-lg border border-amber-500/25 bg-amber-500/10 px-3 py-2 text-[10px] text-amber-100">
+                Aggregate watermark is {metrics.aggregate_data_through || 'not available'}; expected through {metrics.reporting_policy.expected_data_through}. Treat this window as potentially incomplete until aggregation catches up.
+              </div>
+            )}
+
             {(totals?.producer_views || 0) < metrics.comparison_policy.minimum_producer_views && (
               <div className="rounded-lg border border-amber-500/25 bg-amber-500/10 px-3 py-2 text-[11px] text-amber-100">
                 Early sample: {format(totals?.producer_views || 0)} producer views in this window. Use counts descriptively; comparative context remains withheld until the minimum sample is reached.
@@ -324,7 +334,7 @@ export const AdminIntentBaseline: React.FC = () => {
             </div>
 
             <div className="text-[9px] text-stone-600">
-              {metrics.start_date} → {metrics.end_date} · data through {metrics.aggregate_data_through || '—'} · previous-window comparison uses the immediately preceding {metrics.comparison_policy.previous_window_days} days · no traveler identities exposed.
+              Completed UTC window {metrics.start_date} → {metrics.end_date} · aggregate watermark {metrics.aggregate_data_through || '—'} · previous-window comparison uses the immediately preceding {metrics.comparison_policy.previous_window_days} completed days · no traveler identities exposed.
             </div>
           </>
         )}

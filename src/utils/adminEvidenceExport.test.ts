@@ -30,5 +30,7 @@ describe('admin evidence export', () => {
     expect(source).toContain('Traveler demand');
     expect(source).toContain('not bookings, visits or purchases');
     expect(source).toContain('Curated, non-exhaustive coverage');
+    expect(source).toContain('Completed UTC days only');
+    expect(source).toContain('current UTC day is excluded');
   });
 });

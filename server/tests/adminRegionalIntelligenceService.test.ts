@@ -12,6 +12,13 @@ const intent: AdminIntentBaseline = {
   start_date: '2026-08-23',
   end_date: '2026-09-21',
   aggregate_data_through: '2026-09-21',
+  reporting_policy: {
+    basis: 'completed_utc_days',
+    timezone: 'UTC',
+    current_day_excluded: true,
+    expected_data_through: '2026-09-21',
+    aggregate_watermark_current: true,
+  },
   comparison_policy: {
     minimum_active_producers: 5,
     minimum_producer_views: 100,
@@ -154,6 +161,7 @@ test('regional intelligence keeps readiness components auditable and demand samp
   assert.equal(crete.demand_sample_sufficient, true);
   assert.equal(crete.affiliate_sample_sufficient, true);
   assert.equal(crete.affiliates.ctr, 2.5);
+  assert.deepEqual(report.reporting_policy, intent.reporting_policy);
   assert.equal(REGIONAL_DEMAND_MINIMUM_VIEWS, 100);
   assert.equal(REGIONAL_AFFILIATE_MINIMUM_IMPRESSIONS, 100);
   assert.deepEqual(crete.categories.map((row) => row.category).sort(), ['olive_mill', 'winery']);

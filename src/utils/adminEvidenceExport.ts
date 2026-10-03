@@ -13,7 +13,7 @@ let modulePromise: Promise<ExportModule> | null = null;
 
 const loadExportModule = (): Promise<ExportModule> => {
   if (!modulePromise) {
-    const url = '/admin-evidence-export.js?v=20261003-1';
+    const url = '/admin-evidence-export.js?v=20261003-2';
     modulePromise = import(/* @vite-ignore */ url) as Promise<ExportModule>;
   }
   return modulePromise;

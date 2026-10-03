@@ -21,6 +21,13 @@ export interface AdminIntentBaseline {
   start_date: string;
   end_date: string;
   aggregate_data_through: string | null;
+  reporting_policy: {
+    basis: 'completed_utc_days';
+    timezone: 'UTC';
+    current_day_excluded: true;
+    expected_data_through: string;
+    aggregate_watermark_current: boolean;
+  };
   comparison_policy: {
     minimum_active_producers: number;
     minimum_producer_views: number;
@@ -118,7 +125,10 @@ export async function getAdminIntentMetrics(
     throw new AdminIntentMetricsError('service_unavailable', 'Intent analytics are temporarily unavailable.');
   }
 
+  // Evidence/reporting windows use completed UTC days only. Including the
+  // current partial day made same-day exports drift as hourly aggregates refreshed.
   const end = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+  end.setUTCDate(end.getUTCDate() - 1);
   const start = new Date(end);
   start.setUTCDate(start.getUTCDate() - (days - 1));
 
@@ -134,5 +144,18 @@ export async function getAdminIntentMetrics(
     );
   }
 
-  return data as AdminIntentBaseline;
+  const report = data as Omit<AdminIntentBaseline, 'reporting_policy'>;
+  const expectedDataThrough = isoDate(end);
+  return {
+    ...report,
+    reporting_policy: {
+      basis: 'completed_utc_days',
+      timezone: 'UTC',
+      current_day_excluded: true,
+      expected_data_through: expectedDataThrough,
+      aggregate_watermark_current:
+        typeof report.aggregate_data_through === 'string' &&
+        report.aggregate_data_through >= expectedDataThrough,
+    },
+  };
 }

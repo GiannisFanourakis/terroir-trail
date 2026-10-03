@@ -27,9 +27,9 @@ test('admin intent metrics use the aggregate reporting RPC with the selected win
       return {
         data: {
           generated_at: '2026-09-21T00:00:00Z',
-          start_date: '2026-08-23',
-          end_date: '2026-09-21',
-          aggregate_data_through: '2026-09-21',
+          start_date: '2026-08-22',
+          end_date: '2026-09-20',
+          aggregate_data_through: '2026-09-20',
           comparison_policy: {
             minimum_active_producers: 5,
             minimum_producer_views: 100,
@@ -94,11 +94,18 @@ test('admin intent metrics use the aggregate reporting RPC with the selected win
   assert.equal(result.totals.website_clicks, 1);
   assert.equal(result.producers[0].previous.producer_views, 5);
   assert.equal(result.comparison_policy.minimum_producer_views, 100);
+  assert.deepEqual(result.reporting_policy, {
+    basis: 'completed_utc_days',
+    timezone: 'UTC',
+    current_day_excluded: true,
+    expected_data_through: '2026-09-20',
+    aggregate_watermark_current: true,
+  });
   assert.deepEqual(calls, [{
     name: 'get_intent_baseline_v1',
     args: {
-      p_start_date: '2026-08-23',
-      p_end_date: '2026-09-21',
+      p_start_date: '2026-08-22',
+      p_end_date: '2026-09-20',
     },
   }]);
 });

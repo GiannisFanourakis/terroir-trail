@@ -39,6 +39,7 @@ export interface AdminRegionalIntelligence {
   start_date: string;
   end_date: string;
   aggregate_data_through: string | null;
+  reporting_policy: AdminIntentBaseline['reporting_policy'];
   freshness_days: number;
   demand_minimum_views: number;
   affiliate_minimum_impressions: number;
@@ -260,6 +261,7 @@ export function buildRegionalIntelligence(
     start_date: intent.start_date,
     end_date: intent.end_date,
     aggregate_data_through: intent.aggregate_data_through,
+    reporting_policy: intent.reporting_policy,
     freshness_days: REGIONAL_FRESHNESS_DAYS,
     demand_minimum_views: REGIONAL_DEMAND_MINIMUM_VIEWS,
     affiliate_minimum_impressions: REGIONAL_AFFILIATE_MINIMUM_IMPRESSIONS,
