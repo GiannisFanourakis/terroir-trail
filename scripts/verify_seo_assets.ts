@@ -8,7 +8,7 @@ import {
 } from './seoCatalogue';
 
 const CANONICAL_HOST = 'https://terroir-trail.web.app';
-const CANONICAL_SITEMAP_URL = `${CANONICAL_HOST}/sitemap.xml`;
+const CANONICAL_SITEMAP_URL = `${CANONICAL_HOST}/sitemap-index.xml`;
 const PRODUCER_DIRECTORY_URL = `${CANONICAL_HOST}/producers/`;
 const distDir = path.resolve(process.cwd(), 'dist');
 
@@ -117,7 +117,7 @@ function verifySeoAssets(): void {
     `Deterministic canonical SEO/AEO producer snapshot — ${PRODUCERS.length} records, synchronized with the live catalogue.`,
     '## Navigation safety and road access',
     '/producers/<producer-id>/',
-    'Sitemap: https://terroir-trail.web.app/sitemap.xml',
+    'Sitemap: https://terroir-trail.web.app/sitemap-index.xml',
     'Producer directory: https://terroir-trail.web.app/producers/',
     'Destinations index: https://terroir-trail.web.app/destinations/',
     'Categories index: https://terroir-trail.web.app/categories/',

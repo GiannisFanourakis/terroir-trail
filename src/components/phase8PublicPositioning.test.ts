@@ -136,7 +136,7 @@ describe('Public Positioning & SEO Synchronization', () => {
 
       expect(existsSync('public/robots.txt')).toBe(true);
       const robots = read('public/robots.txt');
-      expect(robots).toContain('Sitemap: https://terroir-trail.web.app/sitemap.xml');
+      expect(robots).toContain('Sitemap: https://terroir-trail.web.app/sitemap-index.xml');
     });
   });
 });

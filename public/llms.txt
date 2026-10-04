@@ -1,7 +1,7 @@
 # TerroirTrail — Independent Producer & Agritourism Guide
 
 Canonical URL: https://terroir-trail.web.app/
-Sitemap: https://terroir-trail.web.app/sitemap.xml
+Sitemap: https://terroir-trail.web.app/sitemap-index.xml
 Producer directory: https://terroir-trail.web.app/producers/
 Destinations index: https://terroir-trail.web.app/destinations/
 Categories index: https://terroir-trail.web.app/categories/

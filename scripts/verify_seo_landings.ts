@@ -8,7 +8,7 @@ import {
 } from './seoCatalogue';
 
 const CANONICAL_HOST = 'https://terroir-trail.web.app';
-const CANONICAL_SITEMAP_URL = `${CANONICAL_HOST}/sitemap.xml`;
+const CANONICAL_SITEMAP_URL = `${CANONICAL_HOST}/sitemap-index.xml`;
 const PRODUCER_DIRECTORY_URL = `${CANONICAL_HOST}/producers/`;
 const distDir = path.resolve(process.cwd(), 'dist');
 const MIN_CATEGORY_RECORDS = 2;
@@ -209,6 +209,56 @@ function verifySeo(): void {
   if (sitemapUrls.length !== expectedSitemapUrls.length) fail(`Sitemap has ${sitemapUrls.length} URLs; expected ${expectedSitemapUrls.length} for the current catalogue.`);
   for (const url of expectedSitemapUrls) if (!sitemapUrls.includes(url)) fail(`Sitemap is missing expected URL: ${url}`);
 
+  const sitemapIndexContent = requireFile(path.join(distDir, 'sitemap-index.xml'), 'dist/sitemap-index.xml').trim();
+  if (!sitemapIndexContent.startsWith('<?xml') || !sitemapIndexContent.includes('<sitemapindex') || !sitemapIndexContent.endsWith('</sitemapindex>')) {
+    fail('dist/sitemap-index.xml is not valid XML or is missing the <sitemapindex> root.');
+  }
+  const sitemapIndexUrls = [...sitemapIndexContent.matchAll(/<loc>(.*?)<\/loc>/g)].map((match) => match[1].trim());
+  const expectedChildSitemaps = [
+    `${CANONICAL_HOST}/sitemap-core.xml`,
+    `${CANONICAL_HOST}/sitemap-producers.xml`,
+    `${CANONICAL_HOST}/sitemap-destinations.xml`,
+    `${CANONICAL_HOST}/sitemap-categories.xml`,
+  ];
+  if (sitemapIndexUrls.length !== expectedChildSitemaps.length) {
+    fail(`Sitemap index has ${sitemapIndexUrls.length} child sitemaps; expected ${expectedChildSitemaps.length}.`);
+  }
+  for (const url of expectedChildSitemaps) {
+    if (!sitemapIndexUrls.includes(url)) fail(`Sitemap index is missing child sitemap: ${url}`);
+  }
+
+  const splitUrls: string[] = [];
+  const splitUrlSet = new Set<string>();
+  for (const childUrl of expectedChildSitemaps) {
+    const fileName = new URL(childUrl).pathname.slice(1);
+    const childContent = requireFile(path.join(distDir, fileName), `dist/${fileName}`).trim();
+    if (!childContent.startsWith('<?xml') || !childContent.includes('<urlset') || !childContent.endsWith('</urlset>')) {
+      fail(`dist/${fileName} is not valid XML or is missing the <urlset> root.`);
+    }
+    const childUrls = [...childContent.matchAll(/<loc>(.*?)<\/loc>/g)].map((match) => match[1].trim());
+    for (const url of childUrls) {
+      if (splitUrlSet.has(url)) fail(`Split sitemaps contain duplicate URL: ${url}`);
+      splitUrlSet.add(url);
+      splitUrls.push(url);
+    }
+  }
+  if (splitUrls.length !== expectedSitemapUrls.length) {
+    fail(`Split sitemaps contain ${splitUrls.length} URLs; expected ${expectedSitemapUrls.length}.`);
+  }
+  for (const url of expectedSitemapUrls) {
+    if (!splitUrlSet.has(url)) fail(`Split sitemaps are missing expected URL: ${url}`);
+  }
+
+  const producerSitemapContent = requireFile(path.join(distDir, 'sitemap-producers.xml'), 'dist/sitemap-producers.xml');
+  const producerSitemapUrls = [...producerSitemapContent.matchAll(/<loc>(.*?)<\/loc>/g)].map((match) => match[1].trim());
+  if (producerSitemapUrls.length !== PRODUCERS.length) {
+    fail(`Producer sitemap has ${producerSitemapUrls.length} URLs; expected ${PRODUCERS.length}.`);
+  }
+  for (const producer of PRODUCERS) {
+    const url = producerUrl(producer);
+    if (!producerSitemapUrls.includes(url)) fail(`Producer sitemap is missing expected URL: ${url}`);
+  }
+
   const robotsContent = requireFile(path.join(distDir, 'robots.txt'), 'dist/robots.txt');
   const sitemapDirectivePattern = new RegExp(`^Sitemap:\\s*${CANONICAL_SITEMAP_URL.replace(/\./g, '\\.')}\\s*$`, 'm');
   if (!sitemapDirectivePattern.test(robotsContent)) fail(`dist/robots.txt does not advertise Sitemap: ${CANONICAL_SITEMAP_URL}`);
@@ -227,7 +277,7 @@ function verifySeo(): void {
     `Deterministic canonical SEO/AEO producer snapshot — ${PRODUCERS.length} records, synchronized with the live catalogue.`,
     '## Navigation safety and road access',
     '/producers/<producer-id>/',
-    'Sitemap: https://terroir-trail.web.app/sitemap.xml',
+    'Sitemap: https://terroir-trail.web.app/sitemap-index.xml',
     'Producer directory: https://terroir-trail.web.app/producers/',
     'Verification methodology: https://terroir-trail.web.app/methodology/',
     '## Search and answer-engine discovery',

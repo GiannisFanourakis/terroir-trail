@@ -44,7 +44,7 @@ test('robots explicitly allows search and answer-engine crawlers', () => {
 
   assert.match(
     robots,
-    /Sitemap: https:\/\/terroir-trail\.web\.app\/sitemap\.xml/
+    /Sitemap: https:\/\/terroir-trail\.web\.app\/sitemap-index\.xml/
   );
   assert.match(robots, /https:\/\/terroir-trail\.web\.app\/llms\.txt/);
 });

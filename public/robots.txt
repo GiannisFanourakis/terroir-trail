@@ -45,7 +45,7 @@ User-agent: Amazonbot
 Allow: /
 
 # Discovery resources
-Sitemap: https://terroir-trail.web.app/sitemap.xml
+Sitemap: https://terroir-trail.web.app/sitemap-index.xml
 
 # Machine-readable product context for answer engines:
 # https://terroir-trail.web.app/llms.txt
