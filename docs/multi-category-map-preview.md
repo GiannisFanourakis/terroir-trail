@@ -10,7 +10,7 @@ From the separate worktree, run:
 node node_modules/vite/bin/vite.js --host 127.0.0.1 --port 5174 --strictPort
 ```
 
-Open http://localhost:5174/?preview=categories&country=GR&destination=crete&focus=anoskeli-estate . The development-only selector switches between dual, triple, four-category and museum examples. It focuses the actual existing coordinates. Production builds exclude the selector, sample classification overlay and preview camera behavior.
+Open http://localhost:5174/?preview=categories&country=GR&destination=crete&focus=anoskeli-estate . The preview uses the normal header and map controls; no extra preview toolbar appears. The development-only classification overlay shows dual, triple, four-category and museum examples at the actual existing coordinates. Browse using the normal country, destination and category controls. Production builds exclude the sample classification overlay and preview camera behavior.
 
 ## What changes
 

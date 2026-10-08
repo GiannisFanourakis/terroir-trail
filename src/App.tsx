@@ -34,7 +34,6 @@ import { saveUserProfileToCloud } from './services/firebase';
 import { filterProducers } from './utils/filterProducers';
 import { getProducerCategories } from './utils/producerCategory';
 import { isCategoryPreview } from './config/categoryPreview';
-import { CategoryPreviewBar } from './components/Common/CategoryPreviewBar';
 import { producerService } from './services/producerService';
 import { CountryScope, setActiveCountryScope } from './config/geography';
 import { usePwaInstall } from './hooks/usePwaInstall';
@@ -609,7 +608,6 @@ export const App: React.FC = () => {
   return (
     <div className="flex flex-col h-[100dvh] w-full overflow-hidden bg-stone-950 font-sans text-stone-100">
       <OfflineStatus />
-      {import.meta.env.DEV && isCategoryPreview() && <CategoryPreviewBar />}
       <Header
         selectedDestination={filters.destination}
         onSelectDestination={(dest: Destination | 'all') =>
