@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import type { Producer } from '../src/types/terroir';
+import { getProducerCategories } from '../src/utils/producerCategory';
 import { LIVE_CATALOGUE_METRICS, SEO_PRODUCERS } from './seoCatalogue';
 
 const CANONICAL_HOST = 'https://terroir-trail.web.app';
@@ -90,8 +91,10 @@ const publicPointSummary = (producer: Producer): string | null => {
   }
 };
 
-const publishedProducts = (producer: Producer): string[] =>
-  producer.productSpecialties?.length ? producer.productSpecialties : producer.indigenousVarieties || [];
+const publishedProducts = (producer: Producer): string[] => {
+  const grouped = producer.productSections?.flatMap((section) => section.specialties) ?? [];
+  return grouped.length ? [...new Set(grouped)] : producer.productSpecialties?.length ? producer.productSpecialties : producer.indigenousVarieties || [];
+};
 
 const quickFacts = (producer: Producer): string => {
   const products = publishedProducts(producer);
@@ -101,7 +104,7 @@ const quickFacts = (producer: Producer): string => {
   const mappedPoint = publicPointSummary(producer);
 
   const facts: Array<[string, string]> = [
-    ['Type', categoryLabels[producer.category]],
+    ['Type', getProducerCategories(producer).map((category) => categoryLabels[category]).join(' · ')],
     ['Location', locationSummary(producer)],
     ['Visitor access', visitSummary(producer)],
     ['Road access', roadSummary(producer)],

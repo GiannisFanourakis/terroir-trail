@@ -5,13 +5,16 @@ import { ProducerOverride } from '../../types/booking';
 import {
   X, MapPin, Star, Phone, Mail, Globe, Navigation, Clock,
   Dog, Footprints, Caravan, Car, Sparkles, Share2, Check, Heart, Award,
-  CheckCircle2, Wine, ShoppingBag, ArrowRight, Building2,
-  Camera, ChevronLeft, ChevronRight, Beer, CalendarPlus
+  CheckCircle2, ShoppingBag, ArrowRight, Building2,
+  Camera, ChevronLeft, ChevronRight, CalendarPlus
 } from 'lucide-react';
 
 import { useProducerPhotos } from '../../services/googlePlacesPhotos';
 import { getCategoryFallbackImage } from '../../utils/imageFallbacks';
-import { getEffectiveProducerCategory } from '../../utils/producerCategory';
+import { getEffectiveProducerCategory, getProducerCategories, getProducerVisitorFeatures, producerHasAlcoholCategory } from '../../utils/producerCategory';
+import { ProducerCategoryBadges } from '../Common/ProducerCategoryBadges';
+import { ProducerProductSections } from '../Common/ProducerProductSections';
+import { parseProductSections } from '../../utils/producerClassification';
 import {
   getProducerRoadAccessSourceUrl,
   getProducerRoadAccessWarning,
@@ -140,8 +143,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
 
   if (!producer) return null;
 
-  const effectiveCategoryForNotice = getEffectiveProducerCategory(producer);
-  const isAlcoholProducer = ['winery', 'brewery', 'distillery'].includes(effectiveCategoryForNotice);
+  const isAlcoholProducer = producerHasAlcoholCategory(producer);
 
   if (isAlcoholProducer && !alcoholNoticeAcknowledged) {
     return (
@@ -179,25 +181,6 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
       });
     } catch {
       // A failed clipboard action is not a successful share and must not emit analytics.
-    }
-  };
-
-  const getCategoryDetails = (p: Producer) => {
-    switch (getEffectiveProducerCategory(p)) {
-      case 'winery': return { label: 'Winery', color: 'text-rose-400 bg-rose-500/10 border-rose-500/20' };
-      case 'brewery': return { label: 'Brewery', color: 'text-amber-300 bg-amber-400/15 border-amber-400/30' };
-      case 'distillery': return { label: 'Distillery', color: 'text-amber-400 bg-amber-500/10 border-amber-500/20' };
-      case 'cidery': return { label: 'Cidery', color: 'text-lime-400 bg-lime-500/10 border-lime-500/20' };
-      case 'confectionery': return { label: 'Confectionery Producer', color: 'text-amber-300 bg-amber-700/10 border-amber-700/20' };
-      case 'oil_mill': return { label: 'Oil Mill', color: 'text-yellow-400 bg-yellow-600/10 border-yellow-600/20' };
-      case 'herb_farm': return { label: 'Herb Farm', color: 'text-green-400 bg-green-500/10 border-green-500/20' };
-      case 'mushroom_farm': return { label: 'Mushroom Farm', color: 'text-stone-300 bg-stone-500/10 border-stone-500/20' };
-      case 'olive_mill': return { label: 'Olive Mill', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' };
-      case 'olive_oil_producer': return { label: 'Olive Oil Producer', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' };
-      case 'cheese_dairy': return { label: 'Dairy', color: 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20' };
-      case 'apiary': return { label: 'Apiary / Honey', color: 'text-orange-400 bg-orange-500/10 border-orange-500/20' };
-      case 'farm': return { label: 'Farm', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' };
-      default: return { label: 'Producer', color: 'text-stone-300 bg-stone-500/10 border-white/10' };
     }
   };
 
@@ -569,7 +552,9 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
   };
 
   const effectiveCategory = getEffectiveProducerCategory(producer);
-  const cat = getCategoryDetails(producer);
+  const makerCategories = getProducerCategories(producer);
+  const visitorFeatures = getProducerVisitorFeatures(producer);
+  const productSections = parseProductSections(producer.productSections, makerCategories);
   const road = getRoadAccessDetails(producer);
   const roadWarning = getProducerRoadAccessWarning(producer);
   const roadAccessBlocksDirections =
@@ -581,10 +566,14 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
     (producer.roadAccess === 'paved' ||
       producer.roadAccess === 'narrow_paved' ||
       producer.roadAccess === 'gravel_ok');
-  const term = getCategoryTerminology(
-    getEffectiveProducerCategory(producer),
-    producer.name
-  );
+  const primaryTerm = getCategoryTerminology(effectiveCategory, producer.name);
+  const term = makerCategories.length > 1 ? {
+    ...primaryTerm, whatTheyMakeTitle: 'What They Make', specialtiesLabel: 'Products & Specialties',
+    highlightsLabel: 'Producer Highlights', visitingTitle: 'Producer & Visiting',
+    callAction: 'Call Producer', callShortLabel: 'Call Producer',
+    storeLabel: 'Direct Producer Shop',
+    tastingNotePlaceholder: 'Record your thoughts on their products or your visit...',
+  } : primaryTerm;
   const displaySpecialties = getProducerDisplaySpecialties(producer);
   const visitDetails = getVisitStatusDetails(producer.visitStatus, producer);
   const effectiveOpeningHours =
@@ -778,10 +767,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
 
           <div className="absolute top-4 left-4 z-20 flex flex-col items-start gap-1.5 max-w-[calc(100%-170px)]">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border backdrop-blur-md ${cat.color}`}>
-                <ProducerCategoryIcon category={effectiveCategory} className="w-3.5 h-3.5" />
-                <span>{cat.label}</span>
-              </span>
+              <ProducerCategoryBadges producer={producer} />
               {producer.publicPointType === 'producer_shop' && (
                 <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-semibold bg-sky-500/15 text-sky-200 border border-sky-400/30 backdrop-blur-md">
                   <ShoppingBag className="w-3 h-3" />
@@ -1155,35 +1141,38 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
               </h3>
             </div>
 
-            <div>
-              <h4 className="text-xs font-bold uppercase tracking-wider text-stone-400 mb-2.5">
-                {term.specialtiesLabel}
-              </h4>
-              <div className="flex flex-wrap gap-2">
-                {displaySpecialties.map((v, i) => (
-                  <span
-                    key={i}
-                    className="px-3 py-1.5 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-300 font-semibold text-xs"
-                  >
-                    {v}
-                  </span>
-                ))}
+            {productSections?.length ? (
+              <ProducerProductSections sections={productSections} />
+            ) : displaySpecialties.length > 0 ? (
+              <div>
+                <h4 className="text-xs font-bold uppercase tracking-wider text-stone-400 mb-2.5">
+                  {makerCategories.length > 1 ? 'Products & Specialties' : term.specialtiesLabel}
+                </h4>
+                <div className="flex flex-wrap gap-2">
+                  {displaySpecialties.map((specialty, index) => (
+                    <span key={index} className="px-3 py-1.5 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-300 font-semibold text-xs">
+                      {specialty}
+                    </span>
+                  ))}
+                </div>
               </div>
-            </div>
+            ) : null}
 
-            <div>
-              <h4 className="text-xs font-bold uppercase tracking-wider text-stone-400 mb-2">
-                {term.highlightsLabel}
-              </h4>
-              <div className="space-y-2">
-                {producer.tastingHighlights.map((highlight, idx) => (
-                  <div key={idx} className="flex items-start gap-2.5 p-2.5 rounded-xl bg-stone-900 border border-white/5 text-xs text-stone-200">
-                    <Sparkles className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
-                    <span className="leading-relaxed">{highlight}</span>
-                  </div>
-                ))}
+            {producer.tastingHighlights.length > 0 && (
+              <div>
+                <h4 className="text-xs font-bold uppercase tracking-wider text-stone-400 mb-2">
+                  {term.highlightsLabel}
+                </h4>
+                <div className="space-y-2">
+                  {producer.tastingHighlights.map((highlight, index) => (
+                    <div key={index} className="flex items-start gap-2.5 p-2.5 rounded-xl bg-stone-900 border border-white/5 text-xs text-stone-200">
+                      <Sparkles className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
+                      <span className="leading-relaxed">{highlight}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
             {directBottleShopUrl && (
               <a
@@ -1248,6 +1237,18 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                 <p className="text-xs text-stone-300 leading-relaxed">
                   {visitDetails.description}
                 </p>
+
+                {visitorFeatures.length > 0 && (
+                  <div className="text-xs text-stone-300 leading-relaxed">
+                    <span className="text-[10px] text-stone-400 block font-medium mb-0.5">Visitor features</span>
+                    <span>
+                      {visitorFeatures.map((feature) =>
+                        feature === 'museum' ? 'Museum' :
+                          feature === 'guided_tour' ? 'Guided tours' : 'Tasting'
+                      ).join(', ')}
+                    </span>
+                  </div>
+                )}
 
                 {producer.publicPointType === 'producer_shop' && (
                   <div className="p-3 rounded-xl bg-sky-500/10 border border-sky-400/20 text-[11px] text-sky-100 leading-relaxed">

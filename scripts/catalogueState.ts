@@ -1,5 +1,6 @@
 import { createHash } from 'node:crypto';
 import type { Producer } from '../src/types/terroir';
+import { getProducerCategories } from '../src/utils/producerCategory';
 
 export type CatalogueState = {
   schemaVersion: 1;
@@ -29,6 +30,6 @@ export function buildCatalogueState(producers: readonly Producer[]): CatalogueSt
     destinations: new Set(sorted.map((producer) => producer.destination)).size,
     countries: new Set(sorted.map((producer) => producer.countryCode).filter(Boolean)).size,
     regions: new Set(sorted.map((producer) => producer.region)).size,
-    categories: new Set(sorted.map((producer) => producer.category)).size,
+    categories: new Set(sorted.flatMap(getProducerCategories)).size,
   };
 }

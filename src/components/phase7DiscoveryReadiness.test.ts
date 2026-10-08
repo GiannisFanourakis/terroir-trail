@@ -21,10 +21,9 @@ describe('Phase 7 discovery readiness boundaries', () => {
 
     const map = read('src/components/Map/MapCanvas.tsx');
     const drawer = read('src/components/Drawer/ProducerDetailDrawer.tsx');
-    for (const source of [map, drawer]) {
-      expect(source).toContain('getEffectiveProducerCategory');
-      expect(source).toContain("'farm'");
-    }
+    expect(map).toContain('getProducerCategories');
+    expect(drawer).toContain('getEffectiveProducerCategory');
+    expect(drawer).toContain("'farm'");
     expect(drawer).toContain('Farm & Visiting');
     expect(drawer).toContain('Call Farm');
   });

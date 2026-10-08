@@ -1,5 +1,8 @@
 import { Producer, FilterState } from '../types/terroir';
-import { getEffectiveProducerCategory } from './producerCategory';
+import {
+  getProducerVisitorFeatures,
+  producerMatchesCategory,
+} from './producerCategory';
 import {
   getActiveCountryScope,
   producerMatchesCountry,
@@ -27,11 +30,10 @@ export function filterProducers(
   const activeCountryScope = getActiveCountryScope();
 
   return producers.filter((producer) => {
-    // Use the discovery-facing category so legacy rows do not leak incorrect
-    // taxonomy while their persisted source is being migrated.
+    // Match every verified maker activity while retaining one catalogue identity.
     if (
       filters.category !== 'all' &&
-      getEffectiveProducerCategory(producer) !== filters.category
+      !producerMatchesCategory(producer, filters.category)
     ) {
       return false;
     }
@@ -45,6 +47,12 @@ export function filterProducers(
     ) {
       return false;
     }
+
+    if (
+      filters.museumOnly &&
+      !getProducerVisitorFeatures(producer).includes('museum')
+    )
+      return false;
 
     // Destination filter (Macro-Region: Crete, Santorini, Peloponnese, etc.)
     if (
@@ -111,6 +119,10 @@ export function filterProducers(
         producer.tagLine,
         ...(producer.indigenousVarieties || []),
         ...(producer.productSpecialties || []),
+        ...(producer.productSections || []).flatMap((section) => [
+          ...section.specialties,
+          ...(section.varieties || []),
+        ]),
       ];
 
       return searchableValues.some((value) =>

@@ -7,13 +7,16 @@ import { ACTIVE_PRODUCER_IDS } from '../data/activeProducerIds.generated';
 import { ALL_EXPERIENCES } from '../data/experiences';
 import { supabase, isSupabaseConfigured } from './supabase';
 import { logger } from './logger';
+import { getProducerCategories, isProducerCategory, producerMatchesCategory } from '../utils/producerCategory';
+import { parseAdditionalCategories, parseVisitorFeatures, parseProductSections } from '../utils/producerClassification';
+import { applyCategoryPreview, isCategoryPreview } from '../config/categoryPreview';
 
 const ACTIVE_PRODUCER_ID_SET = new Set<string>(ACTIVE_PRODUCER_IDS);
 const BOOTSTRAP_FALLBACK_PRODUCERS: Producer[] = [
   ...CRETAN_PRODUCERS,
   ...SANTORINI_PRODUCERS,
   ...PHASE10B_PRODUCERS,
-].filter((producer) => ACTIVE_PRODUCER_ID_SET.has(producer.id));
+].filter((producer) => ACTIVE_PRODUCER_ID_SET.has(producer.id)).map(applyCategoryPreview);
 
 let fallbackProducersCache: Producer[] = BOOTSTRAP_FALLBACK_PRODUCERS;
 let fullFallbackPromise: Promise<Producer[]> | null = null;
@@ -22,7 +25,7 @@ async function loadFullFallbackProducers(): Promise<Producer[]> {
   if (!fullFallbackPromise) {
     fullFallbackPromise = import('../data/liveCatalogue.generated').then(
       ({ LIVE_CATALOGUE_PRODUCERS }) => {
-        fallbackProducersCache = LIVE_CATALOGUE_PRODUCERS;
+        fallbackProducersCache = LIVE_CATALOGUE_PRODUCERS.map(applyCategoryPreview);
         return fallbackProducersCache;
       }
     );
@@ -69,11 +72,17 @@ export function mapRowToProducer(row: any): Producer {
       ? (row.road_access as RoadAccess)
       : undefined;
 
-  return {
+  const additionalCategories = Array.isArray(row.additional_categories)
+    ? parseAdditionalCategories(row.additional_categories, row.category) : undefined;
+
+  return applyCategoryPreview({
     id: row.id,
     name: row.name,
     greekName: row.local_name || row.greek_name || row.name,
     category: row.category as Category,
+    additionalCategories,
+    visitorFeatures: Array.isArray(row.visitor_features) ? parseVisitorFeatures(row.visitor_features) : undefined,
+    productSections: parseProductSections(row.product_sections, getProducerCategories({ category: row.category, additionalCategories })),
     destination: row.destination as Destination,
     country,
     countryCode,
@@ -132,7 +141,7 @@ export function mapRowToProducer(row: any): Producer {
         ? row.visitor_languages
         : undefined,
     visitabilityReviewedAt: row.visitability_reviewed_at || undefined,
-  };
+  });
 }
 
 /**
@@ -164,7 +173,7 @@ function filterProducersList(producers: Producer[], options: ProducerQueryOption
     list = list.filter((p) => p.destination === destination);
   }
   if (category && category !== 'all') {
-    list = list.filter((p) => p.category === category);
+    list = list.filter((p) => producerMatchesCategory(p, category));
   }
   if (bounds) {
     list = list.filter(
@@ -186,7 +195,8 @@ function filterProducersList(producers: Producer[], options: ProducerQueryOption
         p.village.toLowerCase().includes(q) ||
         (p.country && p.country.toLowerCase().includes(q)) ||
         p.indigenousVarieties.some((v) => v.toLowerCase().includes(q)) ||
-        p.productSpecialties?.some((specialty) => specialty.toLowerCase().includes(q))
+        p.productSpecialties?.some((specialty) => specialty.toLowerCase().includes(q)) ||
+        p.productSections?.some((section) => [...section.specialties, ...(section.varieties || [])].some((value) => value.toLowerCase().includes(q)))
     );
   }
 
@@ -238,7 +248,10 @@ export const producerService = {
           query = query.eq('destination', destination);
         }
         if (category && category !== 'all') {
-          query = query.eq('category', category);
+          if (!isProducerCategory(category)) throw new Error('Unsupported producer category');
+          if (!isCategoryPreview()) query = query.or(
+            `category.eq.${category},additional_categories.cs.{${category}}`
+          );
         }
         if (bounds) {
           query = query
@@ -253,7 +266,7 @@ export const producerService = {
           query = query.or(`name.ilike.%${q}%,local_name.ilike.%${q}%,village.ilike.%${q}%,region.ilike.%${q}%`);
         }
 
-        query = query.range(offset, offset + limit - 1);
+        query = isCategoryPreview() ? query.range(0, 999) : query.range(offset, offset + limit - 1);
 
         const { data, error } = await query;
         if (error) {
@@ -276,7 +289,7 @@ export const producerService = {
           remoteProducers.forEach((p) => liveProducersCache.set(p.id, p));
           cacheProvenance = 'live';
 
-          return remoteProducers;
+          return isCategoryPreview() ? filterProducersList(remoteProducers, options) : remoteProducers;
         }
       } catch (err) {
         cacheProvenance = 'fallback';

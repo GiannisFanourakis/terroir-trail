@@ -35,7 +35,8 @@ const KB = 1024;
 const budgets = {
   mainJsGzip: 330 * KB,
   largestJsGzip: 330 * KB,
-  totalJsGzip: 850 * KB,
+  // Multiple maker categories add about 2 KB across the application and lazy chunks.
+  totalJsGzip: 855 * KB,
   totalCssGzip: 32 * KB,
 };
 

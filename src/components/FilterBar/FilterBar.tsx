@@ -77,6 +77,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
 
   const activeSecondaryCount = [
     filters.roadAccess !== 'all',
+    Boolean(filters.museumOnly),
   ].filter(Boolean).length;
 
   const activeCategory = categories.find((cat) => cat.id === filters.category) || categories[0];
@@ -181,6 +182,13 @@ export const FilterBar: React.FC<FilterBarProps> = ({
               </span>
 
               <div className="grid grid-cols-1 gap-2">
+                <label className="flex items-center gap-2 text-xs text-stone-200 min-h-[36px] cursor-pointer">
+                  <input type="checkbox" checked={Boolean(filters.museumOnly)}
+                    onChange={(event) => onFilterChange('museumOnly', event.target.checked)}
+                    className="accent-sky-400 w-4 h-4" />
+                  <ProducerCategoryIcon category="museum" className="w-4 h-4 text-sky-300" />
+                  <span>Has a museum</span>
+                </label>
                 <select
                   value={filters.roadAccess}
                   onChange={(e) => { onFilterChange('roadAccess', e.target.value as RoadAccess | 'all'); setIsMobilePanelOpen(false); }}
@@ -274,6 +282,13 @@ export const FilterBar: React.FC<FilterBarProps> = ({
         {/* Desktop Secondary Filters Panel */}
         <div className={`hidden sm:${isMoreFiltersOpen ? 'flex' : 'hidden lg:flex'} flex-wrap items-center justify-between gap-2 pt-1.5 border-t border-white/5 text-xs animate-in fade-in duration-200`}>
           <div className="flex flex-wrap items-center gap-2">
+            <label className="flex items-center gap-2 text-xs text-stone-200 min-h-[36px] cursor-pointer">
+                  <input type="checkbox" checked={Boolean(filters.museumOnly)}
+                    onChange={(event) => onFilterChange('museumOnly', event.target.checked)}
+                    className="accent-sky-400 w-4 h-4" />
+                  <ProducerCategoryIcon category="museum" className="w-4 h-4 text-sky-300" />
+                  <span>Has a museum</span>
+                </label>
             <select
               value={filters.roadAccess}
               onChange={(e) => onFilterChange('roadAccess', e.target.value as RoadAccess | 'all')}

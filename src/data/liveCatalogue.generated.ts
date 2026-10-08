@@ -6,7 +6,7 @@ import type { Producer } from '../types/terroir';
  *
  * Runtime Supabase remains authoritative. This file is shared by runtime fallback
  * and SEO/AEO generation and is refreshed automatically; do not hand-edit it.
- * Latest active source row update: 2026-10-03T12:21:54.092831+00:00
+ * Latest active source row update: 2026-10-08T18:30:09.223257+00:00
  */
 export const LIVE_CATALOGUE_PRODUCERS = [
   {
@@ -14,6 +14,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Adega de Borba",
     "greekName": "Adega de Borba",
     "category": "winery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "alentejo",
     "country": "Portugal",
     "countryCode": "PT",
@@ -79,6 +81,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Adega José de Sousa",
     "greekName": "Adega José de Sousa",
     "category": "winery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "alentejo",
     "country": "Portugal",
     "countryCode": "PT",
@@ -154,6 +158,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Aerakis Cheese Products",
     "greekName": "Παραδοσιακό Τυροκομείο Αεράκη",
     "category": "cheese_dairy",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "crete",
     "country": "Greece",
     "countryCode": "GR",
@@ -201,6 +207,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Aga Sideri",
     "greekName": "Aga Sideri",
     "category": "cidery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "vestland",
     "country": "Norway",
     "countryCode": "NO",
@@ -262,6 +270,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Agricola Gian Piero Marrone",
     "greekName": "Agricola Gian Piero Marrone",
     "category": "winery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "piedmont",
     "country": "Italy",
     "countryCode": "IT",
@@ -331,6 +341,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Agricola Piano",
     "greekName": "Agricola Piano",
     "category": "farm",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "puglia",
     "country": "Italy",
     "countryCode": "IT",
@@ -376,6 +388,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Alpha Estate",
     "greekName": "Κτήμα Άλφα",
     "category": "winery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "northern_greece",
     "country": "Greece",
     "countryCode": "GR",
@@ -426,6 +440,26 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Anoskeli Winery & Olive Mill",
     "greekName": "Οινοποιείο & Ελαιοτριβείο Ανώσκελη",
     "category": "winery",
+    "additionalCategories": [
+      "olive_mill"
+    ],
+    "visitorFeatures": [
+      "tasting"
+    ],
+    "productSections": [
+      {
+        "category": "winery",
+        "specialties": [
+          "Estate-grown wines"
+        ]
+      },
+      {
+        "category": "olive_mill",
+        "specialties": [
+          "Extra virgin olive oil"
+        ]
+      }
+    ],
     "destination": "crete",
     "country": "Greece",
     "countryCode": "GR",
@@ -444,7 +478,13 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "description": "In the small Chania village that gave the brand its name, Anoskeli brings together olive groves, vineyards, a working olive mill, bottling facilities and a boutique winery. Olive oil, wine and tsikoudia all grow out of the same family connection to this corner of western Crete.",
     "story": "The Mamidakis family traces its roots in Anoskeli to Alexandros and Irene Mamidakis. During difficult wartime years Irene cared for seven children and cultivated the family land; decades later the family invested back in the village, founding Anoskeli S.A. in 1983 and opening the modern olive mill in 1985.",
     "indigenousVarieties": [],
-    "tastingHighlights": [],
+    "productSpecialties": [
+      "Estate-grown wines",
+      "Extra virgin olive oil"
+    ],
+    "tastingHighlights": [
+      "Wine and olive oil from one family estate"
+    ],
     "openingHours": "Current 2026 visitor hours not yet confirmed; contact Anoskeli before travelling.",
     "phone": "+30 28240 83126",
     "website": "https://anoskeli.gr",
@@ -475,6 +515,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Antichi Vinai 1877",
     "greekName": "Antichi Vinai 1877",
     "category": "winery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "sicily",
     "country": "Italy",
     "countryCode": "IT",
@@ -539,6 +581,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Apis Aurum / Imkerei Hafner",
     "greekName": "Apis Aurum / Imkerei Hafner",
     "category": "apiary",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "south_tyrol",
     "country": "Italy",
     "countryCode": "IT",
@@ -582,6 +626,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "ARGOGAL / Koromichi Family",
     "greekName": "ΑΡΓΟΓΑΛ",
     "category": "cheese_dairy",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "peloponnese",
     "country": "Greece",
     "countryCode": "GR",
@@ -645,6 +691,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Arvanitis Dairy",
     "greekName": "Τυροκομείο Αρβανίτη",
     "category": "cheese_dairy",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "northern_greece",
     "country": "Greece",
     "countryCode": "GR",
@@ -712,6 +760,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Assuli Winery",
     "greekName": "Assuli",
     "category": "winery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "sicily",
     "country": "Italy",
     "countryCode": "IT",
@@ -776,6 +826,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Baladinos & Sons",
     "greekName": "Μπαλαντίνος",
     "category": "cheese_dairy",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "crete",
     "country": "Greece",
     "countryCode": "GR",
@@ -847,6 +899,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Moulin & Domaine Bastide du Laval",
     "greekName": "Moulin & Domaine Bastide du Laval",
     "category": "olive_mill",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "provence",
     "country": "France",
     "countryCode": "FR",
@@ -917,6 +971,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Beppino Occelli / Valcasotto",
     "greekName": "Beppino Occelli / Valcasotto",
     "category": "cheese_dairy",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "piedmont",
     "country": "Italy",
     "countryCode": "IT",
@@ -989,6 +1045,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Biohof Oberwerkstatt",
     "greekName": "Biohof Oberwerkstatt",
     "category": "cheese_dairy",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "south_tyrol",
     "country": "Italy",
     "countryCode": "IT",
@@ -1048,6 +1106,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Biolea Astrikas Estate",
     "greekName": "Βιολέα - Βιολογικό Ελαιοτριβείο",
     "category": "olive_mill",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "crete",
     "country": "Greece",
     "countryCode": "GR",
@@ -1105,6 +1165,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Brist Olive Oil",
     "greekName": "Brist Olive Oil",
     "category": "olive_oil_producer",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "istria",
     "country": "Croatia",
     "countryCode": "HR",
@@ -1169,6 +1231,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Camporè",
     "greekName": "Camporè",
     "category": "winery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "sicily",
     "country": "Italy",
     "countryCode": "IT",
@@ -1223,6 +1287,19 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Canava Santorini Distillery",
     "greekName": "Αποσταγματοποιία Canava Σαντορίνη",
     "category": "distillery",
+    "additionalCategories": [],
+    "visitorFeatures": [
+      "museum"
+    ],
+    "productSections": [
+      {
+        "category": "distillery",
+        "specialties": [
+          "Ouzo",
+          "Tsikoudia"
+        ]
+      }
+    ],
     "destination": "santorini",
     "country": "Greece",
     "countryCode": "GR",
@@ -1239,7 +1316,14 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "description": "Canava Santorini Distillery in Messaria combines a working spirits producer with a museum devoted to Santorini's distilling and vineyard culture. The operation began in 1974 and remains associated with the Lygnos family.",
     "story": "Evangelos Lygnos founded the distillery in 1974 after learning the craft of ouzo making and working in Santorini wine. His son Loukas later continued the family operation and assembled historic tools, workshops and everyday objects into the museum beside the distillery.",
     "indigenousVarieties": [],
-    "tastingHighlights": [],
+    "productSpecialties": [
+      "Ouzo",
+      "Tsikoudia"
+    ],
+    "tastingHighlights": [
+      "Family distilling tradition since 1974",
+      "Traditional copper-still distillation"
+    ],
     "openingHours": "",
     "phone": "+30 22860 31573",
     "website": "https://www.canavasantorini.com",
@@ -1263,6 +1347,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Cantine Iuppa",
     "greekName": "Cantine Iuppa",
     "category": "winery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "sicily",
     "country": "Italy",
     "countryCode": "IT",
@@ -1318,6 +1404,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Casa Julia",
     "greekName": "Casa Julia",
     "category": "olive_oil_producer",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "tuscany",
     "country": "Italy",
     "countryCode": "IT",
@@ -1383,6 +1471,36 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Cascina Barroero",
     "greekName": "Cascina Barroero",
     "category": "farm",
+    "additionalCategories": [
+      "confectionery",
+      "apiary"
+    ],
+    "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "farm",
+        "specialties": [
+          "Nocciola Piemonte IGP",
+          "Roasted hazelnuts",
+          "Hazelnut flour",
+          "Hazelnut granella",
+          "100% hazelnut paste"
+        ]
+      },
+      {
+        "category": "confectionery",
+        "specialties": [
+          "Gianduja creams",
+          "Hazelnut pastries"
+        ]
+      },
+      {
+        "category": "apiary",
+        "specialties": [
+          "Seasonal honey"
+        ]
+      }
+    ],
     "destination": "piedmont",
     "country": "Italy",
     "countryCode": "IT",
@@ -1453,6 +1571,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Cascina Fontane",
     "greekName": "Cascina Fontane",
     "category": "farm",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "piedmont",
     "country": "Italy",
     "countryCode": "IT",
@@ -1530,6 +1650,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Čebelarstvo Batištuta",
     "greekName": "Čebelarstvo Batištuta",
     "category": "apiary",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "goriska",
     "country": "Slovenia",
     "countryCode": "SI",
@@ -1589,6 +1711,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Ceretto",
     "greekName": "Ceretto",
     "category": "winery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "piedmont",
     "country": "Italy",
     "countryCode": "IT",
@@ -1658,6 +1782,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Château Pesquié",
     "greekName": "Château Pesquié",
     "category": "winery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "provence",
     "country": "France",
     "countryCode": "FR",
@@ -1731,6 +1857,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Chiavalon",
     "greekName": "Chiavalon",
     "category": "olive_mill",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "istria",
     "country": "Croatia",
     "countryCode": "HR",
@@ -1794,6 +1922,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Christakis / Patria Feta",
     "greekName": "ΧΡΙΣΤΑΚΗΣ Α.Β.Ε.Ε.",
     "category": "cheese_dairy",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "northern_greece",
     "country": "Greece",
     "countryCode": "GR",
@@ -1865,6 +1995,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Ciomod / XOCOA",
     "greekName": "Ciomod / XOCOA",
     "category": "confectionery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "sicily",
     "country": "Italy",
     "countryCode": "IT",
@@ -1915,6 +2047,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Colle di Bordocheo",
     "greekName": "Colle di Bordocheo",
     "category": "winery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "tuscany",
     "country": "Italy",
     "countryCode": "IT",
@@ -1981,6 +2115,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Cretan Brewery (Charma Beer)",
     "greekName": "Κρητική Ζυθοποιία (Μπίρα Χάρμα)",
     "category": "brewery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "crete",
     "country": "Greece",
     "countryCode": "GR",
@@ -2043,6 +2179,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Spiridi Olive Oil Farm",
     "greekName": "Spiridi Olive Oil Farm",
     "category": "olive_mill",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "crete",
     "country": "Greece",
     "countryCode": "GR",
@@ -2104,6 +2242,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "De Carlo",
     "greekName": "De Carlo",
     "category": "olive_mill",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "puglia",
     "country": "Italy",
     "countryCode": "IT",
@@ -2159,6 +2299,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Distillerie du Château du Barroux",
     "greekName": "Distillerie du Château du Barroux",
     "category": "distillery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "provence",
     "country": "France",
     "countryCode": "FR",
@@ -2231,6 +2373,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Domaine Biblia Chora",
     "greekName": "Κτήμα Βιβλία Χώρα",
     "category": "winery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "northern_greece",
     "country": "Greece",
     "countryCode": "GR",
@@ -2284,6 +2428,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Domaine D. Migas",
     "greekName": "Κτήμα Δ. Μίγας",
     "category": "winery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "thessaly",
     "country": "Greece",
     "countryCode": "GR",
@@ -2346,6 +2492,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Domaine Karanika",
     "greekName": "Κτήμα Καρανίκα",
     "category": "winery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "northern_greece",
     "country": "Greece",
     "countryCode": "GR",
@@ -2395,6 +2543,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Domaine Mercouri",
     "greekName": "Κτήμα Μερκούρη",
     "category": "winery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "peloponnese",
     "country": "Greece",
     "countryCode": "GR",
@@ -2438,6 +2588,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Domaine Paterianakis",
     "greekName": "Κτήμα Πατεριανάκη",
     "category": "winery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "crete",
     "country": "Greece",
     "countryCode": "GR",
@@ -2490,6 +2642,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Domaine Sigalas",
     "greekName": "Κτήμα Σιγάλα",
     "category": "winery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "santorini",
     "country": "Greece",
     "countryCode": "GR",
@@ -2538,6 +2692,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Domaine Zafeirakis",
     "greekName": "Κτήμα Ζαφειράκη",
     "category": "winery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "thessaly",
     "country": "Greece",
     "countryCode": "GR",
@@ -2600,6 +2756,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Douloufakis Winery",
     "greekName": "Οινοποιείο Δουλουφάκη",
     "category": "winery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "crete",
     "country": "Greece",
     "countryCode": "GR",
@@ -2667,6 +2825,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "ELATOS / Kapetanou Bros",
     "greekName": "ΕΛΑΤΟΣ Γαλακτοκομικά",
     "category": "cheese_dairy",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "peloponnese",
     "country": "Greece",
     "countryCode": "GR",
@@ -2726,6 +2886,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Epli Sideri",
     "greekName": "Epli Sideri",
     "category": "cidery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "vestland",
     "country": "Norway",
     "countryCode": "NO",
@@ -2777,6 +2939,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Estate Argyros Santorini",
     "greekName": "Κτήμα Αργυρού Σαντορίνη",
     "category": "winery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "santorini",
     "country": "Greece",
     "countryCode": "GR",
@@ -2828,6 +2992,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Família Margaça",
     "greekName": "Família Margaça",
     "category": "winery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "alentejo",
     "country": "Portugal",
     "countryCode": "PT",
@@ -2884,6 +3050,37 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Fattoria Corzano e Paterno",
     "greekName": "Fattoria Corzano e Paterno",
     "category": "winery",
+    "additionalCategories": [
+      "cheese_dairy",
+      "olive_oil_producer"
+    ],
+    "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "winery",
+        "specialties": [
+          "Estate wines"
+        ],
+        "varieties": [
+          "Sangiovese",
+          "Canaiolo",
+          "Malvasia",
+          "Trebbiano"
+        ]
+      },
+      {
+        "category": "cheese_dairy",
+        "specialties": [
+          "Artisan sheep's-milk cheeses"
+        ]
+      },
+      {
+        "category": "olive_oil_producer",
+        "specialties": [
+          "Extra virgin olive oil"
+        ]
+      }
+    ],
     "destination": "tuscany",
     "country": "Italy",
     "countryCode": "IT",
@@ -2952,6 +3149,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Formatge Bauma",
     "greekName": "Formatge Bauma",
     "category": "cheese_dairy",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "catalonia",
     "country": "Spain",
     "countryCode": "ES",
@@ -2996,6 +3195,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Formatgeria Casa Mateu",
     "greekName": "Formatgeria Casa Mateu",
     "category": "cheese_dairy",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "catalonia",
     "country": "Spain",
     "countryCode": "ES",
@@ -3058,6 +3259,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Frantoio D'Orazio",
     "greekName": "Frantoio D'Orazio",
     "category": "olive_mill",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "puglia",
     "country": "Italy",
     "countryCode": "IT",
@@ -3121,6 +3324,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Frantoio Muraglia",
     "greekName": "Frantoio Muraglia",
     "category": "olive_mill",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "puglia",
     "country": "Italy",
     "countryCode": "IT",
@@ -3169,6 +3374,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Gaia Wines Nemea",
     "greekName": "Γαία Οινοποιητική Νεμέα",
     "category": "winery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "peloponnese",
     "country": "Greece",
     "countryCode": "GR",
@@ -3223,6 +3430,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Gaia Wines Santorini",
     "greekName": "Γαία Οινοποιητική Σαντορίνη",
     "category": "winery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "santorini",
     "country": "Greece",
     "countryCode": "GR",
@@ -3280,6 +3489,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Gangstad Gårdsysteri",
     "greekName": "Gangstad Gårdsysteri",
     "category": "cheese_dairy",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "trondelag",
     "country": "Norway",
     "countryCode": "NO",
@@ -3342,6 +3553,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Fragospito Winery (Domaine Gavalas)",
     "greekName": "Οινοποιείο Φραγκόσπιτο - Κτήμα Γαβαλά",
     "category": "winery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "crete",
     "country": "Greece",
     "countryCode": "GR",
@@ -3384,6 +3597,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Gavalas Winery Santorini",
     "greekName": "Οινοποιείο Γαβαλά Σαντορίνη",
     "category": "winery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "santorini",
     "country": "Greece",
     "countryCode": "GR",
@@ -3437,6 +3652,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "G.D. Vajra",
     "greekName": "G.D. Vajra",
     "category": "winery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "piedmont",
     "country": "Italy",
     "countryCode": "IT",
@@ -3501,6 +3718,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Grubić Olive Oil",
     "greekName": "GRUBIĆ Uljara",
     "category": "olive_mill",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "istria",
     "country": "Croatia",
     "countryCode": "HR",
@@ -3565,6 +3784,34 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Hardanger Saft- og Siderfabrikk",
     "greekName": "Hardanger Saft- og Siderfabrikk",
     "category": "cidery",
+    "additionalCategories": [
+      "distillery"
+    ],
+    "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "cidery",
+        "specialties": [
+          "Hardanger cider",
+          "Spontaneously fermented cider",
+          "Apple juice",
+          "Alcohol-free cider"
+        ],
+        "varieties": [
+          "Gravenstein",
+          "Summerred",
+          "Discovery",
+          "Aroma"
+        ]
+      },
+      {
+        "category": "distillery",
+        "specialties": [
+          "Apple brandy",
+          "Aquavit"
+        ]
+      }
+    ],
     "destination": "vestland",
     "country": "Norway",
     "countryCode": "NO",
@@ -3632,6 +3879,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Helleland Gard / Heldre Sider",
     "greekName": "Helleland Gard / Heldre Sider",
     "category": "cidery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "vestland",
     "country": "Norway",
     "countryCode": "NO",
@@ -3700,6 +3949,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Herdade da Malhadinha Nova",
     "greekName": "Herdade da Malhadinha Nova",
     "category": "winery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "alentejo",
     "country": "Portugal",
     "countryCode": "PT",
@@ -3763,6 +4014,26 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Herdade do Esporão",
     "greekName": "Herdade do Esporão",
     "category": "winery",
+    "additionalCategories": [
+      "olive_mill"
+    ],
+    "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "winery",
+        "specialties": [
+          "Alentejo wines",
+          "Organic estate wines",
+          "Single-variety wines"
+        ]
+      },
+      {
+        "category": "olive_mill",
+        "specialties": [
+          "Estate extra virgin olive oil"
+        ]
+      }
+    ],
     "destination": "alentejo",
     "country": "Portugal",
     "countryCode": "PT",
@@ -3830,6 +4101,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Herdade do Monte Outeiro",
     "greekName": "Herdade do Monte Outeiro",
     "category": "farm",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "alentejo",
     "country": "Portugal",
     "countryCode": "PT",
@@ -3880,6 +4153,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Herdade do Rocim",
     "greekName": "Herdade do Rocim",
     "category": "winery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "alentejo",
     "country": "Portugal",
     "countryCode": "PT",
@@ -3947,6 +4222,40 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Ipša",
     "greekName": "Ipša",
     "category": "olive_mill",
+    "additionalCategories": [
+      "winery"
+    ],
+    "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "olive_mill",
+        "specialties": [
+          "Frantoio EVOO",
+          "Leccino EVOO",
+          "Istarska Bjelica EVOO",
+          "Ipša Selekcija EVOO"
+        ],
+        "varieties": [
+          "Istarska bjelica",
+          "Buža",
+          "Rosinjola",
+          "Karbonaca"
+        ]
+      },
+      {
+        "category": "winery",
+        "specialties": [
+          "Istrian wines",
+          "Malvazija wines",
+          "Teran wines"
+        ],
+        "varieties": [
+          "Istarska malvazija",
+          "Teran",
+          "Refošk"
+        ]
+      }
+    ],
     "destination": "istria",
     "country": "Croatia",
     "countryCode": "HR",
@@ -4015,6 +4324,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Karavitakis Winery",
     "greekName": "Οινοποιείο Καραβιτάκη",
     "category": "winery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "crete",
     "country": "Greece",
     "countryCode": "GR",
@@ -4065,6 +4376,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "KASTA Microbrews",
     "greekName": "Μικροζυθοποιία Κάστα",
     "category": "brewery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "crete",
     "country": "Greece",
     "countryCode": "GR",
@@ -4108,6 +4421,32 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Stilianou Winery",
     "greekName": "Οινοποιείο Στυλιανού",
     "category": "winery",
+    "additionalCategories": [
+      "olive_oil_producer"
+    ],
+    "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "winery",
+        "specialties": [
+          "Natural and bio-organic wines",
+          "Cretan indigenous grape varieties"
+        ],
+        "varieties": [
+          "Vidiano",
+          "Thrapsathiri",
+          "Vilana",
+          "Kotsifali",
+          "Mandilari"
+        ]
+      },
+      {
+        "category": "olive_oil_producer",
+        "specialties": [
+          "Organic extra virgin olive oil"
+        ]
+      }
+    ],
     "destination": "crete",
     "country": "Greece",
     "countryCode": "GR",
@@ -4122,9 +4461,9 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "gallery": [
       "https://images.unsplash.com/photo-1516594915697-87eb3b1c14ea?auto=format&fit=crop&w=1000&q=80"
     ],
-    "tagLine": "Five generations of natural and organic wine in Kounavoi",
+    "tagLine": "Five generations of family winemaking and organic olive oil in Kounavoi",
     "description": "Stilianou is a small family winery in the historic wine country around Kounavoi and Archanes, producing natural and organically grown wines with a strong emphasis on indigenous Cretan grapes. Olive oil is part of the same family agricultural landscape.",
-    "story": "The family dates its domain to 1922 and describes five generations of winemakers. The continuity is less about reproducing the past unchanged than keeping native varieties, vineyards and family-scale production at the centre while working in a contemporary natural-wine style.",
+    "story": "The family dates its domain to 1922 and describes five generations of winemakers. Native Cretan grapes and family-scale production remain central to its natural-wine approach, alongside organically cultivated olive groves and organic extra virgin olive oil.",
     "indigenousVarieties": [
       "Vidiano",
       "Thrapsathiri",
@@ -4140,7 +4479,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "tastingHighlights": [
       "4-wine tasting (€10 per person)",
       "6-wine tasting (€12 per person)",
-      "Organic olive oil tasting (€3 per person)",
+      "Organic olive oil tasting",
       "Cheese platter available",
       "Local pies platter available"
     ],
@@ -4176,6 +4515,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Ktima Kir-Yianni Naoussa",
     "greekName": "Κτήμα Κυρ-Γιάννη Νάουσα",
     "category": "winery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "northern_greece",
     "country": "Greece",
     "countryCode": "GR",
@@ -4229,6 +4570,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Kirnig Südtiroler Edelpilze",
     "greekName": "Kirnig Südtiroler Edelpilze",
     "category": "mushroom_farm",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "south_tyrol",
     "country": "Italy",
     "countryCode": "IT",
@@ -4286,6 +4629,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Kozlović Winery",
     "greekName": "Vinarija Kozlović",
     "category": "winery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "istria",
     "country": "Croatia",
     "countryCode": "HR",
@@ -4352,6 +4697,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "KräuterReich Wegleit",
     "greekName": "KräuterReich Wegleit",
     "category": "herb_farm",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "south_tyrol",
     "country": "Italy",
     "countryCode": "IT",
@@ -4417,6 +4764,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Ktima Gerovassiliou",
     "greekName": "Κτήμα Γεροβασιλείου",
     "category": "winery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "northern_greece",
     "country": "Greece",
     "countryCode": "GR",
@@ -4472,6 +4821,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Ktima Pavlidis",
     "greekName": "Κτήμα Παυλίδη",
     "category": "winery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "northern_greece",
     "country": "Greece",
     "countryCode": "GR",
@@ -4519,6 +4870,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Ktima Tselepos",
     "greekName": "Κτήμα Τσέλεπου",
     "category": "winery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "peloponnese",
     "country": "Greece",
     "countryCode": "GR",
@@ -4575,6 +4928,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Kykao Handcrafted Beers",
     "greekName": "Χειροποίητη Ζυθοποιία Κύκαο",
     "category": "brewery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "peloponnese",
     "country": "Greece",
     "countryCode": "GR",
@@ -4620,6 +4975,42 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "La Vinyeta",
     "greekName": "La Vinyeta",
     "category": "winery",
+    "additionalCategories": [
+      "olive_oil_producer",
+      "cheese_dairy",
+      "apiary"
+    ],
+    "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "winery",
+        "specialties": [
+          "DO Empordà wines",
+          "Small-production and native-variety wines"
+        ],
+        "varieties": [
+          "Carinyena"
+        ]
+      },
+      {
+        "category": "olive_oil_producer",
+        "specialties": [
+          "Estate olive oil"
+        ]
+      },
+      {
+        "category": "cheese_dairy",
+        "specialties": [
+          "Estate-made cheese"
+        ]
+      },
+      {
+        "category": "apiary",
+        "specialties": [
+          "Estate-made honey"
+        ]
+      }
+    ],
     "destination": "catalonia",
     "country": "Spain",
     "countryCode": "ES",
@@ -4632,16 +5023,18 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     ],
     "coverImage": "",
     "gallery": [],
-    "tagLine": "A young Empordà estate where vineyards and century-old olive trees form one working farm landscape",
-    "description": "La Vinyeta is a DO Empordà winery and farm in Mollet de Peralada, surrounded by vineyards and old olive trees. The estate produces wine and olive oil and opens the property through guided tastings, vineyard visits and food-focused experiences.",
-    "story": "Josep and Marta began La Vinyeta while still in their early twenties, building a small estate around a commitment to the land and the Tramuntana-shaped landscape of the Empordà. Their project grew from vineyards into a broader farm identity that also includes olive oil and visitor experiences.",
+    "tagLine": "An Empordà family estate making wine, olive oil, cheese and honey",
+    "description": "La Vinyeta is a DO Empordà winery and farm in Mollet de Peralada, where vineyards, old olive trees, sheep and beehives form one working agricultural landscape. The estate makes wine, olive oil, cheese and honey; its visitor offer includes guided tastings, vineyard visits and food-focused experiences.",
+    "story": "Josep and Marta began La Vinyeta while still in their early twenties, building a small estate around a commitment to the land and the Tramuntana-shaped landscape of the Empordà. Alongside wine, their farm produces olive oil, cheese and honey, with sheep grazing the vineyards and bees contributing to the estate's biodiversity.",
     "indigenousVarieties": [
       "Carinyena"
     ],
     "productSpecialties": [
       "DO Empordà wines",
       "Estate olive oil",
-      "Small-production and native-variety wines"
+      "Small-production and native-variety wines",
+      "Estate-made cheese",
+      "Estate-made honey"
     ],
     "tastingHighlights": [
       "Guided vineyard and winery visit",
@@ -4681,6 +5074,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Lafkas Brewery",
     "greekName": "Ζυθοποιία Λάφκας",
     "category": "brewery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "crete",
     "country": "Greece",
     "countryCode": "GR",
@@ -4725,6 +5120,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Lahnerhof Distillery",
     "greekName": "Bauernbrennerei Lahnerhof",
     "category": "distillery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "south_tyrol",
     "country": "Italy",
     "countryCode": "IT",
@@ -4791,6 +5188,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Lenkhof",
     "greekName": "Lenkhof",
     "category": "cheese_dairy",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "south_tyrol",
     "country": "Italy",
     "countryCode": "IT",
@@ -4860,6 +5259,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Les Agnels",
     "greekName": "Les Agnels",
     "category": "distillery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "provence",
     "country": "France",
     "countryCode": "FR",
@@ -4940,6 +5341,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Liokareas",
     "greekName": "Ελαιοκτήματα Λιοκαρέα",
     "category": "olive_oil_producer",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "peloponnese",
     "country": "Greece",
     "countryCode": "GR",
@@ -4985,6 +5388,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Lyrarakis Winery",
     "greekName": "Οινοποιείο Λυραράκη",
     "category": "winery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "crete",
     "country": "Greece",
     "countryCode": "GR",
@@ -5039,6 +5444,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Manousakis Winery",
     "greekName": "Οινοποιείο Μανουσάκη",
     "category": "winery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "crete",
     "country": "Greece",
     "countryCode": "GR",
@@ -5097,6 +5504,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Formatgeria Mas d'Eroles",
     "greekName": "Formatgeria Mas d'Eroles",
     "category": "cheese_dairy",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "catalonia",
     "country": "Spain",
     "countryCode": "ES",
@@ -5159,6 +5568,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Masseria Il Frantoio",
     "greekName": "Masseria Il Frantoio",
     "category": "farm",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "puglia",
     "country": "Italy",
     "countryCode": "IT",
@@ -5210,6 +5621,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Mate Olive Oil",
     "greekName": "Mate Olive Oil",
     "category": "olive_mill",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "istria",
     "country": "Croatia",
     "countryCode": "HR",
@@ -5267,6 +5680,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Meligyris",
     "greekName": "Μελίγυρις Κρητικό Μέλι",
     "category": "apiary",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "crete",
     "country": "Greece",
     "countryCode": "GR",
@@ -5309,6 +5724,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "La Miellerie des Butineuses",
     "greekName": "La Miellerie des Butineuses",
     "category": "apiary",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "provence",
     "country": "France",
     "countryCode": "FR",
@@ -5367,6 +5784,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Moarhof Cheese Dairy",
     "greekName": "Hofkäserei Moarhof",
     "category": "cheese_dairy",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "south_tyrol",
     "country": "Italy",
     "countryCode": "IT",
@@ -5429,6 +5848,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Monemvasia Winery Tsimbidi",
     "greekName": "Οινοποιητική Μονεμβασιάς (Τσιμπίδη)",
     "category": "winery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "peloponnese",
     "country": "Greece",
     "countryCode": "GR",
@@ -5492,6 +5913,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Azienda Agricola Monteraponi",
     "greekName": "Azienda Agricola Monteraponi",
     "category": "winery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "tuscany",
     "country": "Italy",
     "countryCode": "IT",
@@ -5545,6 +5968,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Moulin du Clos des Jeannons",
     "greekName": "Moulin du Clos des Jeannons",
     "category": "olive_mill",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "provence",
     "country": "France",
     "countryCode": "FR",
@@ -5604,6 +6029,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "NoccioleNatura",
     "greekName": "NoccioleNatura",
     "category": "farm",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "piedmont",
     "country": "Italy",
     "countryCode": "IT",
@@ -5661,6 +6088,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Notos Brewery",
     "greekName": "Ζυθοποιία Νότος",
     "category": "brewery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "crete",
     "country": "Greece",
     "countryCode": "GR",
@@ -5703,6 +6132,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Nougaterie André Boyer",
     "greekName": "Nougaterie André Boyer",
     "category": "confectionery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "provence",
     "country": "France",
     "countryCode": "FR",
@@ -5767,6 +6198,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Silvain – Paysans Nougatiers",
     "greekName": "Silvain – Paysans Nougatiers",
     "category": "confectionery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "provence",
     "country": "France",
     "countryCode": "FR",
@@ -5845,6 +6278,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Olea B.B. / Oleum Viride Belić",
     "greekName": "Olea B.B. / Oleum Viride Belić",
     "category": "olive_oil_producer",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "istria",
     "country": "Croatia",
     "countryCode": "HR",
@@ -5918,6 +6353,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Molí dels Torms / Olicatessen",
     "greekName": "Molí dels Torms / Olicatessen",
     "category": "olive_mill",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "catalonia",
     "country": "Spain",
     "countryCode": "ES",
@@ -5974,6 +6411,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Olio Intini",
     "greekName": "Olio Intini",
     "category": "olive_mill",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "puglia",
     "country": "Italy",
     "countryCode": "IT",
@@ -6022,6 +6461,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Olio Mimì",
     "greekName": "Olio Mimì",
     "category": "olive_mill",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "puglia",
     "country": "Italy",
     "countryCode": "IT",
@@ -6068,6 +6509,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Mirto Verde Agricola / Olio Mio Sicily",
     "greekName": "Mirto Verde Agricola / Olio Mio Sicily",
     "category": "olive_mill",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "sicily",
     "country": "Italy",
     "countryCode": "IT",
@@ -6112,6 +6555,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Oljarna Kocbek",
     "greekName": "Oljarna Kocbek",
     "category": "oil_mill",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "pomurska",
     "country": "Slovenia",
     "countryCode": "SI",
@@ -6178,6 +6623,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Paraschakis Family Olive Oil Factory",
     "greekName": "Ελαιοτριβείο Παρασχάκη",
     "category": "olive_mill",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "crete",
     "country": "Greece",
     "countryCode": "GR",
@@ -6220,6 +6667,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Peralada Mas Marcè",
     "greekName": "Peralada Mas Marcè",
     "category": "cheese_dairy",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "catalonia",
     "country": "Spain",
     "countryCode": "ES",
@@ -6283,6 +6732,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Peskesi Organic Farm",
     "greekName": "Αγρόκτημα Πεσκέσι",
     "category": "farm",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "crete",
     "country": "Greece",
     "countryCode": "GR",
@@ -6343,6 +6794,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Sknipa Craft Beer",
     "greekName": "Πρότυπη Μικροζυθοποιία (Μπίρα Σκνίπα)",
     "category": "brewery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "northern_greece",
     "country": "Greece",
     "countryCode": "GR",
@@ -6393,6 +6846,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Psiloritis Cheese Dairy",
     "greekName": "Τυροκομείο Ψηλορείτης",
     "category": "cheese_dairy",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "crete",
     "country": "Greece",
     "countryCode": "GR",
@@ -6466,6 +6921,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Ra Nissora",
     "greekName": "Ra Nissora",
     "category": "farm",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "piedmont",
     "country": "Italy",
     "countryCode": "IT",
@@ -6544,6 +7001,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Ribafreixo Wines",
     "greekName": "Ribafreixo Wines",
     "category": "winery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "alentejo",
     "country": "Portugal",
     "countryCode": "PT",
@@ -6613,6 +7072,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Rueslåtten Ysteri / Hol Ysteri",
     "greekName": "Rueslåtten Ysteri / Hol Ysteri",
     "category": "cheese_dairy",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "buskerud",
     "country": "Norway",
     "countryCode": "NO",
@@ -6666,6 +7127,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Sabino Leone",
     "greekName": "Sabino Leone",
     "category": "olive_mill",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "puglia",
     "country": "Italy",
     "countryCode": "IT",
@@ -6732,6 +7195,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Santa Tresa",
     "greekName": "Santa Tresa",
     "category": "winery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "sicily",
     "country": "Italy",
     "countryCode": "IT",
@@ -6796,6 +7261,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Santo Wines Cooperative",
     "greekName": "Συνεταιρισμός Santo Wines Σαντορίνη",
     "category": "winery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "santorini",
     "country": "Greece",
     "countryCode": "GR",
@@ -6845,6 +7312,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Santorini Brewing Company (Donkey Beer)",
     "greekName": "Ζυθοποιία Σαντορίνης (Donkey Beer)",
     "category": "brewery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "santorini",
     "country": "Greece",
     "countryCode": "GR",
@@ -6898,6 +7367,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Schmiedthof",
     "greekName": "Schmiedthof",
     "category": "herb_farm",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "south_tyrol",
     "country": "Italy",
     "countryCode": "IT",
@@ -6958,6 +7429,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Semeli Estate Nemea",
     "greekName": "Κτήμα Σεμέλη Νεμέα",
     "category": "winery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "peloponnese",
     "country": "Greece",
     "countryCode": "GR",
@@ -7012,6 +7485,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Sennerhof",
     "greekName": "Sennerhof",
     "category": "cheese_dairy",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "south_tyrol",
     "country": "Italy",
     "countryCode": "IT",
@@ -7072,6 +7547,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Serra Ferdinandea",
     "greekName": "Serra Ferdinandea",
     "category": "winery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "sicily",
     "country": "Italy",
     "countryCode": "IT",
@@ -7123,6 +7600,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Silva Daskalaki Winery",
     "greekName": "Οινοποιείο Σίλβα Δασκαλάκη",
     "category": "winery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "crete",
     "country": "Greece",
     "countryCode": "GR",
@@ -7187,6 +7666,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Siris Craft Brewery (Voreia)",
     "greekName": "Μικροζυθοποιία Σερρών (Voreia)",
     "category": "brewery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "northern_greece",
     "country": "Greece",
     "countryCode": "GR",
@@ -7235,6 +7716,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Domaine Skouras",
     "greekName": "Κτήμα Σκούρας",
     "category": "winery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "peloponnese",
     "country": "Greece",
     "countryCode": "GR",
@@ -7286,6 +7769,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Solo Cretan Craft Brewery",
     "greekName": "Μικροζυθοποιία Σόλο",
     "category": "brewery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "crete",
     "country": "Greece",
     "countryCode": "GR",
@@ -7334,6 +7819,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Spildegarden",
     "greekName": "Spildegarden",
     "category": "cidery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "vestland",
     "country": "Norway",
     "countryCode": "NO",
@@ -7397,6 +7884,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Stamatogiorgis Dairy",
     "greekName": "Τυροκομείο Σταματογιώργης",
     "category": "cheese_dairy",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "crete",
     "country": "Greece",
     "countryCode": "GR",
@@ -7466,6 +7955,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Stankovič Honey Garden / Zavod Čebela",
     "greekName": "Zavod Čebela",
     "category": "apiary",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "southeast_slovenia",
     "country": "Slovenia",
     "countryCode": "SI",
@@ -7521,6 +8012,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "StathakisFamily Cretan Honey Experience",
     "greekName": "Μελισσοκομία Σταθάκη - Πάρκο Μέλισσας",
     "category": "apiary",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "crete",
     "country": "Greece",
     "countryCode": "GR",
@@ -7568,6 +8061,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Tenuta Cantagallo",
     "greekName": "Tenuta Cantagallo",
     "category": "winery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "tuscany",
     "country": "Italy",
     "countryCode": "IT",
@@ -7621,6 +8116,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Tenuta di Castellaro",
     "greekName": "Tenuta di Castellaro",
     "category": "winery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "sicily",
     "country": "Italy",
     "countryCode": "IT",
@@ -7693,6 +8190,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Tetramythos Winery",
     "greekName": "Οινοποιείο Τετράμυθος",
     "category": "winery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "peloponnese",
     "country": "Greece",
     "countryCode": "GR",
@@ -7741,6 +8240,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Thymiopoulos Vineyards Naoussa",
     "greekName": "Αμπελώνες Θυμιόπουλου",
     "category": "winery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "northern_greece",
     "country": "Greece",
     "countryCode": "GR",
@@ -7797,6 +8298,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Tingvollost",
     "greekName": "Tingvollost",
     "category": "cheese_dairy",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "more_og_romsdal",
     "country": "Norway",
     "countryCode": "NO",
@@ -7858,6 +8361,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Titakis Winery",
     "greekName": "Οινοποιείο Τιτάκη",
     "category": "winery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "crete",
     "country": "Greece",
     "countryCode": "GR",
@@ -7908,6 +8413,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Ktima Toplou",
     "greekName": "Κτήμα Τοπλού",
     "category": "winery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "crete",
     "country": "Greece",
     "countryCode": "GR",
@@ -7960,6 +8467,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Trnulja Estate",
     "greekName": "Ekološka kmetija Trnulja",
     "category": "farm",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "central_slovenia",
     "country": "Slovenia",
     "countryCode": "SI",
@@ -8011,6 +8520,32 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "K. Tsililis / Theopetra Estate",
     "greekName": "Κ. Τσιλιλής Α.Ε. / Κτήμα Θεόπετρα",
     "category": "winery",
+    "additionalCategories": [
+      "distillery"
+    ],
+    "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "winery",
+        "specialties": [
+          "Theopetra Estate wines"
+        ],
+        "varieties": [
+          "Limniona",
+          "Xinomavro",
+          "Malagousia",
+          "Assyrtiko"
+        ]
+      },
+      {
+        "category": "distillery",
+        "specialties": [
+          "Tsililis Tsipouro",
+          "Dark Cave aged grape distillate",
+          "Greek grape spirits"
+        ]
+      }
+    ],
     "destination": "thessaly",
     "country": "Greece",
     "countryCode": "GR",
@@ -8068,6 +8603,37 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Agricultural Cooperative Winery & Distillery of Tyrnavos",
     "greekName": "Αγροτικός Οινοποιητικός Συνεταιρισμός Τυρνάβου",
     "category": "winery",
+    "additionalCategories": [
+      "distillery"
+    ],
+    "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "winery",
+        "specialties": [
+          "PGI Tyrnavos wines",
+          "Moschato Tyrnavou wines",
+          "Grape must products"
+        ],
+        "varieties": [
+          "Moschato Tyrnavou",
+          "Roditis",
+          "Assyrtiko",
+          "Bantiki",
+          "Malagousia",
+          "Limniona",
+          "Xinomavro"
+        ]
+      },
+      {
+        "category": "distillery",
+        "specialties": [
+          "Tsipouro of Tyrnavos",
+          "Ouzo of Tyrnavos",
+          "Oak-aged tsipouro"
+        ]
+      }
+    ],
     "destination": "thessaly",
     "country": "Greece",
     "countryCode": "GR",
@@ -8129,6 +8695,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Tzourmpakis Dairy",
     "greekName": "Τυροκομείο Τζουρμπάκη",
     "category": "cheese_dairy",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "crete",
     "country": "Greece",
     "countryCode": "GR",
@@ -8171,6 +8739,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Vassaltis Vineyards Santorini",
     "greekName": "Αμπελώνες Βασάλτης",
     "category": "winery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "santorini",
     "country": "Greece",
     "countryCode": "GR",
@@ -8216,6 +8786,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Venetsanos Winery Santorini",
     "greekName": "Οινοποιείο Βενετσάνου Σαντορίνη",
     "category": "winery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "santorini",
     "country": "Greece",
     "countryCode": "GR",
@@ -8280,6 +8852,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Vina Guštin",
     "greekName": "Vina Guštin",
     "category": "winery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "goriska",
     "country": "Slovenia",
     "countryCode": "SI",
@@ -8333,6 +8907,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Vina Laguna / Agrolaguna",
     "greekName": "Vina Laguna / Agrolaguna",
     "category": "winery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "istria",
     "country": "Croatia",
     "countryCode": "HR",
@@ -8387,6 +8963,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Voliotis Family Olive Mill",
     "greekName": "Ελαιοτριβείο Οικογένειας Βολιώτη",
     "category": "olive_mill",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "thessaly",
     "country": "Greece",
     "countryCode": "GR",
@@ -8449,6 +9027,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "name": "Zacharioudakis Organic Winery",
     "greekName": "Βιολογικό Οινοποιείο Ζαχαριουδάκη",
     "category": "winery",
+    "additionalCategories": [],
+    "visitorFeatures": [],
     "destination": "crete",
     "country": "Greece",
     "countryCode": "GR",
