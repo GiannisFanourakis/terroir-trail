@@ -1,9 +1,10 @@
 import React from 'react';
 import type { Category } from '../../types/terroir';
 
-export type ProducerCategoryIconKey = Category | 'all' | 'producer';
+export type ProducerCategoryIconKey = Category | 'all' | 'producer' | 'museum';
 
 const ICON_BODIES: Record<ProducerCategoryIconKey, string> = {
+  museum: '<path d="m3 8 9-5 9 5H3ZM5 10v8M10 10v8M14 10v8M19 10v8M3 21h18M4 18h16"/>',
   all: '<path d="M4 6.5 12 3l8 3.5v11L12 21l-8-3.5z"/><path d="M12 3v18M4 6.5l8 4 8-4M4 17.5l8-4 8 4"/>',
   producer: '<path d="M5 20V9l7-5 7 5v11"/><path d="M9 20v-6h6v6M8 10h8"/>',
   winery: '<path d="M8 3h8l-1 5.5A4 4 0 0 1 12 12a4 4 0 0 1-3-3.5z"/><path d="M12 12v7M8.5 21h7"/>',

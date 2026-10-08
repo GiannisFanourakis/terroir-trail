@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest';
-import { producerService } from './producerService';
+import { producerService, mapRowToProducer } from './producerService';
 import { CRETAN_PRODUCERS } from '../data/producers';
 import { LIVE_CATALOGUE_PRODUCERS } from '../data/liveCatalogue.generated';
 import { ALL_EXPERIENCES } from '../data/experiences';
@@ -10,6 +10,7 @@ const EXPECTED_FALLBACK_COUNT = LIVE_CATALOGUE_PRODUCERS.length;
 const { mockSupabaseState } = vi.hoisted(() => {
   const mockSupabaseState = {
     isConfigured: true,
+    orFilters: [] as string[],
     queryResults: new Map<string, { data: any; error: any }>(),
     singleResults: new Map<string, { data: any; error: any }>(),
   };
@@ -37,7 +38,7 @@ vi.mock('./supabase', () => ({
           gte: vi.fn(() => queryObj),
           lte: vi.fn(() => queryObj),
           neq: vi.fn(() => queryObj),
-          or: vi.fn(() => queryObj),
+          or: vi.fn((filter: string) => { mockSupabaseState.orFilters.push(filter); return queryObj; }),
           range: vi.fn(() => queryObj),
           single: vi.fn(() => {
             const key = currentFilterId ? `${table}:${currentFilterId}` : table;
@@ -67,6 +68,33 @@ describe('producerService — Supabase / Fallback Data Ownership', () => {
     mockSupabaseState.isConfigured = true;
     mockSupabaseState.queryResults.clear();
     mockSupabaseState.singleResults.clear();
+    mockSupabaseState.orFilters = [];
+  });
+
+  it('maps secondary categories without changing primary identity or unknown visitor facts', () => {
+    const p = mapRowToProducer({ id: 'dual', name: 'Dual maker', category: 'winery', destination: 'crete',
+      additional_categories: ['olive_mill', 'winery', 'museum', 'olive_mill'],
+      visitor_features: ['museum', 'winery'], product_sections: [{ category: 'olive_mill', specialties: ['Estate oil'] }] });
+    expect(p.category).toBe('winery');
+    expect(p.additionalCategories).toEqual(['olive_mill']);
+    expect(p.visitorFeatures).toEqual(['museum']);
+    expect(p.productSections).toEqual([{ category: 'olive_mill', specialties: ['Estate oil'] }]);
+    expect(p.visitStatus).toBeUndefined();
+    expect(p.roadAccess).toBeUndefined();
+    const legacy = mapRowToProducer({ id: 'old', category: 'winery', destination: 'crete' });
+    expect(legacy.additionalCategories).toBeUndefined();
+    expect(legacy.visitorFeatures).toBeUndefined();
+    expect(legacy.productSections).toBeUndefined();
+  });
+
+  it('queries primary or secondary category membership while caching one authoritative entity', async () => {
+    mockSupabaseState.queryResults.set('producers', { data: [{ id: 'dual', name: 'Dual maker',
+      category: 'winery', additional_categories: ['olive_mill'], destination: 'crete' }], error: null });
+    const rows = await producerService.getProducers({ category: 'olive_mill' });
+    expect(mockSupabaseState.orFilters).toContain('category.eq.olive_mill,additional_categories.cs.{olive_mill}');
+    expect(rows.map((p) => p.id)).toEqual(['dual']);
+    expect(producerService.getCachedProducers()).toHaveLength(1);
+    expect(producerService.getCacheProvenance()).toBe('live');
   });
 
   it('Supabase successful response replaces seed catalogue', async () => {

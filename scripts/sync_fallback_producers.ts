@@ -4,6 +4,8 @@ import dotenv from 'dotenv';
 import { createClient } from '@supabase/supabase-js';
 import { Producer, Category, Destination, Ethos, FoodOption, RoadAccess } from '../src/types/terroir';
 import { DESTINATION_GEOGRAPHY } from '../src/config/geography';
+import { getProducerCategories } from '../src/utils/producerCategory';
+import { parseAdditionalCategories, parseVisitorFeatures, parseProductSections } from '../src/utils/producerClassification';
 
 dotenv.config();
 
@@ -38,6 +40,11 @@ function mapRowToProducer(row: any): Producer {
     openingHours: row.opening_hours || '',
     ethos: Array.isArray(row.ethos) ? (row.ethos as Ethos[]) : [],
   };
+
+  if (Array.isArray(row.additional_categories)) prod.additionalCategories = parseAdditionalCategories(row.additional_categories, prod.category);
+  if (Array.isArray(row.visitor_features)) prod.visitorFeatures = parseVisitorFeatures(row.visitor_features);
+  const productSections = parseProductSections(row.product_sections, getProducerCategories(prod));
+  if (productSections !== undefined) prod.productSections = productSections;
 
   if (row.best_season) prod.bestSeason = row.best_season;
   if (row.phone) prod.phone = row.phone;

@@ -386,3 +386,83 @@
 .mobile-scroll::-webkit-scrollbar-thumb:active {
   background: rgba(245, 158, 11, 0.9);
 }
+
+/* One geographically anchored marker, with primary-first maker symbols. */
+.modern-map-pin.multi-category-pin {
+  position: relative;
+  max-width: var(--pin-expanded-width);
+  transform-origin: calc(var(--pin-compact-width) / 2) center;
+}
+.pin-maker-symbols {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  gap: 2px;
+  flex-shrink: 0;
+}
+.modern-map-pin.multi-category-pin .pin-category-symbol {
+  width: 24px;
+  height: 24px;
+  font-size: 15px;
+}
+.modern-map-pin.multi-category-pin[data-category-count="1"] .pin-category-symbol {
+  width: 26px;
+  height: 26px;
+}
+.modern-map-pin.multi-category-pin.producer-pin-compact {
+  width: var(--pin-compact-width) !important;
+  min-width: var(--pin-compact-width) !important;
+  max-width: var(--pin-compact-width) !important;
+  height: 36px;
+  padding: 3px !important;
+  gap: 0 !important;
+  justify-content: center;
+}
+.modern-map-pin.multi-category-pin.producer-pin-detailed {
+  width: var(--pin-expanded-width) !important;
+  min-width: var(--pin-expanded-width) !important;
+  max-width: var(--pin-expanded-width) !important;
+}
+.modern-map-pin.multi-category-pin.producer-pin-detailed .pin-text-container {
+  max-width: 130px !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+.pin-category-overflow {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 18px;
+  height: 24px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #e7e5e4;
+}
+.pin-museum-badge {
+  position: absolute;
+  right: -6px;
+  top: -9px;
+  width: 19px;
+  height: 19px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+  border-radius: 50%;
+  background: #082f49;
+  color: #bae6fd;
+  border: 1px solid #38bdf8;
+  box-shadow: 0 2px 4px rgba(0,0,0,.4);
+}
+.modern-map-pin.active-pin .pin-category-overflow { color: #0c0a09; }
+@media (pointer: coarse) {
+  .custom-leaflet-pin-wrapper::before {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    min-width: 44px;
+    min-height: 44px;
+    pointer-events: auto;
+  }
+}

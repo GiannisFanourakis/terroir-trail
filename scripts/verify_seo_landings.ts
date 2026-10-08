@@ -1,6 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 import type { Producer } from '../src/types/terroir';
+import { getProducerCategories } from '../src/utils/producerCategory';
+import { groupProducersByMembership } from './producerGroups';
 import {
   LIVE_CATALOGUE_METRICS,
   SEO_PRODUCERS,
@@ -169,10 +171,10 @@ function verifySeo(): void {
   for (const id of ids) if (!/^[a-z0-9-]+$/.test(id)) fail(`Producer id is not path-safe: ${id}`);
 
   const destinationGroups = groupBy(PRODUCERS, (producer) => producer.destination);
-  const categoryGroups = groupBy(PRODUCERS, (producer) => producer.category);
+  const categoryGroups = groupProducersByMembership(PRODUCERS, getProducerCategories);
   const regionGroups = groupBy(PRODUCERS, (producer) => `${producer.destination}::${producer.region}`);
-  const countryCategoryGroups = groupBy(PRODUCERS, (producer) => `${destinationConfig[producer.destination].countrySlug}::${producer.category}`);
-  const comboGroups = groupBy(PRODUCERS, (producer) => `${producer.destination}::${producer.category}`);
+  const countryCategoryGroups = groupProducersByMembership(PRODUCERS, (producer) => getProducerCategories(producer).map((category) => `${destinationConfig[producer.destination].countrySlug}::${category}`));
+  const comboGroups = groupProducersByMembership(PRODUCERS, (producer) => getProducerCategories(producer).map((category) => `${producer.destination}::${category}`));
   const countryGroups = groupBy(PRODUCERS, (producer) => destinationConfig[producer.destination].countrySlug);
 
   const expectedLandingPaths = new Map<string, number>();
@@ -376,11 +378,13 @@ function verifySeo(): void {
     requireIncludes(pageContent, 'href="/producers/"', `Producer page ${producer.id}`);
     requireIncludes(pageContent, 'href="/methodology/"', `Producer methodology link ${producer.id}`);
     requireIncludes(pageContent, `href="${destinationPath(producer.destination)}"`, `Producer destination link ${producer.id}`);
-    if ((categoryGroups.get(producer.category) || []).length >= MIN_CATEGORY_RECORDS) requireIncludes(pageContent, `href="${categoryPath(producer.category)}"`, `Producer category link ${producer.id}`);
     const producerCountrySlug = destinationConfig[producer.destination].countrySlug;
-    if ((countryCategoryGroups.get(`${producerCountrySlug}::${producer.category}`) || []).length >= MIN_COUNTRY_CATEGORY_RECORDS) requireIncludes(pageContent, `href="${countryCategoryPath(producerCountrySlug, producer.category)}"`, `Producer country/category link ${producer.id}`);
+    for (const category of getProducerCategories(producer)) {
+      if ((categoryGroups.get(category) || []).length >= MIN_CATEGORY_RECORDS) requireIncludes(pageContent, `href="${categoryPath(category)}"`, `Producer category link ${producer.id}`);
+      if ((countryCategoryGroups.get(`${producerCountrySlug}::${category}`) || []).length >= MIN_COUNTRY_CATEGORY_RECORDS) requireIncludes(pageContent, `href="${countryCategoryPath(producerCountrySlug, category)}"`, `Producer country/category link ${producer.id}`);
+      if ((comboGroups.get(`${producer.destination}::${category}`) || []).length >= MIN_DESTINATION_CATEGORY_RECORDS) requireIncludes(pageContent, `href="${comboPath(producer.destination, category)}"`, `Producer destination/category link ${producer.id}`);
+    }
     if ((regionGroups.get(`${producer.destination}::${producer.region}`) || []).length >= MIN_REGION_RECORDS) requireIncludes(pageContent, `href="${regionPath(producer.destination, producer.region)}"`, `Producer region link ${producer.id}`);
-    if ((comboGroups.get(`${producer.destination}::${producer.category}`) || []).length >= MIN_DESTINATION_CATEGORY_RECORDS) requireIncludes(pageContent, `href="${comboPath(producer.destination, producer.category)}"`, `Producer destination/category link ${producer.id}`);
     if (!producer.description && !producer.story && !producer.tagLine) fail(`Producer ${producer.id} has no narrative source for an entity page.`);
     if (pageContent.includes(`<link rel="canonical" href="${CANONICAL_HOST}/?producer=`)) fail(`Producer page ${producer.id} canonicalizes to legacy query state.`);
 

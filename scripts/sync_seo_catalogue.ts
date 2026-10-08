@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import type { Producer } from '../src/types/terroir';
+import { getProducerCategories } from '../src/utils/producerCategory';
 import { buildCatalogueState } from './catalogueState';
 import { fetchActiveProducerRows } from './liveCatalogueSource';
 
@@ -90,7 +91,7 @@ export const ACTIVE_PRODUCER_IDS = ${JSON.stringify(ids, null, 2)} as const;
     )
   ).sort((a, b) => a.localeCompare(b));
   const categoryNames = Array.from(
-    new Set(producers.map((producer) => producer.category))
+    new Set(producers.flatMap(getProducerCategories))
   )
     .map((category) => CATEGORY_LABELS[category] ?? category)
     .sort((a, b) => a.localeCompare(b));

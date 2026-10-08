@@ -15,6 +15,16 @@ export type Category =
 
 export type ProducerCategory = Category;
 
+/** Visitor offerings are independent of the producer's maker categories. */
+export type VisitorFeature = 'museum' | 'tasting' | 'guided_tour';
+
+export interface ProducerProductSection {
+  category: Category;
+  specialties: string[];
+  varieties?: string[];
+  highlights?: string[];
+}
+
 export type Destination = 
   // Greece (5)
   | 'crete' 
@@ -137,6 +147,12 @@ export interface Producer {
   /** Legacy frontend alias for the producer's local-language name. Persistence uses public.producers.local_name. */
   greekName: string;
   category: Category;
+  /** Verified additional maker activities. The primary category remains canonical. */
+  additionalCategories?: Category[];
+  /** An empty or missing list means no visitor features have been confirmed. */
+  visitorFeatures?: VisitorFeature[];
+  /** Source-backed products grouped by maker activity; legacy fields remain the fallback. */
+  productSections?: ProducerProductSection[];
   destination: Destination;
   country?: string; // e.g. "Greece", "Italy"
   countryCode?: string; // e.g. "GR", "IT"
@@ -211,4 +227,5 @@ export interface FilterState {
   walkInOnly: boolean;
   campervanOnly: boolean;
   favoritesOnly: boolean;
+  museumOnly?: boolean;
 }

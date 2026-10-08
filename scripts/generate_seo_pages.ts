@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import type { Producer } from '../src/types/terroir';
+import { getProducerCategories } from '../src/utils/producerCategory';
 import { DESTINATION_GEOGRAPHY } from '../src/config/geography';
 import { getProducerRoadAccessSourceUrl } from '../src/utils/producerAccess';
 import { LIVE_CATALOGUE_METRICS, SEO_PRODUCERS } from './seoCatalogue';
@@ -157,7 +158,7 @@ const buildDescription = (producer: Producer): string => {
   const source = producer.tagLine
     ? `${producer.tagLine}. ${producer.description}`
     : producer.description || producer.story;
-  return truncate(source || `${producer.name}, ${categoryLabels[producer.category]} in ${producer.region}.`, 158);
+  return truncate(source || `${producer.name}, ${getProducerCategories(producer).map((category) => categoryLabels[category]).join(' · ')} in ${producer.region}.`, 158);
 };
 
 const buildJsonLd = (producer: Producer, canonicalUrl: string, pageTitle: string, description: string): string => {
@@ -198,7 +199,7 @@ const buildJsonLd = (producer: Producer, canonicalUrl: string, pageTitle: string
     name: producer.name,
     url: producer.website || canonicalUrl,
     description: normalizeText(producer.description || producer.tagLine || description),
-    disambiguatingDescription: `${categoryLabels[producer.category]} in ${[locality, producer.region, country].filter(Boolean).join(', ')}`,
+    disambiguatingDescription: `${getProducerCategories(producer).map((category) => categoryLabels[category]).join(' · ')} in ${[locality, producer.region, country].filter(Boolean).join(', ')}`,
     mainEntityOfPage: { '@id': canonicalUrl },
     location,
   };
@@ -248,7 +249,7 @@ const renderProducerPage = (producer: Producer): string => {
   const interactiveUrl = `${CANONICAL_HOST}/?producer=${encodeURIComponent(producer.id)}`;
   const title = `${producer.name} — ${producer.region} | TerroirTrail`;
   const description = buildDescription(producer);
-  const category = categoryLabels[producer.category];
+  const category = getProducerCategories(producer).map((category) => categoryLabels[category]).join(' · ');
   const location = publicPointAnswer(producer);
   const visiting = visitAnswer(producer);
   const access = accessAnswer(producer);
@@ -259,9 +260,10 @@ const renderProducerPage = (producer: Producer): string => {
     renderSourceLink('Location source', producer.locationSourceUrl),
     renderSourceLink('Road-access source', getProducerRoadAccessSourceUrl(producer)),
   ].filter(Boolean).join('\n            ');
-  const publishedProducts = producer.productSpecialties?.length
-    ? producer.productSpecialties
-    : producer.indigenousVarieties;
+  const groupedProducts = producer.productSections?.flatMap((section) => section.specialties) ?? [];
+  const publishedProducts = groupedProducts.length
+    ? [...new Set(groupedProducts)]
+    : producer.productSpecialties?.length ? producer.productSpecialties : producer.indigenousVarieties;
   const publishedItems = publishedProducts?.length
     ? `<section><h2>Published varieties or products</h2><p>${publishedProducts.map(escapeHtml).join(', ')}</p></section>`
     : '';
@@ -338,7 +340,7 @@ const renderProducerDirectory = (): string => {
       .sort((a, b) => a.region.localeCompare(b.region) || a.name.localeCompare(b.name));
     if (producers.length === 0) return '';
     const items = producers.map((producer) =>
-      `<li><a href="${producerPath(producer)}"><strong>${escapeHtml(producer.name)}</strong><small>${escapeHtml(categoryLabels[producer.category])} · ${escapeHtml(producer.village)}, ${escapeHtml(producer.region)}</small></a></li>`
+      `<li><a href="${producerPath(producer)}"><strong>${escapeHtml(producer.name)}</strong><small>${escapeHtml(getProducerCategories(producer).map((category) => categoryLabels[category]).join(' · '))} · ${escapeHtml(producer.village)}, ${escapeHtml(producer.region)}</small></a></li>`
     ).join('\n');
     return `<section><h2>${escapeHtml(destinationLabels[destination])}</h2><ul class="directory">${items}</ul></section>`;
   }).join('\n');

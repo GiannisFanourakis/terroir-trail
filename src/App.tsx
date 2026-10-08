@@ -32,6 +32,9 @@ import {
 } from './services/browserStorage';
 import { saveUserProfileToCloud } from './services/firebase';
 import { filterProducers } from './utils/filterProducers';
+import { getProducerCategories } from './utils/producerCategory';
+import { isCategoryPreview } from './config/categoryPreview';
+import { CategoryPreviewBar } from './components/Common/CategoryPreviewBar';
 import { producerService } from './services/producerService';
 import { CountryScope, setActiveCountryScope } from './config/geography';
 import { usePwaInstall } from './hooks/usePwaInstall';
@@ -246,7 +249,7 @@ export const App: React.FC = () => {
   };
   const [showFirstRunWelcome, setShowFirstRunWelcome] = useState<boolean>(
     () =>
-      !readStorage<boolean>(STORAGE_KEYS.FIRST_RUN_WELCOME, false, {
+      !isCategoryPreview() && !readStorage<boolean>(STORAGE_KEYS.FIRST_RUN_WELCOME, false, {
         scope: 'Onboarding',
         validator: (value) => typeof value === 'boolean',
       })
@@ -298,7 +301,7 @@ export const App: React.FC = () => {
   const hasExplorerFeatureAccess = hasAdFreeTravelerPass || hasAdminQaAccess;
 
   useEffect(() => {
-    setIntentAnalyticsSuppressed(hasAdminQaAccess);
+    setIntentAnalyticsSuppressed(hasAdminQaAccess || isCategoryPreview());
     return () => setIntentAnalyticsSuppressed(false);
   }, [hasAdminQaAccess]);
 
@@ -374,6 +377,7 @@ export const App: React.FC = () => {
     walkInOnly: false,
     campervanOnly: false,
     favoritesOnly: false,
+    museumOnly: false,
   };
 
   const [filters, setFilters] = useState<FilterState>(initialFilters);
@@ -427,6 +431,17 @@ export const App: React.FC = () => {
     [producers, overrides]
   );
 
+  const previewFocusApplied = useRef(false);
+  useEffect(() => {
+    if (!isCategoryPreview() || previewFocusApplied.current) return;
+    const focusedId = new URLSearchParams(window.location.search).get('focus') || 'anoskeli-estate';
+    const focused = publicProducers.find((producer) => producer.id === focusedId);
+    if (!focused) return;
+    previewFocusApplied.current = true;
+    setSelectedProducer(focused);
+    setIsDrawerOpen(false);
+  }, [publicProducers]);
+
   const publicSelectedProducer = useMemo(
     () =>
       selectedProducer
@@ -459,7 +474,7 @@ export const App: React.FC = () => {
 
   const regionGuideCategoryCount = useMemo(
     () =>
-      new Set(regionGuideProducers.map((producer) => producer.category)).size,
+      new Set(regionGuideProducers.flatMap(getProducerCategories)).size,
     [regionGuideProducers]
   );
 
@@ -594,6 +609,7 @@ export const App: React.FC = () => {
   return (
     <div className="flex flex-col h-[100dvh] w-full overflow-hidden bg-stone-950 font-sans text-stone-100">
       <OfflineStatus />
+      {import.meta.env.DEV && isCategoryPreview() && <CategoryPreviewBar />}
       <Header
         selectedDestination={filters.destination}
         onSelectDestination={(dest: Destination | 'all') =>

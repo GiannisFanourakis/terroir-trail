@@ -1,4 +1,5 @@
 import type { Producer } from '../src/types/terroir';
+import { getProducerCategories } from '../src/utils/producerCategory';
 import { DESTINATION_GEOGRAPHY, SUPPORTED_COUNTRIES, SUPPORTED_COUNTRY_CODES } from '../src/config/geography';
 import { CATALOGUE_REVIEWED_AT } from '../src/data/catalogueMetadata';
 import { SEO_LIVE_PRODUCERS } from './seoLiveCatalogue.generated';
@@ -27,7 +28,7 @@ const countryCounts = countBy(activeCountries);
 const countryCodeCounts = countBy(activeCountryCodes);
 const destinationCounts = countBy(SEO_PRODUCERS.map((producer) => producer.destination));
 const regionCounts = countBy(SEO_PRODUCERS.map((producer) => producer.region));
-const categoryCounts = countBy(SEO_PRODUCERS.map((producer) => producer.category));
+const categoryCounts = countBy(SEO_PRODUCERS.flatMap(getProducerCategories));
 
 export const LIVE_CATALOGUE_METRICS = {
   verifiedAt: CATALOGUE_REVIEWED_AT,

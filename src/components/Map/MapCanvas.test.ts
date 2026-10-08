@@ -277,7 +277,9 @@ describe('MapCanvas marker diffing, in-place updates, and motion preferences', (
       rating: 4.8,
     });
     const sig1 = getProducerMarkerSignature(p1);
-    expect(sig1).toContain('p1|35.2,25.1|Estate One|Archanes|Heraklion|winery|4.8');
+    expect(sig1).toContain('p1|35.2,25.1|Estate One|Archanes|Heraklion|winery||4.8');
+    expect(getProducerMarkerSignature({ ...p1, additionalCategories: ['olive_mill'] })).not.toBe(sig1);
+    expect(getProducerMarkerSignature({ ...p1, visitorFeatures: ['museum'] })).not.toBe(sig1);
 
     const p1ChangedRating = { ...p1, rating: 4.9 };
     const sig2 = getProducerMarkerSignature(p1ChangedRating);

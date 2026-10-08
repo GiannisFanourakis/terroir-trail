@@ -5,8 +5,10 @@ import {
   Plus, Minus, Navigation, Maximize2, Layers, MapPin,
   Star, ArrowRight, ExternalLink, X, Compass, ChevronRight, Heart, AlertCircle, Mountain
 } from 'lucide-react';
-import { getCategoryFallbackImage } from '../../utils/imageFallbacks';
-import { getEffectiveProducerCategory } from '../../utils/producerCategory';
+import { getProducerCategories, formatProducerCategories } from '../../utils/producerCategory';
+import { isCategoryPreview } from '../../config/categoryPreview';
+import { getProducerMarkerHtml, getProducerMarkerDimensions } from '../../utils/producerMapPins';
+import { ProducerCategoryBadges } from '../Common/ProducerCategoryBadges';
 import { resolveProducerCover } from '../../utils/producerMediaResolver';
 import { getUserCoordinates } from '../../services/geolocation';
 import { TERROIR_REGIONS } from '../../data/terroirRegionCatalogue';
@@ -16,7 +18,6 @@ import {
   getDestinationCountry,
 } from '../../config/geography';
 import type { CountryScope } from '../../config/geography';
-import { getProducerCategoryIconMarkup } from '../Common/ProducerCategoryIcon';
 import type { SourceSurface } from '../../services/intentAnalytics';
 
 interface MapCanvasProps {
@@ -106,7 +107,7 @@ export const getAutomaticDestinationZoom = (targetZoom: number): number =>
 
 export const getProducerMarkerSignature = (producer: Producer): string => {
   const [lat, lng] = producer.coordinates;
-  const effectiveCat = getEffectiveProducerCategory(producer);
+  const effectiveCat = getProducerCategories(producer).join(',') + '|' + (producer.visitorFeatures || []).join(',');
   return `${producer.id}|${lat},${lng}|${producer.name}|${producer.village || ''}|${producer.region}|${effectiveCat}|${producer.rating ?? ''}`;
 };
 
@@ -310,82 +311,6 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     },
   };
 
-  const getMarkerHtml = (
-    producer: Producer,
-    isSelected: boolean,
-    renderMode: ProducerMarkerRenderMode = 'detailed'
-  ) => {
-    const effectiveCategory = getEffectiveProducerCategory(producer);
-    const icon = getProducerCategoryIconMarkup(effectiveCategory);
-    let iconBg = 'bg-stone-500/20 text-stone-200 border-white/20';
-
-    switch (effectiveCategory) {
-      case 'winery':
-        iconBg = 'bg-rose-500/20 text-rose-200 border-rose-500/45';
-        break;
-      case 'brewery':
-        iconBg = 'bg-amber-400/20 text-amber-200 border-amber-400/50';
-        break;
-      case 'distillery':
-        iconBg = 'bg-amber-600/20 text-amber-200 border-amber-600/45';
-        break;
-      case 'cidery':
-        iconBg = 'bg-lime-600/20 text-lime-200 border-lime-600/45';
-        break;
-      case 'confectionery':
-        iconBg = 'bg-amber-700/20 text-amber-200 border-amber-700/45';
-        break;
-      case 'oil_mill':
-        iconBg = 'bg-yellow-600/20 text-yellow-200 border-yellow-600/45';
-        break;
-      case 'herb_farm':
-        iconBg = 'bg-green-600/20 text-green-200 border-green-600/45';
-        break;
-      case 'mushroom_farm':
-        iconBg = 'bg-stone-600/20 text-stone-200 border-stone-500/45';
-        break;
-      case 'olive_mill':
-      case 'olive_oil_producer':
-        iconBg = 'bg-emerald-500/20 text-emerald-200 border-emerald-500/45';
-        break;
-      case 'cheese_dairy':
-        iconBg = 'bg-yellow-500/20 text-yellow-200 border-yellow-500/45';
-        break;
-      case 'apiary':
-        iconBg = 'bg-orange-500/20 text-orange-200 border-orange-500/45';
-        break;
-      case 'farm':
-        iconBg = 'bg-emerald-500/20 text-emerald-200 border-emerald-500/45';
-        break;
-    }
-
-    const shortVillage = producer.village
-      ? producer.village.split('(')[0].split(',')[0].trim()
-      : producer.region;
-
-    if (renderMode === 'compact' && !isSelected) {
-      return `
-        <div class="modern-map-pin" title="${producer.name}">
-          <div class="pin-icon-circle ${iconBg} border">
-            ${icon}
-          </div>
-        </div>
-      `;
-    }
-
-    return `
-      <div class="modern-map-pin ${isSelected ? 'active-pin' : ''}">
-        <div class="pin-icon-circle ${iconBg} border">
-          ${icon}
-        </div>
-        <div class="pin-text-container">
-          <span class="pin-text-label" title="${producer.name}">${producer.name}</span>
-          <span class="pin-text-sub">${producer.rating != null ? `Rating ${producer.rating} · ` : ''}${shortVillage}</span>
-        </div>
-      </div>
-    `;
-  };
-
   const resolveProducerMarkerRenderMode = (zoom: number): ProducerMarkerRenderMode =>
     pinDisplayMode === 'compact'
       ? 'compact'
@@ -394,6 +319,21 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       : zoom < 12
       ? 'compact'
       : 'detailed';
+
+  const updateProducerMarkerAccessibility = (marker: L.Marker, producer: Producer) => {
+    const element = marker.getElement();
+    if (!element) return;
+    const label = `${producer.name}, ${formatProducerCategories(producer)}${producer.visitorFeatures?.includes('museum') ? ', Museum' : ''}, ${producer.village}, ${producer.region}. Open producer preview.`;
+    element.setAttribute('role', 'button');
+    element.setAttribute('tabindex', '0');
+    element.setAttribute('aria-label', label);
+    element.onkeydown = (event: KeyboardEvent) => {
+      if (event.key !== 'Enter' && event.key !== ' ') return;
+      event.preventDefault();
+      setActiveRegionId(null);
+      onSelectProducerRef.current(producersMapRef.current.get(producer.id) || producer);
+    };
+  };
 
   const getProducerMarkerIcon = (
     producer: Producer,
@@ -404,18 +344,16 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
 
     if (useCompactIcon) {
       return L.divIcon({
-        html: getMarkerHtml(producer, false, 'compact'),
+        html: getProducerMarkerHtml(producer, false, true),
         className: 'custom-leaflet-pin-wrapper',
-        iconSize: [36, 36],
-        iconAnchor: [18, 18],
+        ...getProducerMarkerDimensions(producer, true),
       });
     }
 
     return L.divIcon({
-      html: getMarkerHtml(producer, isSelected),
+      html: getProducerMarkerHtml(producer, isSelected),
       className: 'custom-leaflet-pin-wrapper',
-      iconSize: [180, 42],
-      iconAnchor: [90, 21],
+      ...getProducerMarkerDimensions(producer, false),
     });
   };
 
@@ -617,6 +555,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
         }
 
         if (!map.hasLayer(existingMarker)) existingMarker.addTo(map);
+        updateProducerMarkerAccessibility(existingMarker, producer);
         return existingMarker;
       }
 
@@ -624,7 +563,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
         icon: getProducerMarkerIcon(producer, isSelected, renderMode),
         riseOnHover: true,
         keyboard: true,
-        title: `${producer.name} — ${producer.village}, ${producer.region}`,
+        title: `${producer.name} — ${formatProducerCategories(producer)} — ${producer.village}, ${producer.region}`,
         zIndexOffset: isSelected ? 1000 : 0,
       });
 
@@ -636,28 +575,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       });
 
       marker.addTo(map);
-      const markerElement = marker.getElement();
-      if (markerElement) {
-        markerElement.setAttribute('role', 'button');
-        markerElement.setAttribute(
-          'aria-label',
-          `Open ${producer.name}, ${producer.village}, ${producer.region}`
-        );
-        markerElement.setAttribute('aria-haspopup', 'dialog');
-
-        const handleMarkerKeyDown = (event: KeyboardEvent) => {
-          if (event.key !== 'Enter' && event.key !== ' ') return;
-          event.preventDefault();
-          setActiveRegionId(null);
-          const currentProducer =
-            producersMapRef.current.get(producer.id) || producer;
-          onSelectProducerRef.current(currentProducer);
-        };
-        markerElement.addEventListener('keydown', handleMarkerKeyDown);
-        marker.once('remove', () => {
-          markerElement.removeEventListener('keydown', handleMarkerKeyDown);
-        });
-      }
+      updateProducerMarkerAccessibility(marker, producer);
       markersRef.current[producer.id] = marker;
       markerSignaturesRef.current[producer.id] = newSignature;
       markerRenderModesRef.current[producer.id] = renderMode;
@@ -792,6 +710,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
         );
         markerRenderModesRef.current[prevId] = previousRenderMode;
         prevMarker.setZIndexOffset(0);
+        updateProducerMarkerAccessibility(prevMarker, prevProducer);
       }
     }
 
@@ -803,6 +722,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
         );
         markerRenderModesRef.current[newId] = 'detailed';
         nextMarker.setZIndexOffset(1000);
+        updateProducerMarkerAccessibility(nextMarker, selectedProducer);
       }
     }
   }, [selectedProducer, pinDisplayMode]);
@@ -817,6 +737,18 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     setActiveRegionId(null);
     const [lat, lng] = selectedProducer.coordinates;
     if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
+
+    if (import.meta.env.DEV && isCategoryPreview()) {
+      // Let the initial geography animation settle before focusing the review example.
+      const previewTimer = window.setTimeout(() => {
+        map.stop();
+        map.setView([lat, lng], Math.max(13, map.getZoom()), { animate: false });
+        if ((mapContainerRef.current?.clientWidth ?? 1024) < 640) {
+          map.panBy([80, 0], { animate: false });
+        }
+      }, 350);
+      return () => window.clearTimeout(previewTimer);
+    }
 
     const comfortableBounds = map.getBounds().pad(-0.15);
     if (comfortableBounds.contains([lat, lng])) return;
@@ -894,25 +826,6 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     return () => window.clearTimeout(timer);
   }, [autoLocate, handleLocateMe]);
 
-  const formatCategoryName = (producer: Producer) => {
-    switch (getEffectiveProducerCategory(producer)) {
-      case 'winery': return 'Winery';
-      case 'brewery': return 'Brewery';
-      case 'distillery': return 'Distillery';
-      case 'cidery': return 'Cidery';
-      case 'confectionery': return 'Confectionery Producer';
-      case 'oil_mill': return 'Oil Mill';
-      case 'herb_farm': return 'Herb Farm';
-      case 'mushroom_farm': return 'Mushroom Farm';
-      case 'olive_mill': return 'Olive Mill';
-      case 'olive_oil_producer': return 'Olive Oil Producer';
-      case 'cheese_dairy': return 'Dairy';
-      case 'apiary': return 'Apiary / Honey';
-      case 'farm': return 'Farm';
-      default: return 'Producer';
-    }
-  };
-
   const selectedResolvedCover = selectedProducer
     ? resolveProducerCover(selectedProducer)
     : null;
@@ -920,7 +833,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     ? producers.filter((producer) => producer.destination === activeTerroirRegion.destination)
     : [];
   const currentRegionCategoryCount = new Set(
-    currentRegionMatchingProducers.map((producer) => getEffectiveProducerCategory(producer))
+    currentRegionMatchingProducers.flatMap(getProducerCategories)
   ).size;
 
   return (
@@ -1210,7 +1123,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
                 <div className="flex items-center justify-between gap-1">
                   <div className="min-w-0">
                     <span className="block text-[9px] sm:text-[10px] uppercase font-bold tracking-wider text-amber-400 truncate">
-                      {formatCategoryName(selectedProducer)} · {selectedProducer.region}
+                      {selectedProducer.region}
                     </span>
                     {selectedProducer.publicPointType === 'producer_shop' && (
                       <span className="block text-[9px] text-sky-300 font-semibold mt-0.5">
@@ -1251,6 +1164,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
                 <p className="text-[11px] sm:text-xs text-stone-400 truncate mt-0.5">
                   {selectedProducer.tagLine}
                 </p>
+                <div className="mt-2"><ProducerCategoryBadges producer={selectedProducer} compact /></div>
               </div>
 
               <div className="flex items-center justify-between gap-2 mt-1.5 pt-1.5 sm:mt-2 sm:pt-2 border-t border-white/10">
