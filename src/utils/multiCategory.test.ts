@@ -112,7 +112,7 @@ describe('multiple producer categories', () => {
     const html = renderToStaticMarkup(
       React.createElement(ProducerCategoryBadges, { producer: museum })
     );
-    expect(html).toContain('data-visitor-feature="museum"');
+    expect(html).not.toContain('data-visitor-feature=');
     expect(html).not.toContain('data-maker-category="museum"');
   });
 

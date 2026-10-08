@@ -14,7 +14,7 @@ Open http://localhost:5174/?preview=categories&country=GR&destination=crete&focu
 
 ## What changes
 
-One producer remains one entity, one map point and one overall count. The primary `category` stays unchanged. `additional_categories` holds other verified maker activities; category filters and SEO category groups match either field. Pins show up to three maker symbols and a `+N` count. Cards and details show every maker badge. Optional product sections group specialties and varieties by activity.
+One producer remains one entity, one map point and one overall count. The primary `category` stays unchanged. `additional_categories` holds other verified maker activities; category filters and SEO category groups match either field. Pins show up to three maker symbols and a `+N` count. Cards and details show every maker badge. These badge rows contain maker categories only; visitor features such as tasting, guided tours and museums are shown as text under Visiting & Access. The museum symbol remains a separate map-pin badge. Optional product sections group specialties and varieties by activity.
 
 Museum is a `visitor_features` value, with a separate blue badge and checkbox. It is not a fourteenth maker category and does not imply current public access. Existing location, visiting and road evidence remain authoritative.
 

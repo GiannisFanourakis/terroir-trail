@@ -11,7 +11,7 @@ import {
 
 import { useProducerPhotos } from '../../services/googlePlacesPhotos';
 import { getCategoryFallbackImage } from '../../utils/imageFallbacks';
-import { getEffectiveProducerCategory, getProducerCategories, producerHasAlcoholCategory } from '../../utils/producerCategory';
+import { getEffectiveProducerCategory, getProducerCategories, getProducerVisitorFeatures, producerHasAlcoholCategory } from '../../utils/producerCategory';
 import { ProducerCategoryBadges } from '../Common/ProducerCategoryBadges';
 import { ProducerProductSections } from '../Common/ProducerProductSections';
 import { parseProductSections } from '../../utils/producerClassification';
@@ -553,6 +553,7 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
 
   const effectiveCategory = getEffectiveProducerCategory(producer);
   const makerCategories = getProducerCategories(producer);
+  const visitorFeatures = getProducerVisitorFeatures(producer);
   const productSections = parseProductSections(producer.productSections, makerCategories);
   const road = getRoadAccessDetails(producer);
   const roadWarning = getProducerRoadAccessWarning(producer);
@@ -1236,6 +1237,18 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
                 <p className="text-xs text-stone-300 leading-relaxed">
                   {visitDetails.description}
                 </p>
+
+                {visitorFeatures.length > 0 && (
+                  <div className="text-xs text-stone-300 leading-relaxed">
+                    <span className="text-[10px] text-stone-400 block font-medium mb-0.5">Visitor features</span>
+                    <span>
+                      {visitorFeatures.map((feature) =>
+                        feature === 'museum' ? 'Museum' :
+                          feature === 'guided_tour' ? 'Guided tours' : 'Tasting'
+                      ).join(', ')}
+                    </span>
+                  </div>
+                )}
 
                 {producer.publicPointType === 'producer_shop' && (
                   <div className="p-3 rounded-xl bg-sky-500/10 border border-sky-400/20 text-[11px] text-sky-100 leading-relaxed">
