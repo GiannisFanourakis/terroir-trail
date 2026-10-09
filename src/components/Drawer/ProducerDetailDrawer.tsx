@@ -772,7 +772,6 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
 
           <div className="absolute top-4 left-4 z-20 flex flex-col items-start gap-1.5 max-w-[calc(100%-170px)]">
             <div className="flex items-center gap-2 flex-wrap">
-              <ProducerCategoryBadges producer={producer} />
               {producer.publicPointType === 'producer_shop' && (
                 <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-semibold bg-sky-500/15 text-sky-200 border border-sky-400/30 backdrop-blur-md">
                   <ShoppingBag className="w-3 h-3" />
@@ -846,6 +845,10 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
             <span>Independent TerroirTrail listing</span>
           </div>
         </div>
+      </div>
+
+      <div className="px-4 py-3 sm:px-6 shrink-0 border-b border-white/10 bg-stone-900/60">
+        <ProducerCategoryBadges producer={producer} />
       </div>
 
       {isHostForProducer && (

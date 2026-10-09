@@ -786,6 +786,23 @@ async function main(): Promise<void> {
       throw new Error('Direct producer deep link rendered the error boundary.');
     }
 
+    for (const width of [390, 320, 1440]) {
+      await cdp.send('Emulation.setDeviceMetricsOverride', { width, height: 844, deviceScaleFactor: 1, mobile: width < 640 });
+      await delay(150);
+      const headerOverlap = await evaluate<boolean>(cdp, `(() => {
+        const drawer = document.querySelector('[role=dialog][aria-label^="Producer details:"]');
+        const badges = drawer?.querySelector('[aria-label="Maker categories"]');
+        if (!badges) return true;
+        const badgeRect = badges.getBoundingClientRect();
+        const targets = [drawer.querySelector('h2'), ...drawer.querySelectorAll('button[aria-label]')].filter(Boolean);
+        return targets.some(node => {
+          const rect = node.getBoundingClientRect();
+          return badgeRect.left < rect.right && badgeRect.right > rect.left && badgeRect.top < rect.bottom && badgeRect.bottom > rect.top;
+        });
+      })()`);
+      if (headerOverlap) throw new Error('Maker badges overlap the producer title or header controls.');
+    }
+
     for (const tab of ['What They Make', 'Visiting & Access']) {
       const tabLiteral = JSON.stringify(tab);
       const clickedTab = await evaluate<boolean>(cdp, `(() => {
