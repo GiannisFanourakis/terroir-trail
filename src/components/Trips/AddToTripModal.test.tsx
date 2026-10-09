@@ -28,6 +28,8 @@ const sampleProducer: Producer = {
   name: 'Vassaltis Vineyards',
   greekName: 'Βασάλτης',
   category: 'winery',
+  additionalCategories: ['olive_mill', 'cheese_dairy', 'apiary'],
+  visitorFeatures: ['museum'],
   destination: 'santorini',
   region: 'Cyclades',
   village: 'Vourvoulos',
@@ -114,6 +116,11 @@ describe('AddToTripModal', () => {
     expect(html).toContain('Vassaltis Vineyards');
     expect(html).toContain('winery');
     expect(html).toContain('santorini');
+    for (const category of ['winery', 'olive_mill', 'cheese_dairy', 'apiary']) {
+      expect(html).toContain(`data-maker-category="${category}"`);
+    }
+    expect(html.match(/data-maker-category=/g)).toHaveLength(4);
+    expect(html).not.toContain('data-visitor-feature=');
   });
 
   it('renders list of available trips and disables trips at maximum capacity (50)', () => {

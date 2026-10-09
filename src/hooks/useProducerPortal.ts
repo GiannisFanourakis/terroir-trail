@@ -7,11 +7,16 @@ import {
   db 
 } from '../services/firebase';
 import { collection, onSnapshot } from 'firebase/firestore';
+import { producerService } from '../services/producerService';
 
 export const useProducerPortal = () => {
   const [overrides, setOverrides] = useState<Record<string, ProducerOverride>>(() =>
     getLocalProducerOverrides()
   );
+
+  useEffect(() => {
+    producerService.setApprovedListingOverrides(overrides);
+  }, [overrides]);
 
   // Sync with Firestore public overrides (public read for map/details)
   useEffect(() => {

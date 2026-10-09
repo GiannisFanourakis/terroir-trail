@@ -2,9 +2,9 @@ import type { Producer } from '../types/terroir';
 
 /**
  * Deterministic active producer snapshot generated from the live Supabase
- * public.producers catalogue where is_active = true.
+ * public.producers catalogue where is_active = true, plus admin-approved public listing edits.
  *
- * Runtime Supabase remains authoritative. This file is shared by runtime fallback
+ * Supabase controls active producer identity; approved listing edits are projected on top. This file is shared by runtime fallback
  * and SEO/AEO generation and is refreshed automatically; do not hand-edit it.
  * Latest active source row update: 2026-10-08T18:30:09.223257+00:00
  */

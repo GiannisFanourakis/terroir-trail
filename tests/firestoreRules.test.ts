@@ -654,4 +654,27 @@ describe('Firestore Security Rules Suite', () => {
     );
   });
 
+  it('Hosts cannot publish category or grouped-product changes directly, including on an approved override', async () => {
+    await testEnv.withSecurityRulesDisabled(async context => {
+      const db = context.firestore();
+      await setDoc(doc(db, 'producer_owners', 'producer-a'), {
+        producerId: 'producer-a', ownerUid: 'host-a', status: 'active',
+      });
+      await setDoc(doc(db, 'producer_overrides', 'producer-a'), {
+        producerId: 'producer-a', isAcceptingBookings: false,
+        additionalCategories: ['olive_mill'],
+        productSections: [{ category: 'olive_mill', specialties: ['Estate oil'] }],
+        classificationPrimaryCategory: 'winery',
+        listingContentReviewedAt: '2026-10-09T00:00:00Z',
+      });
+    });
+    const host = testEnv.authenticatedContext('host-a').firestore();
+    const ref = doc(host, 'producer_overrides', 'producer-a');
+    await assertFails(updateDoc(ref, { additionalCategories: ['cheese_dairy'] }));
+    await assertFails(updateDoc(ref, { productSections: [{ category: 'cheese_dairy', specialties: ['Cheese'] }] }));
+    await assertFails(updateDoc(ref, { classificationPrimaryCategory: 'farm' }));
+    await assertFails(updateDoc(ref, { listingContentReviewedAt: '2099-01-01T00:00:00Z' }));
+    await assertSucceeds(updateDoc(ref, { customNotice: 'Call before visiting.' }));
+  });
+
 });

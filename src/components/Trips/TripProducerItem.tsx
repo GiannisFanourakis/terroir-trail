@@ -17,7 +17,7 @@ import type { TripItemRecordV1, TripProducerState } from '../../services/tripApi
 import type { Producer } from '../../types/terroir';
 import { trackIntent } from '../../services/intentAnalytics';
 import { recordPartnerContactIfAttributed } from '../../services/partnerAttribution';
-import { ProducerCategoryIcon } from '../Common/ProducerCategoryIcon';
+import { ProducerCategoryBadges } from '../Common/ProducerCategoryBadges';
 import { TripReadinessSummary } from './TripReadinessSummary';
 import { getTripDayLabel } from '../../utils/tripReadiness';
 
@@ -186,10 +186,7 @@ export const TripProducerItem: React.FC<TripProducerItemProps> = ({
                     <span className="font-bold text-sm text-white group-hover/title:text-amber-300 transition-colors">
                       {producer.name}
                     </span>
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-300 border border-amber-500/30">
-                      <ProducerCategoryIcon category={producer.category} className="w-3 h-3" />
-                      <span className="capitalize">{producer.category.replace(/_/g, ' ')}</span>
-                    </span>
+                    <ProducerCategoryBadges producer={producer} compact />
                   </div>
                   <div className="mt-0.5 text-xs text-stone-400 flex items-center gap-1.5 flex-wrap">
                     <span className="capitalize">{producer.destination.replace(/_/g, ' ')}</span>

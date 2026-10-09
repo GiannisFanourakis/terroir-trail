@@ -19,7 +19,8 @@ type ProducerListingChangeRouteDependencies = typeof defaults;
 const errorStatus = (error: ProducerListingChangeError) =>
   error.code === 'bad_request' ? 400 :
   error.code === 'forbidden' ? 403 :
-  error.code === 'not_found' ? 404 : 409;
+  error.code === 'not_found' ? 404 :
+  error.code === 'service_unavailable' ? 503 : 409;
 
 export function registerProducerListingChangeRoutes(
   app: Express,

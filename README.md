@@ -31,14 +31,14 @@ The current roadmap and milestone history are maintained in [ROADMAP.md](ROADMAP
 ## Current Public Product
 
 - **Interactive map and producer directory** with country, destination, region, and category discovery.
-- **Multi-category catalogue** spanning the active European publication scope across 13 first-class producer categories.
+- **Multiple maker categories per producer** across 13 supported categories, with grouped products and matching map, trip, export and promoted-card presentation. Visitor features remain separate.
 - **Producer detail pages** with story, products, official contact details, map location, visit information, and access notes where known.
 - **Visitability V1** with explicit states for public visits, seasonal public access, appointment-only access, uncertain current access, and visits that are not publicly confirmed.
 - **Booking and walk-in guidance** that distinguishes required, recommended, not-required, accepted, not-accepted, and subject-to-availability states without turning unknown values into “No.”
 - **Independent road-access classification** with fail-closed rental-car guidance.
 - **Traveler accounts and Terroir Passport** for visited places and private tasting / trip notes.
 - **Favorites / saved places** separated by traveler account.
-- **Producer claim / Host Portal** with ownership review before management privileges are granted.
+- **Producer claim / Host Portal** with ownership review before management privileges are granted, plus source-backed category and grouped-product proposals that require Admin approval.
 - **Canonical SEO/AEO pages** for active producer entities and eligible country, destination, region, category, and destination/category landing pages.
 - **Offline/static fallback** generated from the same active catalogue and lazy-loaded only when the live service is unavailable.
 
@@ -46,7 +46,11 @@ The current roadmap and milestone history are maintained in [ROADMAP.md](ROADMAP
 
 ## Catalogue Source of Truth
 
-The authoritative public catalogue is the Supabase **public.producers** table.
+Supabase **public.producers** controls authoritative producer identity, active publication, geography, primary category and the base catalogue facts.
+
+Admin-approved public listing edits are stored in Firestore **producer_overrides** and projected onto active producers. Additional maker categories and grouped products require an official source, trusted Host ownership and Admin approval. The current Supabase primary category is checked at submission and approval; an edit tied to an outdated primary category is not applied. Direct Host writes cannot publish these fields.
+
+Runtime discovery, trip exports and catalogue/SEO synchronization use the same approved classification projection. Pending requests never enter the public catalogue. SEO reflects approved public edits when the existing reconciliation or deployment workflow next rebuilds the static pages.
 
 Publication is controlled by **public.producers.is_active**.
 
@@ -66,28 +70,20 @@ Exact synchronization checks compare producer IDs **and** a SHA-256 catalogue-co
 
 ---
 
-## Automated Catalogue & Deployment Reconciliation
+## Automated Catalogue & Deployment Publication
 
-Catalogue publication is automated through GitHub Actions and Supabase.
+The **Production Deploy** workflow runs after a successful **Quality Gate** on `main` and can also be invoked manually. It:
 
-The **Production Reconcile** workflow:
-
-1. reads the latest active Supabase catalogue;
+1. reads the latest active Supabase catalogue and approved public listing edits;
 2. regenerates the active producer snapshot, active IDs, and public catalogue summary;
 3. verifies exact live ↔ generated parity;
-4. runs the complete quality gate;
-5. runs browser-level responsive checks;
-6. commits generated catalogue changes when necessary;
-7. rebuilds from the final commit;
-8. re-verifies live catalogue parity immediately before deployment;
-9. compares the local commit and catalogue hash with production;
-10. deploys Firebase Hosting only when production is stale;
-11. runs public smoke and production-UI checks after deployment; and
-12. verifies that the deployed catalogue hash matches the synchronized build.
+4. runs the complete quality gate and real-browser responsive checks;
+5. commits generated catalogue changes when necessary;
+6. builds the final production frontend and re-verifies live catalogue parity;
+7. deploys Firestore rules/indexes, the trusted Cloud Run API and Firebase Hosting; and
+8. verifies API health, public pages, production UI and the deployed catalogue hash.
 
-The reconcile workflow runs after a successful **Quality Gate**, on a scheduled cadence, and can also be invoked manually. Failed gates prevent deployment.
-
-This means adding, editing, deactivating, or reactivating a producer in the authoritative catalogue automatically flows through public counts, About/FAQ statistics, fallback data, SEO/AEO pages, sitemap generation, and the deployed catalogue state.
+Failed checks prevent deployment. Runtime listings use live Supabase data plus approved public edits; generated fallback data, public counts, SEO/AEO pages and sitemaps refresh on the next successful deployment. Database edits alone do not trigger a release. The separate **Production Smoke** workflow runs every six hours and checks HTTP/browser health; it does not regenerate or publish the catalogue.
 
 ---
 
@@ -261,7 +257,8 @@ npm run mobile:preflight -- all
 - [src/data/catalogueSummary.generated.ts](src/data/catalogueSummary.generated.ts) — generated lightweight public catalogue scope
 - [scripts/sync_seo_catalogue.ts](scripts/sync_seo_catalogue.ts) — active-catalogue generator
 - [scripts/verify_live_catalogue_sync.ts](scripts/verify_live_catalogue_sync.ts) — exact live/generated parity verification
-- [.github/workflows/production-reconcile.yml](.github/workflows/production-reconcile.yml) — automated catalogue/deployment reconciliation
+- [.github/workflows/production-deploy.yml](.github/workflows/production-deploy.yml) — automated catalogue/frontend/API publication
+- [.github/workflows/production-smoke.yml](.github/workflows/production-smoke.yml) — scheduled production health checks
 - [public/llms.txt](public/llms.txt) — source template for the machine-readable public product summary
 - [src/utils/producerAccess.ts](src/utils/producerAccess.ts) — road-access and rental-car guidance logic
 

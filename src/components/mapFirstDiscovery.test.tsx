@@ -5,7 +5,7 @@ describe('map-first discovery layout', () => {
   it('uses the interactive map as the discovery surface at every breakpoint', () => {
     const app = readFileSync('src/App.tsx', 'utf8');
 
-    expect(app).not.toContain('ProducerList');
+    expect(app).not.toMatch(/\bProducerList\b/);
     expect(app).not.toContain('Show List');
     expect(app).not.toContain('Show Map');
     expect(app).not.toContain('viewMode');

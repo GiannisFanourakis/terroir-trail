@@ -24,6 +24,8 @@ const sampleProducer: Producer = {
   name: 'Domaine Sigalas',
   greekName: 'Κτήμα Σιγάλα',
   category: 'winery',
+  additionalCategories: ['olive_mill', 'cheese_dairy', 'apiary'],
+  visitorFeatures: ['museum'],
   destination: 'santorini',
   region: 'Cyclades',
   village: 'Oia',
@@ -85,6 +87,9 @@ describe('TripProducerItem', () => {
     expect(html).toContain('Santorini');
     expect(html).toContain('Oia');
     expect(html).toContain('winery');
+    expect(html.match(/data-maker-category=/g)).toHaveLength(4);
+    expect(html).toContain('data-maker-category="apiary"');
+    expect(html).not.toContain('data-visitor-feature=');
     expect(html).toContain('title="Get directions"');
     expect(html).toContain('Day 1 · 1 Jun');
     expect(html).toContain('aria-label="Remove Domaine Sigalas from trip"');

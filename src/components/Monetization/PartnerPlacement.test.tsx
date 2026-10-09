@@ -16,6 +16,8 @@ const producer: Producer = {
   name: 'Family Estate',
   greekName: 'Family Estate',
   category: 'winery',
+  additionalCategories: ['olive_mill'],
+  visitorFeatures: ['museum'],
   destination: 'crete',
   region: 'Heraklion',
   village: 'Archanes',
@@ -57,6 +59,9 @@ describe('PartnerPlacementCard', () => {
 
     expect(html).toContain('Featured Partner');
     expect(html).toContain('Paid placement');
+    expect(html).toContain('data-maker-category="winery"');
+    expect(html).toContain('data-maker-category="olive_mill"');
+    expect(html).not.toContain('data-visitor-feature=');
     expect(html).toContain('Family Estate');
     expect(html).toContain('Harvest visits this week');
     expect(html).toContain('Payment does not change TerroirTrail verification');
