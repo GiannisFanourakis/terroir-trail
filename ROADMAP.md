@@ -247,14 +247,16 @@ Phase 8 reconciliation notes:
 
 Released at `3df96c1` on 2026-10-08. Quality Gate `37825948671` and Production Deploy `37826309189` succeeded; the public version and catalogue-state files were independently verified.
 
-**Follow-up, 2026-10-09:** implementation is in `fix/multi-category-followups`; release verification is in progress.
+**Follow-up, 2026-10-09:** Completed and production-verified.
 
-- [ ] Show all maker categories in trip cards, Add to Trip, promoted cards and HTML/calendar exports.
-- [ ] Support official-source-backed category and grouped-product proposals through trusted Admin review.
-- [ ] Apply approved classifications consistently in runtime filters/search, trip exports, fallback and SEO generation.
-- [ ] Preserve selected product/visiting tabs while approved listing fields and photos refresh.
-- [ ] Keep multiple maker badges clear of the title and header actions on narrow phones.
-- [ ] Complete full validation and record the follow-up production deployment.
+- [x] ~~Show all maker categories in trip cards, Add to Trip, promoted cards and HTML/calendar exports.~~
+- [x] ~~Support official-source-backed category and grouped-product proposals through trusted Admin review.~~
+- [x] ~~Apply approved classifications consistently in runtime filters/search, trip exports, fallback and SEO generation.~~
+- [x] ~~Preserve selected product/visiting tabs while approved listing fields and photos refresh.~~
+- [x] ~~Keep multiple maker badges clear of the title and header actions on narrow phones.~~
+- [x] ~~Complete full validation and record the follow-up production deployment.~~
+
+Released at `a5b4267` on 2026-10-09. Quality Gate `37906863034` and Production Deploy `37907048427` succeeded. The public version and catalogue hash were independently verified. All twelve dual/triple/four-category/museum checks passed at desktop, 390 px and 320 px widths, including grouped products through catalogue refreshes, separate visitor features and clear title/header controls.
 
 ---
 
