@@ -252,6 +252,7 @@ Released at `3df96c1` on 2026-10-08. Quality Gate `37825948671` and Production D
 - [ ] Show all maker categories in trip cards, Add to Trip, promoted cards and HTML/calendar exports.
 - [ ] Support official-source-backed category and grouped-product proposals through trusted Admin review.
 - [ ] Apply approved classifications consistently in runtime filters/search, trip exports, fallback and SEO generation.
+- [ ] Preserve selected product/visiting tabs while approved listing fields and photos refresh.
 - [ ] Complete full validation and record the follow-up production deployment.
 
 ---

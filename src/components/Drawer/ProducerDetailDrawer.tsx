@@ -111,18 +111,23 @@ export const ProducerDetailDrawer: React.FC<ProducerDetailDrawerProps> = ({
   );
   const [heroImgSrc, setHeroImgSrc] = useState<string>('');
 
+  const producerId = producer?.id;
+  const heroImageUrl = resolvedCover?.url || activePhoto?.url ||
+    (producer ? getCategoryFallbackImage(getEffectiveProducerCategory(producer)) : '');
+
+  // Refreshing approved fields or photos must not discard the tab the traveler chose.
   useEffect(() => {
-    if (producer) {
-      setActiveTab('story');
-      setIsEditingNote(false);
-      setNoteDraft(tastingNote);
-      setHeroImgSrc(
-        resolvedCover?.url ||
-          activePhoto?.url ||
-          getCategoryFallbackImage(getEffectiveProducerCategory(producer))
-      );
-    }
-  }, [producer, tastingNote, activePhoto, resolvedCover?.url]);
+    setActiveTab(initialTab);
+    setIsEditingNote(false);
+  }, [producerId, initialTab]);
+
+  useEffect(() => {
+    setNoteDraft(tastingNote);
+  }, [producerId, tastingNote]);
+
+  useEffect(() => {
+    setHeroImgSrc(heroImageUrl);
+  }, [producerId, heroImageUrl]);
 
   const handleHeroImgError = () => {
     if (producer) {

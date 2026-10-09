@@ -58,4 +58,6 @@ Follow-up validation passed: 714 frontend tests, 200 server tests and 28 rules t
 
 The follow-up aggregate JS limit is 858 KB gzip, allowing the measured 2.3 KB increase for shared review logic and lazy Host/Admin editing. The verified build uses 855.4 KB total JS, 291.3 KB main/largest JS and 25.1 KB CSS. Main/largest limits remain 330 KB and CSS remains 32 KB. No dependencies were added.
 
-Production release verification is in progress.
+Selected product and visiting tabs now survive approved-listing and photo refreshes; a different canonical producer still resets the drawer to its initial tab. Hero-image updates and note updates no longer reset the selected tab. The real-browser gate now checks both tabs remain selected after interaction. That regression check failed before the fix and passed after it. Desktop/phone checks also preserved the grouped products through a catalogue refresh for Anoskeli, Corzano e Paterno, La Vinyeta and Canava, including the museum's separate Visiting & Access entry.
+
+The complete quality and browser gates passed again after the tab correction. Production release verification is in progress.
