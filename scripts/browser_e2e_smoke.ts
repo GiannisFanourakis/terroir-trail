@@ -793,6 +793,25 @@ async function main(): Promise<void> {
       throw new Error('Direct producer deep link rendered the error boundary.');
     }
 
+    for (const tab of ['What They Make', 'Visiting & Access']) {
+      const tabLiteral = JSON.stringify(tab);
+      const clickedTab = await evaluate<boolean>(cdp, `(() => {
+        const drawer = document.querySelector('[role=dialog][aria-label^="Producer details:"]');
+        const button = [...(drawer?.querySelectorAll('button') || [])].find(node => node.textContent?.trim() === ${tabLiteral});
+        if (!button) return false;
+        button.click();
+        return true;
+      })()`);
+      if (!clickedTab) throw new Error('Producer tab missing: ' + tab);
+      await delay(1000);
+      const retainedTab = await evaluate<boolean>(cdp, `(() => {
+        const drawer = document.querySelector('[role=dialog][aria-label^="Producer details:"]');
+        const button = [...(drawer?.querySelectorAll('button') || [])].find(node => node.textContent?.trim() === ${tabLiteral});
+        return Boolean(button?.className.includes('border-amber-400'));
+      })()`);
+      if (!retainedTab) throw new Error('Producer tab reset during listing/photo refresh: ' + tab);
+    }
+    console.log('[browser smoke] product and visiting tabs remain selected ✓');
     console.log('[browser smoke] direct producer deep link ✓');
     console.log('[browser smoke] all responsive browser checks passed.');
   } finally {
