@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Producer, Destination, Category } from '../types/terroir';
-import { producerService, ViewportBounds } from '../services/producerService';
+import { producerService, ViewportBounds, PRODUCER_LISTINGS_UPDATED_EVENT } from '../services/producerService';
 
 export interface UseProducersOptions {
   destination?: Destination | 'all';
@@ -51,7 +51,11 @@ export function useProducers(options: UseProducersOptions = {}) {
   );
 
   useEffect(() => {
-    refresh();
+    void refresh();
+    if (typeof window === 'undefined') return;
+    const onPublishedChange = () => { void refresh(); };
+    window.addEventListener(PRODUCER_LISTINGS_UPDATED_EVENT, onPublishedChange);
+    return () => window.removeEventListener(PRODUCER_LISTINGS_UPDATED_EVENT, onPublishedChange);
   }, [refresh]);
 
   const getProducer = useCallback((id: string): Producer | undefined => {

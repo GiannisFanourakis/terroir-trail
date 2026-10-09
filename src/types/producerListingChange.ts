@@ -1,4 +1,4 @@
-import type { FoodOption } from './terroir';
+import type { FoodOption, Category, ProducerProductSection } from './terroir';
 
 export type ProducerListingChangeStatus = 'pending_review' | 'approved' | 'rejected';
 
@@ -7,6 +7,9 @@ export interface ProducerListingChanges {
   description?: string;
   story?: string;
   tastingHighlights?: string[];
+  additionalCategories?: Category[];
+  productSections?: ProducerProductSection[];
+  classificationSourceUrl?: string;
   website?: string;
   foodOption?: FoodOption | null;
   dogFriendly?: boolean;
@@ -24,6 +27,7 @@ export interface ProducerListingChangeRequest {
   status: ProducerListingChangeStatus;
   changes: ProducerListingChanges;
   submittedAt: string;
+  classificationPrimaryCategory?: Category;
   reviewedAt?: string;
   reviewedByUid?: string;
   rejectionReason?: string;

@@ -1,4 +1,4 @@
-import { ProducerCategory, Destination, FoodOption } from './terroir';
+import { ProducerCategory, Destination, FoodOption, ProducerProductSection } from './terroir';
 import { ProducerUploadedImage } from './producerMedia';
 
 export type BookingStatus = 'pending' | 'confirmed' | 'cancelled' | 'completed';
@@ -53,6 +53,10 @@ export interface ProducerOverride {
   description?: string;
   story?: string;
   tastingHighlights?: string[];
+  additionalCategories?: ProducerCategory[];
+  productSections?: ProducerProductSection[];
+  classificationPrimaryCategory?: ProducerCategory;
+  classificationSourceUrl?: string;
   website?: string;
   foodOption?: FoodOption | null;
   dogFriendly?: boolean;

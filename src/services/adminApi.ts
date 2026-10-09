@@ -84,6 +84,8 @@ export interface PendingProducerMediaItem {
   rightsConfirmed: boolean;
 }
 
+import type { Category } from '../types/terroir';
+
 export interface PendingProducerListingChange {
   id: string;
   producerId: string;
@@ -93,6 +95,7 @@ export interface PendingProducerListingChange {
   status: 'pending_review';
   changes: ProducerListingChanges;
   submittedAt: string;
+  classificationPrimaryCategory?: Category;
 }
 
 export interface ActiveProducerOwnership {

@@ -12,6 +12,7 @@ import {
 } from '../../services/partnerAttribution';
 import type { PartnerPlacement } from '../../services/intentAnalytics';
 import { ProducerCategoryIcon } from '../Common/ProducerCategoryIcon';
+import { ProducerCategoryBadges } from '../Common/ProducerCategoryBadges';
 
 type PartnerSourceSurface = 'region_planning' | 'trip_preparation';
 
@@ -22,12 +23,6 @@ interface PartnerPlacementCardProps {
   onOpenProducer: (producer: Producer) => void;
   className?: string;
 }
-
-const categoryLabel = (value: string) =>
-  value
-    .split('_')
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join(' ');
 
 export const PartnerPlacementCard: React.FC<PartnerPlacementCardProps> = ({
   campaign,
@@ -108,7 +103,7 @@ export const PartnerPlacementCard: React.FC<PartnerPlacementCardProps> = ({
 
           <h3 className="mt-2 text-sm font-bold text-white">{producer.name}</h3>
           <div className="mt-1 flex flex-wrap items-center gap-1.5 text-[10px] text-stone-400">
-            <span>{categoryLabel(producer.category)}</span>
+            <ProducerCategoryBadges producer={producer} compact />
             {producer.village && (
               <>
                 <span aria-hidden="true">·</span>

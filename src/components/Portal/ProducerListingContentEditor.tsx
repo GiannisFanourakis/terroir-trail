@@ -1,7 +1,9 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { CheckCircle2, Clock3, FilePenLine, RefreshCw, Send, XCircle } from 'lucide-react';
 import type { Producer, FoodOption } from '../../types/terroir';
 import type { ProducerOverride } from '../../types/booking';
+import { ProducerClassificationEditor } from './ProducerClassificationEditor';
+import { applyApprovedListingOverride, createClassificationDraft, buildClassificationChanges } from '../../utils/approvedProducerListing';
 import type { ProducerListingChanges, ProducerListingChangeRequest } from '../../types/producerListingChange';
 import {
   fetchLatestProducerListingChange,
@@ -47,6 +49,12 @@ export const ProducerListingContentEditor: React.FC<ProducerListingContentEditor
     campervanFriendly: producerOverride?.campervanFriendly !== undefined ? producerOverride.campervanFriendly : producer.campervanFriendly,
   }), [producer, producerOverride]);
 
+  const publishedClassification = useMemo(
+    () => createClassificationDraft(applyApprovedListingOverride(producer, producerOverride)),
+    [producer, producerOverride]
+  );
+  const [classification, setClassification] = useState(publishedClassification);
+  const [classificationSourceUrl, setClassificationSourceUrl] = useState('');
   const [tagLine, setTagLine] = useState(published.tagLine || '');
   const [description, setDescription] = useState(published.description || '');
   const [story, setStory] = useState(published.story || '');
@@ -63,7 +71,9 @@ export const ProducerListingContentEditor: React.FC<ProducerListingContentEditor
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
 
-  const resetForm = () => {
+  const resetForm = useCallback(() => {
+    setClassification(publishedClassification);
+    setClassificationSourceUrl('');
     setTagLine(published.tagLine || '');
     setDescription(published.description || '');
     setStory(published.story || '');
@@ -74,11 +84,11 @@ export const ProducerListingContentEditor: React.FC<ProducerListingContentEditor
     setKidFriendly(Boolean(published.kidFriendly));
     setWalkIn(Boolean(published.walkIn));
     setCampervanFriendly(Boolean(published.campervanFriendly));
-  };
+  }, [published, publishedClassification]);
 
   useEffect(() => {
     resetForm();
-  }, [producer.id, published.tagLine, published.description, published.story, published.website, published.foodOption, published.dogFriendly, published.kidFriendly, published.walkIn, published.campervanFriendly, JSON.stringify(published.tastingHighlights)]);
+  }, [resetForm]);
 
   const loadLatest = async () => {
     if (readOnly) {
@@ -109,7 +119,16 @@ export const ProducerListingContentEditor: React.FC<ProducerListingContentEditor
     if (readOnly || pending) return;
 
     const tastingHighlights = products.split('\n').map(item => item.trim()).filter(Boolean);
-    const changes: ProducerListingChanges = {};
+    const classificationChanges = buildClassificationChanges(producer.category, publishedClassification, classification);
+    if (Object.keys(classificationChanges).length && !classificationSourceUrl.trim()) {
+      setNotice(null);
+      setError('Add an official source for the category or grouped-product changes.');
+      return;
+    }
+    const changes: ProducerListingChanges = {
+      ...classificationChanges,
+      ...(Object.keys(classificationChanges).length ? { classificationSourceUrl: classificationSourceUrl.trim() } : {}),
+    };
     if (tagLine.trim() !== (published.tagLine || '')) changes.tagLine = tagLine.trim();
     if (description.trim() !== (published.description || '')) changes.description = description.trim();
     if (story.trim() !== (published.story || '')) changes.story = story.trim();
@@ -149,7 +168,7 @@ export const ProducerListingContentEditor: React.FC<ProducerListingContentEditor
           Public listing content
         </div>
         <p className="mt-1 text-[11px] text-stone-300 leading-relaxed">
-          Story, tagline, products, website and amenities are review-controlled. Submitting here creates a change request; your currently approved public listing stays unchanged until TerroirTrail approves it.
+          Submit category, product and listing changes for TerroirTrail review. Your approved public listing stays visible until the changes are approved.
         </p>
       </div>
 
@@ -189,7 +208,7 @@ export const ProducerListingContentEditor: React.FC<ProducerListingContentEditor
           <textarea value={story} onChange={event => setStory(event.target.value)} maxLength={6000} rows={7} disabled={readOnly || pending} className="mt-1.5 w-full rounded-xl border border-white/10 bg-stone-900 px-3 py-2.5 text-xs text-white disabled:opacity-60" />
         </label>
         <label className="block text-xs font-semibold text-stone-300">
-          Products / what you make
+          General products / highlights
           <textarea value={products} onChange={event => setProducts(event.target.value)} rows={6} disabled={readOnly || pending} placeholder="One product or highlight per line" className="mt-1.5 w-full rounded-xl border border-white/10 bg-stone-900 px-3 py-2.5 text-xs text-white disabled:opacity-60" />
         </label>
         <div className="grid sm:grid-cols-2 gap-3">
@@ -205,6 +224,10 @@ export const ProducerListingContentEditor: React.FC<ProducerListingContentEditor
           </label>
         </div>
       </div>
+
+      <ProducerClassificationEditor primary={producer.category} draft={classification}
+        onChange={setClassification} sourceUrl={classificationSourceUrl}
+        onSourceUrlChange={setClassificationSourceUrl} disabled={readOnly || pending} />
 
       <div>
         <div className="text-xs font-semibold text-stone-300 mb-2">Visitor amenities</div>

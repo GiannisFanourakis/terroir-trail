@@ -1,21 +1,14 @@
 import { adminDb } from '../firebaseAdmin';
+import { getSupabaseAdmin } from './analyticsIngestionService';
+import type { ProducerListingChanges } from '../../src/types/producerListingChange';
+import type { Category, ProducerProductSection } from '../../src/types/terroir';
+import { isProducerCategory, PRODUCER_CATEGORIES } from '../../src/utils/producerCategory';
 import { getTrustedAccountCapabilities } from './accountAuthorization';
 
 export type ProducerListingChangeStatus = 'pending_review' | 'approved' | 'rejected';
 export type ProducerListingReviewDecision = 'approve' | 'reject';
 
-export interface ProducerListingChanges {
-  tagLine?: string;
-  description?: string;
-  story?: string;
-  tastingHighlights?: string[];
-  website?: string;
-  foodOption?: 'full_taverna' | 'tasting_board' | 'dakos_snacks' | 'brewery_taproom' | 'byo_picnic' | null;
-  dogFriendly?: boolean;
-  kidFriendly?: boolean;
-  walkIn?: boolean;
-  campervanFriendly?: boolean;
-}
+export type { ProducerListingChanges } from '../../src/types/producerListingChange';
 
 export interface ProducerListingChangeRequest {
   id: string;
@@ -26,6 +19,7 @@ export interface ProducerListingChangeRequest {
   status: ProducerListingChangeStatus;
   changes: ProducerListingChanges;
   submittedAt: string;
+  classificationPrimaryCategory?: Category;
   reviewedAt?: string;
   reviewedByUid?: string;
   rejectionReason?: string;
@@ -33,7 +27,7 @@ export interface ProducerListingChangeRequest {
 
 export class ProducerListingChangeError extends Error {
   constructor(
-    public readonly code: 'forbidden' | 'not_found' | 'conflict' | 'bad_request',
+    public readonly code: 'forbidden' | 'not_found' | 'conflict' | 'bad_request' | 'service_unavailable',
     message: string
   ) {
     super(message);
@@ -52,6 +46,9 @@ const BOOLEAN_FIELDS = ['dogFriendly', 'kidFriendly', 'walkIn', 'campervanFriend
 const ALLOWED_FIELDS = new Set([
   ...Object.keys(STRING_LIMITS),
   'tastingHighlights',
+  'additionalCategories',
+  'productSections',
+  'classificationSourceUrl',
   'foodOption',
   ...BOOLEAN_FIELDS,
 ]);
@@ -122,6 +119,56 @@ export function sanitizeProducerListingChanges(input: unknown): ProducerListingC
     });
   }
 
+  if ('additionalCategories' in raw || 'productSections' in raw || 'classificationSourceUrl' in raw) {
+    if (!Array.isArray(raw.additionalCategories) || !Array.isArray(raw.productSections)) {
+      throw new ProducerListingChangeError('bad_request', 'Submit additional categories and grouped products together.');
+    }
+    if (raw.additionalCategories.length >= PRODUCER_CATEGORIES.length ||
+        raw.additionalCategories.some(value => !isProducerCategory(value))) {
+      throw new ProducerListingChangeError('bad_request', 'Choose only recognized maker categories.');
+    }
+    changes.additionalCategories = [...new Set(raw.additionalCategories)] as Category[];
+    if (raw.productSections.length > PRODUCER_CATEGORIES.length) {
+      throw new ProducerListingChangeError('bad_request', 'Use at most one product group per maker category.');
+    }
+    const seen = new Set<Category>();
+    changes.productSections = raw.productSections.map((section: unknown): ProducerProductSection => {
+      if (!section || typeof section !== 'object' || Array.isArray(section)) {
+        throw new ProducerListingChangeError('bad_request', 'Each product group must contain a maker category and product lists.');
+      }
+      const group = section as Record<string, unknown>;
+      if (!isProducerCategory(group.category) || seen.has(group.category) ||
+          Object.keys(group).some(key => !['category', 'specialties', 'varieties', 'highlights'].includes(key))) {
+        throw new ProducerListingChangeError('bad_request', 'Product groups must use unique, recognized maker categories.');
+      }
+      seen.add(group.category);
+      const list = (field: string, required = false): string[] => {
+        const values = group[field];
+        if (values === undefined && !required) return [];
+        if (!Array.isArray(values) || values.length > 20) {
+          throw new ProducerListingChangeError('bad_request', 'Use at most 20 text items in each product list.');
+        }
+        return [...new Set(values.map((item, index) => {
+          const value = cleanString(item, 140, `Product ${index + 1}`);
+          if (!value) throw new ProducerListingChangeError('bad_request', 'Product groups cannot contain blank rows.');
+          return value;
+        }))];
+      };
+      const specialties = list('specialties', true);
+      const varieties = list('varieties');
+      const highlights = list('highlights');
+      if (!specialties.length && !varieties.length && !highlights.length) {
+        throw new ProducerListingChangeError('bad_request', 'Leave empty product groups out of the request.');
+      }
+      return { category: group.category, specialties,
+        ...(varieties.length ? { varieties } : {}), ...(highlights.length ? { highlights } : {}) };
+    });
+    const source = cleanString(raw.classificationSourceUrl, 500, 'Official source');
+    if (!source) throw new ProducerListingChangeError('bad_request', 'Add an official source for category and grouped-product changes.');
+    validateWebsite(source);
+    changes.classificationSourceUrl = source;
+  }
+
   if ('foodOption' in raw) {
     if (raw.foodOption !== null && (typeof raw.foodOption !== 'string' || !FOOD_OPTIONS.has(raw.foodOption))) {
       throw new ProducerListingChangeError('bad_request', 'Food option is not recognized.');
@@ -143,6 +190,29 @@ export function sanitizeProducerListingChanges(input: unknown): ProducerListingC
   return changes;
 }
 
+export function validateListingClassification(changes: ProducerListingChanges, primary: Category): void {
+  if (!changes.additionalCategories) return;
+  if (changes.additionalCategories.includes(primary)) {
+    throw new ProducerListingChangeError('bad_request', 'The primary category is fixed and cannot be repeated as an additional category.');
+  }
+  const categories = new Set([primary, ...changes.additionalCategories]);
+  if (changes.productSections?.some(section => !categories.has(section.category))) {
+    throw new ProducerListingChangeError('bad_request', 'Every product group must belong to one of the proposed maker categories.');
+  }
+}
+
+async function loadClassificationCategory(producerId: string): Promise<Category> {
+  const supabase = getSupabaseAdmin();
+  if (!supabase) throw new ProducerListingChangeError('service_unavailable', 'Live catalogue verification is temporarily unavailable.');
+  const { data, error } = await supabase.from('producers').select('category')
+    .eq('id', producerId).eq('is_active', true).maybeSingle();
+  if (error) throw new ProducerListingChangeError('service_unavailable', 'Live catalogue verification is temporarily unavailable.');
+  if (!data || !isProducerCategory(data.category)) {
+    throw new ProducerListingChangeError('not_found', 'This producer is not available in the active catalogue.');
+  }
+  return data.category;
+}
+
 const requestFromDoc = (doc: any, producerName?: string): ProducerListingChangeRequest => {
   const data = doc.data() || {};
   return {
@@ -154,6 +224,8 @@ const requestFromDoc = (doc: any, producerName?: string): ProducerListingChangeR
     status: data.status as ProducerListingChangeStatus,
     changes: data.changes || {},
     submittedAt: String(data.submittedAt || ''),
+    ...(isProducerCategory(data.classificationPrimaryCategory)
+      ? { classificationPrimaryCategory: data.classificationPrimaryCategory } : {}),
     ...(data.reviewedAt ? { reviewedAt: String(data.reviewedAt) } : {}),
     ...(data.reviewedByUid ? { reviewedByUid: String(data.reviewedByUid) } : {}),
     ...(data.rejectionReason ? { rejectionReason: String(data.rejectionReason) } : {}),
@@ -171,7 +243,8 @@ export async function submitProducerListingChanges(
   actorEmail: string | undefined,
   producerId: string,
   requestedChanges: unknown,
-  db = adminDb()
+  db = adminDb(),
+  categoryLoader = loadClassificationCategory
 ): Promise<ProducerListingChangeRequest> {
   const cleanProducerId = producerId.trim();
   if (!cleanProducerId) {
@@ -184,6 +257,9 @@ export async function submitProducerListingChanges(
   }
 
   const changes = sanitizeProducerListingChanges(requestedChanges);
+  const classificationPrimaryCategory = changes.additionalCategories !== undefined
+    ? await categoryLoader(cleanProducerId) : undefined;
+  if (classificationPrimaryCategory) validateListingClassification(changes, classificationPrimaryCategory);
   const existing = await db.collection('producer_listing_change_requests')
     .where('producerId', '==', cleanProducerId)
     .get();
@@ -203,6 +279,7 @@ export async function submitProducerListingChanges(
     status: 'pending_review' as const,
     changes,
     submittedAt,
+    ...(classificationPrimaryCategory ? { classificationPrimaryCategory } : {}),
   };
 
   await db.runTransaction(async (transaction: any) => {
@@ -270,7 +347,8 @@ export async function reviewProducerListingChange(
   requestId: string,
   decision: ProducerListingReviewDecision,
   reason: string = '',
-  db = adminDb()
+  db = adminDb(),
+  categoryLoader = loadClassificationCategory
 ) {
   await requireContentModerator(actorUid, db);
   const cleanRequestId = requestId.trim();
@@ -287,6 +365,10 @@ export async function reviewProducerListingChange(
 
   const requestRef = db.collection('producer_listing_change_requests').doc(cleanRequestId);
   const auditRef = db.collection('admin_audit').doc();
+  const previewDoc = await requestRef.get();
+  const preview = previewDoc.exists ? previewDoc.data() || {} : {};
+  const primary = decision === 'approve' && preview.changes?.additionalCategories !== undefined
+    ? await categoryLoader(String(preview.producerId || '')) : undefined;
 
   return db.runTransaction(async (transaction: any) => {
     const requestDoc = await transaction.get(requestRef);
@@ -303,6 +385,12 @@ export async function reviewProducerListingChange(
       throw new ProducerListingChangeError('conflict', 'Producer listing change request has invalid listing metadata.');
     }
     const changes = sanitizeProducerListingChanges(request.changes);
+    if (decision === 'approve' && changes.additionalCategories !== undefined) {
+      if (!primary || primary !== request.classificationPrimaryCategory) {
+        throw new ProducerListingChangeError('conflict', 'The canonical category changed after submission. Submit a fresh category and product review.');
+      }
+      validateListingClassification(changes, primary);
+    }
     const occurredAt = new Date().toISOString();
 
     if (decision === 'approve') {
@@ -310,6 +398,7 @@ export async function reviewProducerListingChange(
       transaction.set(overrideRef, {
         producerId,
         ...changes,
+        ...(primary ? { classificationPrimaryCategory: primary } : {}),
         listingContentReviewedAt: occurredAt,
         updatedAt: occurredAt,
       }, { merge: true });

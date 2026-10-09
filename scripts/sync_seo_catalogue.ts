@@ -2,6 +2,8 @@ import fs from 'fs';
 import path from 'path';
 import type { Producer } from '../src/types/terroir';
 import { getProducerCategories } from '../src/utils/producerCategory';
+import { applyApprovedListingOverride } from '../src/utils/approvedProducerListing';
+import { fetchPublishedProducerOverrides } from './publishedProducerListings';
 import { buildCatalogueState } from './catalogueState';
 import { fetchActiveProducerRows } from './liveCatalogueSource';
 
@@ -33,9 +35,13 @@ const fail = (message: string): never => {
 
 async function syncSeoCatalogue(): Promise<void> {
   const rows = await fetchActiveProducerRows();
+  const overrides = await fetchPublishedProducerOverrides();
   const { mapRowToProducer } = await import('../src/services/producerService');
   const producers: Producer[] = rows
-    .map((row) => mapRowToProducer(row))
+    .map((row) => {
+      const producer = mapRowToProducer(row);
+      return applyApprovedListingOverride(producer, overrides[producer.id]);
+    })
     .sort((a, b) => a.id.localeCompare(b.id));
 
   const ids = producers.map((producer) => producer.id);
@@ -66,9 +72,9 @@ async function syncSeoCatalogue(): Promise<void> {
 
 /**
  * Deterministic active producer snapshot generated from the live Supabase
- * public.producers catalogue where is_active = true.
+ * public.producers catalogue where is_active = true, plus admin-approved public listing edits.
  *
- * Runtime Supabase remains authoritative. This file is shared by runtime fallback
+ * Supabase controls active producer identity; approved listing edits are projected on top. This file is shared by runtime fallback
  * and SEO/AEO generation and is refreshed automatically; do not hand-edit it.
  * Latest active source row update: ${latestUpdatedAt}
  */

@@ -1,4 +1,9 @@
 import { getSupabaseAdmin } from './analyticsIngestionService';
+import { adminDb } from '../firebaseAdmin';
+import type { ProducerOverride } from '../../src/types/booking';
+import { applyApprovedClassification } from '../../src/utils/approvedProducerListing';
+import { formatProducerCategories, isProducerCategory } from '../../src/utils/producerCategory';
+import { parseAdditionalCategories } from '../../src/utils/producerClassification';
 import { getTrip, TripServiceError, type TripWithItems } from './tripService';
 
 export type TripPackFormat = 'html' | 'ics';
@@ -13,6 +18,7 @@ export interface TripPackProducerRow {
   id: string;
   name: string;
   category: string | null;
+  additional_categories?: string[] | null;
   destination: string | null;
   region: string | null;
   village: string | null;
@@ -37,6 +43,7 @@ export const TRIP_PACK_PRODUCER_FIELDS = [
   'id',
   'name',
   'category',
+  'additional_categories',
   'destination',
   'region',
   'village',
@@ -80,6 +87,14 @@ const label = (value: string | null | undefined) =>
   value
     ? value.replaceAll('_', ' ').replace(/\b\w/g, (c) => c.toUpperCase())
     : 'Not publicly confirmed';
+
+const producerCategoriesLabel = (producer: TripPackProducerRow): string =>
+  isProducerCategory(producer.category)
+    ? formatProducerCategories({
+        category: producer.category,
+        additionalCategories: parseAdditionalCategories(producer.additional_categories, producer.category),
+      })
+    : label(producer.category);
 
 const dayDate = (
   startDate: string | null,
@@ -153,7 +168,7 @@ function buildHtml(
         <div>
           <span class="eyebrow">${item.dayNumber ? `Day ${item.dayNumber}${date ? ` · ${escapeHtml(longDate(date))}` : ''}` : 'Unassigned'}</span>
           <h2>${escapeHtml(producer.name)}</h2>
-          <p class="meta">${escapeHtml([label(producer.category), location].filter(Boolean).join(' · '))}</p>
+          <p class="meta">${escapeHtml([producerCategoriesLabel(producer), location].filter(Boolean).join(' · '))}</p>
         </div>
         <span class="number">${item.position}</span>
       </div>
@@ -279,6 +294,7 @@ function buildIcs(
     const url =
       safeHttpUrl(producer.google_maps_url) || safeHttpUrl(producer.website);
     const description = [
+      producerCategoriesLabel(producer),
       label(producer.visit_booking_requirement),
       producer.phone ? `Phone: ${producer.phone}` : null,
       'Planning snapshot only. Re-check the live TerroirTrail listing before travel.',
@@ -330,6 +346,17 @@ export function buildTripPackFromData(
     : buildHtml(trip, producers, generatedAt);
 }
 
+export function applyTripPackClassification(rows: TripPackProducerRow[], overrides: Record<string, ProducerOverride>): TripPackProducerRow[] {
+  return rows.map(row => {
+    if (!isProducerCategory(row.category)) return row;
+    const projected = applyApprovedClassification({
+      id: row.id, category: row.category,
+      additionalCategories: parseAdditionalCategories(row.additional_categories, row.category),
+    }, overrides[row.id]);
+    return { ...row, additional_categories: projected.additionalCategories };
+  });
+}
+
 export async function createTripPack(
   uid: string,
   tripId: string,
@@ -361,9 +388,17 @@ export async function createTripPack(
     );
   }
 
+  const db = adminDb();
+  let overrides: Record<string, ProducerOverride>;
+  try {
+    const docs = await db.getAll(...producerIds.map(id => db.collection('producer_overrides').doc(id)));
+    overrides = Object.fromEntries(docs.filter(doc => doc.exists).map(doc => [doc.id, doc.data() as ProducerOverride]));
+  } catch {
+    throw new TripServiceError('service_unavailable', 'Approved producer facts are temporarily unavailable.');
+  }
   return buildTripPackFromData(
     trip,
-    (data || []) as unknown as TripPackProducerRow[],
+    applyTripPackClassification((data || []) as unknown as TripPackProducerRow[], overrides),
     format
   );
 }

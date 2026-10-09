@@ -1,4 +1,6 @@
 import { SEO_PRODUCERS } from './seoCatalogue';
+import { applyApprovedListingOverride } from '../src/utils/approvedProducerListing';
+import { fetchPublishedProducerOverrides } from './publishedProducerListings';
 import { buildCatalogueState } from './catalogueState';
 import { fetchActiveProducerRows } from './liveCatalogueSource';
 import { CATALOGUE_SUMMARY } from '../src/data/catalogueSummary.generated';
@@ -10,8 +12,12 @@ const fail = (message: string): never => {
 
 async function verify(): Promise<void> {
   const rows = await fetchActiveProducerRows();
+  const overrides = await fetchPublishedProducerOverrides();
   const { mapRowToProducer } = await import('../src/services/producerService');
-  const liveProducers = rows.map((row) => mapRowToProducer(row)).sort((a, b) => a.id.localeCompare(b.id));
+  const liveProducers = rows.map((row) => {
+    const producer = mapRowToProducer(row);
+    return applyApprovedListingOverride(producer, overrides[producer.id]);
+  }).sort((a, b) => a.id.localeCompare(b.id));
   const snapshotProducers = [...SEO_PRODUCERS].sort((a, b) => a.id.localeCompare(b.id));
 
   const liveIds = liveProducers.map((producer) => producer.id);

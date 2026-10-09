@@ -33,6 +33,7 @@ const producer: TripPackProducerRow = {
   id: 'producer-1',
   name: 'Estate <script>alert(1)</script>',
   category: 'winery',
+  additional_categories: ['winery', 'olive_mill', 'museum', 'olive_mill'],
   destination: 'crete',
   region: 'Heraklion',
   village: 'Archanes',
@@ -56,6 +57,7 @@ const producer: TripPackProducerRow = {
 test('Trip Pack producer query excludes removed locality column', () => {
   assert.equal(TRIP_PACK_PRODUCER_FIELDS.includes('village'), true);
   assert.equal(TRIP_PACK_PRODUCER_FIELDS.includes('locality'), false);
+  assert.equal(TRIP_PACK_PRODUCER_FIELDS.includes('additional_categories'), true);
 });
 
 test('HTML Trip Pack is printable, escaped and carries trust warnings', () => {
@@ -70,6 +72,8 @@ test('HTML Trip Pack is printable, escaped and carries trust warnings', () => {
   assert.match(pack.body, /Crete &lt;Road Trip&gt;/);
   assert.match(pack.body, /Estate &lt;script&gt;alert\(1\)&lt;\/script&gt;/);
   assert.doesNotMatch(pack.body, /<script>alert\(1\)<\/script>/);
+  assert.match(pack.body, /Winery · Olive Mill/);
+  assert.doesNotMatch(pack.body, /Museum/);
   assert.match(pack.body, /Road access/);
   assert.match(pack.body, />Easy</);
   assert.match(pack.body, /Re-check the live TerroirTrail listing/);
@@ -86,6 +90,7 @@ test('calendar export assigns saved stops to their trip day', () => {
 
   assert.equal(pack.contentType, 'text/calendar; charset=utf-8');
   assert.match(pack.body, /BEGIN:VCALENDAR/);
+  assert.match(pack.body, /DESCRIPTION:Winery · Olive Mill/);
   assert.match(pack.body, /DTSTART;VALUE=DATE:20261001/);
   assert.match(pack.body, /DTSTART;VALUE=DATE:20261002/);
   assert.match(pack.body, /SUMMARY:Estate <script>alert\(1\)<\/script>/);

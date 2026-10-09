@@ -1,3 +1,5 @@
+import type { ProducerOverride } from '../types/booking';
+import { applyApprovedListingOverride } from '../utils/approvedProducerListing';
 import { Producer, Destination, Category, Ethos, RoadAccess, FoodOption } from '../types/terroir';
 import { TastingExperience } from '../types/booking';
 import { CRETAN_PRODUCERS } from '../data/producers';
@@ -188,15 +190,13 @@ function filterProducersList(producers: Producer[], options: ProducerQueryOption
   if (searchQuery && searchQuery.trim()) {
     const q = searchQuery.toLowerCase().trim();
     list = list.filter(
-      (p) =>
-        p.name.toLowerCase().includes(q) ||
-        p.greekName.toLowerCase().includes(q) ||
-        p.region.toLowerCase().includes(q) ||
-        p.village.toLowerCase().includes(q) ||
-        (p.country && p.country.toLowerCase().includes(q)) ||
-        p.indigenousVarieties.some((v) => v.toLowerCase().includes(q)) ||
-        p.productSpecialties?.some((specialty) => specialty.toLowerCase().includes(q)) ||
-        p.productSections?.some((section) => [...section.specialties, ...(section.varieties || [])].some((value) => value.toLowerCase().includes(q)))
+      (p) => [
+        p.name, p.greekName, p.region, p.village, p.country,
+        ...p.indigenousVarieties, ...(p.productSpecialties || []),
+        ...(p.productSections || []).flatMap(section => [
+          ...section.specialties, ...(section.varieties || []), ...(section.highlights || []),
+        ]),
+      ].some(value => typeof value === 'string' && value.toLowerCase().includes(q))
     );
   }
 
@@ -207,8 +207,13 @@ function filterProducersList(producers: Producer[], options: ProducerQueryOption
  * Authoritative in-memory state and provenance tracking.
  *
  * - fallback: lightweight audited bootstrap, then a lazy-loaded deterministic snapshot of the full active catalogue.
- * - live: Supabase successfully returned data and remains the sole authority.
+ * - live: Supabase owns active entity identity; only admin-reviewed listing fields are projected on top.
  */
+let approvedListingOverrides: Record<string, ProducerOverride> = {};
+export const PRODUCER_LISTINGS_UPDATED_EVENT = 'terroirtrail:producer-listings-updated';
+const projectProducer = (producer: Producer): Producer =>
+  applyApprovedListingOverride(producer, approvedListingOverrides[producer.id]);
+
 let cacheProvenance: DataProvenance = 'fallback';
 const liveProducersCache = new Map<string, Producer>();
 
@@ -228,7 +233,13 @@ export const producerService = {
     return experienceProvenance;
   },
 
+  setApprovedListingOverrides(overrides: Record<string, ProducerOverride>): void {
+    approvedListingOverrides = overrides;
+    if (typeof window !== 'undefined') window.dispatchEvent(new Event(PRODUCER_LISTINGS_UPDATED_EVENT));
+  },
+
   resetCacheForTesting(): void {
+    approvedListingOverrides = {};
     cacheProvenance = 'fallback';
     liveProducersCache.clear();
     fallbackProducersCache = BOOTSTRAP_FALLBACK_PRODUCERS;
@@ -239,6 +250,9 @@ export const producerService = {
 
   async getProducers(options: ProducerQueryOptions = {}): Promise<Producer[]> {
     const { destination, category, searchQuery, bounds, limit = 1000, offset = 0 } = options;
+    // Reviewed fields can change category/search membership. Filter the projected live rows before pagination.
+    const needsProjection = Object.values(approvedListingOverrides).some(override =>
+      override.additionalCategories !== undefined && Boolean(override.listingContentReviewedAt));
 
     if (this.isLiveDb() && supabase) {
       try {
@@ -249,7 +263,7 @@ export const producerService = {
         }
         if (category && category !== 'all') {
           if (!isProducerCategory(category)) throw new Error('Unsupported producer category');
-          if (!isCategoryPreview()) query = query.or(
+          if (!isCategoryPreview() && !needsProjection) query = query.or(
             `category.eq.${category},additional_categories.cs.{${category}}`
           );
         }
@@ -261,12 +275,12 @@ export const producerService = {
             .gte('lng', bounds.west)
             .lte('lng', bounds.east);
         }
-        if (searchQuery && searchQuery.trim()) {
+        if (!needsProjection && searchQuery && searchQuery.trim()) {
           const q = searchQuery.trim();
           query = query.or(`name.ilike.%${q}%,local_name.ilike.%${q}%,village.ilike.%${q}%,region.ilike.%${q}%`);
         }
 
-        query = isCategoryPreview() ? query.range(0, 999) : query.range(offset, offset + limit - 1);
+        query = isCategoryPreview() || needsProjection ? query.range(0, 999) : query.range(offset, offset + limit - 1);
 
         const { data, error } = await query;
         if (error) {
@@ -289,7 +303,8 @@ export const producerService = {
           remoteProducers.forEach((p) => liveProducersCache.set(p.id, p));
           cacheProvenance = 'live';
 
-          return isCategoryPreview() ? filterProducersList(remoteProducers, options) : remoteProducers;
+          const projected = remoteProducers.map(projectProducer);
+          return isCategoryPreview() || needsProjection ? filterProducersList(projected, options) : projected;
         }
       } catch (err) {
         cacheProvenance = 'fallback';
@@ -300,13 +315,13 @@ export const producerService = {
     }
 
     const fallbackProducers = await loadFullFallbackProducers();
-    return filterProducersList(fallbackProducers, options);
+    return filterProducersList(fallbackProducers.map(projectProducer), options);
   },
 
   async getProducerById(id: string): Promise<Producer | null> {
     if (this.isLiveDb() && supabase) {
       if (cacheProvenance === 'live' && liveProducersCache.has(id)) {
-        return liveProducersCache.get(id) || null;
+        return this.getCachedProducer(id) || null;
       }
 
       try {
@@ -321,22 +336,25 @@ export const producerService = {
             const prod = mapRowToProducer(data);
             liveProducersCache.set(prod.id, prod);
             cacheProvenance = 'live';
-            return prod;
+            return projectProducer(prod);
           }
           return null;
         }
         logger.warn('Catalogue', 'producer_by_id_failed', { id, reason: error.message });
-        return (await loadFullFallbackProducers()).find((p) => p.id === id) || null;
+        const producer = (await loadFullFallbackProducers()).find((p) => p.id === id);
+        return producer ? projectProducer(producer) : null;
       } catch (err) {
         logger.warn('Catalogue', 'producer_by_id_error', {
           id,
           reason: err instanceof Error ? err.message : String(err),
         });
-        return (await loadFullFallbackProducers()).find((p) => p.id === id) || null;
+        const producer = (await loadFullFallbackProducers()).find((p) => p.id === id);
+        return producer ? projectProducer(producer) : null;
       }
     }
 
-    return (await loadFullFallbackProducers()).find((p) => p.id === id) || null;
+    const producer = (await loadFullFallbackProducers()).find((p) => p.id === id);
+    return producer ? projectProducer(producer) : null;
   },
 
   async getExperiences(producerId?: string): Promise<TastingExperience[]> {
@@ -374,16 +392,18 @@ export const producerService = {
 
   getCachedProducers(): Producer[] {
     if (cacheProvenance === 'live') {
-      return Array.from(liveProducersCache.values());
+      return Array.from(liveProducersCache.values()).map(projectProducer);
     }
-    return fallbackProducersCache;
+    return fallbackProducersCache.map(projectProducer);
   },
 
   getCachedProducer(id: string): Producer | undefined {
     if (cacheProvenance === 'live') {
-      return liveProducersCache.get(id);
+      const producer = liveProducersCache.get(id);
+      return producer ? projectProducer(producer) : undefined;
     }
-    return fallbackProducersCache.find((p) => p.id === id);
+    const producer = fallbackProducersCache.find((p) => p.id === id);
+    return producer ? projectProducer(producer) : undefined;
   },
 
   getCachedExperiences(producerId?: string): TastingExperience[] {

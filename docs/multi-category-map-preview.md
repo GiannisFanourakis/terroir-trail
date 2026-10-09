@@ -1,6 +1,6 @@
 # Multiple maker categories — implementation and rollout
 
-Branch: `feat/multi-category-map`, based on `6754053`. The user confirmed the map preview works on 2026-10-08.
+Original branch: `feat/multi-category-map`, based on `6754053`. The user confirmed the map preview works on 2026-10-08. It was merged as `3df96c1` and deployed that day. Quality Gate `37825948671` and Production Deploy `37826309189` succeeded; production version/catalogue state and the dual/triple/four-category/museum desktop and phone cases were independently verified.
 
 ## Development preview
 
@@ -34,7 +34,7 @@ Live verification found 146 active producers, 10 with multiple categories, one m
 
 ## Release workflow
 
-After the database migration, refresh the authoritative snapshot with `npm run sync:seo-catalogue`, verify it with `npm run verify:live-catalogue`, and run `npm run check`. Include the refreshed runtime fallback and SEO snapshot in the feature-branch commit. Merge into main, deploy Firebase Hosting with `npm run deploy`, and verify the public and browser smoke checks.
+Refresh the active Supabase catalogue plus approved public listing edits with `npm run sync:seo-catalogue`, verify it with `npm run verify:live-catalogue`, and run `npm run check`. Include the refreshed runtime fallback and SEO snapshot in the feature-branch commit. Merge into main and use the existing Quality Gate → Production Deploy workflow, which releases the frontend and trusted API and verifies public/browser smoke checks. The deployment refreshes approved public edits; pending requests are never included. Database edits alone do not trigger a release, and the scheduled Production Smoke workflow checks health without republishing the catalogue.
 
 ## Verification
 
@@ -44,4 +44,18 @@ All three SQL migrations passed isolated PostgreSQL checks using the current rev
 
 The complete `npm run check` gate passed after the live catalogue refresh: 706 frontend tests, 191 server tests and 27 rules tests, plus typecheck, lint, format, public-grants, catalogue audit, build, SEO/AEO and link-graph checks. `npm run verify:live-catalogue` confirmed exact parity for all 146 active producer records.
 
-The aggregate JS budget is 855 KB gzip; the verified build uses 853.1 KB total JS, 291.2 KB main/largest JS and 25.1 KB CSS. Initial/main and largest-chunk limits remain 330 KB; the CSS limit remains 32 KB. Preview data and UI are absent from the production bundle.
+For the original rollout, the aggregate JS budget was 855 KB gzip; its verified build used 853.1 KB total JS, 291.2 KB main/largest JS and 25.1 KB CSS. Initial/main and largest-chunk limits remain 330 KB; the CSS limit remains 32 KB. Preview data and UI are absent from the production bundle.
+
+## Display and editing follow-up — 2026-10-09
+
+The `fix/multi-category-followups` branch extends the shared maker badges to trip cards, Add to Trip and promoted producer cards. Printable/offline HTML and calendar exports include every verified maker category once and never treat museum, tasting or tours as maker categories.
+
+Verified Hosts can propose additional maker categories and products grouped by activity. The primary category stays fixed. The form requires an official evidence URL for classification/product changes; Admin moderation shows the source, canonical primary and complete proposed product groups. The server checks active Supabase identity and primary category, validates bounded allowlisted categories/product lists, and publishes only after trusted Admin approval. A changed primary blocks approval; rejected or pending requests do not change public data. Existing client-write restrictions continue to block direct category/product publication.
+
+Reviewed edits use the existing public Firestore `producer_overrides` layer. Shared projection applies only to an active catalogue entity and the primary category that was reviewed. Runtime category filtering and product search run after that projection, and trip exports and catalogue/SEO synchronization apply it too. Group edits also refresh the legacy specialty/variety view so cleared or removed groups do not reappear in fallback displays or search. Supabase continues to own identity, publication, geography and primary category; no new producer records or schema changes are required.
+
+Follow-up validation passed: 714 frontend tests, 200 server tests and 28 rules tests (942 total), plus the complete `npm run check` typecheck/lint/format/data/SEO/AEO/link-graph gate. Exact live parity still covers all 146 active producers. Real Chrome checks passed at phone, portrait/landscape tablet and desktop sizes; the actual classification editor also passed desktop/phone interaction checks for four groups, category removal, the fixed primary, visitor-feature separation and required evidence, without submitting a live request.
+
+The follow-up aggregate JS limit is 858 KB gzip, allowing the measured 2.3 KB increase for shared review logic and lazy Host/Admin editing. The verified build uses 855.4 KB total JS, 291.3 KB main/largest JS and 25.1 KB CSS. Main/largest limits remain 330 KB and CSS remains 32 KB. No dependencies were added.
+
+Production release verification is in progress.

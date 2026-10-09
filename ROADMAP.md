@@ -4,7 +4,7 @@
 >
 > Completion convention: change `- [ ] Step` to `- [x] ~~Step~~` when finished. Do not mark a step complete until it has been implemented, tested, pushed, deployed where applicable, and verified.
 
-**Last updated:** 2026-09-23
+**Last updated:** 2026-10-09
 **Current focus:** Phase 15.8A Explorer is live; immediate work is B2C validation plus planned Phase 15.8B Trip Intelligence/Journey Mode. Producer Partner outreach remains deferred behind traveler evidence.
 
 ---
@@ -234,6 +234,25 @@ Phase 8 reconciliation notes:
 - Live Supabase producers no longer need to be precompiled into the legacy/static compatibility allowlist: producer-card and drawer eligibility now use the live producer trust state (`google_place_id` plus `verified_location` / `verified_entrance`).
 - The production image hierarchy is: approved host/producer media → explicitly credited local media → live Google Places imagery → neutral category fallback.
 - Producer-uploaded media remains a gated prototype; its proposed Supabase storage migration has not been applied.
+
+---
+
+### Multiple maker categories — production rollout, 2026-10-08
+
+- [x] ~~Keep one canonical producer entity and map point while supporting verified additional maker categories.~~
+- [x] ~~Separate museums, tasting and guided tours from maker-category badge rows; retain the museum map symbol.~~
+- [x] ~~Apply guarded Supabase taxonomy/content migrations and synchronize the runtime fallback and SEO catalogue.~~
+- [x] ~~Publish the reviewed ten multiple-category producers and one museum feature with grouped products and targeted source-backed copy.~~
+- [x] ~~Verify the full quality gate, SEO/link graph, deployment, and desktop/phone production behavior.~~
+
+Released at `3df96c1` on 2026-10-08. Quality Gate `37825948671` and Production Deploy `37826309189` succeeded; the public version and catalogue-state files were independently verified.
+
+**Follow-up, 2026-10-09:** implementation is in `fix/multi-category-followups`; release verification is in progress.
+
+- [ ] Show all maker categories in trip cards, Add to Trip, promoted cards and HTML/calendar exports.
+- [ ] Support official-source-backed category and grouped-product proposals through trusted Admin review.
+- [ ] Apply approved classifications consistently in runtime filters/search, trip exports, fallback and SEO generation.
+- [ ] Complete full validation and record the follow-up production deployment.
 
 ---
 

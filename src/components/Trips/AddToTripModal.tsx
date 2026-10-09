@@ -20,6 +20,7 @@ import type { Producer } from '../../types/terroir';
 import { trackIntent } from '../../services/intentAnalytics';
 import { recordPartnerTripAddIfAttributed } from '../../services/partnerAttribution';
 import { ProducerCategoryIcon } from '../Common/ProducerCategoryIcon';
+import { ProducerCategoryBadges } from '../Common/ProducerCategoryBadges';
 import { TripDatePickerField } from './TripDatePickerField';
 
 interface AddToTripModalProps {
@@ -462,9 +463,12 @@ export const AddToTripModal: React.FC<AddToTripModalProps> = ({
           </div>
           <div className="min-w-0 flex-1">
             <h3 className="font-bold text-xs text-white truncate">{producer.name}</h3>
-            <p className="text-[11px] text-stone-400 truncate capitalize">
-              {producer.category.replace(/_/g, ' ')} · {producer.destination.replace(/_/g, ' ')}
+            <p className="mt-0.5 text-[11px] text-stone-400 capitalize">
+              {producer.destination.replace(/_/g, ' ')}
             </p>
+            <div className="mt-1.5">
+              <ProducerCategoryBadges producer={producer} compact />
+            </div>
           </div>
         </div>
 

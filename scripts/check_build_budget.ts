@@ -35,8 +35,8 @@ const KB = 1024;
 const budgets = {
   mainJsGzip: 330 * KB,
   largestJsGzip: 330 * KB,
-  // Multiple maker categories add about 2 KB across the application and lazy chunks.
-  totalJsGzip: 855 * KB,
+  // Reviewed category/product editing adds about 2.3 KB across shared and lazy Host/Admin chunks.
+  totalJsGzip: 858 * KB,
   totalCssGzip: 32 * KB,
 };
 

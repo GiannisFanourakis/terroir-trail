@@ -1,4 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { getProducerCategoryDetails, isProducerCategory } from '../../utils/producerCategory';
+import { ProducerProductSections } from '../Common/ProducerProductSections';
+import type { ProducerProductSection } from '../../types/terroir';
 import { Check, CheckCircle2, Clock3, FilePenLine, RefreshCw, XCircle } from 'lucide-react';
 import {
   approveProducerListingChange,
@@ -16,7 +19,10 @@ const FIELD_LABELS: Record<string, string> = {
   tagLine: 'Tagline',
   description: 'Description',
   story: 'Story',
-  tastingHighlights: 'Products / highlights',
+  tastingHighlights: 'General products / highlights',
+  additionalCategories: 'Additional maker categories',
+  productSections: 'Products grouped by maker category',
+  classificationSourceUrl: 'Official evidence source',
   website: 'Website',
   foodOption: 'Food option',
   dogFriendly: 'Dog friendly',
@@ -109,7 +115,7 @@ export const ProducerListingChangeModeration: React.FC<ProducerListingChangeMode
             <h3 className="text-sm font-bold text-white">Producer listing change review</h3>
             {!loading && requests.length > 0 && <span className="px-2 py-0.5 rounded-full border border-amber-500/30 bg-amber-500/10 text-amber-300 text-[9px] uppercase font-bold tracking-wide">{requests.length} pending</span>}
           </div>
-          <p className="text-[11px] text-stone-400 mt-0.5">Review Host-proposed story, products, website and amenities before they replace the approved public listing content.</p>
+          <p className="text-[11px] text-stone-400 mt-0.5">Review maker categories and grouped products against the supplied official source, along with story, website and amenities, before publishing.</p>
         </div>
         <button type="button" onClick={() => void loadRequests()} disabled={loading} className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-white/10 bg-stone-900 text-stone-300 disabled:opacity-50 text-xs font-semibold cursor-pointer">
           <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} /> Refresh
@@ -137,6 +143,7 @@ export const ProducerListingChangeModeration: React.FC<ProducerListingChangeMode
                     <h4 className="text-sm font-bold text-white">{item.producerName}</h4>
                     <div className="text-[10px] text-stone-500 mt-0.5">Listing ID: {item.producerId}</div>
                     {item.requesterEmail && <div className="text-[10px] text-stone-500">Host: {item.requesterEmail}</div>}
+                    {item.classificationPrimaryCategory && <div className="mt-1 text-[11px] text-stone-400">Primary maker category: {getProducerCategoryDetails(item.classificationPrimaryCategory).label} (fixed)</div>}
                   </div>
                   <div className="flex items-center gap-1.5 text-[10px] text-amber-300"><Clock3 className="w-3.5 h-3.5" />{new Date(item.submittedAt).toLocaleString()}</div>
                 </div>
@@ -145,7 +152,15 @@ export const ProducerListingChangeModeration: React.FC<ProducerListingChangeMode
                   {Object.entries(item.changes).map(([field, value]) => (
                     <div key={field} className="rounded-lg border border-white/5 bg-stone-950/70 px-3 py-2">
                       <div className="text-[9px] uppercase tracking-wide font-bold text-stone-500">{FIELD_LABELS[field] || field}</div>
-                      <div className="mt-1 text-xs text-stone-200 whitespace-pre-wrap break-words">{displayValue(value)}</div>
+                      <div className="mt-1 text-xs text-stone-200 whitespace-pre-wrap break-words">
+                        {field === 'productSections' && Array.isArray(value)
+                          ? value.length ? <ProducerProductSections sections={value as ProducerProductSection[]} /> : 'Clear all groups'
+                          : field === 'additionalCategories' && Array.isArray(value)
+                            ? value.filter(isProducerCategory).map(category => getProducerCategoryDetails(category).label).join(' · ') || 'Primary category only'
+                            : field === 'classificationSourceUrl' && typeof value === 'string' && /^https?:\/\//.test(value)
+                              ? <a href={value} target="_blank" rel="noopener noreferrer" className="text-amber-300 underline">{value}</a>
+                              : displayValue(value)}
+                      </div>
                     </div>
                   ))}
                 </div>

@@ -1,3 +1,4 @@
+import { applyApprovedListingOverride } from './utils/approvedProducerListing';
 import React, {
   useState,
   useMemo,
@@ -9,7 +10,6 @@ import React, {
 import { useProducers } from './hooks/useProducers';
 import { Producer, FilterState, Destination } from './types/terroir';
 import type { UserProfile } from './types/auth';
-import type { ProducerOverride } from './types/booking';
 import { Header } from './components/Header/Header';
 import { FirstRunWelcome } from './components/Onboarding/FirstRunWelcome';
 import { OfflineStatus } from './components/System/OfflineStatus';
@@ -153,41 +153,6 @@ export type ActiveModal =
     }
   | null;
 
-const applyApprovedListingOverride = (
-  producer: Producer,
-  override?: ProducerOverride
-): Producer => {
-  if (!override) return producer;
-  return {
-    ...producer,
-    ...(override.tagLine !== undefined ? { tagLine: override.tagLine } : {}),
-    ...(override.description !== undefined
-      ? { description: override.description }
-      : {}),
-    ...(override.story !== undefined ? { story: override.story } : {}),
-    ...(override.tastingHighlights !== undefined
-      ? { tastingHighlights: override.tastingHighlights }
-      : {}),
-    ...(override.website !== undefined
-      ? { website: override.website || undefined }
-      : {}),
-    ...(override.foodOption !== undefined
-      ? { foodOption: override.foodOption || undefined }
-      : {}),
-    ...(override.dogFriendly !== undefined
-      ? { dogFriendly: override.dogFriendly }
-      : {}),
-    ...(override.kidFriendly !== undefined
-      ? { kidFriendly: override.kidFriendly }
-      : {}),
-    ...(override.walkIn !== undefined
-      ? { walkInFriendly: override.walkIn }
-      : {}),
-    ...(override.campervanFriendly !== undefined
-      ? { campervanFriendly: override.campervanFriendly }
-      : {}),
-  };
-};
 
 export const App: React.FC = () => {
   const [selectedProducer, setSelectedProducer] = useState<Producer | null>(

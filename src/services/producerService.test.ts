@@ -97,6 +97,28 @@ describe('producerService — Supabase / Fallback Data Ownership', () => {
     expect(producerService.getCacheProvenance()).toBe('live');
   });
 
+  it('filters reviewed category membership and product search after projection while retaining the live entity', async () => {
+    mockSupabaseState.queryResults.set('producers', { data: [
+      { id: 'estate', name: 'Estate', category: 'winery', additional_categories: [], destination: 'crete' },
+      { id: 'another', name: 'Another', category: 'winery', destination: 'crete' },
+    ], error: null });
+    producerService.setApprovedListingOverrides({
+      estate: { producerId: 'estate', isAcceptingBookings: false,
+        classificationPrimaryCategory: 'winery', additionalCategories: ['cheese_dairy'],
+        productSections: [{ category: 'cheese_dairy', specialties: ['Fresh estate cheese'] }],
+        listingContentReviewedAt: '2026-10-09T00:00:00Z', updatedAt: '2026-10-09T00:00:00Z' },
+    });
+    const rows = await producerService.getProducers({ category: 'cheese_dairy', searchQuery: 'estate cheese', limit: 1 });
+    expect(rows.map(value => value.id)).toEqual(['estate']);
+    expect(mockSupabaseState.orFilters).toEqual([]);
+    expect(producerService.getCacheProvenance()).toBe('live');
+    expect(producerService.getCachedProducers()).toHaveLength(2);
+    expect((await producerService.getProducerById('estate'))?.additionalCategories).toEqual(['cheese_dairy']);
+    expect(rows[0].category).toBe('winery');
+    producerService.setApprovedListingOverrides({});
+    expect(producerService.getCachedProducer('estate')?.additionalCategories).toEqual([]);
+  });
+
   it('Supabase successful response replaces seed catalogue', async () => {
     const liveRows = [
       {
