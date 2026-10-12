@@ -171,6 +171,30 @@ const destinationDirectory = `
           </p>
         </nav>`;
 
+const liveDomCrawlerHub = `<nav class="sr-only" aria-label="TerroirTrail directory and regional guides" data-seo-crawler-hub="true">
+      <a href="/producers/">All producers (${LIVE_CATALOGUE_METRICS.totalProducers})</a>
+      <a href="/destinations/">Producer destinations (${LIVE_CATALOGUE_METRICS.destinationCount})</a>
+      <a href="/categories/">Producer categories (${LIVE_CATALOGUE_METRICS.categoryCount})</a>
+      <a href="/methodology/">Verification methodology</a>
+      <a href="/greece/">Greece</a>
+      <a href="/greece/crete/">Crete (${destinationCounts.crete})</a>
+      <a href="/greece/santorini/">Santorini (${destinationCounts.santorini})</a>
+      <a href="/greece/peloponnese/">Peloponnese (${destinationCounts.peloponnese})</a>
+      <a href="/greece/northern-greece/">Macedonia, Greece (${destinationCounts.northernGreece})</a>
+      <a href="/italy/">Italy</a>
+      <a href="/italy/tuscany/">Tuscany (${destinationCounts.tuscany})</a>
+      <a href="/privacy.html">Privacy policy</a>
+    </nav>`;
+
+if (!html.includes('data-seo-crawler-hub="true"')) {
+  html = replaceRequired(
+    html,
+    /<div id="root"><\/div>/i,
+    `<div id="root"></div>\n    ${liveDomCrawlerHub}`,
+    'homepage root container'
+  );
+}
+
 if (!html.includes('aria-label="Explore TerroirTrail destinations"')) {
   const noscriptMarker = '<h2>TerroirTrail — Independent Producer &amp; Agritourism Guide</h2>';
   if (html.includes(noscriptMarker)) {

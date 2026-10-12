@@ -63,6 +63,16 @@ test('SEO landing generation uses a structural idempotent homepage marker', () =
   );
 });
 
+test('homepage SEO finalization injects live-DOM crawler hub outside noscript', () => {
+  const finalizer = read('scripts/finalize_phase12_homepage.ts');
+
+  assert.match(finalizer, /data-seo-crawler-hub="true"/);
+  assert.match(finalizer, /<a href="\/producers\/">/);
+  assert.match(finalizer, /<a href="\/destinations\/">/);
+  assert.match(finalizer, /<a href="\/categories\/">/);
+  assert.match(finalizer, /<a href="\/methodology\/">/);
+});
+
 
 test('checked-in sitemap is only a stable seed; build generation owns live catalogue URLs', () => {
   const sitemap = read('public/sitemap.xml');

@@ -70,12 +70,16 @@ const homepage = fs.readFileSync(path.join(distDir, 'index.html'), 'utf-8');
 if (!/<div id="root">\s*<\/div>/i.test(homepage)) {
   fail('Homepage #root must stay empty before React mounts; do not reintroduce a visible preload SEO fallback.');
 }
+const homepageOutsideNoscript = homepage.replace(/<noscript>[\s\S]*?<\/noscript>/gi, '');
 for (const href of ['/producers/', '/destinations/', '/categories/', '/methodology/', '/greece/crete/', '/greece/santorini/']) {
   if (!homepage.includes(`href="${href}"`)) fail(`Homepage no-JavaScript discovery fallback missing ${href}`);
+  if (!homepageOutsideNoscript.includes(`href="${href}"`)) {
+    fail(`Homepage live DOM (outside <noscript>) is missing crawlable link ${href} for JS-enabled crawlers.`);
+  }
 }
 
 console.log('SEO internal-link graph verification passed:');
 console.log(`  - ${sitemapUrls.length} sitemap URLs have canonical built files`);
 console.log('  - 0 orphaned sitemap URLs');
 console.log('  - normal app #root stays empty until React mounts');
-console.log('  - no-JavaScript discovery links remain available without a visible preload fallback');
+console.log('  - both live-DOM (JS-enabled) and no-JavaScript discovery links remain available without a visible preload fallback');
