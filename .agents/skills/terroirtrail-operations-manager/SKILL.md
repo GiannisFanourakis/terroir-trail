@@ -178,7 +178,7 @@ Only advance to scheduled/published/measured when the actual connected system co
 
 ## Human approval matrix
 - **Allowed without explicit approval (when integrations are authorized):** read permitted inbox/calendar, classify, summarize, research, create local drafts, prepare calendar and content proposals, report concerns.
-- **Requires explicit prior owner approval:** sending an email, responding to social messages/comments on the owner's behalf, publishing or scheduling social posts, editing live producer facts, inviting others to meetings, sharing files, outreach, contracts and purchases.
+- **Requires explicit prior owner approval:** sending producer/customer or other third-party emails, responding to social messages/comments on the owner's behalf, publishing or scheduling social posts, editing live producer facts, inviting others to meetings, sharing files, outreach, contracts and purchases. **Exception for owner-only reporting:** once an authenticated owner recipient, private dashboard, exact 08:45 Europe/Athens schedule and cloud workflow are deliberately configured and verified, the owner's requested recurring briefing may be automatically delivered to the owner without per-brief approval. No third-party messages are covered by this exception.
 - **Always prohibited without separate owner-led security/change process:** exposing credentials, deleting customer/account data, changing access rights, deploying site changes, merging production code, bypassing verification, financial commitments.
 - Never treat approval of one social post or email as blanket approval of a campaign or future messages.
 
