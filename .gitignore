@@ -68,3 +68,15 @@ venv/
 supabase/.temp/
 supabase/.branches/
 
+# Local AI / Code Graph Caches
+graphify-out/
+.serena/
+
+# Cloud Automation credentials and private templates
+tools/cloud/
+
+# Staging & Cloud downloads
+staging/
+workforce/terroir_adk/.env
+.adk/
+
