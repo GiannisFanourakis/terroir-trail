@@ -25,12 +25,39 @@ let fullFallbackPromise: Promise<Producer[]> | null = null;
 
 async function loadFullFallbackProducers(): Promise<Producer[]> {
   if (!fullFallbackPromise) {
-    fullFallbackPromise = import('../data/liveCatalogue.generated').then(
-      ({ LIVE_CATALOGUE_PRODUCERS }) => {
-        fallbackProducersCache = LIVE_CATALOGUE_PRODUCERS.map(applyCategoryPreview);
-        return fallbackProducersCache;
-      }
-    );
+    fullFallbackPromise = (async () => {
+      // In unit tests, keep the canonical bundled fixture rather than doing HTTP.
+      // In production, the same records are served as a versioned static asset:
+      // shipping 146 long editorial records in a JS chunk doubles catalogue code.
+      const catalogue: Producer[] =
+        import.meta.env.MODE === 'test'
+          ? (await import('../data/liveCatalogue.generated')).LIVE_CATALOGUE_PRODUCERS
+          : await (async () => {
+              const response = await fetch('/catalogue-fallback.json', {
+                credentials: 'omit',
+                cache: 'no-cache',
+              });
+              if (!response.ok) throw new Error('Static catalogue unavailable');
+              const data: unknown = await response.json();
+              if (
+                !Array.isArray(data) ||
+                data.length < 100 ||
+                data.some((value) => !value || typeof value !== 'object' ||
+                  typeof value.id !== 'string')
+              ) {
+                throw new Error('Invalid static catalogue response');
+              }
+              return data as Producer[];
+            })();
+      fallbackProducersCache = catalogue.map(applyCategoryPreview);
+      return fallbackProducersCache;
+    })().catch(() => {
+      // If both Supabase and the static asset are unavailable, retain the
+      // limited audited bootstrap rather than an empty or unverified catalogue.
+      fallbackProducersCache = BOOTSTRAP_FALLBACK_PRODUCERS;
+      fullFallbackPromise = null; // retry on a subsequent request
+      return fallbackProducersCache;
+    });
   }
   return fullFallbackPromise;
 }

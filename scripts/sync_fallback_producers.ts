@@ -81,9 +81,9 @@ function mapRowToProducer(row: any): Producer {
 }
 
 function assertPhase6CreteIntegrity(producers: Producer[]) {
-  if (producers.length !== 27) {
+  if (producers.length !== 28) {
     throw new Error(
-      `Expected exactly 27 audited Crete records before fallback generation; received ${producers.length}.`
+      `Expected exactly 28 audited Crete records before fallback generation; received ${producers.length}.`
     );
   }
 

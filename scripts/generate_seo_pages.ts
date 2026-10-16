@@ -295,7 +295,8 @@ const renderProducerPage = (producer: Producer): string => {
     <meta name="twitter:image" content="${CANONICAL_HOST}/logo.png" />
     <script type="application/ld+json">${jsonLd}</script>
     <style>${pageStyles}</style>
-  </head>
+    <script defer src="/ga4-consent.js"></script>
+</head>
   <body style="margin:0">
     <main class="seo-page">
       <article>
@@ -381,7 +382,8 @@ const renderProducerDirectory = (): string => {
     <meta property="og:description" content="${escapeHtml(description)}" />
     <script type="application/ld+json">${JSON.stringify(itemList, null, 2).replace(/</g, '\\u003c')}</script>
     <style>${pageStyles}</style>
-  </head>
+    <script defer src="/ga4-consent.js"></script>
+</head>
   <body style="margin:0">
     <main class="seo-page">
       <article>

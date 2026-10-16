@@ -54,9 +54,38 @@ function syncAuditedPhase13Media(producer: Producer): Producer {
  */
 const ACTIVE_PRODUCER_ID_SET = new Set<string>(ACTIVE_PRODUCER_IDS);
 
-export const AUDITED_PRODUCERS: Producer[] = [
+const phase13DairyIds = new Set(PHASE13_DAIRY_PRODUCERS.map((producer) => producer.id));
+const auditedById = new Map<string, Producer>();
+
+for (const producer of [
   ...CRETAN_PRODUCERS,
   ...SANTORINI_PRODUCERS,
   ...PHASE10B_PRODUCERS,
   ...PHASE13_DAIRY_PRODUCERS.map(syncAuditedPhase13Media),
-].filter((producer) => ACTIVE_PRODUCER_ID_SET.has(producer.id));
+]) {
+  if (!ACTIVE_PRODUCER_ID_SET.has(producer.id)) continue;
+  const existing = auditedById.get(producer.id);
+  if (!existing) {
+    auditedById.set(producer.id, producer);
+    continue;
+  }
+  if (!phase13DairyIds.has(producer.id) || producer.category !== 'cheese_dairy') {
+    throw new Error('Unexpected duplicate audited producer: ' + producer.id);
+  }
+  // Three established Crete dairy listings are also present in Phase 13.
+  // Keep the previously audited Crete identity, location, road access and
+  // visitability fields. Only fill its missing verified product specialties.
+  if (
+    existing.indigenousVarieties?.length &&
+    JSON.stringify(existing.indigenousVarieties) !== JSON.stringify(producer.productSpecialties)
+  ) {
+    throw new Error('Conflicting dairy product audit: ' + producer.id);
+  }
+  auditedById.set(producer.id, {
+    ...existing,
+    productSpecialties: existing.productSpecialties?.length
+      ? existing.productSpecialties
+      : producer.productSpecialties,
+  });
+}
+export const AUDITED_PRODUCERS: Producer[] = Array.from(auditedById.values());

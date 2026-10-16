@@ -10,6 +10,7 @@ export default tseslint.config(
       'android/**',
       'ios/**',
       'coverage/**',
+      'tools/cloud/**',
       '**/*.d.ts',
     ],
   },

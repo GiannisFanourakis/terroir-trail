@@ -1,10 +1,9 @@
 name: Production Deploy
 
+# Production deployment requires an explicit owner-triggered workflow run.
+# GitHub main merges must not automatically deploy Firestore, Cloud Run or Hosting.
 on:
   workflow_dispatch:
-  workflow_run:
-    workflows: ['Quality Gate']
-    types: [completed]
 
 permissions:
   contents: write
@@ -16,7 +15,7 @@ concurrency:
 
 jobs:
   deploy:
-    if: ${{ github.event_name != 'workflow_run' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main') }}
+    if: ${{ github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     timeout-minutes: 45
     env:
@@ -225,4 +224,4 @@ jobs:
       - name: Deployment summary
         run: |
           echo "Production deployment completed from $(git rev-parse --short HEAD)."
-          echo "Future successful pushes to main deploy Firestore, Cloud Run, and Hosting automatically."
+          echo "Production deploys require an explicit owner-triggered workflow_dispatch run."
