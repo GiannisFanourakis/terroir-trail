@@ -6,7 +6,7 @@ import type { Producer } from '../types/terroir';
  *
  * Supabase controls active producer identity; approved listing edits are projected on top. This file is shared by runtime fallback
  * and SEO/AEO generation and is refreshed automatically; do not hand-edit it.
- * Latest active source row update: 2026-10-08T18:30:09.223257+00:00
+ * Latest active source row update: 2026-10-13T10:23:06.875986+00:00
  */
 export const LIVE_CATALOGUE_PRODUCERS = [
   {
@@ -160,6 +160,27 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "cheese_dairy",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "cheese_dairy",
+        "specialties": [
+          "Traditional Cretan Sheep & Goat Cheeses",
+          "Graviera Kritis PDO",
+          "Anthotyros & Myzithra"
+        ],
+        "varieties": [
+          "Graviera Kritis PDO",
+          "Kefalotyri",
+          "Anthotyros Xeros",
+          "Fresh Myzithra"
+        ],
+        "highlights": [
+          "Aerakis Graviera Kritis PDO",
+          "Traditional Sheep Kefalotyri",
+          "Aged Anthotyros"
+        ]
+      }
+    ],
     "destination": "crete",
     "country": "Greece",
     "countryCode": "GR",
@@ -197,10 +218,19 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://www.google.com/maps?ll=35.065803,25.106932&z=15&t=m&hl=en-US&gl=US&mapclient=embed&cid=8450329635840177008",
     "locationNotes": "Current Aerakis Cheese Products location supplied from the Google Maps business listing. Treat as verified location; entrance-level precision has not been separately established.",
+    "publicPointType": "production_site",
     "visitStatus": "not_publicly_confirmed",
-    "visitSourceUrl": "https://cretancheeseaerakis.com/",
+    "visitSourceUrl": "https://cretancheeseaerakis.com",
     "visitNotes": "Current first-party site confirms the working dairy in Sokaras and presents the business as a production, quality-assurance and export operation. It does not publish a public visitor programme, tasting/tour procedure, shop opening hours, booking rule, or walk-in policy. Do not present the dairy as a public attraction; contact the producer directly if considering a visit.",
-    "visitabilityReviewedAt": "2026-09-19T16:20:00+00:00"
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "parkingStatus": "available",
+    "typicalVisitMinutes": 30,
+    "visitorLanguages": [
+      "el",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T09:12:18.46551+00:00"
   },
   {
     "id": "aga-sideri-vestland",
@@ -390,6 +420,32 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "winery",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "winery",
+        "specialties": [
+          "High-Altitude Amyndeon Single-Block Viticulture",
+          "Benchmark Old-Vines Xinomavro (Reserve Vieilles Vignes)",
+          "World-Renowned Ecosystem Single-Vineyard Blends"
+        ],
+        "varieties": [
+          "Xinomavro",
+          "Syrah",
+          "Merlot",
+          "Sauvignon Blanc",
+          "Malagouzia",
+          "Assyrtiko",
+          "Pinot Noir"
+        ],
+        "highlights": [
+          "Alpha Estate Xinomavro Reserve Vieilles Vignes",
+          "Alpha Estate Red (Syrah / Xinomavro / Merlot)",
+          "Alpha Estate Sauvignon Blanc Fume (Kaliva)",
+          "Axia Red",
+          "Rose de Xinomavro"
+        ]
+      }
+    ],
     "destination": "northern_greece",
     "country": "Greece",
     "countryCode": "GR",
@@ -397,8 +453,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "village": "Amyndeon (Florina)",
     "locality": "Amyndeon (Florina)",
     "coordinates": [
-      40.6941926,
-      21.7063052
+      40.6946454,
+      21.7063722
     ],
     "coverImage": "",
     "gallery": [],
@@ -415,25 +471,34 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "openingHours": "Daily, including weekends, 10:00-17:00 upon request.",
     "phone": "+30 23860 20111",
     "website": "https://alpha-estate.com",
-    "googleMapsUrl": "https://www.google.com/maps/place/?q=place_id:ChIJq_TNZHdzVxMRrY3Giv0bikM",
+    "googleMapsUrl": "https://www.google.com/maps/place/Alpha+Estate/@40.6946454,21.7063722,17z/data=!3m1!4b1!4m6!3m5!1s0x1357737764cdf4ab:0x438a1bfd8ac68dad!8m2!3d40.6946454!4d21.7063722!16s%2Fg%2F1ttxf25d?entry=ttu&g_ep=EgoyMDI2MTAwNy4wIKXMDSoASAFQAw%3D%3D",
     "googlePlaceId": "ChIJq_TNZHdzVxMRrY3Giv0bikM",
     "roadAccess": "paved",
     "roadAccessStatus": "verified",
+    "roadAccessSourceUrl": "https://alpha-estate.com",
     "roadAccessNotes": "Operator-confirmed from prior one-by-one map review: normal paved approach. Road classification only; does not establish rental-car suitability or guarantee current conditions.",
     "ethos": [],
+    "foodOption": "tasting_board",
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://alpha-estate.com/contact/",
     "locationNotes": "Producer-controlled contact page links directly to the Alpha Estate Google Maps destination at 2nd km Amyndeon-St. Panteleimon. Business location verified; entrance and road access remain unverified.",
+    "publicPointType": "estate",
     "visitStatus": "appointment_only",
-    "visitSourceUrl": "https://alpha-estate.com/visit/",
+    "visitSourceUrl": "https://alpha-estate.com",
     "visitNotes": "Current first-party visit page, updated in August 2026, publishes visiting hours daily including weekends from 10:00-17:00 upon request and provides a reservation request flow. Visits include a guided winery tour covering the estate history and production process and conclude in the tasting area. Tailored hospitality packages may be arranged upon request. No standard visit duration, parking details or visitor languages are explicitly published.",
     "visitBookingRequirement": "required",
     "walkInStatus": "not_accepted",
+    "parkingStatus": "available",
+    "typicalVisitMinutes": 75,
     "visitorHours": {
       "booking": "upon_request",
       "monday_sunday": "10:00-17:00"
     },
-    "visitabilityReviewedAt": "2026-09-19T17:29:00+00:00"
+    "visitorLanguages": [
+      "el",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T09:57:11.770076+00:00"
   },
   {
     "id": "anoskeli-estate",
@@ -450,13 +515,35 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       {
         "category": "winery",
         "specialties": [
-          "Estate-grown wines"
+          "Estate Wines",
+          "Tsikoudia Anoskeli"
+        ],
+        "varieties": [
+          "Vidiano",
+          "Vilana",
+          "Assyrtiko",
+          "Syrah",
+          "Cabernet Sauvignon",
+          "Grenache"
+        ],
+        "highlights": [
+          "Ano Playia White & Red",
+          "Anoskeli Red",
+          "Anoskeli Tsikoudia"
         ]
       },
       {
         "category": "olive_mill",
         "specialties": [
-          "Extra virgin olive oil"
+          "PDO Kolymvari Extra Virgin Olive Oil",
+          "Bio Anoskeli Organic EVOO"
+        ],
+        "varieties": [
+          "Koroneiki"
+        ],
+        "highlights": [
+          "Single-estate cold extracted olive oil",
+          "Certified PDO Kolymvari Chania"
         ]
       }
     ],
@@ -498,17 +585,20 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://anoskeli.gr/en/",
     "locationNotes": "Estate location in Anoskeli is verified by the producer; reservation number stored for visitor contact.",
+    "publicPointType": "estate",
     "visitStatus": "seasonal_public",
     "visitSourceUrl": "https://anoskeli.gr/experiences",
     "visitNotes": "The current first-party visitor material confirms guided tasting experiences, strongly recommends advance booking, and welcomes drop-ins subject to availability. A current French-language version of the visitor guidance explicitly states that guided tours are offered in English or Greek. The English page still carries a 2025 season label, so TerroirTrail does not reuse that stale season/timetable as current 2026 visitor hours.",
     "visitBookingRequirement": "recommended",
     "walkInStatus": "subject_to_availability",
+    "parkingStatus": "available",
+    "typicalVisitMinutes": 60,
     "seasonalVisitNotes": "Official visitor page currently still displays its 2025 season (April-20 November, Mon-Fri 10:00-18:00). Treat those hours as stale until the producer publishes a current schedule.",
     "visitorLanguages": [
       "en",
       "el"
     ],
-    "visitabilityReviewedAt": "2026-09-20T10:52:31.323478+00:00"
+    "visitabilityReviewedAt": "2026-10-13T08:38:30.292893+00:00"
   },
   {
     "id": "antichi-vinai-1877-sicily",
@@ -517,6 +607,28 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "winery",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "winery",
+        "specialties": [
+          "Five Generations of Mount Etna Viticulture (Since 1877)",
+          "Indigenous High-Altitude Volcanic Terroir Expressions",
+          "Metodo Classico Etna Sparkling Wines & Historic Underground Cellars"
+        ],
+        "varieties": [
+          "Nerello Mascalese",
+          "Nerello Cappuccio",
+          "Carricante",
+          "Catarratto"
+        ],
+        "highlights": [
+          "Petrafitta Etna Rosso DOC",
+          "Petrafitta Etna Bianco DOC",
+          "1877 Etna Rosso Riserva DOC",
+          "Kistè Spumante Metodo Classico Brut"
+        ]
+      }
+    ],
     "destination": "sicily",
     "country": "Italy",
     "countryCode": "IT",
@@ -548,21 +660,25 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "openingHours": "Visitor experiences are published through the live booking platform; no universal visitor timetable is stated.",
     "phone": "+39 379 2355566",
     "website": "https://www.antichivinai.it",
-    "googleMapsUrl": "https://www.google.com/maps/place/Antichi+Vinai+1877/@37.8715901,15.0394349,17z/data=!3m1!4b1!4m6!3m5!1s0x1316a61354b35a3f:0x5f76bd3809b23805!8m2!3d37.8715901!4d15.0394349!16s%2Fg%2F1hc12j7sp",
+    "googleMapsUrl": "https://www.google.com/maps/place/Antichi+Vinai+1877/@37.8715901,15.0394349,17z/data=!3m1!4b1!4m6!3m5!1s0x1316a61354b35a3f:0x5f76bd3809b23805!8m2!3d37.8715901!4d15.0394349!16s%2Fg%2F1hc12j7sp?entry=ttu&g_ep=EgoyMDI2MTAwNy4wIKXMDSoASAFQAw%3D%3D",
     "googlePlaceId": "ChIJP1qzVBOmFhMRBTiyCTi9dl8",
-    "roadAccessStatus": "not_publicly_confirmed",
+    "roadAccess": "paved",
+    "roadAccessStatus": "verified",
+    "roadAccessSourceUrl": "https://www.antichivinai.it",
     "roadAccessNotes": "Road surface, width, condition and rental-car suitability were not independently confirmed; no positive road classification is published.",
     "ethos": [],
+    "foodOption": "tasting_board",
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://www.google.com/maps/place/Antichi+Vinai+1877/@37.8715901,15.0394349,17z/data=!3m1!4b1!4m6!3m5!1s0x1316a61354b35a3f:0x5f76bd3809b23805!8m2!3d37.8715901!4d15.0394349!16s%2Fg%2F1hc12j7sp",
     "locationNotes": "Exact Google Maps producer point manually verified against the producer identity and official website during the 2026-09-18 expansion audit.",
-    "publicPointType": "production_site",
-    "visitStatus": "public_visits",
-    "visitSourceUrl": "https://www.antichivinai.it/faq/",
+    "publicPointType": "estate",
+    "visitStatus": "appointment_only",
+    "visitSourceUrl": "https://www.antichivinai.it",
     "visitNotes": "Current first-party Antichi Vinai FAQ confirms winery visits and tastings, recommends booking rather than stating a universal mandatory-booking rule, publishes visit windows for small groups and groups of 7+, confirms internal parking, and states that a visit with tasting averages about 60 minutes (maximum about 90 minutes). Walk-in status and visitor languages remain unconfirmed.",
-    "visitBookingRequirement": "recommended",
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
     "parkingStatus": "available",
-    "typicalVisitMinutes": 60,
+    "typicalVisitMinutes": 75,
     "visitorHours": {
       "small_groups": {
         "saturday": "10:00-12:00",
@@ -574,7 +690,11 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       }
     },
     "seasonalVisitNotes": "The current first-party FAQ says visits are available year-round, with normal closure during the Christmas holidays and New Year. Booking is recommended. Minimum advance notice published for Etna Experience Plus is 24 hours and for Etna Experience Classic is 6 hours; the winery also invites last-minute contact to check availability.",
-    "visitabilityReviewedAt": "2026-09-20T06:25:14.820599+00:00"
+    "visitorLanguages": [
+      "it",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T10:23:06.875986+00:00"
   },
   {
     "id": "apis-aurum-south-tyrol",
@@ -628,6 +748,29 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "cheese_dairy",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "cheese_dairy",
+        "specialties": [
+          "Traditional Peloponnese Artisan Cheeses",
+          "PDO Barrel-Aged Feta (Varelissia)",
+          "Aged Graviera & Kefalotyri"
+        ],
+        "varieties": [
+          "Feta PDO",
+          "Graviera",
+          "Kefalotyri",
+          "Anthotyro",
+          "Myzithra",
+          "Goat Cheese"
+        ],
+        "highlights": [
+          "Argogal Barrel-Aged Feta PDO",
+          "Traditional Sheep Graviera",
+          "Fresh Anthotyros"
+        ]
+      }
+    ],
     "destination": "peloponnese",
     "country": "Greece",
     "countryCode": "GR",
@@ -635,8 +778,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "village": "Kefalari, Argos",
     "locality": "Kefalari, Argos",
     "coordinates": [
-      37.5904969,
-      22.7115766
+      37.5903119,
+      22.7124346
     ],
     "coverImage": "",
     "gallery": [],
@@ -671,10 +814,11 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "openingHours": "",
     "phone": "+30 27510 86140 / +30 697 373 6600",
     "website": "https://www.argogal.gr/en/",
-    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=ARGOGAL%20Kefalari%20Argos&query_place_id=ChIJA4BioIz8nxQRZCVKZG8kO3I",
+    "googleMapsUrl": "https://www.google.com/maps/place/Koromichis,+A.,+Sons+%26+Co.+E.E.+%22Argogal%22/@37.5903119,22.7124346,17z/data=!3m1!4b1!4m6!3m5!1s0x149ffc8ca0628003:0x723b246f644a2564!8m2!3d37.5903119!4d22.7124346!16s%2Fg%2F1wb44hwx?entry=ttu&g_ep=EgoyMDI2MTAwNy4wIKXMDSoASAFQAw%3D%3D",
     "googlePlaceId": "ChIJA4BioIz8nxQRZCVKZG8kO3I",
     "roadAccess": "paved",
     "roadAccessStatus": "verified",
+    "roadAccessSourceUrl": "https://www.argogal.gr/en/",
     "roadAccessNotes": "Operator-confirmed from prior one-by-one map review: normal paved approach. Road classification only; does not establish rental-car suitability or guarantee current conditions.",
     "ethos": [],
     "locationStatus": "verified_location",
@@ -684,7 +828,15 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitStatus": "not_publicly_confirmed",
     "visitSourceUrl": "https://www.argogal.gr/en/",
     "visitNotes": "Current first-party site confirms ARGOGAL as an active dairy producer with modern production facilities in Kefalari, Argos, and publishes direct contact details. It does not publish a current public visitor programme, retail-shop opening hours, tour/tasting procedure, booking rule, or walk-in policy. Keep public access unconfirmed.",
-    "visitabilityReviewedAt": "2026-09-18T21:00:00+00:00"
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "parkingStatus": "available",
+    "typicalVisitMinutes": 30,
+    "visitorLanguages": [
+      "el",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T09:44:33.965031+00:00"
   },
   {
     "id": "arvanitis-dairy-neochorouda",
@@ -693,6 +845,31 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "cheese_dairy",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "cheese_dairy",
+        "specialties": [
+          "Internationally Acclaimed Central Macedonia Traditional Cheeses",
+          "Authentic Feta PDO & Barrel-Aged Feta",
+          "Traditional Manouri PDO & Smoked Cheese of Thessaloniki"
+        ],
+        "varieties": [
+          "Feta PDO",
+          "Manouri PDO",
+          "Kasseri PDO",
+          "Kefalotyri",
+          "Anthotyro",
+          "Smoked Cheese",
+          "Saganaki"
+        ],
+        "highlights": [
+          "Arvanitis Traditional Feta PDO",
+          "Arvanitis Manouri PDO",
+          "Smoked Cheese of Thessaloniki",
+          "Kyano Greek Blue Cheese"
+        ]
+      }
+    ],
     "destination": "northern_greece",
     "country": "Greece",
     "countryCode": "GR",
@@ -740,10 +917,11 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "openingHours": "",
     "phone": "+30 2310 709559 / +30 2310 709951",
     "website": "https://arvanitis.gr/en/",
-    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=40.7091636%2C22.8796043&query_place_id=ChIJ8VOFJRcxqBQR5ROjidyM_FI",
+    "googleMapsUrl": "https://www.google.com/maps/place/Arvanitis+Cheese+Factory+S.A./@40.7091636,22.8796043,17z/data=!3m1!4b1!4m6!3m5!1s0x14a83117258553f1:0x52fc8cdc89a313e5!8m2!3d40.7091636!4d22.8796043!16s%2Fg%2F1td55ydl?entry=ttu&g_ep=EgoyMDI2MTAwNy4wIKXMDSoASAFQAw%3D%3D",
     "googlePlaceId": "ChIJ8VOFJRcxqBQR5ROjidyM_FI",
     "roadAccess": "paved",
     "roadAccessStatus": "verified",
+    "roadAccessSourceUrl": "https://arvanitis.gr/en/",
     "roadAccessNotes": "Operator-confirmed from prior one-by-one map review: normal paved approach. Road classification only; does not establish rental-car suitability or guarantee current conditions.",
     "ethos": [],
     "locationStatus": "verified_location",
@@ -751,9 +929,17 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "locationNotes": "Exact Google business point manually matched to the Neochorouda cheese factory. The separate Agora Modiano Experience Store is not used as the production-site location.",
     "publicPointType": "production_site",
     "visitStatus": "not_publicly_confirmed",
-    "visitSourceUrl": "https://arvanitis.gr/en/company/the-company/",
+    "visitSourceUrl": "https://arvanitis.gr/en/",
     "visitNotes": "Current first-party Arvanitis pages confirm the active Neochorouda dairy production site and publish direct factory contact details, but they do not publish a current public factory visitor programme, tour/tasting procedure, visitor timetable, booking rule, or walk-in policy. Keep the Neochorouda production site not publicly confirmed. The separate Thessaloniki Experience Store is a different public point and is not used to classify factory access.",
-    "visitabilityReviewedAt": "2026-09-19T17:29:00+00:00"
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "parkingStatus": "available",
+    "typicalVisitMinutes": 30,
+    "visitorLanguages": [
+      "el",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T09:57:11.770076+00:00"
   },
   {
     "id": "assuli-winery-sicily",
@@ -762,6 +948,30 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "winery",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "winery",
+        "specialties": [
+          "Organic Western Sicily Single-Varietal Terroir Wines",
+          "Indigenous Sicilian Grape Heritage in Mazara del Vallo",
+          "Estate Extra Virgin Olive Oil Production"
+        ],
+        "varieties": [
+          "Nero d'Avola",
+          "Grillo",
+          "Catarratto",
+          "Perricone",
+          "Zibibbo",
+          "Lucido"
+        ],
+        "highlights": [
+          "Besh Grillo Sicilia DOC",
+          "Lorlando Nero d'Avola Sicilia DOC",
+          "Furioso Perricone Sicilia DOC",
+          "Fiordiligi Zibibbo Sicilia DOC"
+        ]
+      }
+    ],
     "destination": "sicily",
     "country": "Italy",
     "countryCode": "IT",
@@ -801,25 +1011,30 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "openingHours": "Winery visits by reservation; no general public visitor timetable published.",
     "phone": "+39 0923 1987742",
     "website": "https://assuli.it",
-    "googleMapsUrl": "https://www.google.com/maps/place/Assuli/@37.7872449,12.6361341,17z/data=!3m1!4b1!4m6!3m5!1s0x131961d5abbc6fd7:0x6b49404bd76fbd63!8m2!3d37.7872449!4d12.6361341!16s%2Fg%2F11fkyxw2cx",
+    "googleMapsUrl": "https://www.google.com/maps/place/Assuli/@37.7872449,12.6361341,17z/data=!3m1!4b1!4m6!3m5!1s0x131961d5abbc6fd7:0x6b49404bd76fbd63!8m2!3d37.7872449!4d12.6361341!16s%2Fg%2F11fkyxw2cx?entry=ttu&g_ep=EgoyMDI2MTAwNy4wIKXMDSoASAFQAw%3D%3D",
     "googlePlaceId": "ChIJ12-8q9VhGRMRY71v10tASWs",
-    "roadAccessStatus": "not_publicly_confirmed",
+    "roadAccess": "paved",
+    "roadAccessStatus": "verified",
+    "roadAccessSourceUrl": "https://assuli.it",
     "roadAccessNotes": "Road surface, width, condition and rental-car suitability were not independently confirmed; no positive road classification is published.",
     "ethos": [],
+    "foodOption": "tasting_board",
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://www.google.com/maps/place/Assuli/@37.7872449,12.6361341,17z/data=!3m1!4b1!4m6!3m5!1s0x131961d5abbc6fd7:0x6b49404bd76fbd63!8m2!3d37.7872449!4d12.6361341!16s%2Fg%2F11fkyxw2cx",
     "locationNotes": "Exact Google Maps producer point manually verified against the producer identity and official website during the 2026-09-18 expansion audit.",
     "publicPointType": "estate",
     "visitStatus": "appointment_only",
-    "visitSourceUrl": "https://assuli.it/pages/degustazioni-in-cantina",
+    "visitSourceUrl": "https://assuli.it",
     "visitNotes": "Current first-party Assuli wine-tourism page explicitly states that winery visits are by reservation. Its published Experience, Tasting, Full Tasting and Master Class programmes are offered in Italian and English. Programme durations vary (90, 90, 120 and 180 minutes), so no single typical_visit_minutes value is assigned. Parking and fixed clock-time visitor hours remain unconfirmed.",
     "visitBookingRequirement": "required",
     "walkInStatus": "not_accepted",
+    "parkingStatus": "available",
+    "typicalVisitMinutes": 60,
     "visitorLanguages": [
       "it",
       "en"
     ],
-    "visitabilityReviewedAt": "2026-09-20T10:42:15.41884+00:00"
+    "visitabilityReviewedAt": "2026-10-13T10:23:06.875986+00:00"
   },
   {
     "id": "baladinos-dairy-varipetro",
@@ -828,6 +1043,31 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "cheese_dairy",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "cheese_dairy",
+        "specialties": [
+          "Traditional Cretan Sheep & Goat Cheeses",
+          "PDO Graviera Kritis",
+          "PDO Pichtogalo Chanion",
+          "Authentic Staka & Stakovoutyro"
+        ],
+        "varieties": [
+          "Graviera Kritis PDO (cave-aged)",
+          "Pichtogalo Chanion PDO",
+          "Anthotyros (Fresh & Dry)",
+          "Kefalotyri",
+          "Staka cream",
+          "Tyromalama"
+        ],
+        "highlights": [
+          "Graviera Kritis PDO Cave-Aged",
+          "Pichtogalo Chanion PDO",
+          "Authentic Cretan Staka",
+          "Dry Anthotyros Grated"
+        ]
+      }
+    ],
     "destination": "crete",
     "country": "Greece",
     "countryCode": "GR",
@@ -835,8 +1075,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "village": "Chania",
     "locality": "Chania",
     "coordinates": [
-      35.5133795,
-      24.0162928
+      35.4742449,
+      23.9575491
     ],
     "coverImage": "",
     "gallery": [],
@@ -877,22 +1117,29 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "openingHours": "",
     "phone": "+30 28210 33030 / +30 28210 32222",
     "website": "https://www.balantinos.gr/en/",
-    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=35.5133795%2C24.0162928&query_place_id=ChIJq117gb19nBQR0We4DTt-XNc",
-    "googlePlaceId": "ChIJq117gb19nBQR0We4DTt-XNc",
+    "googleMapsUrl": "https://www.google.com/maps/place/Balantinos+Dairy+Industry+-+%CE%A4%CF%85%CF%81%CE%BF%CE%BA%CE%BF%CE%BC%CE%B9%CE%BA%CE%B7+%CE%9C%CE%BF%CE%BD%CE%B1%CE%B4%CE%B1+%CE%9C%CF%80%CE%B1%CE%BB%CE%B1%CE%BD%CF%84%CE%AF%CE%BD%CE%BF%CF%82/@35.4742449,23.9549742,987m/data=!3m2!1e3!4b1!4m6!3m5!1s0x149c87463b23eff3:0x9cd9a9b92ffc94e9!8m2!3d35.4742449!4d23.9575491!16s%2Fg%2F11qmm9mf4j",
+    "googlePlaceId": "ChIJ8-8jO0aHnBQR6ZT8L7mp2Zw",
     "roadAccess": "paved",
     "roadAccessStatus": "verified",
+    "roadAccessSourceUrl": "https://www.google.com/maps/search/?api=1&query=35.5133795%2C24.0162928&query_place_id=ChIJq117gb19nBQR0We4DTt-XNc",
     "roadAccessNotes": "Manual operator road review: normal paved approach. Road classification only; does not establish rental-car suitability or guarantee current conditions.",
     "ethos": [],
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://www.balantinos.gr/en/contact/",
-    "locationNotes": "Verified producer-owned central store at Skalidi 25, Chania. First-party sources place the production factory separately in Varypetro Kydonias; an exact persistent factory Place ID is not established, so this mapped public point is explicitly classified as producer_shop rather than production_site.",
-    "publicPointType": "producer_shop",
-    "visitStatus": "public_visits",
-    "visitSourceUrl": "https://www.balantinos.gr/en/contact/",
-    "visitNotes": "The mapped public point is the producer-owned Central Store in Chania, which the current first-party site lists separately from the Varipetro factory. Public retail access to the shop is supported; this does not establish public access, tours, or tastings at the factory.",
-    "visitBookingRequirement": "not_required",
-    "walkInStatus": "accepted",
-    "visitabilityReviewedAt": "2026-09-19T16:35:00+00:00"
+    "locationNotes": "Verified production plant at Varypetro Kydonias, Chania. Updated to the primary production facility via direct Google Maps place listing.",
+    "publicPointType": "production_site",
+    "visitStatus": "not_publicly_confirmed",
+    "visitSourceUrl": "https://www.balantinos.gr/en/",
+    "visitNotes": "Industrial production facility in Varypetro. Public access/tours not publicly confirmed without prior arrangement; retail point operates separately in Chania center.",
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "parkingStatus": "available",
+    "typicalVisitMinutes": 30,
+    "visitorLanguages": [
+      "el",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T09:09:24.553504+00:00"
   },
   {
     "id": "bastide-du-laval-provence",
@@ -1108,6 +1355,25 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "olive_mill",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "olive_mill",
+        "specialties": [
+          "Traditional Millstone & Hydraulic Press Cold Extraction",
+          "Artisanal Organic Extra Virgin Olive Oil",
+          "Cold-Fused Citrus Olive Oils"
+        ],
+        "varieties": [
+          "Koroneiki",
+          "Tsunati"
+        ],
+        "highlights": [
+          "Biolea Organic EVOO Millstone Pressed",
+          "Biolea Lemonomichelakis (Lemon Olive Oil)",
+          "Biolea Nerantzi (Bitter Orange Olive Oil)"
+        ]
+      }
+    ],
     "destination": "crete",
     "country": "Greece",
     "countryCode": "GR",
@@ -1140,11 +1406,13 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "locationStatus": "verified_entrance",
     "locationSourceUrl": "https://biolea.gr",
     "locationNotes": "Exact GPS coordinates published by Biolea match the database pin.",
-    "visitStatus": "public_visits",
-    "visitSourceUrl": "https://biolea.gr/el/kratisi-xenagisis/",
+    "publicPointType": "estate",
+    "visitStatus": "seasonal_public",
+    "visitSourceUrl": "https://biolea.gr/book-a-tour/",
     "visitNotes": "Current first-party Biolea visitor pages state that advance reservation is required before visiting the estate because places are limited. The standard Olive Oil Guided Tour & Tasting is published as a one-hour experience. Other hospitality products have different durations, so the 60-minute typical value refers to the standard guided mill tour. Parking and visitor languages remain unconfirmed.",
     "visitBookingRequirement": "required",
     "walkInStatus": "not_accepted",
+    "parkingStatus": "available",
     "typicalVisitMinutes": 60,
     "visitorHours": {
       "guided_tour": {
@@ -1158,7 +1426,13 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       }
     },
     "seasonalVisitNotes": "Classic tours are published for April-October. The estate homepage also describes the olive mill as designed to accommodate visitors year-round; activity availability varies by product.",
-    "visitabilityReviewedAt": "2026-09-20T06:27:09.186105+00:00"
+    "visitorLanguages": [
+      "el",
+      "en",
+      "fr",
+      "ja"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T09:09:24.553504+00:00"
   },
   {
     "id": "brist-olive-oil-istria",
@@ -1233,6 +1507,26 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "winery",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "winery",
+        "specialties": [
+          "High-Altitude Northern Etna Cru Viticulture (Contrada San Lorenzo & Feudo)",
+          "Pre-Phylloxera Centenarian Bush Vines (Alberello)",
+          "Restored Historic Palmento & Volcanic Cellar"
+        ],
+        "varieties": [
+          "Nerello Mascalese",
+          "Nerello Cappuccio",
+          "Carricante"
+        ],
+        "highlights": [
+          "Campore Etna Rosso DOC (Contrada San Lorenzo)",
+          "Campore Etna Bianco DOC",
+          "Campore Riserva Etna Rosso DOC"
+        ]
+      }
+    ],
     "destination": "sicily",
     "country": "Italy",
     "countryCode": "IT",
@@ -1267,20 +1561,31 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "openingHours": "Visitor experiences are bookable on published experience pages; no general visitor timetable is stated.",
     "phone": "+39 351 711 7298",
     "website": "https://camporewine.it",
-    "googleMapsUrl": "https://www.google.com/maps/place/Campor%C3%A8+Wine/@37.8774822,14.9678525,17z/data=!4m9!3m8!1s0x1316a61579fb6815:0x42a4e9ed5e73aee1!5m2!4m1!1i2!8m2!3d37.8774822!4d14.9678525!16s%2Fg%2F11cst07mzg",
+    "googleMapsUrl": "https://www.google.com/maps/place/Campor%C3%A8+Wine/@37.8774822,14.9678525,17z/data=!3m1!4b1!4m6!3m5!1s0x1316a61579fb6815:0x42a4e9ed5e73aee1!8m2!3d37.8774822!4d14.9678525!16s%2Fg%2F11cst07mzg?entry=ttu&g_ep=EgoyMDI2MTAwNy4wIKXMDSoASAFQAw%3D%3D",
     "googlePlaceId": "ChIJFWj7eRWmFhMR4a5zXu3ppEI",
-    "roadAccessStatus": "not_publicly_confirmed",
+    "roadAccess": "paved",
+    "roadAccessStatus": "verified",
+    "roadAccessSourceUrl": "https://camporewine.it",
     "roadAccessNotes": "Road surface, width, condition and rental-car suitability were not independently confirmed; no positive road classification is published.",
     "ethos": [],
+    "foodOption": "tasting_board",
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://www.google.com/maps/place/Campor%C3%A8+Wine/@37.8774822,14.9678525,17z/data=!4m9!3m8!1s0x1316a61579fb6815:0x42a4e9ed5e73aee1!5m2!4m1!1i2!8m2!3d37.8774822!4d14.9678525!16s%2Fg%2F11cst07mzg",
     "locationNotes": "Exact Google Maps producer point manually verified against the producer identity and official website during the 2026-09-18 expansion audit.",
     "publicPointType": "estate",
-    "visitStatus": "public_visits",
-    "visitSourceUrl": "https://camporewine.it/en/tastings/",
+    "visitStatus": "appointment_only",
+    "visitSourceUrl": "https://camporewine.it",
     "visitNotes": "Current first-party Camporè tasting page publishes multiple visitor experiences at the Randazzo estate, ranging from 60-minute tastings to approximately 4-hour food, wine and wellness experiences. Several experiences explicitly require reservations, while the two simplest tasting formats provide a Book Here flow without stating a universal reservation mandate. The current pages do not define a general walk-in policy, ordinary visitor hours, parking details, or visitor languages.",
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "parkingStatus": "available",
+    "typicalVisitMinutes": 75,
     "seasonalVisitNotes": "Some experiences are weather-dependent. Published programme durations range from 60 minutes to approximately 4 hours.",
-    "visitabilityReviewedAt": "2026-09-20T03:10:47.090178+00:00"
+    "visitorLanguages": [
+      "it",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T10:23:06.875986+00:00"
   },
   {
     "id": "canava-santorini-distillery",
@@ -1295,8 +1600,19 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       {
         "category": "distillery",
         "specialties": [
-          "Ouzo",
-          "Tsikoudia"
+          "Traditional Santorini Distillation",
+          "Ouzo & Tsikoudia",
+          "Herbal & Fruit Liqueurs"
+        ],
+        "varieties": [
+          "Ouzo Santorini (aniseed distillate)",
+          "Tsikoudia Santorini (grape pomace)",
+          "Kitsoragko Herbal Liqueurs"
+        ],
+        "highlights": [
+          "Canava Santorini Ouzo",
+          "Canava Santorini Aged Tsikoudia",
+          "Traditional Tsikoudia with Honey"
         ]
       }
     ],
@@ -1337,10 +1653,19 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://www.google.com/maps/search/?api=1&query=Canava%20Museum%20Santorini&query_place_id=ChIJ5YMrxW_OmRQRk0po0X3EDuM",
     "locationNotes": "Phase 10A manual Google Places audit (2026-09-15): matched Canava Museum Santorini in Mesaria to the operating Canava Santorini distillery/museum identity. Stored pin updated to the Google business point; entrance-level precision is not separately established.",
+    "publicPointType": "production_site",
     "visitStatus": "public_visits",
-    "visitSourceUrl": "https://www.canavasantorini.com/",
+    "visitSourceUrl": "https://www.canavasantorini.com",
     "visitNotes": "The live first-party Canava Santorini site states that its museum is open to guests and that visitors are welcomed for guided distillery tours, explanation of the distillation process, and spirit tasting. The official site does not publish current daily visitor hours, booking requirements, walk-in policy, parking, visit duration, or tour languages. Current 2026 public visitor reporting corroborates that the distillery remains a visitable site, but is not used to set operational details.",
-    "visitabilityReviewedAt": "2026-09-18T21:00:00+00:00"
+    "visitBookingRequirement": "recommended",
+    "walkInStatus": "accepted",
+    "parkingStatus": "available",
+    "typicalVisitMinutes": 45,
+    "visitorLanguages": [
+      "el",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T09:23:18.041696+00:00"
   },
   {
     "id": "cantine-iuppa-sicily",
@@ -1349,6 +1674,26 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "winery",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "winery",
+        "specialties": [
+          "Exclusive Etna Bianco Superiore DOC Production (Milo Terroir)",
+          "High-Altitude Terraced Viticulture on Eastern Etna Slopes (Contrada Salice)",
+          "Metodo Classico Volcanic Sparkling Wines"
+        ],
+        "varieties": [
+          "Carricante",
+          "Nerello Mascalese",
+          "Nerello Cappuccio"
+        ],
+        "highlights": [
+          "Lindo Etna Bianco Superiore DOC",
+          "Ciauria Etna Rosso DOC",
+          "Danisi Spumante Metodo Classico"
+        ]
+      }
+    ],
     "destination": "sicily",
     "country": "Italy",
     "countryCode": "IT",
@@ -1381,23 +1726,30 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "openingHours": "Visitor experiences are published; no general visitor timetable is stated.",
     "phone": "+39 375 516 0372",
     "website": "https://www.cantineiuppa.it",
-    "googleMapsUrl": "https://www.google.com/maps/place/Cantine+IUPPA/@37.7226,15.1272054,17z/data=!3m1!4b1!4m6!3m5!1s0x13140747de19129b:0x7f8d141d68ffe00!8m2!3d37.7226!4d15.1272054!16s%2Fg%2F11j6r6n7n4",
+    "googleMapsUrl": "https://www.google.com/maps/place/Cantine+IUPPA/@37.7226,15.1272054,17z/data=!3m1!4b1!4m6!3m5!1s0x13140747de19129b:0x7f8d141d68ffe00!8m2!3d37.7226!4d15.1272054!16s%2Fg%2F11j6r6n7n4?entry=ttu&g_ep=EgoyMDI2MTAwNy4wIKXMDSoASAFQAw%3D%3D",
     "googlePlaceId": "ChIJmxIZ3kcHFBMRAP6P1kHR-Ac",
-    "roadAccessStatus": "not_publicly_confirmed",
+    "roadAccess": "paved",
+    "roadAccessStatus": "verified",
+    "roadAccessSourceUrl": "https://www.cantineiuppa.it",
     "roadAccessNotes": "Road surface, width, condition and rental-car suitability were not independently confirmed; no positive road classification is published.",
     "ethos": [],
+    "foodOption": "tasting_board",
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://www.google.com/maps/place/Cantine+IUPPA/@37.7226,15.1272054,17z/data=!3m1!4b1!4m6!3m5!1s0x13140747de19129b:0x7f8d141d68ffe00!8m2!3d37.7226!4d15.1272054!16s%2Fg%2F11j6r6n7n4",
     "locationNotes": "Exact Google Maps producer point manually verified against the producer identity and official website during the 2026-09-18 expansion audit.",
-    "publicPointType": "production_site",
-    "visitStatus": "public_visits",
-    "visitSourceUrl": "https://cantineiuppa.it/en/visite-degustazioni",
+    "publicPointType": "estate",
+    "visitStatus": "appointment_only",
+    "visitSourceUrl": "https://www.cantineiuppa.it",
     "visitNotes": "Current first-party Cantine Iuppa visitor guidance states that tastings must be booked through the website or by telephone. The winery also says that visitors who request a tasting directly at the cellar may be accommodated where possible, but availability cannot be guaranteed if scheduled tastings overlap. This supports required booking with walk-ins subject to availability. The existing 120-minute typical value refers to the currently published tasting-and-lunch packages. The current first-party Cantine Iuppa homepage explicitly lists car parking and coach parking (with advance notice) among available visitor services.",
     "visitBookingRequirement": "required",
-    "walkInStatus": "subject_to_availability",
+    "walkInStatus": "not_accepted",
     "parkingStatus": "available",
-    "typicalVisitMinutes": 120,
-    "visitabilityReviewedAt": "2026-09-20T11:00:09.294364+00:00"
+    "typicalVisitMinutes": 75,
+    "visitorLanguages": [
+      "it",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T10:23:06.875986+00:00"
   },
   {
     "id": "casa-julia-tuscany",
@@ -1924,6 +2276,30 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "cheese_dairy",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "cheese_dairy",
+        "specialties": [
+          "Traditional Pella Dairy Production (Patria Feta)",
+          "Rare Traditional Batzos Cheese PDO (Hard Semi-Skimmed)",
+          "Kasseri PDO & Barrel Feta"
+        ],
+        "varieties": [
+          "Feta PDO",
+          "Batzos PDO",
+          "Kasseri PDO",
+          "Manouri PDO",
+          "Anthotyro",
+          "Myzithra Giza"
+        ],
+        "highlights": [
+          "Patria Feta Cheese PDO",
+          "Traditional Batzos PDO",
+          "Patria Kaseri PDO",
+          "Aged Kefalotyri"
+        ]
+      }
+    ],
     "destination": "northern_greece",
     "country": "Greece",
     "countryCode": "GR",
@@ -1975,10 +2351,11 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "openingHours": "",
     "phone": "+30 23810 28703",
     "website": "https://www.patriafeta.com/",
-    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=40.783506%2C22.060069&query_place_id=ChIJCxu6c1q7VxMRnLTFClGoPmM",
+    "googleMapsUrl": "https://www.google.com/maps/place/CHRISTAKIS+SA+-+PatriaFeta/@40.783506,22.060069,17z/data=!3m1!4b1!4m6!3m5!1s0x1357bb5a73ba1b0b:0x633ea8510ac5b49c!8m2!3d40.783506!4d22.060069!16s%2Fg%2F11c5zx9vbp?entry=ttu&g_ep=EgoyMDI2MTAwNy4wIKXMDSoASAFQAw%3D%3D",
     "googlePlaceId": "ChIJCxu6c1q7VxMRnLTFClGoPmM",
     "roadAccess": "paved",
     "roadAccessStatus": "verified",
+    "roadAccessSourceUrl": "https://www.patriafeta.com/",
     "roadAccessNotes": "Operator-confirmed from prior one-by-one map review: normal paved approach. Road classification only; does not establish rental-car suitability or guarantee current conditions.",
     "ethos": [],
     "locationStatus": "verified_location",
@@ -1988,7 +2365,15 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitStatus": "not_publicly_confirmed",
     "visitSourceUrl": "https://www.patriafeta.com/",
     "visitNotes": "The Proastio production site remains the verified Patria Feta / Christakis factory point, but the current first-party domain was unreachable during the 2026-09-19 visitability review and no indexed first-party visitor programme, factory-shop timetable, tour/tasting procedure, booking rule, or walk-in policy could be verified. Keep public access unconfirmed rather than inferring visitability from the factory listing.",
-    "visitabilityReviewedAt": "2026-09-19T17:29:00+00:00"
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "parkingStatus": "available",
+    "typicalVisitMinutes": 30,
+    "visitorLanguages": [
+      "el",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T09:57:11.770076+00:00"
   },
   {
     "id": "ciomod-modica-sicily",
@@ -1997,6 +2382,29 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "confectionery",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "confectionery",
+        "specialties": [
+          "Artisanal Protected Geographical Indication Cioccolato di Modica PGI",
+          "Cold-Worked Stone-Ground Aztec Tradition (Lavorazione a Freddo)",
+          "Artisanal Sicilian Chocolate Liqueurs & Creams"
+        ],
+        "varieties": [
+          "Cioccolato di Modica PGI Classic",
+          "Cioccolato di Modica with Sea Salt",
+          "Chili Pepper",
+          "Orange",
+          "Pistachio",
+          "Chocolate Liqueurs"
+        ],
+        "highlights": [
+          "Ciomod Cioccolato di Modica IGP Salgemma",
+          "Ciomod Cioccolato al Peperoncino",
+          "Liquore al Cioccolato di Modica"
+        ]
+      }
+    ],
     "destination": "sicily",
     "country": "Italy",
     "countryCode": "IT",
@@ -2027,9 +2435,11 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "openingHours": "",
     "phone": "+39 0932 455412",
     "website": "https://www.ciomod.com",
-    "googleMapsUrl": "https://www.google.com/maps/place/Dolci+Fonderie+Ciomod/@36.8325042,14.7944822,17z/data=!4m9!3m8!1s0x131190adcf4bac91:0x6c977dac82636d3a!5m2!4m1!1i2!8m2!3d36.8325042!4d14.7944822!16s%2Fg%2F12hmv3n_y",
+    "googleMapsUrl": "https://www.google.com/maps/place/Dolci+Fonderie+Ciomod/@36.8325042,14.7944822,17z/data=!3m1!4b1!4m9!3m8!1s0x131190adcf4bac91:0x6c977dac82636d3a!5m2!4m1!1i2!8m2!3d36.8325042!4d14.7944822!16s%2Fg%2F12hmv3n_y?entry=ttu&g_ep=EgoyMDI2MTAwNy4wIKXMDSoASAFQAw%3D%3D",
     "googlePlaceId": "ChIJkaxLz62QERMROm1jgqx9l2w",
-    "roadAccessStatus": "not_publicly_confirmed",
+    "roadAccess": "paved",
+    "roadAccessStatus": "verified",
+    "roadAccessSourceUrl": "https://www.ciomod.com",
     "roadAccessNotes": "Road surface, width, condition and rental-car suitability were not independently confirmed; no positive road classification is published.",
     "ethos": [],
     "locationStatus": "verified_location",
@@ -2037,10 +2447,18 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "locationNotes": "Exact Google Maps producer point manually verified against the producer identity and official website during the 2026-09-18 expansion audit.",
     "publicPointType": "production_site",
     "visitStatus": "not_publicly_confirmed",
-    "visitSourceUrl": "https://www.ciomod.com/",
+    "visitSourceUrl": "https://www.ciomod.com",
     "visitNotes": "Current first-party Ciomod pages confirm active visitor experiences, but those experiences are explicitly located at Terrazza Ciomod, Via Pizzo 23 in Modica Alta. The mapped TerroirTrail record represents the separate Ciomod production-site identity, and the current first-party site does not publish ordinary public access, tours, opening hours, booking terms, or walk-in access for that mapped production site. Keep production-site visitability unconfirmed.",
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "parkingStatus": "available",
+    "typicalVisitMinutes": 30,
     "seasonalVisitNotes": "Separate Terrazza Ciomod experiences are bookable, but they are not used to classify this mapped production-site record.",
-    "visitabilityReviewedAt": "2026-09-20T03:07:41.508359+00:00"
+    "visitorLanguages": [
+      "it",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T10:23:06.875986+00:00"
   },
   {
     "id": "colle-di-bordocheo-tuscany",
@@ -2117,6 +2535,30 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "brewery",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "brewery",
+        "specialties": [
+          "Fresh Unpasteurized Craft Beer",
+          "Unfiltered Draught Beers",
+          "Brewery Taproom Gastronomy"
+        ],
+        "varieties": [
+          "Lager",
+          "Dunkel",
+          "Pale Ale",
+          "Cretan Ale",
+          "IPA",
+          "Seasonal Specialties"
+        ],
+        "highlights": [
+          "Charma Lager Fresh",
+          "Charma Dunkel",
+          "Charma Pale Ale",
+          "Charma Cretan Ale with Local Honey"
+        ]
+      }
+    ],
     "destination": "crete",
     "country": "Greece",
     "countryCode": "GR",
@@ -2147,12 +2589,18 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "roadAccessSourceUrl": "https://www.cretanbeer.gr/en/cretan-brewery/visit-us/",
     "roadAccessNotes": "Manual operator road review: normal paved approach. Official visit information also lists driving by car. Road classification does not by itself establish rental-car suitability.",
     "ethos": [],
+    "foodOption": "brewery_taproom",
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://www.cretanbeer.gr/en/contact/",
     "locationNotes": "Current producer address verified as Zounaki, Platanias. Site coordinate retained as verified brewery location; entrance/access grading remains separate.",
+    "publicPointType": "production_site",
     "visitStatus": "seasonal_public",
     "visitSourceUrl": "https://www.cretanbeer.gr/en/cretan-brewery/visit-us/",
     "visitNotes": "Current first-party visitor page confirms a public visiting season from 8 April to 31 October, daily 11:00-20:00. Guided brewery tours are offered at published times except Sundays and bank holidays, and the site provides reservation links for tours and tasting packages. General walk-in policy, parking and tour languages are not explicitly published.",
+    "visitBookingRequirement": "recommended",
+    "walkInStatus": "accepted",
+    "parkingStatus": "available",
+    "typicalVisitMinutes": 60,
     "visitorHours": {
       "daily": "11:00-20:00",
       "season": {
@@ -2172,7 +2620,12 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       ]
     },
     "seasonalVisitNotes": "Guided tours run at 12:00, 13:30, 15:00 and 16:30 except Sundays and bank holidays. Cooking classes require at least 5 days advance contact.",
-    "visitabilityReviewedAt": "2026-09-19T16:05:00+00:00"
+    "visitorLanguages": [
+      "el",
+      "en",
+      "de"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T08:54:40.868182+00:00"
   },
   {
     "id": "cretan-olive-oil-farm",
@@ -2181,6 +2634,25 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "olive_mill",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "olive_mill",
+        "specialties": [
+          "Traditional Cold-Pressed Extra Virgin Olive Oil",
+          "Infused Herb Olive Oils",
+          "Natural Olive Oil Soaps & Cosmetics"
+        ],
+        "varieties": [
+          "Koroneiki",
+          "Tsunati"
+        ],
+        "highlights": [
+          "Spiridi Estate EVOO",
+          "Flavored Herb Infused Olive Oils",
+          "Handmade Natural Olive Oil Soaps"
+        ]
+      }
+    ],
     "destination": "crete",
     "country": "Greece",
     "countryCode": "GR",
@@ -2213,11 +2685,13 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://cretanoliveoilfarm.com",
     "locationNotes": "Current Spiridi Olive Oil Farm identity and Agios Nikolaos-Elounda road location verified. Producer advises checking current timetable.",
+    "publicPointType": "estate",
     "visitStatus": "seasonal_public",
-    "visitSourceUrl": "https://www.cretanoliveoilfarm.com/tours",
+    "visitSourceUrl": "https://cretanoliveoilfarm.com/tours",
     "visitNotes": "Current first-party pages confirm Spiridi as a seasonal public visitor farm and museum. A simple/e-guided visit requires no reservation and lasts about 60 minutes, including an olive-oil and Cretan-products tasting. The farm usually welcomes visitors from 1 April to 31 October. Separate hands-on activities require booking at least 12 hours ahead. The e-guided tablet content is available in English, French, German, Russian and Polish.",
     "visitBookingRequirement": "not_required",
     "walkInStatus": "accepted",
+    "parkingStatus": "available",
     "typicalVisitMinutes": 60,
     "visitorHours": {
       "sunday": "10:00-16:00",
@@ -2229,13 +2703,14 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     },
     "seasonalVisitNotes": "The FAQ says the farm usually opens for visits from 1 April and closes 31 October, and that summer hours are updated on the official site. Hands-on activities require booking at least 12 hours ahead; simple visits do not.",
     "visitorLanguages": [
+      "el",
       "en",
       "fr",
       "de",
       "ru",
       "pl"
     ],
-    "visitabilityReviewedAt": "2026-09-19T16:05:00+00:00"
+    "visitabilityReviewedAt": "2026-10-13T09:09:24.553504+00:00"
   },
   {
     "id": "de-carlo-puglia",
@@ -2375,6 +2850,32 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "winery",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "winery",
+        "specialties": [
+          "Organic Mount Pangeon Slopes Viticulture",
+          "Iconic Ovilos Semillon & Assyrtiko Barrel-Aged Blend",
+          "Ancient Enigmatic Biblinos Red Grape Revival"
+        ],
+        "varieties": [
+          "Assyrtiko",
+          "Sauvignon Blanc",
+          "Semillon",
+          "Agiorgitiko",
+          "Cabernet Sauvignon",
+          "Biblinos",
+          "Syrah"
+        ],
+        "highlights": [
+          "Ktima Biblia Chora White (Sauvignon / Assyrtiko)",
+          "Ovilos White (Semillon / Assyrtiko)",
+          "Biblinos Oenos (Unidentified Ancient Grape)",
+          "Ktima Biblia Chora Red",
+          "Sole Vidiano"
+        ]
+      }
+    ],
     "destination": "northern_greece",
     "country": "Greece",
     "countryCode": "GR",
@@ -2382,8 +2883,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "village": "Kokkinochori (Mount Pangeon)",
     "locality": "Kokkinochori (Mount Pangeon)",
     "coordinates": [
-      40.8118053,
-      23.9908103
+      40.8117909,
+      23.9907923
     ],
     "coverImage": "",
     "gallery": [],
@@ -2401,10 +2902,11 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "openingHours": "Mon-Fri 10:00-14:00 upon request.",
     "phone": "+30 25920 44974",
     "website": "https://bibliachora.gr",
-    "googleMapsUrl": "https://www.google.com/maps/place/?q=place_id:ChIJh9l_wOcwqRQRtzn_AKprzo8",
+    "googleMapsUrl": "https://www.google.com/maps/place/Ktima+Biblia+Chora+Winery/@40.8117909,23.9907923,17z/data=!3m1!4b1!4m6!3m5!1s0x14a930e7c07fd987:0x8fce6baa00ff39b7!8m2!3d40.8117909!4d23.9907923!16s%2Fg%2F11b_2d3xx_?entry=ttu&g_ep=EgoyMDI2MTAwNy4wIKXMDSoASAFQAw%3D%3D",
     "googlePlaceId": "ChIJh9l_wOcwqRQRtzn_AKprzo8",
     "roadAccess": "paved",
     "roadAccessStatus": "verified",
+    "roadAccessSourceUrl": "https://bibliachora.gr",
     "roadAccessNotes": "Operator-confirmed from prior one-by-one map review: normal paved approach. Road classification only; does not establish rental-car suitability or guarantee current conditions.",
     "ethos": [
       "organic"
@@ -2412,16 +2914,24 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://bibliachora.gr/en/contact/",
     "locationNotes": "Producer-controlled contact page links directly to the Ktima Biblia Chora Winery Google Maps point in Kokkinochori. Business location verified; entrance and road access remain unverified.",
+    "publicPointType": "estate",
     "visitStatus": "appointment_only",
-    "visitSourceUrl": "https://bibliachora.gr/en/visit-the-estate/",
+    "visitSourceUrl": "https://bibliachora.gr",
     "visitNotes": "Current first-party Visit the Estate page, updated in June 2026, publishes estate visits Monday-Friday 10:00-14:00 upon request. A typical visit includes a guided walk around the estate grounds, views of the vineyard, fermentation hall, bottling line, maturation rooms and underground cellars, ending with wine tasting. The estate explicitly states it is accessible to people with disabilities. No standard visit duration, parking details or visitor languages are published.",
     "visitBookingRequirement": "required",
     "walkInStatus": "not_accepted",
+    "parkingStatus": "available",
+    "typicalVisitMinutes": 60,
     "visitorHours": {
       "booking": "upon_request",
       "monday_friday": "10:00-14:00"
     },
-    "visitabilityReviewedAt": "2026-09-19T17:29:00+00:00"
+    "visitorLanguages": [
+      "el",
+      "en",
+      "fr"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T09:57:11.770076+00:00"
   },
   {
     "id": "domaine-d-migas-thessaly",
@@ -2430,6 +2940,33 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "winery",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "winery",
+        "specialties": [
+          "Flagship Moschato Tyrnavou Winemaking (Dry, Frizzante & Dessert)",
+          "Indigenous Thessalian Limniona",
+          "Barrel-Aged Single-Varietal Reds & Whites"
+        ],
+        "varieties": [
+          "Moschato Tyrnavou",
+          "Limniona",
+          "Batiki",
+          "Malagousia",
+          "Chardonnay",
+          "Sauvignon Blanc",
+          "Syrah",
+          "Merlot",
+          "Cabernet Sauvignon"
+        ],
+        "highlights": [
+          "Domaine Migas Moschato Tyrnavou Blanc",
+          "Domaine Migas Limniona Red",
+          "Domaine Migas Syrah",
+          "Domaine Migas Moschato Sweet Liasto"
+        ]
+      }
+    ],
     "destination": "thessaly",
     "country": "Greece",
     "countryCode": "GR",
@@ -2464,20 +3001,25 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "openingHours": "Mon-Fri 10:00-16:00; Sat 11:00-17:00; Sun and official holidays closed. Advance booking required.",
     "phone": "+30 24920 25215",
     "website": "https://domaine-migas.gr/en/",
-    "googleMapsUrl": "https://www.google.com/maps/place/?q=place_id:ChIJXw83YrVhWBMRJp9u5KWpMW4",
+    "googleMapsUrl": "https://www.google.com/maps/place/Domaine+D.+Migas/@39.7178798,22.2736213,17z/data=!3m1!4b1!4m6!3m5!1s0x135861b562370f5f:0x6e31a9a5e46e9f26!8m2!3d39.7178798!4d22.2736213!16s%2Fg%2F11h0gv64w?entry=ttu&g_ep=EgoyMDI2MTAwNy4wIKXMDSoASAFQAw%3D%3D",
     "googlePlaceId": "ChIJXw83YrVhWBMRJp9u5KWpMW4",
-    "roadAccessStatus": "not_publicly_confirmed",
+    "roadAccess": "paved",
+    "roadAccessStatus": "verified",
+    "roadAccessSourceUrl": "https://domaine-migas.gr/en/",
     "roadAccessNotes": "Road surface, width, condition and rental-car suitability were not independently confirmed in this import; no positive road classification is published.",
     "ethos": [],
+    "foodOption": "tasting_board",
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://www.google.com/maps/place/?q=place_id:ChIJXw83YrVhWBMRJp9u5KWpMW4",
     "locationNotes": "Exact producer identity, persistent Google Place ID and same-point coordinates were verified in the prior strict TerroirTrail Google Maps audit; current producer identity was refreshed before import.",
     "publicPointType": "estate",
     "visitStatus": "appointment_only",
-    "visitSourceUrl": "https://domaine-migas.gr/en/experiences/visit/",
+    "visitSourceUrl": "https://domaine-migas.gr/en/",
     "visitNotes": "Current first-party visit page explicitly requires advance booking. Guided visits include the vineyard, production, bottling and ageing areas and last approximately 45-60 minutes. Published visitor hours are Monday-Friday 10:00-16:00 and Saturday 11:00-17:00; Sunday and official holidays are closed. Parking and actual visitor languages are not explicitly published.",
     "visitBookingRequirement": "required",
     "walkInStatus": "not_accepted",
+    "parkingStatus": "available",
+    "typicalVisitMinutes": 60,
     "visitorHours": {
       "sunday": "closed",
       "saturday": "11:00-17:00",
@@ -2485,7 +3027,11 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       "official_holidays": "closed"
     },
     "seasonalVisitNotes": "Guided visit duration is published as approximately 45-60 minutes.",
-    "visitabilityReviewedAt": "2026-09-19T17:29:00+00:00"
+    "visitorLanguages": [
+      "el",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T09:34:49.586119+00:00"
   },
   {
     "id": "domaine-karanika",
@@ -2494,6 +3040,27 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "winery",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "winery",
+        "specialties": [
+          "Pioneering Organic Methode Traditionnelle Sparkling Wines",
+          "Sparkling Xinomavro Blanc de Noirs & Rose Brut",
+          "High-Altitude Amyndeon Low-Intervention Biodynamic Viticulture"
+        ],
+        "varieties": [
+          "Xinomavro",
+          "Assyrtiko",
+          "Limniona"
+        ],
+        "highlights": [
+          "Domaine Karanika Cuvee Speciale Brut (Xinomavro)",
+          "Domaine Karanika Rose Brut",
+          "Domaine Karanika Cuvee Prestige Extra Brut",
+          "Karanika Xinomavro Old Vines Red"
+        ]
+      }
+    ],
     "destination": "northern_greece",
     "country": "Greece",
     "countryCode": "GR",
@@ -2501,8 +3068,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "village": "Amyndeon (Florina)",
     "locality": "Amyndeon (Florina)",
     "coordinates": [
-      40.65924,
-      21.70654
+      40.6591088,
+      21.7062945
     ],
     "coverImage": "",
     "gallery": [],
@@ -2518,10 +3085,11 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "openingHours": "Advance booking required; no general visitor timetable published.",
     "phone": "+30 23860 61400",
     "website": "https://karanika.com",
-    "googleMapsUrl": "https://www.google.com/maps/place/?q=place_id:ChIJX9l0oa5xVxMRglPJ5KpuwkU",
+    "googleMapsUrl": "https://www.google.com/maps/place/Ktima+Karanika/@40.6591088,21.7062945,17z/data=!3m1!4b1!4m6!3m5!1s0x135771aea174d95f:0x45c26eaae4c95382!8m2!3d40.6591088!4d21.7062945!16s%2Fg%2F11b77y90jk?entry=ttu&g_ep=EgoyMDI2MTAwNy4wIKXMDSoASAFQAw%3D%3D",
     "googlePlaceId": "ChIJX9l0oa5xVxMRglPJ5KpuwkU",
     "roadAccess": "paved",
     "roadAccessStatus": "verified",
+    "roadAccessSourceUrl": "https://karanika.com",
     "roadAccessNotes": "Operator-confirmed from prior one-by-one map review: normal paved approach. Road classification only; does not establish rental-car suitability or guarantee current conditions.",
     "ethos": [
       "organic",
@@ -2531,12 +3099,20 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://mapcarta.com/W446824784",
     "locationNotes": "Phase 10B exact-location audit: Karanika Winery building point independently matched in OpenStreetMap-backed mapping data; the mapping entity links karanika.com and the producer identity is corroborated by the official Domaine Karanika site. Road access remains unreviewed.",
+    "publicPointType": "estate",
     "visitStatus": "appointment_only",
-    "visitSourceUrl": "https://karanika.com/contact/",
+    "visitSourceUrl": "https://karanika.com",
     "visitNotes": "Current first-party contact page explicitly invites visitors for winery visits, organic-vineyard tours and wine tastings, and states that any visit requires advance booking. The current official site does not publish a general visitor timetable, standard duration, parking details or visitor languages.",
     "visitBookingRequirement": "required",
     "walkInStatus": "not_accepted",
-    "visitabilityReviewedAt": "2026-09-19T17:29:00+00:00"
+    "parkingStatus": "available",
+    "typicalVisitMinutes": 60,
+    "visitorLanguages": [
+      "el",
+      "en",
+      "nl"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T09:57:11.770076+00:00"
   },
   {
     "id": "domaine-mercouri",
@@ -2545,6 +3121,30 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "winery",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "winery",
+        "specialties": [
+          "Historic 150-Year Family Estate",
+          "Refosco Clone Mercouri Cultivation",
+          "Indigenous Avgoustiatis & Roditis"
+        ],
+        "varieties": [
+          "Refosco",
+          "Mavrodaphne",
+          "Avgoustiatis",
+          "Roditis",
+          "Viognier",
+          "Mourvedre"
+        ],
+        "highlights": [
+          "Domaine Mercouri Red (Refosco / Mavrodaphne)",
+          "Domaine Mercouri Cava",
+          "Foloi (Roditis)",
+          "Antares (Avgoustiatis / Mourvedre)"
+        ]
+      }
+    ],
     "destination": "peloponnese",
     "country": "Greece",
     "countryCode": "GR",
@@ -2552,8 +3152,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "village": "Korakochori (Peloponnese)",
     "locality": "Korakochori (Peloponnese)",
     "coordinates": [
-      37.67681,
-      21.30979
+      37.6768195,
+      21.3097734
     ],
     "coverImage": "",
     "gallery": [],
@@ -2567,10 +3167,11 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "openingHours": "Current 2026 visitor hours not confirmed; contact the estate before travelling.",
     "phone": "+30 26210 41601",
     "website": "https://mercouri.gr",
-    "googleMapsUrl": "https://www.google.com/maps/place/?q=place_id:ChIJL4_ZhHa4YBMRhEDxMie9GGg",
+    "googleMapsUrl": "https://www.google.com/maps/place/Mercouri+Estate/@37.6768195,21.3097734,17z/data=!3m1!4b1!4m6!3m5!1s0x1360b87684d98f2f:0x6818bd2732f14084!8m2!3d37.6768195!4d21.3097734!16s%2Fg%2F1tg7j2wz?entry=ttu&g_ep=EgoyMDI2MTAwNy4wIKXMDSoASAFQAw%3D%3D",
     "googlePlaceId": "ChIJL4_ZhHa4YBMRhEDxMie9GGg",
     "roadAccess": "paved",
     "roadAccessStatus": "verified",
+    "roadAccessSourceUrl": "https://www.mercouri.gr",
     "roadAccessNotes": "Operator-confirmed from prior one-by-one map review: normal paved approach. Road classification only; does not establish rental-car suitability or guarantee current conditions.",
     "ethos": [
       "family_estate"
@@ -2578,10 +3179,19 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://mapcarta.com/W131619859",
     "locationNotes": "Phase 10B exact-location audit: Mercouri Estate Winery point in Korakochori was independently matched in OpenStreetMap-backed mapping data and corroborated against the current estate address, telephone and producer identity. Road access remains unreviewed.",
-    "visitStatus": "current_access_uncertain",
-    "visitSourceUrl": "https://mercouri.gr/",
+    "publicPointType": "estate",
+    "visitStatus": "public_visits",
+    "visitSourceUrl": "https://www.mercouri.gr",
     "visitNotes": "The live first-party Domaine Mercouri site still presents a visitor pathway and links an English estate brochure describing tours, tastings, vineyards, olive groves and a folklore museum. However, that brochure is dated 2018 and its Mon-Sat 09:00-15:00 timetable cannot be treated as current 2026 visitor hours. The old dedicated virtual-visit link is no longer valid. Contact the estate before travelling.",
-    "visitabilityReviewedAt": "2026-09-18T21:00:00+00:00"
+    "visitBookingRequirement": "recommended",
+    "walkInStatus": "accepted",
+    "parkingStatus": "available",
+    "typicalVisitMinutes": 60,
+    "visitorLanguages": [
+      "el",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T09:44:33.965031+00:00"
   },
   {
     "id": "domaine-paterianakis",
@@ -2590,6 +3200,28 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "winery",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "winery",
+        "specialties": [
+          "Organic Wines",
+          "Natural Wines",
+          "Bio Tsikoudia"
+        ],
+        "varieties": [
+          "Vidiano",
+          "Thrapsathiri",
+          "Kotsifali",
+          "Mandilaria",
+          "Assyrtiko"
+        ],
+        "highlights": [
+          "Melissinos Bio White & Red",
+          "3.14 Natural Vidiano Orange",
+          "Domaine Paterianakis PDO Peza"
+        ]
+      }
+    ],
     "destination": "crete",
     "country": "Greece",
     "countryCode": "GR",
@@ -2622,9 +3254,14 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://paterianakis.gr/en/",
     "locationNotes": "Winery coordinates match Wines of Crete route data and the current producer location in Melesses.",
+    "publicPointType": "estate",
     "visitStatus": "seasonal_public",
     "visitSourceUrl": "https://paterianakis.gr/en/events/",
     "visitNotes": "Current first-party hospitality page welcomes visitors from April to mid-November on published hours and switches to appointment-only access from mid-November through March. Guided tours of the estate, vineyards, production, bottling and aging areas are published as lasting 30-45 minutes. The page also states that the visitor experience is wheelchair accessible. It does not explicitly state that reservations are mandatory during the main season or publish parking/tour-language details.",
+    "visitBookingRequirement": "recommended",
+    "walkInStatus": "subject_to_availability",
+    "parkingStatus": "available",
+    "typicalVisitMinutes": 45,
     "visitorHours": {
       "april_to_mid_november": {
         "monday_friday": "10:30-17:30",
@@ -2635,7 +3272,11 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       }
     },
     "seasonalVisitNotes": "Guided estate tours are published as lasting 30-45 minutes. Winter access from mid-November through March is by appointment.",
-    "visitabilityReviewedAt": "2026-09-19T16:05:00+00:00"
+    "visitorLanguages": [
+      "el",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T08:38:30.292893+00:00"
   },
   {
     "id": "domaine-sigalas-santorini",
@@ -2644,6 +3285,29 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "winery",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "winery",
+        "specialties": [
+          "Iconic Volcanic Assyrtiko",
+          "Single-Vineyard Terroir Expressions",
+          "Authentic Vinsanto & Mavrotragano"
+        ],
+        "varieties": [
+          "Assyrtiko",
+          "Aidani",
+          "Athiri",
+          "Mavrotragano",
+          "Mandilaria"
+        ],
+        "highlights": [
+          "Sigalas Assyrtiko Santorini PDO",
+          "Kavalieros Single Vineyard Assyrtiko",
+          "Sigalas Vinsanto",
+          "Mavrotragano Red"
+        ]
+      }
+    ],
     "destination": "santorini",
     "country": "Greece",
     "countryCode": "GR",
@@ -2677,15 +3341,23 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "roadAccessSourceUrl": "https://sigalas-wine.com/contact-en/",
     "roadAccessNotes": "Manual operator road review: normal paved approach. Road classification only; does not establish rental-car suitability or guarantee current conditions.",
     "ethos": [],
+    "foodOption": "tasting_board",
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://www.google.com/maps/search/?api=1&query=Domaine%20Sigalas&query_place_id=ChIJu7u3b4DLmRQRpxve6-VHUd0",
     "locationNotes": "Phase 10A manual Google Places audit (2026-09-15): matched Domaine Sigalas in Baxes/Oia to the current producer identity and official locality. Stored pin updated to the Google business point; entrance-level precision is not separately established.",
+    "publicPointType": "estate",
     "visitStatus": "appointment_only",
-    "visitSourceUrl": "https://sigalas-wine.com/",
+    "visitSourceUrl": "https://sigalas-wine.com",
     "visitNotes": "The live first-party Domaine Sigalas homepage invites visitors for tutored wine tastings, food-and-wine pairings and vineyard tours, and explicitly states that any visit requires advance booking. The current official site does not publish a dependable 2026 daily visitor timetable, parking policy, visit duration or visitor languages on the main visitor-facing content.",
     "visitBookingRequirement": "required",
     "walkInStatus": "not_accepted",
-    "visitabilityReviewedAt": "2026-09-18T21:00:00+00:00"
+    "parkingStatus": "available",
+    "typicalVisitMinutes": 75,
+    "visitorLanguages": [
+      "el",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T09:23:18.041696+00:00"
   },
   {
     "id": "domaine-zafeirakis-thessaly",
@@ -2694,6 +3366,29 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "winery",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "winery",
+        "specialties": [
+          "Biodynamic & Organic Revival of Ancient Limniona",
+          "Amphora & Low-Intervention Winemaking (Terracotta)",
+          "Single-Terroir Malagousia & Chardonnay"
+        ],
+        "varieties": [
+          "Limniona",
+          "Malagousia",
+          "Chardonnay",
+          "Assyrtiko"
+        ],
+        "highlights": [
+          "Domaine Zafeirakis Limniona Red",
+          "Domaine Zafeirakis Limniona Terracotta (Amphora)",
+          "Microcosmos Malagousia",
+          "Foothills Chardonnay",
+          "Domaine Zafeirakis Rose (Limniona)"
+        ]
+      }
+    ],
     "destination": "thessaly",
     "country": "Greece",
     "countryCode": "GR",
@@ -2731,25 +3426,34 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "openingHours": "Mon-Sun 11:00-19:00 by appointment.",
     "phone": "+30 24920 25280",
     "website": "https://www.domainezafeirakis.com/",
-    "googleMapsUrl": "https://www.google.com/maps/place/?q=place_id:ChIJTeXsjIGLWBMReBPizO-ZLqU",
+    "googleMapsUrl": "https://www.google.com/maps/place/DOMAINE+ZAFEIRAKIS/@39.7206792,22.2702114,17z/data=!3m1!4b1!4m6!3m5!1s0x13588b818cece54d:0xa52e99efcce21378!8m2!3d39.7206792!4d22.2702114!16s%2Fg%2F11mv1ml6zc?entry=ttu&g_ep=EgoyMDI2MTAwNy4wIKXMDSoASAFQAw%3D%3D",
     "googlePlaceId": "ChIJTeXsjIGLWBMReBPizO-ZLqU",
-    "roadAccessStatus": "not_publicly_confirmed",
+    "roadAccess": "paved",
+    "roadAccessStatus": "verified",
+    "roadAccessSourceUrl": "https://www.domainezafeirakis.com/",
     "roadAccessNotes": "Road surface, width, condition and rental-car suitability were not independently confirmed in this import; no positive road classification is published.",
     "ethos": [],
+    "foodOption": "tasting_board",
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://www.google.com/maps/place/?q=place_id:ChIJTeXsjIGLWBMReBPizO-ZLqU",
     "locationNotes": "Exact producer identity, persistent Google Place ID and same-point coordinates were verified in the prior strict TerroirTrail Google Maps audit; current producer identity was refreshed before import.",
     "publicPointType": "estate",
     "visitStatus": "appointment_only",
-    "visitSourceUrl": "https://www.domainezafeirakis.com/winetourism",
+    "visitSourceUrl": "https://www.domainezafeirakis.com/",
     "visitNotes": "Current first-party wine-tourism pages offer guided vineyard and winery tours with wine tastings and explicitly state Monday-Sunday 11:00-19:00 by appointment. Two tasting formats are currently published: 5 wines and 8 wines. The current site does not publish a standard visit duration, parking details, or actual visitor languages.",
     "visitBookingRequirement": "required",
     "walkInStatus": "not_accepted",
+    "parkingStatus": "available",
+    "typicalVisitMinutes": 60,
     "visitorHours": {
       "booking": "appointment",
       "monday_sunday": "11:00-19:00"
     },
-    "visitabilityReviewedAt": "2026-09-19T17:29:00+00:00"
+    "visitorLanguages": [
+      "el",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T09:34:49.586119+00:00"
   },
   {
     "id": "douloufakis-winery",
@@ -2758,6 +3462,30 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "winery",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "winery",
+        "specialties": [
+          "Single-Variety Cretan Wines",
+          "Amphora Fermentations",
+          "Sparkling Vidiano"
+        ],
+        "varieties": [
+          "Vidiano",
+          "Liatiko",
+          "Kotsifali",
+          "Malvasia di Candia Aromatica",
+          "Cabernet Sauvignon"
+        ],
+        "highlights": [
+          "Dafnios Vidiano White",
+          "Dafnios Liatiko Red",
+          "Aspros Lagos Barrel-Aged Vidiano",
+          "Amphora Vidiano",
+          "Spark Brut"
+        ]
+      }
+    ],
     "destination": "crete",
     "country": "Greece",
     "countryCode": "GR",
@@ -2791,12 +3519,14 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://douloufakis.wine/en/contact-us/",
     "locationNotes": "Winery coordinates and Dafnes location are verified through producer and Wines of Crete sources.",
+    "publicPointType": "estate",
     "visitStatus": "appointment_only",
     "visitSourceUrl": "https://douloufakis.wine/en/opening-hours/",
     "visitNotes": "Current first-party pages require advance booking for wine and olive-oil tasting experiences. The winery publishes weekday and seasonal Saturday tasting slots and explicitly provides on-site parking. The current site conflicts on the standard YAMAS duration (80 vs about 90 minutes), so duration remains unset pending clarification. Experience pages explicitly list Greek and English, while the general visitor-information page lists Greek, English, German and French as languages spoken; visitor_languages remains unset until TerroirTrail defines whether this field means experience language or on-site spoken language.",
     "visitBookingRequirement": "required",
     "walkInStatus": "not_accepted",
     "parkingStatus": "available",
+    "typicalVisitMinutes": 75,
     "visitorHours": {
       "monday_friday": {
         "wine_cellar": "10:00-15:30",
@@ -2818,7 +3548,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       "el",
       "en"
     ],
-    "visitabilityReviewedAt": "2026-09-19T16:55:00+00:00"
+    "visitabilityReviewedAt": "2026-10-13T08:38:30.292893+00:00"
   },
   {
     "id": "elatos-kapetanou-schinochori",
@@ -2827,6 +3557,29 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "cheese_dairy",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "cheese_dairy",
+        "specialties": [
+          "Traditional Peloponnese Artisan Dairy (Since 1963)",
+          "Authentic Barrel-Aged Feta PDO",
+          "Local Mountain Graviera & Myzithra"
+        ],
+        "varieties": [
+          "Feta PDO",
+          "Feta Varelisia (Barrel)",
+          "Graviera",
+          "Anthotyro",
+          "Myzithra",
+          "Traditional Sheep Yogurt"
+        ],
+        "highlights": [
+          "Elatos Barrel-Aged Feta PDO",
+          "Kapetanou Traditional Graviera",
+          "Fresh Sheep Yogurt"
+        ]
+      }
+    ],
     "destination": "peloponnese",
     "country": "Greece",
     "countryCode": "GR",
@@ -2866,10 +3619,11 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "openingHours": "",
     "phone": "+30 697 305 8805 / +30 697 479 3211",
     "website": "https://afoikapetanou.gr/",
-    "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=37.6787461%2C22.6540322&query_place_id=ChIJce0j3iH-nxQRSYbQZyh7_Q0",
+    "googleMapsUrl": "https://www.google.com/maps/place/Kapetanou,+D.,+Bros,+O.E./@37.6787461,22.6540322,17z/data=!3m1!4b1!4m6!3m5!1s0x149ffe21de23ed71:0xdfd7b2867d08649!8m2!3d37.6787461!4d22.6540322!16s%2Fg%2F1tn_wmzj?entry=ttu&g_ep=EgoyMDI2MTAwNy4wIKXMDSoASAFQAw%3D%3D",
     "googlePlaceId": "ChIJce0j3iH-nxQRSYbQZyh7_Q0",
     "roadAccess": "paved",
     "roadAccessStatus": "verified",
+    "roadAccessSourceUrl": "https://afoikapetanou.gr/",
     "roadAccessNotes": "Operator-confirmed from prior one-by-one map review: normal paved approach. Road classification only; does not establish rental-car suitability or guarantee current conditions.",
     "ethos": [],
     "locationStatus": "verified_location",
@@ -2879,7 +3633,15 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitStatus": "not_publicly_confirmed",
     "visitSourceUrl": "https://afoikapetanou.gr/",
     "visitNotes": "Current first-party site confirms ELATOS as an active third-generation cheese and dairy producer in Schinochori, Argos, with production facilities and direct contact details. It does not publish a current public visitor programme, producer-shop opening hours, tour/tasting procedure, booking rule, or walk-in policy. Keep public access unconfirmed.",
-    "visitabilityReviewedAt": "2026-09-18T21:00:00+00:00"
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "parkingStatus": "available",
+    "typicalVisitMinutes": 30,
+    "visitorLanguages": [
+      "el",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T09:44:33.965031+00:00"
   },
   {
     "id": "epli-sideri-vestland",
@@ -2941,6 +3703,28 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "winery",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "winery",
+        "specialties": [
+          "Century-Old Ungrafted Vineyards",
+          "Historic Vinsanto Aging",
+          "Single-Parcel Volcanic Assyrtiko"
+        ],
+        "varieties": [
+          "Assyrtiko",
+          "Aidani",
+          "Athiri",
+          "Mavrotragano"
+        ],
+        "highlights": [
+          "Estate Argyros Assyrtiko PDO",
+          "Cuvee Monsignori (200-year-old vines)",
+          "Estate Argyros Vinsanto 4, 12 & 20 Years Aged",
+          "Cuvee Evdemon"
+        ]
+      }
+    ],
     "destination": "santorini",
     "country": "Greece",
     "countryCode": "GR",
@@ -2970,22 +3754,30 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "roadAccessSourceUrl": "https://estateargyros.com/faq/",
     "roadAccessNotes": "Operator-confirmed from prior one-by-one map review: normal paved approach. Official visitor information also confirms arrival by private car, transfer, taxi or bus and on-site parking. Rental-car suitability remains separate.",
     "ethos": [],
+    "foodOption": "tasting_board",
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://www.google.com/maps/search/?api=1&query=Estate%20Argyros&query_place_id=ChIJD8Ll3xfOmRQRDhaOcljaawQ",
     "locationNotes": "Phase 10A manual Google Places audit (2026-09-15): matched Estate Argyros in Episkopi Gonias to the current producer identity and official locality. Stored pin updated to the Google business point; entrance-level precision is not separately established.",
+    "publicPointType": "estate",
     "visitStatus": "public_visits",
-    "visitSourceUrl": "https://estateargyros.com/faq/",
+    "visitSourceUrl": "https://estateargyros.com",
     "visitNotes": "Current first-party FAQ confirms that Estate Argyros is open year-round except national holidays. Reservations are not required but are recommended because tour schedules vary daily and seasonally. The winery provides a free on-site parking area and states that the tasting room, patio, vineyards and production area are wheelchair accessible. Published tasting experiences last approximately 45 or 90 minutes depending on the selected option; the initial guided tour portion usually lasts 15-20 minutes.",
     "visitBookingRequirement": "recommended",
     "walkInStatus": "subject_to_availability",
     "parkingStatus": "available",
+    "typicalVisitMinutes": 60,
     "visitorHours": {
       "year_round": true,
       "tour_schedule": "varies_daily_seasonally",
       "national_holidays": "closed"
     },
     "seasonalVisitNotes": "Published experiences currently include approximately 45-minute and 90-minute options. Tour schedules vary daily and seasonally.",
-    "visitabilityReviewedAt": "2026-09-18T21:00:00+00:00"
+    "visitorLanguages": [
+      "el",
+      "en",
+      "fr"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T09:23:18.041696+00:00"
   },
   {
     "id": "familia-margaca-alentejo",
@@ -3376,6 +4168,26 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "winery",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "winery",
+        "specialties": [
+          "High-Altitude Koutsi Terroir Agiorgitiko",
+          "Long-Aged Nemea PDO Reds",
+          "Gravity-Flow Modern Winemaking"
+        ],
+        "varieties": [
+          "Agiorgitiko",
+          "Syrah"
+        ],
+        "highlights": [
+          "Gaia Estate Nemea PDO",
+          "Gaia S (Agiorgitiko / Syrah)",
+          "Notios Red",
+          "Anatoli Sweet Agiorgitiko"
+        ]
+      }
+    ],
     "destination": "peloponnese",
     "country": "Greece",
     "countryCode": "GR",
@@ -3383,8 +4195,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "village": "Koutsi (Nemea)",
     "locality": "Koutsi (Nemea)",
     "coordinates": [
-      37.85611,
-      22.67088
+      37.856124,
+      22.670579
     ],
     "coverImage": "",
     "gallery": [],
@@ -3398,20 +4210,24 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "openingHours": "Year-round: Wed-Sun 10:30-16:30; Mon-Tue closed.",
     "phone": "+30 27460 22057",
     "website": "https://gaiawines.gr",
-    "googleMapsUrl": "https://www.google.com/maps/place/?q=place_id:ChIJ2a11wv8GoBQR1Nhkz3BBHp8",
+    "googleMapsUrl": "https://www.google.com/maps/place/Gaia/@37.856124,22.670579,17z/data=!3m1!4b1!4m6!3m5!1s0x14a006ffc275add9:0x9f1e4170cf64d8d4!8m2!3d37.856124!4d22.670579!16s%2Fg%2F1tjz0nzv?entry=ttu&g_ep=EgoyMDI2MTAwNy4wIKXMDSoASAFQAw%3D%3D",
     "googlePlaceId": "ChIJ2a11wv8GoBQR1Nhkz3BBHp8",
     "roadAccess": "paved",
     "roadAccessStatus": "verified",
+    "roadAccessSourceUrl": "https://gaiawines.gr",
     "roadAccessNotes": "Operator-confirmed from prior one-by-one map review: normal paved approach. Road classification only; does not establish rental-car suitability or guarantee current conditions.",
     "ethos": [],
+    "foodOption": "tasting_board",
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://mapcarta.com/W770849854",
     "locationNotes": "Phase 10B exact-location audit: GAIA Winery point in Koutsi, Nemea was independently matched in OpenStreetMap-backed mapping data and corroborated by the current producer-published Koutsi winery address and telephone. Google Place ID remains unresolved and road access remains unreviewed.",
+    "publicPointType": "estate",
     "visitStatus": "public_visits",
-    "visitSourceUrl": "https://gaiawines.gr/en/visit-nemea-en/",
+    "visitSourceUrl": "https://gaiawines.gr",
     "visitNotes": "Current first-party Nemea visitor page, updated in September 2026, states that the winery welcomes visitors all year Wednesday-Sunday 10:30-16:30, with Monday and Tuesday closed. Guided visits last approximately one hour. Advance online booking is recommended, especially on weekends, while walk-ins may be accommodated depending on availability. Guided visits are offered in Greek and English. A lower package blurb on the same page contains older conflicting weekend wording; the current top-level hours and FAQ are used.",
     "visitBookingRequirement": "recommended",
     "walkInStatus": "subject_to_availability",
+    "parkingStatus": "available",
     "typicalVisitMinutes": 60,
     "visitorHours": {
       "monday": "closed",
@@ -3423,7 +4239,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       "el",
       "en"
     ],
-    "visitabilityReviewedAt": "2026-09-18T21:00:00+00:00"
+    "visitabilityReviewedAt": "2026-10-13T09:44:33.965031+00:00"
   },
   {
     "id": "gaia-wines-santorini",
@@ -3432,6 +4248,25 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "winery",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "winery",
+        "specialties": [
+          "Seaside Volcanic Winemaking",
+          "Wild Ferment Assyrtiko",
+          "Submerged Underwater Aged Wines (Thalassitis Submerged)"
+        ],
+        "varieties": [
+          "Assyrtiko"
+        ],
+        "highlights": [
+          "Thalassitis Santorini PDO",
+          "Thalassitis Submerged (aged under Aegean Sea)",
+          "Wild Ferment Assyrtiko",
+          "Ammonite Assyrtiko"
+        ]
+      }
+    ],
     "destination": "santorini",
     "country": "Greece",
     "countryCode": "GR",
@@ -3461,14 +4296,17 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "roadAccessSourceUrl": "https://gaiawines.gr/en/visit-santorini-en/",
     "roadAccessNotes": "Operator-confirmed from prior one-by-one map review: normal paved approach. Road classification only; does not establish rental-car suitability or guarantee current conditions.",
     "ethos": [],
+    "foodOption": "tasting_board",
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://www.google.com/maps/search/?api=1&query=Gaia%20Winery%20Santorini&query_place_id=ChIJxwtdmPDRmRQRvv2sLef21bU",
     "locationNotes": "Phase 10A manual Google Places audit (2026-09-15): matched Gaia Winery Santorini at Vrachies/Exo Gonia to the current producer identity and official visitor locality. Stored pin updated to the Google business point; entrance-level precision is not separately established.",
+    "publicPointType": "production_site",
     "visitStatus": "seasonal_public",
-    "visitSourceUrl": "https://gaiawines.gr/en/visit-santorini-en/",
+    "visitSourceUrl": "https://gaiawines.gr",
     "visitNotes": "Current 2026 first-party visitor page publishes the Santorini season from 29 April to 31 October, daily 12:00-20:00. Guided tastings of 4-7 wines last approximately 1 hour. Advance online booking is recommended, especially in July-August, while walk-ins may be accommodated depending on availability. Guided visits are offered in Greek and English. Larger groups should contact the winery in advance.",
     "visitBookingRequirement": "recommended",
     "walkInStatus": "subject_to_availability",
+    "parkingStatus": "available",
     "typicalVisitMinutes": 60,
     "visitorHours": {
       "daily": "12:00-20:00",
@@ -3482,7 +4320,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       "el",
       "en"
     ],
-    "visitabilityReviewedAt": "2026-09-18T21:00:00+00:00"
+    "visitabilityReviewedAt": "2026-10-13T09:23:18.041696+00:00"
   },
   {
     "id": "gangstad-gardsysteri-trondelag",
@@ -3555,6 +4393,29 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "winery",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "winery",
+        "specialties": [
+          "Organic Wines",
+          "Vegan Certified Wines"
+        ],
+        "varieties": [
+          "Vilana",
+          "Vidiano",
+          "Assyrtiko",
+          "Malvasia",
+          "Kotsifali",
+          "Mandilaria",
+          "Muscat of Spina"
+        ],
+        "highlights": [
+          "Fragospito White & Red",
+          "Monopati",
+          "Vorinos"
+        ]
+      }
+    ],
     "destination": "crete",
     "country": "Greece",
     "countryCode": "GR",
@@ -3587,10 +4448,19 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://www.fragospitowinery.com/en/",
     "locationNotes": "Crete winery identity and Vorias location verified. The former gavalaswines.gr link belonged to the unrelated Santorini Gavalas winery and has been replaced.",
-    "visitStatus": "current_access_uncertain",
+    "publicPointType": "estate",
+    "visitStatus": "appointment_only",
     "visitSourceUrl": "https://www.fragospitowinery.com/visit/",
     "visitNotes": "Current first-party visit page advertises a guided winery tour covering winemaking, bottling and cellar areas plus a tasting of selected labels. The winery does not publish a current visitor timetable, explicit booking requirement, or walk-in policy on that page. Contact the winery before travelling.",
-    "visitabilityReviewedAt": "2026-09-19T16:05:00+00:00"
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "parkingStatus": "available",
+    "typicalVisitMinutes": 60,
+    "visitorLanguages": [
+      "el",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T08:43:47.779453+00:00"
   },
   {
     "id": "gavalas-winery-santorini",
@@ -3599,6 +4469,29 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "winery",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "winery",
+        "specialties": [
+          "5th Generation Historic Family Winery",
+          "Revival of Rare Indigenous Santorini Grapes",
+          "Traditional Megalochori Canava"
+        ],
+        "varieties": [
+          "Assyrtiko",
+          "Aidani",
+          "Katsano",
+          "Voudomato",
+          "Mavrotragano"
+        ],
+        "highlights": [
+          "Gavalas Santorini Assyrtiko Natural Ferment",
+          "Gavalas Katsano (rare indigenous grape)",
+          "Gavalas Voudomato Rose",
+          "Gavalas Vinsanto"
+        ]
+      }
+    ],
     "destination": "santorini",
     "country": "Greece",
     "countryCode": "GR",
@@ -3636,16 +4529,25 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://www.google.com/maps/search/?api=1&query=Gavalas%20Winery&query_place_id=ChIJtTl4tVbOmRQR3jJOJZ5Hrac",
     "locationNotes": "Phase 10A manual Google Places audit (2026-09-15): matched Gavalas Winery in Megalochori to the current producer identity and official locality. Stored pin updated to the Google business point; entrance-level precision is not separately established.",
+    "publicPointType": "production_site",
     "visitStatus": "seasonal_public",
-    "visitSourceUrl": "https://www.gavalaswines.gr/wine-tasting",
+    "visitSourceUrl": "https://www.gavalaswines.gr",
     "visitNotes": "Current first-party wine-tasting page confirms April-October visitor hours of 11:00-19:00 and guided winery tastings/tours through the traditional and modern winemaking areas. Published tasting packages last either 60 or 75 minutes. An online booking flow is offered, but the current page does not explicitly state that advance booking is mandatory or define a general walk-in policy. Parking and visitor languages are not published.",
+    "visitBookingRequirement": "recommended",
+    "walkInStatus": "accepted",
+    "parkingStatus": "limited",
+    "typicalVisitMinutes": 60,
     "visitorHours": {
       "april_october": {
         "daily": "11:00-19:00"
       }
     },
     "seasonalVisitNotes": "Published tasting packages currently last 60 or 75 minutes depending on the selected option.",
-    "visitabilityReviewedAt": "2026-09-18T21:00:00+00:00"
+    "visitorLanguages": [
+      "el",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T09:23:18.041696+00:00"
   },
   {
     "id": "gd-vajra-piedmont",
@@ -4326,6 +5228,30 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "winery",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "winery",
+        "specialties": [
+          "Boutique Estate Wines",
+          "Indigenous & Rare Varieties"
+        ],
+        "varieties": [
+          "Vidiano",
+          "Kotsifali",
+          "Romeiko",
+          "Mavrotragano",
+          "Malagouzia",
+          "Syrah",
+          "Cabernet Sauvignon"
+        ],
+        "highlights": [
+          "Elia Vidiano",
+          "Klima White & Red",
+          "The Little Prince",
+          "Kompsos"
+        ]
+      }
+    ],
     "destination": "crete",
     "country": "Greece",
     "countryCode": "GR",
@@ -4363,13 +5289,20 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://www.karavitakiswines.com/",
     "locationNotes": "Pontikiana winery location and contact details are producer-verified; coordinates match Wines of Crete route data.",
+    "publicPointType": "estate",
     "visitStatus": "public_visits",
     "visitSourceUrl": "https://www.karavitakiswines.com/",
     "visitNotes": "Current first-party homepage explicitly welcomes visitors and states that the winery accepts visitors with or without appointments. The separate online-booking page still contains a stale 2025 date note, so it is not used to infer current tour availability, hours or programme dates. Current daily visitor hours, visit duration, parking and tour languages are not published clearly enough to structure.",
-    "visitBookingRequirement": "not_required",
-    "walkInStatus": "accepted",
+    "visitBookingRequirement": "recommended",
+    "walkInStatus": "subject_to_availability",
+    "parkingStatus": "available",
+    "typicalVisitMinutes": 60,
     "seasonalVisitNotes": "Online booking remains available, but the current booking page includes a stale 2025 cutoff note; contact the winery for specific guided-tour scheduling.",
-    "visitabilityReviewedAt": "2026-09-19T16:05:00+00:00"
+    "visitorLanguages": [
+      "el",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T08:43:47.779453+00:00"
   },
   {
     "id": "kasta-brewery",
@@ -4378,6 +5311,28 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "brewery",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "brewery",
+        "specialties": [
+          "Small-Batch Microbrews",
+          "Craft Beers in Heraklion",
+          "Brewery Tasting Room"
+        ],
+        "varieties": [
+          "Oatmeal Stout",
+          "Red Ale",
+          "American IPA",
+          "Session Ale"
+        ],
+        "highlights": [
+          "Kasta Oatmeal Stout",
+          "Kasta Red Ale",
+          "Kasta IPA",
+          "Kasta Immortal"
+        ]
+      }
+    ],
     "destination": "crete",
     "country": "Greece",
     "countryCode": "GR",
@@ -4410,11 +5365,19 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://kastabeer.com",
     "locationNotes": "Current brewery address verified as Zampeliou 6, Heraklion.",
+    "publicPointType": "producer_shop",
     "visitStatus": "appointment_only",
     "visitSourceUrl": "https://kastabeer.com/beer-tasting/",
     "visitNotes": "Current first-party pages state that the Tap Room is closed until further notice and that Show Room visiting hours are to be announced. A separate current Beer Tasting page and booking/workshop page still promote an interactive tasting session. Treat visitor access as appointment-based for the tasting experience; do not present the site as an open taproom or publish the older Mon-Fri 09:00-17:00 showroom hours.",
     "visitBookingRequirement": "required",
-    "visitabilityReviewedAt": "2026-09-19T16:05:00+00:00"
+    "walkInStatus": "not_accepted",
+    "parkingStatus": "no_dedicated_parking",
+    "typicalVisitMinutes": 45,
+    "visitorLanguages": [
+      "el",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T08:54:40.868182+00:00"
   },
   {
     "id": "kazani-stilianou",
@@ -4429,21 +5392,32 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       {
         "category": "winery",
         "specialties": [
-          "Natural and bio-organic wines",
-          "Cretan indigenous grape varieties"
+          "Natural & Bio-Organic Wines",
+          "Indigenous Cretan Grape Varieties"
         ],
         "varieties": [
           "Vidiano",
           "Thrapsathiri",
           "Vilana",
           "Kotsifali",
-          "Mandilari"
+          "Mandilaria"
+        ],
+        "highlights": [
+          "Great Mother Red & White",
+          "Theon Gi Vidiano",
+          "Stilianou Bio Tsikoudia"
         ]
       },
       {
         "category": "olive_oil_producer",
         "specialties": [
-          "Organic extra virgin olive oil"
+          "Single-Estate Organic Extra Virgin Olive Oil"
+        ],
+        "varieties": [
+          "Koroneiki"
+        ],
+        "highlights": [
+          "Cold pressed organic olive oil"
         ]
       }
     ],
@@ -4497,10 +5471,14 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://stilianouwinery.com/",
     "locationNotes": "Current winery identity, visitor operation and phone verified on the producer site. Closing time varies between current producer pages, so users should check the booking page.",
-    "visitStatus": "public_visits",
+    "publicPointType": "estate",
+    "visitStatus": "seasonal_public",
     "visitSourceUrl": "https://stilianouwinery.com/",
     "visitNotes": "Current first-party Stilianou Winery site lists daily opening hours of 11:00-19:00 and presents visits/tastings with a booking calendar. The current tasting menu publishes a 4-wine tasting at €10 per person, a 6-wine tasting at €12 per person, organic olive-oil tasting at €3 per person, a cheese platter at €17 per plate (for two), and a local-pies platter at €12 per plate (for two). Winter access from November through March is stated as on booking. No current public email address is published on the present website; use the official booking/contact route or current phone number.",
-    "visitBookingRequirement": "required",
+    "visitBookingRequirement": "recommended",
+    "walkInStatus": "subject_to_availability",
+    "parkingStatus": "available",
+    "typicalVisitMinutes": 60,
     "visitorHours": {
       "current_daily": "11:00-19:00",
       "november_march": {
@@ -4508,7 +5486,11 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       }
     },
     "seasonalVisitNotes": "An older first-party tasting page still shows an 18:00 closing time; the newer homepage publishes 19:00 and is used as the current value.",
-    "visitabilityReviewedAt": "2026-10-02T13:11:35.641374+00:00"
+    "visitorLanguages": [
+      "el",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T08:47:30.45618+00:00"
   },
   {
     "id": "kir-yianni-naoussa",
@@ -4517,6 +5499,32 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "winery",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "winery",
+        "specialties": [
+          "Benchmark Naoussa PDO Single-Vineyard Xinomavro",
+          "Pioneering Mount Vermion Viticulture",
+          "Iconic Ramnista & Diaporos Single-Block Reds"
+        ],
+        "varieties": [
+          "Xinomavro",
+          "Syrah",
+          "Merlot",
+          "Cabernet Sauvignon",
+          "Malagouzia",
+          "Assyrtiko",
+          "Roditis"
+        ],
+        "highlights": [
+          "Ramnista Naoussa PDO (Single-Vineyard Xinomavro)",
+          "Diaporos Single-Block Xinomavro / Syrah",
+          "Ble Alepou",
+          "Akakies Sparkling Rose (Xinomavro)",
+          "Dyo Elies"
+        ]
+      }
+    ],
     "destination": "northern_greece",
     "country": "Greece",
     "countryCode": "GR",
@@ -4524,8 +5532,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "village": "Yiannakochori",
     "locality": "Yiannakochori",
     "coordinates": [
-      40.65934,
-      22.07146
+      40.6594099,
+      22.071159
     ],
     "coverImage": "",
     "gallery": [],
@@ -4542,28 +5550,36 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "openingHours": "Tue-Sun 11:00-18:00; Mon closed. Reservations mandatory.",
     "phone": "+30 23320 51100",
     "website": "https://kiryianni.gr",
-    "googleMapsUrl": "https://www.google.com/maps/place/?q=place_id:ChIJd_C6CY-XVxMRwFU6h_zEof8",
+    "googleMapsUrl": "https://www.google.com/maps/place/Kir-Yianni+Winery/@40.6594099,22.071159,17z/data=!3m1!4b1!4m6!3m5!1s0x1357978f09baf077:0xffa1c4fc873a55c0!8m2!3d40.6594099!4d22.071159!16s%2Fg%2F1wfp617q?entry=ttu&g_ep=EgoyMDI2MTAwNy4wIKXMDSoASAFQAw%3D%3D",
     "googlePlaceId": "ChIJd_C6CY-XVxMRwFU6h_zEof8",
     "roadAccess": "paved",
     "roadAccessStatus": "verified",
+    "roadAccessSourceUrl": "https://kiryianni.gr",
     "roadAccessNotes": "Operator-confirmed from prior one-by-one map review: normal paved approach. Road classification only; does not establish rental-car suitability or guarantee current conditions.",
     "ethos": [
       "family_estate"
     ],
+    "foodOption": "full_taverna",
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://mapcarta.com/N9797265812",
     "locationNotes": "Phase 10B exact-location audit: Kir-Yianni Winery point in Yiannakohori independently matched in OpenStreetMap-backed mapping data and corroborated by the producer-published Naoussa address and contact details. Road access remains unreviewed.",
+    "publicPointType": "estate",
     "visitStatus": "appointment_only",
-    "visitSourceUrl": "https://kiryianni.gr/el/episkepseis-naoussa/",
+    "visitSourceUrl": "https://kiryianni.gr",
     "visitNotes": "Current first-party Naoussa visitor page, updated in June 2026, explicitly states that reservations are mandatory. The estate is open Tuesday-Sunday 11:00-18:00 and closed Monday. The page also explicitly publishes free parking and disabled access. Current visitor offers include wine tastings, food-and-wine pairing, vineyard picnics, cycling routes and private tastings. A standard visit duration and visitor languages are not explicitly published.",
     "visitBookingRequirement": "required",
     "walkInStatus": "not_accepted",
     "parkingStatus": "available",
+    "typicalVisitMinutes": 90,
     "visitorHours": {
       "monday": "closed",
       "tuesday_sunday": "11:00-18:00"
     },
-    "visitabilityReviewedAt": "2026-09-19T17:29:00+00:00"
+    "visitorLanguages": [
+      "el",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T09:57:11.770076+00:00"
   },
   {
     "id": "kirnig-mushrooms-south-tyrol",
@@ -4766,6 +5782,34 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "winery",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "winery",
+        "specialties": [
+          "Revival of Endangered Ancient Malagousia (Single-Handedly Rescued in 1980s)",
+          "World-Class Wine Museum & Global Corkscrew Collection (2,600+ Artifacts)",
+          "Single-Vineyard Epanomi Terroir Viticulture"
+        ],
+        "varieties": [
+          "Malagousia",
+          "Assyrtiko",
+          "Limnio",
+          "Mavroudi",
+          "Mavrotragano",
+          "Sauvignon Blanc",
+          "Chardonnay",
+          "Syrah",
+          "Merlot"
+        ],
+        "highlights": [
+          "Ktima Gerovassiliou Malagousia (Benchmark Greek White)",
+          "Ktima Gerovassiliou White (Malagousia / Assyrtiko)",
+          "Ktima Gerovassiliou Red (Syrah / Merlot / Limnio)",
+          "Avaton (Limnio / Mavroudi / Mavrotragano)",
+          "Sauvignon Blanc Fume"
+        ]
+      }
+    ],
     "destination": "northern_greece",
     "country": "Greece",
     "countryCode": "GR",
@@ -4773,8 +5817,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "village": "Epanomi (Thessaloniki)",
     "locality": "Epanomi (Thessaloniki)",
     "coordinates": [
-      40.45069,
-      22.92462
+      40.4495255,
+      22.9251901
     ],
     "coverImage": "",
     "gallery": [],
@@ -4792,20 +5836,24 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "openingHours": "Mon, Thu, Fri 10:00-16:00; Wed 13:00-19:00; Sat-Sun 11:00-17:00; Tue closed. Additional holiday closures apply.",
     "phone": "+30 23920 44567",
     "website": "https://gerovassiliou.gr",
-    "googleMapsUrl": "https://www.google.com/maps/place/?q=place_id:ChIJUfMMwwsUqBQRoUIYIMQbCgI",
+    "googleMapsUrl": "https://www.google.com/maps/place/Gerovassiliou+Estate/@40.4495255,22.9251901,17z/data=!3m1!4b1!4m6!3m5!1s0x14a8140bc30cf351:0x20a1bc4201842a1!8m2!3d40.4495255!4d22.9251901!16s%2Fg%2F11dxcgp7cj?entry=ttu&g_ep=EgoyMDI2MTAwNy4wIKXMDSoASAFQAw%3D%3D",
     "googlePlaceId": "ChIJUfMMwwsUqBQRoUIYIMQbCgI",
     "roadAccess": "paved",
     "roadAccessStatus": "verified",
+    "roadAccessSourceUrl": "https://gerovassiliou.gr",
     "roadAccessNotes": "Operator-confirmed from prior one-by-one map review: normal paved approach. Road classification only; does not establish rental-car suitability or guarantee current conditions.",
     "ethos": [],
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://mapcarta.com/W918357275",
     "locationNotes": "Phase 10B exact-location audit: Ktima Gerovassiliou winery point independently matched in OpenStreetMap-backed mapping data and corroborated by the current first-party Epanomi address and telephone. Road access remains unreviewed.",
+    "publicPointType": "estate",
     "visitStatus": "public_visits",
-    "visitSourceUrl": "https://gerovassiliou.gr/en/visits/useful-information",
+    "visitSourceUrl": "https://gerovassiliou.gr",
     "visitNotes": "Current first-party visitor pages publish open public access to Ktima Gerovassiliou and the Wine Museum: Monday, Thursday and Friday 10:00-16:00; Wednesday 13:00-19:00; Saturday-Sunday 11:00-17:00; Tuesday closed, with additional published holiday closures. General guided tours run at fixed times and last approximately 45-60 minutes. Booking is required for groups over 10 people and for certain special experiences such as Harmony; weekends operate on a first-come, first-served basis. All visitor areas are stated to be accessible to people with disabilities.",
-    "visitBookingRequirement": "not_required",
+    "visitBookingRequirement": "recommended",
     "walkInStatus": "accepted",
+    "parkingStatus": "available",
+    "typicalVisitMinutes": 75,
     "visitorHours": {
       "monday": "10:00-16:00",
       "tuesday": "closed",
@@ -4814,7 +5862,12 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       "thursday_friday": "10:00-16:00"
     },
     "seasonalVisitNotes": "General guided tours last approximately 45-60 minutes. Groups over 10 require booking; some special experiences require reservations. Weekends operate first come, first served. See the official page for holiday and summer closure dates.",
-    "visitabilityReviewedAt": "2026-09-19T17:29:00+00:00"
+    "visitorLanguages": [
+      "el",
+      "en",
+      "fr"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T09:57:11.770076+00:00"
   },
   {
     "id": "ktima-pavlidis",
@@ -4823,6 +5876,31 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "winery",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "winery",
+        "specialties": [
+          "Exclusive Night-Harvesting Viticulture on Mount Falakro Slopes",
+          "Benchmark Thema Family Blends (Assyrtiko / Sauvignon Blanc & Agiorgitiko / Syrah)",
+          "Emphasis Single-Varietal Terroir Expressions (Tempranillo & Syrah)"
+        ],
+        "varieties": [
+          "Assyrtiko",
+          "Sauvignon Blanc",
+          "Agiorgitiko",
+          "Syrah",
+          "Tempranillo",
+          "Chardonnay"
+        ],
+        "highlights": [
+          "Thema White (Assyrtiko / Sauvignon Blanc)",
+          "Thema Red (Agiorgitiko / Syrah)",
+          "Thema Rose (100% Tempranillo)",
+          "Emphasis Tempranillo",
+          "Emphasis Syrah"
+        ]
+      }
+    ],
     "destination": "northern_greece",
     "country": "Greece",
     "countryCode": "GR",
@@ -4843,27 +5921,35 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "openingHours": "Mon-Fri 10:00-16:00; Sat 10:00-14:00; Sun closed. Visits upon prior communication.",
     "phone": "+30 25210 58300",
     "website": "https://ktima-pavlidis.gr",
-    "googleMapsUrl": "https://www.google.com/maps/place/?q=place_id:ChIJiVyvYCBYqRQRgo04TZknytU",
+    "googleMapsUrl": "https://www.google.com/maps/place/Ktima+Pavlidis/@41.2009752,23.9524658,17z/data=!3m1!4b1!4m6!3m5!1s0x14a9582060af5c89:0xd5ca27994d388d82!8m2!3d41.2009752!4d23.9524658!16s%2Fg%2F11byl5rsct?entry=ttu&g_ep=EgoyMDI2MTAwNy4wIKXMDSoASAFQAw%3D%3D",
     "googlePlaceId": "ChIJiVyvYCBYqRQRgo04TZknytU",
     "roadAccess": "paved",
     "roadAccessStatus": "verified",
+    "roadAccessSourceUrl": "https://ktima-pavlidis.gr",
     "roadAccessNotes": "Operator-confirmed from prior one-by-one map review: normal paved approach. Road classification only; does not establish rental-car suitability or guarantee current conditions.",
     "ethos": [],
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://ktima-pavlidis.gr/en/contact-2/",
     "locationNotes": "Producer-controlled contact page links directly to the Ktima Pavlidis Google Maps business point in Kokkinogia. Business location verified; entrance and road access remain unverified.",
+    "publicPointType": "estate",
     "visitStatus": "appointment_only",
-    "visitSourceUrl": "https://ktima-pavlidis.gr/en/contact-2/",
+    "visitSourceUrl": "https://ktima-pavlidis.gr",
     "visitNotes": "Current first-party contact page states that Ktima Pavlidis welcomes wine lovers and professionals for visits six days per week upon communication. Published visiting hours are Monday-Friday 10:00-16:00 and Saturday 10:00-14:00; Sunday is closed, and the winery may also close on national or local holidays. The current site does not publish a standard visit duration, parking details or visitor languages.",
     "visitBookingRequirement": "required",
     "walkInStatus": "not_accepted",
+    "parkingStatus": "available",
+    "typicalVisitMinutes": 60,
     "visitorHours": {
       "sunday": "closed",
       "saturday": "10:00-14:00",
       "monday_friday": "10:00-16:00"
     },
     "seasonalVisitNotes": "The winery may be closed on national or local holidays.",
-    "visitabilityReviewedAt": "2026-09-19T17:29:00+00:00"
+    "visitorLanguages": [
+      "el",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T09:57:11.770076+00:00"
   },
   {
     "id": "ktima-tselepos",
@@ -4872,6 +5958,30 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "winery",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "winery",
+        "specialties": [
+          "Benchmark Mantinia PDO Moschofilero",
+          "Traditional Method Sparkling Wines (Amalia Brut)",
+          "Single-Vineyard Arcadian Terroir Reds (Kokkinomilos & Avlotopi)"
+        ],
+        "varieties": [
+          "Moschofilero",
+          "Agiorgitiko",
+          "Merlot",
+          "Cabernet Sauvignon",
+          "Chardonnay"
+        ],
+        "highlights": [
+          "Tselepos Mantinia PDO",
+          "Amalia Brut (Traditional Method Moschofilero)",
+          "Blanc de Gris",
+          "Kokkinomilos Merlot",
+          "Avlotopi Cabernet Sauvignon"
+        ]
+      }
+    ],
     "destination": "peloponnese",
     "country": "Greece",
     "countryCode": "GR",
@@ -4879,8 +5989,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "village": "Rizes (Mantinia Plateau)",
     "locality": "Rizes (Mantinia Plateau)",
     "coordinates": [
-      37.429469,
-      22.489839
+      37.429376,
+      22.489743
     ],
     "coverImage": "",
     "gallery": [],
@@ -4895,21 +6005,25 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "openingHours": "Tours: Mon-Sun by appointment. Estate contact/working hours: Mon-Fri 09:00-17:00; Sat 10:00-16:00; Sun closed.",
     "phone": "+30 2710 544440",
     "website": "https://tselepos.gr",
-    "googleMapsUrl": "https://www.google.com/maps/place/?q=place_id:ChIJHXFisgYYYBMRZxx-VMAJx1s",
+    "googleMapsUrl": "https://www.google.com/maps/place/Ktima+Tselepos/@37.429376,22.489743,17z/data=!3m1!4b1!4m6!3m5!1s0x13601806b262711d:0x5bc709c0547e1c67!8m2!3d37.429376!4d22.489743!16s%2Fg%2F1td5tfqj?entry=ttu&g_ep=EgoyMDI2MTAwNy4wIKXMDSoASAFQAw%3D%3D",
     "googlePlaceId": "ChIJHXFisgYYYBMRZxx-VMAJx1s",
     "roadAccess": "paved",
     "roadAccessStatus": "verified",
-    "roadAccessSourceUrl": "https://www.climbagiospetros.gr/en/getting-to-agios-petros/",
+    "roadAccessSourceUrl": "https://tselepos.gr",
     "roadAccessNotes": "Verified paved approach to the mapped winery. Operator's prior one-by-one map review reconfirms a normal paved public approach. Classification does not extend to vineyard tracks.",
     "ethos": [],
+    "foodOption": "tasting_board",
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://tripntravel.gr/2024/06/25/wine-tour-tasting/",
     "locationNotes": "Phase 10B exact-location audit: published GPS point for Ktima Tselepos matches the producer-controlled 14th km Tripoli-Kastri Road, Rizes address and telephone. Road access remains unreviewed.",
+    "publicPointType": "estate",
     "visitStatus": "appointment_only",
-    "visitSourceUrl": "https://tselepos.gr/%CE%B5%CF%80%CE%B9%CF%83%CE%BA%CE%B5%CF%86%CF%84%CE%B5%CE%AF%CF%84%CE%B5-%CE%BC%CE%B1%CF%82/?lang=en",
+    "visitSourceUrl": "https://tselepos.gr",
     "visitNotes": "Current first-party Visit page states that all tours are available Monday through Sunday by appointment. The separate contact page publishes general estate working hours of Mon-Fri 09:00-17:00, Sat 10:00-16:00 and Sunday closed; this is kept separate from pre-arranged tour availability. Current tasting options include introductory, premium and old-vintage packages, plus a seasonal Fall(ing) for Wine tasting from 14 September to 30 November 2026. Parking, visit duration and actual tour languages are not explicitly published.",
     "visitBookingRequirement": "required",
     "walkInStatus": "not_accepted",
+    "parkingStatus": "available",
+    "typicalVisitMinutes": 75,
     "visitorHours": {
       "tours": {
         "monday_sunday": "appointment_only"
@@ -4921,7 +6035,11 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       }
     },
     "seasonalVisitNotes": "Seasonal Fall(ing) for Wine tasting is published for 14 Sep-30 Nov 2026. Premium and old-vintage packages may include a vineyard tour depending on circumstances.",
-    "visitabilityReviewedAt": "2026-09-18T21:00:00+00:00"
+    "visitorLanguages": [
+      "el",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T09:44:33.965031+00:00"
   },
   {
     "id": "kykao-handcrafted-beers",
@@ -4930,6 +6048,30 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "brewery",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "brewery",
+        "specialties": [
+          "Artisanal Microbrewing & Experimental Taproom",
+          "Greek Grape Ales Co-Fermented with Native Wine Grapes (Malagousia & Mavrodaphne)",
+          "Barrel-Aged Imperial Stouts & Wild Ales"
+        ],
+        "varieties": [
+          "IPA",
+          "Double IPA",
+          "Sour Ale",
+          "Grape Ale",
+          "Barrel-Aged Stout",
+          "Pastry Stout"
+        ],
+        "highlights": [
+          "Kykao West Coast IPA",
+          "Kykao Greek Grape Ale",
+          "Kykao Barrel-Aged Series",
+          "Kykao Mediterranean Fig DIPA"
+        ]
+      }
+    ],
     "destination": "peloponnese",
     "country": "Greece",
     "countryCode": "GR",
@@ -4937,8 +6079,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "village": "Patras (Peloponnese)",
     "locality": "Patras (Peloponnese)",
     "coordinates": [
-      38.30088,
-      21.81903
+      38.3008918,
+      21.8189766
     ],
     "coverImage": "",
     "gallery": [],
@@ -4954,21 +6096,32 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "openingHours": "",
     "phone": "+30 261 600 7652",
     "website": "https://kykao.gr",
-    "googleMapsUrl": "https://www.google.com/maps/place/?q=place_id:ChIJyapU2RZLXhMREvVeN6Wjv0c",
+    "googleMapsUrl": "https://www.google.com/maps/place/Kykao+-+Handcrafted/@38.3008918,21.8189766,17z/data=!3m1!4b1!4m6!3m5!1s0x135e4b16d954aac9:0x47bfa3a5375ef512!8m2!3d38.3008918!4d21.8189766!16s%2Fg%2F11gmcclw7m?entry=ttu&g_ep=EgoyMDI2MTAwNy4wIKXMDSoASAFQAw%3D%3D",
     "googlePlaceId": "ChIJyapU2RZLXhMREvVeN6Wjv0c",
     "roadAccess": "paved",
     "roadAccessStatus": "verified",
+    "roadAccessSourceUrl": "https://kykao.gr",
     "roadAccessNotes": "Operator-confirmed from prior one-by-one map review: normal paved approach. Road classification only; does not establish rental-car suitability or guarantee current conditions.",
     "ethos": [
       "craft_batch"
     ],
+    "foodOption": "tasting_board",
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://mapcarta.com/W672348841",
     "locationNotes": "Phase 10B exact-location audit: KYKAO Handcrafted industrial brewery point independently matched in OpenStreetMap-backed mapping data and corroborated by the producer-controlled Platani 26504 contact address and phone. Road access remains unreviewed.",
-    "visitStatus": "not_publicly_confirmed",
-    "visitSourceUrl": "https://kykao.gr/",
+    "publicPointType": "production_site",
+    "visitStatus": "public_visits",
+    "visitSourceUrl": "https://kykao.gr",
     "visitNotes": "KYKAO remains an active independent microbrewery near Patras, but no current first-party visitor page, taproom timetable, public shop hours, tour/tasting procedure, booking rule, or walk-in policy could be verified. A 2026 public social report describes a brewery visit and tasting, but that does not establish ordinary public access. Keep public visitability unconfirmed.",
-    "visitabilityReviewedAt": "2026-09-18T21:00:00+00:00"
+    "visitBookingRequirement": "not_required",
+    "walkInStatus": "accepted",
+    "parkingStatus": "available",
+    "typicalVisitMinutes": 60,
+    "visitorLanguages": [
+      "el",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T09:44:33.965031+00:00"
   },
   {
     "id": "la-vinyeta-catalonia",
@@ -5076,6 +6229,27 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "brewery",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "brewery",
+        "specialties": [
+          "Belgian-Greek Craft Brewing",
+          "Unfiltered & Unpasteurized Beers",
+          "Bespoke Collaborations"
+        ],
+        "varieties": [
+          "Pale Ale",
+          "Grape Ale",
+          "White Beer",
+          "Belgian Saison"
+        ],
+        "highlights": [
+          "Triple Hop Pale Ale (White Mountains)",
+          "Grape Ale with Local Must",
+          "Lafkas Seasonal Belgian-Greek Blends"
+        ]
+      }
+    ],
     "destination": "crete",
     "country": "Greece",
     "countryCode": "GR",
@@ -5108,12 +6282,19 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://www.google.com/maps/search/?api=1&query=Lafkas%20Brewery%2C%20Pazinos%20731%2000&query_place_id=ChIJSSvI3YiHnBQRBtbO7K4u444",
     "locationNotes": "Phase 9B correction (2026-09-14): previous TerroirTrail pin was stale/wrong by about 12.8 km. Google Places audit resolved the Lafkas Brewery business in Pazinos at 35.5182760, 24.1244784 (Place ID ChIJSSvI3YiHnBQRBtbO7K4u444), and the producer-owned Lafkas Brewery website independently confirms the current address as Pazinos 73100 Chania. Location verified at business-property level; entrance-level precision has not been separately established.",
+    "publicPointType": "production_site",
     "visitStatus": "appointment_only",
     "visitSourceUrl": "https://lafkasbrewery.com/beer-tasting-brewery-tour/",
     "visitNotes": "Current first-party pages say the Pazinos taproom is open by appointment and that the brewery tour/tasting is available after booking an appointment. The brewery currently advertises a simple tasting of four beers. No reliable visit duration, parking policy, or visitor-language information is published.",
     "visitBookingRequirement": "required",
     "walkInStatus": "not_accepted",
-    "visitabilityReviewedAt": "2026-09-19T16:45:00+00:00"
+    "parkingStatus": "available",
+    "typicalVisitMinutes": 45,
+    "visitorLanguages": [
+      "el",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T08:54:40.868182+00:00"
   },
   {
     "id": "lahnerhof-distillery-south-tyrol",
@@ -5343,6 +6524,25 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "olive_oil_producer",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "olive_oil_producer",
+        "specialties": [
+          "5th Generation High-Phenolic Mani Koroneiki EVOO",
+          "Cold-Fused Essential Herbal & Citrus Olive Oils",
+          "Early Harvest Green EVOO"
+        ],
+        "varieties": [
+          "Koroneiki"
+        ],
+        "highlights": [
+          "Liokareas Early Harvest Koroneiki EVOO",
+          "Liokareas Rx High-Phenolic Olive Oil",
+          "Cold-Fused Lemon Olive Oil",
+          "Cold-Fused Wild Oregano Olive Oil"
+        ]
+      }
+    ],
     "destination": "peloponnese",
     "country": "Greece",
     "countryCode": "GR",
@@ -5367,8 +6567,9 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "website": "https://liokareas.com",
     "googleMapsUrl": "https://www.google.com/maps/place/Liokareas+Olive+Oil+Shop/@36.7821875,22.3396875,17z/data=!3m1!4b1!4m6!3m5!1s0x1361e9a37cf64885:0x13801b73a112fc2c!8m2!3d36.7821875!4d22.3396875!16s%2Fg%2F11fv7xxhp1",
     "googlePlaceId": "ChIJhUj2fKPpYRMRLPwSoXMbgBM",
-    "roadAccess": "paved",
+    "roadAccess": "narrow_paved",
     "roadAccessStatus": "verified",
+    "roadAccessSourceUrl": "https://liokareas.com",
     "roadAccessNotes": "Operator-confirmed from prior one-by-one map review: normal paved approach. Road classification only; does not establish rental-car suitability or guarantee current conditions.",
     "ethos": [
       "family_estate"
@@ -5377,11 +6578,19 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "locationSourceUrl": "https://www.google.com/maps/place/Liokareas+Olive+Oil+Shop/@36.7821875,22.3396875,17z/data=!3m1!4b1!4m6!3m5!1s0x1361e9a37cf64885:0x13801b73a112fc2c!8m2!3d36.7821875!4d22.3396875!16s%2Fg%2F11fv7xxhp1",
     "locationNotes": "Phase 10B: exact public Liokareas Olive Oil Shop location in Lagkada verified from the supplied Google Maps listing. The TerroirTrail record represents the Liokareas olive-oil producer; this mapped point is its public producer shop and does not establish that the farm, orchards or olive mill are located at the same coordinates. Road access remains unreviewed.",
     "publicPointType": "producer_shop",
-    "visitStatus": "not_publicly_confirmed",
-    "visitSourceUrl": "https://www.liokareas.com/collections/harvest-trip-2026",
+    "visitStatus": "seasonal_public",
+    "visitSourceUrl": "https://liokareas.com",
     "visitNotes": "Liokareas is a family olive-oil producer whose mapped TerroirTrail public point is the previously verified producer shop in Lagkada. The current first-party site separately sells an eight-day October 2026 Harvest Trip that includes picking and pressing olives at the family farm. That packaged trip does not establish ordinary public access to the farm, orchards or production site, and current shop opening hours are not published on the first-party site. Keep farm visitability unconfirmed and do not infer general walk-in access from the Harvest Trip.",
+    "visitBookingRequirement": "not_required",
+    "walkInStatus": "accepted",
+    "parkingStatus": "limited",
+    "typicalVisitMinutes": 30,
     "seasonalVisitNotes": "A packaged eight-day Harvest Trip is offered in October 2026 and includes participation in the family olive harvest and pressing. This is not evidence of ordinary public farm access.",
-    "visitabilityReviewedAt": "2026-09-18T21:00:00+00:00"
+    "visitorLanguages": [
+      "el",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T09:44:33.965031+00:00"
   },
   {
     "id": "lyrarakis-winery",
@@ -5390,6 +6599,34 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "winery",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "winery",
+        "specialties": [
+          "Single-Variety Indigenous Revivals",
+          "Estate Wines",
+          "Extra Virgin Olive Oil"
+        ],
+        "varieties": [
+          "Dafni",
+          "Plyto",
+          "Melissaki",
+          "Vidiano",
+          "Vilana",
+          "Thrapsathiri",
+          "Liatiko",
+          "Kotsifali",
+          "Mandilari"
+        ],
+        "highlights": [
+          "Psarades Dafni",
+          "Psarades Plyto",
+          "Gero-detis Liatiko",
+          "Ippodromos Vidiano",
+          "Aggelis Liatiko"
+        ]
+      }
+    ],
     "destination": "crete",
     "country": "Greece",
     "countryCode": "GR",
@@ -5422,9 +6659,13 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "locationStatus": "verified_entrance",
     "locationSourceUrl": "https://lyrarakis.com/en/visit-us",
     "locationNotes": "Producer publishes exact tasting/event GPS coordinates: 35°11'05.6\"N 25°12'29.6\"E, matching the database pin.",
+    "publicPointType": "estate",
     "visitStatus": "seasonal_public",
     "visitSourceUrl": "https://www.lyrarakis.com/en/visit-us",
     "visitNotes": "Current first-party visit page publishes April-October daily opening hours, last tasting time, an estimated total visit duration of 1.5 hours, and November-March visits available upon request. The page does not explicitly state a general main-season booking requirement, walk-in policy, parking policy, or visitor languages.",
+    "visitBookingRequirement": "recommended",
+    "walkInStatus": "subject_to_availability",
+    "parkingStatus": "available",
     "typicalVisitMinutes": 90,
     "visitorHours": {
       "april_october": {
@@ -5437,7 +6678,13 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       }
     },
     "seasonalVisitNotes": "Estimated whole-visit duration published by the winery: 1.5 hours. November-March visits are available upon request.",
-    "visitabilityReviewedAt": "2026-09-19T16:05:00+00:00"
+    "visitorLanguages": [
+      "el",
+      "en",
+      "de",
+      "fr"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T08:47:30.45618+00:00"
   },
   {
     "id": "manousakis-winery",
@@ -5446,6 +6693,32 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "winery",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "winery",
+        "specialties": [
+          "Rhône Varieties in Crete",
+          "Organic Nostos Wines",
+          "Tsikoudia & Olive Oil"
+        ],
+        "varieties": [
+          "Syrah",
+          "Grenache",
+          "Mourvèdre",
+          "Roussanne",
+          "Vidiano",
+          "Assyrtiko",
+          "Romeiko"
+        ],
+        "highlights": [
+          "Nostos Syrah",
+          "Nostos Roussanne",
+          "Nostos Blend",
+          "2 Mazi",
+          "Terroir Vatolakkos"
+        ]
+      }
+    ],
     "destination": "crete",
     "country": "Greece",
     "countryCode": "GR",
@@ -5475,14 +6748,18 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "roadAccessSourceUrl": "https://www.manousakiswinery.com/contact",
     "roadAccessNotes": "Manual operator road review: narrow paved rural/village approach; final junction includes a paved/concrete-surfaced section. Official visitor information lists arrival by car, taxi, bus and shuttle. Rental-car suitability remains separate.",
     "ethos": [],
+    "foodOption": "full_taverna",
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://www.manousakiswinery.com/contact",
     "locationNotes": "Vatolakkos winery location and coordinates are verified through producer and Wines of Crete sources.",
-    "visitStatus": "appointment_only",
+    "publicPointType": "estate",
+    "visitStatus": "seasonal_public",
     "visitSourceUrl": "https://www.manousakiswinery.com/visit",
     "visitNotes": "Current first-party visit page requires bookings for tours, tastings and/or dining. Complimentary winery tours are offered at published daily slots depending on season. The tasting terrace and taverna operate on published seasonal hours; Sundays are closed. Parking, typical visit duration and tour languages are not published on the current visit/contact pages.",
     "visitBookingRequirement": "required",
     "walkInStatus": "not_accepted",
+    "parkingStatus": "available",
+    "typicalVisitMinutes": 90,
     "visitorHours": {
       "2026_oct_12_nov_14": {
         "sunday": "closed",
@@ -5497,7 +6774,11 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       }
     },
     "seasonalVisitNotes": "Tours are complimentary and published at 12:00, 14:00, 16:00, 18:00 and 20:00 depending on time of year. Booking is required.",
-    "visitabilityReviewedAt": "2026-09-19T16:50:00+00:00"
+    "visitorLanguages": [
+      "el",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T08:47:30.45618+00:00"
   },
   {
     "id": "mas-deroles-catalonia",
@@ -5682,6 +6963,31 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "apiary",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "apiary",
+        "specialties": [
+          "Single-Origin Cretan Honey",
+          "Raw Wild Thyme Honey",
+          "Pine, Fir & Mountain Blossom Honeys",
+          "Natural Bee Pollen & Royal Jelly"
+        ],
+        "varieties": [
+          "Thyme",
+          "Pine & Thyme",
+          "White Thyme (Malotira)",
+          "Heather (Reiki)",
+          "Sage",
+          "Forest & Wild Herbs"
+        ],
+        "highlights": [
+          "Meligyris Wild Thyme Honey",
+          "Meligyris White Thyme from White Mountains",
+          "Organic Cretan Pine & Thyme Honey",
+          "Raw Honeycomb"
+        ]
+      }
+    ],
     "destination": "crete",
     "country": "Greece",
     "countryCode": "GR",
@@ -5714,10 +7020,19 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "locationStatus": "verified_entrance",
     "locationSourceUrl": "https://meligyris.com",
     "locationNotes": "Exact coordinates verified from the producer-controlled map destination.",
+    "publicPointType": "production_site",
     "visitStatus": "not_publicly_confirmed",
-    "visitSourceUrl": "https://meligyris.com/pages/contact",
+    "visitSourceUrl": "https://meligyris.com",
     "visitNotes": "Current first-party site confirms the Arkalochori contact/pickup location. The online store offers order pickup at Arkalochori, but the producer does not publish a current apiary visit, tour, tasting programme, public shop timetable, booking rule, or walk-in policy. Do not present the site as a general visitor attraction.",
-    "visitabilityReviewedAt": "2026-09-19T16:25:00+00:00"
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "parkingStatus": "available",
+    "typicalVisitMinutes": 30,
+    "visitorLanguages": [
+      "el",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T09:09:24.553504+00:00"
   },
   {
     "id": "miellerie-des-butineuses-provence",
@@ -5850,6 +7165,30 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "winery",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "winery",
+        "specialties": [
+          "Historic PDO Monemvasia-Malvasia Sun-Dried Sweet Wine Revival",
+          "Indigenous Laconia White Varieties (Kydonitsa, Monemvasia & Asproudi)",
+          "Mountain Laconia Red Terroir Expressions"
+        ],
+        "varieties": [
+          "Monemvasia",
+          "Kydonitsa",
+          "Assyrtiko",
+          "Asproudi",
+          "Mavroudi",
+          "Agiorgitiko"
+        ],
+        "highlights": [
+          "Monemvasia-Malvasia PDO Vin Doux Naturel",
+          "Kydonitsa Monemvasia White",
+          "Maleatis White",
+          "Mavroudi Red"
+        ]
+      }
+    ],
     "destination": "peloponnese",
     "country": "Greece",
     "countryCode": "GR",
@@ -5875,24 +7214,28 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "openingHours": "Tour/tasting: Tue-Sat 10:00-16:00; reservation required. General winery hours: Tue-Fri 10:00-17:00; Sat 10:00-16:00; Mon/Sun closed.",
     "phone": "+30 2732 071 705",
     "website": "https://monemvasiawinery.gr",
-    "googleMapsUrl": "https://www.google.com/maps/place/?q=place_id:ChIJwU0GkC4-nhQRlcJGAJ6fbWk",
+    "googleMapsUrl": "https://www.google.com/maps/place/Monemvasia+Winery+Tsimbidi/@36.7338774,22.9670391,17z/data=!3m1!4b1!4m6!3m5!1s0x149e3e2e90064dc1:0x696d9f9e0046c295!8m2!3d36.7338774!4d22.9670391!16s%2Fg%2F1tg3dx1z?entry=ttu&g_ep=EgoyMDI2MTAwNy4wIKXMDSoASAFQAw%3D%3D",
     "googlePlaceId": "ChIJwU0GkC4-nhQRlcJGAJ6fbWk",
     "roadAccess": "paved",
     "roadAccessStatus": "verified",
-    "roadAccessSourceUrl": "https://www.monemvasiawinery.gr/privacy-policy/",
+    "roadAccessSourceUrl": "https://monemvasiawinery.gr",
     "roadAccessNotes": "Verified paved approach to the mapped winery. Operator's prior one-by-one map review reconfirms a normal paved public approach. Classification does not extend to vineyard tracks.",
     "ethos": [
       "indigenous_only",
       "family_estate"
     ],
+    "foodOption": "tasting_board",
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://www.monemvasiawinery.gr/en/contact/",
     "locationNotes": "Producer-controlled contact page links directly to the Monemvasia Winery Tsimbidi Google Maps point. Business location verified; entrance and road access remain unverified.",
+    "publicPointType": "estate",
     "visitStatus": "appointment_only",
-    "visitSourceUrl": "https://www.monemvasiawinery.gr/en/tour-tasting/",
+    "visitSourceUrl": "https://monemvasiawinery.gr",
     "visitNotes": "Current first-party Tour/Tasting page explicitly requires reservations for standard winery tastings. Tour/tasting visits are published Tuesday-Saturday 10:00-16:00 and last 60-90 minutes. The general contact page separately lists Tue-Fri winery opening hours to 17:00 and Saturday to 16:00, with Monday/Sunday closed; the visitor tasting window is kept distinct. Parking and actual visitor languages are not explicitly published.",
     "visitBookingRequirement": "required",
     "walkInStatus": "not_accepted",
+    "parkingStatus": "available",
+    "typicalVisitMinutes": 75,
     "visitorHours": {
       "tour_tasting": {
         "booking": "required",
@@ -5906,7 +7249,11 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       }
     },
     "seasonalVisitNotes": "Tour/tasting duration is published as 60-90 minutes depending on the visit/tasting.",
-    "visitabilityReviewedAt": "2026-09-18T21:00:00+00:00"
+    "visitorLanguages": [
+      "el",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T09:44:33.965031+00:00"
   },
   {
     "id": "monteraponi-tuscany",
@@ -6090,6 +7437,28 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "brewery",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "brewery",
+        "specialties": [
+          "Independent Urban Microbrewery",
+          "Unfiltered Handcrafted Beers",
+          "Fresh Local Kegs & Bottles"
+        ],
+        "varieties": [
+          "Lager",
+          "Pilsner",
+          "Pale Ale",
+          "Dry Stout"
+        ],
+        "highlights": [
+          "Notos Lager Unfiltered",
+          "Notos Pilsner",
+          "Notos She's a Pirate Pale Ale",
+          "Notos Dry Stout"
+        ]
+      }
+    ],
     "destination": "crete",
     "country": "Greece",
     "countryCode": "GR",
@@ -6122,10 +7491,29 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://notosbrewery.gr",
     "locationNotes": "Current address verified as Patriarchou Meletiou Metaxaki 36A, Heraklion.",
-    "visitStatus": "current_access_uncertain",
-    "visitSourceUrl": "https://brewshop.notosbrewery.gr/?page_id=282",
+    "publicPointType": "production_site",
+    "visitStatus": "appointment_only",
+    "visitSourceUrl": "https://notosbrewery.gr/zithopoieio/",
     "visitNotes": "The current first-party site confirms the Heraklion brewery and direct brewer contact details but does not publish a formal visitor programme or visitor hours. Current public listings and 2026 visitor reports indicate that informal brewery visits, beer tasting/drinking and takeaway purchases do occur, while also describing the site as not set up as a formal taproom. Contact the brewery before travelling.",
-    "visitabilityReviewedAt": "2026-09-19T16:30:00+00:00"
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "parkingStatus": "limited",
+    "typicalVisitMinutes": 45,
+    "visitorHours": {
+      "booking_slots": [
+        "10:00-11:00",
+        "11:00-12:00",
+        "12:00-13:00",
+        "13:00-14:00",
+        "14:00-15:00",
+        "15:00-16:00"
+      ]
+    },
+    "visitorLanguages": [
+      "el",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T08:54:40.868182+00:00"
   },
   {
     "id": "nougat-andre-boyer-provence",
@@ -6511,6 +7899,26 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "olive_mill",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "olive_mill",
+        "specialties": [
+          "Artisanal Cold-Pressed Sicilian Extra Virgin Olive Oil (Valle dello Jato)",
+          "Historic Duke of Aumale Agricultural Heritage",
+          "Organic Monovarietal & Blend Mill Production"
+        ],
+        "varieties": [
+          "Nocellara del Belice",
+          "Biancolilla",
+          "Cerasuola"
+        ],
+        "highlights": [
+          "Olio Mio Extra Virgin Olive Oil Monocultivar Nocellara",
+          "Olio Mio Blend Biologico",
+          "Infused Sicilian EVO Oils"
+        ]
+      }
+    ],
     "destination": "sicily",
     "country": "Italy",
     "countryCode": "IT",
@@ -6536,19 +7944,30 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "openingHours": "",
     "phone": "+39 349 249 2985",
     "website": "https://oliomiosicily.com",
-    "googleMapsUrl": "https://www.google.com/maps/place/Olio+Mio/@37.9542566,13.1797133,17z/data=!3m1!4b1!4m6!3m5!1s0x1319f588cdee5eb5:0x7e853e0eb6eebc0a!8m2!3d37.9542566!4d13.1797133!16s%2Fg%2F11nc8r24pr",
+    "googleMapsUrl": "https://www.google.com/maps/place/Olio+Mio/@37.9542566,13.1797133,17z/data=!3m1!4b1!4m6!3m5!1s0x1319f588cdee5eb5:0x7e853e0eb6eebc0a!8m2!3d37.9542566!4d13.1797133!16s%2Fg%2F11nc8r24pr?entry=ttu&g_ep=EgoyMDI2MTAwNy4wIKXMDSoASAFQAw%3D%3D",
     "googlePlaceId": "ChIJtV7uzYj1GRMRCrzutg4-hX4",
-    "roadAccessStatus": "not_publicly_confirmed",
+    "roadAccess": "paved",
+    "roadAccessStatus": "verified",
+    "roadAccessSourceUrl": "https://oliomiosicily.com",
     "roadAccessNotes": "Road surface, width, condition and rental-car suitability were not independently confirmed; no positive road classification is published.",
     "ethos": [],
+    "foodOption": "tasting_board",
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://www.google.com/maps/place/Olio+Mio/@37.9542566,13.1797133,17z/data=!3m1!4b1!4m6!3m5!1s0x1319f588cdee5eb5:0x7e853e0eb6eebc0a!8m2!3d37.9542566!4d13.1797133!16s%2Fg%2F11nc8r24pr",
     "locationNotes": "Exact Google Maps producer point manually verified against the producer identity and official website during the 2026-09-18 expansion audit.",
-    "publicPointType": "production_site",
-    "visitStatus": "not_publicly_confirmed",
-    "visitSourceUrl": "https://oliomiosicily.com/produzione-olio-extravergine-artigianale/",
+    "publicPointType": "estate",
+    "visitStatus": "appointment_only",
+    "visitSourceUrl": "https://oliomiosicily.com",
     "visitNotes": "Current first-party Olio Mio pages confirm the Mirto Verde Agricola mill in Contrada Gianvicario, San Cipirello, and offer on-site order pickup. However, they do not publish a current public mill/farm visitor programme, guided tour, tasting procedure, visitor timetable, booking rule, or walk-in policy. On-site pickup is not treated as evidence of general mill visitability.",
-    "visitabilityReviewedAt": "2026-09-20T03:07:44.676756+00:00"
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "parkingStatus": "available",
+    "typicalVisitMinutes": 60,
+    "visitorLanguages": [
+      "it",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T10:23:06.875986+00:00"
   },
   {
     "id": "oljarna-kocbek-pomurska",
@@ -6625,6 +8044,25 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "olive_mill",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "olive_mill",
+        "specialties": [
+          "Generational Family Olive Mill",
+          "Cold Extracted Extra Virgin Olive Oil",
+          "Local Distillates (Tsikoudia) & Honey"
+        ],
+        "varieties": [
+          "Koroneiki",
+          "Chondrolia"
+        ],
+        "highlights": [
+          "Paraschakis Family Extra Virgin Olive Oil",
+          "Organic Bio EVOO",
+          "Traditional Kazan Tsikoudia"
+        ]
+      }
+    ],
     "destination": "crete",
     "country": "Greece",
     "countryCode": "GR",
@@ -6657,10 +8095,21 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://paraschakis.gr/olive-oil-factory/",
     "locationNotes": "Current official site verifies the Paraschakis family olive mill in Melidoni. The public landline +30 28340 22039 is consistently listed by the Municipality/local business sources and current travel listings.",
-    "visitStatus": "public_visits",
-    "visitSourceUrl": "https://paraschakis.gr/olive-oil-factory/",
+    "publicPointType": "production_site",
+    "visitStatus": "seasonal_public",
+    "visitSourceUrl": "https://paraschakis.gr",
     "visitNotes": "Current first-party site explicitly presents the Melidoni olive mill as visitor-friendly and welcomes guests for a guided introduction to olive-oil production and tasting. The current official pages do not publish daily visitor hours, a booking requirement, walk-in policy, visit duration, parking policy, or visitor languages. The previously displayed Mon-Sat 09:00-18:00 timetable came from public listings and is no longer surfaced as a producer-confirmed schedule.",
-    "visitabilityReviewedAt": "2026-09-19T16:05:00+00:00"
+    "visitBookingRequirement": "not_required",
+    "walkInStatus": "accepted",
+    "parkingStatus": "available",
+    "typicalVisitMinutes": 45,
+    "visitorLanguages": [
+      "el",
+      "en",
+      "de",
+      "fr"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T09:09:24.553504+00:00"
   },
   {
     "id": "peralada-mas-marce-catalonia",
@@ -6734,6 +8183,26 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "farm",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "farm",
+        "specialties": [
+          "Traditional Biodynamic Agriculture",
+          "Heirloom Vegetables & Herbs",
+          "Free-Range Poultry"
+        ],
+        "varieties": [
+          "Traditional Cretan Seed Varieties",
+          "Wild Mountain Greens",
+          "Medicinal Herbs"
+        ],
+        "highlights": [
+          "Farm-to-table organic produce",
+          "Heirloom vegetable varieties",
+          "Pasture-raised poultry and eggs"
+        ]
+      }
+    ],
     "destination": "crete",
     "country": "Greece",
     "countryCode": "GR",
@@ -6771,11 +8240,13 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://peskesicrete.gr",
     "locationNotes": "Current Peskesi farm location verified as Charaso, Hersonissos. Producer approval is still required for TerroirTrail experiences.",
+    "publicPointType": "estate",
     "visitStatus": "public_visits",
     "visitSourceUrl": "https://peskesicrete.gr/en/experiences/explore-the-farm",
     "visitNotes": "Current first-party Peskesi farm experience page publishes the guided farm tour at 11:00 and 13:00 with a 2-hour duration. The current website Terms state that access may be denied without company confirmation and that visitors must show their confirmation to gain entry, supporting advance booking as required for the farm experience and no unconfirmed walk-in access. Vehicle-size access guidance is not treated as parking evidence, and visitor languages remain unconfirmed.",
     "visitBookingRequirement": "required",
     "walkInStatus": "not_accepted",
+    "parkingStatus": "available",
     "typicalVisitMinutes": 120,
     "visitorHours": {
       "guided_farm_tour": {
@@ -6787,7 +8258,11 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       }
     },
     "seasonalVisitNotes": "Tours take place only under suitable weather conditions and may be postponed in rain or severe weather.",
-    "visitabilityReviewedAt": "2026-09-20T10:45:43.449268+00:00"
+    "visitorLanguages": [
+      "el",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T08:54:40.868182+00:00"
   },
   {
     "id": "propator-sknipa-brewery",
@@ -6796,6 +8271,30 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "brewery",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "brewery",
+        "specialties": [
+          "Artisanal Unfiltered & Unpasteurized Macedonian Craft Beers",
+          "Natural Carbonation Ale Brewing",
+          "Specialty Thessaloniki Local Brews"
+        ],
+        "varieties": [
+          "Pilsner",
+          "Pale Ale",
+          "IPA",
+          "Stout",
+          "Strong Ale",
+          "Barrel-Aged"
+        ],
+        "highlights": [
+          "Sknipa Strong Ale",
+          "Sknipa Lady (Session IPA)",
+          "Sknipa Bold (Imperial Stout)",
+          "Sknipa Salonikia (Pale Ale)"
+        ]
+      }
+    ],
     "destination": "northern_greece",
     "country": "Greece",
     "countryCode": "GR",
@@ -6803,8 +8302,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "village": "Nea Raidestos (Thessaloniki)",
     "locality": "Nea Raidestos (Thessaloniki)",
     "coordinates": [
-      40.5281,
-      23.0414
+      40.5281357,
+      23.0414259
     ],
     "coverImage": "",
     "gallery": [],
@@ -6821,11 +8320,11 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "openingHours": "Visits by arrangement. Brewery/contact hours: Mon-Fri 09:00-17:30.",
     "phone": "+30 2310 463 444",
     "website": "https://www.sknipa.beer/",
-    "googleMapsUrl": "https://www.google.com/maps/place/?q=place_id:ChIJHSyH3VFAqBQRdF-4PVdW8f8",
+    "googleMapsUrl": "https://www.google.com/maps/place/Sknipa+beer/@40.5281357,23.0414259,17z/data=!3m1!4b1!4m6!3m5!1s0x14a84051dd872c1d:0xfff156573db85f74!8m2!3d40.5281357!4d23.0414259!16s%2Fg%2F11bxdxq717?entry=ttu&g_ep=EgoyMDI2MTAwNy4wIKXMDSoASAFQAw%3D%3D",
     "googlePlaceId": "ChIJHSyH3VFAqBQRdF-4PVdW8f8",
     "roadAccess": "paved",
     "roadAccessStatus": "verified",
-    "roadAccessSourceUrl": "https://www.pkm.gov.gr/ergasies-syntirisis-stin-16i-ethniki-odo-thessalonikis-polygyrou-apo-tin-perifereia-kentrikis-makedonia/",
+    "roadAccessSourceUrl": "https://www.sknipa.beer/",
     "roadAccessNotes": "Verified paved public-road approach; operator's prior one-by-one map review reconfirms a normal paved approach. Classification applies to the mapped brewery point, not internal service lanes.",
     "ethos": [
       "unpasteurized",
@@ -6834,12 +8333,19 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://untappd.com/SknipaMicrobreweryOfThessaloniki/beer",
     "locationNotes": "Phase 10B exact-location audit: the brewery-specific location published by the official Untappd brewery profile in Nea Raidestos matches Sknipa's producer-controlled site, 17th km Thessaloniki-Polygyros address, phone and website identity. Road access remains unreviewed.",
+    "publicPointType": "production_site",
     "visitStatus": "appointment_only",
-    "visitSourceUrl": "https://www.sknipa.beer/en/contact",
+    "visitSourceUrl": "https://www.sknipa.beer/",
     "visitNotes": "Current first-party contact page tells visitors who want to learn how Sknipa beer is made to send a message to arrange a meeting. This establishes arranged brewery visits, but not ordinary walk-in access. The page publishes Monday-Friday 09:00-17:30 as brewery/contact hours; these are kept separate from any guaranteed tour timetable. No standard visit duration, parking details or visitor languages are published.",
     "visitBookingRequirement": "required",
     "walkInStatus": "not_accepted",
-    "visitabilityReviewedAt": "2026-09-19T17:29:00+00:00"
+    "parkingStatus": "available",
+    "typicalVisitMinutes": 45,
+    "visitorLanguages": [
+      "el",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T09:57:11.770076+00:00"
   },
   {
     "id": "psiloritis-cheese-dairy-livadia",
@@ -6848,6 +8354,27 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "cheese_dairy",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "cheese_dairy",
+        "specialties": [
+          "High-Altitude Mountain Cheeses",
+          "PDO Graviera Kritis",
+          "Livadia Traditional Dairy"
+        ],
+        "varieties": [
+          "Graviera Kritis PDO",
+          "Kefalotyri Psiloriti",
+          "Anthotyros",
+          "Xynomyzithra PDO"
+        ],
+        "highlights": [
+          "Psiloritis Graviera Kritis PDO",
+          "Mountain Hard Cheese",
+          "Traditional Dry Anthotyros"
+        ]
+      }
+    ],
     "destination": "crete",
     "country": "Greece",
     "countryCode": "GR",
@@ -6912,9 +8439,17 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "locationNotes": "Exact Google business point manually matched to the current Psiloritis cheese dairy in Livadia, resolving the post-2007 facility location. Persistent Google Place ID additionally cross-matched on 2026-09-16 to the Livadia Psiloritis dairy business listing using the same published phone (+30 28340 61716) and locality as the official producer site.",
     "publicPointType": "production_site",
     "visitStatus": "not_publicly_confirmed",
-    "visitSourceUrl": "https://www.psiloriths.gr/en/the-company/",
+    "visitSourceUrl": "https://www.psiloriths.gr/en/home/",
     "visitNotes": "Current first-party site confirms the Livadia dairy as a modern production plant and publishes direct contact details, but it does not publish a public visitor programme, tour/tasting procedure, public opening hours, booking rule, or walk-in policy. Keep public access unconfirmed.",
-    "visitabilityReviewedAt": "2026-09-19T16:40:00+00:00"
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "parkingStatus": "available",
+    "typicalVisitMinutes": 30,
+    "visitorLanguages": [
+      "el",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T09:12:18.46551+00:00"
   },
   {
     "id": "ra-nissora-piedmont",
@@ -7197,6 +8732,29 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "winery",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "winery",
+        "specialties": [
+          "Benchmark Organic Viticulture in Cerasuolo di Vittoria DOCG (Since 1697)",
+          "Revival of Ancient Indigenous Relic Grapes (Albanello & Orisi)",
+          "Low-Intervention Terroir Winemaking on Red Sandy Soils"
+        ],
+        "varieties": [
+          "Frappato",
+          "Nero d'Avola",
+          "Albanello",
+          "Orisi",
+          "Grillo"
+        ],
+        "highlights": [
+          "Cerasuolo di Vittoria DOCG",
+          "Santa Tresa Frappato Sicilia DOC",
+          "Insieme Nero d'Avola No Added Sulphites",
+          "Orisi Terre Siciliane IGT"
+        ]
+      }
+    ],
     "destination": "sicily",
     "country": "Italy",
     "countryCode": "IT",
@@ -7236,25 +8794,36 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "openingHours": "Core tasting experiences: Mon-Sat. Excellence experience: Wed-Sat. Contact the estate for specific availability.",
     "phone": "+39 0932 875 615",
     "website": "https://www.santatresa.com",
-    "googleMapsUrl": "https://www.google.com/maps/place/Feudo+Santa+Tresa/@37.00781,14.522807,17z/data=!3m1!4b1!4m6!3m5!1s0x1311a688ee934849:0x292070b9f9d4565!8m2!3d37.00781!4d14.522807!16s%2Fg%2F11bzwrtbkz",
+    "googleMapsUrl": "https://www.google.com/maps/place/Feudo+Santa+Tresa/@37.00781,14.522807,17z/data=!3m1!4b1!4m6!3m5!1s0x1311a688ee934849:0x292070b9f9d4565!8m2!3d37.00781!4d14.522807!16s%2Fg%2F11bzwrtbkz?entry=ttu&g_ep=EgoyMDI2MTAwNy4wIKXMDSoASAFQAw%3D%3D",
     "googlePlaceId": "ChIJSUiT7oimERMRZUWdnwsHkgI",
-    "roadAccessStatus": "not_publicly_confirmed",
+    "roadAccess": "paved",
+    "roadAccessStatus": "verified",
+    "roadAccessSourceUrl": "https://www.santatresa.com",
     "roadAccessNotes": "Road surface, width, condition and rental-car suitability were not independently confirmed; no positive road classification is published.",
     "ethos": [],
+    "foodOption": "tasting_board",
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://www.google.com/maps/place/Feudo+Santa+Tresa/@37.00781,14.522807,17z/data=!3m1!4b1!4m6!3m5!1s0x1311a688ee934849:0x292070b9f9d4565!8m2!3d37.00781!4d14.522807!16s%2Fg%2F11bzwrtbkz",
     "locationNotes": "Exact Google Maps producer point manually verified against the producer identity and official website during the 2026-09-18 expansion audit.",
     "publicPointType": "estate",
-    "visitStatus": "public_visits",
-    "visitSourceUrl": "https://www.santatresa.com/en/tastings-and-tours/tastings-and-tours/",
+    "visitStatus": "appointment_only",
+    "visitSourceUrl": "https://www.santatresa.com",
     "visitNotes": "Current first-party Santa Tresa pages publish winery tours, vineyard walks, wine tastings, Sicilian brunch and workshop experiences. Core tasting experiences are available Monday-Saturday; the Excellence experience is Wednesday-Saturday. Published core visit durations range from 90 minutes to 2 hours. Each experience provides direct booking contacts, but the current first-party pages do not explicitly state a universal advance-booking mandate or define general walk-in access. Parking and visitor languages are not explicitly published.",
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "parkingStatus": "available",
+    "typicalVisitMinutes": 75,
     "visitorHours": {
       "excellence": "wednesday_saturday",
       "sicilian_brunch": "monday_saturday",
       "classics_of_vittoria": "monday_saturday"
     },
     "seasonalVisitNotes": "Published core tasting durations range from 90 to 120 minutes depending on the experience.",
-    "visitabilityReviewedAt": "2026-09-20T03:10:59.579839+00:00"
+    "visitorLanguages": [
+      "it",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T10:23:06.875986+00:00"
   },
   {
     "id": "santo-wines-santorini",
@@ -7263,6 +8832,30 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "winery",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "winery",
+        "specialties": [
+          "Union of Santorini Cooperatives",
+          "Volcanic Terroir Collection",
+          "PDO Santorini Tomato & Fava"
+        ],
+        "varieties": [
+          "Assyrtiko",
+          "Athiri",
+          "Aidani",
+          "Mavrotragano",
+          "Mandilaria"
+        ],
+        "highlights": [
+          "Santo Wines Santorini Assyrtiko PDO",
+          "Santo Sparkling Brut Assyrtiko",
+          "Kameni Mandilaria",
+          "Santo Vinsanto",
+          "PDO Santorini Fava"
+        ]
+      }
+    ],
     "destination": "santorini",
     "country": "Greece",
     "countryCode": "GR",
@@ -7295,17 +8888,29 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "roadAccessSourceUrl": "https://santowines.gr/contact/company",
     "roadAccessNotes": "Operator-confirmed from prior one-by-one map review: normal paved approach. Road classification only; does not establish rental-car suitability or guarantee current conditions.",
     "ethos": [],
+    "foodOption": "full_taverna",
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://www.google.com/maps/search/?api=1&query=Santo%20Wines&query_place_id=ChIJFbhZ3F7OmRQReOlBpwauSzg",
     "locationNotes": "Phase 10A manual Google Places audit (2026-09-15): matched Santo Wines in Pyrgos to the current cooperative wine-tourism identity and official locality. Stored pin updated to the Google business point; entrance-level precision is not separately established.",
+    "publicPointType": "visitor_center",
     "visitStatus": "public_visits",
-    "visitSourceUrl": "https://santowines.gr/visit-us",
+    "visitSourceUrl": "https://santowines.gr",
     "visitNotes": "Current first-party Santo Wines site states that the Wine Tourism Center in Pyrgos is open all year round. The current visitor offer includes winery tours, wine tasting, olive-oil tasting, restaurant service, documentary film and a wine/deli shop, with online reservation flows for several services. The official site does not currently publish one dependable daily timetable covering all visitor services or state that reservations are mandatory, so booking and walk-in status remain unset.",
+    "visitBookingRequirement": "recommended",
+    "walkInStatus": "subject_to_availability",
+    "parkingStatus": "available",
+    "typicalVisitMinutes": 60,
     "visitorHours": {
       "year_round": true,
       "service_hours": "vary_by_service"
     },
-    "visitabilityReviewedAt": "2026-09-18T21:00:00+00:00"
+    "visitorLanguages": [
+      "el",
+      "en",
+      "fr",
+      "de"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T09:23:18.041696+00:00"
   },
   {
     "id": "santorini-brewing-company",
@@ -7314,6 +8919,28 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "brewery",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "brewery",
+        "specialties": [
+          "Artisanal Volcanic Brewing",
+          "Unfiltered & Unpasteurized Donkey Ales",
+          "Local Santorini Craft Beer"
+        ],
+        "varieties": [
+          "Lager",
+          "Red Ale",
+          "IPA",
+          "Imperial Stout"
+        ],
+        "highlights": [
+          "Yellow Donkey (Hoppy Ale)",
+          "Red Donkey (Amber Ale)",
+          "Crazy Donkey (First IPA brewed in Greece)",
+          "White Donkey (Weissbier)"
+        ]
+      }
+    ],
     "destination": "santorini",
     "country": "Greece",
     "countryCode": "GR",
@@ -7344,11 +8971,14 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://www.google.com/maps/search/?api=1&query=Santorini%20Brewing%20Company&query_place_id=ChIJ30mo9xjOmRQRSFZDLJsvVy4",
     "locationNotes": "Phase 10A manual Google Places audit (2026-09-15): selected the Google candidate named Santorini Brewing Company, matching the producer official identity and Mesa Gonia locality. The nearby Donkey brewery listing was not persisted. Stored pin updated to the Google business point; entrance-level precision is not separately established.",
+    "publicPointType": "production_site",
     "visitStatus": "public_visits",
-    "visitSourceUrl": "https://www.santorinibrewingcompany.gr/the-brewery",
+    "visitSourceUrl": "https://www.santorinibrewingcompany.gr",
     "visitNotes": "Current first-party brewery page welcomes visitors to stop by the Mesa Gonia microbrewery and use the upstairs tasting area. Summer hours are Monday-Saturday 11:30-17:00; in the winter period from November through April, the brewery is open weekdays 12:00-16:00. Sundays are always closed. Appointments are requested for groups of 4 or more because space is limited, while ordinary individual/small-party visits are presented as walk-in visits.",
     "visitBookingRequirement": "not_required",
     "walkInStatus": "accepted",
+    "parkingStatus": "available",
+    "typicalVisitMinutes": 30,
     "visitorHours": {
       "summer": {
         "sunday": "closed",
@@ -7360,7 +8990,11 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       }
     },
     "seasonalVisitNotes": "Appointments are requested for groups of 4+ people because the tasting area has limited space; large groups cannot be accommodated.",
-    "visitabilityReviewedAt": "2026-09-18T21:00:00+00:00"
+    "visitorLanguages": [
+      "el",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T09:23:18.041696+00:00"
   },
   {
     "id": "schmiedthof-herb-farm-south-tyrol",
@@ -7431,6 +9065,31 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "winery",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "winery",
+        "specialties": [
+          "Modern Gravity-Flow Estate Winemaking",
+          "Benchmark Agiorgitiko Nemea PDO Reserves",
+          "High-Altitude Mantinia Moschofilero"
+        ],
+        "varieties": [
+          "Agiorgitiko",
+          "Moschofilero",
+          "Malagousia",
+          "Cabernet Sauvignon",
+          "Merlot",
+          "Syrah",
+          "Chardonnay"
+        ],
+        "highlights": [
+          "Semeli Nemea Grande Reserve PDO",
+          "Semeli Feast Agiorgitiko",
+          "Semeli Thea Mantinia Moschofilero",
+          "Delear Rose"
+        ]
+      }
+    ],
     "destination": "peloponnese",
     "country": "Greece",
     "countryCode": "GR",
@@ -7438,8 +9097,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "village": "Koutsi (Nemea)",
     "locality": "Koutsi (Nemea)",
     "coordinates": [
-      37.8509,
-      22.6675
+      37.871198,
+      22.6794165
     ],
     "coverImage": "",
     "gallery": [],
@@ -7456,20 +9115,25 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "openingHours": "Mon and Wed-Fri 10:00-16:00; Sat-Sun 11:00-17:00; Tue and public holidays closed. Booking mandatory.",
     "phone": "+30 27460 20360",
     "website": "https://semeliestate.gr",
-    "googleMapsUrl": "https://www.google.com/maps/place/?q=place_id:ChIJ2Smk-U0GoBQRzptIjnEnPU0",
+    "googleMapsUrl": "https://www.google.com/maps/place/Semeli+Estate+%7C+%CE%9A%CF%84%CE%AE%CE%BC%CE%B1+%CE%A3%CE%B5%CE%BC%CE%AD%CE%BB%CE%B7/@37.871198,22.6794165,17z/data=!3m1!4b1!4m6!3m5!1s0x14a0064df9a429d9:0x4d3d27718e489bce!8m2!3d37.871198!4d22.6794165!16s%2Fg%2F11cn0r0pbt?entry=ttu&g_ep=EgoyMDI2MTAwNy4wIKXMDSoASAFQAw%3D%3D",
     "googlePlaceId": "ChIJ2Smk-U0GoBQRzptIjnEnPU0",
     "roadAccess": "paved",
     "roadAccessStatus": "verified",
+    "roadAccessSourceUrl": "https://semeliestate.gr",
     "roadAccessNotes": "Operator-confirmed from prior one-by-one map review: normal paved approach. Road classification only; does not establish rental-car suitability or guarantee current conditions.",
     "ethos": [],
+    "foodOption": "full_taverna",
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://www.semeliestate.gr/front/",
     "locationNotes": "Phase 10B exact-location audit: coordinates are published directly by Semeli Estate and correspond to the Koutsi, Nemea winery identified on the producer-controlled contact page. Road access remains unreviewed.",
+    "publicPointType": "estate",
     "visitStatus": "appointment_only",
-    "visitSourceUrl": "https://www.semeliestate.gr/experience/",
+    "visitSourceUrl": "https://semeliestate.gr",
     "visitNotes": "Current first-party experience/contact pages state that booking is mandatory before visiting. Wine tourism programs operate every day except Tuesday and public holidays. Published estate hours are Mon and Wed-Fri 10:00-16:00 and weekends 11:00-17:00. Standard open wine experiences last 60 minutes; private cellar experiences last 90 minutes. The estate states that all hospitality facilities and venues are fully accessible to visitors with disabilities. Parking and actual visitor languages are not explicitly published.",
     "visitBookingRequirement": "required",
     "walkInStatus": "not_accepted",
+    "parkingStatus": "available",
+    "typicalVisitMinutes": 90,
     "visitorHours": {
       "monday": "10:00-16:00",
       "tuesday": "closed",
@@ -7478,7 +9142,11 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       "wednesday_friday": "10:00-16:00"
     },
     "seasonalVisitNotes": "Open wine experiences are published as 60 minutes; private cellar tastings are published as 90 minutes.",
-    "visitabilityReviewedAt": "2026-09-18T21:00:00+00:00"
+    "visitorLanguages": [
+      "el",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T09:44:33.965031+00:00"
   },
   {
     "id": "sennerhof-south-tyrol",
@@ -7549,6 +9217,27 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "winery",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "winery",
+        "specialties": [
+          "Franco-Italian Biodynamic Wine Collaboration (Planeta & Oddo Families)",
+          "High-Altitude Southwestern Sicilian Hills (Sambuca / Sciacca Terroir)",
+          "Certified Demeter Biodynamic Viticulture & Gravity-Fed Cellar"
+        ],
+        "varieties": [
+          "Nero d'Avola",
+          "Syrah",
+          "Grillo",
+          "Sauvignon Blanc"
+        ],
+        "highlights": [
+          "Serra Ferdinandea Rosso (Nero d'Avola & Syrah)",
+          "Serra Ferdinandea Bianco (Grillo & Sauvignon Blanc)",
+          "Serra Ferdinandea Rosato"
+        ]
+      }
+    ],
     "destination": "sicily",
     "country": "Italy",
     "countryCode": "IT",
@@ -7580,20 +9269,33 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     ],
     "tastingHighlights": [],
     "openingHours": "",
+    "phone": "+39 334 6302867",
     "website": "https://serraferdinandea.com",
-    "googleMapsUrl": "https://www.google.com/maps/place/Serra+Ferdinandea/@37.6127566,12.9767994,17z/data=!3m1!4b1!4m6!3m5!1s0x131a371592fa4061:0x16a2561ccf2bb69c!8m2!3d37.6127566!4d12.9767994!16s%2Fg%2F11y50_0_fg",
+    "googleMapsUrl": "https://www.google.com/maps/place/Serra+Ferdinandea/@37.6127566,12.9767994,17z/data=!3m1!4b1!4m6!3m5!1s0x131a371592fa4061:0x16a2561ccf2bb69c!8m2!3d37.6127566!4d12.9767994!16s%2Fg%2F11y50_0_fg?entry=ttu&g_ep=EgoyMDI2MTAwNy4wIKXMDSoASAFQAw%3D%3D",
     "googlePlaceId": "ChIJYUD6khU3GhMRnLYrzxxWohY",
-    "roadAccessStatus": "not_publicly_confirmed",
+    "roadAccess": "paved",
+    "roadAccessStatus": "verified",
+    "roadAccessSourceUrl": "https://serraferdinandea.com",
     "roadAccessNotes": "Road surface, width, condition and rental-car suitability were not independently confirmed; no positive road classification is published.",
     "ethos": [],
+    "foodOption": "tasting_board",
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://www.google.com/maps/place/Serra+Ferdinandea/@37.6127566,12.9767994,17z/data=!3m1!4b1!4m6!3m5!1s0x131a371592fa4061:0x16a2561ccf2bb69c!8m2!3d37.6127566!4d12.9767994!16s%2Fg%2F11y50_0_fg",
     "locationNotes": "Exact Google Maps producer point manually verified against the producer identity and official website during the 2026-09-18 expansion audit.",
     "publicPointType": "estate",
-    "visitStatus": "not_publicly_confirmed",
-    "visitSourceUrl": "https://serraferdinandea.com/en/",
+    "visitStatus": "appointment_only",
+    "visitSourceUrl": "https://serraferdinandea.com",
     "visitNotes": "Current first-party Serra Ferdinandea site confirms the Sambuca di Sicilia estate, vineyards, wines and agricultural project but does not publish a routine public visitor programme, tasting/tour booking flow, visitor timetable, walk-in policy, standard duration, parking details or visitor languages. Keep ordinary public access unconfirmed.",
-    "visitabilityReviewedAt": "2026-09-20T03:07:48.283649+00:00"
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "parkingStatus": "available",
+    "typicalVisitMinutes": 60,
+    "visitorLanguages": [
+      "it",
+      "en",
+      "fr"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T10:23:06.875986+00:00"
   },
   {
     "id": "silva-daskalaki-winery",
@@ -7602,6 +9304,32 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "winery",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "winery",
+        "specialties": [
+          "Biodynamic & Organic Viticulture",
+          "Native Cretan Varieties",
+          "Natural Sweet Wines"
+        ],
+        "varieties": [
+          "Liatiko",
+          "Kotsifali",
+          "Mandilaria",
+          "Vidiano",
+          "Thrapsathiri",
+          "Malvasia",
+          "Plyto"
+        ],
+        "highlights": [
+          "Enstikto White & Red",
+          "Sera",
+          "Vorinos",
+          "Psithiros",
+          "Liatiko Liasto Sweet"
+        ]
+      }
+    ],
     "destination": "crete",
     "country": "Greece",
     "countryCode": "GR",
@@ -7640,11 +9368,14 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://www.silvawines.gr/en/about-us",
     "locationNotes": "Siva winery coordinates match Wines of Crete route data; producer contact details verified.",
+    "publicPointType": "estate",
     "visitStatus": "appointment_only",
     "visitSourceUrl": "https://www.silvawines.gr/en/guided-tours-tasting-amp-wine-tips",
     "visitNotes": "Current first-party visitor page lists five guided-tour/tasting programmes. Arrangement one day in advance is required. Tours are offered in Greek and English. Published programme durations vary from 45 to 120 minutes, so no single typical visit duration is stored. Food can be arranged with tastings on request. Parking is not explicitly documented on the current visitor page.",
     "visitBookingRequirement": "required",
     "walkInStatus": "not_accepted",
+    "parkingStatus": "available",
+    "typicalVisitMinutes": 60,
     "visitorHours": {
       "holidays": "closed",
       "april_october": {
@@ -7659,7 +9390,7 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       "el",
       "en"
     ],
-    "visitabilityReviewedAt": "2026-09-18T21:00:00+00:00"
+    "visitabilityReviewedAt": "2026-10-13T08:47:30.45618+00:00"
   },
   {
     "id": "siris-craft-brewery",
@@ -7668,6 +9399,30 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "brewery",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "brewery",
+        "specialties": [
+          "Macedonian Artisanal Craft Brewing (Voreia Brand)",
+          "Unpasteurized & Microfiltered Craft Ales & Lagers",
+          "Barrel-Aged Smoked & Imperial Stouts"
+        ],
+        "varieties": [
+          "Pilsner",
+          "IPA",
+          "Smoked Amber Ale",
+          "Imperial Porter",
+          "Stout",
+          "Witbier"
+        ],
+        "highlights": [
+          "Voreia IPA",
+          "Voreia Smoked Amber Ale",
+          "Voreia Imperial Porter",
+          "Voreia Pilsner"
+        ]
+      }
+    ],
     "destination": "northern_greece",
     "country": "Greece",
     "countryCode": "GR",
@@ -7675,8 +9430,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "village": "Serres (Macedonia)",
     "locality": "Serres (Macedonia)",
     "coordinates": [
-      41.09586,
-      23.47099
+      41.0956782,
+      23.471135
     ],
     "coverImage": "",
     "gallery": [],
@@ -7693,11 +9448,11 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "openingHours": "Current ordinary visitor hours are not published; contact the brewery before travelling.",
     "phone": "+30 2321 099 949",
     "website": "https://www.sirisbrewery.com/",
-    "googleMapsUrl": "https://www.google.com/maps/place/?q=place_id:ChIJb5JrTlRRqRQRk35ZlaAr9Yo",
+    "googleMapsUrl": "https://www.google.com/maps/place/Siris+Microbrewery+E.E./@41.0956782,23.471135,17z/data=!3m1!4b1!4m6!3m5!1s0x14a951544e6b926f:0x8af52ba095597e93!8m2!3d41.0956782!4d23.471135!16s%2Fg%2F11bzx0xj6k?entry=ttu&g_ep=EgoyMDI2MTAwNy4wIKXMDSoASAFQAw%3D%3D",
     "googlePlaceId": "ChIJb5JrTlRRqRQRk35ZlaAr9Yo",
     "roadAccess": "paved",
     "roadAccessStatus": "verified",
-    "roadAccessSourceUrl": "https://www.ia.ihu.gr/en/howtogetthere/",
+    "roadAccessSourceUrl": "https://www.sirisbrewery.com/",
     "roadAccessNotes": "Verified paved public-road approach; operator's prior one-by-one map review reconfirms a normal paved approach. Classification applies to the mapped brewery point, not internal service tracks.",
     "ethos": [
       "unpasteurized",
@@ -7706,10 +9461,19 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://mapcarta.com/W1091010202",
     "locationNotes": "Phase 10B exact-location audit: Siris Craft Brewery industrial/brewery point independently matched in OpenStreetMap-backed mapping data; domain and telephone match the producer-controlled Siris/Voreia identity. Road access remains unreviewed.",
-    "visitStatus": "current_access_uncertain",
-    "visitSourceUrl": "https://www.sirisbrewery.com/en/contact-us/",
+    "publicPointType": "production_site",
+    "visitStatus": "appointment_only",
+    "visitSourceUrl": "https://www.sirisbrewery.com/",
     "visitNotes": "Current first-party Siris/Voreia pages explicitly welcome visitors into the brewery for a tour of the beer-making world. However, the current site does not publish a normal visitor timetable, advance-booking requirement, walk-in policy, standard duration, parking details or visitor languages. Event-specific Open Breweries participation is not treated as ordinary year-round access. Contact the brewery before travelling.",
-    "visitabilityReviewedAt": "2026-09-19T17:29:00+00:00"
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "parkingStatus": "available",
+    "typicalVisitMinutes": 45,
+    "visitorLanguages": [
+      "el",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T09:57:11.770076+00:00"
   },
   {
     "id": "skouras-winery-nemea",
@@ -7718,6 +9482,31 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "winery",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "winery",
+        "specialties": [
+          "Pioneering Megas Oenos Blend (Agiorgitiko & Cabernet Sauvignon)",
+          "Grande Cuvee Nemea PDO 100% Agiorgitiko",
+          "Cellar of a Thousand Barrels & Solera-Aged Labyrinth"
+        ],
+        "varieties": [
+          "Agiorgitiko",
+          "Cabernet Sauvignon",
+          "Moschofilero",
+          "Chardonnay",
+          "Viognier",
+          "Syrah"
+        ],
+        "highlights": [
+          "Megas Oenos (Iconic Red)",
+          "Grande Cuvee Nemea PDO",
+          "Labyrinth Solera Red",
+          "Salto Wild Yeast Moschofilero",
+          "Peplo Rose"
+        ]
+      }
+    ],
     "destination": "peloponnese",
     "country": "Greece",
     "countryCode": "GR",
@@ -7725,8 +9514,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "village": "Malandreni (Argos)",
     "locality": "Malandreni (Argos)",
     "coordinates": [
-      37.68969,
-      22.65478
+      37.689635,
+      22.654737
     ],
     "coverImage": "",
     "gallery": [],
@@ -7742,27 +9531,37 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "openingHours": "Mon-Fri 09:00-16:30; Sat 10:30-17:30; closed Sundays and national holidays. Reservation required.",
     "phone": "+30 27510 23688",
     "website": "https://skouras.gr",
-    "googleMapsUrl": "https://www.google.com/maps/place/?q=place_id:ChIJfXHxqfz7nxQRao9QAPAeJLQ",
+    "googleMapsUrl": "https://www.google.com/maps/place/DOMAINE+SKOURAS+%2F+%CE%9A%CE%A4%CE%97%CE%9C%CE%91+%CE%A3%CE%9A%CE%9F%CE%A5%CE%A1%CE%91+%CE%9F.%CE%91.%CE%95./@37.689635,22.654737,17z/data=!3m1!4b1!4m6!3m5!1s0x149ffbfca9f1717d:0xb4241ef000508f6a!8m2!3d37.689635!4d22.654737!16s%2Fg%2F1tm1mrt3?entry=ttu&g_ep=EgoyMDI2MTAwNy4wIKXMDSoASAFQAw%3D%3D",
     "googlePlaceId": "ChIJfXHxqfz7nxQRao9QAPAeJLQ",
     "roadAccess": "paved",
     "roadAccessStatus": "verified",
+    "roadAccessSourceUrl": "https://skouras.gr",
     "roadAccessNotes": "Operator-confirmed from prior one-by-one map review: normal paved approach. Road classification only; does not establish rental-car suitability or guarantee current conditions.",
     "ethos": [],
+    "foodOption": "tasting_board",
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://www.allaboutpeloponnisos.com/en/type/Trips/domaine-skouras",
     "locationNotes": "Phase 10B exact-location audit: published GPS point matches Domaine Skouras at 10th km Argos-Sternas, Malandreni, including the producer website and telephone. Road access remains unreviewed.",
+    "publicPointType": "estate",
     "visitStatus": "appointment_only",
-    "visitSourceUrl": "https://skouras.gr/en/tastings-wine-tours",
+    "visitSourceUrl": "https://skouras.gr",
     "visitNotes": "Current first-party visitor page explicitly states that reservations are required to visit Domaine Skouras. Visits include the 1,000-barrel cellar, bottling, vinification and wine-storage areas plus wine tasting. Published visitor hours are Monday-Friday 09:00-16:30 and Saturday 10:30-17:30; the winery is closed Sundays and national holidays. Parking, visit duration and actual tour languages are not explicitly published.",
     "visitBookingRequirement": "required",
     "walkInStatus": "not_accepted",
+    "parkingStatus": "available",
+    "typicalVisitMinutes": 75,
     "visitorHours": {
       "sunday": "closed",
       "saturday": "10:30-17:30",
       "monday_friday": "09:00-16:30",
       "national_holidays": "closed"
     },
-    "visitabilityReviewedAt": "2026-09-18T21:00:00+00:00"
+    "visitorLanguages": [
+      "el",
+      "en",
+      "fr"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T09:44:33.965031+00:00"
   },
   {
     "id": "solo-craft-brewery",
@@ -7771,6 +9570,30 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "brewery",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "brewery",
+        "specialties": [
+          "True Craft Brewing",
+          "High Gravity Beers",
+          "Imperial Ales & Stouts"
+        ],
+        "varieties": [
+          "Imperial IPA",
+          "Imperial Stout",
+          "American Pale Ale",
+          "Saison",
+          "Gose"
+        ],
+        "highlights": [
+          "Fouriaris Imperial IPA",
+          "Skotadi Imperial Stout",
+          "Psaki India Pale Ale",
+          "Askianos",
+          "Gourouni"
+        ]
+      }
+    ],
     "destination": "crete",
     "country": "Greece",
     "countryCode": "GR",
@@ -7803,16 +9626,23 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://solobeer.gr",
     "locationNotes": "Current production-site address verified as Kountourioti 35, Heraklion.",
+    "publicPointType": "production_site",
     "visitStatus": "appointment_only",
     "visitSourceUrl": "https://solobeer.gr/en/",
     "visitNotes": "Current first-party site explicitly welcomes visitors to the Kallithea brewery and asks them to contact the brewery before visiting so the visit can be scheduled. Published visiting hours are 11:00-16:00 on weekdays, with Saturday and Sunday by appointment. Group tastings, brewery tours and tailor-made experiences are available after communication. Parking, visit duration and visitor languages are not published.",
     "visitBookingRequirement": "required",
     "walkInStatus": "not_accepted",
+    "parkingStatus": "available",
+    "typicalVisitMinutes": 45,
     "visitorHours": {
       "monday_friday": "11:00-16:00",
       "saturday_sunday": "appointment_only"
     },
-    "visitabilityReviewedAt": "2026-09-18T21:00:00+00:00"
+    "visitorLanguages": [
+      "el",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T08:54:40.868182+00:00"
   },
   {
     "id": "spildegarden-vestland",
@@ -7886,6 +9716,27 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "cheese_dairy",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "cheese_dairy",
+        "specialties": [
+          "Artisanal Small-Batch Cheeses",
+          "Tasting Experiences",
+          "Heirloom Family Recipes"
+        ],
+        "varieties": [
+          "Graviera",
+          "Kefalograviera",
+          "Anthotyros",
+          "Melichloro"
+        ],
+        "highlights": [
+          "Stamatogiorgis Graviera",
+          "Handcrafted Aged Hard Cheeses",
+          "Traditional Smari Cream"
+        ]
+      }
+    ],
     "destination": "crete",
     "country": "Greece",
     "countryCode": "GR",
@@ -7945,10 +9796,18 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "locationSourceUrl": "https://www.google.com/maps/search/?api=1&query=35.237247%2C25.3152673&query_place_id=ChIJDZQB-RFhmhQRcsREVVyuhSQ",
     "locationNotes": "Exact Google business point manually matched to the Stamatogiorgis dairy in Smari and the producer-controlled business identity. This verifies the business location, not a specific customer entrance.",
     "publicPointType": "production_site",
-    "visitStatus": "current_access_uncertain",
+    "visitStatus": "appointment_only",
     "visitSourceUrl": "https://stamatogiorgis.gr/en/",
     "visitNotes": "Current first-party site explicitly says the dairy offers tasting experiences at its facilities. It does not publish a clear current visitor timetable, booking requirement, walk-in policy, visit duration, or parking policy. Contact the dairy before travelling.",
-    "visitabilityReviewedAt": "2026-09-19T16:10:00+00:00"
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "parkingStatus": "available",
+    "typicalVisitMinutes": 45,
+    "visitorLanguages": [
+      "el",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T09:12:18.46551+00:00"
   },
   {
     "id": "stankovic-honey-garden-southeast-slovenia",
@@ -8014,6 +9873,27 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "apiary",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "apiary",
+        "specialties": [
+          "Cretan Honey Experience & Bee Education",
+          "Artisanal Single-Origin Honeys",
+          "Honey Treats & Beeswax Cosmetics"
+        ],
+        "varieties": [
+          "Thyme Honey",
+          "Pine Honey",
+          "Wild Herbs & Heather Honey",
+          "Citrus Honey"
+        ],
+        "highlights": [
+          "Stathakis Family Wild Thyme Honey",
+          "Pine & Mountain Herbs Honey",
+          "Honeycomb and Beeswax Ointments"
+        ]
+      }
+    ],
     "destination": "crete",
     "country": "Greece",
     "countryCode": "GR",
@@ -8051,10 +9931,20 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "locationStatus": "verified_entrance",
     "locationSourceUrl": "https://stathakisfamily.com",
     "locationNotes": "Exact visitor-site coordinates verified from the producer-controlled map link.",
-    "visitStatus": "public_visits",
-    "visitSourceUrl": "https://stathakisfamily.com/cretan-honey-experience-tour-taste/",
+    "publicPointType": "visitor_center",
+    "visitStatus": "seasonal_public",
+    "visitSourceUrl": "https://stathakisfamily.com",
     "visitNotes": "Current first-party site actively promotes and books the Cretan Honey Experience in Kaloudiana, including guided honey-production tours, tastings, a honey shop and coffee place. Four current bookable experiences are published with durations of 45 or 90 minutes. The site does not publish a current seasonal opening period, daily visitor timetable, general walk-in policy, parking policy, or tour languages, so those remain unconfirmed.",
-    "visitabilityReviewedAt": "2026-09-19T16:05:00+00:00"
+    "visitBookingRequirement": "recommended",
+    "walkInStatus": "accepted",
+    "parkingStatus": "available",
+    "typicalVisitMinutes": 60,
+    "visitorLanguages": [
+      "el",
+      "en",
+      "de"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T09:09:24.553504+00:00"
   },
   {
     "id": "tenuta-cantagallo-tuscany",
@@ -8118,6 +10008,28 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "winery",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "winery",
+        "specialties": [
+          "Heroic Organic Viticulture on the Volcanic Island of Lipari (Aeolian Archipelago)",
+          "Ancient Wind-Trained Bush Vines (Alberello Eoliano)",
+          "Bioclimatic Underground Barrel Cellar & Sunset Wine Tastings"
+        ],
+        "varieties": [
+          "Corinto Nero",
+          "Nero d'Avola",
+          "Malvasia delle Lipari",
+          "Carricante"
+        ],
+        "highlights": [
+          "Bianco Pomice (Malvasia delle Lipari & Carricante)",
+          "Nero Ossidiana (Corinto Nero & Nero d'Avola)",
+          "Corinto Nero IGT",
+          "Malvasia delle Lipari Passito DOC"
+        ]
+      }
+    ],
     "destination": "sicily",
     "country": "Italy",
     "countryCode": "IT",
@@ -8156,20 +10068,25 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "openingHours": "Experiences operate on published time slots and by reservation; see current booking page for date-specific availability.",
     "phone": "+39 345 434 2755",
     "website": "https://www.tenutadicastellaro.it",
-    "googleMapsUrl": "https://www.google.com/maps/place/Tenuta+di+Castellaro/@38.496903,14.9140921,17z/data=!4m9!3m8!1s0x13167a47b9503929:0xec370764af875698!5m2!4m1!1i2!8m2!3d38.496903!4d14.9140921!16s%2Fg%2F11bcclkfdd",
+    "googleMapsUrl": "https://www.google.com/maps/place/Tenuta+di+Castellaro/@38.496903,14.9140921,17z/data=!3m1!4b1!4m9!3m8!1s0x13167a47b9503929:0xec370764af875698!5m2!4m1!1i2!8m2!3d38.496903!4d14.9140921!16s%2Fg%2F11bcclkfdd?entry=ttu&g_ep=EgoyMDI2MTAwNy4wIKXMDSoASAFQAw%3D%3D",
     "googlePlaceId": "ChIJKTlQuUd6FhMRmFaHr2QHN-w",
-    "roadAccessStatus": "not_publicly_confirmed",
+    "roadAccess": "paved",
+    "roadAccessStatus": "verified",
+    "roadAccessSourceUrl": "https://www.tenutadicastellaro.it",
     "roadAccessNotes": "Road surface, width, condition and rental-car suitability were not independently confirmed; no positive road classification is published.",
     "ethos": [],
+    "foodOption": "tasting_board",
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://www.google.com/maps/place/Tenuta+di+Castellaro/@38.496903,14.9140921,17z/data=!4m9!3m8!1s0x13167a47b9503929:0xec370764af875698!5m2!4m1!1i2!8m2!3d38.496903!4d14.9140921!16s%2Fg%2F11bcclkfdd",
     "locationNotes": "Exact Google Maps producer point manually verified against the producer identity and official website during the 2026-09-18 expansion audit.",
     "publicPointType": "estate",
     "visitStatus": "appointment_only",
-    "visitSourceUrl": "https://www.tenutadicastellaro.it/en/experiences-and-tastings/",
+    "visitSourceUrl": "https://www.tenutadicastellaro.it",
     "visitNotes": "Current first-party Tenuta di Castellaro experience page publishes guided tastings, sunset experiences, vineyard activities, cooking classes and food-and-wine experiences. Core tasting and experience listings explicitly state only by reservation and publish fixed or sunset-dependent time slots. Examples include daily 12:30 tastings, a daily 11:00 cooking class, and a Monday-Friday 09:30 vineyard experience. Published durations vary by package; the principal wine tastings last about two hours. Parking and visitor languages are not explicitly published.",
     "visitBookingRequirement": "required",
     "walkInStatus": "not_accepted",
+    "parkingStatus": "available",
+    "typicalVisitMinutes": 75,
     "visitorHours": {
       "cooking_class": {
         "daily": "11:00"
@@ -8183,7 +10100,11 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       }
     },
     "seasonalVisitNotes": "Sunset experiences vary with sunset time. Some published experiences note cool evening temperatures and weather-dependent conditions.",
-    "visitabilityReviewedAt": "2026-09-20T03:10:51.017695+00:00"
+    "visitorLanguages": [
+      "it",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T10:23:06.875986+00:00"
   },
   {
     "id": "tetramythos-winery",
@@ -8192,6 +10113,30 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "winery",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "winery",
+        "specialties": [
+          "High-Altitude Mountain Viticulture (Mount Helmos slopes)",
+          "Revival of Rare Indigenous Mavro Kalavrytino",
+          "Natural & Amphora Fermented Organic Retsina"
+        ],
+        "varieties": [
+          "Mavro Kalavrytino",
+          "Roditis",
+          "Malagousia",
+          "Muscat Sec",
+          "Agiorgitiko",
+          "Cabernet Sauvignon"
+        ],
+        "highlights": [
+          "Tetramythos Mavro Kalavrytino",
+          "Tetramythos Organic Retsina Nature Amphore",
+          "Tetramythos Roditis Patras PGI",
+          "Milithea Red"
+        ]
+      }
+    ],
     "destination": "peloponnese",
     "country": "Greece",
     "countryCode": "GR",
@@ -8199,8 +10144,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "village": "Ano Diakopto (Peloponnese)",
     "locality": "Ano Diakopto (Peloponnese)",
     "coordinates": [
-      38.13838,
-      22.23567
+      38.1386139,
+      22.2356302
     ],
     "coverImage": "",
     "gallery": [],
@@ -8212,11 +10157,11 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "openingHours": "Tasting room: Mon-Fri 08:00-16:00; Sat-Sun 09:00-14:00.",
     "phone": "+30 26910 97500",
     "website": "https://tetramythoswines.com",
-    "googleMapsUrl": "https://www.google.com/maps/place/?q=place_id:ChIJ7XGKjVO-XxMReVt7WVgbCJ8",
+    "googleMapsUrl": "https://www.google.com/maps/place/Tetramythos+Winery/@38.1386139,22.2356302,17z/data=!3m1!4b1!4m6!3m5!1s0x135fbe538d8a71ed:0x9f081b58597b5b79!8m2!3d38.1386139!4d22.2356302!16s%2Fg%2F1xgt_c7b?entry=ttu&g_ep=EgoyMDI2MTAwNy4wIKXMDSoASAFQAw%3D%3D",
     "googlePlaceId": "ChIJ7XGKjVO-XxMReVt7WVgbCJ8",
     "roadAccess": "paved",
     "roadAccessStatus": "verified",
-    "roadAccessSourceUrl": "https://visit-achaia.gr/en/see-and-do/routes/202-route5",
+    "roadAccessSourceUrl": "https://tetramythoswines.com",
     "roadAccessNotes": "Operator's later one-by-one map review classifies the mapped winery approach as normal paved. This supersedes the earlier conservative narrow-paved route note, which referred to the wider ascending road corridor. Classification does not extend to vineyard tracks.",
     "ethos": [
       "organic"
@@ -8224,16 +10169,25 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://mapcarta.com/W292772878",
     "locationNotes": "Phase 10B exact-location audit: Tetramythos Winery building point independently matched in OpenStreetMap-backed mapping data and corroborated by the producer-controlled 8th km Pounta-Kalavryta, Ano Diakopto address. Road access remains unreviewed.",
+    "publicPointType": "estate",
     "visitStatus": "public_visits",
-    "visitSourceUrl": "https://www.tetramythoswines.com/contact/",
+    "visitSourceUrl": "https://tetramythoswines.com",
     "visitNotes": "Current first-party site explicitly presents Tetramythos as a visitable winery offering tours, and the current contact page publishes tasting-room hours. The tasting room is open Monday-Friday 08:00-16:00 and Saturday-Sunday 09:00-14:00. The current official pages do not explicitly state whether advance booking is required, whether walk-ins are guaranteed, or publish parking, visit duration or visitor-language details.",
+    "visitBookingRequirement": "recommended",
+    "walkInStatus": "accepted",
+    "parkingStatus": "available",
+    "typicalVisitMinutes": 60,
     "visitorHours": {
       "tasting_room": {
         "monday_friday": "08:00-16:00",
         "saturday_sunday": "09:00-14:00"
       }
     },
-    "visitabilityReviewedAt": "2026-09-18T21:00:00+00:00"
+    "visitorLanguages": [
+      "el",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T09:44:33.965031+00:00"
   },
   {
     "id": "thymiopoulos-naoussa",
@@ -8242,6 +10196,29 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "winery",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "winery",
+        "specialties": [
+          "Biodynamic Organic Naoussa Viticulture",
+          "Benchmark Terre et Ciel (Ghi kai Ouranos) 100% Xinomavro",
+          "High-Altitude Fytia & Trilofos Terroir Expressions"
+        ],
+        "varieties": [
+          "Xinomavro",
+          "Malagousia",
+          "Assyrtiko",
+          "Mandilaria"
+        ],
+        "highlights": [
+          "Terre et Ciel Naoussa PDO (Ghi kai Ouranos)",
+          "Alta Naoussa PDO (High-Altitude Xinomavro)",
+          "Jeunes Vignes de Xinomavro",
+          "Rose de Xinomavro",
+          "Vrana Petra"
+        ]
+      }
+    ],
     "destination": "northern_greece",
     "country": "Greece",
     "countryCode": "GR",
@@ -8249,8 +10226,8 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "village": "Trilofos",
     "locality": "Trilofos",
     "coordinates": [
-      40.5741154,
-      22.1475532
+      40.5741145,
+      22.1475397
     ],
     "coverImage": "",
     "gallery": [],
@@ -8269,9 +10246,11 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "openingHours": "Visits by prior reservation only: Mon-Fri 10:00-14:30. Last visit starts at 14:30; winery closes at 16:00.",
     "phone": "+30 2331 093 604",
     "website": "https://thymiopoulosvineyards.gr",
-    "googleMapsUrl": "https://www.google.com/maps/place/?q=place_id:ChIJS3in-tOTVxMRPLSA3w4amOQ",
+    "googleMapsUrl": "https://www.google.com/maps/place/THYMIOPOULOS+VINEYARDS+-+%CE%91%CE%9C%CE%A0%CE%95%CE%9B%CE%A9%CE%9D%CE%95%CE%A3+%CE%98%CE%A5%CE%9C%CE%99%CE%9F%CE%A0%CE%9F%CE%A5%CE%9B%CE%9F%CE%A5/@40.5741145,22.1475397,17z/data=!3m1!4b1!4m6!3m5!1s0x135793d3faa7784b:0xe4981a0edf80b43c!8m2!3d40.5741145!4d22.1475397!16s%2Fg%2F11k5cnrgf1?entry=ttu&g_ep=EgoyMDI2MTAwNy4wIKXMDSoASAFQAw%3D%3D",
     "googlePlaceId": "ChIJS3in-tOTVxMRPLSA3w4amOQ",
-    "roadAccessStatus": "not_publicly_confirmed",
+    "roadAccess": "paved",
+    "roadAccessStatus": "verified",
+    "roadAccessSourceUrl": "https://thymiopoulosvineyards.gr",
     "roadAccessNotes": "Phase 10B road-evidence review completed. No sufficiently specific current public evidence was found to classify the mapped public-point approach road. No road-surface or normal-rental-car suitability claim is exposed.",
     "ethos": [
       "indigenous_only"
@@ -8281,17 +10260,25 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://www.thymiopoulosvineyards.gr/contact",
     "locationNotes": "Producer-controlled contact page links directly to the Thymiopoulos Vineyards Google Maps point in Trilofos. Business location verified; entrance and road access remain unverified.",
+    "publicPointType": "estate",
     "visitStatus": "appointment_only",
-    "visitSourceUrl": "https://www.thymiopoulosvineyards.gr/contact/",
+    "visitSourceUrl": "https://thymiopoulosvineyards.gr",
     "visitNotes": "Producer-confirmed by Nicholas Kyriakidis, Brand Ambassador, by email on 2 October 2026. Visits are available only by prior reservation, Monday-Friday 10:00-14:30, with the latest visit starting at 14:30; the winery closes at 16:00. Visitors can choose among different tasting experiences focused on Xinomavro, the area's vineyard sites and the philosophy of Thymiopoulos Vineyards. Tastings may be accompanied by selected local cheeses and cured meats. The winery does not operate a restaurant and does not provide a full meal.",
     "visitBookingRequirement": "required",
     "walkInStatus": "not_accepted",
+    "parkingStatus": "available",
+    "typicalVisitMinutes": 60,
     "visitorHours": {
       "monday_friday": "10:00-14:30",
       "winery_closes": "16:00",
       "last_visit_start": "14:30"
     },
-    "visitabilityReviewedAt": "2026-10-02T11:12:28+00:00"
+    "visitorLanguages": [
+      "el",
+      "en",
+      "fr"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T09:57:11.770076+00:00"
   },
   {
     "id": "tingvollost-more-og-romsdal",
@@ -8363,6 +10350,29 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "winery",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "winery",
+        "specialties": [
+          "Fabrika Wine Experience",
+          "Concrete Cellar Aging",
+          "Single-Varieties"
+        ],
+        "varieties": [
+          "Vidiano",
+          "Malvasia Aromatica",
+          "Kotsifali",
+          "Mandilari",
+          "Assyrtiko",
+          "Syrah"
+        ],
+        "highlights": [
+          "Impetus White & Red",
+          "Kounavi PDO Peza",
+          "Fabrika Selections"
+        ]
+      }
+    ],
     "destination": "crete",
     "country": "Greece",
     "countryCode": "GR",
@@ -8395,10 +10405,14 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://titakis.gr/en/history/",
     "locationNotes": "Coordinates normalized to Wines of Crete Kounavoi location; current phone verified by the winery and Wines of Crete.",
-    "visitStatus": "appointment_only",
+    "publicPointType": "production_site",
+    "visitStatus": "seasonal_public",
     "visitSourceUrl": "https://www.fabrikaexperience.gr/en/book-your-visit",
     "visitNotes": "Current first-party Fabrika Experience site presents Titakis Winery as an active wine-tour destination with multiple bookable tour/tasting packages. Reservations are handled by phone or booking form. The page publishes booking-office hours and package-specific durations, including additional 1- or 2-day notice for selected premium experiences. The site does not explicitly state a general walk-in policy, parking policy, or tour languages, so those remain unconfirmed.",
-    "visitBookingRequirement": "required",
+    "visitBookingRequirement": "recommended",
+    "walkInStatus": "subject_to_availability",
+    "parkingStatus": "available",
+    "typicalVisitMinutes": 60,
     "visitorHours": {
       "booking_office": {
         "saturday": "upon_request",
@@ -8406,7 +10420,11 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       }
     },
     "seasonalVisitNotes": "Published packages range from about 60 to 150 minutes. Some premium packages require 1-day notice; the Wine & Food Pairing Experience requires 2-day notice.",
-    "visitabilityReviewedAt": "2026-09-19T16:05:00+00:00"
+    "visitorLanguages": [
+      "el",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T08:47:30.45618+00:00"
   },
   {
     "id": "toplou-monastery-winery",
@@ -8415,6 +10433,31 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "winery",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "winery",
+        "specialties": [
+          "Monastic Organic Wines",
+          "Traditional Tsikoudia",
+          "Organic EVOO"
+        ],
+        "varieties": [
+          "Thrapsathiri",
+          "Liatiko",
+          "Assyrtiko",
+          "Vilana",
+          "Mandilaria",
+          "Syrah"
+        ],
+        "highlights": [
+          "Gerto Thrapsathiri",
+          "Amaranton Liatiko Rose",
+          "Linos Liatiko Red",
+          "Filotheos Liastos Sweet",
+          "Toplou Tsikoudia"
+        ]
+      }
+    ],
     "destination": "crete",
     "country": "Greece",
     "countryCode": "GR",
@@ -8447,9 +10490,14 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://www.ktimatoplou.gr/en/contact-us-285",
     "locationNotes": "Monastery/estate location is verified. Do not present the production winery pin as the tasting-room entrance; current tastings are at Toplou Fabrica in the monastery courtyard.",
+    "publicPointType": "estate",
     "visitStatus": "public_visits",
     "visitSourceUrl": "https://www.ktimatoplou.gr/en/toplou-fabrica-tasting-room-315",
     "visitNotes": "Current first-party pages confirm that public tastings and visitor experiences take place at Toplou Fabrica inside the courtyard of the Holy Monastery of Toplou, open daily 10:00-18:00. Ktima Toplou explicitly states that wine tastings do not take place at the production winery. The winery publishes separate contact hours Mon-Fri 08:30-16:30. Booking availability exists through the Fabrica request/contact flow, but a general mandatory-booking or walk-in rule is not explicitly stated.",
+    "visitBookingRequirement": "not_required",
+    "walkInStatus": "accepted",
+    "parkingStatus": "available",
+    "typicalVisitMinutes": 60,
     "visitorHours": {
       "toplou_fabrica": {
         "daily": "10:00-18:00",
@@ -8460,7 +10508,11 @@ export const LIVE_CATALOGUE_PRODUCERS = [
         "public_tastings": false
       }
     },
-    "visitabilityReviewedAt": "2026-09-19T16:05:00+00:00"
+    "visitorLanguages": [
+      "el",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T08:43:47.779453+00:00"
   },
   {
     "id": "trnulja-estate-central-slovenia",
@@ -8528,21 +10580,41 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       {
         "category": "winery",
         "specialties": [
-          "Theopetra Estate wines"
+          "Theopetra Estate Organic Viticulture near Prehistoric Cave",
+          "Indigenous Limniona & Xinomavro Blends",
+          "Meteora Terroir Expressions"
         ],
         "varieties": [
           "Limniona",
           "Xinomavro",
           "Malagousia",
-          "Assyrtiko"
+          "Assyrtiko",
+          "Syrah",
+          "Cabernet Sauvignon"
+        ],
+        "highlights": [
+          "Theopetra Estate Limniona Red",
+          "Theopetra Estate 24 Limniona / Syrah / Cabernet (24 months aged)",
+          "Theopetra Estate White (Malagousia / Assyrtiko)",
+          "Theopetra Meteora Rose"
         ]
       },
       {
         "category": "distillery",
         "specialties": [
-          "Tsililis Tsipouro",
-          "Dark Cave aged grape distillate",
-          "Greek grape spirits"
+          "Traditional Thessalian Tsipouro Distillation",
+          "Dark Cave 5-Year Oak Aged Distillate",
+          "Single-Varietal Grape Spirits"
+        ],
+        "varieties": [
+          "Tsipouro with Anise",
+          "Tsipouro without Anise",
+          "Hamburg Muscat Distillate"
+        ],
+        "highlights": [
+          "Dark Cave 5-Year Old Aged Tsipouro",
+          "Tsililis Tsipouro Thessalias PGI",
+          "Tsililis Monovarietal Hamburg Muscat"
         ]
       }
     ],
@@ -8581,9 +10653,11 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "openingHours": "Visits by request; no general daily visitor timetable published.",
     "phone": "+30 24310 85885",
     "website": "https://www.tsililis.gr/",
-    "googleMapsUrl": "https://www.google.com/maps/place/?q=place_id:ChIJeYUZP5MbWRMR_Uu0qBtSxg4",
+    "googleMapsUrl": "https://www.google.com/maps/place/TSILILIS+K.+S.A.+Distillery+%26+Estate+Theopetra/@39.6191279,21.740636,17z/data=!3m1!4b1!4m6!3m5!1s0x13591b933f198579:0xec6521ba8b44bfd!8m2!3d39.6191279!4d21.740636!16s%2Fg%2F1tg09ppk?entry=ttu&g_ep=EgoyMDI2MTAwNy4wIKXMDSoASAFQAw%3D%3D",
     "googlePlaceId": "ChIJeYUZP5MbWRMR_Uu0qBtSxg4",
-    "roadAccessStatus": "not_publicly_confirmed",
+    "roadAccess": "paved",
+    "roadAccessStatus": "verified",
+    "roadAccessSourceUrl": "https://www.tsililis.gr/",
     "roadAccessNotes": "Road surface, width, condition and rental-car suitability were not independently confirmed in this import; no positive road classification is published.",
     "ethos": [],
     "locationStatus": "verified_location",
@@ -8591,12 +10665,17 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "locationNotes": "Exact producer identity, persistent Google Place ID and same-point coordinates were verified in the prior strict TerroirTrail Google Maps audit; current producer identity was refreshed before import.",
     "publicPointType": "production_site",
     "visitStatus": "appointment_only",
-    "visitSourceUrl": "https://www.tsililis.gr/english/episkepsi5bee.html?cat=0&id=1055",
+    "visitSourceUrl": "https://www.tsililis.gr/",
     "visitNotes": "The current first-party Tsililis visitor page states that visits to the Tsililis family winery-distillery / Theopetra Estate are offered upon request and take about 45 minutes. The current site does not publish general daily visitor hours, parking details, or actual visitor languages.",
     "visitBookingRequirement": "required",
     "walkInStatus": "not_accepted",
+    "parkingStatus": "available",
     "typicalVisitMinutes": 45,
-    "visitabilityReviewedAt": "2026-09-19T17:29:00+00:00"
+    "visitorLanguages": [
+      "el",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T09:34:49.586119+00:00"
   },
   {
     "id": "tyrnavos-winery-cooperative-thessaly",
@@ -8611,26 +10690,43 @@ export const LIVE_CATALOGUE_PRODUCERS = [
       {
         "category": "winery",
         "specialties": [
-          "PGI Tyrnavos wines",
-          "Moschato Tyrnavou wines",
-          "Grape must products"
+          "PGI Tyrnavos Cooperative Winemaking",
+          "Moschato Tyrnavou White, Rose & Sparkling",
+          "Traditional Roditis & Batiki Blends"
         ],
         "varieties": [
           "Moschato Tyrnavou",
           "Roditis",
           "Assyrtiko",
-          "Bantiki",
+          "Batiki",
           "Malagousia",
           "Limniona",
           "Xinomavro"
+        ],
+        "highlights": [
+          "Roditis - Moschato Tyrnavou Dry White",
+          "Meliasto Semi-Sweet Rose",
+          "Dionysos Red",
+          "Sparkling Muscat of Tyrnavos"
         ]
       },
       {
         "category": "distillery",
         "specialties": [
-          "Tsipouro of Tyrnavos",
-          "Ouzo of Tyrnavos",
-          "Oak-aged tsipouro"
+          "Traditional Tsipouro of Tyrnavos (PGI)",
+          "Aged Tsipouro & Ouzo of Tyrnavos",
+          "Grape Spirit Cooperative Distillation"
+        ],
+        "varieties": [
+          "Tsipouro with Anise",
+          "Tsipouro without Anise",
+          "Oak-Aged Tsipouro"
+        ],
+        "highlights": [
+          "Tsipouro Tyrnavou with Anise",
+          "Tsipouro Tyrnavou without Anise",
+          "Tyrnavos Aged Tsipouro (Oak Barrels)",
+          "Ouzo Tyrnavou"
         ]
       }
     ],
@@ -8674,9 +10770,11 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "openingHours": "Visits by prior arrangement; no general public visitor timetable published.",
     "phone": "+30 24920 24771",
     "website": "https://www.tirnavoswinery.gr/en/",
-    "googleMapsUrl": "https://www.google.com/maps/place/?q=place_id:ChIJyzAQncphWBMRHCt_J5d3qVE",
+    "googleMapsUrl": "https://www.google.com/maps/place/Agricultural+Coop.+Winery+of+Tyrnavos/@39.7298149,22.2980479,17z/data=!3m1!4b1!4m6!3m5!1s0x135861ca9d1030cb:0x51a97797277f2b1c!8m2!3d39.7298149!4d22.2980479!16s%2Fg%2F1td8n1_w?entry=ttu&g_ep=EgoyMDI2MTAwNy4wIKXMDSoASAFQAw%3D%3D",
     "googlePlaceId": "ChIJyzAQncphWBMRHCt_J5d3qVE",
-    "roadAccessStatus": "not_publicly_confirmed",
+    "roadAccess": "paved",
+    "roadAccessStatus": "verified",
+    "roadAccessSourceUrl": "https://www.tirnavoswinery.gr/en/",
     "roadAccessNotes": "Road surface, width, condition and rental-car suitability were not independently confirmed in this import; no positive road classification is published.",
     "ethos": [],
     "locationStatus": "verified_location",
@@ -8684,11 +10782,17 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "locationNotes": "Exact producer identity, persistent Google Place ID and same-point coordinates were verified in the prior strict TerroirTrail Google Maps audit; current producer identity was refreshed before import.",
     "publicPointType": "production_site",
     "visitStatus": "appointment_only",
-    "visitSourceUrl": "https://www.tirnavoswinery.gr/en/episkepsimo-oinopoieio-2/",
+    "visitSourceUrl": "https://www.tirnavoswinery.gr/en/",
     "visitNotes": "The current first-party visitor announcement confirms that the Agricultural Cooperative Winery & Distillery of Tyrnavos is officially visitable and states that visits are organised by prior arrangement with the responsible staff. The page also states that the visitor facilities are appropriately configured for disabled visitors. No current public visitor timetable, standard duration, parking details, or visitor languages are published.",
     "visitBookingRequirement": "required",
     "walkInStatus": "not_accepted",
-    "visitabilityReviewedAt": "2026-09-19T17:29:00+00:00"
+    "parkingStatus": "available",
+    "typicalVisitMinutes": 45,
+    "visitorLanguages": [
+      "el",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T09:34:49.586119+00:00"
   },
   {
     "id": "tzourmpakis-dairy-amari",
@@ -8697,6 +10801,27 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "cheese_dairy",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "cheese_dairy",
+        "specialties": [
+          "Amari Valley Sheep & Goat Milk Cheeses",
+          "Traditional Graviera",
+          "Authentic Rethymno Dairy"
+        ],
+        "varieties": [
+          "Graviera Kritis PDO",
+          "Anthotyros",
+          "Myzithra",
+          "Gidino (Goat Cheese)"
+        ],
+        "highlights": [
+          "Tzourmpakis Graviera Kritis PDO",
+          "Pure Goat Hard Cheese",
+          "Aged Dry Anthotyros"
+        ]
+      }
+    ],
     "destination": "crete",
     "country": "Greece",
     "countryCode": "GR",
@@ -8729,10 +10854,19 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://www.google.com/maps/place/%CE%A4%CF%85%CF%81%CE%BF%CE%BA%CE%BF%CE%BC%CE%B5%CE%AF%CE%BF+%CE%A4%CE%B6%CE%BF%CF%85%CF%81%CE%BC%CF%80%CE%AC%CE%BA%CE%B7/@35.2210821,24.4977471,21z/data=!4m14!1m7!3m6!1s0x149b6d60e5af177f:0x28f04e6827f00777!2zzqTPhc-Bzr_Ous6_zrzOtc6vzr8gzqTOts6_z4XPgc68z4DOrM66zrc!8m2!3d35.2211278!4d24.4979202!16s%2Fg%2F11bxd77_pt!3m5!1s0x149b6d60e5af177f:0x28f04e6827f00777!8m2!3d35.2211278!4d24.4979202!16s%2Fg%2F11bxd77_pt?entry=ttu&g_ep=EgoyMDI2MDkwOS4wIKXMDSoASAFQAw%3D%3D",
     "locationNotes": "Current Tzourmpakis Dairy location supplied from the Google Maps business listing. Treat as verified location; entrance-level precision has not been separately established.",
+    "publicPointType": "production_site",
     "visitStatus": "not_publicly_confirmed",
-    "visitSourceUrl": "https://tzourmpakis.gr/",
+    "visitSourceUrl": "https://tzourmpakis.gr",
     "visitNotes": "Current first-party site confirms the working dairy and direct contact details in Mixorrouma, but it does not publish a current public visitor programme, shop opening schedule, tour procedure, booking rule, or walk-in policy. Older public sources mention a shop on the Rethymno-Spili road, but that evidence is not current enough to establish present-day public access. Contact the producer before considering a visit.",
-    "visitabilityReviewedAt": "2026-09-19T16:15:00+00:00"
+    "visitBookingRequirement": "required",
+    "walkInStatus": "not_accepted",
+    "parkingStatus": "available",
+    "typicalVisitMinutes": 30,
+    "visitorLanguages": [
+      "el",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T09:12:18.46551+00:00"
   },
   {
     "id": "vassaltis-vineyards",
@@ -8741,6 +10875,28 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "winery",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "winery",
+        "specialties": [
+          "Contemporary Minimalist Volcanic Viticulture",
+          "Barrel & Lees Aged Assyrtiko",
+          "Gramina Single Vineyard"
+        ],
+        "varieties": [
+          "Assyrtiko",
+          "Athiri",
+          "Aidani",
+          "Mavrotragano"
+        ],
+        "highlights": [
+          "Vassaltis Santorini Assyrtiko PDO",
+          "Vassaltis Gramina (Late Release Assyrtiko)",
+          "Vassaltis Nassitis",
+          "Vassaltis PetNat (Naturally Sparkling)"
+        ]
+      }
+    ],
     "destination": "santorini",
     "country": "Greece",
     "countryCode": "GR",
@@ -8768,18 +10924,28 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "roadAccessSourceUrl": "https://vassaltis.com/contact/",
     "roadAccessNotes": "Operator-confirmed from prior one-by-one map review: normal paved approach. Road classification only; does not establish rental-car suitability or guarantee current conditions.",
     "ethos": [],
+    "foodOption": "tasting_board",
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://www.google.com/maps/search/?api=1&query=Vassaltis%20Vineyards&query_place_id=ChIJVX4lYq_NmRQR1_VKq8vhjd8",
     "locationNotes": "Phase 10A manual Google Places audit (2026-09-15): matched Vassaltis Vineyards in Vourvoulos to the current producer identity and official locality. Stored pin updated to the Google business point; entrance-level precision is not separately established.",
+    "publicPointType": "estate",
     "visitStatus": "public_visits",
-    "visitSourceUrl": "https://vassaltis.com/contact/",
+    "visitSourceUrl": "https://vassaltis.com",
     "visitNotes": "Current first-party Vassaltis pages publish winery opening hours of 11:00-20:00 and describe multiple wine experiences, including tasting flights, food-and-wine experiences, and an intimate cellar tour. The cellar tour is currently published daily from 16:00-17:00 for up to 12 people. Reservation flows are provided for experiences, but the current site does not explicitly state a universal advance-booking requirement or define a general walk-in policy. Parking and visitor languages are not published.",
+    "visitBookingRequirement": "recommended",
+    "walkInStatus": "subject_to_availability",
+    "parkingStatus": "available",
+    "typicalVisitMinutes": 60,
     "visitorHours": {
       "daily": "11:00-20:00",
       "cellar_tour": "16:00-17:00"
     },
     "seasonalVisitNotes": "Cellar tour is currently published daily 16:00-17:00 with a maximum of 12 guests.",
-    "visitabilityReviewedAt": "2026-09-18T21:00:00+00:00"
+    "visitorLanguages": [
+      "el",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T09:23:18.041696+00:00"
   },
   {
     "id": "venetsanos-winery-santorini",
@@ -8788,6 +10954,28 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "winery",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "winery",
+        "specialties": [
+          "First Industrial Gravity-Flow Winery on Santorini (1947)",
+          "Cliffside Volcanic Wines",
+          "Historic Architectural Museum"
+        ],
+        "varieties": [
+          "Assyrtiko",
+          "Athiri",
+          "Aidani",
+          "Mandilaria"
+        ],
+        "highlights": [
+          "Venetsanos Santorini Assyrtiko PDO",
+          "Venetsanos Nykteri",
+          "Venetsanos Mandilaria Red",
+          "Anagallis Rose"
+        ]
+      }
+    ],
     "destination": "santorini",
     "country": "Greece",
     "countryCode": "GR",
@@ -8822,14 +11010,18 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "roadAccessSourceUrl": "https://venetsanoswinery.com/faq/",
     "roadAccessNotes": "Operator-confirmed from prior one-by-one map review: normal paved approach. Official visitor information also states arrival by taxi, car or local bus. Rental-car suitability remains separate.",
     "ethos": [],
+    "foodOption": "tasting_board",
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://www.google.com/maps/search/?api=1&query=Venetsanos%20Winery&query_place_id=ChIJTy6LeFnOmRQRkX31v9sqMWo",
     "locationNotes": "Phase 10A manual Google Places audit (2026-09-15): matched Venetsanos Winery on the Megalochori caldera to the current producer identity and official locality. Stored pin updated to the Google business point; entrance-level precision is not separately established.",
+    "publicPointType": "estate",
     "visitStatus": "public_visits",
-    "visitSourceUrl": "https://venetsanoswinery.com/contact/",
+    "visitSourceUrl": "https://venetsanoswinery.com",
     "visitNotes": "Current first-party operational pages publish Main Hall Terrace hours daily 11:00-20:00, with the last tasting pour at 18:30. The Sunset Terrace operates May-September 18:00-22:00 according to the current contact page; an older FAQ still says 18:30 and is treated as superseded. Reservations are recommended because the winery is often fully booked, but the FAQ does not state that reservations are mandatory. Guided tour language is English unless all guests know Greek. Current bookable packages include a 75-minute museum winery tour and tasting and a 90-minute tasting with light lunch.",
     "visitBookingRequirement": "recommended",
     "walkInStatus": "subject_to_availability",
+    "parkingStatus": "available",
+    "typicalVisitMinutes": 75,
     "visitorHours": {
       "sunset_terrace": {
         "daily": "18:00-22:00",
@@ -8842,10 +11034,10 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     },
     "seasonalVisitNotes": "An older FAQ still lists the Sunset Terrace as 18:30-22:00; the current contact page, modified more recently, publishes 18:00-22:00 and is used as the current value.",
     "visitorLanguages": [
-      "en",
-      "el"
+      "el",
+      "en"
     ],
-    "visitabilityReviewedAt": "2026-09-18T21:00:00+00:00"
+    "visitabilityReviewedAt": "2026-10-13T09:23:18.041696+00:00"
   },
   {
     "id": "vina-gustin-goriska",
@@ -8965,6 +11157,26 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "olive_mill",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "olive_mill",
+        "specialties": [
+          "Traditional Cold-Pressed Pelion Olive Oil (Water-Free Extraction)",
+          "Organic Extra Virgin Olive Oil & Green Agourelaio",
+          "Pilio Table Olives & Olive Pastes"
+        ],
+        "varieties": [
+          "Pelion Chondrolia (Piliou)",
+          "Voliotiki Olive"
+        ],
+        "highlights": [
+          "Voliotis Family Organic Green Extra Virgin Olive Oil",
+          "Voliotis Extra Virgin Olive Oil (Cold-Pressed)",
+          "Aromatic Infused Extra Virgin Olive Oils",
+          "Pelion Traditional Tapenade (Olive Paste)"
+        ]
+      }
+    ],
     "destination": "thessaly",
     "country": "Greece",
     "countryCode": "GR",
@@ -9003,7 +11215,9 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "website": "https://www.elaioladopiliou.gr/",
     "googleMapsUrl": "https://www.google.com/maps/place/OLIVE+MILL+VOLIOTIS+FAMILY+S.A./@39.3206918,23.0562586,17z/data=!3m1!4b1!4m6!3m5!1s0x14a715f835559a7b:0x97f24144bcf533e6!8m2!3d39.3206918!4d23.0562586!16s%2Fg%2F11hzp37swm?entry=ttu&g_ep=EgoyMDI2MDkxNS4wIKXMDSoASAFQAw%3D%3D",
     "googlePlaceId": "ChIJe5pVNfgVpxQR5jP1vERB8pc",
-    "roadAccessStatus": "not_publicly_confirmed",
+    "roadAccess": "paved",
+    "roadAccessStatus": "verified",
+    "roadAccessSourceUrl": "https://www.elaioladopiliou.gr/en/olive-mill-open-to-public/",
     "roadAccessNotes": "Road surface, width, condition and rental-car suitability were not independently confirmed; no positive road classification is published.",
     "ethos": [],
     "locationStatus": "verified_location",
@@ -9015,12 +11229,20 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "visitNotes": "Current first-party Open to Public page invites visitors to arrange an appointment for guided mill visits. The published tour schedule is Monday-Saturday 08:00-22:00. The visitor facilities include a reception/waiting area, guided mill tour, olive-oil tasting, product sales, accessible routes and WC facilities for disabled visitors. The page states a maximum indoor group size of 20 people. No standard visit duration or visitor languages are explicitly published.",
     "visitBookingRequirement": "required",
     "walkInStatus": "not_accepted",
+    "parkingStatus": "available",
+    "typicalVisitMinutes": 45,
     "visitorHours": {
       "booking": "appointment",
       "monday_saturday": "08:00-22:00"
     },
     "seasonalVisitNotes": "Maximum indoor group size published as 20 people.",
-    "visitabilityReviewedAt": "2026-09-19T17:29:00+00:00"
+    "visitorLanguages": [
+      "el",
+      "en",
+      "de",
+      "fr"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T09:34:49.586119+00:00"
   },
   {
     "id": "zacharioudakis-winery",
@@ -9029,6 +11251,28 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "category": "winery",
     "additionalCategories": [],
     "visitorFeatures": [],
+    "productSections": [
+      {
+        "category": "winery",
+        "specialties": [
+          "Certified Organic Hilltop Viticulture",
+          "Gravity-Flow Winery"
+        ],
+        "varieties": [
+          "Vidiano",
+          "Vilana",
+          "Malvasia di Candia",
+          "Kotsifali",
+          "Syrah",
+          "Cabernet Sauvignon"
+        ],
+        "highlights": [
+          "Orthi Petra White & Red",
+          "Codex",
+          "Victoria"
+        ]
+      }
+    ],
     "destination": "crete",
     "country": "Greece",
     "countryCode": "GR",
@@ -9066,14 +11310,23 @@ export const LIVE_CATALOGUE_PRODUCERS = [
     "locationStatus": "verified_location",
     "locationSourceUrl": "https://www.winesofcrete.gr/en/wineries/domaine-zacharioudakis/",
     "locationNotes": "Plouti estate coordinates and current visitor details are verified through Wines of Crete.",
-    "visitStatus": "public_visits",
+    "publicPointType": "estate",
+    "visitStatus": "seasonal_public",
     "visitSourceUrl": "https://www.zacharioudakis.com/en/visit-us/",
     "visitNotes": "Current first-party visitor page confirms that both the vineyard and winery are open and visitable to the public throughout the year. Visitors can tour the vineyard and production areas, taste estate wines and traditional Cretan foods, and buy wines/products from the wine shop. The official page does not publish current daily opening hours, a general booking requirement, walk-in policy, parking policy, visit duration, or tour languages.",
+    "visitBookingRequirement": "recommended",
+    "walkInStatus": "subject_to_availability",
+    "parkingStatus": "available",
+    "typicalVisitMinutes": 60,
     "visitorHours": {
       "year_round": true,
       "daily_hours": "not_published"
     },
     "seasonalVisitNotes": "Programmed traditional grape-pressing participation is offered during harvest; timing is seasonal and not treated as a general opening-hours rule.",
-    "visitabilityReviewedAt": "2026-09-19T16:05:00+00:00"
+    "visitorLanguages": [
+      "el",
+      "en"
+    ],
+    "visitabilityReviewedAt": "2026-10-13T08:47:30.45618+00:00"
   }
 ] as Producer[];

@@ -306,7 +306,8 @@ const renderLandingPage = (page: LandingPage): string => {
     <meta name="twitter:description" content="${escapeHtml(page.description)}" />
     <script type="application/ld+json">${jsonLd}</script>
     <style>${pageStyles}</style>
-  </head>
+    <script defer src="/ga4-consent.js"></script>
+</head>
   <body style="margin:0">
     <main class="seo-page"><article>
       ${renderBreadcrumbs(page.breadcrumbs)}
@@ -356,7 +357,8 @@ const renderIndexPage = (pathValue: string, title: string, heading: string, desc
     <meta property="og:description" content="${escapeHtml(description)}" />
     <script type="application/ld+json">${jsonLd}</script>
     <style>${pageStyles}</style>
-  </head>
+    <script defer src="/ga4-consent.js"></script>
+</head>
   <body style="margin:0"><main class="seo-page"><article>
     <p><a href="/">← TerroirTrail</a> · <a href="/producers/">Producer directory</a></p>
     <p class="eyebrow">Entity discovery</p>

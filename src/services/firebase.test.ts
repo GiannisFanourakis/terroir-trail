@@ -13,6 +13,11 @@ const {
   mockWhere,
   mockOrderBy,
 } = vi.hoisted(() => {
+  // Initialize synthetic config before static imports of ./firebase execute.
+  // The test must not depend on a developer's untracked .env credentials.
+  vi.stubEnv('VITE_FIREBASE_API_KEY', 'test-api-key');
+  vi.stubEnv('VITE_FIREBASE_AUTH_DOMAIN', 'test.firebaseapp.com');
+  vi.stubEnv('VITE_FIREBASE_PROJECT_ID', 'test-project');
   const mockSetDoc = vi.fn();
   const mockUpdateDoc = vi.fn();
   const mockGetDoc = vi.fn();
@@ -55,10 +60,6 @@ const mockLocalStorage = {
   key: vi.fn(() => null),
 };
 vi.stubGlobal('localStorage', mockLocalStorage);
-
-vi.stubEnv('VITE_FIREBASE_API_KEY', 'test-api-key');
-vi.stubEnv('VITE_FIREBASE_AUTH_DOMAIN', 'test.firebaseapp.com');
-vi.stubEnv('VITE_FIREBASE_PROJECT_ID', 'test-project');
 
 vi.mock('firebase/app', () => ({
   initializeApp: vi.fn(() => ({ name: '[DEFAULT]' })),

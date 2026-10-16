@@ -171,6 +171,60 @@ describe('producerService — Supabase / Fallback Data Ownership', () => {
     expect(producers).not.toHaveLength(EXPECTED_FALLBACK_COUNT);
   });
 
+  it('loads the complete same-origin JSON fallback in production mode', async () => {
+    const originalMode = import.meta.env.MODE;
+    const originalFetch = globalThis.fetch;
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => LIVE_CATALOGUE_PRODUCERS,
+    });
+    vi.stubEnv('MODE', 'production');
+    vi.stubGlobal('fetch', fetchMock);
+    try {
+      mockSupabaseState.queryResults.set('producers', {
+        data: null,
+        error: new Error('simulated Supabase failure'),
+      });
+      const producers = await producerService.getProducers();
+      expect(producers).toHaveLength(LIVE_CATALOGUE_PRODUCERS.length);
+      expect(producers[0].id).toBe(LIVE_CATALOGUE_PRODUCERS[0].id);
+      expect(fetchMock).toHaveBeenCalledOnce();
+      expect(fetchMock).toHaveBeenCalledWith('/catalogue-fallback.json', {
+        credentials: 'omit',
+        cache: 'no-cache',
+      });
+      expect(producerService.getCacheProvenance()).toBe('fallback');
+    } finally {
+      vi.stubEnv('MODE', originalMode);
+      vi.stubGlobal('fetch', originalFetch);
+    }
+  });
+
+  it('retains the audited bootstrap if the static catalogue fails to load', async () => {
+    const originalMode = import.meta.env.MODE;
+    const originalFetch = globalThis.fetch;
+    const fetchMock = vi.fn().mockResolvedValue({ ok: false, status: 503 });
+    vi.stubEnv('MODE', 'production');
+    vi.stubGlobal('fetch', fetchMock);
+    try {
+      mockSupabaseState.queryResults.set('producers', {
+        data: null,
+        error: new Error('simulated Supabase failure'),
+      });
+      const producers = await producerService.getProducers();
+      const ids = producers.map((producer) => producer.id);
+      expect(ids).toEqual(expect.arrayContaining(CRETAN_PRODUCERS.map((producer) => producer.id)));
+      expect(new Set(ids).size).toBe(ids.length);
+      expect(producers.length).toBeGreaterThan(20);
+      expect(producers.length).toBeLessThan(LIVE_CATALOGUE_PRODUCERS.length);
+      expect(fetchMock).toHaveBeenCalledOnce();
+      expect(producerService.getCacheProvenance()).toBe('fallback');
+    } finally {
+      vi.stubEnv('MODE', originalMode);
+      vi.stubGlobal('fetch', originalFetch);
+    }
+  });
+
   it('Supabase request failure falls back to static seed', async () => {
     mockSupabaseState.queryResults.set('producers', {
       data: null,
@@ -431,8 +485,9 @@ describe('producerService — Supabase / Fallback Data Ownership', () => {
   });
 
   describe('Phase 5 — Offline / Fallback Data Synchronization Integrity', () => {
-    it('bundled CRETAN_PRODUCERS contains exactly 26 audited Crete records with no synthetic material', () => {
-      expect(CRETAN_PRODUCERS).toHaveLength(26);
+    it('bundled CRETAN_PRODUCERS contains the 28 current audited Crete records without synthetic material', () => {
+      expect(CRETAN_PRODUCERS).toHaveLength(28);
+      expect(new Set(CRETAN_PRODUCERS.map((producer) => producer.id)).size).toBe(28);
 
       // Verify all are Crete
       expect(CRETAN_PRODUCERS.every((p) => p.destination === 'crete')).toBe(true);
@@ -441,16 +496,27 @@ describe('producerService — Supabase / Fallback Data Ownership', () => {
       expect(CRETAN_PRODUCERS.every((p) => p.rating === undefined)).toBe(true);
       expect(CRETAN_PRODUCERS.every((p) => p.reviewCount === undefined)).toBe(true);
 
-      // Verify NO synthetic price levels or food options exist
+      // No invented pricing; only these specifically reviewed and sourced food options.
       expect(CRETAN_PRODUCERS.every((p) => p.priceLevel === undefined)).toBe(true);
-      expect(CRETAN_PRODUCERS.every((p) => p.foodOption === undefined)).toBe(true);
+      const sourceBackedFood = new Map([
+        ['cretan-brewery-charma', 'brewery_taproom'],
+        ['manousakis-winery', 'full_taverna'],
+        ['kazani-stilianou', 'tasting_board'],
+      ]);
+      for (const producer of CRETAN_PRODUCERS) {
+        expect(producer.foodOption, producer.id).toBe(sourceBackedFood.get(producer.id));
+        if (producer.foodOption) expect(producer.visitSourceUrl, producer.id).toMatch(/^https:\/\//);
+      }
 
-      // Only source-backed verified road classifications may exist in fallback data.
+      // Every present road classification must carry a current explicit review and source.
       const roadClassified = CRETAN_PRODUCERS.filter((p) => p.roadAccess !== undefined);
-      expect(roadClassified).toHaveLength(1);
-      expect(roadClassified[0].id).toBe('peskesi-farm-kazani');
-      expect(roadClassified[0].roadAccess).toBe('unpaved_passable');
-      expect(roadClassified[0].roadAccessStatus).toBe('verified');
+      expect(roadClassified).toHaveLength(CRETAN_PRODUCERS.length);
+      for (const producer of roadClassified) {
+        expect(producer.roadAccessStatus, producer.id).toBe('verified');
+        expect(producer.roadAccessSourceUrl, producer.id).toMatch(/^https:\/\//);
+      }
+      const peskesi = roadClassified.find((p) => p.id === 'peskesi-farm-kazani');
+      expect(peskesi?.roadAccess).toBe('unpaved_passable');
 
       // Every Crete road-access record has now been reviewed; unknown remains explicit.
       expect(
@@ -459,8 +525,12 @@ describe('producerService — Supabase / Fallback Data Ownership', () => {
         )
       ).toBe(true);
 
-      // Verify NO synthetic tasting packages exist
-      expect(CRETAN_PRODUCERS.every((p) => !p.tastingHighlights || p.tastingHighlights.length === 0)).toBe(true);
+      // Editorial tasting highlights may appear only alongside a cited producer source.
+      for (const producer of CRETAN_PRODUCERS) {
+        if (producer.tastingHighlights?.length) {
+          expect(producer.visitSourceUrl, producer.id).toMatch(/^https:\/\//);
+        }
+      }
 
       // Verify location and visit status are defined on every producer
       expect(CRETAN_PRODUCERS.every((p) => p.locationStatus !== undefined)).toBe(true);
@@ -475,13 +545,9 @@ describe('producerService — Supabase / Fallback Data Ownership', () => {
       expect(lafkas?.locationStatus).toBe('verified_location');
       expect(lafkas?.visitStatus).toBe('appointment_only');
 
-      const wildHerbs = CRETAN_PRODUCERS.find((p) => p.id === 'wild-herbs-kallikratis');
-      expect(wildHerbs).toBeDefined();
-      expect(wildHerbs?.coordinates).toEqual([35.2378367, 24.2565003]);
-      expect(wildHerbs?.locationStatus).toBe('verified_location');
-      expect(wildHerbs?.visitStatus).toBe('seasonal_public');
-      expect(wildHerbs?.roadAccess).toBeUndefined();
-      expect(wildHerbs?.roadAccessStatus).toBe('current_access_uncertain');
+      // The Wild Herbs listing was withdrawn. Historical Place ID checks must
+      // never republish an inactive producer into the fallback catalogue.
+      expect(CRETAN_PRODUCERS.some((p) => p.id === 'wild-herbs-kallikratis')).toBe(false);
 
       const aerakis = CRETAN_PRODUCERS.find((p) => p.id === 'aerakis-dairy-anogeia');
       expect(aerakis).toBeDefined();
@@ -494,7 +560,8 @@ describe('producerService — Supabase / Fallback Data Ownership', () => {
       expect(tzourmpakis).toBeDefined();
       expect(tzourmpakis?.coordinates).toEqual([35.2211278, 24.4979202]);
       expect(tzourmpakis?.locationStatus).toBe('verified_location');
-      expect(tzourmpakis?.visitStatus).toBe('current_access_uncertain');
+      // Current first-party evidence does not establish a public visitor program.
+      expect(tzourmpakis?.visitStatus).toBe('not_publicly_confirmed');
       expect(tzourmpakis?.village).toBe('Mixorrouma (Agios Vasileios)');
 
       const stilianou = CRETAN_PRODUCERS.find((p) => p.id === 'kazani-stilianou');

@@ -2,7 +2,7 @@ import { Producer } from '../types/terroir';
 
 /**
  * Authoritative bundled offline/fallback catalogue for Crete.
- * Synchronized directly from live Supabase (26 audited Crete records).
+ * Synchronized directly from live Supabase (28 audited Crete records).
  * All synthetic ratings, reviews, pricing, access defaults, and non-existent
  * tasting packages have been removed. Unknown fields are preserved as undefined.
  */
@@ -33,22 +33,151 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "description": "In the small Chania village that gave the brand its name, Anoskeli brings together olive groves, vineyards, a working olive mill, bottling facilities and a boutique winery. Olive oil, wine and tsikoudia all grow out of the same family connection to this corner of western Crete.",
       "story": "The Mamidakis family traces its roots in Anoskeli to Alexandros and Irene Mamidakis. During difficult wartime years Irene cared for seven children and cultivated the family land; decades later the family invested back in the village, founding Anoskeli S.A. in 1983 and opening the modern olive mill in 1985.",
       "indigenousVarieties": [],
-      "tastingHighlights": [],
-      "openingHours": "Apr-20 Nov: Mon-Fri 10:00-18:00; booking strongly recommended; drop-ins subject to availability",
+      "tastingHighlights": [
+          "Wine and olive oil from one family estate"
+      ],
+      "openingHours": "Current 2026 visitor hours not yet confirmed; contact Anoskeli before travelling.",
       "ethos": [],
+      "additionalCategories": [
+          "olive_mill"
+      ],
+      "visitorFeatures": [
+          "tasting"
+      ],
+      "productSections": [
+          {
+              "category": "winery",
+              "specialties": [
+                  "Estate Wines",
+                  "Tsikoudia Anoskeli"
+              ],
+              "varieties": [
+                  "Vidiano",
+                  "Vilana",
+                  "Assyrtiko",
+                  "Syrah",
+                  "Cabernet Sauvignon",
+                  "Grenache"
+              ],
+              "highlights": [
+                  "Ano Playia White & Red",
+                  "Anoskeli Red",
+                  "Anoskeli Tsikoudia"
+              ]
+          },
+          {
+              "category": "olive_mill",
+              "specialties": [
+                  "PDO Kolymvari Extra Virgin Olive Oil",
+                  "Bio Anoskeli Organic EVOO"
+              ],
+              "varieties": [
+                  "Koroneiki"
+              ],
+              "highlights": [
+                  "Single-estate cold extracted olive oil",
+                  "Certified PDO Kolymvari Chania"
+              ]
+          }
+      ],
       "phone": "+30 28240 83126",
       "website": "https://anoskeli.gr",
       "googleMapsUrl": "https://maps.google.com/?q=35.459833,23.775786",
       "googlePlaceId": "ChIJQwdI8aeMnBQRZAI_Lg6tC08",
-      "roadAccessStatus": "not_publicly_confirmed",
+      "roadAccess": "narrow_paved",
+      "roadAccessStatus": "verified",
       "roadAccessSourceUrl": "https://anoskeli.gr",
-      "roadAccessNotes": "Phase 6 review (2026-09-13): no explicit source-backed road-surface, width, or vehicle-suitability classification was found in the reviewed public material. Road type remains unpublished.",
+      "roadAccessNotes": "Manual operator road review: narrow paved rural/village approach. Road classification only; does not establish rental-car suitability or guarantee current conditions.",
       "locationStatus": "verified_location",
       "locationSourceUrl": "https://anoskeli.gr/en/",
       "locationNotes": "Estate location in Anoskeli is verified by the producer; reservation number stored for visitor contact.",
+      "publicPointType": "estate",
       "visitStatus": "seasonal_public",
       "visitSourceUrl": "https://anoskeli.gr/experiences",
-      "visitNotes": "The estate explicitly welcomes visitors for tastings and tours. Advance booking is strongly recommended; drop-ins are accepted subject to availability. Visitor season is published as April to 20 November."
+      "visitNotes": "The current first-party visitor material confirms guided tasting experiences, strongly recommends advance booking, and welcomes drop-ins subject to availability. A current French-language version of the visitor guidance explicitly states that guided tours are offered in English or Greek. The English page still carries a 2025 season label, so TerroirTrail does not reuse that stale season/timetable as current 2026 visitor hours."
+  },
+  {
+      "id": "baladinos-dairy-varipetro",
+      "name": "Baladinos & Sons",
+      "greekName": "Μπαλαντίνος",
+      "category": "cheese_dairy",
+      "destination": "crete",
+      "country": "Greece",
+      "countryCode": "GR",
+      "region": "Chania",
+      "village": "Chania",
+      "locality": "Chania",
+      "coordinates": [
+          35.4742449,
+          23.9575491
+      ],
+      "coverImage": "",
+      "gallery": [],
+      "tagLine": "Four generations of Chania cheesemaking, from Therissos pastoral roots to Varipetro.",
+      "description": "Baladinos & Sons traces its dairy tradition to Therissos and 1928. The fourth-generation family business now produces a wide range of Cretan cheeses and dairy products at its modern Varipetro factory, using milk associated with free-range animals in Crete; its long-standing Skalidi Street shop is a separate public point.",
+      "story": "The Baladinos family links its cheesemaking story to the mountain village of Therissos, where stock raising and dairy production shaped the family trade. Since 1928 the business has grown through four generations, adding a central Chania shop in the 1950s and later a modern production plant in Varipetro. The company presents its mission as preserving Cretan food culture while combining traditional cheesemaking with modern production and quality controls.",
+      "indigenousVarieties": [
+          "Kefalotyri",
+          "Graviera PDO",
+          "Pichtogalo Chanion PDO",
+          "dry anthotyros",
+          "Cretan tyromalama",
+          "goat and sheep white cheese",
+          "Cretan butter oil",
+          "sheep and goat Cretan butter",
+          "goat yogurt",
+          "cow yogurt",
+          "sheep yogurt"
+      ],
+      "tastingHighlights": [
+          "The Baladinos family traces its cheesemaking tradition to Therissos in 1928 and is now in its fourth generation.",
+          "Production is associated with the modern Varipetro facilities, while the long-standing central Chania shop is a separate public point.",
+          "The dairy makes Cretan Graviera PDO, Pichtogalo Chanion PDO, Kefalotyri, dry Anthotyros, Tyromalama, yogurts and traditional Cretan butter products."
+      ],
+      "openingHours": "",
+      "ethos": [],
+      "additionalCategories": [],
+      "visitorFeatures": [],
+      "productSections": [
+          {
+              "category": "cheese_dairy",
+              "specialties": [
+                  "Traditional Cretan Sheep & Goat Cheeses",
+                  "PDO Graviera Kritis",
+                  "PDO Pichtogalo Chanion",
+                  "Authentic Staka & Stakovoutyro"
+              ],
+              "varieties": [
+                  "Graviera Kritis PDO (cave-aged)",
+                  "Pichtogalo Chanion PDO",
+                  "Anthotyros (Fresh & Dry)",
+                  "Kefalotyri",
+                  "Staka cream",
+                  "Tyromalama"
+              ],
+              "highlights": [
+                  "Graviera Kritis PDO Cave-Aged",
+                  "Pichtogalo Chanion PDO",
+                  "Authentic Cretan Staka",
+                  "Dry Anthotyros Grated"
+              ]
+          }
+      ],
+      "phone": "+30 28210 33030 / +30 28210 32222",
+      "website": "https://www.balantinos.gr/en/",
+      "googleMapsUrl": "https://www.google.com/maps/place/Balantinos+Dairy+Industry+-+%CE%A4%CF%85%CF%81%CE%BF%CE%BA%CE%BF%CE%BC%CE%B9%CE%BA%CE%B7+%CE%9C%CE%BF%CE%BD%CE%B1%CE%B4%CE%B1+%CE%9C%CF%80%CE%B1%CE%BB%CE%B1%CE%BD%CF%84%CE%AF%CE%BD%CE%BF%CF%82/@35.4742449,23.9549742,987m/data=!3m2!1e3!4b1!4m6!3m5!1s0x149c87463b23eff3:0x9cd9a9b92ffc94e9!8m2!3d35.4742449!4d23.9575491!16s%2Fg%2F11qmm9mf4j",
+      "googlePlaceId": "ChIJ8-8jO0aHnBQR6ZT8L7mp2Zw",
+      "roadAccess": "paved",
+      "roadAccessStatus": "verified",
+      "roadAccessSourceUrl": "https://www.google.com/maps/search/?api=1&query=35.5133795%2C24.0162928&query_place_id=ChIJq117gb19nBQR0We4DTt-XNc",
+      "roadAccessNotes": "Manual operator road review: normal paved approach. Road classification only; does not establish rental-car suitability or guarantee current conditions.",
+      "locationStatus": "verified_location",
+      "locationSourceUrl": "https://www.balantinos.gr/en/contact/",
+      "locationNotes": "Verified production plant at Varypetro Kydonias, Chania. Updated to the primary production facility via direct Google Maps place listing.",
+      "publicPointType": "production_site",
+      "visitStatus": "not_publicly_confirmed",
+      "visitSourceUrl": "https://www.balantinos.gr/en/",
+      "visitNotes": "Industrial production facility in Varypetro. Public access/tours not publicly confirmed without prior arrangement; retail point operates separately in Chania center."
   },
   {
       "id": "biolea-estate",
@@ -74,21 +203,44 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "story": "Founder Yiorgos Dimitriadis spent decades researching how traditional olive-oil production could work in a modern estate. Today the fifth and sixth generations remain hands-on: Chloe Dimitriadis directs the harvest and mill, while she and her husband Michalis Papadakis continue the family business around olive oil, food and the Astrikas estate.",
       "indigenousVarieties": [],
       "tastingHighlights": [],
-      "openingHours": "Tours by appointment Mon-Sun 10:00-17:00; Restaurant/Kafeneion Tue-Sun 11:00-15:30",
+      "openingHours": "Guided tour: Mon-Sun 10:00-17:00 by appointment; classic tours Apr-Oct. Restaurant/Kafeneion: Tue-Sun 11:00-15:30.",
       "ethos": [],
+      "additionalCategories": [],
+      "visitorFeatures": [],
+      "productSections": [
+          {
+              "category": "olive_mill",
+              "specialties": [
+                  "Traditional Millstone & Hydraulic Press Cold Extraction",
+                  "Artisanal Organic Extra Virgin Olive Oil",
+                  "Cold-Fused Citrus Olive Oils"
+              ],
+              "varieties": [
+                  "Koroneiki",
+                  "Tsunati"
+              ],
+              "highlights": [
+                  "Biolea Organic EVOO Millstone Pressed",
+                  "Biolea Lemonomichelakis (Lemon Olive Oil)",
+                  "Biolea Nerantzi (Bitter Orange Olive Oil)"
+              ]
+          }
+      ],
       "phone": "+30 28240 23281",
       "website": "https://biolea.gr",
       "googleMapsUrl": "https://maps.google.com/?q=35.463807,23.743427",
       "googlePlaceId": "ChIJ_U9uyrr0nBQRPiI3ZYRHH2M",
-      "roadAccessStatus": "not_publicly_confirmed",
+      "roadAccess": "paved",
+      "roadAccessStatus": "verified",
       "roadAccessSourceUrl": "https://biolea.gr/contact/",
-      "roadAccessNotes": "Official Biolea contact information publishes the Astrikas Estate address and exact GPS point. No explicit road-surface, width, or vehicle-suitability classification is published, so road type remains unconfirmed.",
+      "roadAccessNotes": "Manual operator road review: normal paved approach. Road classification only; does not establish rental-car suitability or guarantee current conditions.",
       "locationStatus": "verified_entrance",
       "locationSourceUrl": "https://biolea.gr",
       "locationNotes": "Exact GPS coordinates published by Biolea match the database pin.",
-      "visitStatus": "public_visits",
-      "visitSourceUrl": "https://biolea.gr/",
-      "visitNotes": "Biolea explicitly welcomes visitors to the Astrikas estate. Guided olive-oil tours are by appointment; the estate also operates its restaurant and Kafeneion on published hours. Producer-operated tours and dining are direct Biolea offerings, not TerroirTrail Experiences."
+      "publicPointType": "estate",
+      "visitStatus": "seasonal_public",
+      "visitSourceUrl": "https://biolea.gr/book-a-tour/",
+      "visitNotes": "Current first-party Biolea visitor pages state that advance reservation is required before visiting the estate because places are limited. The standard Olive Oil Guided Tour & Tasting is published as a one-hour experience. Other hospitality products have different durations, so the 60-minute typical value refers to the standard guided mill tour. Parking and visitor languages remain unconfirmed."
   },
   {
       "id": "cretan-brewery-charma",
@@ -115,21 +267,50 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "story": "Mechanical engineer Ioannis Lionakis, born and raised in Chania, founded the brewery in 2007. His starting point was simple: he felt locals and visitors were missing the kind of fresh beer he had encountered elsewhere in Europe, so he set out to make it in western Crete.",
       "indigenousVarieties": [],
       "tastingHighlights": [],
-      "openingHours": "8 Apr-31 Oct: daily 11:00-20:00; no brewery tours Sundays/bank holidays",
+      "openingHours": "8 Apr-31 Oct: daily 11:00-20:00. Kitchen until 19:30. No brewery tours Sundays or bank holidays.",
       "ethos": [],
+      "additionalCategories": [],
+      "visitorFeatures": [],
+      "productSections": [
+          {
+              "category": "brewery",
+              "specialties": [
+                  "Fresh Unpasteurized Craft Beer",
+                  "Unfiltered Draught Beers",
+                  "Brewery Taproom Gastronomy"
+              ],
+              "varieties": [
+                  "Lager",
+                  "Dunkel",
+                  "Pale Ale",
+                  "Cretan Ale",
+                  "IPA",
+                  "Seasonal Specialties"
+              ],
+              "highlights": [
+                  "Charma Lager Fresh",
+                  "Charma Dunkel",
+                  "Charma Pale Ale",
+                  "Charma Cretan Ale with Local Honey"
+              ]
+          }
+      ],
       "phone": "+30 28240 31002",
       "website": "https://cretanbeer.gr",
       "googleMapsUrl": "https://maps.google.com/?q=35.486870,23.825860",
       "googlePlaceId": "ChIJQ7fRzLOLnBQRWaCt5UX2izE",
-      "roadAccessStatus": "not_publicly_confirmed",
+      "roadAccess": "paved",
+      "roadAccessStatus": "verified",
       "roadAccessSourceUrl": "https://www.cretanbeer.gr/en/cretan-brewery/visit-us/",
-      "roadAccessNotes": "Official visit information explicitly lists driving a car as a way to reach the brewery. It does not publish a road-surface, width, or vehicle-suitability classification, so no road type is published.",
+      "roadAccessNotes": "Manual operator road review: normal paved approach. Official visit information also lists driving by car. Road classification does not by itself establish rental-car suitability.",
+      "foodOption": "brewery_taproom",
       "locationStatus": "verified_location",
       "locationSourceUrl": "https://www.cretanbeer.gr/en/contact/",
       "locationNotes": "Current producer address verified as Zounaki, Platanias. Site coordinate retained as verified brewery location; entrance/access grading remains separate.",
+      "publicPointType": "production_site",
       "visitStatus": "seasonal_public",
       "visitSourceUrl": "https://www.cretanbeer.gr/en/cretan-brewery/visit-us/",
-      "visitNotes": "Cretan Brewery publishes a visitor season from 8 April to 31 October, daily 11:00-20:00. Guided brewery tours are not offered Sundays or bank holidays."
+      "visitNotes": "Current first-party visitor page confirms a public visiting season from 8 April to 31 October, daily 11:00-20:00. Guided brewery tours are offered at published times except Sundays and bank holidays, and the site provides reservation links for tours and tasting packages. General walk-in policy, parking and tour languages are not explicitly published."
   },
   {
       "id": "karavitakis-winery",
@@ -155,15 +336,42 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "story": "The family describes an eighty-year winemaking legacy in western Crete. Rather than turning that history into a museum piece, the current generation has built a boutique winery with modern equipment and continues experimenting with different varieties and carefully selected vineyard sites.",
       "indigenousVarieties": [],
       "tastingHighlights": [],
-      "openingHours": "Visitors accepted with or without appointment; check current tour availability",
+      "openingHours": "",
       "ethos": [],
+      "additionalCategories": [],
+      "visitorFeatures": [],
+      "productSections": [
+          {
+              "category": "winery",
+              "specialties": [
+                  "Boutique Estate Wines",
+                  "Indigenous & Rare Varieties"
+              ],
+              "varieties": [
+                  "Vidiano",
+                  "Kotsifali",
+                  "Romeiko",
+                  "Mavrotragano",
+                  "Malagouzia",
+                  "Syrah",
+                  "Cabernet Sauvignon"
+              ],
+              "highlights": [
+                  "Elia Vidiano",
+                  "Klima White & Red",
+                  "The Little Prince",
+                  "Kompsos"
+              ]
+          }
+      ],
       "phone": "+30 28240 23381",
       "website": "https://karavitakiswines.com",
       "googleMapsUrl": "https://maps.google.com/?q=35.501992,23.791172",
       "googlePlaceId": "ChIJJ-2L8JSLnBQRwjVRodG9348",
-      "roadAccessStatus": "not_publicly_confirmed",
+      "roadAccess": "paved",
+      "roadAccessStatus": "verified",
       "roadAccessSourceUrl": "https://karavitakiswines.com",
-      "roadAccessNotes": "Phase 6 review (2026-09-13): no explicit source-backed road-surface, width, or vehicle-suitability classification was found in the reviewed public material. Road type remains unpublished.",
+      "roadAccessNotes": "Manual operator road review: normal paved approach. Road classification only; does not establish rental-car suitability or guarantee current conditions.",
       "vipPerks": {
           "freeMeze": "Chania Kalamata olives & sourdough",
           "welcomePour": "Kompsos Sparkling Romaiko",
@@ -172,9 +380,10 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "locationStatus": "verified_location",
       "locationSourceUrl": "https://www.karavitakiswines.com/",
       "locationNotes": "Pontikiana winery location and contact details are producer-verified; coordinates match Wines of Crete route data.",
+      "publicPointType": "estate",
       "visitStatus": "public_visits",
       "visitSourceUrl": "https://www.karavitakiswines.com/",
-      "visitNotes": "Karavitakis explicitly welcomes visitors with or without appointments; appointments remain preferable for a guided visit."
+      "visitNotes": "Current first-party homepage explicitly welcomes visitors and states that the winery accepts visitors with or without appointments. The separate online-booking page still contains a stale 2025 date note, so it is not used to infer current tour availability, hours or programme dates. Current daily visitor hours, visit duration, parking and tour languages are not published clearly enough to structure."
   },
   {
       "id": "lafkas-brewery",
@@ -200,21 +409,46 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "story": "The story began in 2011, when Michalis was studying winemaking and beverage technology and travelled to Belgium, where he met Aurelie. Five years later they were living together in Crete and developing their own Greek–Belgian beer; in 2017 they launched their first release, a Triple Hop Pale Ale.",
       "indigenousVarieties": [],
       "tastingHighlights": [],
-      "openingHours": "By appointment",
+      "openingHours": "Open by appointment",
       "ethos": [],
+      "additionalCategories": [],
+      "visitorFeatures": [],
+      "productSections": [
+          {
+              "category": "brewery",
+              "specialties": [
+                  "Belgian-Greek Craft Brewing",
+                  "Unfiltered & Unpasteurized Beers",
+                  "Bespoke Collaborations"
+              ],
+              "varieties": [
+                  "Pale Ale",
+                  "Grape Ale",
+                  "White Beer",
+                  "Belgian Saison"
+              ],
+              "highlights": [
+                  "Triple Hop Pale Ale (White Mountains)",
+                  "Grape Ale with Local Must",
+                  "Lafkas Seasonal Belgian-Greek Blends"
+              ]
+          }
+      ],
       "phone": "+30 6945430402",
       "website": "https://lafkasbrewery.com",
       "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=Lafkas%20Brewery%2C%20Pazinos%20731%2000&query_place_id=ChIJSSvI3YiHnBQRBtbO7K4u444",
       "googlePlaceId": "ChIJSSvI3YiHnBQRBtbO7K4u444",
-      "roadAccessStatus": "not_publicly_confirmed",
+      "roadAccess": "paved",
+      "roadAccessStatus": "verified",
       "roadAccessSourceUrl": "https://lafkasbrewery.com",
-      "roadAccessNotes": "Phase 6 review (2026-09-13): no explicit source-backed road-surface, width, or vehicle-suitability classification was found in the reviewed public material. Road type remains unpublished.",
+      "roadAccessNotes": "Manual operator road review: normal paved approach. Road classification only; does not establish rental-car suitability or guarantee current conditions.",
       "locationStatus": "verified_location",
       "locationSourceUrl": "https://www.google.com/maps/search/?api=1&query=Lafkas%20Brewery%2C%20Pazinos%20731%2000&query_place_id=ChIJSSvI3YiHnBQRBtbO7K4u444",
       "locationNotes": "Phase 9B correction (2026-09-14): previous TerroirTrail pin was stale/wrong by about 12.8 km. Google Places audit resolved the Lafkas Brewery business in Pazinos at 35.5182760, 24.1244784 (Place ID ChIJSSvI3YiHnBQRBtbO7K4u444), and the producer-owned Lafkas Brewery website independently confirms the current address as Pazinos 73100 Chania. Location verified at business-property level; entrance-level precision has not been separately established.",
+      "publicPointType": "production_site",
       "visitStatus": "appointment_only",
-      "visitSourceUrl": "https://lafkasbrewery.com/",
-      "visitNotes": "Lafkas explicitly states that the Pazinos brewery is open by appointment. This is visitability only; no TerroirTrail bookable experience exists."
+      "visitSourceUrl": "https://lafkasbrewery.com/beer-tasting-brewery-tour/",
+      "visitNotes": "Current first-party pages say the Pazinos taproom is open by appointment and that the brewery tour/tasting is available after booking an appointment. The brewery currently advertises a simple tasting of four beers. No reliable visit duration, parking policy, or visitor-language information is published."
   },
   {
       "id": "manousakis-winery",
@@ -240,21 +474,52 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "story": "Ted Manousakis was born in Vatolakkos in 1943 and left Crete for the United States at the age of eleven. His desire to reconnect with the village eventually became the winery: the first vineyards were planted in 1993, and the wines took the name Nostos, the Greek idea of yearning to return home. His daughter Alexandra made a similar return in 2007, leaving New York for Crete and helping grow the family winery.",
       "indigenousVarieties": [],
       "tastingHighlights": [],
-      "openingHours": "1 Jun-18 Oct 2026: Mon-Sat 12:00-22:00; Sun closed; booking required",
+      "openingHours": "Through 10 Oct 2026: Mon-Sat 12:00-20:00; Sun closed. 12 Oct-14 Nov 2026: 12:00-18:00; Sun closed. 16 Nov 2026-Apr 2027: tours & tastings by appointment only.",
       "ethos": [],
+      "additionalCategories": [],
+      "visitorFeatures": [],
+      "productSections": [
+          {
+              "category": "winery",
+              "specialties": [
+                  "Rhône Varieties in Crete",
+                  "Organic Nostos Wines",
+                  "Tsikoudia & Olive Oil"
+              ],
+              "varieties": [
+                  "Syrah",
+                  "Grenache",
+                  "Mourvèdre",
+                  "Roussanne",
+                  "Vidiano",
+                  "Assyrtiko",
+                  "Romeiko"
+              ],
+              "highlights": [
+                  "Nostos Syrah",
+                  "Nostos Roussanne",
+                  "Nostos Blend",
+                  "2 Mazi",
+                  "Terroir Vatolakkos"
+              ]
+          }
+      ],
       "phone": "+30 28210 78787",
       "website": "https://manousakiswinery.com",
       "googleMapsUrl": "https://maps.google.com/?q=35.449042,23.887819",
       "googlePlaceId": "ChIJuaGesySJnBQRgOXzw30bNBA",
-      "roadAccessStatus": "not_publicly_confirmed",
+      "roadAccess": "narrow_paved",
+      "roadAccessStatus": "verified",
       "roadAccessSourceUrl": "https://www.manousakiswinery.com/contact",
-      "roadAccessNotes": "Official contact information provides Getting Here options by car, taxi, bus and shuttle. It does not publish a road-surface, width, or vehicle-suitability classification, so no road type is published.",
+      "roadAccessNotes": "Manual operator road review: narrow paved rural/village approach; final junction includes a paved/concrete-surfaced section. Official visitor information lists arrival by car, taxi, bus and shuttle. Rental-car suitability remains separate.",
+      "foodOption": "full_taverna",
       "locationStatus": "verified_location",
       "locationSourceUrl": "https://www.manousakiswinery.com/contact",
       "locationNotes": "Vatolakkos winery location and coordinates are verified through producer and Wines of Crete sources.",
-      "visitStatus": "appointment_only",
+      "publicPointType": "estate",
+      "visitStatus": "seasonal_public",
       "visitSourceUrl": "https://www.manousakiswinery.com/visit",
-      "visitNotes": "Manousakis publishes seasonal visitor hours and requires bookings for visits."
+      "visitNotes": "Current first-party visit page requires bookings for tours, tastings and/or dining. Complimentary winery tours are offered at published daily slots depending on season. The tasting terrace and taverna operate on published seasonal hours; Sundays are closed. Parking, typical visit duration and tour languages are not published on the current visit/contact pages."
   },
   {
       "id": "stathakis-honey-park",
@@ -280,15 +545,39 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "story": "The family business began in 1963 when Stelios Stathakis acquired his first hives. More than sixty years later, the next generations have expanded the operation with a modern packing facility while keeping beekeeping—not tourism—as the foundation of the family business.",
       "indigenousVarieties": [],
       "tastingHighlights": [],
-      "openingHours": "Spring-Summer; check current visitor hours before travelling",
+      "openingHours": "",
       "ethos": [],
+      "additionalCategories": [],
+      "visitorFeatures": [],
+      "productSections": [
+          {
+              "category": "apiary",
+              "specialties": [
+                  "Cretan Honey Experience & Bee Education",
+                  "Artisanal Single-Origin Honeys",
+                  "Honey Treats & Beeswax Cosmetics"
+              ],
+              "varieties": [
+                  "Thyme Honey",
+                  "Pine Honey",
+                  "Wild Herbs & Heather Honey",
+                  "Citrus Honey"
+              ],
+              "highlights": [
+                  "Stathakis Family Wild Thyme Honey",
+                  "Pine & Mountain Herbs Honey",
+                  "Honeycomb and Beeswax Ointments"
+              ]
+          }
+      ],
       "phone": "+30 6977906195",
       "website": "https://stathakisfamily.com",
       "googleMapsUrl": "https://maps.google.com/?q=35.480012,23.689595",
       "googlePlaceId": "ChIJ-bttLbr1nBQRqwEUhZIfplM",
-      "roadAccessStatus": "not_publicly_confirmed",
+      "roadAccess": "paved",
+      "roadAccessStatus": "verified",
       "roadAccessSourceUrl": "https://stathakisfamily.com",
-      "roadAccessNotes": "Phase 6 review (2026-09-13): no explicit source-backed road-surface, width, or vehicle-suitability classification was found in the reviewed public material. Road type remains unpublished.",
+      "roadAccessNotes": "Manual operator road review: normal paved approach. Road classification only; does not establish rental-car suitability or guarantee current conditions.",
       "vipPerks": {
           "freeMeze": "Fresh sheep yogurt with pollen granules",
           "welcomePour": "Wild Malotira herbal tea with pure comb honey",
@@ -297,52 +586,13 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "locationStatus": "verified_entrance",
       "locationSourceUrl": "https://stathakisfamily.com",
       "locationNotes": "Exact visitor-site coordinates verified from the producer-controlled map link.",
+      "publicPointType": "visitor_center",
       "visitStatus": "seasonal_public",
-      "visitSourceUrl": "https://stathakisfamily.com/about-us/",
-      "visitNotes": "The family explicitly lists its Cretan Honey Experience site in Kaloudiana as open during spring and summer. This does not make its paid activities TerroirTrail experiences."
-  },
-  {
-      "id": "wild-herbs-kallikratis",
-      "name": "Wild Herbs of Crete",
-      "greekName": "Άγρια Βότανα Κρήτης - Καλλικράτης",
-      "category": "apiary",
-      "destination": "crete",
-      "country": "Greece",
-      "countryCode": "GR",
-      "region": "Chania",
-      "village": "Kallikratis (Sfakia)",
-      "locality": "Kallikratis (Sfakia)",
-      "coordinates": [
-          35.2378367,
-          24.2565003
-      ],
-      "coverImage": "https://images.unsplash.com/photo-1515694346937-94d85e41e6f0?auto=format&fit=crop&w=1000&q=80",
-      "gallery": [
-          "https://images.unsplash.com/photo-1515694346937-94d85e41e6f0?auto=format&fit=crop&w=1000&q=80"
-      ],
-      "tagLine": "Janina and Babis among the wild aromatic plants of Sfakia",
-      "description": "Wild Herbs of Crete grew from Janina and Babis Psaroudakis's work collecting and distilling aromatic plants around Kallikratis and the mountains of Sfakia. Their archive documents herbs, essential oils, hydrolates, soaps and the practical knowledge of working with plants in a rugged landscape.",
-      "story": "Their old field notes make the work tangible: collecting wild dittany meant climbing carefully on rocky slopes and taking only leaves so the perennial roots remained alive. In 2011 they also documented opening a tiny mountain café in Kallikratis where herbs, soaps and essential oils sat alongside coffee and homemade lemonade.",
-      "indigenousVarieties": [],
-      "tastingHighlights": [],
-      "openingHours": "Wed-Sun 11:00-19:00 (seasonal; check current listing before travel)",
-      "ethos": [],
-      "phone": "+30 6949092073",
-      "website": "https://wildherbsofcrete.com",
-      "googleMapsUrl": "https://www.google.com/maps/place/Wild+Herbs+of+Crete/@35.2376928,24.2562818,21z/data=!4m22!1m15!4m14!1m6!1m2!1s0x149b64897e85fdbf:0x23fbfa93da44674!2zV2lsZCBIZXJicyBvZiBDcmV0ZSwgzprOsc67zrvOuc66z4HOrM-EzrfPgiA3MzAgMTE!2m2!1d24.2565003!2d35.2378367!1m6!1m2!1s0x149a586bd068e13f:0x400bd2ce2b9b6f0!2zzpfPgc6szrrOu861zrnOvw!2m2!1d25.1421291!2d35.3386746!3m5!1s0x149b64897e85fdbf:0x23fbfa93da44674!8m2!3d35.2378367!4d24.2565003!16s%2Fg%2F1q5glqyf8?entry=ttu&g_ep=EgoyMDI2MDkwOS4wIKXMDSoASAFQAw%3D%3D",
-      "googlePlaceId": "ChIJv_2FfolkmxQRdEakPam_PwI",
-      "roadAccessStatus": "current_access_uncertain",
-      "roadAccessSourceUrl": "https://cretazine.com/en/crete/travel-explore/crete-360/item/1269-herbal-sanctuaries-of-crete",
-      "roadAccessNotes": "Current first-party road-surface and vehicle-suitability guidance was not found. An older independent report describes dusty mountain roads to Kallikratis and says the Fragkokastelo approach is more difficult. Because that evidence is old and route-dependent, no current road classification is published; confirm conditions before driving.",
-      "locationStatus": "verified_location",
-      "locationSourceUrl": "https://www.google.com/maps/place/Wild+Herbs+of+Crete/@35.2376928,24.2562818,21z/data=!4m22!1m15!4m14!1m6!1m2!1s0x149b64897e85fdbf:0x23fbfa93da44674!2zV2lsZCBIZXJicyBvZiBDcmV0ZSwgzprOsc67zrvOuc66z4HOrM-EzrfPgiA3MzAgMTE!2m2!1d24.2565003!2d35.2378367!1m6!1m2!1s0x149a586bd068e13f:0x400bd2ce2b9b6f0!2zzpfPgc6szrrOu861zrnOvw!2m2!1d25.1421291!2d35.3386746!3m5!1s0x149b64897e85fdbf:0x23fbfa93da44674!8m2!3d35.2378367!4d24.2565003!16s%2Fg%2F1q5glqyf8?entry=ttu&g_ep=EgoyMDI2MDkwOS4wIKXMDSoASAFQAw%3D%3D",
-      "locationNotes": "Current Wild Herbs of Crete Google Maps business pin in Kallikratis supplied by the TerroirTrail project owner. Location verified; entrance-level precision has not been separately established.",
-      "visitStatus": "seasonal_public",
-      "visitSourceUrl": "https://www.google.com/maps/place/Wild+Herbs+of+Crete/@35.2376928,24.2562818,21z/data=!4m22!1m15!4m14!1m6!1m2!1s0x149b64897e85fdbf:0x23fbfa93da44674!2zV2lsZCBIZXJicyBvZiBDcmV0ZSwgzprOsc67zrvOuc66z4HOrM-EzrfPgiA3MzAgMTE!2m2!1d24.2565003!2d35.2378367!1m6!1m2!1s0x149a586bd068e13f:0x400bd2ce2b9b6f0!2zzpfPgc6szrrOu861zrnOvw!2m2!1d25.1421291!2d35.3386746!3m5!1s0x149b64897e85fdbf:0x23fbfa93da44674!8m2!3d35.2378367!4d24.2565003!16s%2Fg%2F1q5glqyf8?entry=ttu&g_ep=EgoyMDI2MDkwOS4wIKXMDSoASAFQAw%3D%3D",
-      "visitNotes": "Current public business listing shows Wild Herbs of Crete open seasonally in Kallikratis, with published hours Wednesday-Sunday. Hours can change seasonally, so travelers should check the current listing or call before making a long mountain drive."
+      "visitSourceUrl": "https://stathakisfamily.com",
+      "visitNotes": "Current first-party site actively promotes and books the Cretan Honey Experience in Kaloudiana, including guided honey-production tours, tastings, a honey shop and coffee place. Four current bookable experiences are published with durations of 45 or 90 minutes. The site does not publish a current seasonal opening period, daily visitor timetable, general walk-in policy, parking policy, or tour languages, so those remain unconfirmed."
   },
   // ==========================================
-  // --- HERAKLION (14 AUDITED RECORDS) ---
+  // --- HERAKLION (15 AUDITED RECORDS) ---
   // ==========================================
   {
       "id": "aerakis-dairy-anogeia",
@@ -368,15 +618,39 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "story": "Aerakis is a family-owned dairy in Sokaras with a long-standing tradition in Cretan cheesemaking. Its production uses sheep and goat milk collected from local farmers in the Asterousia region, combining traditional cheesemaking methods with modern food-safety, traceability and quality-control systems.",
       "indigenousVarieties": [],
       "tastingHighlights": [],
-      "openingHours": "Contact producer before visiting",
+      "openingHours": "",
       "ethos": [],
+      "additionalCategories": [],
+      "visitorFeatures": [],
+      "productSections": [
+          {
+              "category": "cheese_dairy",
+              "specialties": [
+                  "Traditional Cretan Sheep & Goat Cheeses",
+                  "Graviera Kritis PDO",
+                  "Anthotyros & Myzithra"
+              ],
+              "varieties": [
+                  "Graviera Kritis PDO",
+                  "Kefalotyri",
+                  "Anthotyros Xeros",
+                  "Fresh Myzithra"
+              ],
+              "highlights": [
+                  "Aerakis Graviera Kritis PDO",
+                  "Traditional Sheep Kefalotyri",
+                  "Aged Anthotyros"
+              ]
+          }
+      ],
       "phone": "+30 28930 31990",
       "website": "https://cretancheeseaerakis.com",
       "googleMapsUrl": "https://www.google.com/maps?ll=35.065803,25.106932&z=15&t=m&hl=en-US&gl=US&mapclient=embed&cid=8450329635840177008",
       "googlePlaceId": "ChIJK7sRuXvvmhQRcLM1MwiaRXU",
-      "roadAccessStatus": "not_publicly_confirmed",
+      "roadAccess": "narrow_paved",
+      "roadAccessStatus": "verified",
       "roadAccessSourceUrl": "https://cretancheeseaerakis.com/",
-      "roadAccessNotes": "Official Aerakis information confirms the dairy is based in Sokaras, Gortyna. No explicit public road-surface, width, or vehicle-suitability guidance was found, so road type remains unconfirmed.",
+      "roadAccessNotes": "Manual operator road review: narrow paved approach. Road classification only; does not establish rental-car suitability or guarantee current conditions.",
       "vipPerks": {
           "freeMeze": "Slice of 2-year cave-aged Graviera",
           "welcomePour": "Fresh alpine sheep whey warm drink",
@@ -385,9 +659,10 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "locationStatus": "verified_location",
       "locationSourceUrl": "https://www.google.com/maps?ll=35.065803,25.106932&z=15&t=m&hl=en-US&gl=US&mapclient=embed&cid=8450329635840177008",
       "locationNotes": "Current Aerakis Cheese Products location supplied from the Google Maps business listing. Treat as verified location; entrance-level precision has not been separately established.",
+      "publicPointType": "production_site",
       "visitStatus": "not_publicly_confirmed",
-      "visitSourceUrl": "https://cretancheeseaerakis.com/",
-      "visitNotes": "The producer verifies the working dairy in Sokaras but does not currently publish visitor instructions on its own site. Do not present the dairy as a walk-in attraction."
+      "visitSourceUrl": "https://cretancheeseaerakis.com",
+      "visitNotes": "Current first-party site confirms the working dairy in Sokaras and presents the business as a production, quality-assurance and export operation. It does not publish a public visitor programme, tasting/tour procedure, shop opening hours, booking rule, or walk-in policy. Do not present the dairy as a public attraction; contact the producer directly if considering a visit."
   },
   {
       "id": "domaine-paterianakis",
@@ -413,21 +688,47 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "story": "The family vineyard predates the modern estate: Aristides Nikoloudakis established vines here, and Manolis Paterianakis moved toward organic cultivation in 1980. Giorgos Paterianakis created the present estate in 1988 and produced its first organic wine in 1997; today his daughters Emmanuela and Niki continue the work in wine production and sales.",
       "indigenousVarieties": [],
       "tastingHighlights": [],
-      "openingHours": "Apr-mid Nov: Mon-Fri 10:30-17:30, Sat-Sun 10:30-16:00; mid-Nov-Mar by appointment",
+      "openingHours": "Apr-mid Nov: Mon-Fri 10:30-17:30; Sat-Sun 10:30-16:00. Mid-Nov-Mar: open by appointment.",
       "ethos": [],
+      "additionalCategories": [],
+      "visitorFeatures": [],
+      "productSections": [
+          {
+              "category": "winery",
+              "specialties": [
+                  "Organic Wines",
+                  "Natural Wines",
+                  "Bio Tsikoudia"
+              ],
+              "varieties": [
+                  "Vidiano",
+                  "Thrapsathiri",
+                  "Kotsifali",
+                  "Mandilaria",
+                  "Assyrtiko"
+              ],
+              "highlights": [
+                  "Melissinos Bio White & Red",
+                  "3.14 Natural Vidiano Orange",
+                  "Domaine Paterianakis PDO Peza"
+              ]
+          }
+      ],
       "phone": "+30 2810 226674",
       "website": "https://paterianakis.gr",
       "googleMapsUrl": "https://maps.google.com/?q=35.180894,25.196347",
       "googlePlaceId": "ChIJdX0LdST0mhQReNnGJiIVQKk",
-      "roadAccessStatus": "not_publicly_confirmed",
+      "roadAccess": "paved",
+      "roadAccessStatus": "verified",
       "roadAccessSourceUrl": "https://paterianakis.gr",
-      "roadAccessNotes": "Phase 6 review (2026-09-13): no explicit source-backed road-surface, width, or vehicle-suitability classification was found in the reviewed public material. Road type remains unpublished.",
+      "roadAccessNotes": "Manual operator road review: normal paved approach. Road classification only; does not establish rental-car suitability or guarantee current conditions.",
       "locationStatus": "verified_location",
       "locationSourceUrl": "https://paterianakis.gr/en/",
       "locationNotes": "Winery coordinates match Wines of Crete route data and the current producer location in Melesses.",
+      "publicPointType": "estate",
       "visitStatus": "seasonal_public",
       "visitSourceUrl": "https://paterianakis.gr/en/events/",
-      "visitNotes": "The estate welcomes visitors April to mid-November on published hours; from mid-November through March visits are by appointment."
+      "visitNotes": "Current first-party hospitality page welcomes visitors from April to mid-November on published hours and switches to appointment-only access from mid-November through March. Guided tours of the estate, vineyards, production, bottling and aging areas are published as lasting 30-45 minutes. The page also states that the visitor experience is wheelchair accessible. It does not explicitly state that reservations are mandatory during the main season or publish parking/tour-language details."
   },
   {
       "id": "douloufakis-winery",
@@ -454,21 +755,49 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "story": "Dimitris Douloufakis began professional winemaking in 1930, his son George took over in 1960, and grandson Nikos returned from oenology studies in Alba, Italy, to lead the winery in 1993. In 2000 Nikos turned his attention to the then little-known Vidiano grape and began planting and vinifying it seriously.",
       "indigenousVarieties": [],
       "tastingHighlights": [],
-      "openingHours": "Mon-Fri cellar 10:00-15:30; tours/tastings by advance booking; seasonal Saturday tastings Jun-Sep",
+      "openingHours": "Wine cellar: Mon-Fri 10:00-15:30. Tours/tastings: Mon-Fri 10:00, 12:00, 14:00 all year; Sat 12:00 and 14:00 in Jun-Sep. Advance booking required.",
       "ethos": [],
+      "additionalCategories": [],
+      "visitorFeatures": [],
+      "productSections": [
+          {
+              "category": "winery",
+              "specialties": [
+                  "Single-Variety Cretan Wines",
+                  "Amphora Fermentations",
+                  "Sparkling Vidiano"
+              ],
+              "varieties": [
+                  "Vidiano",
+                  "Liatiko",
+                  "Kotsifali",
+                  "Malvasia di Candia Aromatica",
+                  "Cabernet Sauvignon"
+              ],
+              "highlights": [
+                  "Dafnios Vidiano White",
+                  "Dafnios Liatiko Red",
+                  "Aspros Lagos Barrel-Aged Vidiano",
+                  "Amphora Vidiano",
+                  "Spark Brut"
+              ]
+          }
+      ],
       "phone": "+30 2810 792017",
       "website": "https://douloufakis.wine",
       "googleMapsUrl": "https://maps.google.com/?q=35.215109,25.049664",
       "googlePlaceId": "ChIJFaEXELf5mhQRNPosWGmK770",
-      "roadAccessStatus": "not_publicly_confirmed",
+      "roadAccess": "narrow_paved",
+      "roadAccessStatus": "verified",
       "roadAccessSourceUrl": "https://douloufakis.wine/en/getting-here/",
-      "roadAccessNotes": "Official directions confirm access by car from Heraklion via the Heraklion–Moires highway, Stavrakia–Siva provincial road and final village streets, with winery parking. The official page does not explicitly classify road surface, width, or rental-car suitability, so no road type is published.",
+      "roadAccessNotes": "Manual operator road review: narrow paved village approach. Official directions confirm access by car and winery parking. Rental-car suitability remains a separate field/assessment.",
       "locationStatus": "verified_location",
       "locationSourceUrl": "https://douloufakis.wine/en/contact-us/",
       "locationNotes": "Winery coordinates and Dafnes location are verified through producer and Wines of Crete sources.",
+      "publicPointType": "estate",
       "visitStatus": "appointment_only",
-      "visitSourceUrl": "https://douloufakis.wine/en/",
-      "visitNotes": "The winery offers visits and tastings, but advance booking is required for visitor programs. Public production-site existence does not imply walk-in access."
+      "visitSourceUrl": "https://douloufakis.wine/en/opening-hours/",
+      "visitNotes": "Current first-party pages require advance booking for wine and olive-oil tasting experiences. The winery publishes weekday and seasonal Saturday tasting slots and explicitly provides on-site parking. The current site conflicts on the standard YAMAS duration (80 vs about 90 minutes), so duration remains unset pending clarification. Experience pages explicitly list Greek and English, while the general visitor-information page lists Greek, English, German and French as languages spoken; visitor_languages remains unset until TerroirTrail defines whether this field means experience language or on-site spoken language."
   },
   {
       "id": "gavalas-crete-winery",
@@ -496,19 +825,46 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "tastingHighlights": [],
       "openingHours": "Contact winery before visiting",
       "ethos": [],
+      "additionalCategories": [],
+      "visitorFeatures": [],
+      "productSections": [
+          {
+              "category": "winery",
+              "specialties": [
+                  "Organic Wines",
+                  "Vegan Certified Wines"
+              ],
+              "varieties": [
+                  "Vilana",
+                  "Vidiano",
+                  "Assyrtiko",
+                  "Malvasia",
+                  "Kotsifali",
+                  "Mandilaria",
+                  "Muscat of Spina"
+              ],
+              "highlights": [
+                  "Fragospito White & Red",
+                  "Monopati",
+                  "Vorinos"
+              ]
+          }
+      ],
       "phone": "+30 28940 51060",
       "website": "https://www.fragospitowinery.com/en/",
       "googleMapsUrl": "https://maps.google.com/?q=35.099950,25.117253",
       "googlePlaceId": "ChIJgzInNBjwmhQRutqQL7tYua4",
-      "roadAccessStatus": "not_publicly_confirmed",
+      "roadAccess": "narrow_paved",
+      "roadAccessStatus": "verified",
       "roadAccessSourceUrl": "https://www.fragospitowinery.com/en/",
-      "roadAccessNotes": "Phase 6 review (2026-09-13): no explicit source-backed road-surface, width, or vehicle-suitability classification was found in the reviewed public material. Road type remains unpublished.",
+      "roadAccessNotes": "Manual operator road review: narrow paved approach. Road classification only; does not establish rental-car suitability or guarantee current conditions.",
       "locationStatus": "verified_location",
       "locationSourceUrl": "https://www.fragospitowinery.com/en/",
       "locationNotes": "Crete winery identity and Vorias location verified. The former gavalaswines.gr link belonged to the unrelated Santorini Gavalas winery and has been replaced.",
-      "visitStatus": "current_access_uncertain",
+      "publicPointType": "estate",
+      "visitStatus": "appointment_only",
       "visitSourceUrl": "https://www.fragospitowinery.com/visit/",
-      "visitNotes": "Fragospito publishes a guided-tour/tasting page, but the site does not provide a clearly current visitor timetable. Contact the winery before travelling."
+      "visitNotes": "Current first-party visit page advertises a guided winery tour covering winemaking, bottling and cellar areas plus a tasting of selected labels. The winery does not publish a current visitor timetable, explicit booking requirement, or walk-in policy on that page. Contact the winery before travelling."
   },
   {
       "id": "kasta-brewery",
@@ -534,21 +890,47 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "story": "Biologist and brewer Kostas Antonakakis founded KASTA with his wife Anna Tzani, a pharmacist, opening the Heraklion brewing lab in late 2018. Even the name is personal: KASTA is an acronym built from the initials of members of their family.",
       "indigenousVarieties": [],
       "tastingHighlights": [],
-      "openingHours": "Mon-Fri 09:00-17:00",
+      "openingHours": "Tap Room closed until further notice; Show Room hours not currently published. Beer tasting sessions are offered by booking.",
       "ethos": [],
+      "additionalCategories": [],
+      "visitorFeatures": [],
+      "productSections": [
+          {
+              "category": "brewery",
+              "specialties": [
+                  "Small-Batch Microbrews",
+                  "Craft Beers in Heraklion",
+                  "Brewery Tasting Room"
+              ],
+              "varieties": [
+                  "Oatmeal Stout",
+                  "Red Ale",
+                  "American IPA",
+                  "Session Ale"
+              ],
+              "highlights": [
+                  "Kasta Oatmeal Stout",
+                  "Kasta Red Ale",
+                  "Kasta IPA",
+                  "Kasta Immortal"
+              ]
+          }
+      ],
       "phone": "+30 2811 813479",
       "website": "https://kastabeer.com",
       "googleMapsUrl": "https://maps.google.com/?q=35.338429,25.131678",
       "googlePlaceId": "ChIJ94-gKsBbmhQRN5SD4LmOscM",
-      "roadAccessStatus": "not_publicly_confirmed",
+      "roadAccess": "narrow_paved",
+      "roadAccessStatus": "verified",
       "roadAccessSourceUrl": "https://kastabeer.com",
-      "roadAccessNotes": "Phase 6 review (2026-09-13): no explicit source-backed road-surface, width, or vehicle-suitability classification was found in the reviewed public material. Road type remains unpublished.",
+      "roadAccessNotes": "Manual operator road review: adjacent road is narrow paved; the final approximately 10 m to the showroom are through a pedestrian alley, so vehicles should not be routed to the exact entrance. Nearby parking has not been verified.",
       "locationStatus": "verified_location",
       "locationSourceUrl": "https://kastabeer.com",
       "locationNotes": "Current brewery address verified as Zampeliou 6, Heraklion.",
-      "visitStatus": "public_visits",
-      "visitSourceUrl": "https://kastabeer.com/about-us/",
-      "visitNotes": "KASTA publishes showroom visiting hours at its Heraklion Brewing Lab. A tasting session is a separate producer offering and is not a TerroirTrail experience."
+      "publicPointType": "producer_shop",
+      "visitStatus": "appointment_only",
+      "visitSourceUrl": "https://kastabeer.com/beer-tasting/",
+      "visitNotes": "Current first-party pages state that the Tap Room is closed until further notice and that Show Room visiting hours are to be announced. A separate current Beer Tasting page and booking/workshop page still promote an interactive tasting session. Treat visitor access as appointment-based for the tasting experience; do not present the site as an open taproom or publish the older Mon-Fri 09:00-17:00 showroom hours."
   },
   {
       "id": "lyrarakis-winery",
@@ -574,21 +956,53 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "story": "Brothers Manolis and Sotiris Lyrarakis founded the winery in 1966. The family planted the rare Dafni and Plyto varieties in the Psarades vineyard in 1992 and later gave Melissaki a home at Gero Deti in 2010—part of a continuing search for Cretan grapes that had almost disappeared.",
       "indigenousVarieties": [],
       "tastingHighlights": [],
-      "openingHours": "Apr-Oct: daily 11:30-19:00, last tasting 17:30; Nov-Mar by request; bank holidays closed",
+      "openingHours": "Apr-Oct: daily 11:30-19:00; last tastings start 17:30. Bank holidays closed. Nov-Mar: visits available upon request.",
       "ethos": [],
+      "additionalCategories": [],
+      "visitorFeatures": [],
+      "productSections": [
+          {
+              "category": "winery",
+              "specialties": [
+                  "Single-Variety Indigenous Revivals",
+                  "Estate Wines",
+                  "Extra Virgin Olive Oil"
+              ],
+              "varieties": [
+                  "Dafni",
+                  "Plyto",
+                  "Melissaki",
+                  "Vidiano",
+                  "Vilana",
+                  "Thrapsathiri",
+                  "Liatiko",
+                  "Kotsifali",
+                  "Mandilari"
+              ],
+              "highlights": [
+                  "Psarades Dafni",
+                  "Psarades Plyto",
+                  "Gero-detis Liatiko",
+                  "Ippodromos Vidiano",
+                  "Aggelis Liatiko"
+              ]
+          }
+      ],
       "phone": "+30 6981050681",
       "website": "https://lyrarakis.com",
       "googleMapsUrl": "https://maps.google.com/?q=35.184889,25.208222",
       "googlePlaceId": "ChIJa95IFTf0mhQRY5TF5uhxJoU",
-      "roadAccessStatus": "not_publicly_confirmed",
+      "roadAccess": "narrow_paved",
+      "roadAccessStatus": "verified",
       "roadAccessSourceUrl": "https://lyrarakis.com",
-      "roadAccessNotes": "Phase 6 review (2026-09-13): no explicit source-backed road-surface, width, or vehicle-suitability classification was found in the reviewed public material. Road type remains unpublished.",
+      "roadAccessNotes": "Manual operator road review: narrow paved approach. Road classification only; does not establish rental-car suitability or guarantee current conditions.",
       "locationStatus": "verified_entrance",
       "locationSourceUrl": "https://lyrarakis.com/en/visit-us",
       "locationNotes": "Producer publishes exact tasting/event GPS coordinates: 35°11'05.6\"N 25°12'29.6\"E, matching the database pin.",
+      "publicPointType": "estate",
       "visitStatus": "seasonal_public",
-      "visitSourceUrl": "https://lyrarakis.com/en/visit-us",
-      "visitNotes": "The tasting site is open daily April-October on published hours; November-March visits are available on request."
+      "visitSourceUrl": "https://www.lyrarakis.com/en/visit-us",
+      "visitNotes": "Current first-party visit page publishes April-October daily opening hours, last tasting time, an estimated total visit duration of 1.5 hours, and November-March visits available upon request. The page does not explicitly state a general main-season booking requirement, walk-in policy, parking policy, or visitor languages."
   },
   {
       "id": "meligyris-apiary",
@@ -614,21 +1028,50 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "story": "Manolis Stefanakis grew up inside that beekeeping tradition and later studied at the Agricultural University of Athens. He brought the two worlds together by examining how altitude, humidity, soil and local microclimates affect the organoleptic and biochemical character of each honey.",
       "indigenousVarieties": [],
       "tastingHighlights": [],
-      "openingHours": "Contact producer before visiting",
+      "openingHours": "",
       "ethos": [],
+      "additionalCategories": [],
+      "visitorFeatures": [],
+      "productSections": [
+          {
+              "category": "apiary",
+              "specialties": [
+                  "Single-Origin Cretan Honey",
+                  "Raw Wild Thyme Honey",
+                  "Pine, Fir & Mountain Blossom Honeys",
+                  "Natural Bee Pollen & Royal Jelly"
+              ],
+              "varieties": [
+                  "Thyme",
+                  "Pine & Thyme",
+                  "White Thyme (Malotira)",
+                  "Heather (Reiki)",
+                  "Sage",
+                  "Forest & Wild Herbs"
+              ],
+              "highlights": [
+                  "Meligyris Wild Thyme Honey",
+                  "Meligyris White Thyme from White Mountains",
+                  "Organic Cretan Pine & Thyme Honey",
+                  "Raw Honeycomb"
+              ]
+          }
+      ],
       "phone": "+30 28910 29066",
       "website": "https://meligyris.com",
       "googleMapsUrl": "https://maps.google.com/?q=35.149930,25.265626",
       "googlePlaceId": "ChIJ88HxsqT0mhQRh_C91lHjOsc",
-      "roadAccessStatus": "not_publicly_confirmed",
+      "roadAccess": "paved",
+      "roadAccessStatus": "verified",
       "roadAccessSourceUrl": "https://meligyris.com",
-      "roadAccessNotes": "Phase 6 review (2026-09-13): no explicit source-backed road-surface, width, or vehicle-suitability classification was found in the reviewed public material. Road type remains unpublished.",
+      "roadAccessNotes": "Manual operator road review: paved village road of normal usable width. Road classification only; does not establish rental-car suitability or guarantee current conditions.",
       "locationStatus": "verified_entrance",
       "locationSourceUrl": "https://meligyris.com",
       "locationNotes": "Exact coordinates verified from the producer-controlled map destination.",
+      "publicPointType": "production_site",
       "visitStatus": "not_publicly_confirmed",
-      "visitSourceUrl": "https://meligyris.com/pages/contact",
-      "visitNotes": "Meligyris publishes its Arkalochori production/contact address but does not currently advertise the site as a public visitor attraction on its own website."
+      "visitSourceUrl": "https://meligyris.com",
+      "visitNotes": "Current first-party site confirms the Arkalochori contact/pickup location. The online store offers order pickup at Arkalochori, but the producer does not publish a current apiary visit, tour, tasting programme, public shop timetable, booking rule, or walk-in policy. Do not present the site as a general visitor attraction."
   },
   {
       "id": "notos-brewery",
@@ -654,21 +1097,47 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "story": "Childhood friends Antonis Tampakakis, Giorgos Neroladakis, Kostas Verigos and Lambros Petsalakis spent years talking, planning and learning before turning their brewing hobby into Notos. Their project became Heraklion's first microbrewery and introduced their own local craft beer to the city.",
       "indigenousVarieties": [],
       "tastingHighlights": [],
-      "openingHours": "Contact brewery before visiting",
+      "openingHours": "",
       "ethos": [],
+      "additionalCategories": [],
+      "visitorFeatures": [],
+      "productSections": [
+          {
+              "category": "brewery",
+              "specialties": [
+                  "Independent Urban Microbrewery",
+                  "Unfiltered Handcrafted Beers",
+                  "Fresh Local Kegs & Bottles"
+              ],
+              "varieties": [
+                  "Lager",
+                  "Pilsner",
+                  "Pale Ale",
+                  "Dry Stout"
+              ],
+              "highlights": [
+                  "Notos Lager Unfiltered",
+                  "Notos Pilsner",
+                  "Notos She's a Pirate Pale Ale",
+                  "Notos Dry Stout"
+              ]
+          }
+      ],
       "phone": "+30 2811 117167",
       "website": "https://notosbrewery.gr",
       "googleMapsUrl": "https://maps.google.com/?q=35.329399,25.114201",
       "googlePlaceId": "ChIJV-H_WvJZmhQRhDv7rC9J7BI",
-      "roadAccessStatus": "not_publicly_confirmed",
+      "roadAccess": "paved",
+      "roadAccessStatus": "verified",
       "roadAccessSourceUrl": "https://notosbrewery.gr",
-      "roadAccessNotes": "Phase 6 review (2026-09-13): no explicit source-backed road-surface, width, or vehicle-suitability classification was found in the reviewed public material. Road type remains unpublished.",
+      "roadAccessNotes": "Manual operator road review: normal paved urban street to the mapped entrance. Road classification only; does not establish rental-car suitability.",
       "locationStatus": "verified_location",
       "locationSourceUrl": "https://notosbrewery.gr",
       "locationNotes": "Current address verified as Patriarchou Meletiou Metaxaki 36A, Heraklion.",
-      "visitStatus": "not_publicly_confirmed",
-      "visitSourceUrl": "https://brewshop.notosbrewery.gr/?page_id=282",
-      "visitNotes": "Notos publishes its brewery address and direct brewer contact details, but its current official pages do not clearly advertise general public visiting hours."
+      "publicPointType": "production_site",
+      "visitStatus": "appointment_only",
+      "visitSourceUrl": "https://notosbrewery.gr/zithopoieio/",
+      "visitNotes": "The current first-party site confirms the Heraklion brewery and direct brewer contact details but does not publish a formal visitor programme or visitor hours. Current public listings and 2026 visitor reports indicate that informal brewery visits, beer tasting/drinking and takeaway purchases do occur, while also describing the site as not set up as a formal taproom. Contact the brewery before travelling."
   },
   {
       "id": "peskesi-farm-kazani",
@@ -694,8 +1163,30 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "story": "The farm follows what Peskesi calls a “Farm to Table” and “Table to Farm” cycle: food begins in the soil, while organic material and knowledge return to the farm rather than ending at the plate. The result is less a showcase farm than a working attempt to make cultivation, cooking and waste reduction part of one system.",
       "indigenousVarieties": [],
       "tastingHighlights": [],
-      "openingHours": "Farm: Mon-Fri 09:00-15:00; check activity/visit requirements before travelling",
+      "openingHours": "Guided farm tours daily at 11:00 and 13:00; tours are weather-dependent.",
       "ethos": [],
+      "additionalCategories": [],
+      "visitorFeatures": [],
+      "productSections": [
+          {
+              "category": "farm",
+              "specialties": [
+                  "Traditional Biodynamic Agriculture",
+                  "Heirloom Vegetables & Herbs",
+                  "Free-Range Poultry"
+              ],
+              "varieties": [
+                  "Traditional Cretan Seed Varieties",
+                  "Wild Mountain Greens",
+                  "Medicinal Herbs"
+              ],
+              "highlights": [
+                  "Farm-to-table organic produce",
+                  "Heirloom vegetable varieties",
+                  "Pasture-raised poultry and eggs"
+              ]
+          }
+      ],
       "phone": "+30 6988889994",
       "website": "https://peskesicrete.gr",
       "googleMapsUrl": "https://maps.google.com/?q=35.275161,25.299635",
@@ -703,7 +1194,7 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "roadAccess": "unpaved_passable",
       "roadAccessStatus": "verified",
       "roadAccessSourceUrl": "https://peskesicrete.gr/en/experiences/explore-the-farm",
-      "roadAccessNotes": "Producer states that access to the farm is via a passable dirt road; entry is limited to vehicles up to 20 seats. The producer recommends approaching through Skotino, Voritsi and Charaso from the Gouves area and following wooden signs. This verifies passable unpaved access but does not by itself establish rental-car suitability.",
+      "roadAccessNotes": "Producer guidance confirms a passable dirt-road approach and vehicles up to 20 seats. Manual operator review found the final approximately 400 m unpaved and in reasonable visible condition. Conditions can change; this classification does not imply rental-car suitability.",
       "vipPerks": {
           "freeMeze": "Freshly baked sourdough with wood-fired anthotiro",
           "welcomePour": "Single-Estate Wild Thyme Tsikoudia",
@@ -712,9 +1203,10 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "locationStatus": "verified_location",
       "locationSourceUrl": "https://peskesicrete.gr",
       "locationNotes": "Current Peskesi farm location verified as Charaso, Hersonissos. Producer approval is still required for TerroirTrail experiences.",
+      "publicPointType": "estate",
       "visitStatus": "public_visits",
       "visitSourceUrl": "https://peskesicrete.gr/en/experiences/explore-the-farm",
-      "visitNotes": "Peskesi publishes the Charaso farm as a visitor destination and gives access directions. Individual activities may require separate booking with Peskesi; none are TerroirTrail experiences."
+      "visitNotes": "Current first-party Peskesi farm experience page publishes the guided farm tour at 11:00 and 13:00 with a 2-hour duration. The current website Terms state that access may be denied without company confirmation and that visitors must show their confirmation to gain entry, supporting advance booking as required for the farm experience and no unconfirmed walk-in access. Vehicle-size access guidance is not treated as parking evidence, and visitor languages remain unconfirmed."
   },
   {
       "id": "silva-daskalaki-winery",
@@ -741,15 +1233,44 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "story": "The Daskalaki family dates its viticulture and winemaking tradition to 1920. In 1998 Irini Daskalaki-Xenogiannaki began building the modern winery in Siva; by 2004 the family had made its first official bottlings of dry and naturally sweet Liatiko.",
       "indigenousVarieties": [],
       "tastingHighlights": [],
-      "openingHours": "Apr-Oct: Mon-Sat 10:30-17:30; Nov-Mar: Mon-Fri 10:30-17:30; appointment required one day ahead",
+      "openingHours": "Apr-Oct: Mon-Sat 10:30-17:30; Nov-Mar: Mon-Fri 10:30-17:30. Closed on holidays. Appointment required one day ahead.",
       "ethos": [],
+      "additionalCategories": [],
+      "visitorFeatures": [],
+      "productSections": [
+          {
+              "category": "winery",
+              "specialties": [
+                  "Biodynamic & Organic Viticulture",
+                  "Native Cretan Varieties",
+                  "Natural Sweet Wines"
+              ],
+              "varieties": [
+                  "Liatiko",
+                  "Kotsifali",
+                  "Mandilaria",
+                  "Vidiano",
+                  "Thrapsathiri",
+                  "Malvasia",
+                  "Plyto"
+              ],
+              "highlights": [
+                  "Enstikto White & Red",
+                  "Sera",
+                  "Vorinos",
+                  "Psithiros",
+                  "Liatiko Liasto Sweet"
+              ]
+          }
+      ],
       "phone": "+30 2810 792021",
       "website": "https://silvawines.gr",
       "googleMapsUrl": "https://maps.google.com/?q=35.208883,25.035853",
       "googlePlaceId": "ChIJCwKcSg35mhQRemlU_UuJXJg",
-      "roadAccessStatus": "not_publicly_confirmed",
+      "roadAccess": "paved",
+      "roadAccessStatus": "verified",
       "roadAccessSourceUrl": "https://silvawines.gr",
-      "roadAccessNotes": "Phase 6 review (2026-09-13): no explicit source-backed road-surface, width, or vehicle-suitability classification was found in the reviewed public material. Road type remains unpublished.",
+      "roadAccessNotes": "Manual operator road review: normal paved road reaches the winery; no dirt final section observed. Road classification only; does not establish rental-car suitability.",
       "vipPerks": {
           "freeMeze": "Aged sheep Graviera & carob rusks",
           "welcomePour": "Biodynamic Vorinos Vidiano",
@@ -758,9 +1279,10 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "locationStatus": "verified_location",
       "locationSourceUrl": "https://www.silvawines.gr/en/about-us",
       "locationNotes": "Siva winery coordinates match Wines of Crete route data; producer contact details verified.",
+      "publicPointType": "estate",
       "visitStatus": "appointment_only",
       "visitSourceUrl": "https://www.silvawines.gr/en/guided-tours-tasting-amp-wine-tips",
-      "visitNotes": "Silva Daskalaki requires arrangements one day in advance for winery visits and tastings."
+      "visitNotes": "Current first-party visitor page lists five guided-tour/tasting programmes. Arrangement one day in advance is required. Tours are offered in Greek and English. Published programme durations vary from 45 to 120 minutes, so no single typical visit duration is stored. Food can be arranged with tastings on request. Parking is not explicitly documented on the current visitor page."
   },
   {
       "id": "solo-craft-brewery",
@@ -786,21 +1308,128 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "story": "From the beginning, Solo framed good beer as something social rather than simply commercial—its own language says craft beer is about people, togetherness and sharing ideas. That philosophy explains why experimentation and dialogue with beer drinkers are part of the brewery's identity.",
       "indigenousVarieties": [],
       "tastingHighlights": [],
-      "openingHours": "Mon-Fri 11:00-16:00; Sat-Sun by appointment; contact before visiting",
+      "openingHours": "Mon-Fri 11:00-16:00; Sat-Sun by appointment. Contact before visiting so the brewery can schedule the visit.",
       "ethos": [],
+      "additionalCategories": [],
+      "visitorFeatures": [],
+      "productSections": [
+          {
+              "category": "brewery",
+              "specialties": [
+                  "True Craft Brewing",
+                  "High Gravity Beers",
+                  "Imperial Ales & Stouts"
+              ],
+              "varieties": [
+                  "Imperial IPA",
+                  "Imperial Stout",
+                  "American Pale Ale",
+                  "Saison",
+                  "Gose"
+              ],
+              "highlights": [
+                  "Fouriaris Imperial IPA",
+                  "Skotadi Imperial Stout",
+                  "Psaki India Pale Ale",
+                  "Askianos",
+                  "Gourouni"
+              ]
+          }
+      ],
       "phone": "+30 2811 750209",
       "website": "https://solobeer.gr",
       "googleMapsUrl": "https://maps.google.com/?q=35.311700,25.176000",
       "googlePlaceId": "ChIJo2tbh7JZmhQRkvvJabgPQH8",
-      "roadAccessStatus": "not_publicly_confirmed",
+      "roadAccess": "paved",
+      "roadAccessStatus": "verified",
       "roadAccessSourceUrl": "https://solobeer.gr/en/",
-      "roadAccessNotes": "Official Solo Brewery information publishes a How to Reach address and Google Map for the Kallithea brewery. No explicit road-surface, width, or vehicle-suitability classification is published, so road type remains unconfirmed.",
+      "roadAccessNotes": "Manual operator road review: normal paved approach. Official producer information publishes the mapped brewery location. Road classification only; does not establish rental-car suitability.",
       "locationStatus": "verified_location",
       "locationSourceUrl": "https://solobeer.gr",
       "locationNotes": "Current production-site address verified as Kountourioti 35, Heraklion.",
+      "publicPointType": "production_site",
       "visitStatus": "appointment_only",
       "visitSourceUrl": "https://solobeer.gr/en/",
-      "visitNotes": "Solo welcomes visitors but explicitly asks them to contact the brewery in advance so the visit can be scheduled; weekends are by appointment."
+      "visitNotes": "Current first-party site explicitly welcomes visitors to the Kallithea brewery and asks them to contact the brewery before visiting so the visit can be scheduled. Published visiting hours are 11:00-16:00 on weekdays, with Saturday and Sunday by appointment. Group tastings, brewery tours and tailor-made experiences are available after communication. Parking, visit duration and visitor languages are not published."
+  },
+  {
+      "id": "stamatogiorgis-dairy-smari",
+      "name": "Stamatogiorgis Dairy",
+      "greekName": "Τυροκομείο Σταματογιώργης",
+      "category": "cheese_dairy",
+      "destination": "crete",
+      "country": "Greece",
+      "countryCode": "GR",
+      "region": "Heraklion",
+      "village": "Smari Pediados",
+      "locality": "Smari Pediados",
+      "coordinates": [
+          35.237247,
+          25.3152673
+      ],
+      "coverImage": "",
+      "gallery": [],
+      "tagLine": "Generations of Smari cheesemaking, 100% local milk and both traditional and delicatessen Cretan flavors.",
+      "description": "Stamatogiorgis is a family-owned dairy in Smari, Pediados, rooted in Cretan cheesemaking tradition. It makes classic cheeses from 100% local milk and also develops delicatessen variations with pepper, bukovo, Cretan herbs and smoking, alongside traditional dairy products.",
+      "story": "The Stamatogiorgis family describes generations of cheesemaking know-how carried into a modern family dairy in Smari. Its range begins with traditional Cretan cheeses such as Graviera, Kefalotyri, Myzithra and Anthotyro, but extends to herb, pepper and smoked cheeses and everyday dairy products. The producer also highlights international distinctions and tasting experiences at its facilities; because current booking and walk-in procedures are not clear, TerroirTrail continues to treat visitor access as uncertain rather than guaranteed.",
+      "indigenousVarieties": [
+          "Graviera",
+          "Kefalotyri",
+          "Myzithra",
+          "Anthotyro",
+          "cheese with pepper",
+          "cheese with bukovo",
+          "cheese with Cretan herbs",
+          "smoked cheese",
+          "sheep yogurt",
+          "anthogalo",
+          "katsochoiri"
+      ],
+      "tastingHighlights": [
+          "The family-owned Smari dairy presents generations of Cretan cheesemaking know-how and uses 100% local milk.",
+          "Traditional cheeses include Graviera, Kefalotyri, Myzithra and Anthotyro, alongside pepper, bukovo, Cretan-herb and smoked delicatessen cheeses.",
+          "The producer also makes sheep yogurt, anthogalo and katsochoiri and advertises tasting experiences at its facilities; current booking and walk-in terms remain uncertain."
+      ],
+      "openingHours": "",
+      "ethos": [],
+      "additionalCategories": [],
+      "visitorFeatures": [],
+      "productSections": [
+          {
+              "category": "cheese_dairy",
+              "specialties": [
+                  "Artisanal Small-Batch Cheeses",
+                  "Tasting Experiences",
+                  "Heirloom Family Recipes"
+              ],
+              "varieties": [
+                  "Graviera",
+                  "Kefalograviera",
+                  "Anthotyros",
+                  "Melichloro"
+              ],
+              "highlights": [
+                  "Stamatogiorgis Graviera",
+                  "Handcrafted Aged Hard Cheeses",
+                  "Traditional Smari Cream"
+              ]
+          }
+      ],
+      "phone": "+30 697 342 3040",
+      "website": "https://stamatogiorgis.gr/en/",
+      "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=35.237247%2C25.3152673&query_place_id=ChIJDZQB-RFhmhQRcsREVVyuhSQ",
+      "googlePlaceId": "ChIJDZQB-RFhmhQRcsREVVyuhSQ",
+      "roadAccess": "paved",
+      "roadAccessStatus": "verified",
+      "roadAccessSourceUrl": "https://www.google.com/maps/search/?api=1&query=35.237247%2C25.3152673&query_place_id=ChIJDZQB-RFhmhQRcsREVVyuhSQ",
+      "roadAccessNotes": "Manual operator road review: normal paved approach. Road classification only; does not establish rental-car suitability or guarantee current conditions.",
+      "locationStatus": "verified_location",
+      "locationSourceUrl": "https://www.google.com/maps/search/?api=1&query=35.237247%2C25.3152673&query_place_id=ChIJDZQB-RFhmhQRcsREVVyuhSQ",
+      "locationNotes": "Exact Google business point manually matched to the Stamatogiorgis dairy in Smari and the producer-controlled business identity. This verifies the business location, not a specific customer entrance.",
+      "publicPointType": "production_site",
+      "visitStatus": "appointment_only",
+      "visitSourceUrl": "https://stamatogiorgis.gr/en/",
+      "visitNotes": "Current first-party site explicitly says the dairy offers tasting experiences at its facilities. It does not publish a clear current visitor timetable, booking requirement, walk-in policy, visit duration, or parking policy. Contact the dairy before travelling."
   },
   {
       "id": "kazani-stilianou",
@@ -821,26 +1450,78 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "gallery": [
           "https://images.unsplash.com/photo-1516594915697-87eb3b1c14ea?auto=format&fit=crop&w=1000&q=80"
       ],
-      "tagLine": "Five generations of natural and organic wine in Kounavoi",
+      "tagLine": "Five generations of family winemaking and organic olive oil in Kounavoi",
       "description": "Stilianou is a small family winery in the historic wine country around Kounavoi and Archanes, producing natural and organically grown wines with a strong emphasis on indigenous Cretan grapes. Olive oil is part of the same family agricultural landscape.",
-      "story": "The family dates its domain to 1922 and describes five generations of winemakers. The continuity is less about reproducing the past unchanged than keeping native varieties, vineyards and family-scale production at the centre while working in a contemporary natural-wine style.",
-      "indigenousVarieties": [],
-      "tastingHighlights": [],
-      "openingHours": "Daily from 11:00; Nov-Mar by booking; check current closing time",
+      "story": "The family dates its domain to 1922 and describes five generations of winemakers. Native Cretan grapes and family-scale production remain central to its natural-wine approach, alongside organically cultivated olive groves and organic extra virgin olive oil.",
+      "indigenousVarieties": [
+          "Vidiano",
+          "Thrapsathiri",
+          "Vilana",
+          "Kotsifali",
+          "Mandilari"
+      ],
+      "tastingHighlights": [
+          "4-wine tasting (€10 per person)",
+          "6-wine tasting (€12 per person)",
+          "Organic olive oil tasting",
+          "Cheese platter available",
+          "Local pies platter available"
+      ],
+      "openingHours": "Daily 11:00-19:00. Nov-Mar: contact/book before visiting.",
       "ethos": [],
+      "additionalCategories": [
+          "olive_oil_producer"
+      ],
+      "visitorFeatures": [],
+      "productSections": [
+          {
+              "category": "winery",
+              "specialties": [
+                  "Natural & Bio-Organic Wines",
+                  "Indigenous Cretan Grape Varieties"
+              ],
+              "varieties": [
+                  "Vidiano",
+                  "Thrapsathiri",
+                  "Vilana",
+                  "Kotsifali",
+                  "Mandilaria"
+              ],
+              "highlights": [
+                  "Great Mother Red & White",
+                  "Theon Gi Vidiano",
+                  "Stilianou Bio Tsikoudia"
+              ]
+          },
+          {
+              "category": "olive_oil_producer",
+              "specialties": [
+                  "Single-Estate Organic Extra Virgin Olive Oil"
+              ],
+              "varieties": [
+                  "Koroneiki"
+              ],
+              "highlights": [
+                  "Cold pressed organic olive oil"
+              ]
+          }
+      ],
       "phone": "+30 6940784329",
       "website": "https://stilianouwinery.com",
       "googleMapsUrl": "https://maps.google.com/?q=35.235858,25.191400",
       "googlePlaceId": "ChIJ64tJU_71mhQRkQMBKPHOyUs",
-      "roadAccessStatus": "not_publicly_confirmed",
+      "roadAccess": "narrow_paved",
+      "roadAccessStatus": "verified",
       "roadAccessSourceUrl": "https://stilianouwinery.com",
-      "roadAccessNotes": "Phase 6 review (2026-09-13): no explicit source-backed road-surface, width, or vehicle-suitability classification was found in the reviewed public material. Road type remains unpublished.",
+      "roadAccessNotes": "Manual operator road review: narrow paved approach. Road classification only; does not establish rental-car suitability or guarantee current conditions.",
+      "foodOption": "tasting_board",
       "locationStatus": "verified_location",
       "locationSourceUrl": "https://stilianouwinery.com/",
       "locationNotes": "Current winery identity, visitor operation and phone verified on the producer site. Closing time varies between current producer pages, so users should check the booking page.",
-      "visitStatus": "public_visits",
+      "publicPointType": "estate",
+      "visitStatus": "seasonal_public",
       "visitSourceUrl": "https://stilianouwinery.com/",
-      "visitNotes": "Stilianou publishes winery visiting/tasting hours; from November to March visits are by booking. Check the producer page for the current closing time."
+      "visitNotes": "Current first-party Stilianou Winery site lists daily opening hours of 11:00-19:00 and presents visits/tastings with a booking calendar. The current tasting menu publishes a 4-wine tasting at €10 per person, a 6-wine tasting at €12 per person, organic olive-oil tasting at €3 per person, a cheese platter at €17 per plate (for two), and a local-pies platter at €12 per plate (for two). Winter access from November through March is stated as on booking. No current public email address is published on the present website; use the official booking/contact route or current phone number."
   },
   {
       "id": "titakis-winery",
@@ -866,21 +1547,48 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "story": "Titos Titakis founded the first family winery in Kalloni in 1952, and his son Nikolaos expanded its commercial reach. Production moved to modern facilities in Kounavoi in 1996; the third generation entered management in 2005 and has continued expanding the family's vineyards and wine portfolio.",
       "indigenousVarieties": [],
       "tastingHighlights": [],
-      "openingHours": "Book Fabrika visit with the winery; contact for current hours",
+      "openingHours": "Booking office: Mon-Fri 08:00-15:00; Sat upon request. Visit time is arranged through the Fabrika reservation flow.",
       "ethos": [],
+      "additionalCategories": [],
+      "visitorFeatures": [],
+      "productSections": [
+          {
+              "category": "winery",
+              "specialties": [
+                  "Fabrika Wine Experience",
+                  "Concrete Cellar Aging",
+                  "Single-Varieties"
+              ],
+              "varieties": [
+                  "Vidiano",
+                  "Malvasia Aromatica",
+                  "Kotsifali",
+                  "Mandilari",
+                  "Assyrtiko",
+                  "Syrah"
+              ],
+              "highlights": [
+                  "Impetus White & Red",
+                  "Kounavi PDO Peza",
+                  "Fabrika Selections"
+              ]
+          }
+      ],
       "phone": "+30 2810 743630",
       "website": "https://titakis.gr",
       "googleMapsUrl": "https://maps.google.com/?q=35.2330555556,25.1838666667",
       "googlePlaceId": "ChIJc19IswH2mhQRs59Vro6kHog",
-      "roadAccessStatus": "not_publicly_confirmed",
+      "roadAccess": "paved",
+      "roadAccessStatus": "verified",
       "roadAccessSourceUrl": "https://titakis.gr",
-      "roadAccessNotes": "Phase 6 review (2026-09-13): no explicit source-backed road-surface, width, or vehicle-suitability classification was found in the reviewed public material. Road type remains unpublished.",
+      "roadAccessNotes": "Manual operator road review: normal paved approach. Road classification only; does not establish rental-car suitability or guarantee current conditions.",
       "locationStatus": "verified_location",
       "locationSourceUrl": "https://titakis.gr/en/history/",
       "locationNotes": "Coordinates normalized to Wines of Crete Kounavoi location; current phone verified by the winery and Wines of Crete.",
-      "visitStatus": "appointment_only",
-      "visitSourceUrl": "https://titakis.gr/en/contact/",
-      "visitNotes": "Titakis publishes the Fabrika visitor concept and a booking route for winery visits; do not imply walk-in availability without confirmation."
+      "publicPointType": "production_site",
+      "visitStatus": "seasonal_public",
+      "visitSourceUrl": "https://www.fabrikaexperience.gr/en/book-your-visit",
+      "visitNotes": "Current first-party Fabrika Experience site presents Titakis Winery as an active wine-tour destination with multiple bookable tour/tasting packages. Reservations are handled by phone or booking form. The page publishes booking-office hours and package-specific durations, including additional 1- or 2-day notice for selected premium experiences. The site does not explicitly state a general walk-in policy, parking policy, or tour languages, so those remain unconfirmed."
   },
   {
       "id": "zacharioudakis-winery",
@@ -906,15 +1614,40 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "story": "Journalist Stelios Zacharioudakis and his wife Victoria began creating the estate in 2000 on land connected to his father and grandfather. By 2009 the project had grown into a completed winery, and Zacharioudakis describes that moment as the point when journalism moved to the background and winemaking became his daily work.",
       "indigenousVarieties": [],
       "tastingHighlights": [],
-      "openingHours": "Apr-Oct: Mon-Sat 10:00-17:00; winter visits after contact",
+      "openingHours": "Open to visitors year-round; current daily visitor hours are not published on the official visit page. Contact the winery before travelling.",
       "ethos": [],
+      "additionalCategories": [],
+      "visitorFeatures": [],
+      "productSections": [
+          {
+              "category": "winery",
+              "specialties": [
+                  "Certified Organic Hilltop Viticulture",
+                  "Gravity-Flow Winery"
+              ],
+              "varieties": [
+                  "Vidiano",
+                  "Vilana",
+                  "Malvasia di Candia",
+                  "Kotsifali",
+                  "Syrah",
+                  "Cabernet Sauvignon"
+              ],
+              "highlights": [
+                  "Orthi Petra White & Red",
+                  "Codex",
+                  "Victoria"
+              ]
+          }
+      ],
       "phone": "+30 28920 96226",
       "website": "https://zacharioudakis.com",
       "googleMapsUrl": "https://maps.google.com/?q=35.077339,24.941453",
       "googlePlaceId": "ChIJRS6SqV3imhQRh2S9CPLm4oE",
-      "roadAccessStatus": "not_publicly_confirmed",
+      "roadAccess": "narrow_paved",
+      "roadAccessStatus": "verified",
       "roadAccessSourceUrl": "https://zacharioudakis.com",
-      "roadAccessNotes": "Phase 6 review (2026-09-13): no explicit source-backed road-surface, width, or vehicle-suitability classification was found in the reviewed public material. Road type remains unpublished.",
+      "roadAccessNotes": "Manual operator road review: narrow paved approach. Road classification only; does not establish rental-car suitability or guarantee current conditions.",
       "vipPerks": {
           "freeMeze": "Messara artisanal dried figs & cheese",
           "welcomePour": "Orthi Petra Organic Vidiano",
@@ -923,12 +1656,13 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "locationStatus": "verified_location",
       "locationSourceUrl": "https://www.winesofcrete.gr/en/wineries/domaine-zacharioudakis/",
       "locationNotes": "Plouti estate coordinates and current visitor details are verified through Wines of Crete.",
+      "publicPointType": "estate",
       "visitStatus": "seasonal_public",
-      "visitSourceUrl": "https://www.winesofcrete.gr/en/wineries/domaine-zacharioudakis/",
-      "visitNotes": "The winery and vineyard are open to visitors April-October, Monday-Saturday 10:00-17:00. During winter, contact the estate before visiting."
+      "visitSourceUrl": "https://www.zacharioudakis.com/en/visit-us/",
+      "visitNotes": "Current first-party visitor page confirms that both the vineyard and winery are open and visitable to the public throughout the year. Visitors can tour the vineyard and production areas, taste estate wines and traditional Cretan foods, and buy wines/products from the wine shop. The official page does not publish current daily opening hours, a general booking requirement, walk-in policy, parking policy, visit duration, or tour languages."
   },
   // ==========================================
-  // --- RETHYMNO (2 AUDITED RECORDS) ---
+  // --- RETHYMNO (3 AUDITED RECORDS) ---
   // ==========================================
   {
       "id": "parasiris-olive-mill",
@@ -954,21 +1688,125 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "story": "The mill has remained in the Paraschakis family for generations. Rather than discarding older equipment as production modernised, the family kept the story visible: visitors can see how pressing moved from manual and animal-powered methods to contemporary centrifugal extraction.",
       "indigenousVarieties": [],
       "tastingHighlights": [],
-      "openingHours": "Mon-Sat 09:00-18:00; Sunday closed (check current listing before travel)",
+      "openingHours": "",
       "ethos": [],
+      "additionalCategories": [],
+      "visitorFeatures": [],
+      "productSections": [
+          {
+              "category": "olive_mill",
+              "specialties": [
+                  "Generational Family Olive Mill",
+                  "Cold Extracted Extra Virgin Olive Oil",
+                  "Local Distillates (Tsikoudia) & Honey"
+              ],
+              "varieties": [
+                  "Koroneiki",
+                  "Chondrolia"
+              ],
+              "highlights": [
+                  "Paraschakis Family Extra Virgin Olive Oil",
+                  "Organic Bio EVOO",
+                  "Traditional Kazan Tsikoudia"
+              ]
+          }
+      ],
       "phone": "+30 28340 22039",
       "website": "https://paraschakis.gr",
       "googleMapsUrl": "https://maps.google.com/?q=35.375870,24.728410",
       "googlePlaceId": "ChIJc4w4p8SomxQRNLLndoFdE0E",
-      "roadAccessStatus": "not_publicly_confirmed",
+      "roadAccess": "paved",
+      "roadAccessStatus": "verified",
       "roadAccessSourceUrl": "https://paraschakis.gr",
-      "roadAccessNotes": "Phase 6 review (2026-09-13): no explicit source-backed road-surface, width, or vehicle-suitability classification was found in the reviewed public material. Road type remains unpublished.",
+      "roadAccessNotes": "Manual operator road review: normal paved approach. Road classification only; does not establish rental-car suitability or guarantee current conditions.",
       "locationStatus": "verified_location",
       "locationSourceUrl": "https://paraschakis.gr/olive-oil-factory/",
       "locationNotes": "Current official site verifies the Paraschakis family olive mill in Melidoni. The public landline +30 28340 22039 is consistently listed by the Municipality/local business sources and current travel listings.",
-      "visitStatus": "public_visits",
-      "visitSourceUrl": "https://paraschakis.gr/olive-oil-factory/",
-      "visitNotes": "The Paraschakis family explicitly welcomes visitors to the Melidoni olive mill for an introduction to older and modern production methods and olive-oil tasting. Current public listings show Monday-Saturday 09:00-18:00; check before a special trip."
+      "publicPointType": "production_site",
+      "visitStatus": "seasonal_public",
+      "visitSourceUrl": "https://paraschakis.gr",
+      "visitNotes": "Current first-party site explicitly presents the Melidoni olive mill as visitor-friendly and welcomes guests for a guided introduction to olive-oil production and tasting. The current official pages do not publish daily visitor hours, a booking requirement, walk-in policy, visit duration, parking policy, or visitor languages. The previously displayed Mon-Sat 09:00-18:00 timetable came from public listings and is no longer surfaced as a producer-confirmed schedule."
+  },
+  {
+      "id": "psiloritis-cheese-dairy-livadia",
+      "name": "Psiloritis Cheese Dairy",
+      "greekName": "Τυροκομείο Ψηλορείτης",
+      "category": "cheese_dairy",
+      "destination": "crete",
+      "country": "Greece",
+      "countryCode": "GR",
+      "region": "Rethymno",
+      "village": "Livadia Mylopotamou",
+      "locality": "Livadia Mylopotamou",
+      "coordinates": [
+          35.3038706,
+          24.8093411
+      ],
+      "coverImage": "",
+      "gallery": [],
+      "tagLine": "Family cheesemaking at the foothills of Psiloritis, built around local mountain sheep and goat milk.",
+      "description": "Psiloritis Cheese Dairy has produced traditional Cretan dairy products in Livadia Mylopotamou since 1993. Founder Efstratios Klados began with milk from his own sheep and goats; the dairy later expanded its local milk network and moved to modern facilities in 2007 while retaining traditional Cretan cheeses at the centre of production.",
+      "story": "Efstratios Klados began producing Graviera and Kefalotyri in 1993 from milk supplied by his own sheep and goats at the foothills of Psiloritis. As demand grew, the dairy began working with other local producers from 1995, with particular attention to milk quality and local sheep and goat breeds reared largely in mountainous areas. In 2007 the family business relocated to modern facilities and adopted ISO 22000 food-safety certification while continuing its traditional Cretan range.",
+      "indigenousVarieties": [
+          "Cretan Graviera",
+          "Kefalotyri",
+          "Cretan Xynomyzithra",
+          "Anthotyros",
+          "sweet Myzithra",
+          "white brine cheese",
+          "yogurt",
+          "Graviera with thyme",
+          "Graviera with oregano",
+          "Graviera with bukovo",
+          "smoked cheese",
+          "grated Graviera",
+          "Cretan xinochondros"
+      ],
+      "tastingHighlights": [
+          "Founder Efstratios Klados began producing Graviera and Kefalotyri in 1993 using milk from his own sheep and goats at the foothills of Psiloritis.",
+          "From 1995 the dairy expanded its local milk network, with emphasis on milk quality and local sheep and goat breeds reared largely in mountainous areas.",
+          "The family moved to modern facilities in 2007 and adopted ISO 22000 food-safety certification; the range includes Cretan Graviera, Kefalotyri, Xynomyzithra, Anthotyros and flavored Graviera."
+      ],
+      "openingHours": "",
+      "ethos": [],
+      "additionalCategories": [],
+      "visitorFeatures": [],
+      "productSections": [
+          {
+              "category": "cheese_dairy",
+              "specialties": [
+                  "High-Altitude Mountain Cheeses",
+                  "PDO Graviera Kritis",
+                  "Livadia Traditional Dairy"
+              ],
+              "varieties": [
+                  "Graviera Kritis PDO",
+                  "Kefalotyri Psiloriti",
+                  "Anthotyros",
+                  "Xynomyzithra PDO"
+              ],
+              "highlights": [
+                  "Psiloritis Graviera Kritis PDO",
+                  "Mountain Hard Cheese",
+                  "Traditional Dry Anthotyros"
+              ]
+          }
+      ],
+      "phone": "+30 28340 61716",
+      "website": "https://www.psiloriths.gr/en/home/",
+      "googleMapsUrl": "https://www.google.com/maps/search/?api=1&query=35.3038706%2C24.8093411&query_place_id=ChIJIZTR0koHmxQRQqWZvFNSOGU",
+      "googlePlaceId": "ChIJIZTR0koHmxQRQqWZvFNSOGU",
+      "roadAccess": "narrow_paved",
+      "roadAccessStatus": "verified",
+      "roadAccessSourceUrl": "https://www.google.com/maps/search/?api=1&query=35.3038706%2C24.8093411&query_place_id=ChIJIZTR0koHmxQRQqWZvFNSOGU",
+      "roadAccessNotes": "Manual operator road review: narrow paved village road. Road classification only; does not establish rental-car suitability or guarantee current conditions.",
+      "locationStatus": "verified_location",
+      "locationSourceUrl": "https://www.google.com/maps/search/?api=1&query=35.3038706%2C24.8093411",
+      "locationNotes": "Exact Google business point manually matched to the current Psiloritis cheese dairy in Livadia, resolving the post-2007 facility location. Persistent Google Place ID additionally cross-matched on 2026-09-16 to the Livadia Psiloritis dairy business listing using the same published phone (+30 28340 61716) and locality as the official producer site.",
+      "publicPointType": "production_site",
+      "visitStatus": "not_publicly_confirmed",
+      "visitSourceUrl": "https://www.psiloriths.gr/en/home/",
+      "visitNotes": "Current first-party site confirms the Livadia dairy as a modern production plant and publishes direct contact details, but it does not publish a public visitor programme, tour/tasting procedure, public opening hours, booking rule, or walk-in policy. Keep public access unconfirmed."
   },
   {
       "id": "tzourmpakis-dairy-amari",
@@ -994,21 +1832,46 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "story": "The family dates its cheesemaking activity to 1978. Its own account emphasises continuity rather than reinvention: milk from local grazing flocks, recipes and handling passed between generations, and modern food-safety certification supporting a traditional range of Cretan cheeses.",
       "indigenousVarieties": [],
       "tastingHighlights": [],
-      "openingHours": "Contact dairy before visiting",
+      "openingHours": "",
       "ethos": [],
+      "additionalCategories": [],
+      "visitorFeatures": [],
+      "productSections": [
+          {
+              "category": "cheese_dairy",
+              "specialties": [
+                  "Amari Valley Sheep & Goat Milk Cheeses",
+                  "Traditional Graviera",
+                  "Authentic Rethymno Dairy"
+              ],
+              "varieties": [
+                  "Graviera Kritis PDO",
+                  "Anthotyros",
+                  "Myzithra",
+                  "Gidino (Goat Cheese)"
+              ],
+              "highlights": [
+                  "Tzourmpakis Graviera Kritis PDO",
+                  "Pure Goat Hard Cheese",
+                  "Aged Dry Anthotyros"
+              ]
+          }
+      ],
       "phone": "+30 28320 20013",
       "website": "https://tzourmpakis.gr",
       "googleMapsUrl": "https://www.google.com/maps/place/%CE%A4%CF%85%CF%81%CE%BF%CE%BA%CE%BF%CE%BC%CE%B5%CE%AF%CE%BF+%CE%A4%CE%B6%CE%BF%CF%85%CF%81%CE%BC%CF%80%CE%AC%CE%BA%CE%B7/@35.2210821,24.4977471,21z/data=!4m14!1m7!3m6!1s0x149b6d60e5af177f:0x28f04e6827f00777!2zzqTPhc-Bzr_Ous6_zrzOtc6vzr8gzqTOts6_z4XPgc68z4DOrM66zrc!8m2!3d35.2211278!4d24.4979202!16s%2Fg%2F11bxd77_pt!3m5!1s0x149b6d60e5af177f:0x28f04e6827f00777!8m2!3d35.2211278!4d24.4979202!16s%2Fg%2F11bxd77_pt?entry=ttu&g_ep=EgoyMDI2MDkwOS4wIKXMDSoASAFQAw%3D%3D",
       "googlePlaceId": "ChIJfxev5WBtmxQRdwfwJ2hO8Cg",
-      "roadAccessStatus": "not_publicly_confirmed",
+      "roadAccess": "narrow_paved",
+      "roadAccessStatus": "verified",
       "roadAccessSourceUrl": "https://tzourmpakis.gr/",
-      "roadAccessNotes": "Official Tzourmpakis information confirms the Mixorrouma dairy location and provides a map link. No explicit public road-surface, width, or vehicle-suitability classification is published, so road type remains unconfirmed.",
+      "roadAccessNotes": "Manual operator road review: narrow paved village road. Road classification only; does not establish rental-car suitability or guarantee current conditions.",
       "locationStatus": "verified_location",
       "locationSourceUrl": "https://www.google.com/maps/place/%CE%A4%CF%85%CF%81%CE%BF%CE%BA%CE%BF%CE%BC%CE%B5%CE%AF%CE%BF+%CE%A4%CE%B6%CE%BF%CF%85%CF%81%CE%BC%CF%80%CE%AC%CE%BA%CE%B7/@35.2210821,24.4977471,21z/data=!4m14!1m7!3m6!1s0x149b6d60e5af177f:0x28f04e6827f00777!2zzqTPhc-Bzr_Ous6_zrzOtc6vzr8gzqTOts6_z4XPgc68z4DOrM66zrc!8m2!3d35.2211278!4d24.4979202!16s%2Fg%2F11bxd77_pt!3m5!1s0x149b6d60e5af177f:0x28f04e6827f00777!8m2!3d35.2211278!4d24.4979202!16s%2Fg%2F11bxd77_pt?entry=ttu&g_ep=EgoyMDI2MDkwOS4wIKXMDSoASAFQAw%3D%3D",
       "locationNotes": "Current Tzourmpakis Dairy location supplied from the Google Maps business listing. Treat as verified location; entrance-level precision has not been separately established.",
-      "visitStatus": "current_access_uncertain",
-      "visitSourceUrl": "https://tzourmpakis.gr/",
-      "visitNotes": "The current dairy and producer-controlled map destination are verified. Historical sources mention a shop on the Rethymno-Spili road, but current public walk-in instructions are not explicit enough to promise access."
+      "publicPointType": "production_site",
+      "visitStatus": "not_publicly_confirmed",
+      "visitSourceUrl": "https://tzourmpakis.gr",
+      "visitNotes": "Current first-party site confirms the working dairy and direct contact details in Mixorrouma, but it does not publish a current public visitor programme, shop opening schedule, tour procedure, booking rule, or walk-in policy. Older public sources mention a shop on the Rethymno-Spili road, but that evidence is not current enough to establish present-day public access. Contact the producer before considering a visit."
   },
   // ==========================================
   // --- LASITHI (2 AUDITED RECORDS) ---
@@ -1037,21 +1900,50 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "story": "Wine has long been part of monastery life here: an inscription on Toplou's wine press records Liatiko cultivation in 1709. The monastery revived old vineyards and planted new ones in the late 1990s, leading to the modern winery and distillery that now carry this agricultural heritage forward.",
       "indigenousVarieties": [],
       "tastingHighlights": [],
-      "openingHours": "Toplou Fabrica daily 10:00-18:00; winery contact Mon-Fri 08:30-16:30",
+      "openingHours": "Toplou Fabrica visitor/tasting room: daily 10:00-18:00. Production winery contact hours: Mon-Fri 08:30-16:30; tastings do not take place at the winery.",
       "ethos": [],
+      "additionalCategories": [],
+      "visitorFeatures": [],
+      "productSections": [
+          {
+              "category": "winery",
+              "specialties": [
+                  "Monastic Organic Wines",
+                  "Traditional Tsikoudia",
+                  "Organic EVOO"
+              ],
+              "varieties": [
+                  "Thrapsathiri",
+                  "Liatiko",
+                  "Assyrtiko",
+                  "Vilana",
+                  "Mandilaria",
+                  "Syrah"
+              ],
+              "highlights": [
+                  "Gerto Thrapsathiri",
+                  "Amaranton Liatiko Rose",
+                  "Linos Liatiko Red",
+                  "Filotheos Liastos Sweet",
+                  "Toplou Tsikoudia"
+              ]
+          }
+      ],
       "phone": "+30 28430 29630",
       "website": "https://www.ktimatoplou.gr/",
       "googleMapsUrl": "https://maps.google.com/?q=35.2215,26.2163",
       "googlePlaceId": "ChIJEaesXnDvkBQRqf3MIrUc1WQ",
-      "roadAccessStatus": "not_publicly_confirmed",
+      "roadAccess": "paved",
+      "roadAccessStatus": "verified",
       "roadAccessSourceUrl": "https://www.ktimatoplou.gr/",
-      "roadAccessNotes": "Phase 6 review (2026-09-13): no explicit source-backed road-surface, width, or vehicle-suitability classification was found in the reviewed public material. Road type remains unpublished.",
+      "roadAccessNotes": "Manual operator road review: normal paved approach to the mapped public point. Classification applies to the mapped visitor location only, not unrelated service or production tracks.",
       "locationStatus": "verified_location",
       "locationSourceUrl": "https://www.ktimatoplou.gr/en/contact-us-285",
       "locationNotes": "Monastery/estate location is verified. Do not present the production winery pin as the tasting-room entrance; current tastings are at Toplou Fabrica in the monastery courtyard.",
+      "publicPointType": "estate",
       "visitStatus": "public_visits",
       "visitSourceUrl": "https://www.ktimatoplou.gr/en/toplou-fabrica-tasting-room-315",
-      "visitNotes": "Public tastings are offered at Toplou Fabrica inside the courtyard of the Holy Monastery of Toplou. Ktima Toplou explicitly states that tastings do not take place at the production winery. The current monastery/estate location is suitable for reaching the visitor destination; use Toplou Fabrica instructions for final access."
+      "visitNotes": "Current first-party pages confirm that public tastings and visitor experiences take place at Toplou Fabrica inside the courtyard of the Holy Monastery of Toplou, open daily 10:00-18:00. Ktima Toplou explicitly states that wine tastings do not take place at the production winery. The winery publishes separate contact hours Mon-Fri 08:30-16:30. Booking availability exists through the Fabrica request/contact flow, but a general mandatory-booking or walk-in rule is not explicitly stated."
   },
   {
       "id": "cretan-olive-oil-farm",
@@ -1077,21 +1969,44 @@ export const CRETAN_PRODUCERS: Producer[] = [
       "story": "The project grew unexpectedly from work on books about the Cretan diet in the 1990s, which led the family to reconnect with older recipes, ingredients and producers across the island. After years of welcoming visitors, they rebuilt their family's 1882 olive press inside the museum; in 2024 the farm took the Spiridi name to foreground the family legacy.",
       "indigenousVarieties": [],
       "tastingHighlights": [],
-      "openingHours": "Mon-Sat 09:30-19:00; Sun 10:00-16:00",
+      "openingHours": "Usually 1 Apr-31 Oct. Mon-Sat 09:30-18:30; Sun 10:00-16:00. Check the main page for seasonal timetable updates.",
       "ethos": [],
+      "additionalCategories": [],
+      "visitorFeatures": [],
+      "productSections": [
+          {
+              "category": "olive_mill",
+              "specialties": [
+                  "Traditional Cold-Pressed Extra Virgin Olive Oil",
+                  "Infused Herb Olive Oils",
+                  "Natural Olive Oil Soaps & Cosmetics"
+              ],
+              "varieties": [
+                  "Koroneiki",
+                  "Tsunati"
+              ],
+              "highlights": [
+                  "Spiridi Estate EVOO",
+                  "Flavored Herb Infused Olive Oils",
+                  "Handmade Natural Olive Oil Soaps"
+              ]
+          }
+      ],
       "phone": "+30 28410 24139",
       "website": "https://cretanoliveoilfarm.com",
       "googleMapsUrl": "https://maps.google.com/?q=35.211141,25.711611",
       "googlePlaceId": "ChIJVVVVVeV_kBQRuwz899nRDW0",
-      "roadAccessStatus": "not_publicly_confirmed",
+      "roadAccess": "paved",
+      "roadAccessStatus": "verified",
       "roadAccessSourceUrl": "https://cretanoliveoilfarm.com",
-      "roadAccessNotes": "Phase 6 review (2026-09-13): no explicit source-backed road-surface, width, or vehicle-suitability classification was found in the reviewed public material. Road type remains unpublished.",
+      "roadAccessNotes": "Manual operator road review: normal paved approach. Road classification only; does not establish rental-car suitability or guarantee current conditions.",
       "locationStatus": "verified_location",
       "locationSourceUrl": "https://cretanoliveoilfarm.com",
       "locationNotes": "Current Spiridi Olive Oil Farm identity and Agios Nikolaos-Elounda road location verified. Producer advises checking current timetable.",
-      "visitStatus": "public_visits",
-      "visitSourceUrl": "https://www.cretanoliveoilfarm.com/",
-      "visitNotes": "Spiridi explicitly operates as a visitor farm and museum and publishes daily opening hours and self-guided access."
+      "publicPointType": "estate",
+      "visitStatus": "seasonal_public",
+      "visitSourceUrl": "https://cretanoliveoilfarm.com/tours",
+      "visitNotes": "Current first-party pages confirm Spiridi as a seasonal public visitor farm and museum. A simple/e-guided visit requires no reservation and lasts about 60 minutes, including an olive-oil and Cretan-products tasting. The farm usually welcomes visitors from 1 April to 31 October. Separate hands-on activities require booking at least 12 hours ahead. The e-guided tablet content is available in English, French, German, Russian and Polish."
   },
 ];
 
